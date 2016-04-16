@@ -1,0 +1,4 @@
+Java port of https://github.com/krisajenkins/yesql
+
+libs:
+- https://github.com/square/javapoet
