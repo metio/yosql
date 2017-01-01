@@ -16,21 +16,23 @@
  */
 package com.github.sebhoss.yosql;
 
-import org.yaml.snakeyaml.Yaml;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Consumer;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.yaml.snakeyaml.Yaml;
 
 @Named
 @Singleton
 public class SqlFileParser {
 
-    private final Yaml yamlParser = new Yaml();
+    private final Yaml         yamlParser = new Yaml();
     private final PluginErrors pluginErrors;
 
     @Inject
@@ -42,22 +44,23 @@ public class SqlFileParser {
         final StringBuilder yaml = new StringBuilder();
         final StringBuilder sql = new StringBuilder();
 
-        splitUpYamlAndSql(path, yaml, sql);
+        splitUpYamlAndSql(path, yaml::append, sql::append);
 
-        final SqlStatementConfiguration configuration = yamlParser.loadAs(yaml.toString().trim(), SqlStatementConfiguration.class);
+        final SqlStatementConfiguration configuration = yamlParser.loadAs(yaml.toString().trim(),
+                SqlStatementConfiguration.class);
 
         return new SqlStatement(configuration, sql.toString().trim());
     }
 
-    private void splitUpYamlAndSql(final Path path, final StringBuilder yaml, final StringBuilder sql) {
+    private void splitUpYamlAndSql(final Path path, final Consumer<String> yaml, final Consumer<String> sql) {
         try (final BufferedReader reader = Files.newBufferedReader(path)) {
             for (String line; (line = reader.readLine()) != null;) {
                 if (line.startsWith("--")) {
-                    yaml.append(line.substring(2));
-                    yaml.append("\n");
+                    yaml.accept(line.substring(2));
+                    yaml.accept("\n");
                 } else {
-                    sql.append(line);
-                    sql.append("\n");
+                    sql.accept(line);
+                    sql.accept("\n");
                 }
             }
         } catch (final IOException exception) {
