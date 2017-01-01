@@ -1,10 +1,10 @@
 package com.github.sebhoss.yosql;
 
+import java.nio.file.Path;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.nio.file.Path;
 
 public class SqlFileParserSimpleTest {
 
@@ -21,7 +21,7 @@ public class SqlFileParserSimpleTest {
         final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
 
         // when
-        final SqlStatement statement = parser.parse(sqlFile);
+        final SqlStatement statement = parser.parse(new SqlSourceFile(sqlFile, null));
 
         // then
         Assert.assertNotNull(statement);
@@ -33,7 +33,7 @@ public class SqlFileParserSimpleTest {
         final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
 
         // when
-        final SqlStatement statement = parser.parse(sqlFile);
+        final SqlStatement statement = parser.parse(new SqlSourceFile(sqlFile, null));
         final SqlStatementConfiguration configuration = statement.getConfiguration();
 
         // then
@@ -46,7 +46,7 @@ public class SqlFileParserSimpleTest {
         final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
 
         // when
-        final SqlStatement statement = parser.parse(sqlFile);
+        final SqlStatement statement = parser.parse(new SqlSourceFile(sqlFile, null));
         final String sqlStatement = statement.getStatement();
 
         // then
@@ -59,7 +59,7 @@ public class SqlFileParserSimpleTest {
         final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
 
         // when
-        final SqlStatement statement = parser.parse(sqlFile);
+        final SqlStatement statement = parser.parse(new SqlSourceFile(sqlFile, null));
         final SqlStatementConfiguration configuration = statement.getConfiguration();
 
         // then

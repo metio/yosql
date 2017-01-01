@@ -14,7 +14,7 @@ public final class YoSqlConfiguration {
      */
     public static FileSet defaultSqlFileSet() {
         final FileSet fileSet = new FileSet();
-        fileSet.setDirectory("src/main/yosql");
+        fileSet.setDirectory("./src/main/yosql");
         fileSet.addInclude("**/*.sql");
         return fileSet;
     }

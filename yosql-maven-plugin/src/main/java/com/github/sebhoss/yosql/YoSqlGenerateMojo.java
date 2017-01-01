@@ -127,7 +127,9 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         fileSetResolver.resolveFiles(sqlFiles)
                 .map(sqlFileParser::parse)
                 .collect(groupingBy(SqlStatement::getRepository))
-                .forEach(codeGenerator::generateRepository);
+                .forEach((name, statements) -> codeGenerator.generateRepository(
+                        outputBaseDirectory.toPath().resolve(name + ".java"),
+                        statements));
 
         if (pluginErrors.hasErrors()) {
             pluginErrors.buildError("Error during mojo execution");

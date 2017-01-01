@@ -12,6 +12,7 @@
    <module>yosql-dependency</module>
    <module>yosql-maven-plugin</module>
    <module>yosql-gradle-plugin</module>
+   <module>yosql-example</module>
   </modules>
 
   <properties>

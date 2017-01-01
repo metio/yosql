@@ -24,16 +24,39 @@ public class SqlFileParser {
         this.pluginErrors = pluginErrors;
     }
 
-    public SqlStatement parse(final Path path) {
+    public SqlStatement parse(final SqlSourceFile source) {
         final StringBuilder yaml = new StringBuilder();
         final StringBuilder sql = new StringBuilder();
 
-        splitUpYamlAndSql(path, yaml::append, sql::append);
+        splitUpYamlAndSql(source.getPathToSqlFile(), yaml::append, sql::append);
 
-        final SqlStatementConfiguration configuration = yamlParser.loadAs(yaml.toString(),
-                SqlStatementConfiguration.class);
+        final SqlStatementConfiguration configuration = createStatementConfiguration(yaml.toString());
+
+        if (configuration.getName() == null || configuration.getName().isEmpty()) {
+            configuration.setName(getFileNameWithoutExtension(source.getPathToSqlFile()));
+        }
+        if (configuration.getRepository() == null || configuration.getRepository().isEmpty()) {
+            final Path relativePath = source.getBaseDirectory().relativize(source.getPathToSqlFile());
+            final Path fullyQualifiedPath = relativePath.getParent();
+            final String fullyQualifiedRepositoryName = fullyQualifiedPath.toString();
+            configuration.setRepository(fullyQualifiedRepositoryName);
+        }
 
         return new SqlStatement(configuration, sql.toString());
+    }
+
+    private SqlStatementConfiguration createStatementConfiguration(final String yaml) {
+        SqlStatementConfiguration configuration = yamlParser.loadAs(yaml,
+                SqlStatementConfiguration.class);
+        if (configuration == null) {
+            configuration = new SqlStatementConfiguration();
+        }
+        return configuration;
+    }
+
+    private String getFileNameWithoutExtension(final Path path) {
+        final String fileName = path.getFileName().toString();
+        return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
     private void splitUpYamlAndSql(final Path path, final Consumer<String> yaml, final Consumer<String> sql) {

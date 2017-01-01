@@ -62,7 +62,7 @@ public class YoSqlConfigurationTest {
         final String directory = fileSet.getDirectory();
 
         // then
-        assertEquals("src/main/yosql", directory);
+        assertEquals("./src/main/yosql", directory);
     }
 
     @Test

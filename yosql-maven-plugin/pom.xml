@@ -5,14 +5,16 @@
     <artifactId>yosql</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
+
   <artifactId>yosql-maven-plugin</artifactId>
-  
+  <packaging>maven-plugin</packaging>
+
    <properties>
     <version.org.apache.maven.plugins.maven-compiler-plugin>3.1</version.org.apache.maven.plugins.maven-compiler-plugin>
     <version.org.apache.maven.plugins.maven-javadoc-plugin>2.10.1</version.org.apache.maven.plugins.maven-javadoc-plugin>
     <version.org.apache.maven.plugin-tools.maven-javadoc-plugin>3.2</version.org.apache.maven.plugin-tools.maven-javadoc-plugin>
-    <version.org.apache.maven.plugin-tools.maven-plugin-annotations>3.4</version.org.apache.maven.plugin-tools.maven-plugin-annotations>
-    <version.org.codehaus.mojo.maven-plugin-plugin>3.4</version.org.codehaus.mojo.maven-plugin-plugin>
+    <version.org.apache.maven.plugin-tools.maven-plugin-annotations>3.5</version.org.apache.maven.plugin-tools.maven-plugin-annotations>
+    <version.org.codehaus.mojo.maven-plugin-plugin>3.5</version.org.codehaus.mojo.maven-plugin-plugin>
     <version.org.codehaus.mojo.plexus-component-metadata>1.6</version.org.codehaus.mojo.plexus-component-metadata>
     <version.org.codehaus.plexus.maven-javadoc-plugin>1.5.5</version.org.codehaus.plexus.maven-javadoc-plugin>
   </properties>
