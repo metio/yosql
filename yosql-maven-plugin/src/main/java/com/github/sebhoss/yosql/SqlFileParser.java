@@ -40,6 +40,10 @@ public class SqlFileParser {
             final Path fullyQualifiedPath = relativePath.getParent();
             final String fullyQualifiedRepositoryName = fullyQualifiedPath.toString();
             configuration.setRepository(fullyQualifiedRepositoryName);
+        } else {
+            final String userGivenRepository = configuration.getRepository();
+            final String cleanedRepository = userGivenRepository.replace(".", "/");
+            configuration.setRepository(cleanedRepository);
         }
 
         return new SqlStatement(configuration, sql.toString());

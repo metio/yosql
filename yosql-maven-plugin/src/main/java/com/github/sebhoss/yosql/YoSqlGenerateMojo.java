@@ -3,6 +3,7 @@ package com.github.sebhoss.yosql;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -126,14 +127,21 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
         fileSetResolver.resolveFiles(sqlFiles)
                 .map(sqlFileParser::parse)
+                .sorted(compareByName())
                 .collect(groupingBy(SqlStatement::getRepository))
                 .forEach((name, statements) -> codeGenerator.generateRepository(
-                        outputBaseDirectory.toPath().resolve(name + ".java"),
+                        outputBaseDirectory.toPath(),
+                        name.replace("/", "."),
                         statements));
+        codeGenerator.generateUtilities(outputBaseDirectory.toPath(), "com.example.utils");
 
         if (pluginErrors.hasErrors()) {
             pluginErrors.buildError("Error during mojo execution");
         }
+    }
+
+    private Comparator<SqlStatement> compareByName() {
+        return (s1, s2) -> s1.getConfiguration().getName().compareTo(s2.getConfiguration().getName());
     }
 
 }
