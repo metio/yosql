@@ -1,5 +1,13 @@
 package com.github.sebhoss.yosql;
 
+import static java.util.stream.Collectors.groupingBy;
+
+import java.io.File;
+import java.util.List;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
+
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -7,14 +15,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-
-import javax.inject.Inject;
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.groupingBy;
 
 /**
  * TODO:
@@ -38,8 +38,10 @@ import static java.util.stream.Collectors.groupingBy;
  * file)</li>
  * <li>java.util.Stream api (enabled by default, disabled w/ POM config + YAML
  * per SQL file)</li>
- * <li>allow to overwrite error log messages through fixed location of .properties file</li>
- * <li>: provide default.properties for error logging (part of this project), allow to overwrite those defaults w/ user-project settings</li>
+ * <li>allow to overwrite error log messages through fixed location of
+ * .properties file</li>
+ * <li>: provide default.properties for error logging (part of this project),
+ * allow to overwrite those defaults w/ user-project settings</li>
  * </ul>
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = false)
@@ -49,48 +51,48 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * The SQL files to load (.sql)
      */
     @Parameter(required = false)
-    private final FileSet sqlFiles = YoSqlConfiguration.defaultSqlFileSet();
+    private final FileSet                sqlFiles = YoSqlConfiguration.defaultSqlFileSet();
 
     /**
      * The output directory for the resolved templates
      */
     @Parameter(required = true, defaultValue = "${project.build.directory}/generated-sources/yosql")
-    private File outputBaseDirectory;
+    private File                         outputBaseDirectory;
 
     /**
      * Controls whether the SQL statements should be compiled inlined (default:
      * <strong>yes</strong>) or loaded at runtime.
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean compileInline;
+    private boolean                      compileInline;
 
     /**
-     * Controls whether the generated repositories should contain batch methods (default:
-     * <strong>yes</strong>).
+     * Controls whether the generated repositories should contain batch methods
+     * (default: <strong>yes</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean generateBatchApi;
+    private boolean                      generateBatchApi;
 
     /**
      * The method name prefix to apply to all batch methods (default:
      * <strong>batch</strong>).
      */
     @Parameter(required = true, defaultValue = "batch")
-    private String batchPrefix;
+    private String                       batchPrefix;
 
     /**
-     * Controls whether the generated repositories should offer {@link Stream}s as return types (default:
-     * <strong>yes</strong>).
+     * Controls whether the generated repositories should offer {@link Stream}s
+     * as return types (default: <strong>yes</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean generateStreamApi;
+    private boolean                      generateStreamApi;
 
     /**
      * The method name prefix to apply to all stream methods (default:
      * <strong>stream</strong>).
      */
     @Parameter(required = true, defaultValue = "stream")
-    private String streamPrefix;
+    private String                       streamPrefix;
 
     /**
      * Optional list of converters that are applied to input parameters.
@@ -98,11 +100,11 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     @Parameter(required = false)
     private List<ConverterConfiguration> converters;
 
-    private final PluginErrors pluginErrors;
-    private final PluginPreconditions preconditions;
-    private final FileSetResolver fileSetResolver;
-    private final SqlFileParser sqlFileParser;
-    private final CodeGenerator codeGenerator;
+    private final PluginErrors           pluginErrors;
+    private final PluginPreconditions    preconditions;
+    private final FileSetResolver        fileSetResolver;
+    private final SqlFileParser          sqlFileParser;
+    private final CodeGenerator          codeGenerator;
 
     @Inject
     YoSqlGenerateMojo(
@@ -122,11 +124,10 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         preconditions.assertDirectoryIsWriteable(outputBaseDirectory);
 
-        final Map<String, List<SqlStatement>> statements = fileSetResolver.resolveFiles(sqlFiles)
+        fileSetResolver.resolveFiles(sqlFiles)
                 .map(sqlFileParser::parse)
-                .collect(groupingBy(sql -> sql.getConfiguration().getRepository()));
-
-        statements.forEach(codeGenerator::generateRepository);
+                .collect(groupingBy(SqlStatement::getRepository))
+                .forEach(codeGenerator::generateRepository);
 
         if (pluginErrors.hasErrors()) {
             pluginErrors.buildError("Error during mojo execution");

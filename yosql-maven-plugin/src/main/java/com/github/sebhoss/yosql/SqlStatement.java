@@ -3,7 +3,7 @@ package com.github.sebhoss.yosql;
 public class SqlStatement {
 
     private final SqlStatementConfiguration configuration;
-    private final String statement;
+    private final String                    statement;
 
     public SqlStatement(final SqlStatementConfiguration configuration, final String statement) {
         this.configuration = configuration;
@@ -16,6 +16,10 @@ public class SqlStatement {
 
     public String getStatement() {
         return statement;
+    }
+
+    public String getRepository() {
+        return configuration.getRepository();
     }
 
 }
