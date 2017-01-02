@@ -8,26 +8,26 @@ public class ExampleApp {
 
     public static final void main(final String[] arguments) {
         final AdminRepository adminRepository = new AdminRepository();
-        adminRepository.adminUser(arguments);
-        adminRepository.batchAdminUser(arguments);
-        adminRepository.streamAdminUser(arguments);
+        adminRepository.adminUser();
+        adminRepository.batchAdminUser();
+        adminRepository.streamAdminUser();
         final CompanyRepository companyRepository = new CompanyRepository();
-        companyRepository.queryAllCompanies(arguments);
-        companyRepository.batchQueryAllCompanies(arguments);
-        companyRepository.streamQueryAllCompanies(arguments);
+        companyRepository.queryAllCompanies();
+        companyRepository.batchQueryAllCompanies();
+        companyRepository.streamQueryAllCompanies();
         final UserRepository userRepository = new UserRepository();
-        userRepository.adminUser(arguments);
-        userRepository.batchAdminUser(arguments);
-        userRepository.streamAdminUser(arguments);
-        userRepository.queryAllUsers(arguments);
-        userRepository.batchQueryAllUsers(arguments);
-        userRepository.streamQueryAllUsers(arguments);
-        userRepository.querySingleUser(arguments);
-        userRepository.batchQuerySingleUser(arguments);
-        userRepository.streamQuerySingleUser(arguments);
-        userRepository.queryWithoutFrontMatter(arguments);
-        userRepository.batchQueryWithoutFrontMatter(arguments);
-        userRepository.streamQueryWithoutFrontMatter(arguments);
+        userRepository.adminUser();
+        userRepository.batchAdminUser();
+        userRepository.streamAdminUser();
+        userRepository.queryAllUsers();
+        userRepository.batchQueryAllUsers();
+        userRepository.streamQueryAllUsers();
+        userRepository.querySingleUser();
+        userRepository.batchQuerySingleUser();
+        userRepository.streamQuerySingleUser();
+        userRepository.queryWithoutFrontMatter();
+        userRepository.batchQueryWithoutFrontMatter();
+        userRepository.streamQueryWithoutFrontMatter();
     }
 
 }
