@@ -16,14 +16,14 @@
   </modules>
 
   <properties>
-    <version.bom>2016.01.17</version.bom>
+    <version.bom>9999.99.99-SNAPSHOT</version.bom>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.github.sebhoss.bom</groupId>
-        <artifactId>auto-managed</artifactId>
+        <groupId>de.xn--ho-hia.maven.boms</groupId>
+        <artifactId>maven-boms-all</artifactId>
         <version>${version.bom}</version>
         <type>pom</type>
         <scope>import</scope>
