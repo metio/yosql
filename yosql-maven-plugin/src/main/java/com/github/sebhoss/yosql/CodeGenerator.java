@@ -9,12 +9,16 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.annotation.Generated;
 import javax.inject.Inject;
@@ -28,10 +32,10 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.WildcardTypeName;
 
 @Named
 @Singleton
@@ -94,7 +98,7 @@ public class CodeGenerator {
     private Iterable<MethodSpec> namedParamMethods() {
         final Stream<MethodSpec> constructors = Stream.of(namedParamConstructor());
         final Stream<MethodSpec> methods = Stream.of(
-                getPreparedStatement(), executeQuery(), setInt(), getIndex());
+                getPreparedStatement(), executeQuery(), setInt());
         return Stream.concat(constructors, methods)
                 .collect(Collectors.toList());
     }
@@ -136,22 +140,26 @@ public class CodeGenerator {
     }
 
     private static MethodSpec setInt() {
+        final ParameterizedTypeName indexType = ParameterizedTypeName.get(Collection.class, Integer.class);
         return MethodSpec.methodBuilder("setInt")
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(String.class, "name")
                 .addParameter(int.class, "value")
                 .addException(SQLException.class)
                 .returns(void.class)
-                .addStatement("$N.setInt(getIndex($N), $N)", "preparedStatement", "name", "value")
-                .build();
-    }
-
-    private static MethodSpec getIndex() {
-        return MethodSpec.methodBuilder("getIndex")
-                .addModifiers(Modifier.PRIVATE)
-                .addParameter(String.class, "name")
-                .returns(int.class)
-                .addStatement("return $N.indexOf($N) + 1", "fields", "name")
+                .addStatement("$T indexes = new $T<>();", indexType, ArrayList.class)
+                .beginControlFlow("for (int index = 0; index < $N.size(); index++)", "fields")
+                .beginControlFlow("if ($N.get($N).equals($N))", "fields", "index", "name")
+                .addStatement("$N.add($N + 1)", "indexes", "index")
+                .endControlFlow()
+                .endControlFlow()
+                .beginControlFlow("if ($N.isEmpty())", "indexes")
+                .addStatement("throw new $T($T.format($S, $N))", IllegalArgumentException.class, String.class,
+                        "SQL statement doesn't contain the parameter '%s'", "name")
+                .endControlFlow()
+                .beginControlFlow("for (Integer jdbcIndex : $N)", "indexes")
+                .addStatement("$N.setInt($N, $N)", "preparedStatement", "jdbcIndex", "value")
+                .endControlFlow()
                 .build();
     }
 
@@ -227,9 +235,10 @@ public class CodeGenerator {
                 .map(CodeGenerator::singleQuery);
         final Stream<MethodSpec> batchQueries = sqlStatements.stream()
                 .map(CodeGenerator::batchQuery);
-        final Stream<MethodSpec> streamQueries = sqlStatements.stream()
-                .map(CodeGenerator::streamQuery);
-        final Stream<MethodSpec> utilities = Stream.of(resultSetToList());
+        final Stream<MethodSpec> streamQueries = Stream.concat(sqlStatements.stream()
+                .map(CodeGenerator::streamQueryEager), sqlStatements.stream()
+                        .map(CodeGenerator::streamQueryLazy));
+        final Stream<MethodSpec> utilities = Stream.of(resultSetToList(), resultSetToMap());
         return Stream.concat(singleQueries, Stream.concat(batchQueries, Stream.concat(streamQueries, utilities)))
                 .collect(Collectors.toList());
     }
@@ -239,7 +248,7 @@ public class CodeGenerator {
         return MethodSpec.methodBuilder(configuration.getName())
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ResultSet.class)
-                .addParameters(asParameters(configuration.getParameters()))
+                .addParameters(configuration.getParameterSpecs())
                 .beginControlFlow("try ($T connection = $N.getConnection())", Connection.class, "dataSource")
                 .addStatement("$T preparedStatement = $N.prepareStatement($N)", PreparedStatement.class, "connection",
                         constantSqlStatementField(configuration))
@@ -257,7 +266,7 @@ public class CodeGenerator {
         return MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ResultSet.class)
-                .addParameters(asParameters(configuration.getParameters()))
+                .addParameters(configuration.getParameterSpecs())
                 .beginControlFlow("try ($T connection = $N.getConnection())", Connection.class, "dataSource")
                 .addStatement("$T preparedStatement = $N.prepareStatement($N)", PreparedStatement.class, "connection",
                         constantSqlStatementField(configuration))
@@ -269,88 +278,92 @@ public class CodeGenerator {
                 .build();
     }
 
-    /**
-     * <pre>
-     * public Stream<Map<String, Object>> streamQueryWithoutFrontMatter() {
-     *     try (Connection connection = dataSource.getConnection();
-     *             PreparedStatement preparedStatement = connection.prepareStatement(QUERY_WITHOUT_FRONT_MATTER)) {
-     *         final ResultSet resultSet = preparedStatement.executeQuery();
-     * 
-     *         StreamSupport
-     *                 .stream(new Spliterators.AbstractSpliterator<Map<String, Object>>(
-     *                         Long.MAX_VALUE, Spliterator.ORDERED) {
-     *                     &#64;Override
-     *                     public boolean tryAdvance(final Consumer<? super Map<String, Object>> action) {
-     *                         try {
-     *                             if (!resultSet.next()) {
-     *                                 return false;
-     *                             }
-     *                             action.accept(resultSetToMap(resultSet));
-     *                             return true;
-     *                         } catch (final SQLException exception) {
-     *                             throw new RuntimeException(exception);
-     *                         }
-     *                     }
-     *                 }, false);
-     * 
-     *         final List<Map<String, Object>> resultList = resultSetToList(resultSet);
-     *         return resultList.stream();
-     *     } catch (final SQLException exception) {
-     *         throw new RuntimeException(exception);
-     *     }
-     * }
-     * 
-     * private static List<Map<String, Object>> resultSetToList(final ResultSet resultSet) throws SQLException {
-     *     final List<Map<String, Object>> list = new ArrayList<>();
-     *     while (resultSet.next()) {
-     *         final Map<String, Object> row = resultSetToMap(resultSet);
-     *         list.add(row);
-     *     }
-     *     return list;
-     * }
-     * 
-     * private static Map<String, Object> resultSetToMap(final ResultSet resultSet) throws SQLException {
-     *     final ResultSetMetaData metaData = resultSet.getMetaData();
-     *     final int columnCount = metaData.getColumnCount();
-     *     final Map<String, Object> row = new HashMap<>(columnCount);
-     *     for (int index = 1; index <= columnCount; index++) {
-     *         row.put(metaData.getColumnName(index), resultSet.getObject(index));
-     *     }
-     *     return row;
-     * }
-     * </pre>
-     */
-
-    private static MethodSpec streamQuery(final SqlStatement sqlStatement) {
+    private static MethodSpec streamQueryEager(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
-        final String methodName = prefixedName(configuration.getStreamPrefix(), configuration.getName());
+        final String methodName = prefixedName(configuration.getStreamPrefix() + "Eager", configuration.getName());
         return MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(streamOfMaps)
-                .addParameters(asParameters(configuration.getParameters()))
+                .addParameters(configuration.getParameterSpecs())
                 .beginControlFlow(
                         "try ($T connection = $N.getConnection(); $T preparedStatement = $N.prepareStatement($N))",
                         Connection.class, "dataSource", PreparedStatement.class, "connection",
                         constantSqlStatementField(configuration))
-                .addStatement("$T resultSet = $N.executeQuery()", ResultSet.class, "preparedStatement")
-                .addStatement("$T resultList = resultSetToList($N)", listOfMaps, "resultSet")
+                .addStatement("final $T resultSet = $N.executeQuery()", ResultSet.class, "preparedStatement")
+                .addStatement("final $T resultList = resultSetToList($N)", listOfMaps, "resultSet")
                 .addStatement("return $N.stream()", "resultList")
                 .endControlFlow()
-                .beginControlFlow("catch ($T exception)", SQLException.class)
+                .beginControlFlow("catch (final $T exception)", SQLException.class)
                 .addStatement("throw new $T(exception)", RuntimeException.class)
                 .endControlFlow()
                 .build();
     }
 
-    private static Iterable<ParameterSpec> asParameters(final List<SqlParameter> parameters) {
-        return Optional.ofNullable(parameters)
-                .map(params -> params.stream()
-                        .map(param -> {
-                            final TypeName type = ClassName.bestGuess(param.getType());
-                            return ParameterSpec.builder(type, param.getName(), Modifier.FINAL).build();
-                        })
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+    private static MethodSpec streamQueryLazy(final SqlStatement sqlStatement) {
+        final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
+        final String methodName = prefixedName(configuration.getStreamPrefix() + "Lazy", configuration.getName());
+        final ParameterizedTypeName map = ParameterizedTypeName.get(Map.class, String.class, Object.class);
+        final ClassName spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
+        final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass, map);
+        final ClassName consumerClass = ClassName.get(Consumer.class);
+        final ParameterizedTypeName consumerType = ParameterizedTypeName.get(consumerClass,
+                WildcardTypeName.supertypeOf(map));
+        final TypeSpec spliterator = TypeSpec
+                .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
+                .addSuperinterface(superinterface)
+                .addMethod(MethodSpec.methodBuilder("tryAdvance")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addParameter(consumerType, "action")
+                        .returns(boolean.class)
+                        .beginControlFlow("try")
+                        .beginControlFlow("if ($N.next())", "resultSet")
+                        .addStatement("$N.accept(resultSetToMap($N, $N, $N))", "action", "resultSet", "metaData",
+                                "columnCount")
+                        .addStatement("return true")
+                        .endControlFlow()
+                        .addStatement("return false")
+                        .endControlFlow()
+                        .beginControlFlow("catch (final $T exception)", SQLException.class)
+                        .addStatement("throw new $T($N)", RuntimeException.class, "exception")
+                        .endControlFlow()
+                        .build())
+                .build();
+        final TypeSpec closer = TypeSpec.anonymousClassBuilder("")
+                .addSuperinterface(Runnable.class)
+                .addMethod(MethodSpec.methodBuilder("run")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC)
+                        .returns(void.class)
+                        .beginControlFlow("try")
+                        .addStatement("$N.close()", "resultSet")
+                        .addStatement("$N.close()", "preparedStatement")
+                        .addStatement("$N.close()", "connection")
+                        .endControlFlow()
+                        .beginControlFlow("catch ($T exception)", SQLException.class)
+                        .addStatement("throw new $T($N)", RuntimeException.class, "exception")
+                        .endControlFlow()
+                        .build())
+                .build();
+        return MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(streamOfMaps)
+                .addParameters(configuration.getParameterSpecs())
+                .beginControlFlow("try")
+                .addStatement("final $T connection = $N.getConnection()", Connection.class, "dataSource")
+                .addStatement("final $T preparedStatement = $N.prepareStatement($N)", PreparedStatement.class,
+                        "connection",
+                        constantSqlStatementField(configuration))
+                .addStatement("final $T resultSet = $N.executeQuery()", ResultSet.class, "preparedStatement")
+                .addStatement("final $T metaData = $N.getMetaData()", ResultSetMetaData.class, "resultSet")
+                .addStatement("final int columnCount = $N.getColumnCount()", "metaData")
+                .addStatement("return $T.stream($L, false).onClose($L)",
+                        StreamSupport.class, spliterator, closer)
+                .endControlFlow()
+                .beginControlFlow("catch ($T exception)", SQLException.class)
+                .addStatement("throw new $T(exception)", RuntimeException.class)
+                .endControlFlow()
+                .build();
     }
 
     private static MethodSpec resultSetToList() {
@@ -359,18 +372,31 @@ public class CodeGenerator {
                 .addParameter(ResultSet.class, "resultSet")
                 .addException(SQLException.class)
                 .returns(listOfMaps)
-                .addStatement("$T metaData = $N.getMetaData()", ResultSetMetaData.class, "resultSet")
-                .addStatement("int columnCount = $N.getColumnCount()", "metaData")
+                .addStatement("final $T metaData = $N.getMetaData()", ResultSetMetaData.class, "resultSet")
+                .addStatement("final int columnCount = $N.getColumnCount()", "metaData")
                 .addStatement("$T list = new $T<>()", listOfMaps, ArrayList.class)
                 .beginControlFlow("while ($N.next())", "resultSet")
+                .addStatement("$N.add($N($N, $N, $N))", "list", "resultSetToMap", "resultSet", "metaData",
+                        "columnCount")
+                .endControlFlow()
+                .addStatement("return $N", "list")
+                .build();
+    }
+
+    private static MethodSpec resultSetToMap() {
+        return MethodSpec.methodBuilder("resultSetToMap")
+                .addModifiers(Modifier.PRIVATE)
+                .addParameter(ResultSet.class, "resultSet")
+                .addParameter(ResultSetMetaData.class, "metaData")
+                .addParameter(int.class, "columnCount")
+                .addException(SQLException.class)
+                .returns(mapOfKeyValues)
                 .addStatement("$T row = new $T<>($N)", mapOfKeyValues, HashMap.class, "columnCount")
                 .beginControlFlow("for (int index = 1; index <= $N; index++)", "columnCount")
                 .addStatement("$N.put($N.getColumnName($N), $N.getObject($N))", "row", "metaData", "index", "resultSet",
                         "index")
                 .endControlFlow()
-                .addStatement("$N.add($N)", "list", "row")
-                .endControlFlow()
-                .addStatement("return $N", "list")
+                .addStatement("return $N", "row")
                 .build();
     }
 

@@ -10,24 +10,24 @@ public class ExampleApp {
         final AdminRepository adminRepository = new AdminRepository();
         adminRepository.adminUser();
         adminRepository.batchAdminUser();
-        adminRepository.streamAdminUser();
+        adminRepository.streamEagerAdminUser();
         final CompanyRepository companyRepository = new CompanyRepository();
         companyRepository.queryAllCompanies();
         companyRepository.batchQueryAllCompanies();
-        companyRepository.streamQueryAllCompanies();
+        companyRepository.streamEagerQueryAllCompanies();
         final UserRepository userRepository = new UserRepository();
         userRepository.adminUser();
         userRepository.batchAdminUser();
-        userRepository.streamAdminUser();
+        userRepository.streamEagerAdminUser();
         userRepository.queryAllUsers();
         userRepository.batchQueryAllUsers();
-        userRepository.streamQueryAllUsers();
-        userRepository.querySingleUser();
-        userRepository.batchQuerySingleUser();
-        userRepository.streamQuerySingleUser();
+        userRepository.streamEagerQueryAllUsers();
+        userRepository.querySingleUser(1);
+        userRepository.batchQuerySingleUser(2);
+        userRepository.streamEagerQuerySingleUser(3);
         userRepository.queryWithoutFrontMatter();
         userRepository.batchQueryWithoutFrontMatter();
-        userRepository.streamQueryWithoutFrontMatter();
+        userRepository.streamEagerQueryWithoutFrontMatter();
     }
 
 }
