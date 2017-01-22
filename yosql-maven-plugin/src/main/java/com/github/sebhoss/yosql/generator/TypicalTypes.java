@@ -1,0 +1,24 @@
+package com.github.sebhoss.yosql.generator;
+
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+
+public class TypicalTypes {
+
+    public static final ClassName STRING                 = ClassName.get("java.lang", "String");
+    public static final ClassName INTEGER                = ClassName.get("java.lang", "Integer");
+
+    public static final ClassName COLLECTION             = ClassName.get("java.util", "Collection");
+    public static final ClassName LIST                   = ClassName.get("java.util", "List");
+    public static final ClassName MAP                    = ClassName.get("java.util", "Map");
+    public static final ClassName STREAM                 = ClassName.get("java.util.stream", "Stream");
+    public static final ClassName ARRAY_LIST             = ClassName.get("java.util", "ArrayList");
+
+    public static final ClassName PATTERN                = ClassName.get("java.util.regex", "Pattern");
+    public static final ClassName MATCHER                = ClassName.get("java.util.regex", "Matcher");
+
+    public static final TypeName  LIST_OF_STRINGS        = ParameterizedTypeName.get(LIST, STRING);
+    public static final TypeName  COLLECTION_OF_INTEGERS = ParameterizedTypeName.get(COLLECTION, INTEGER);
+
+}
