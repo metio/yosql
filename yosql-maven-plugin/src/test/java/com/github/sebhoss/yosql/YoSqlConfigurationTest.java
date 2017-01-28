@@ -7,32 +7,38 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.maven.model.FileSet;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  *
  */
 public class YoSqlConfigurationTest {
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Test
-    public void shouldReturnNotNullFileSet() {
+    public void shouldReturnNotNullFileSet() throws IOException {
         // given
         FileSet fileSet;
 
         // when
-        fileSet = defaultSqlFileSet();
+        fileSet = defaultSqlFileSet(folder.newFolder());
 
         // then
         assertNotNull(fileSet);
     }
 
     @Test
-    public void shouldReturnNotNullFileSetDirectory() {
+    public void shouldReturnNotNullFileSetDirectory() throws IOException {
         // given
-        final FileSet fileSet = defaultSqlFileSet();
+        final FileSet fileSet = defaultSqlFileSet(folder.newFolder());
 
         // when
         final String directory = fileSet.getDirectory();
@@ -42,9 +48,9 @@ public class YoSqlConfigurationTest {
     }
 
     @Test
-    public void shouldReturnFileSetPointingToRelativeDirectory() {
+    public void shouldReturnFileSetPointingToRelativeDirectory() throws IOException {
         // given
-        final FileSet fileSet = defaultSqlFileSet();
+        final FileSet fileSet = defaultSqlFileSet(folder.newFolder());
 
         // when
         final String directory = fileSet.getDirectory();
@@ -54,9 +60,9 @@ public class YoSqlConfigurationTest {
     }
 
     @Test
-    public void shouldReturnFileSetPointingToYoSqlDirectory() {
+    public void shouldReturnFileSetPointingToYoSqlDirectory() throws IOException {
         // given
-        final FileSet fileSet = defaultSqlFileSet();
+        final FileSet fileSet = defaultSqlFileSet(folder.newFolder());
 
         // when
         final String directory = fileSet.getDirectory();
@@ -66,9 +72,9 @@ public class YoSqlConfigurationTest {
     }
 
     @Test
-    public void shouldReturnNotNullFileSetIncludes() {
+    public void shouldReturnNotNullFileSetIncludes() throws IOException {
         // given
-        final FileSet fileSet = defaultSqlFileSet();
+        final FileSet fileSet = defaultSqlFileSet(folder.newFolder());
 
         // when
         final List<String> includes = fileSet.getIncludes();
@@ -78,9 +84,9 @@ public class YoSqlConfigurationTest {
     }
 
     @Test
-    public void shouldReturnFileSetWithIncludes() {
+    public void shouldReturnFileSetWithIncludes() throws IOException {
         // given
-        final FileSet fileSet = defaultSqlFileSet();
+        final FileSet fileSet = defaultSqlFileSet(folder.newFolder());
 
         // when
         final List<String> includes = fileSet.getIncludes();
@@ -90,9 +96,9 @@ public class YoSqlConfigurationTest {
     }
 
     @Test
-    public void shouldReturnFileSetIncludingSqlFiles() {
+    public void shouldReturnFileSetIncludingSqlFiles() throws IOException {
         // given
-        final FileSet fileSet = defaultSqlFileSet();
+        final FileSet fileSet = defaultSqlFileSet(folder.newFolder());
 
         // when
         final List<String> includes = fileSet.getIncludes();

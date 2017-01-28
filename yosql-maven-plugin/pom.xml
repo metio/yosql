@@ -62,15 +62,14 @@
         </plugin>
 
       <plugin>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-component-metadata</artifactId>
-        <version>${version.org.codehaus.mojo.plexus-component-metadata}</version>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+        <version>1.1</version>
         <executions>
           <execution>
-            <id>generate-metadata</id>
-            <phase>process-classes</phase>
+            <id>generate-index</id>
             <goals>
-              <goal>generate-metadata</goal>
+              <goal>main-index</goal>
             </goals>
           </execution>
         </executions>

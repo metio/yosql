@@ -1,4 +1,6 @@
 select  *
 from    users
-where   id = 123
+where   id = :id
+  and   name = :name
+  and   other = :id
 ;

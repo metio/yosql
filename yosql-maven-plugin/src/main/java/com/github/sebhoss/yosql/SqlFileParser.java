@@ -4,7 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,12 +25,17 @@ import org.yaml.snakeyaml.Yaml;
 @Singleton
 public class SqlFileParser {
 
-    private final Yaml         yamlParser = new Yaml();
-    private final PluginErrors pluginErrors;
+    public static final String        PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
+    public static final Pattern       PATTERN         = Pattern.compile(PARAMETER_REGEX);
+
+    private final Yaml                yamlParser      = new Yaml();
+    private final PluginErrors        pluginErrors;
+    private final PluginRuntimeConfig runtimeConfig;
 
     @Inject
-    public SqlFileParser(final PluginErrors pluginErrors) {
+    public SqlFileParser(final PluginErrors pluginErrors, final PluginRuntimeConfig runtimeConfig) {
         this.pluginErrors = pluginErrors;
+        this.runtimeConfig = runtimeConfig;
     }
 
     public SqlStatement parse(final SqlSourceFile source) {
@@ -30,10 +44,71 @@ public class SqlFileParser {
 
         splitUpYamlAndSql(source.getPathToSqlFile(), yaml::append, sql::append);
 
-        final SqlStatementConfiguration configuration = createStatementConfiguration(yaml.toString());
+        final String rawSqlStatement = sql.toString();
+        final String rawYaml = yaml.toString();
 
+        final Map<String, List<Integer>> parameterIndices = extractParameterNames(rawSqlStatement);
+        final SqlStatementConfiguration configuration = createStatementConfiguration(source, rawYaml,
+                parameterIndices);
+
+        return new SqlStatement(configuration, rawSqlStatement);
+    }
+
+    private Map<String, List<Integer>> extractParameterNames(final String sqlStatement) {
+        final Map<String, List<Integer>> indices = new LinkedHashMap<>();
+        final Matcher matcher = PATTERN.matcher(sqlStatement);
+        int counter = 0;
+        while (matcher.find()) {
+            counter++;
+            final String parameterName = matcher.group().substring(1);
+            if (!indices.containsKey(parameterName)) {
+                indices.put(parameterName, new ArrayList<>());
+            }
+            indices.get(parameterName).add(Integer.valueOf(counter));
+        }
+        return indices;
+    }
+
+    private SqlStatementConfiguration createStatementConfiguration(final SqlSourceFile source, final String yaml,
+            final Map<String, List<Integer>> parameterIndices) {
+        final SqlStatementConfiguration configuration = loadOrCreateConfig(yaml);
+        final String fileName = getFileNameWithoutExtension(source.getPathToSqlFile());
         if (configuration.getName() == null || configuration.getName().isEmpty()) {
-            configuration.setName(getFileNameWithoutExtension(source.getPathToSqlFile()));
+            configuration.setName(fileName);
+        }
+        if (configuration.getBatchPrefix() == null || configuration.getBatchPrefix().isEmpty()) {
+            configuration.setBatchPrefix(runtimeConfig.getBatchPrefix());
+        }
+        if (configuration.getBatchSuffix() == null || configuration.getBatchSuffix().isEmpty()) {
+            configuration.setBatchSuffix(runtimeConfig.getBatchSuffix());
+        }
+        if (configuration.getStreamPrefix() == null || configuration.getStreamPrefix().isEmpty()) {
+            configuration.setStreamPrefix(runtimeConfig.getStreamPrefix());
+        }
+        if (configuration.getLazyName() == null || configuration.getLazyName().isEmpty()) {
+            configuration.setLazyName(runtimeConfig.getLazyName());
+        }
+        if (configuration.getEagerName() == null || configuration.getEagerName().isEmpty()) {
+            configuration.setEagerName(runtimeConfig.getEagerName());
+        }
+        if (configuration.getType() == null) {
+            if (startsWith(fileName, "update", "insert", "delete", "create", "write", "add", "remove", "merge")) {
+                configuration.setType(SqlStatementType.WRITING);
+            } else {
+                configuration.setType(SqlStatementType.READING);
+            }
+        }
+        if (configuration.isUsingPluginSingleConfig()) {
+            configuration.setSingle(runtimeConfig.isGenerateBatchApi());
+        }
+        if (configuration.isUsingPluginBatchConfig()) {
+            configuration.setBatch(runtimeConfig.isGenerateBatchApi());
+        }
+        if (configuration.isUsingPluginStreamEagerConfig()) {
+            configuration.setStreamEager(runtimeConfig.isGenerateStreamEagerApi());
+        }
+        if (configuration.isUsingPluginStreamLazyConfig()) {
+            configuration.setStreamLazy(runtimeConfig.isGenerateStreamLazyApi());
         }
         if (configuration.getRepository() == null || configuration.getRepository().isEmpty()) {
             final Path relativePath = source.getBaseDirectory().relativize(source.getPathToSqlFile());
@@ -45,11 +120,48 @@ public class SqlFileParser {
             final String cleanedRepository = userGivenRepository.replace(".", "/");
             configuration.setRepository(cleanedRepository);
         }
+        if (validateParameterConfig(source, parameterIndices, configuration)) {
+            for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
+                final String parameterName = entry.getKey();
 
-        return new SqlStatement(configuration, sql.toString());
+                if (!configuration.getParameters().stream()
+                        .filter(parameter -> parameterName.equals(parameter.getName()))
+                        .findAny().isPresent()) {
+                    final SqlParameter sqlParameter = new SqlParameter();
+                    sqlParameter.setName(parameterName);
+                    configuration.getParameters().add(sqlParameter);
+                }
+
+                configuration.getParameters().stream()
+                        .filter(parameter -> parameterName.equals(parameter.getName()))
+                        .forEach(parameter -> parameter.setIndices(entry.getValue().stream()
+                                .mapToInt(Integer::intValue)
+                                .toArray()));
+            }
+        }
+        return configuration;
     }
 
-    private SqlStatementConfiguration createStatementConfiguration(final String yaml) {
+    private boolean startsWith(final String fileName, final String... prefixes) {
+        return Arrays.stream(prefixes)
+                .anyMatch(fileName::startsWith);
+    }
+
+    private boolean validateParameterConfig(
+            final SqlSourceFile source,
+            final Map<String, List<Integer>> parameterIndices,
+            final SqlStatementConfiguration configuration) {
+        final List<String> errors = configuration.getParameters().stream()
+                .filter(param -> !parameterIndices.containsKey(param.getName()))
+                .map(param -> String.format("[%s] declares unknown parameter [%s]",
+                        source.getPathToSqlFile(), param.getName()))
+                .peek(msg -> pluginErrors.add(new IllegalArgumentException(msg)))
+                .peek(msg -> runtimeConfig.getLogger().error(msg))
+                .collect(Collectors.toList());
+        return errors == null || errors.isEmpty();
+    }
+
+    private SqlStatementConfiguration loadOrCreateConfig(final String yaml) {
         SqlStatementConfiguration configuration = yamlParser.loadAs(yaml,
                 SqlStatementConfiguration.class);
         if (configuration == null) {

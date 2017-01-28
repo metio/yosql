@@ -5,7 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit test that verifies the default values for {@link SqlStatementConfiguration}.
+ * Unit test that verifies the default values for
+ * {@link SqlStatementConfiguration}.
  */
 public class SqlStatementConfigurationDefaultsTest {
 
@@ -28,7 +29,8 @@ public class SqlStatementConfigurationDefaultsTest {
 
     @Test
     public void shouldEnableStreamModeByDefault() {
-        Assert.assertTrue(configuration.isStream());
+        Assert.assertTrue(configuration.isStreamEager());
+        Assert.assertTrue(configuration.isStreamLazy());
     }
 
     @Test

@@ -12,7 +12,7 @@ public class SqlFileParserSimpleTest {
 
     @Before
     public void setUp() {
-        parser = new SqlFileParser(new PluginErrors());
+        parser = new SqlFileParser(new PluginErrors(), null);
     }
 
     @Test

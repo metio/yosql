@@ -1,12 +1,10 @@
 --
 -- parameters:
---   - name: userId
+--   - name: id
 --     type: int
 --   - name: name
 --     type: java.lang.String
 --
-select  *
-from    users
-where   id = :userId
-  and   name = :name
+INSERT INTO companies (id, name)
+    VALUES (:id, :name)
 ;
