@@ -14,6 +14,8 @@ public class TypicalNames {
     public static final String META_DATA                 = "metaData";
     public static final String COLUMN_COUNT              = "columnCount";
     public static final String NAME                      = "name";
+    public static final String STATE                     = "state";
+    public static final String EMITTER                   = "emitter";
     public static final String VALUE                     = "value";
     public static final String INDEX                     = "index";
     public static final String INDICES                   = "indices";

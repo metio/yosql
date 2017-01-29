@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeName;
 
 public class TypicalTypes {
 
+    public static final ClassName OBJECT                    = ClassName.get("java.lang", "Object");
     public static final ClassName STRING                    = ClassName.get("java.lang", "String");
     public static final ClassName INTEGER                   = ClassName.get("java.lang", "Integer");
 
@@ -23,5 +24,6 @@ public class TypicalTypes {
     public static final TypeName  LIST_OF_STRINGS           = ParameterizedTypeName.get(LIST, STRING);
     public static final TypeName  COLLECTION_OF_INTEGERS    = ParameterizedTypeName.get(COLLECTION, INTEGER);
     public static final TypeName  MAP_OF_STRING_AND_NUMBERS = ParameterizedTypeName.get(MAP, STRING, ARRAY_OF_INTS);
+    public static final TypeName  MAP_OF_STRING_AND_OBJECTS = ParameterizedTypeName.get(MAP, STRING, OBJECT);
 
 }

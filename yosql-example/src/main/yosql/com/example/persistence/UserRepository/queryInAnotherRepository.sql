@@ -1,5 +1,5 @@
 --
--- name: adminUser
+-- name: queryAdminUser
 -- repository: com.example.persistence.AdminRepository
 --
 select  *

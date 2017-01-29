@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -26,7 +27,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 
-import com.github.sebhoss.yosql.generator.NamedParameterStatementGenerator;
+import com.github.sebhoss.yosql.generator.FlowStateGenerator;
 import com.github.sebhoss.yosql.generator.TypicalModifiers;
 import com.github.sebhoss.yosql.generator.TypicalNames;
 import com.github.sebhoss.yosql.generator.TypicalTypes;
@@ -42,35 +43,46 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 
+import io.reactivex.Emitter;
+import io.reactivex.Flowable;
+import io.reactivex.functions.BiConsumer;
+
 @Named
 @Singleton
 public class CodeGenerator {
 
-    private static final ClassName                 string         = ClassName.get("java.lang", "String");
-    private static final ClassName                 object         = ClassName.get("java.lang", "Object");
-    private static final ClassName                 list           = ClassName.get("java.util", "List");
-    private static final ClassName                 map            = ClassName.get("java.util", "Map");
-    private static final ClassName                 stream         = ClassName.get("java.util.stream", "Stream");
-    private static final TypeName                  mapOfKeyValues = ParameterizedTypeName.get(map, string, object);
-    private static final TypeName                  listOfMaps     = ParameterizedTypeName.get(list, mapOfKeyValues);
-    private static final TypeName                  streamOfMaps   = ParameterizedTypeName.get(stream, mapOfKeyValues);
+    private static final ClassName    string         = ClassName.get("java.lang", "String");
+    private static final ClassName    object         = ClassName.get("java.lang", "Object");
+    private static final ClassName    list           = ClassName.get("java.util", "List");
+    private static final ClassName    map            = ClassName.get("java.util", "Map");
+    private static final ClassName    stream         = ClassName.get("java.util.stream", "Stream");
+    private static final ClassName    flowable       = ClassName.get("io.reactivex", "Flowable");
+    private static final TypeName     mapOfKeyValues = ParameterizedTypeName.get(map, string, object);
+    private static final TypeName     listOfMaps     = ParameterizedTypeName.get(list, mapOfKeyValues);
+    private static final TypeName     streamOfMaps   = ParameterizedTypeName.get(stream, mapOfKeyValues);
+    private static final TypeName     flowableOfMaps = ParameterizedTypeName.get(flowable, mapOfKeyValues);
 
-    private final PluginErrors                     pluginErrors;
-    private final NamedParameterStatementGenerator namedParamStatementGenerator;
-    private final PluginRuntimeConfig              runtimeConfig;
+    private final PluginErrors        pluginErrors;
+    private final FlowStateGenerator  flowStateGenerator;
+    private final PluginRuntimeConfig runtimeConfig;
 
     @Inject
     public CodeGenerator(
-            final NamedParameterStatementGenerator namedParamStatementGenerator,
+            final FlowStateGenerator flowStateGenerator,
             final PluginErrors pluginErrors,
             final PluginRuntimeConfig runtimeConfig) {
-        this.namedParamStatementGenerator = namedParamStatementGenerator;
+        this.flowStateGenerator = flowStateGenerator;
         this.pluginErrors = pluginErrors;
         this.runtimeConfig = runtimeConfig;
     }
 
-    public void generateUtilities() {
-        namedParamStatementGenerator.generateNamedParameterStatementClass();
+    public void generateUtilities(final List<SqlStatement> allStatements) {
+        if (allStatements.stream()
+                .map(SqlStatement::getConfiguration)
+                .filter(config -> SqlStatementType.READING == config.getType())
+                .anyMatch(config -> config.isGenerateRxJavaApi())) {
+            flowStateGenerator.generateFlowStateClass();
+        }
     }
 
     /**
@@ -195,6 +207,10 @@ public class CodeGenerator {
                         .filter(statement -> statement.getConfiguration().isStreamLazy())
                         .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                         .map(CodeGenerator::streamQueryLazy));
+        final Stream<MethodSpec> rxJavaQueries = sqlStatements.stream()
+                .filter(statement -> statement.getConfiguration().isGenerateRxJavaApi())
+                .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
+                .map(this::flowWithBackpressure);
         final Stream<MethodSpec> utilities = Stream.concat(
                 sqlStatements.stream()
                         .filter(statement -> shouldBuildResultToListHelperMethod(statement))
@@ -207,7 +223,8 @@ public class CodeGenerator {
         return Stream.concat(constructors,
                 Stream.concat(singleQueries,
                         Stream.concat(batchQueries,
-                                Stream.concat(streamQueries, utilities))))
+                                Stream.concat(streamQueries,
+                                        Stream.concat(rxJavaQueries, utilities)))))
                 .collect(Collectors.toList());
     }
 
@@ -293,6 +310,103 @@ public class CodeGenerator {
                     .endControlFlow()
                     .build();
         }
+    }
+
+    private MethodSpec flowWithBackpressure(final SqlStatement sqlStatement) {
+        final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
+
+        final ClassName flowState = ClassName.get(runtimeConfig.getUtilityPackageName(),
+                FlowStateGenerator.FLOW_STATE_CLASS_NAME);
+        final ClassName callable = ClassName.get(Callable.class);
+        final ParameterizedTypeName initialStateType = ParameterizedTypeName.get(callable, flowState);
+        final Builder callMethodBuilder = MethodSpec.methodBuilder("call")
+                .addAnnotation(Override.class)
+                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+                .returns(flowState)
+                .addException(Exception.class)
+                .addStatement("final $T $N = new $T()", flowState, TypicalNames.STATE, flowState)
+                .addStatement("$N.$N = $N.getConnection()", TypicalNames.STATE, TypicalNames.CONNECTION,
+                        TypicalNames.DATA_SOURCE)
+                .addStatement("$N.$N = $N.$N.prepareStatement($N)", TypicalNames.STATE,
+                        TypicalNames.PREPARED_STATEMENT, TypicalNames.STATE, TypicalNames.CONNECTION,
+                        constantSqlStatementField(configuration));
+        for (final SqlParameter parameter : configuration.getParameters()) {
+            callMethodBuilder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
+                    constsantSqlStatementParametersField(configuration), parameter.getName())
+                    .addStatement("$N.$N.setObject($N, $N)", TypicalNames.STATE, TypicalNames.PREPARED_STATEMENT,
+                            TypicalNames.JDBC_INDEX, parameter.getName())
+                    .endControlFlow();
+        }
+        final TypeSpec initialState = TypeSpec.anonymousClassBuilder("")
+                .addSuperinterface(initialStateType)
+                .addMethod(callMethodBuilder
+                        .addStatement("$N.$N = $N.$N.executeQuery()", TypicalNames.STATE, TypicalNames.RESULT_SET,
+                                TypicalNames.STATE, TypicalNames.PREPARED_STATEMENT)
+                        .addStatement("$N.$N = $N.$N.getMetaData()", TypicalNames.STATE, TypicalNames.META_DATA,
+                                TypicalNames.STATE, TypicalNames.RESULT_SET)
+                        .addStatement("$N.$N = $N.$N.getColumnCount()", TypicalNames.STATE, TypicalNames.COLUMN_COUNT,
+                                TypicalNames.STATE, TypicalNames.META_DATA)
+                        .addStatement("return $N", TypicalNames.STATE)
+                        .build())
+                .build();
+
+        final ClassName biConsumer = ClassName.get(BiConsumer.class);
+        final ClassName rawEmitter = ClassName.get(Emitter.class);
+        final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter,
+                TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
+        final ParameterizedTypeName generatorType = ParameterizedTypeName.get(biConsumer, flowState, emitter);
+        final TypeSpec generator = TypeSpec.anonymousClassBuilder("")
+                .addSuperinterface(generatorType)
+                .addMethod(MethodSpec.methodBuilder("accept")
+                        .addAnnotation(Override.class)
+                        .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+                        .addParameter(flowState, TypicalNames.STATE, TypicalModifiers.PARAMETER)
+                        .addParameter(emitter, TypicalNames.EMITTER, TypicalModifiers.PARAMETER)
+                        .returns(void.class)
+                        .addException(Exception.class)
+                        .beginControlFlow("try")
+                        .beginControlFlow("if ($N.$N.next())", TypicalNames.STATE, TypicalNames.RESULT_SET)
+                        .addStatement("$1N.onNext(resultSetToMap($2N.$3N, $2N.$4N, $2N.$5N))", TypicalNames.EMITTER,
+                                TypicalNames.STATE, TypicalNames.RESULT_SET, TypicalNames.META_DATA,
+                                TypicalNames.COLUMN_COUNT)
+                        .nextControlFlow("else")
+                        .addStatement("$N.onComplete()", TypicalNames.EMITTER)
+                        .endControlFlow()
+                        .endControlFlow()
+                        .beginControlFlow("catch (final $T $N)", SQLException.class, TypicalNames.EXCEPTION)
+                        .addStatement("$N.onError($N)", TypicalNames.EMITTER, TypicalNames.EXCEPTION)
+                        .endControlFlow()
+                        .build())
+                .build();
+
+        final ClassName consumerClass = ClassName.get(io.reactivex.functions.Consumer.class);
+        final ParameterizedTypeName disposerType = ParameterizedTypeName.get(consumerClass, flowState);
+        final TypeSpec disposer = TypeSpec.anonymousClassBuilder("")
+                .addSuperinterface(disposerType)
+                .addMethod(MethodSpec.methodBuilder("accept")
+                        .addAnnotation(Override.class)
+                        .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+                        .addParameter(flowState, TypicalNames.STATE, TypicalModifiers.PARAMETER)
+                        .returns(void.class)
+                        .addException(Exception.class)
+                        .beginControlFlow("try")
+                        .addStatement("$N.$N.close()", TypicalNames.STATE, TypicalNames.RESULT_SET)
+                        .addStatement("$N.$N.close()", TypicalNames.STATE, TypicalNames.PREPARED_STATEMENT)
+                        .addStatement("$N.$N.close()", TypicalNames.STATE, TypicalNames.CONNECTION)
+                        .endControlFlow()
+                        .beginControlFlow("catch (final $T $N)", SQLException.class, TypicalNames.EXCEPTION)
+                        .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
+                        .endControlFlow()
+                        .build())
+                .build();
+
+        return MethodSpec.methodBuilder(configuration.getFlowableName())
+                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+                .returns(flowableOfMaps)
+                .addParameters(configuration.getParameterSpecs())
+                .addStatement("return $T.generate($L, $L, $L)",
+                        Flowable.class, initialState, generator, disposer)
+                .build();
     }
 
     private static MethodSpec batchQuery(final SqlStatement sqlStatement) {

@@ -85,6 +85,15 @@ public class SqlFileParser {
         if (configuration.getStreamPrefix() == null || configuration.getStreamPrefix().isEmpty()) {
             configuration.setStreamPrefix(runtimeConfig.getStreamPrefix());
         }
+        if (configuration.getStreamSuffix() == null || configuration.getStreamSuffix().isEmpty()) {
+            configuration.setStreamSuffix(runtimeConfig.getStreamSuffix());
+        }
+        if (configuration.getReactivePrefix() == null || configuration.getReactivePrefix().isEmpty()) {
+            configuration.setReactivePrefix(runtimeConfig.getReactivePrefix());
+        }
+        if (configuration.getReactiveSuffix() == null || configuration.getReactiveSuffix().isEmpty()) {
+            configuration.setReactiveSuffix(runtimeConfig.getReactiveSuffix());
+        }
         if (configuration.getLazyName() == null || configuration.getLazyName().isEmpty()) {
             configuration.setLazyName(runtimeConfig.getLazyName());
         }
@@ -92,10 +101,30 @@ public class SqlFileParser {
             configuration.setEagerName(runtimeConfig.getEagerName());
         }
         if (configuration.getType() == null) {
-            if (startsWith(fileName, "update", "insert", "delete", "create", "write", "add", "remove", "merge")) {
+            if (startsWith(configuration.getName(), runtimeConfig.getAllowedWritePrefixes())) {
                 configuration.setType(SqlStatementType.WRITING);
             } else {
                 configuration.setType(SqlStatementType.READING);
+            }
+        }
+        if (runtimeConfig.isValidateMethodNamePrefixes()) {
+            switch (configuration.getType()) {
+            case READING:
+                if (!startsWith(configuration.getName(), runtimeConfig.getAllowedReadPrefixes())) {
+                    final String msg = String.format("[%s] has invalid READ prefix in its name [%s]",
+                            source.getPathToSqlFile(), configuration.getName());
+                    pluginErrors.add(new IllegalArgumentException(msg));
+                    runtimeConfig.getLogger().error(msg);
+                }
+                break;
+            case WRITING:
+                if (!startsWith(configuration.getName(), runtimeConfig.getAllowedWritePrefixes())) {
+                    final String msg = String.format("[%s] has invalid WRITE prefix in its name [%s]",
+                            source.getPathToSqlFile(), configuration.getName());
+                    pluginErrors.add(new IllegalArgumentException(msg));
+                    runtimeConfig.getLogger().error(msg);
+                }
+                break;
             }
         }
         if (configuration.isUsingPluginSingleConfig()) {
@@ -109,6 +138,9 @@ public class SqlFileParser {
         }
         if (configuration.isUsingPluginStreamLazyConfig()) {
             configuration.setStreamLazy(runtimeConfig.isGenerateStreamLazyApi());
+        }
+        if (configuration.isUsingPluginRxJavaConfig()) {
+            configuration.setGenerateRxJavaApi(runtimeConfig.isGenerateRxJavaApi());
         }
         if (configuration.getRepository() == null || configuration.getRepository().isEmpty()) {
             final Path relativePath = source.getBaseDirectory().relativize(source.getPathToSqlFile());

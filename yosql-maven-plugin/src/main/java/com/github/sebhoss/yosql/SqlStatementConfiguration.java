@@ -1,9 +1,12 @@
 package com.github.sebhoss.yosql;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.github.sebhoss.yosql.generator.TypicalModifiers;
@@ -15,7 +18,6 @@ import com.squareup.javapoet.TypeName;
 public class SqlStatementConfiguration {
 
     private String             name;
-    private String             upperCaseName;
     private boolean            single;
     private boolean            singleOverwritten;
     private boolean            batch;
@@ -28,12 +30,16 @@ public class SqlStatementConfiguration {
     private boolean            streamLazyOverwritten;
     private String             streamPrefix;
     private String             streamSuffix;
+    private String             reactivePrefix;
+    private String             reactiveSuffix;
     private List<SqlParameter> parameters = new ArrayList<>();
     private String             resultConverter;
     private String             repository;
     private String             lazyName;
     private String             eagerName;
     private SqlStatementType   type;
+    private boolean            generateRxJavaApi;
+    private boolean            generateRxJavaApiOverwritten;
 
     public Iterable<ParameterSpec> getParameterSpecs() {
         return Optional.ofNullable(parameters)
@@ -88,28 +94,29 @@ public class SqlStatementConfiguration {
         return ArrayTypeName.of(calculateTypeName);
     }
 
+    public String getFlowableName() {
+        return join(reactivePrefix, name, reactiveSuffix);
+    }
+
     public String getBatchName() {
-        return suffixedName(prefixedName(batchPrefix), batchSuffix);
+        return join(batchPrefix, name, batchSuffix);
     }
 
     public String getStreamLazyName() {
-        return suffixedName(prefixedName(streamPrefix, "Lazy"), streamSuffix);
+        return join(streamPrefix, name, streamSuffix, lazyName);
     }
 
     public String getStreamEagerName() {
-        return suffixedName(prefixedName(streamPrefix, "Eager"), streamSuffix);
+        return join(streamPrefix, name, streamSuffix, eagerName);
     }
 
-    private String prefixedName(final String prefix) {
-        return prefix == null || prefix.isEmpty() ? name : prefix + upperCaseName;
-    }
-
-    private String prefixedName(final String prefix1, final String prefix2) {
-        return prefix1 == null || prefix1.isEmpty() ? name : prefix1 + prefix2 + upperCaseName;
-    }
-
-    private String suffixedName(final String first, final String suffix) {
-        return suffix == null || suffix.isEmpty() ? first : first + suffix;
+    private String join(final String... strings) {
+        final AtomicInteger hits = new AtomicInteger(0);
+        return Arrays.stream(strings)
+                .filter(Objects::nonNull)
+                .map(s -> hits.getAndIncrement() == 0 ? s : s.substring(0, 1).toUpperCase()
+                        + s.substring(1, s.length()))
+                .collect(Collectors.joining());
     }
 
     public String getName() {
@@ -118,8 +125,6 @@ public class SqlStatementConfiguration {
 
     public void setName(final String name) {
         this.name = name;
-        upperCaseName = name.substring(0, 1).toUpperCase()
-                + name.substring(1, name.length());
     }
 
     /**
@@ -171,6 +176,36 @@ public class SqlStatementConfiguration {
     }
 
     /**
+     * @return the reactivePrefix
+     */
+    public String getReactivePrefix() {
+        return reactivePrefix;
+    }
+
+    /**
+     * @param reactivePrefix
+     *            the reactivePrefix to set
+     */
+    public void setReactivePrefix(final String reactivePrefix) {
+        this.reactivePrefix = reactivePrefix;
+    }
+
+    /**
+     * @return the reactiveSuffix
+     */
+    public String getReactiveSuffix() {
+        return reactiveSuffix;
+    }
+
+    /**
+     * @param reactiveSuffix
+     *            the reactiveSuffix to set
+     */
+    public void setReactiveSuffix(final String reactiveSuffix) {
+        this.reactiveSuffix = reactiveSuffix;
+    }
+
+    /**
      * @return the streamEager
      */
     public boolean isStreamEager() {
@@ -211,18 +246,18 @@ public class SqlStatementConfiguration {
     }
 
     /**
-     * @return the streamPostfix
+     * @return the streamSuffix
      */
-    public String getStreamPostfix() {
+    public String getStreamSuffix() {
         return streamSuffix;
     }
 
     /**
-     * @param streamPostfix
-     *            the streamPostfix to set
+     * @param streamSuffix
+     *            the streamSuffix to set
      */
-    public void setStreamPostfix(final String streamPostfix) {
-        streamSuffix = streamPostfix;
+    public void setStreamSuffix(final String streamSuffix) {
+        this.streamSuffix = streamSuffix;
     }
 
     public List<SqlParameter> getParameters() {
@@ -308,6 +343,13 @@ public class SqlStatementConfiguration {
     }
 
     /**
+     * @return <code>true</code> if 'generateRxJavaApi' was not overwritten.
+     */
+    public boolean isUsingPluginRxJavaConfig() {
+        return !generateRxJavaApiOverwritten;
+    }
+
+    /**
      * @return <code>true</code> if 'parameters' has at least one parameter.
      */
     protected boolean hasParameters() {
@@ -327,6 +369,22 @@ public class SqlStatementConfiguration {
      */
     public void setType(final SqlStatementType type) {
         this.type = type;
+    }
+
+    /**
+     * @return the generateRxJavaApi
+     */
+    public boolean isGenerateRxJavaApi() {
+        return generateRxJavaApi;
+    }
+
+    /**
+     * @param generateRxJavaApi
+     *            the generateRxJavaApi to set
+     */
+    public void setGenerateRxJavaApi(final boolean generateRxJavaApi) {
+        this.generateRxJavaApi = generateRxJavaApi;
+        generateRxJavaApiOverwritten = true;
     }
 
 }

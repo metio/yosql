@@ -1,5 +1,5 @@
 --
--- name: adminUser
+-- name: queryAdminUser
 --
 select  *
 from    users

@@ -17,16 +17,23 @@ public class PluginRuntimeConfig {
     private File          outputBaseDirectory;
     private boolean       compileInline;
     private boolean       generateBatchApi;
+    private boolean       generateRxJavaApi;
     private String        batchPrefix;
     private boolean       generateStreamEagerApi;
     private boolean       generateStreamLazyApi;
     private String        streamPrefix;
+    private String        streamSuffix;
+    private String        reactivePrefix;
+    private String        reactiveSuffix;
     private String        lazyName;
     private String        eagerName;
     private boolean       generateSingleQueryApi;
     private String        utilityPackageName;
     private Supplier<Log> logSupplier;
     private String        batchSuffix;
+    private String[]      allowedWritePrefixes;
+    private String[]      allowedReadPrefixes;
+    private boolean       validateMethodNamePrefixes;
 
     /**
      * @return the outputBaseDirectory
@@ -74,6 +81,21 @@ public class PluginRuntimeConfig {
     }
 
     /**
+     * @return the generateRxJavaApi
+     */
+    public boolean isGenerateRxJavaApi() {
+        return generateRxJavaApi;
+    }
+
+    /**
+     * @param generateRxJavaApi
+     *            the generateRxJavaApi to set
+     */
+    public void setGenerateRxJavaApi(final boolean generateRxJavaApi) {
+        this.generateRxJavaApi = generateRxJavaApi;
+    }
+
+    /**
      * @return the batchPrefix
      */
     public String getBatchPrefix() {
@@ -101,6 +123,51 @@ public class PluginRuntimeConfig {
      */
     public void setStreamPrefix(final String streamPrefix) {
         this.streamPrefix = streamPrefix;
+    }
+
+    /**
+     * @return the streamSuffix
+     */
+    public String getStreamSuffix() {
+        return streamSuffix;
+    }
+
+    /**
+     * @param streamSuffix
+     *            the streamSuffix to set
+     */
+    public void setStreamSuffix(final String streamSuffix) {
+        this.streamSuffix = streamSuffix;
+    }
+
+    /**
+     * @return the reactivePrefix
+     */
+    public String getReactivePrefix() {
+        return reactivePrefix;
+    }
+
+    /**
+     * @param reactivePrefix
+     *            the reactivePrefix to set
+     */
+    public void setReactivePrefix(final String reactivePrefix) {
+        this.reactivePrefix = reactivePrefix;
+    }
+
+    /**
+     * @return the reactiveSuffix
+     */
+    public String getReactiveSuffix() {
+        return reactiveSuffix;
+    }
+
+    /**
+     * @param reactiveSuffix
+     *            the reactiveSuffix to set
+     */
+    public void setReactiveSuffix(final String reactiveSuffix) {
+        this.reactiveSuffix = reactiveSuffix;
     }
 
     /**
@@ -211,5 +278,50 @@ public class PluginRuntimeConfig {
 
     public String getBatchSuffix() {
         return batchSuffix;
+    }
+
+    /**
+     * @return the allowedWritePrefixes
+     */
+    public String[] getAllowedWritePrefixes() {
+        return allowedWritePrefixes;
+    }
+
+    /**
+     * @param allowedWritePrefixes
+     *            the allowedWritePrefixes to set
+     */
+    public void setAllowedWritePrefixes(final String[] allowedWritePrefixes) {
+        this.allowedWritePrefixes = allowedWritePrefixes;
+    }
+
+    /**
+     * @return the allowedReadPrefixes
+     */
+    public String[] getAllowedReadPrefixes() {
+        return allowedReadPrefixes;
+    }
+
+    /**
+     * @param allowedReadPrefixes
+     *            the allowedReadPrefixes to set
+     */
+    public void setAllowedReadPrefixes(final String[] allowedReadPrefixes) {
+        this.allowedReadPrefixes = allowedReadPrefixes;
+    }
+
+    /**
+     * @return the validateMethodNamePrefixes
+     */
+    public boolean isValidateMethodNamePrefixes() {
+        return validateMethodNamePrefixes;
+    }
+
+    /**
+     * @param validateMethodNamePrefixes
+     *            the validateMethodNamePrefixes to set
+     */
+    public void setValidateMethodNamePrefixes(final boolean validateMethodNamePrefixes) {
+        this.validateMethodNamePrefixes = validateMethodNamePrefixes;
     }
 }
