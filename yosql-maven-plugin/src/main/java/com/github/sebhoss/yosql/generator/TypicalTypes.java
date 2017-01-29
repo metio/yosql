@@ -20,10 +20,19 @@ public class TypicalTypes {
     public static final ClassName PATTERN                   = ClassName.get("java.util.regex", "Pattern");
     public static final ClassName MATCHER                   = ClassName.get("java.util.regex", "Matcher");
 
+    public static final ClassName FLOWABLE                  = ClassName.get("io.reactivex", "Flowable");
+
     public static final TypeName  ARRAY_OF_INTS             = ArrayTypeName.of(int.class);
     public static final TypeName  LIST_OF_STRINGS           = ParameterizedTypeName.get(LIST, STRING);
     public static final TypeName  COLLECTION_OF_INTEGERS    = ParameterizedTypeName.get(COLLECTION, INTEGER);
     public static final TypeName  MAP_OF_STRING_AND_NUMBERS = ParameterizedTypeName.get(MAP, STRING, ARRAY_OF_INTS);
     public static final TypeName  MAP_OF_STRING_AND_OBJECTS = ParameterizedTypeName.get(MAP, STRING, OBJECT);
+
+    public static final TypeName  LIST_OF_MAPS              = ParameterizedTypeName.get(LIST,
+            TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
+    public static final TypeName  STREAM_OF_MAPS            = ParameterizedTypeName.get(STREAM,
+            TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
+    public static final TypeName  FLOWABLE_OF_MAPS          = ParameterizedTypeName.get(FLOWABLE,
+            TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
 
 }

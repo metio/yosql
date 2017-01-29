@@ -39,7 +39,6 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.MethodSpec.Builder;
 import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 
@@ -50,17 +49,6 @@ import io.reactivex.functions.BiConsumer;
 @Named
 @Singleton
 public class CodeGenerator {
-
-    private static final ClassName    string         = ClassName.get("java.lang", "String");
-    private static final ClassName    object         = ClassName.get("java.lang", "Object");
-    private static final ClassName    list           = ClassName.get("java.util", "List");
-    private static final ClassName    map            = ClassName.get("java.util", "Map");
-    private static final ClassName    stream         = ClassName.get("java.util.stream", "Stream");
-    private static final ClassName    flowable       = ClassName.get("io.reactivex", "Flowable");
-    private static final TypeName     mapOfKeyValues = ParameterizedTypeName.get(map, string, object);
-    private static final TypeName     listOfMaps     = ParameterizedTypeName.get(list, mapOfKeyValues);
-    private static final TypeName     streamOfMaps   = ParameterizedTypeName.get(stream, mapOfKeyValues);
-    private static final TypeName     flowableOfMaps = ParameterizedTypeName.get(flowable, mapOfKeyValues);
 
     private final PluginErrors        pluginErrors;
     private final FlowStateGenerator  flowStateGenerator;
@@ -252,7 +240,7 @@ public class CodeGenerator {
         if (SqlStatementType.READING == configuration.getType()) {
             final Builder methodBuilder = MethodSpec.methodBuilder(configuration.getName())
                     .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                    .returns(listOfMaps)
+                    .returns(TypicalTypes.LIST_OF_MAPS)
                     .addParameters(configuration.getParameterSpecs());
             if (configuration.getParameters() != null && !configuration.getParameters().isEmpty()) {
                 methodBuilder.beginControlFlow("try ($L)", allPreparedAutoCloseableResources(configuration));
@@ -402,7 +390,7 @@ public class CodeGenerator {
 
         return MethodSpec.methodBuilder(configuration.getFlowableName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                .returns(flowableOfMaps)
+                .returns(TypicalTypes.FLOWABLE_OF_MAPS)
                 .addParameters(configuration.getParameterSpecs())
                 .addStatement("return $T.generate($L, $L, $L)",
                         Flowable.class, initialState, generator, disposer)
@@ -440,7 +428,7 @@ public class CodeGenerator {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         final Builder methodBuilder = MethodSpec.methodBuilder(configuration.getStreamEagerName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                .returns(streamOfMaps)
+                .returns(TypicalTypes.STREAM_OF_MAPS)
                 .addParameters(configuration.getParameterSpecs());
         if (configuration.getParameters() != null && !configuration.getParameters().isEmpty()) {
             methodBuilder.beginControlFlow("try ($L)", allPreparedAutoCloseableResources(configuration));
@@ -454,13 +442,15 @@ public class CodeGenerator {
             methodBuilder
                     .beginControlFlow("try (final $T $N = $N.executeQuery())", ResultSet.class, TypicalNames.RESULT_SET,
                             TypicalNames.PREPARED_STATEMENT)
-                    .addStatement("final $T resultList = resultSetToList($N)", listOfMaps, TypicalNames.RESULT_SET)
+                    .addStatement("final $T resultList = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS,
+                            TypicalNames.RESULT_SET)
                     .addStatement("return $N.stream()", "resultList")
                     .endControlFlow()
                     .endControlFlow();
         } else {
             methodBuilder.beginControlFlow("try ($L)", allAutoCloseableResources(configuration))
-                    .addStatement("final $T resultList = resultSetToList($N)", listOfMaps, TypicalNames.RESULT_SET)
+                    .addStatement("final $T resultList = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS,
+                            TypicalNames.RESULT_SET)
                     .addStatement("return $N.stream()", "resultList")
                     .endControlFlow();
         }
@@ -542,7 +532,7 @@ public class CodeGenerator {
                 .build();
         final Builder queryMethodBuilder = MethodSpec.methodBuilder(configuration.getStreamLazyName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                .returns(streamOfMaps)
+                .returns(TypicalTypes.STREAM_OF_MAPS)
                 .addParameters(configuration.getParameterSpecs())
                 .beginControlFlow("try")
                 .addStatement("final $T $N = $N.getConnection()", Connection.class, TypicalNames.CONNECTION,
@@ -579,10 +569,10 @@ public class CodeGenerator {
                 .addModifiers(TypicalModifiers.PRIVATE_METHOD)
                 .addParameter(ResultSet.class, TypicalNames.RESULT_SET, TypicalModifiers.PARAMETER)
                 .addException(SQLException.class)
-                .returns(listOfMaps)
+                .returns(TypicalTypes.LIST_OF_MAPS)
                 .addStatement("final $T metaData = $N.getMetaData()", ResultSetMetaData.class, TypicalNames.RESULT_SET)
                 .addStatement("final int columnCount = $N.getColumnCount()", TypicalNames.META_DATA)
-                .addStatement("final $T list = new $T<>()", listOfMaps, ArrayList.class)
+                .addStatement("final $T list = new $T<>()", TypicalTypes.LIST_OF_MAPS, ArrayList.class)
                 .beginControlFlow("while ($N.next())", TypicalNames.RESULT_SET)
                 .addStatement("$N.add($N($N, $N, $N))", "list", "resultSetToMap", TypicalNames.RESULT_SET,
                         TypicalNames.META_DATA, TypicalNames.COLUMN_COUNT)
@@ -598,9 +588,9 @@ public class CodeGenerator {
                 .addParameter(ResultSetMetaData.class, TypicalNames.META_DATA, TypicalModifiers.PARAMETER)
                 .addParameter(int.class, TypicalNames.COLUMN_COUNT, TypicalModifiers.PARAMETER)
                 .addException(SQLException.class)
-                .returns(mapOfKeyValues)
-                .addStatement("final $T row = new $T<>($N)", mapOfKeyValues, LinkedHashMap.class,
-                        TypicalNames.COLUMN_COUNT)
+                .returns(TypicalTypes.MAP_OF_STRING_AND_OBJECTS)
+                .addStatement("final $T row = new $T<>($N)", TypicalTypes.MAP_OF_STRING_AND_OBJECTS,
+                        LinkedHashMap.class, TypicalNames.COLUMN_COUNT)
                 .beginControlFlow("for (int index = 1; index <= $N; index++)", TypicalNames.COLUMN_COUNT)
                 .addStatement("$N.put($N.getColumnName($N), $N.getObject($N))", "row", TypicalNames.META_DATA, "index",
                         TypicalNames.RESULT_SET, "index")
