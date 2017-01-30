@@ -73,31 +73,31 @@ public class SqlFileParser {
             final Map<String, List<Integer>> parameterIndices) {
         final SqlStatementConfiguration configuration = loadOrCreateConfig(yaml);
         final String fileName = getFileNameWithoutExtension(source.getPathToSqlFile());
-        if (configuration.getName() == null || configuration.getName().isEmpty()) {
+        if (nullOrEmpty(configuration.getName())) {
             configuration.setName(fileName);
         }
-        if (configuration.getBatchPrefix() == null || configuration.getBatchPrefix().isEmpty()) {
+        if (nullOrEmpty(configuration.getBatchPrefix())) {
             configuration.setBatchPrefix(runtimeConfig.getBatchPrefix());
         }
-        if (configuration.getBatchSuffix() == null || configuration.getBatchSuffix().isEmpty()) {
+        if (nullOrEmpty(configuration.getBatchSuffix())) {
             configuration.setBatchSuffix(runtimeConfig.getBatchSuffix());
         }
-        if (configuration.getStreamPrefix() == null || configuration.getStreamPrefix().isEmpty()) {
+        if (nullOrEmpty(configuration.getStreamPrefix())) {
             configuration.setStreamPrefix(runtimeConfig.getStreamPrefix());
         }
-        if (configuration.getStreamSuffix() == null || configuration.getStreamSuffix().isEmpty()) {
+        if (nullOrEmpty(configuration.getStreamSuffix())) {
             configuration.setStreamSuffix(runtimeConfig.getStreamSuffix());
         }
-        if (configuration.getReactivePrefix() == null || configuration.getReactivePrefix().isEmpty()) {
+        if (nullOrEmpty(configuration.getReactivePrefix())) {
             configuration.setReactivePrefix(runtimeConfig.getReactivePrefix());
         }
-        if (configuration.getReactiveSuffix() == null || configuration.getReactiveSuffix().isEmpty()) {
+        if (nullOrEmpty(configuration.getReactiveSuffix())) {
             configuration.setReactiveSuffix(runtimeConfig.getReactiveSuffix());
         }
-        if (configuration.getLazyName() == null || configuration.getLazyName().isEmpty()) {
+        if (nullOrEmpty(configuration.getLazyName())) {
             configuration.setLazyName(runtimeConfig.getLazyName());
         }
-        if (configuration.getEagerName() == null || configuration.getEagerName().isEmpty()) {
+        if (nullOrEmpty(configuration.getEagerName())) {
             configuration.setEagerName(runtimeConfig.getEagerName());
         }
         if (configuration.getType() == null) {
@@ -180,7 +180,6 @@ public class SqlFileParser {
         if (validateParameterConfig(source, parameterIndices, configuration)) {
             for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
                 final String parameterName = entry.getKey();
-
                 if (!configuration.getParameters().stream()
                         .filter(parameter -> parameterName.equals(parameter.getName()))
                         .findAny().isPresent()) {
@@ -188,7 +187,6 @@ public class SqlFileParser {
                     sqlParameter.setName(parameterName);
                     configuration.getParameters().add(sqlParameter);
                 }
-
                 configuration.getParameters().stream()
                         .filter(parameter -> parameterName.equals(parameter.getName()))
                         .forEach(parameter -> parameter.setIndices(entry.getValue().stream()
@@ -197,6 +195,10 @@ public class SqlFileParser {
             }
         }
         return configuration;
+    }
+
+    private boolean nullOrEmpty(final String object) {
+        return object == null || object.isEmpty();
     }
 
     private boolean startsWith(final String fileName, final String... prefixes) {
