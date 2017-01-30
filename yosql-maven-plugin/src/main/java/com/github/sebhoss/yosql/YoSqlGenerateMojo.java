@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -246,27 +247,17 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         preconditions.assertDirectoryIsWriteable(outputBaseDirectory);
 
         initializePluginConfig();
-        final Instant preParse = Instant.now();
         final List<SqlStatement> allStatements = parseAllSqlFiles();
-        final Instant postParse = Instant.now();
         generateRepositories(allStatements);
-        final Instant postGenerateRepos = Instant.now();
         generateUtilities(allStatements);
-        final Instant postGenerateUtils = Instant.now();
 
         if (pluginErrors.hasErrors()) {
             pluginErrors.buildError("Error during code generation");
         }
-
-        getLog().debug("Total used SQL statements: " + allStatements.size());
-        getLog().debug("Time spent parsing (ms): " + Duration.between(preParse, postParse).toMillis());
-        getLog().debug("Time spent generating repositories (ms): "
-                + Duration.between(postParse, postGenerateRepos).toMillis());
-        getLog().debug("Time spent generating utilities (ms): "
-                + Duration.between(postGenerateRepos, postGenerateUtils).toMillis());
     }
 
     private void initializePluginConfig() {
+        final Instant preInit = Instant.now();
         runtimeConfig.setBatchPrefix(batchPrefix);
         runtimeConfig.setBatchSuffix(batchSuffix);
         runtimeConfig.setReactivePrefix(reactivePrefix);
@@ -294,25 +285,41 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                     .filter(dependency -> "io.reactivex.rxjava2".equals(dependency.getGroupId()))
                     .anyMatch(dependency -> "rxjava".equals(dependency.getArtifactId())));
         }
+        final Instant postInit = Instant.now();
+        getLog().debug("Time spent initializing (ms): " + Duration.between(preInit, postInit).toMillis());
     }
 
     private List<SqlStatement> parseAllSqlFiles() {
+        final Instant preParse = Instant.now();
         final FileSet filesToParse = Optional.ofNullable(sqlFiles)
                 .orElse(YoSqlConfiguration.defaultSqlFileSet(project.getBasedir()));
-        return fileSetResolver.resolveFiles(filesToParse)
+        final List<SqlStatement> allStatements = fileSetResolver.resolveFiles(filesToParse)
                 .map(sqlFileParser::parse)
                 .sorted(Comparator.comparing(statement -> statement.getConfiguration().getName()))
                 .collect(Collectors.toList());
+        final Instant postParse = Instant.now();
+        getLog().debug("Time spent parsing (ms): " + Duration.between(preParse, postParse).toMillis());
+        getLog().debug("Parsed statements: " + allStatements.size());
+        return allStatements;
     }
 
     private void generateRepositories(final List<SqlStatement> allStatements) {
-        allStatements.stream()
-                .collect(groupingBy(SqlStatement::getRepository))
-                .forEach(codeGenerator::generateRepository);
+        final Instant preGenerate = Instant.now();
+        final Map<String, List<SqlStatement>> repositories = allStatements.stream()
+                .collect(groupingBy(SqlStatement::getRepository));
+        repositories.forEach(codeGenerator::generateRepository);
+        final Instant postGenerate = Instant.now();
+        getLog().debug("Time spent generating repositories (ms): "
+                + Duration.between(preGenerate, postGenerate).toMillis());
+        getLog().debug("Generated repositories: " + repositories.size());
     }
 
     private void generateUtilities(final List<SqlStatement> allStatements) {
+        final Instant preGenerate = Instant.now();
         codeGenerator.generateUtilities(allStatements);
+        final Instant postGenerate = Instant.now();
+        getLog().debug("Time spent generating utilities (ms): "
+                + Duration.between(preGenerate, postGenerate).toMillis());
     }
 
 }
