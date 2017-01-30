@@ -288,12 +288,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 .orElse(YoSqlConfiguration.defaultSqlFileSet(project.getBasedir()));
         return fileSetResolver.resolveFiles(filesToParse)
                 .map(sqlFileParser::parse)
-                .sorted(compareByName())
+                .sorted(Comparator.comparing(statement -> statement.getConfiguration().getName()))
                 .collect(Collectors.toList());
-    }
-
-    private Comparator<SqlStatement> compareByName() {
-        return (s1, s2) -> s1.getConfiguration().getName().compareTo(s2.getConfiguration().getName());
     }
 
     private void generateRepositories(final List<SqlStatement> allStatements) {
