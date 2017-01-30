@@ -292,6 +292,10 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 .collect(Collectors.toList());
     }
 
+    private Comparator<SqlStatement> compareByName() {
+        return (s1, s2) -> s1.getConfiguration().getName().compareTo(s2.getConfiguration().getName());
+    }
+
     private void generateRepositories(final List<SqlStatement> allStatements) {
         allStatements.stream()
                 .collect(groupingBy(SqlStatement::getRepository))
@@ -300,10 +304,6 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     private void generateUtilities(final List<SqlStatement> allStatements) {
         codeGenerator.generateUtilities(allStatements);
-    }
-
-    private Comparator<SqlStatement> compareByName() {
-        return (s1, s2) -> s1.getConfiguration().getName().compareTo(s2.getConfiguration().getName());
     }
 
 }
