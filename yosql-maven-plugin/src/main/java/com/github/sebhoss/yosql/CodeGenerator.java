@@ -535,7 +535,7 @@ public class CodeGenerator {
 
     private static CodeBlock catchAndRethrow() {
         return CodeBlock.builder()
-                .beginControlFlow("catch ($T $N)", SQLException.class, TypicalNames.EXCEPTION)
+                .beginControlFlow("catch (final $T $N)", SQLException.class, TypicalNames.EXCEPTION)
                 .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
                 .endControlFlow()
                 .build();
