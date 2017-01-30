@@ -31,15 +31,6 @@
         <configuration>
           <basePackageName>com.example.persistence</basePackageName>
         </configuration>
-        <executions>
-          <execution>
-            <id>generate-repositories</id>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <phase>generate-sources</phase>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
