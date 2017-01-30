@@ -3,6 +3,8 @@ package com.github.sebhoss.yosql;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -244,15 +246,24 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         preconditions.assertDirectoryIsWriteable(outputBaseDirectory);
 
         initializePluginConfig();
+        final Instant preParse = Instant.now();
         final List<SqlStatement> allStatements = parseAllSqlFiles();
+        final Instant postParse = Instant.now();
         generateRepositories(allStatements);
+        final Instant postGenerateRepos = Instant.now();
         generateUtilities(allStatements);
+        final Instant postGenerateUtils = Instant.now();
 
         if (pluginErrors.hasErrors()) {
             pluginErrors.buildError("Error during code generation");
-        } else {
-            getLog().info("parsed statements: " + allStatements.size());
         }
+
+        getLog().debug("Total used SQL statements: " + allStatements.size());
+        getLog().debug("Time spent parsing (ms): " + Duration.between(preParse, postParse).toMillis());
+        getLog().debug("Time spent generating repositories (ms): "
+                + Duration.between(postParse, postGenerateRepos).toMillis());
+        getLog().debug("Time spent generating utilities (ms): "
+                + Duration.between(postGenerateRepos, postGenerateUtils).toMillis());
     }
 
     private void initializePluginConfig() {
