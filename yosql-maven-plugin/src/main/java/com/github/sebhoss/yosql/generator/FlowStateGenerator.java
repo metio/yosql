@@ -37,7 +37,8 @@ public class FlowStateGenerator {
     }
 
     public void generateFlowStateClass() {
-        final ClassName superclass = ClassName.get(runtimeConfig.getUtilityPackageName(),
+        final ClassName superclass = ClassName.get(
+                runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
                 ResultStateGenerator.RESULT_STATE_CLASS_NAME);
         final TypeSpec type = TypeSpec.classBuilder(FLOW_STATE_CLASS_NAME)
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
@@ -46,7 +47,8 @@ public class FlowStateGenerator {
                 .addMethods(methods())
                 .addAnnotation(commonGenerator.generatedAnnotation(FlowStateGenerator.class))
                 .build();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), runtimeConfig.getUtilityPackageName(),
+        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(),
+                runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
                 type);
     }
 

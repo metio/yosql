@@ -1,6 +1,6 @@
 --
 -- name: queryAdminUser
--- repository: com.example.persistence.AdminRepository
+-- repository: AdminRepository
 --
 select  *
 from    users

@@ -29,6 +29,7 @@ public class PluginRuntimeConfig {
     private String        eagerName;
     private boolean       generateSingleQueryApi;
     private String        utilityPackageName;
+    private String        basePackageName;
     private Supplier<Log> logSupplier;
     private String        batchSuffix;
     private String[]      allowedWritePrefixes;
@@ -261,6 +262,20 @@ public class PluginRuntimeConfig {
      */
     public void setUtilityPackageName(final String utilityPackageName) {
         this.utilityPackageName = utilityPackageName;
+    }
+
+    /**
+     * @return the basePackageName
+     */
+    public String getBasePackageName() {
+        return basePackageName;
+    }
+
+    /**
+     * @param basePackageName the basePackageName to set
+     */
+    public void setBasePackageName(String basePackageName) {
+        this.basePackageName = basePackageName;
     }
 
     public void setLogger(final Supplier<Log> logSupplier) {

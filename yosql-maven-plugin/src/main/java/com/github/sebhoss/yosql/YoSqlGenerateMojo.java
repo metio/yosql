@@ -165,11 +165,17 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                       eagerName;
 
     /**
-     * The package name for utilities (default:
-     * <strong>com.example.util</strong>).
+     * The package name for utilities (default: <strong>util</strong>).
      */
-    @Parameter(required = true, defaultValue = "com.example.util")
+    @Parameter(required = true, defaultValue = "util")
     private String                       utilityPackageName;
+
+    /**
+     * The base package name for all generated classes.
+     */
+    @Parameter(required = true)
+    private String                       basePackageName;
+    // TODO: rename to basePackage[Name]
 
     /**
      * The allow method name prefixes for writing methods (default:
@@ -258,6 +264,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setStreamPrefix(streamPrefix);
         runtimeConfig.setStreamSuffix(streamSuffix);
         runtimeConfig.setUtilityPackageName(utilityPackageName);
+        runtimeConfig.setBasePackageName(basePackageName);
         runtimeConfig.setLogger(() -> getLog());
         runtimeConfig.setAllowedReadPrefixes(allowedReadPrefixes.split(","));
         runtimeConfig.setAllowedWritePrefixes(allowedWritePrefixes.split(","));

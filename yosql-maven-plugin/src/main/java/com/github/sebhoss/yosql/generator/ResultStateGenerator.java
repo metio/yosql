@@ -42,7 +42,8 @@ public class ResultStateGenerator {
                 .addMethods(methods())
                 .addAnnotation(commonGenerator.generatedAnnotation(ResultStateGenerator.class))
                 .build();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), runtimeConfig.getUtilityPackageName(),
+        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(),
+                runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
                 type);
     }
 

@@ -83,19 +83,19 @@ public class CodeGenerator {
     /**
      * Generates a single repository.
      *
-     * @param name
+     * @param repositoryName
      * @param sqlStatements
      *            The SQL statements to be included in the repository.
      */
-    public void generateRepository(final String fqnOfRepository,
+    public void generateRepository(final String repositoryName,
             final List<SqlStatement> sqlStatements) {
-        flowState = ClassName.get(runtimeConfig.getUtilityPackageName(),
+        flowState = ClassName.get(runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
                 FlowStateGenerator.FLOW_STATE_CLASS_NAME);
-        resultState = ClassName.get(runtimeConfig.getUtilityPackageName(),
+        resultState = ClassName.get(runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
                 ResultStateGenerator.RESULT_STATE_CLASS_NAME);
 
-        final String className = getClassName(fqnOfRepository);
-        final String packageName = getPackageName(fqnOfRepository);
+        final String className = getClassName(repositoryName);
+        final String packageName = getPackageName(repositoryName);
         final TypeSpec repository = TypeSpec.classBuilder(className)
                 .addModifiers(TypicalModifiers.PUBLIC_CLASS)
                 .addFields(asFields(sqlStatements))
@@ -142,13 +142,13 @@ public class CodeGenerator {
                 .build();
     }
 
-    private String getPackageName(final String fqnOfRepository) {
-        return fqnOfRepository.substring(0, fqnOfRepository.lastIndexOf("."));
+    private String getPackageName(final String repositoryName) {
+        return repositoryName.substring(0, repositoryName.lastIndexOf("."));
     }
 
-    private String getClassName(final String fqnOfRepository) {
-        return fqnOfRepository.substring(fqnOfRepository.lastIndexOf(".") + 1,
-                fqnOfRepository.length());
+    private String getClassName(final String repositoryName) {
+        return repositoryName.substring(repositoryName.lastIndexOf(".") + 1,
+                repositoryName.length());
     }
 
     private Iterable<FieldSpec> asFields(final List<SqlStatement> sqlStatements) {

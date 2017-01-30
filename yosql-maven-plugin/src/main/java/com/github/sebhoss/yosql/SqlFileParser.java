@@ -143,13 +143,15 @@ public class SqlFileParser {
             configuration.setGenerateRxJavaApi(runtimeConfig.isGenerateRxJavaApi());
         }
         if (configuration.getRepository() == null || configuration.getRepository().isEmpty()) {
-            final Path relativePath = source.getBaseDirectory().relativize(source.getPathToSqlFile());
-            final Path fullyQualifiedPath = relativePath.getParent();
-            final String fullyQualifiedRepositoryName = fullyQualifiedPath.toString();
-            configuration.setRepository(fullyQualifiedRepositoryName);
+            final Path relativePathToSqlFile = source.getBaseDirectory().relativize(source.getPathToSqlFile());
+            final Path enclosingDirectory = relativePathToSqlFile.getParent();
+            final String fullyQualifiedRepositoryName = enclosingDirectory.toString();
+            configuration.setRepository(runtimeConfig.getBasePackageName() + "." + fullyQualifiedRepositoryName);
         } else {
             final String userGivenRepository = configuration.getRepository();
-            final String cleanedRepository = userGivenRepository.replace(".", "/");
+            final String actualRepository = userGivenRepository.startsWith(runtimeConfig.getBasePackageName())
+                    ? userGivenRepository : runtimeConfig.getBasePackageName() + "." + userGivenRepository;
+            final String cleanedRepository = actualRepository.replace(".", "/");
             configuration.setRepository(cleanedRepository);
         }
         if (validateParameterConfig(source, parameterIndices, configuration)) {
