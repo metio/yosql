@@ -84,6 +84,7 @@ public class CodeGenerator {
      * Generates a single repository.
      *
      * @param repositoryName
+     *            The fully-qualified name of the repository to generate.
      * @param sqlStatements
      *            The SQL statements to be included in the repository.
      */
