@@ -25,6 +25,7 @@ public class PluginRuntimeConfig {
     private String        streamSuffix;
     private String        reactivePrefix;
     private String        reactiveSuffix;
+    private String        repositoryNameSuffix;
     private String        lazyName;
     private String        eagerName;
     private boolean       generateSingleQueryApi;
@@ -172,6 +173,21 @@ public class PluginRuntimeConfig {
     }
 
     /**
+     * @return the repositoryNameSuffix
+     */
+    public String getRepositoryNameSuffix() {
+        return repositoryNameSuffix;
+    }
+
+    /**
+     * @param repositoryNameSuffix
+     *            the repositoryNameSuffix to set
+     */
+    public void setRepositoryNameSuffix(final String repositoryNameSuffix) {
+        this.repositoryNameSuffix = repositoryNameSuffix;
+    }
+
+    /**
      * @return the generateStreamEagerApi
      */
     public boolean isGenerateStreamEagerApi() {
@@ -272,9 +288,10 @@ public class PluginRuntimeConfig {
     }
 
     /**
-     * @param basePackageName the basePackageName to set
+     * @param basePackageName
+     *            the basePackageName to set
      */
-    public void setBasePackageName(String basePackageName) {
+    public void setBasePackageName(final String basePackageName) {
         this.basePackageName = basePackageName;
     }
 

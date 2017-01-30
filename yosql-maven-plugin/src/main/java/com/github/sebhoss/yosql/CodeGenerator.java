@@ -211,6 +211,10 @@ public class CodeGenerator {
                 .filter(statement -> statement.getConfiguration().isGenerateRxJavaApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                 .map(this::flowWithBackpressure);
+
+        sqlStatements.stream()
+                .anyMatch(this::shouldBuildResultToMapHelperMethod);
+
         final Stream<MethodSpec> utilities = Stream.concat(
                 sqlStatements.stream()
                         .filter(statement -> shouldBuildResultToListHelperMethod(statement))

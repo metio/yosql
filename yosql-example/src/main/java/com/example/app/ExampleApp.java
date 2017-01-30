@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.h2.jdbcx.JdbcDataSource;
 
 import com.example.persistence.CompanyRepository;
+import com.example.persistence.SchemaRepository;
 
 import io.reactivex.Flowable;
 
@@ -19,8 +20,10 @@ public class ExampleApp {
             final JdbcDataSource dataSource = new JdbcDataSource();
             dataSource.setURL("jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1");
 
+            final SchemaRepository schemaRepository = new SchemaRepository(dataSource);
+            schemaRepository.createCompaniesTable();
+
             final CompanyRepository companyRepository = new CompanyRepository(dataSource);
-            companyRepository.createCompaniesTable();
             companyRepository.insertCompany(123, "test");
             companyRepository.insertCompanyBatch(new int[] { 456, 789 }, new String[] { "two", "three" });
             companyRepository.insertCompanyBatch(new int[] { 91, 32 }, new String[] { "more", "other" });

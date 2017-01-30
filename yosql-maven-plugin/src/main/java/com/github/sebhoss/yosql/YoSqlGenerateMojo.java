@@ -175,7 +175,13 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      */
     @Parameter(required = true)
     private String                       basePackageName;
-    // TODO: rename to basePackage[Name]
+
+    /**
+     * The repository name suffix to use for all generated repositories
+     * (default: <strong>Repository</strong>).
+     */
+    @Parameter(required = true, defaultValue = "Repository")
+    private String                       repositoryNameSuffix;
 
     /**
      * The allow method name prefixes for writing methods (default:
@@ -252,6 +258,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setBatchSuffix(batchSuffix);
         runtimeConfig.setReactivePrefix(reactivePrefix);
         runtimeConfig.setReactiveSuffix(reactiveSuffix);
+        runtimeConfig.setRepositoryNameSuffix(repositoryNameSuffix);
         runtimeConfig.setCompileInline(compileInline);
         runtimeConfig.setEagerName(eagerName);
         runtimeConfig.setGenerateSingleQueryApi(generateSingleQueryApi);
@@ -269,7 +276,6 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setAllowedReadPrefixes(allowedReadPrefixes.split(","));
         runtimeConfig.setAllowedWritePrefixes(allowedWritePrefixes.split(","));
         runtimeConfig.setValidateMethodNamePrefixes(validateMethodNamePrefixes);
-
         if (!generateRxJavaApi) {
             runtimeConfig.setGenerateRxJavaApi(project.getDependencies().stream()
                     .filter(dependency -> "io.reactivex.rxjava2".equals(dependency.getGroupId()))
@@ -289,7 +295,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private void generateRepositories(final List<SqlStatement> allStatements) {
         allStatements.stream()
                 .collect(groupingBy(SqlStatement::getRepository))
-                .forEach((name, statements) -> codeGenerator.generateRepository(name.replace("/", "."), statements));
+                .forEach(codeGenerator::generateRepository);
     }
 
     private void generateUtilities(final List<SqlStatement> allStatements) {

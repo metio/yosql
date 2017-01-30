@@ -128,31 +128,54 @@ public class SqlFileParser {
             }
         }
         if (configuration.isUsingPluginSingleConfig()) {
-            configuration.setSingle(runtimeConfig.isGenerateBatchApi());
+            configuration.setSingle(runtimeConfig.isGenerateSingleQueryApi());
         }
         if (configuration.isUsingPluginBatchConfig()) {
-            configuration.setBatch(runtimeConfig.isGenerateBatchApi());
+            if (SqlStatementType.READING == configuration.getType()) {
+                configuration.setBatch(false);
+            } else {
+                configuration.setBatch(runtimeConfig.isGenerateBatchApi());
+            }
         }
         if (configuration.isUsingPluginStreamEagerConfig()) {
-            configuration.setStreamEager(runtimeConfig.isGenerateStreamEagerApi());
+            if (SqlStatementType.WRITING == configuration.getType()) {
+                configuration.setStreamEager(false);
+            } else {
+                configuration.setStreamEager(runtimeConfig.isGenerateStreamEagerApi());
+            }
         }
         if (configuration.isUsingPluginStreamLazyConfig()) {
-            configuration.setStreamLazy(runtimeConfig.isGenerateStreamLazyApi());
+            if (SqlStatementType.WRITING == configuration.getType()) {
+                configuration.setStreamLazy(false);
+            } else {
+                configuration.setStreamLazy(runtimeConfig.isGenerateStreamLazyApi());
+            }
         }
         if (configuration.isUsingPluginRxJavaConfig()) {
-            configuration.setGenerateRxJavaApi(runtimeConfig.isGenerateRxJavaApi());
+            if (SqlStatementType.WRITING == configuration.getType()) {
+                configuration.setGenerateRxJavaApi(false);
+            } else {
+                configuration.setGenerateRxJavaApi(runtimeConfig.isGenerateRxJavaApi());
+            }
         }
         if (configuration.getRepository() == null || configuration.getRepository().isEmpty()) {
             final Path relativePathToSqlFile = source.getBaseDirectory().relativize(source.getPathToSqlFile());
-            final Path enclosingDirectory = relativePathToSqlFile.getParent();
-            final String fullyQualifiedRepositoryName = enclosingDirectory.toString();
-            configuration.setRepository(runtimeConfig.getBasePackageName() + "." + fullyQualifiedRepositoryName);
+            final String rawRepositoryName = relativePathToSqlFile.getParent().toString();
+            final String dottedRepositoryName = rawRepositoryName.replace("/", ".");
+            final String upperCaseName = dottedRepositoryName.substring(0, 1).toUpperCase() +
+                    dottedRepositoryName.substring(1, dottedRepositoryName.length());
+            final String fullRepositoryName = upperCaseName.endsWith(runtimeConfig.getRepositoryNameSuffix())
+                    ? upperCaseName
+                    : upperCaseName + runtimeConfig.getRepositoryNameSuffix();
+            configuration.setRepository(runtimeConfig.getBasePackageName() + "." + fullRepositoryName);
         } else {
             final String userGivenRepository = configuration.getRepository();
             final String actualRepository = userGivenRepository.startsWith(runtimeConfig.getBasePackageName())
                     ? userGivenRepository : runtimeConfig.getBasePackageName() + "." + userGivenRepository;
-            final String cleanedRepository = actualRepository.replace(".", "/");
-            configuration.setRepository(cleanedRepository);
+            final String fullRepositoryName = actualRepository.endsWith(runtimeConfig.getRepositoryNameSuffix())
+                    ? actualRepository
+                    : actualRepository + runtimeConfig.getRepositoryNameSuffix();
+            configuration.setRepository(fullRepositoryName);
         }
         if (validateParameterConfig(source, parameterIndices, configuration)) {
             for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
