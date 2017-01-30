@@ -37,9 +37,8 @@ public class FlowStateGenerator {
     }
 
     public void generateFlowStateClass() {
-        final ClassName superclass = ClassName.get(
-                runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
-                ResultStateGenerator.RESULT_STATE_CLASS_NAME);
+        final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
+        final ClassName superclass = ClassName.get(packageName, ResultStateGenerator.RESULT_STATE_CLASS_NAME);
         final TypeSpec type = TypeSpec.classBuilder(FLOW_STATE_CLASS_NAME)
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
                 .superclass(superclass)
@@ -47,9 +46,8 @@ public class FlowStateGenerator {
                 .addMethods(methods())
                 .addAnnotation(commonGenerator.generatedAnnotation(FlowStateGenerator.class))
                 .build();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(),
-                runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
-                type);
+        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
+        runtimeConfig.getLogger().info(String.format("Generated [%s.%s]", packageName, FLOW_STATE_CLASS_NAME));
     }
 
     private Iterable<FieldSpec> fields() {

@@ -108,7 +108,7 @@ public class CodeGenerator {
 
         try {
             javaFile.writeTo(runtimeConfig.getOutputBaseDirectory().toPath());
-            runtimeConfig.getLogger().info(String.format("Generated [%s.%s] using %s SQL statements", packageName,
+            runtimeConfig.getLogger().info(String.format("Generated [%s.%s] using %s statements", packageName,
                     className, sqlStatements.size()));
         } catch (final IOException exception) {
             pluginErrors.add(exception);

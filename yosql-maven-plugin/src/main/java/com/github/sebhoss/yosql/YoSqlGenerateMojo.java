@@ -298,8 +298,9 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 .sorted(Comparator.comparing(statement -> statement.getConfiguration().getName()))
                 .collect(Collectors.toList());
         final Instant postParse = Instant.now();
-        getLog().debug("Time spent parsing (ms): " + Duration.between(preParse, postParse).toMillis());
-        getLog().debug("Parsed statements: " + allStatements.size());
+        getLog().debug(String.format("Time spent parsing [%s] statements (ms): %s",
+                allStatements.size(),
+                Duration.between(preParse, postParse).toMillis()));
         return allStatements;
     }
 
@@ -309,9 +310,9 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 .collect(groupingBy(SqlStatement::getRepository));
         repositories.forEach(codeGenerator::generateRepository);
         final Instant postGenerate = Instant.now();
-        getLog().debug("Time spent generating repositories (ms): "
-                + Duration.between(preGenerate, postGenerate).toMillis());
-        getLog().debug("Generated repositories: " + repositories.size());
+        getLog().debug(String.format("Time spent generating [%s] repositories (ms): %s",
+                repositories.size(),
+                Duration.between(preGenerate, postGenerate).toMillis()));
     }
 
     private void generateUtilities(final List<SqlStatement> allStatements) {

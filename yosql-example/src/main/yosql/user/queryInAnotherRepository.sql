@@ -1,6 +1,6 @@
 --
 -- name: queryAdminUser
--- repository: AdminRepository
+-- repository: Admin
 --
 select  *
 from    users

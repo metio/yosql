@@ -42,9 +42,9 @@ public class ResultStateGenerator {
                 .addMethods(methods())
                 .addAnnotation(commonGenerator.generatedAnnotation(ResultStateGenerator.class))
                 .build();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(),
-                runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
-                type);
+        final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
+        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
+        runtimeConfig.getLogger().info(String.format("Generated [%s.%s]", packageName, RESULT_STATE_CLASS_NAME));
     }
 
     private Iterable<FieldSpec> fields() {
