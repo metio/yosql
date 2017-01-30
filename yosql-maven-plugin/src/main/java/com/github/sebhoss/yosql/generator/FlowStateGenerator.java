@@ -2,8 +2,7 @@ package com.github.sebhoss.yosql.generator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.PluginRuntimeConfig;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 @Named
@@ -36,9 +37,13 @@ public class FlowStateGenerator {
     }
 
     public void generateFlowStateClass() {
+        final ClassName superclass = ClassName.get(runtimeConfig.getUtilityPackageName(),
+                ResultStateGenerator.RESULT_STATE_CLASS_NAME);
         final TypeSpec type = TypeSpec.classBuilder(FLOW_STATE_CLASS_NAME)
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+                .superclass(superclass)
                 .addFields(fields())
+                .addMethods(methods())
                 .addAnnotation(commonGenerator.generatedAnnotation(FlowStateGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), runtimeConfig.getUtilityPackageName(),
@@ -49,39 +54,49 @@ public class FlowStateGenerator {
         final List<FieldSpec> fields = new ArrayList<>();
         fields.add(connectionField());
         fields.add(preparedStatementField());
-        fields.add(resultSetField());
-        fields.add(metaDataField());
-        fields.add(columnCountField());
         return fields;
     }
 
     private FieldSpec connectionField() {
         return FieldSpec.builder(Connection.class, TypicalNames.CONNECTION)
-                .addModifiers(TypicalModifiers.PUBLIC_FIELD)
+                .addModifiers(TypicalModifiers.PRIVATE_FIELD)
                 .build();
     }
 
     private FieldSpec preparedStatementField() {
         return FieldSpec.builder(PreparedStatement.class, TypicalNames.PREPARED_STATEMENT)
-                .addModifiers(TypicalModifiers.PUBLIC_FIELD)
+                .addModifiers(TypicalModifiers.PRIVATE_FIELD)
                 .build();
     }
 
-    private FieldSpec resultSetField() {
-        return FieldSpec.builder(ResultSet.class, TypicalNames.RESULT_SET)
-                .addModifiers(TypicalModifiers.PUBLIC_FIELD)
+    private Iterable<MethodSpec> methods() {
+        final List<MethodSpec> fields = new ArrayList<>();
+        fields.add(constructor());
+        fields.add(close());
+        return fields;
+    }
+
+    private MethodSpec constructor() {
+        return TypicalMethods.constructor()
+                .addParameter(TypicalParameters.connection())
+                .addParameter(TypicalParameters.preparedStatement())
+                .addParameter(TypicalParameters.resultSet())
+                .addParameter(TypicalParameters.metaData())
+                .addParameter(TypicalParameters.columnCount())
+                .addStatement("super($N, $N, $N)", TypicalNames.RESULT_SET, TypicalNames.META_DATA,
+                        TypicalNames.COLUMN_COUNT)
+                .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.CONNECTION))
+                .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.PREPARED_STATEMENT))
                 .build();
     }
 
-    private FieldSpec metaDataField() {
-        return FieldSpec.builder(ResultSetMetaData.class, TypicalNames.META_DATA)
-                .addModifiers(TypicalModifiers.PUBLIC_FIELD)
-                .build();
-    }
-
-    private FieldSpec columnCountField() {
-        return FieldSpec.builder(int.class, TypicalNames.COLUMN_COUNT)
-                .addModifiers(TypicalModifiers.PUBLIC_FIELD)
+    private MethodSpec close() {
+        return TypicalMethods.publicMethod("close")
+                .returns(void.class)
+                .addException(SQLException.class)
+                .addStatement("$N.close()", TypicalNames.RESULT_SET)
+                .addStatement("$N.close()", TypicalNames.PREPARED_STATEMENT)
+                .addStatement("$N.close()", TypicalNames.CONNECTION)
                 .build();
     }
 

@@ -16,6 +16,7 @@ public class TypicalTypes {
     public static final ClassName MAP                       = ClassName.get("java.util", "Map");
     public static final ClassName STREAM                    = ClassName.get("java.util.stream", "Stream");
     public static final ClassName ARRAY_LIST                = ClassName.get("java.util", "ArrayList");
+    public static final ClassName CONSUMER                  = ClassName.get("java.util.function", "Consumer");
 
     public static final ClassName PATTERN                   = ClassName.get("java.util.regex", "Pattern");
     public static final ClassName MATCHER                   = ClassName.get("java.util.regex", "Matcher");

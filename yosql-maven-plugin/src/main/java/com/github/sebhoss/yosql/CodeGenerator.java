@@ -4,18 +4,16 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -28,8 +26,12 @@ import javax.inject.Singleton;
 import javax.sql.DataSource;
 
 import com.github.sebhoss.yosql.generator.FlowStateGenerator;
+import com.github.sebhoss.yosql.generator.ResultStateGenerator;
+import com.github.sebhoss.yosql.generator.TypicalCodeBlocks;
+import com.github.sebhoss.yosql.generator.TypicalMethods;
 import com.github.sebhoss.yosql.generator.TypicalModifiers;
 import com.github.sebhoss.yosql.generator.TypicalNames;
+import com.github.sebhoss.yosql.generator.TypicalParameters;
 import com.github.sebhoss.yosql.generator.TypicalTypes;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -37,29 +39,33 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.MethodSpec.Builder;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 
 import io.reactivex.Emitter;
 import io.reactivex.Flowable;
-import io.reactivex.functions.BiConsumer;
 
 @Named
 @Singleton
 public class CodeGenerator {
 
-    private final PluginErrors        pluginErrors;
-    private final FlowStateGenerator  flowStateGenerator;
-    private final PluginRuntimeConfig runtimeConfig;
+    private final PluginErrors         pluginErrors;
+    private final FlowStateGenerator   flowStateGenerator;
+    private final PluginRuntimeConfig  runtimeConfig;
+    private final ResultStateGenerator resultStateGenerator;
+
+    private ClassName                  flowState;
+    private ClassName                  resultState;
 
     @Inject
     public CodeGenerator(
             final FlowStateGenerator flowStateGenerator,
+            final ResultStateGenerator resultStateGenerator,
             final PluginErrors pluginErrors,
             final PluginRuntimeConfig runtimeConfig) {
         this.flowStateGenerator = flowStateGenerator;
+        this.resultStateGenerator = resultStateGenerator;
         this.pluginErrors = pluginErrors;
         this.runtimeConfig = runtimeConfig;
     }
@@ -69,6 +75,7 @@ public class CodeGenerator {
                 .map(SqlStatement::getConfiguration)
                 .filter(config -> SqlStatementType.READING == config.getType())
                 .anyMatch(config -> config.isGenerateRxJavaApi())) {
+            resultStateGenerator.generateResultStateClass();
             flowStateGenerator.generateFlowStateClass();
         }
     }
@@ -82,6 +89,11 @@ public class CodeGenerator {
      */
     public void generateRepository(final String fqnOfRepository,
             final List<SqlStatement> sqlStatements) {
+        flowState = ClassName.get(runtimeConfig.getUtilityPackageName(),
+                FlowStateGenerator.FLOW_STATE_CLASS_NAME);
+        resultState = ClassName.get(runtimeConfig.getUtilityPackageName(),
+                ResultStateGenerator.RESULT_STATE_CLASS_NAME);
+
         final String className = getClassName(fqnOfRepository);
         final String packageName = getPackageName(fqnOfRepository);
         final TypeSpec repository = TypeSpec.classBuilder(className)
@@ -182,7 +194,7 @@ public class CodeGenerator {
         final Stream<MethodSpec> constructors = Stream.of(constructor());
         final Stream<MethodSpec> singleQueries = sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isSingle())
-                .map(CodeGenerator::singleQuery);
+                .map(this::singleQuery);
         final Stream<MethodSpec> batchQueries = sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isBatch())
                 .filter(statement -> statement.getConfiguration().hasParameters())
@@ -191,10 +203,10 @@ public class CodeGenerator {
         final Stream<MethodSpec> streamQueries = Stream.concat(sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isStreamEager())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
-                .map(CodeGenerator::streamQueryEager), sqlStatements.stream()
+                .map(this::streamQueryEager), sqlStatements.stream()
                         .filter(statement -> statement.getConfiguration().isStreamLazy())
                         .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
-                        .map(CodeGenerator::streamQueryLazy));
+                        .map(this::streamQueryLazy));
         final Stream<MethodSpec> rxJavaQueries = sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isGenerateRxJavaApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
@@ -217,10 +229,9 @@ public class CodeGenerator {
     }
 
     private static MethodSpec constructor() {
-        return MethodSpec.constructorBuilder()
-                .addModifiers(TypicalModifiers.PUBLIC_CONSTRUCTOR)
-                .addParameter(DataSource.class, TypicalNames.DATA_SOURCE, TypicalModifiers.PARAMETER)
-                .addStatement("this.$N = $N", TypicalNames.DATA_SOURCE, TypicalNames.DATA_SOURCE)
+        return TypicalMethods.constructor()
+                .addParameter(TypicalParameters.dataSource())
+                .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.DATA_SOURCE))
                 .build();
     }
 
@@ -235,67 +246,34 @@ public class CodeGenerator {
                         && SqlStatementType.READING == statement.getConfiguration().getType();
     }
 
-    private static MethodSpec singleQuery(final SqlStatement sqlStatement) {
+    private MethodSpec singleQuery(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         if (SqlStatementType.READING == configuration.getType()) {
-            final Builder methodBuilder = MethodSpec.methodBuilder(configuration.getName())
-                    .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+            return TypicalMethods.publicMethod(configuration.getName())
                     .returns(TypicalTypes.LIST_OF_MAPS)
-                    .addParameters(configuration.getParameterSpecs());
-            if (configuration.getParameters() != null && !configuration.getParameters().isEmpty()) {
-                methodBuilder.beginControlFlow("try ($L)", allPreparedAutoCloseableResources(configuration));
-                for (final SqlParameter parameter : configuration.getParameters()) {
-                    methodBuilder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
-                            constsantSqlStatementParametersField(configuration), parameter.getName())
-                            .addStatement("$N.setObject($N, $N)", TypicalNames.PREPARED_STATEMENT,
-                                    TypicalNames.JDBC_INDEX,
-                                    parameter.getName())
-                            .endControlFlow();
-                }
-                methodBuilder
-                        .beginControlFlow("try (final $T $N = $N.executeQuery())", ResultSet.class,
-                                TypicalNames.RESULT_SET,
-                                TypicalNames.PREPARED_STATEMENT)
-                        .addStatement("return resultSetToList($N)", TypicalNames.RESULT_SET)
-                        .endControlFlow()
-                        .endControlFlow();
-            } else {
-                methodBuilder.beginControlFlow("try ($L)", allAutoCloseableResources(configuration))
-                        .addStatement("return resultSetToList($N)", TypicalNames.RESULT_SET)
-                        .endControlFlow();
-            }
-            return methodBuilder
-                    .beginControlFlow("catch ($T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                    .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
+                    .addParameters(configuration.getParameterSpecs())
+                    .addCode(tryAllPreparedAutoCloseableResources(configuration))
+                    .addCode(setParameters(configuration))
+                    .beginControlFlow("try (final $T $N = $N.executeQuery())", ResultSet.class,
+                            TypicalNames.RESULT_SET, TypicalNames.PREPARED_STATEMENT)
+                    .addCode(TypicalCodeBlocks.getMetaData())
+                    .addCode(TypicalCodeBlocks.getColumnCount())
+                    .addStatement("final $T $N = new $T($N, $N, $N)", resultState, "result", resultState,
+                            TypicalNames.RESULT_SET, TypicalNames.META_DATA, TypicalNames.COLUMN_COUNT)
+                    .addStatement("return resultSetToList($N)", "result")
                     .endControlFlow()
+                    .endControlFlow()
+                    .addCode(catchAndRethrow())
                     .build();
         } else {
-            final Builder methodBuilder = MethodSpec.methodBuilder(configuration.getName())
-                    .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+            return TypicalMethods.publicMethod(configuration.getName())
                     .returns(int.class)
-                    .addParameters(configuration.getParameterSpecs());
-            if (configuration.getParameters() != null && !configuration.getParameters().isEmpty()) {
-                methodBuilder.beginControlFlow("try ($L)", allPreparedAutoCloseableResources(configuration));
-                for (final SqlParameter parameter : configuration.getParameters()) {
-                    methodBuilder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
-                            constsantSqlStatementParametersField(configuration), parameter.getName())
-                            .addStatement("$N.setObject($N, $N)", TypicalNames.PREPARED_STATEMENT,
-                                    TypicalNames.JDBC_INDEX,
-                                    parameter.getName())
-                            .endControlFlow();
-                }
-                methodBuilder
-                        .addStatement("return $N.executeUpdate()", TypicalNames.PREPARED_STATEMENT)
-                        .endControlFlow();
-            } else {
-                methodBuilder.beginControlFlow("try ($L)", allPreparedAutoCloseableResources(configuration))
-                        .addStatement("return $N.executeUpdate()", TypicalNames.PREPARED_STATEMENT)
-                        .endControlFlow();
-            }
-            return methodBuilder
-                    .beginControlFlow("catch ($T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                    .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
+                    .addParameters(configuration.getParameterSpecs())
+                    .addCode(tryAllPreparedAutoCloseableResources(configuration))
+                    .addCode(setParameters(configuration))
+                    .addStatement("return $N.executeUpdate()", TypicalNames.PREPARED_STATEMENT)
                     .endControlFlow()
+                    .addCode(catchAndRethrow())
                     .build();
         }
     }
@@ -303,60 +281,58 @@ public class CodeGenerator {
     private MethodSpec flowWithBackpressure(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
 
-        final ClassName flowState = ClassName.get(runtimeConfig.getUtilityPackageName(),
-                FlowStateGenerator.FLOW_STATE_CLASS_NAME);
+        final TypeSpec initialState = createFlowState(configuration, flowState);
+        final TypeSpec generator = createFlowGenerator(flowState);
+        final TypeSpec disposer = createFlowDisposer(flowState);
+
+        return TypicalMethods.publicMethod(configuration.getFlowableName())
+                .returns(TypicalTypes.FLOWABLE_OF_MAPS)
+                .addParameters(configuration.getParameterSpecs())
+                .addStatement("return $T.generate($L, $L, $L)", Flowable.class, initialState, generator, disposer)
+                .build();
+    }
+
+    private TypeSpec createFlowState(final SqlStatementConfiguration configuration, final ClassName flowState) {
         final ClassName callable = ClassName.get(Callable.class);
         final ParameterizedTypeName initialStateType = ParameterizedTypeName.get(callable, flowState);
-        final Builder callMethodBuilder = MethodSpec.methodBuilder("call")
-                .addAnnotation(Override.class)
-                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                .returns(flowState)
-                .addException(Exception.class)
-                .addStatement("final $T $N = new $T()", flowState, TypicalNames.STATE, flowState)
-                .addStatement("$N.$N = $N.getConnection()", TypicalNames.STATE, TypicalNames.CONNECTION,
-                        TypicalNames.DATA_SOURCE)
-                .addStatement("$N.$N = $N.$N.prepareStatement($N)", TypicalNames.STATE,
-                        TypicalNames.PREPARED_STATEMENT, TypicalNames.STATE, TypicalNames.CONNECTION,
-                        constantSqlStatementField(configuration));
-        for (final SqlParameter parameter : configuration.getParameters()) {
-            callMethodBuilder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
-                    constsantSqlStatementParametersField(configuration), parameter.getName())
-                    .addStatement("$N.$N.setObject($N, $N)", TypicalNames.STATE, TypicalNames.PREPARED_STATEMENT,
-                            TypicalNames.JDBC_INDEX, parameter.getName())
-                    .endControlFlow();
-        }
-        final TypeSpec initialState = TypeSpec.anonymousClassBuilder("")
+        return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(initialStateType)
-                .addMethod(callMethodBuilder
-                        .addStatement("$N.$N = $N.$N.executeQuery()", TypicalNames.STATE, TypicalNames.RESULT_SET,
-                                TypicalNames.STATE, TypicalNames.PREPARED_STATEMENT)
-                        .addStatement("$N.$N = $N.$N.getMetaData()", TypicalNames.STATE, TypicalNames.META_DATA,
-                                TypicalNames.STATE, TypicalNames.RESULT_SET)
-                        .addStatement("$N.$N = $N.$N.getColumnCount()", TypicalNames.STATE, TypicalNames.COLUMN_COUNT,
-                                TypicalNames.STATE, TypicalNames.META_DATA)
-                        .addStatement("return $N", TypicalNames.STATE)
+                .addMethod(TypicalMethods.implementation("call")
+                        .returns(flowState)
+                        .addException(Exception.class)
+                        .addStatement("final $T $N = $N.getConnection()", Connection.class, TypicalNames.CONNECTION,
+                                TypicalNames.DATA_SOURCE)
+                        .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
+                                TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION,
+                                constantSqlStatementField(configuration))
+                        .addCode(setParameters(configuration))
+                        .addCode(TypicalCodeBlocks.executeQuery())
+                        .addCode(TypicalCodeBlocks.getMetaData())
+                        .addCode(TypicalCodeBlocks.getColumnCount())
+                        .addStatement("return new $T($N, $N, $N, $N, $N)", flowState, TypicalNames.CONNECTION,
+                                TypicalNames.PREPARED_STATEMENT, TypicalNames.RESULT_SET, TypicalNames.META_DATA,
+                                TypicalNames.COLUMN_COUNT)
                         .build())
                 .build();
+    }
 
-        final ClassName biConsumer = ClassName.get(BiConsumer.class);
+    private TypeSpec createFlowGenerator(final ClassName flowState) {
+        final ClassName biConsumer = ClassName.get(io.reactivex.functions.BiConsumer.class);
         final ClassName rawEmitter = ClassName.get(Emitter.class);
         final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter,
                 TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
         final ParameterizedTypeName generatorType = ParameterizedTypeName.get(biConsumer, flowState, emitter);
-        final TypeSpec generator = TypeSpec.anonymousClassBuilder("")
+        return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(generatorType)
-                .addMethod(MethodSpec.methodBuilder("accept")
-                        .addAnnotation(Override.class)
-                        .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+                .addMethod(TypicalMethods.implementation("accept")
                         .addParameter(flowState, TypicalNames.STATE, TypicalModifiers.PARAMETER)
                         .addParameter(emitter, TypicalNames.EMITTER, TypicalModifiers.PARAMETER)
                         .returns(void.class)
                         .addException(Exception.class)
                         .beginControlFlow("try")
-                        .beginControlFlow("if ($N.$N.next())", TypicalNames.STATE, TypicalNames.RESULT_SET)
-                        .addStatement("$1N.onNext(resultSetToMap($2N.$3N, $2N.$4N, $2N.$5N))", TypicalNames.EMITTER,
-                                TypicalNames.STATE, TypicalNames.RESULT_SET, TypicalNames.META_DATA,
-                                TypicalNames.COLUMN_COUNT)
+                        .beginControlFlow("if ($N.next())", TypicalNames.STATE)
+                        .addStatement("$N.onNext(resultSetToMap($N))", TypicalNames.EMITTER,
+                                TypicalNames.STATE)
                         .nextControlFlow("else")
                         .addStatement("$N.onComplete()", TypicalNames.EMITTER)
                         .endControlFlow()
@@ -366,241 +342,203 @@ public class CodeGenerator {
                         .endControlFlow()
                         .build())
                 .build();
+    }
 
+    private TypeSpec createFlowDisposer(final ClassName flowState) {
         final ClassName consumerClass = ClassName.get(io.reactivex.functions.Consumer.class);
         final ParameterizedTypeName disposerType = ParameterizedTypeName.get(consumerClass, flowState);
-        final TypeSpec disposer = TypeSpec.anonymousClassBuilder("")
+        return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(disposerType)
-                .addMethod(MethodSpec.methodBuilder("accept")
-                        .addAnnotation(Override.class)
-                        .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                        .addParameter(flowState, TypicalNames.STATE, TypicalModifiers.PARAMETER)
+                .addMethod(TypicalMethods.implementation("accept")
+                        .addParameter(TypicalParameters.parameter(flowState, TypicalNames.STATE))
                         .returns(void.class)
                         .addException(Exception.class)
-                        .beginControlFlow("try")
-                        .addStatement("$N.$N.close()", TypicalNames.STATE, TypicalNames.RESULT_SET)
-                        .addStatement("$N.$N.close()", TypicalNames.STATE, TypicalNames.PREPARED_STATEMENT)
-                        .addStatement("$N.$N.close()", TypicalNames.STATE, TypicalNames.CONNECTION)
-                        .endControlFlow()
-                        .beginControlFlow("catch (final $T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                        .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
-                        .endControlFlow()
+                        .addStatement("$N.close()", TypicalNames.STATE)
                         .build())
-                .build();
-
-        return MethodSpec.methodBuilder(configuration.getFlowableName())
-                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                .returns(TypicalTypes.FLOWABLE_OF_MAPS)
-                .addParameters(configuration.getParameterSpecs())
-                .addStatement("return $T.generate($L, $L, $L)",
-                        Flowable.class, initialState, generator, disposer)
                 .build();
     }
 
     private static MethodSpec batchQuery(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
-        final Builder methodBuilder = MethodSpec.methodBuilder(configuration.getBatchName())
+        return MethodSpec.methodBuilder(configuration.getBatchName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(configuration.getBatchParameterSpecs())
-                .beginControlFlow("try ($L)", allPreparedAutoCloseableResources(configuration))
+                .addCode(tryAllPreparedAutoCloseableResources(configuration))
                 .beginControlFlow("for (int $N = 0; $N < $N.length; $N++)", TypicalNames.BATCH, TypicalNames.BATCH,
-                        configuration.getParameters().get(0).getName(), TypicalNames.BATCH);
-        for (final SqlParameter parameter : configuration.getParameters()) {
-            methodBuilder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
-                    constsantSqlStatementParametersField(configuration), parameter.getName())
-                    .addStatement("$N.setObject($N, $N[$N])", TypicalNames.PREPARED_STATEMENT,
-                            TypicalNames.JDBC_INDEX, parameter.getName(), TypicalNames.BATCH)
-                    .endControlFlow();
-        }
-        return methodBuilder
+                        configuration.getParameters().get(0).getName(), TypicalNames.BATCH)
+                .addCode(setBatchParameters(configuration))
                 .addStatement("$N.addBatch()", TypicalNames.PREPARED_STATEMENT)
                 .endControlFlow()
                 .addStatement("return $N.executeBatch()", TypicalNames.PREPARED_STATEMENT)
                 .endControlFlow()
-                .beginControlFlow("catch ($T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
-                .endControlFlow()
+                .addCode(catchAndRethrow())
                 .build();
     }
 
-    private static MethodSpec streamQueryEager(final SqlStatement sqlStatement) {
+    private MethodSpec streamQueryEager(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
-        final Builder methodBuilder = MethodSpec.methodBuilder(configuration.getStreamEagerName())
+        return MethodSpec.methodBuilder(configuration.getStreamEagerName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
                 .returns(TypicalTypes.STREAM_OF_MAPS)
-                .addParameters(configuration.getParameterSpecs());
-        if (configuration.getParameters() != null && !configuration.getParameters().isEmpty()) {
-            methodBuilder.beginControlFlow("try ($L)", allPreparedAutoCloseableResources(configuration));
-            for (final SqlParameter parameter : configuration.getParameters()) {
-                methodBuilder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
-                        constsantSqlStatementParametersField(configuration), parameter.getName())
-                        .addStatement("$N.setObject($N, $N)", TypicalNames.PREPARED_STATEMENT, TypicalNames.JDBC_INDEX,
-                                parameter.getName())
-                        .endControlFlow();
-            }
-            methodBuilder
-                    .beginControlFlow("try (final $T $N = $N.executeQuery())", ResultSet.class, TypicalNames.RESULT_SET,
-                            TypicalNames.PREPARED_STATEMENT)
-                    .addStatement("final $T resultList = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS,
-                            TypicalNames.RESULT_SET)
-                    .addStatement("return $N.stream()", "resultList")
-                    .endControlFlow()
-                    .endControlFlow();
-        } else {
-            methodBuilder.beginControlFlow("try ($L)", allAutoCloseableResources(configuration))
-                    .addStatement("final $T resultList = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS,
-                            TypicalNames.RESULT_SET)
-                    .addStatement("return $N.stream()", "resultList")
-                    .endControlFlow();
-        }
-        return methodBuilder
-                .beginControlFlow("catch (final $T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
-                .endControlFlow()
-                .build();
-    }
-
-    private static CodeBlock allAutoCloseableResources(final SqlStatementConfiguration configuration) {
-        final CodeBlock autocloseResources = CodeBlock.builder()
-                .addStatement("final $T $N = $N.getConnection()", Connection.class, TypicalNames.CONNECTION,
-                        TypicalNames.DATA_SOURCE)
-                .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
-                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION,
-                        constantSqlStatementField(configuration))
-                .addStatement("final $T $N = $N.executeQuery()", ResultSet.class, TypicalNames.RESULT_SET,
+                .addParameters(configuration.getParameterSpecs())
+                .addCode(tryAllPreparedAutoCloseableResources(configuration))
+                .addCode(setParameters(configuration))
+                .beginControlFlow("try (final $T $N = $N.executeQuery())", ResultSet.class, TypicalNames.RESULT_SET,
                         TypicalNames.PREPARED_STATEMENT)
-                .build();
-        return autocloseResources;
+                .addCode(TypicalCodeBlocks.getMetaData())
+                .addCode(TypicalCodeBlocks.getColumnCount())
+                .addStatement("final $T $N = new $T($N, $N, $N)", resultState, "result", resultState,
+                        TypicalNames.RESULT_SET, TypicalNames.META_DATA, TypicalNames.COLUMN_COUNT)
+                .addStatement("final $T resultList = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS,
+                        "result")
+                .addStatement("return $N.stream()", "resultList")
+                .endControlFlow()
+                .endControlFlow()
+                .addCode(catchAndRethrow()).build();
     }
 
-    private static CodeBlock allPreparedAutoCloseableResources(final SqlStatementConfiguration configuration) {
-        final CodeBlock autocloseResources = CodeBlock.builder()
-                .addStatement("final $T $N = $N.getConnection()", Connection.class, TypicalNames.CONNECTION,
-                        TypicalNames.DATA_SOURCE)
-                .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
-                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION,
-                        constantSqlStatementField(configuration))
-                .build();
-        return autocloseResources;
-    }
-
-    private static MethodSpec streamQueryLazy(final SqlStatement sqlStatement) {
+    private MethodSpec streamQueryLazy(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
-        final ParameterizedTypeName map = ParameterizedTypeName.get(Map.class, String.class, Object.class);
         final ClassName spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
-        final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass, map);
-        final ClassName consumerClass = ClassName.get(Consumer.class);
-        final ParameterizedTypeName consumerType = ParameterizedTypeName.get(consumerClass,
-                WildcardTypeName.supertypeOf(map));
+        final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass,
+                TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
+        final ParameterizedTypeName consumerType = ParameterizedTypeName.get(TypicalTypes.CONSUMER,
+                WildcardTypeName.supertypeOf(TypicalTypes.MAP_OF_STRING_AND_OBJECTS));
         final TypeSpec spliterator = TypeSpec
                 .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
                 .addSuperinterface(superinterface)
-                .addMethod(MethodSpec.methodBuilder("tryAdvance")
-                        .addAnnotation(Override.class)
-                        .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                        .addParameter(consumerType, "action")
+                .addMethod(TypicalMethods.implementation("tryAdvance")
+                        .addParameter(TypicalParameters.parameter(consumerType, "action"))
                         .returns(boolean.class)
                         .beginControlFlow("try")
-                        .beginControlFlow("if ($N.next())", TypicalNames.RESULT_SET)
-                        .addStatement("$N.accept(resultSetToMap($N, $N, $N))", "action", TypicalNames.RESULT_SET,
-                                "metaData", "columnCount")
+                        .beginControlFlow("if ($N.next())", "result")
+                        .addStatement("$N.accept(resultSetToMap($N))", "action", "result")
                         .addStatement("return true")
                         .endControlFlow()
                         .addStatement("return false")
                         .endControlFlow()
-                        .beginControlFlow("catch (final $T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                        .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
-                        .endControlFlow()
+                        .addCode(catchAndRethrow())
                         .build())
                 .build();
         final TypeSpec closer = TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(Runnable.class)
-                .addMethod(MethodSpec.methodBuilder("run")
-                        .addAnnotation(Override.class)
-                        .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+                .addMethod(TypicalMethods.implementation("run")
                         .returns(void.class)
                         .beginControlFlow("try")
                         .addStatement("$N.close()", TypicalNames.RESULT_SET)
                         .addStatement("$N.close()", TypicalNames.PREPARED_STATEMENT)
                         .addStatement("$N.close()", TypicalNames.CONNECTION)
                         .endControlFlow()
-                        .beginControlFlow("catch ($T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                        .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
-                        .endControlFlow()
+                        .addCode(catchAndRethrow())
                         .build())
                 .build();
-        final Builder queryMethodBuilder = MethodSpec.methodBuilder(configuration.getStreamLazyName())
+        return MethodSpec.methodBuilder(configuration.getStreamLazyName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
                 .returns(TypicalTypes.STREAM_OF_MAPS)
                 .addParameters(configuration.getParameterSpecs())
                 .beginControlFlow("try")
-                .addStatement("final $T $N = $N.getConnection()", Connection.class, TypicalNames.CONNECTION,
-                        TypicalNames.DATA_SOURCE)
-                .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
-                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION,
-                        constantSqlStatementField(configuration));
-        if (configuration.getParameters() != null && !configuration.getParameters().isEmpty()) {
-            for (final SqlParameter parameter : configuration.getParameters()) {
-                queryMethodBuilder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
-                        constsantSqlStatementParametersField(configuration), parameter.getName())
-                        .addStatement("$N.setObject($N, $N)", TypicalNames.PREPARED_STATEMENT, TypicalNames.JDBC_INDEX,
-                                parameter.getName())
-                        .endControlFlow();
-            }
-        }
-        return queryMethodBuilder
-                .addStatement("final $T $N = $N.executeQuery()", ResultSet.class, TypicalNames.RESULT_SET,
-                        TypicalNames.PREPARED_STATEMENT)
-                .addStatement("final $T $N = $N.getMetaData()", ResultSetMetaData.class, TypicalNames.META_DATA,
-                        TypicalNames.RESULT_SET)
-                .addStatement("final int $N = $N.getColumnCount()", TypicalNames.COLUMN_COUNT, TypicalNames.META_DATA)
+                .addCode(allPreparedAutoCloseableResources(configuration))
+                .addCode(setParameters(configuration))
+                .addCode(TypicalCodeBlocks.executeQuery())
+                .addCode(TypicalCodeBlocks.getMetaData())
+                .addCode(TypicalCodeBlocks.getColumnCount())
+                .addStatement("final $T $N = new $T($N, $N, $N)", resultState, "result", resultState,
+                        TypicalNames.RESULT_SET, TypicalNames.META_DATA, TypicalNames.COLUMN_COUNT)
                 .addStatement("return $T.stream($L, false).onClose($L)",
                         StreamSupport.class, spliterator, closer)
                 .endControlFlow()
-                .beginControlFlow("catch ($T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
-                .endControlFlow()
+                .addCode(catchAndRethrow())
                 .build();
     }
 
-    private static MethodSpec resultSetToList() {
+    private MethodSpec resultSetToList() {
         return MethodSpec.methodBuilder("resultSetToList")
                 .addModifiers(TypicalModifiers.PRIVATE_METHOD)
-                .addParameter(ResultSet.class, TypicalNames.RESULT_SET, TypicalModifiers.PARAMETER)
+                .addParameter(TypicalParameters.parameter(resultState, "result"))
                 .addException(SQLException.class)
                 .returns(TypicalTypes.LIST_OF_MAPS)
-                .addStatement("final $T metaData = $N.getMetaData()", ResultSetMetaData.class, TypicalNames.RESULT_SET)
-                .addStatement("final int columnCount = $N.getColumnCount()", TypicalNames.META_DATA)
                 .addStatement("final $T list = new $T<>()", TypicalTypes.LIST_OF_MAPS, ArrayList.class)
-                .beginControlFlow("while ($N.next())", TypicalNames.RESULT_SET)
-                .addStatement("$N.add($N($N, $N, $N))", "list", "resultSetToMap", TypicalNames.RESULT_SET,
-                        TypicalNames.META_DATA, TypicalNames.COLUMN_COUNT)
+                .beginControlFlow("while ($N.next())", "result")
+                .addStatement("$N.add($N($N))", "list", "resultSetToMap", "result")
                 .endControlFlow()
                 .addStatement("return $N", "list")
                 .build();
     }
 
-    private static MethodSpec resultSetToMap() {
+    private MethodSpec resultSetToMap() {
         return MethodSpec.methodBuilder("resultSetToMap")
                 .addModifiers(TypicalModifiers.PRIVATE_METHOD)
-                .addParameter(ResultSet.class, TypicalNames.RESULT_SET, TypicalModifiers.PARAMETER)
-                .addParameter(ResultSetMetaData.class, TypicalNames.META_DATA, TypicalModifiers.PARAMETER)
-                .addParameter(int.class, TypicalNames.COLUMN_COUNT, TypicalModifiers.PARAMETER)
+                .addParameter(TypicalParameters.parameter(resultState, "result"))
                 .addException(SQLException.class)
                 .returns(TypicalTypes.MAP_OF_STRING_AND_OBJECTS)
-                .addStatement("final $T row = new $T<>($N)", TypicalTypes.MAP_OF_STRING_AND_OBJECTS,
-                        LinkedHashMap.class, TypicalNames.COLUMN_COUNT)
-                .beginControlFlow("for (int index = 1; index <= $N; index++)", TypicalNames.COLUMN_COUNT)
-                .addStatement("$N.put($N.getColumnName($N), $N.getObject($N))", "row", TypicalNames.META_DATA, "index",
-                        TypicalNames.RESULT_SET, "index")
+                .addStatement("final $T row = new $T<>($N.getColumnCount())", TypicalTypes.MAP_OF_STRING_AND_OBJECTS,
+                        LinkedHashMap.class, "result")
+                .beginControlFlow("for (int index = 1; index <= $N.getColumnCount(); index++)",
+                        "result")
+                .addStatement("$N.put($N.getColumnName($N), $N.getObject($N))", "row", "result", "index",
+                        "result", "index")
                 .endControlFlow()
                 .addStatement("return $N", "row")
                 .build();
     }
 
+    private static CodeBlock tryAllPreparedAutoCloseableResources(final SqlStatementConfiguration configuration) {
+        return CodeBlock.builder()
+                .beginControlFlow("try ($L)", allPreparedAutoCloseableResources(configuration))
+                .build();
+    }
+
+    private static CodeBlock allPreparedAutoCloseableResources(final SqlStatementConfiguration configuration) {
+        return CodeBlock.builder()
+                .addStatement("final $T $N = $N.getConnection()", Connection.class, TypicalNames.CONNECTION,
+                        TypicalNames.DATA_SOURCE)
+                .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
+                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION,
+                        constantSqlStatementField(configuration))
+                .build();
+    }
+
     private static String constantSqlStatementField(final SqlStatementConfiguration configuration) {
         return configuration.getName().replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
+    }
+
+    private static CodeBlock setParameters(final SqlStatementConfiguration configuration) {
+        return parameterAssignment(configuration, "$N.setObject($N, $N)",
+                parameterName -> new String[] { TypicalNames.PREPARED_STATEMENT,
+                        TypicalNames.JDBC_INDEX, parameterName });
+    }
+
+    private static CodeBlock setBatchParameters(final SqlStatementConfiguration configuration) {
+        return parameterAssignment(configuration, "$N.setObject($N, $N[$N])",
+                parameterName -> new String[] { TypicalNames.PREPARED_STATEMENT,
+                        TypicalNames.JDBC_INDEX, parameterName, TypicalNames.BATCH });
+    }
+
+    private static CodeBlock parameterAssignment(
+            final SqlStatementConfiguration configuration,
+            final String codeStatement,
+            final Function<String, Object[]> parameterSetter) {
+        final com.squareup.javapoet.CodeBlock.Builder builder = CodeBlock.builder();
+        final List<SqlParameter> parameters = configuration.getParameters();
+        if (parameters != null && !parameters.isEmpty()) {
+            for (final SqlParameter parameter : configuration.getParameters()) {
+                builder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
+                        constsantSqlStatementParametersField(configuration), parameter.getName())
+                        .add(CodeBlock.builder().addStatement(codeStatement,
+                                parameterSetter.apply(parameter.getName())).build())
+                        .endControlFlow();
+            }
+        }
+        return builder.build();
+    }
+
+    private static CodeBlock catchAndRethrow() {
+        return CodeBlock.builder()
+                .beginControlFlow("catch ($T $N)", SQLException.class, TypicalNames.EXCEPTION)
+                .addStatement("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION)
+                .endControlFlow()
+                .build();
     }
 
 }
