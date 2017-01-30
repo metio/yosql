@@ -177,12 +177,11 @@ public class SqlFileParser {
                     : actualRepository + runtimeConfig.getRepositoryNameSuffix();
             configuration.setRepository(fullRepositoryName);
         }
-        if (validateParameterConfig(source, parameterIndices, configuration)) {
+        if (parametersAreValid(source, parameterIndices, configuration)) {
             for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
                 final String parameterName = entry.getKey();
                 if (!configuration.getParameters().stream()
-                        .filter(parameter -> parameterName.equals(parameter.getName()))
-                        .findAny().isPresent()) {
+                        .anyMatch(parameter -> parameterName.equals(parameter.getName()))) {
                     final SqlParameter sqlParameter = new SqlParameter();
                     sqlParameter.setName(parameterName);
                     configuration.getParameters().add(sqlParameter);
@@ -206,7 +205,7 @@ public class SqlFileParser {
                 .anyMatch(fileName::startsWith);
     }
 
-    private boolean validateParameterConfig(
+    private boolean parametersAreValid(
             final SqlSourceFile source,
             final Map<String, List<Integer>> parameterIndices,
             final SqlStatementConfiguration configuration) {
