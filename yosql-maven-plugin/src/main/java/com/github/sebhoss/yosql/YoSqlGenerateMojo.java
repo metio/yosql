@@ -119,8 +119,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * <strong>io.reactivex.rxjava2:rxjava</strong> is a declared dependency,
      * default is <strong>true</strong>.
      */
-    @Parameter(required = true, defaultValue = "false")
-    private boolean                      generateRxJavaApi;
+    @Parameter(required = false)
+    private Boolean                      generateRxJavaApi;
 
     /**
      * The method name prefix to apply to all stream methods (default:
@@ -250,6 +250,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
         if (pluginErrors.hasErrors()) {
             pluginErrors.buildError("Error during code generation");
+        } else {
+            getLog().info("parsed statements: " + allStatements.size());
         }
     }
 
@@ -265,7 +267,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setGenerateBatchApi(generateBatchApi);
         runtimeConfig.setGenerateStreamEagerApi(generateEagerStreamApi);
         runtimeConfig.setGenerateStreamLazyApi(generateLazyStreamApi);
-        runtimeConfig.setGenerateRxJavaApi(generateRxJavaApi);
+        runtimeConfig.setGenerateRxJavaApi(generateRxJavaApi == null ? false : generateRxJavaApi);
         runtimeConfig.setLazyName(lazyName);
         runtimeConfig.setOutputBaseDirectory(outputBaseDirectory);
         runtimeConfig.setStreamPrefix(streamPrefix);
@@ -276,7 +278,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setAllowedReadPrefixes(allowedReadPrefixes.split(","));
         runtimeConfig.setAllowedWritePrefixes(allowedWritePrefixes.split(","));
         runtimeConfig.setValidateMethodNamePrefixes(validateMethodNamePrefixes);
-        if (!generateRxJavaApi) {
+        if (generateRxJavaApi == null) {
             runtimeConfig.setGenerateRxJavaApi(project.getDependencies().stream()
                     .filter(dependency -> "io.reactivex.rxjava2".equals(dependency.getGroupId()))
                     .anyMatch(dependency -> "rxjava".equals(dependency.getArtifactId())));
