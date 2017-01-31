@@ -196,18 +196,18 @@ public class CodeGenerator {
     private Iterable<MethodSpec> asMethods(final List<SqlStatement> sqlStatements) {
         final Stream<MethodSpec> constructors = Stream.of(constructor());
         final Stream<MethodSpec> singleQueries = sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isSingle())
+                .filter(statement -> statement.getConfiguration().isGenerateStandardApi())
                 .map(this::singleQuery);
         final Stream<MethodSpec> batchQueries = sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isBatch())
+                .filter(statement -> statement.getConfiguration().isGenerateBatchApi())
                 .filter(statement -> statement.getConfiguration().hasParameters())
                 .filter(statement -> SqlStatementType.WRITING == statement.getConfiguration().getType())
                 .map(CodeGenerator::batchQuery);
         final Stream<MethodSpec> streamQueries = Stream.concat(sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isStreamEager())
+                .filter(statement -> statement.getConfiguration().isGenerateStreamEagerApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                 .map(this::streamQueryEager), sqlStatements.stream()
-                        .filter(statement -> statement.getConfiguration().isStreamLazy())
+                        .filter(statement -> statement.getConfiguration().isGenerateStreamLazyApi())
                         .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                         .map(this::streamQueryLazy));
         final Stream<MethodSpec> rxJavaQueries = sqlStatements.stream()
@@ -243,13 +243,13 @@ public class CodeGenerator {
     }
 
     private boolean shouldBuildResultToMapHelperMethod(final SqlStatement statement) {
-        return statement.getConfiguration().isStreamLazy()
+        return statement.getConfiguration().isGenerateStreamLazyApi()
                 || shouldBuildResultToListHelperMethod(statement);
     }
 
     private boolean shouldBuildResultToListHelperMethod(final SqlStatement statement) {
-        return statement.getConfiguration().isStreamEager()
-                || statement.getConfiguration().isSingle()
+        return statement.getConfiguration().isGenerateStreamEagerApi()
+                || statement.getConfiguration().isGenerateStandardApi()
                         && SqlStatementType.READING == statement.getConfiguration().getType();
     }
 

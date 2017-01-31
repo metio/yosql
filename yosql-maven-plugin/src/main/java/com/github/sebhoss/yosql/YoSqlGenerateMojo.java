@@ -5,15 +5,19 @@ import static java.util.stream.Collectors.groupingBy;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -57,22 +61,40 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private File                         outputBaseDirectory;
 
     /**
-     * Controls whether the SQL statements should be compiled inlined (default:
-     * <strong>yes</strong>) or loaded at runtime.
+     * The package name for utilities (default: <strong>util</strong>).
      */
-    @Parameter(required = true, defaultValue = "true")
-    private boolean                      compileInline;
+    @Parameter(required = true, defaultValue = "util")
+    private String                       utilityPackageName;
 
     /**
-     * Controls whether the generated repositories should contain methods that
-     * execute a single query (default: <strong>true</strong>).
+     * The base package name for all generated classes.
+     */
+    @Parameter(required = true)
+    private String                       basePackageName;
+
+    /**
+     * Controls whether the SQL statements should be inlined in the generated
+     * repositories or loaded at runtime (default: <strong>inline</strong>).
+     * Other possible value is <strong>load</strong>.
+     */
+    @Parameter(required = true, defaultValue = "inline")
+    private String                       repositorySqlStatements;
+
+    /**
+     * Controls whether the generated repositories should contain
+     * <em>standard</em> methods that. Standard methods execute depending on the
+     * type of the query and could either be a single 'executeQuery' on a
+     * PreparedStatement in case of SQL SELECT statements or a single call to
+     * 'executeUpdate' for SQL UPDATE statements. (default:
+     * <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                      generateSingleQueryApi;
+    private boolean                      generateStandardApi;
 
     /**
      * Controls whether the generated repositories should contain batch methods
-     * (default: <strong>true</strong>).
+     * for SQL INSERT/UPDATE/DELETE statements. (default:
+     * <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
     private boolean                      generateBatchApi;
@@ -82,14 +104,14 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * <strong>""</strong>).
      */
     @Parameter(required = false, defaultValue = "")
-    private String                       batchPrefix;
+    private String                       methodBatchPrefix;
 
     /**
      * The method name suffix to apply to all batch methods (default:
      * <strong>"Batch"</strong>).
      */
     @Parameter(required = true, defaultValue = "Batch")
-    private String                       batchSuffix;
+    private String                       methodBatchSuffix;
 
     /**
      * Controls whether the generated repositories should offer eager
@@ -110,7 +132,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * {@link io.reactivex.Flowable}s as return types (default:
      * <strong>false</strong>). In case
      * <strong>io.reactivex.rxjava2:rxjava</strong> is a declared dependency,
-     * default is <strong>true</strong>.
+     * defaults to <strong>true</strong>.
      */
     @Parameter(required = false)
     private Boolean                      generateRxJavaApi;
@@ -120,54 +142,42 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * <strong>""</strong>).
      */
     @Parameter(required = false, defaultValue = "")
-    private String                       streamPrefix;
+    private String                       methodStreamPrefix;
 
     /**
      * The method name suffix to apply to all stream methods (default:
      * <strong>Stream</strong>).
      */
     @Parameter(required = true, defaultValue = "Stream")
-    private String                       streamSuffix;
+    private String                       methodStreamSuffix;
 
     /**
      * The method name prefix to apply to all RxJava methods (default:
      * <strong>""</strong>).
      */
     @Parameter(required = false, defaultValue = "")
-    private String                       reactivePrefix;
+    private String                       methodRxJavaPrefix;
 
     /**
      * The method name suffix to apply to all RxJava methods (default:
      * <strong>Flow</strong>).
      */
     @Parameter(required = true, defaultValue = "Flow")
-    private String                       reactiveSuffix;
+    private String                       methodRxJavaSuffix;
 
     /**
      * The method name extra to apply to all lazy stream methods (default:
      * <strong>Lazy</strong>).
      */
     @Parameter(required = true, defaultValue = "Lazy")
-    private String                       lazyName;
+    private String                       methodLazyName;
 
     /**
      * The method name extra to apply to all eager stream methods (default:
      * <strong>Eager</strong>).
      */
     @Parameter(required = true, defaultValue = "Eager")
-    private String                       eagerName;
-
-    /**
-     * The package name for utilities (default: <strong>util</strong>).
-     */
-    @Parameter(required = true, defaultValue = "util")
-    private String                       utilityPackageName;
-
-    /**
-     * The base package name for all generated classes.
-     */
-    @Parameter(required = true)
-    private String                       basePackageName;
+    private String                       methodEagerName;
 
     /**
      * The repository name suffix to use for all generated repositories
@@ -182,7 +192,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * merge"</strong>).
      */
     @Parameter(required = true, defaultValue = "update,insert,delete,create,write,add,remove,merge")
-    private String                       allowedWritePrefixes;
+    private String                       methodAllowedWritePrefixes;
 
     /**
      * The allow method name prefixes for writing methods (default:
@@ -190,7 +200,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * merge"</strong>).
      */
     @Parameter(required = true, defaultValue = "select,read,query,find")
-    private String                       allowedReadPrefixes;
+    private String                       methodAllowedReadPrefixes;
 
     /**
      * Controls whether method names are validated according to
@@ -198,7 +208,21 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * <strong>allowedWritePrefixes</strong> (default: <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                      validateMethodNamePrefixes;
+    private boolean                      methodValidateNamePrefixes;
+
+    /**
+     * The groupId to match for automatic RxJava detection (default:
+     * <strong>"io.reactivex.rxjava2"</strong>).
+     */
+    @Parameter(required = true, defaultValue = "io.reactivex.rxjava2")
+    private String                       rxJavaGroupId;
+
+    /**
+     * The artifactId to match for automatic RxJava detection (default:
+     * <strong>"rxjava"</strong>).
+     */
+    @Parameter(required = true, defaultValue = "rxjava")
+    private String                       rxJavaArtifactId;
 
     /**
      * Optional list of converters that are applied to input parameters.
@@ -248,35 +272,60 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     private void initializePluginConfig() {
         final Instant preInit = Instant.now();
-        runtimeConfig.setBatchPrefix(batchPrefix);
-        runtimeConfig.setBatchSuffix(batchSuffix);
-        runtimeConfig.setReactivePrefix(reactivePrefix);
-        runtimeConfig.setReactiveSuffix(reactiveSuffix);
+        runtimeConfig.setLogger(() -> getLog());
+
+        runtimeConfig.setOutputBaseDirectory(outputBaseDirectory);
+        runtimeConfig.setBasePackageName(basePackageName);
+        runtimeConfig.setUtilityPackageName(utilityPackageName);
+
         runtimeConfig.setRepositoryNameSuffix(repositoryNameSuffix);
-        runtimeConfig.setCompileInline(compileInline);
-        runtimeConfig.setEagerName(eagerName);
-        runtimeConfig.setGenerateSingleQueryApi(generateSingleQueryApi);
+        runtimeConfig.setRepositorySqlStatements(repositorySqlStatements);
+
+        runtimeConfig.setGenerateStandardApi(generateStandardApi);
         runtimeConfig.setGenerateBatchApi(generateBatchApi);
         runtimeConfig.setGenerateStreamEagerApi(generateEagerStreamApi);
         runtimeConfig.setGenerateStreamLazyApi(generateLazyStreamApi);
-        runtimeConfig.setGenerateRxJavaApi(generateRxJavaApi == null ? false : generateRxJavaApi);
-        runtimeConfig.setLazyName(lazyName);
-        runtimeConfig.setOutputBaseDirectory(outputBaseDirectory);
-        runtimeConfig.setStreamPrefix(streamPrefix);
-        runtimeConfig.setStreamSuffix(streamSuffix);
-        runtimeConfig.setUtilityPackageName(utilityPackageName);
-        runtimeConfig.setBasePackageName(basePackageName);
-        runtimeConfig.setLogger(() -> getLog());
-        runtimeConfig.setAllowedReadPrefixes(allowedReadPrefixes.split(","));
-        runtimeConfig.setAllowedWritePrefixes(allowedWritePrefixes.split(","));
-        runtimeConfig.setValidateMethodNamePrefixes(validateMethodNamePrefixes);
         if (generateRxJavaApi == null) {
-            runtimeConfig.setGenerateRxJavaApi(project.getDependencies().stream()
-                    .filter(dependency -> "io.reactivex.rxjava2".equals(dependency.getGroupId()))
-                    .anyMatch(dependency -> "rxjava".equals(dependency.getArtifactId())));
+            runtimeConfig.setGenerateRxJavaApi(project.getDependencies().stream().anyMatch(isRxJava2()));
+        } else {
+            runtimeConfig.setGenerateRxJavaApi(generateRxJavaApi);
         }
+
+        runtimeConfig.setMethodBatchPrefix(methodBatchPrefix);
+        runtimeConfig.setMethodBatchSuffix(methodBatchSuffix);
+        runtimeConfig.setMethodRxJavaPrefix(methodRxJavaPrefix);
+        runtimeConfig.setMethodRxJavaSuffix(methodRxJavaSuffix);
+        runtimeConfig.setMethodStreamPrefix(methodStreamPrefix);
+        runtimeConfig.setMethodStreamSuffix(methodStreamSuffix);
+        runtimeConfig.setMethodEagerName(methodEagerName);
+        runtimeConfig.setMethodLazyName(methodLazyName);
+
+        runtimeConfig.setAllowedReadPrefixes(allowedReadPrefixes());
+        runtimeConfig.setAllowedWritePrefixes(allowedWritePrefixes());
+        runtimeConfig.setValidateMethodNamePrefixes(methodValidateNamePrefixes);
+
         final Instant postInit = Instant.now();
         getLog().debug("Time spent initializing (ms): " + Duration.between(preInit, postInit).toMillis());
+    }
+
+    private String[] allowedWritePrefixes() {
+        return allowedPrefixes(methodAllowedWritePrefixes);
+    }
+
+    private String[] allowedReadPrefixes() {
+        return allowedPrefixes(methodAllowedReadPrefixes);
+    }
+
+    private String[] allowedPrefixes(final String input) {
+        return Arrays.stream(input.split(","))
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .toArray(String[]::new);
+    }
+
+    private Predicate<? super Dependency> isRxJava2() {
+        return dependency -> rxJavaGroupId.equals(dependency.getGroupId())
+                && rxJavaArtifactId.equals(dependency.getArtifactId());
     }
 
     private List<SqlStatement> parseAllSqlFiles() {

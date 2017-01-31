@@ -7,107 +7,68 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.github.sebhoss.yosql.generator.TypicalModifiers;
-import com.squareup.javapoet.ArrayTypeName;
-import com.squareup.javapoet.ClassName;
+import com.github.sebhoss.yosql.generator.TypicalParameters;
 import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeName;
 
 public class SqlStatementConfiguration {
 
     private String             name;
-    private boolean            single;
-    private boolean            singleOverwritten;
-    private boolean            batch;
-    private boolean            batchOverwritten;
-    private String             batchPrefix;
-    private String             batchSuffix;
-    private boolean            streamEager;
-    private boolean            streamEagerOverwritten;
-    private boolean            streamLazy;
-    private boolean            streamLazyOverwritten;
-    private String             streamPrefix;
-    private String             streamSuffix;
-    private String             reactivePrefix;
-    private String             reactiveSuffix;
+    private String             repository;
+    private SqlStatementType   type;
     private List<SqlParameter> parameters = new ArrayList<>();
     private String             resultConverter;
-    private String             repository;
-    private String             lazyName;
-    private String             eagerName;
-    private SqlStatementType   type;
+    private boolean            generateStandardApi;
+    private boolean            generateStandardApiOverwritten;
+    private boolean            generateBatchApi;
+    private boolean            generateBatchApiOverwritten;
     private boolean            generateRxJavaApi;
     private boolean            generateRxJavaApiOverwritten;
+    private boolean            generateStreamEagerApi;
+    private boolean            generateStreamEagerApiOverwritten;
+    private boolean            generateStreamLazyApi;
+    private boolean            generateStreamLazyApiOverwritten;
+    private String             methodBatchPrefix;
+    private String             methodBatchSuffix;
+    private String             methodStreamPrefix;
+    private String             methodStreamSuffix;
+    private String             methodRxJavaPrefix;
+    private String             methodRxJavaSuffix;
+    private String             methodLazyName;
+    private String             methodEagerName;
 
     public Iterable<ParameterSpec> getParameterSpecs() {
-        return Optional.ofNullable(parameters)
-                .map(params -> params.stream()
-                        .map(param -> ParameterSpec
-                                .builder(calculateTypeName(param), param.getName(), TypicalModifiers.PARAMETER)
-                                .build())
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+        return getParameterSpecs(TypicalParameters::ofSqlParameter);
     }
 
     public Iterable<ParameterSpec> getBatchParameterSpecs() {
+        return getParameterSpecs(TypicalParameters::batchOfSqlParameter);
+    }
+
+    private Iterable<ParameterSpec> getParameterSpecs(final Function<SqlParameter, ParameterSpec> asParameter) {
         return Optional.ofNullable(parameters)
                 .map(params -> params.stream()
-                        .map(param -> ParameterSpec
-                                .builder(calculateBatchTypeName(param), param.getName(), TypicalModifiers.PARAMETER)
-                                .build())
+                        .map(asParameter)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }
 
-    private TypeName calculateTypeName(final SqlParameter param) {
-        final String userSpecifiedType = param.getType();
-        if (userSpecifiedType.contains(".")) {
-            return ClassName.bestGuess(userSpecifiedType);
-        } else {
-            switch (userSpecifiedType) {
-            case "boolean":
-                return TypeName.BOOLEAN;
-            case "byte":
-                return TypeName.BYTE;
-            case "short":
-                return TypeName.SHORT;
-            case "long":
-                return TypeName.LONG;
-            case "char":
-                return TypeName.CHAR;
-            case "float":
-                return TypeName.FLOAT;
-            case "double":
-                return TypeName.DOUBLE;
-            case "int":
-                return TypeName.INT;
-            default:
-                return TypeName.OBJECT;
-            }
-        }
-    }
-
-    private TypeName calculateBatchTypeName(final SqlParameter param) {
-        final TypeName calculateTypeName = calculateTypeName(param);
-        return ArrayTypeName.of(calculateTypeName);
-    }
-
     public String getFlowableName() {
-        return join(reactivePrefix, name, reactiveSuffix);
+        return join(methodRxJavaPrefix, name, methodRxJavaSuffix);
     }
 
     public String getBatchName() {
-        return join(batchPrefix, name, batchSuffix);
+        return join(methodBatchPrefix, name, methodBatchSuffix);
     }
 
     public String getStreamLazyName() {
-        return join(streamPrefix, name, streamSuffix, lazyName);
+        return join(methodStreamPrefix, name, methodStreamSuffix, methodLazyName);
     }
 
     public String getStreamEagerName() {
-        return join(streamPrefix, name, streamSuffix, eagerName);
+        return join(methodStreamPrefix, name, methodStreamSuffix, methodEagerName);
     }
 
     private String join(final String... strings) {
@@ -128,136 +89,136 @@ public class SqlStatementConfiguration {
     }
 
     /**
-     * @return the single
+     * @return the generateStandardApi
      */
-    public boolean isSingle() {
-        return single;
+    public boolean isGenerateStandardApi() {
+        return generateStandardApi;
     }
 
     /**
-     * @param single
-     *            the single to set
+     * @param generateStandardApi
+     *            the generateStandardApi to set
      */
-    public void setSingle(final boolean single) {
-        this.single = single;
-        singleOverwritten = true;
+    public void setGenerateStandardApi(final boolean generateStandardApi) {
+        this.generateStandardApi = generateStandardApi;
+        generateStandardApiOverwritten = true;
     }
 
-    public boolean isBatch() {
-        return batch;
+    public boolean isGenerateBatchApi() {
+        return generateBatchApi;
     }
 
-    public void setBatch(final boolean batch) {
-        this.batch = batch;
-        batchOverwritten = true;
+    public void setGenerateBatchApi(final boolean generateBatchApi) {
+        this.generateBatchApi = generateBatchApi;
+        generateBatchApiOverwritten = true;
     }
 
-    public String getBatchPrefix() {
-        return batchPrefix;
+    public String getMethodBatchPrefix() {
+        return methodBatchPrefix;
     }
 
-    public void setBatchPrefix(final String batchPrefix) {
-        this.batchPrefix = batchPrefix;
+    public void setMethodBatchPrefix(final String methodBatchPrefix) {
+        this.methodBatchPrefix = methodBatchPrefix;
     }
 
     /**
-     * @return the batchSuffix
+     * @return the method batch suffix
      */
-    public String getBatchSuffix() {
-        return batchSuffix;
+    public String getMethodBatchSuffix() {
+        return methodBatchSuffix;
     }
 
     /**
-     * @param batchSuffix
-     *            the batchSuffix to set
+     * @param methodBatchSuffix
+     *            the method batch suffix to set
      */
-    public void setBatchSuffix(final String batchSuffix) {
-        this.batchSuffix = batchSuffix;
+    public void setMethodBatchSuffix(final String methodBatchSuffix) {
+        this.methodBatchSuffix = methodBatchSuffix;
     }
 
     /**
-     * @return the reactivePrefix
+     * @return the methodRxJavaPrefix
      */
-    public String getReactivePrefix() {
-        return reactivePrefix;
+    public String getMethodReactivePrefix() {
+        return methodRxJavaPrefix;
     }
 
     /**
-     * @param reactivePrefix
-     *            the reactivePrefix to set
+     * @param methodRxJavaPrefix
+     *            the methodRxJavaPrefix to set
      */
-    public void setReactivePrefix(final String reactivePrefix) {
-        this.reactivePrefix = reactivePrefix;
+    public void setMethodReactivePrefix(final String methodRxJavaPrefix) {
+        this.methodRxJavaPrefix = methodRxJavaPrefix;
     }
 
     /**
-     * @return the reactiveSuffix
+     * @return the methodRxJavaSuffix
      */
-    public String getReactiveSuffix() {
-        return reactiveSuffix;
+    public String getMethodReactiveSuffix() {
+        return methodRxJavaSuffix;
     }
 
     /**
-     * @param reactiveSuffix
-     *            the reactiveSuffix to set
+     * @param methodRxJavaSuffix
+     *            the methodRxJavaSuffix to set
      */
-    public void setReactiveSuffix(final String reactiveSuffix) {
-        this.reactiveSuffix = reactiveSuffix;
+    public void setMethodReactiveSuffix(final String methodRxJavaSuffix) {
+        this.methodRxJavaSuffix = methodRxJavaSuffix;
     }
 
     /**
      * @return the streamEager
      */
-    public boolean isStreamEager() {
-        return streamEager;
+    public boolean isGenerateStreamEagerApi() {
+        return generateStreamEagerApi;
     }
 
     /**
-     * @param streamEager
-     *            the streamEager to set
+     * @param generateStreamEagerApi
+     *            the generateStreamEagerApi to set
      */
-    public void setStreamEager(final boolean streamEager) {
-        this.streamEager = streamEager;
-        streamEagerOverwritten = true;
+    public void setGenerateStreamEagerApi(final boolean generateStreamEagerApi) {
+        this.generateStreamEagerApi = generateStreamEagerApi;
+        generateStreamEagerApiOverwritten = true;
     }
 
     /**
-     * @return the streamLazy
+     * @return the generateStreamLazyApi
      */
-    public boolean isStreamLazy() {
-        return streamLazy;
+    public boolean isGenerateStreamLazyApi() {
+        return generateStreamLazyApi;
     }
 
     /**
-     * @param streamLazy
-     *            the streamLazy to set
+     * @param generateStreamLazyApi
+     *            the generateStreamLazyApi to set
      */
-    public void setStreamLazy(final boolean streamLazy) {
-        this.streamLazy = streamLazy;
-        streamLazyOverwritten = true;
+    public void setGenerateStreamLazyApi(final boolean generateStreamLazyApi) {
+        this.generateStreamLazyApi = generateStreamLazyApi;
+        generateStreamLazyApiOverwritten = true;
     }
 
-    public String getStreamPrefix() {
-        return streamPrefix;
+    public String getMethodStreamPrefix() {
+        return methodStreamPrefix;
     }
 
-    public void setStreamPrefix(final String streamPrefix) {
-        this.streamPrefix = streamPrefix;
+    public void setMethodStreamPrefix(final String methodStreamPrefix) {
+        this.methodStreamPrefix = methodStreamPrefix;
     }
 
     /**
-     * @return the streamSuffix
+     * @return the methodStreamSuffix
      */
-    public String getStreamSuffix() {
-        return streamSuffix;
+    public String getMethodStreamSuffix() {
+        return methodStreamSuffix;
     }
 
     /**
-     * @param streamSuffix
-     *            the streamSuffix to set
+     * @param methodStreamSuffix
+     *            the methodStreamSuffix to set
      */
-    public void setStreamSuffix(final String streamSuffix) {
-        this.streamSuffix = streamSuffix;
+    public void setMethodStreamSuffix(final String methodStreamSuffix) {
+        this.methodStreamSuffix = methodStreamSuffix;
     }
 
     public List<SqlParameter> getParameters() {
@@ -285,61 +246,62 @@ public class SqlStatementConfiguration {
     }
 
     /**
-     * @return the lazyName
+     * @return the methodLazyName
      */
-    public String getLazyName() {
-        return lazyName;
+    public String getMethodLazyName() {
+        return methodLazyName;
     }
 
     /**
-     * @param lazyName
-     *            the lazyName to set
+     * @param methodLazyName
+     *            the methodLazyName to set
      */
-    public void setLazyName(final String lazyName) {
-        this.lazyName = lazyName;
+    public void setMethodLazyName(final String methodLazyName) {
+        this.methodLazyName = methodLazyName;
     }
 
     /**
-     * @return the eagerName
+     * @return the methodEagerName
      */
-    public String getEagerName() {
-        return eagerName;
+    public String getMethodEagerName() {
+        return methodEagerName;
     }
 
     /**
-     * @param eagerName
-     *            the eagerName to set
+     * @param methodEagerName
+     *            the methodEagerName to set
      */
-    public void setEagerName(final String eagerName) {
-        this.eagerName = eagerName;
+    public void setMethodEagerName(final String methodEagerName) {
+        this.methodEagerName = methodEagerName;
     }
 
     /**
      * @return <code>true</code> if 'single' was not overwritten.
      */
     protected boolean isUsingPluginSingleConfig() {
-        return !singleOverwritten;
+        return !generateStandardApiOverwritten;
     }
 
     /**
-     * @return <code>true</code> if 'batch' was not overwritten.
+     * @return <code>true</code> if 'generateBatchApi' was not overwritten and
+     *         the plugin configuration should be used.
      */
     protected boolean isUsingPluginBatchConfig() {
-        return !batchOverwritten;
+        return !generateBatchApiOverwritten;
     }
 
     /**
      * @return <code>true</code> if 'streamEager' was not overwritten.
      */
     protected boolean isUsingPluginStreamEagerConfig() {
-        return !streamEagerOverwritten;
+        return !generateStreamEagerApiOverwritten;
     }
 
     /**
      * @return <code>true</code> if 'streamLazy' was not overwritten.
      */
     protected boolean isUsingPluginStreamLazyConfig() {
-        return !streamLazyOverwritten;
+        return !generateStreamLazyApiOverwritten;
     }
 
     /**

@@ -19,23 +19,23 @@ public class SqlStatementConfigurationDefaultsTest {
 
     @Test
     public void shouldEnableBatchModeByDefault() {
-        Assert.assertTrue(configuration.isBatch());
+        Assert.assertTrue(configuration.isGenerateBatchApi());
     }
 
     @Test
     public void shouldUseBatchAsDefaultBatchPrefix() {
-        Assert.assertEquals("batch", configuration.getBatchPrefix());
+        Assert.assertEquals("batch", configuration.getMethodBatchPrefix());
     }
 
     @Test
     public void shouldEnableStreamModeByDefault() {
-        Assert.assertTrue(configuration.isStreamEager());
-        Assert.assertTrue(configuration.isStreamLazy());
+        Assert.assertTrue(configuration.isGenerateStreamEagerApi());
+        Assert.assertTrue(configuration.isGenerateStreamLazyApi());
     }
 
     @Test
     public void shouldUseStreamAsDefaultStreamPrefix() {
-        Assert.assertEquals("stream", configuration.getStreamPrefix());
+        Assert.assertEquals("stream", configuration.getMethodStreamPrefix());
     }
 
     @Test

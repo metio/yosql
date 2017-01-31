@@ -15,24 +15,24 @@ public class PluginRuntimeConfig {
 
     private FileSet       sqlFiles;
     private File          outputBaseDirectory;
-    private boolean       compileInline;
+    private String        repositorySqlStatements;
     private boolean       generateBatchApi;
     private boolean       generateRxJavaApi;
-    private String        batchPrefix;
+    private String        methodBatchPrefix;
     private boolean       generateStreamEagerApi;
     private boolean       generateStreamLazyApi;
-    private String        streamPrefix;
-    private String        streamSuffix;
-    private String        reactivePrefix;
-    private String        reactiveSuffix;
+    private String        methodStreamPrefix;
+    private String        methodStreamSuffix;
+    private String        methodRxJavaPrefix;
+    private String        methodRxJavaSuffix;
     private String        repositoryNameSuffix;
-    private String        lazyName;
-    private String        eagerName;
-    private boolean       generateSingleQueryApi;
+    private String        methodLazyName;
+    private String        methodEagerName;
+    private boolean       generateStandardApi;
     private String        utilityPackageName;
     private String        basePackageName;
     private Supplier<Log> logSupplier;
-    private String        batchSuffix;
+    private String        methodBatchSuffix;
     private String[]      allowedWritePrefixes;
     private String[]      allowedReadPrefixes;
     private boolean       validateMethodNamePrefixes;
@@ -53,18 +53,19 @@ public class PluginRuntimeConfig {
     }
 
     /**
-     * @return the compileInline
+     * @return How SQL statements are to be included in generated repositories.
      */
-    public boolean isCompileInline() {
-        return compileInline;
+    public String getRepositorySqlStatements() {
+        return repositorySqlStatements;
     }
 
     /**
-     * @param compileInline
-     *            the compileInline to set
+     * @param repositorySqlStatements
+     *            How SQL statements are to be included in generated
+     *            repositories.
      */
-    public void setCompileInline(final boolean compileInline) {
-        this.compileInline = compileInline;
+    public void setRepositorySqlStatements(final String repositorySqlStatements) {
+        this.repositorySqlStatements = repositorySqlStatements;
     }
 
     /**
@@ -98,78 +99,78 @@ public class PluginRuntimeConfig {
     }
 
     /**
-     * @return the batchPrefix
+     * @return the batch prefix
      */
-    public String getBatchPrefix() {
-        return batchPrefix;
+    public String getMethodBatchPrefix() {
+        return methodBatchPrefix;
     }
 
     /**
-     * @param batchPrefix
-     *            the batchPrefix to set
+     * @param methodBatchPrefix
+     *            the batch prefix to set
      */
-    public void setBatchPrefix(final String batchPrefix) {
-        this.batchPrefix = batchPrefix;
+    public void setMethodBatchPrefix(final String methodBatchPrefix) {
+        this.methodBatchPrefix = methodBatchPrefix;
     }
 
     /**
-     * @return the streamPrefix
+     * @return the method stream prefix
      */
-    public String getStreamPrefix() {
-        return streamPrefix;
+    public String getMethodStreamPrefix() {
+        return methodStreamPrefix;
     }
 
     /**
-     * @param streamPrefix
-     *            the streamPrefix to set
+     * @param methodStreamPrefix
+     *            the method stream prefix to set
      */
-    public void setStreamPrefix(final String streamPrefix) {
-        this.streamPrefix = streamPrefix;
+    public void setMethodStreamPrefix(final String methodStreamPrefix) {
+        this.methodStreamPrefix = methodStreamPrefix;
     }
 
     /**
-     * @return the streamSuffix
+     * @return the method stream suffix
      */
-    public String getStreamSuffix() {
-        return streamSuffix;
+    public String getMethodStreamSuffix() {
+        return methodStreamSuffix;
     }
 
     /**
-     * @param streamSuffix
-     *            the streamSuffix to set
+     * @param methodStreamSuffix
+     *            the method stream suffix to set
      */
-    public void setStreamSuffix(final String streamSuffix) {
-        this.streamSuffix = streamSuffix;
+    public void setMethodStreamSuffix(final String methodStreamSuffix) {
+        this.methodStreamSuffix = methodStreamSuffix;
     }
 
     /**
-     * @return the reactivePrefix
+     * @return the RxJava prefix
      */
-    public String getReactivePrefix() {
-        return reactivePrefix;
+    public String getMethodRxJavaPrefix() {
+        return methodRxJavaPrefix;
     }
 
     /**
-     * @param reactivePrefix
-     *            the reactivePrefix to set
+     * @param methodRxJavaPrefix
+     *            the RxJava prefix to set
      */
-    public void setReactivePrefix(final String reactivePrefix) {
-        this.reactivePrefix = reactivePrefix;
+    public void setMethodRxJavaPrefix(final String methodRxJavaPrefix) {
+        this.methodRxJavaPrefix = methodRxJavaPrefix;
     }
 
     /**
-     * @return the reactiveSuffix
+     * @return the method RxJava suffix
      */
-    public String getReactiveSuffix() {
-        return reactiveSuffix;
+    public String getMethodRxJavaSuffix() {
+        return methodRxJavaSuffix;
     }
 
     /**
-     * @param reactiveSuffix
-     *            the reactiveSuffix to set
+     * @param methodRxJavaSuffix
+     *            the method RxJava suffix to set
      */
-    public void setReactiveSuffix(final String reactiveSuffix) {
-        this.reactiveSuffix = reactiveSuffix;
+    public void setMethodRxJavaSuffix(final String methodRxJavaSuffix) {
+        this.methodRxJavaSuffix = methodRxJavaSuffix;
     }
 
     /**
@@ -218,33 +219,33 @@ public class PluginRuntimeConfig {
     }
 
     /**
-     * @return the lazyName
+     * @return the method lazy name
      */
-    public String getLazyName() {
-        return lazyName;
+    public String getMethodLazyName() {
+        return methodLazyName;
     }
 
     /**
-     * @param lazyName
-     *            the lazyName to set
+     * @param methodLazyName
+     *            the method lazy name to set
      */
-    public void setLazyName(final String lazyName) {
-        this.lazyName = lazyName;
+    public void setMethodLazyName(final String methodLazyName) {
+        this.methodLazyName = methodLazyName;
     }
 
     /**
-     * @return the eagerName
+     * @return the method eager name
      */
-    public String getEagerName() {
-        return eagerName;
+    public String getMethodEagerName() {
+        return methodEagerName;
     }
 
     /**
-     * @param eagerName
-     *            the eagerName to set
+     * @param methodEagerName
+     *            the method eager name to set
      */
-    public void setEagerName(final String eagerName) {
-        this.eagerName = eagerName;
+    public void setMethodEagerName(final String methodEagerName) {
+        this.methodEagerName = methodEagerName;
     }
 
     /**
@@ -254,15 +255,15 @@ public class PluginRuntimeConfig {
         return sqlFiles;
     }
 
-    public void setGenerateSingleQueryApi(final boolean generateSingleQueryApi) {
-        this.generateSingleQueryApi = generateSingleQueryApi;
+    public void setGenerateStandardApi(final boolean generateStandardApi) {
+        this.generateStandardApi = generateStandardApi;
     }
 
     /**
-     * @return the generateSingleQueryApi
+     * @return the generateStandardApi
      */
-    public boolean isGenerateSingleQueryApi() {
-        return generateSingleQueryApi;
+    public boolean isGenerateStandardApi() {
+        return generateStandardApi;
     }
 
     /**
@@ -304,12 +305,12 @@ public class PluginRuntimeConfig {
         return logSupplier.get();
     }
 
-    public void setBatchSuffix(final String batchSuffix) {
-        this.batchSuffix = batchSuffix;
+    public void setMethodBatchSuffix(final String methodBatchSuffix) {
+        this.methodBatchSuffix = methodBatchSuffix;
     }
 
-    public String getBatchSuffix() {
-        return batchSuffix;
+    public String getMethodBatchSuffix() {
+        return methodBatchSuffix;
     }
 
     /**
