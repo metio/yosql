@@ -207,7 +207,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private List<ConverterConfiguration> converters;
 
     @Parameter(property = "project", defaultValue = "${project}", readonly = true, required = true)
-    protected MavenProject               project;
+    private MavenProject                 project;
 
     private final PluginErrors           pluginErrors;
     private final PluginPreconditions    preconditions;
