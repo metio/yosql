@@ -28,9 +28,6 @@
         <groupId>com.github.sebhoss.yosql</groupId>
         <artifactId>yosql-maven-plugin</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <configuration>
-          <basePackageName>com.example.persistence</basePackageName>
-        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -67,9 +67,10 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                       utilityPackageName;
 
     /**
-     * The base package name for all generated classes.
+     * The base package name for all generated classes (default:
+     * <strong>com.example.persistence</strong>).
      */
-    @Parameter(required = true)
+    @Parameter(required = true, defaultValue = "com.example.persistence")
     private String                       basePackageName;
 
     /**
