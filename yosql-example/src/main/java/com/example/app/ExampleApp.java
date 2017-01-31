@@ -21,60 +21,75 @@ public class ExampleApp {
             dataSource.setURL("jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1");
 
             final SchemaRepository schemaRepository = new SchemaRepository(dataSource);
-            schemaRepository.createCompaniesTable();
-
             final CompanyRepository companyRepository = new CompanyRepository(dataSource);
-            companyRepository.insertCompany(123, "test");
-            companyRepository.insertCompanyBatch(new int[] { 456, 789 }, new String[] { "two", "three" });
-            companyRepository.insertCompanyBatch(new int[] { 91, 32 }, new String[] { "more", "other" });
-            companyRepository.insertCompany(47, "test");
-            companyRepository.insertCompanyBatch(new int[] { 56, 78 }, new String[] { "abc", "def" });
-            companyRepository.insertCompanyBatch(new int[] { 612, 768 }, new String[] { "123", "234" });
 
-            System.out.println("queryAllCompanies----------------------");
-            timed(() -> companyRepository.queryAllCompanies().forEach(System.out::println));
+            initializeDatabase(schemaRepository, companyRepository);
 
-            System.out.println("streamEagerQueryAllCompanies----------------------");
-            timed(() -> companyRepository.queryAllCompaniesStreamEager().forEach(System.out::println));
-
-            System.out.println("streamLazyQueryAllCompanies----------------------");
-            timed(() -> {
-                try (Stream<Map<String, Object>> companies = companyRepository.queryAllCompaniesStreamLazy()) {
-                    companies.forEach(System.out::println);
-                }
-            });
-
-            System.out.println("findCompanyByName----------------------");
-            timed(() -> companyRepository.findCompanyByName("test").forEach(System.out::println));
-
-            System.out.println("findCompanies----------------------");
-            timed(() -> companyRepository.findCompanies(30, 95).forEach(System.out::println));
-
-            System.out.println("streamLazyFindCompanies----------------------");
-            timed(() -> {
-                try (Stream<Map<String, Object>> companies = companyRepository.findCompaniesStreamLazy(112, 999)) {
-                    companies.forEach(System.out::println);
-                }
-            });
-
-            System.out.println("findCompanies-fromIterable----------------------");
-            timed(() -> Flowable.fromIterable(companyRepository.findCompanies(30, 50))
-                    .forEach(System.out::println));
-
-            System.out.println("flowQueryAllCompanies----------------------");
-            timed(() -> companyRepository.queryAllCompaniesFlow()
-                    .forEach(System.out::println));
-
-            System.out.println("flowFindCompanies----------------------");
-            timed(() -> companyRepository.findCompaniesFlow(20, 120)
-                    .forEach(System.out::println));
-
-            System.out.println("flowFindCompanyByName----------------------");
-            timed(() -> companyRepository.findCompanyByNameFlow("test")
-                    .forEach(System.out::println));
+            standardTests(companyRepository);
+            streamTests(companyRepository);
+            rxJavaTests(companyRepository);
         } else if (Arrays.stream(arguments).anyMatch("psql"::equals)) {
             // start psql first
         }
+    }
+
+    private static void initializeDatabase(final SchemaRepository schemaRepository,
+            final CompanyRepository companyRepository) {
+        schemaRepository.createCompaniesTable();
+        companyRepository.insertCompany(123, "test");
+        companyRepository.insertCompanyBatch(new int[] { 456, 789 }, new String[] { "two", "three" });
+        companyRepository.insertCompanyBatch(new int[] { 91, 32 }, new String[] { "more", "other" });
+        companyRepository.insertCompany(47, "test");
+        companyRepository.insertCompanyBatch(new int[] { 56, 78 }, new String[] { "abc", "def" });
+        companyRepository.insertCompanyBatch(new int[] { 612, 768 }, new String[] { "123", "234" });
+    }
+
+    private static void standardTests(final CompanyRepository companyRepository) {
+        System.out.println("queryAllCompanies----------------------");
+        timed(() -> companyRepository.queryAllCompanies().forEach(System.out::println));
+
+        System.out.println("findCompanyByName----------------------");
+        timed(() -> companyRepository.findCompanyByName("test").forEach(System.out::println));
+
+        System.out.println("findCompanies----------------------");
+        timed(() -> companyRepository.findCompanies(30, 95).forEach(System.out::println));
+    }
+
+    private static void streamTests(final CompanyRepository companyRepository) {
+        System.out.println("streamEagerQueryAllCompanies----------------------");
+        timed(() -> companyRepository.queryAllCompaniesStreamEager().forEach(System.out::println));
+
+        System.out.println("streamLazyQueryAllCompanies----------------------");
+        timed(() -> {
+            try (Stream<Map<String, Object>> companies = companyRepository.queryAllCompaniesStreamLazy()) {
+                companies.forEach(System.out::println);
+            }
+        });
+
+        System.out.println("streamLazyFindCompanies----------------------");
+        timed(() -> {
+            try (Stream<Map<String, Object>> companies = companyRepository.findCompaniesStreamLazy(112, 999)) {
+                companies.forEach(System.out::println);
+            }
+        });
+    }
+
+    private static void rxJavaTests(final CompanyRepository companyRepository) {
+        System.out.println("findCompanies-fromIterable----------------------");
+        timed(() -> Flowable.fromIterable(companyRepository.findCompanies(30, 50))
+                .forEach(System.out::println));
+
+        System.out.println("flowQueryAllCompanies----------------------");
+        timed(() -> companyRepository.queryAllCompaniesFlow()
+                .forEach(System.out::println));
+
+        System.out.println("flowFindCompanies----------------------");
+        timed(() -> companyRepository.findCompaniesFlow(20, 120)
+                .forEach(System.out::println));
+
+        System.out.println("flowFindCompanyByName----------------------");
+        timed(() -> companyRepository.findCompanyByNameFlow("test")
+                .forEach(System.out::println));
     }
 
     private static void timed(final Runnable runnable) {
