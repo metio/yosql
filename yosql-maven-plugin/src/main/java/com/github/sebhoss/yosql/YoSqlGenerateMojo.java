@@ -27,28 +27,18 @@ import org.apache.maven.project.MavenProject;
  * TODO:
  * <ul>
  * <li>Factory/Spring/CDI/Guice(?)</li>
- * <li>Single/multiple execution</li>
- * <li>: folder structure could equal package structure + simple class name of
- * Repository as last folder</li>
- * <li>: SQL files in that last folder are methods of the Repository</li>
- * <li>: configure default suffix (e.g. Repository) in POM -> shorter folder
- * names</li>
- * <li>Plugin config < execution config < yaml config</li>
- * <li>file name as default for method/statement name</li>
  * <li>compile statement inline vs. load at runtime (from a different module)
  * </li>
  * <li>generate converter for result</li>
  * <li>configure global converters in POM</li>
  * <li>error log w/ full SQL statement (+ parameter substitution), so users can
  * write that into a different log file.</li>
- * <li>batch api (enabled by default, disabled w/ POM config + YAML per SQL
- * file)</li>
- * <li>java.util.Stream api (enabled by default, disabled w/ POM config + YAML
- * per SQL file)</li>
  * <li>allow to overwrite error log messages through fixed location of
  * .properties file</li>
  * <li>: provide default.properties for error logging (part of this project),
  * allow to overwrite those defaults w/ user-project settings</li>
+ * <li>sql file/repository layout: directory as repo with single statement files
+ * or multi statement files as repo.</li>
  * </ul>
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = false)
