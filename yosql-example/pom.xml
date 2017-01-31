@@ -9,7 +9,7 @@
 
   <artifactId>yosql-example</artifactId>
   <packaging>jar</packaging>
-  
+
   <dependencies>
       <dependency>
         <groupId>com.h2database</groupId>
