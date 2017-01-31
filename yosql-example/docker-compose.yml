@@ -7,3 +7,12 @@ services:
       - POSTGRES_PASSWORD=example
     ports:
       - "50000:5432"
+  mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=example
+      - MYSQL_USER=example
+      - MYSQL_PASSWORD=example
+      - MYSQL_ROOT_PASSWORD=example
+    ports:
+      - "51000:3306"

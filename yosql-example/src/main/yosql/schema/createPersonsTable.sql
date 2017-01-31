@@ -2,6 +2,6 @@
 --
 CREATE TABLE persons (
     id INTEGER,
-    name VARCHAR
+    name VARCHAR(50)
 )
 ;

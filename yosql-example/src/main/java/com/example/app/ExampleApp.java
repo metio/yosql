@@ -14,12 +14,13 @@ import org.postgresql.ds.PGPoolingDataSource;
 import com.example.persistence.CompanyRepository;
 import com.example.persistence.PersonRepository;
 import com.example.persistence.SchemaRepository;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import io.reactivex.Flowable;
 
 public class ExampleApp {
 
-    public static final void main(final String[] arguments) {
+    public static final void main(final String[] arguments) throws Exception {
         if (match(arguments, "h2")) {
             final JdbcDataSource dataSource = new JdbcDataSource();
             dataSource.setURL("jdbc:h2:mem:example;DB_CLOSE_DELAY=-1");
@@ -33,9 +34,17 @@ public class ExampleApp {
             dataSource.setDatabaseName("example");
             dataSource.setUser("example");
             dataSource.setPassword("example");
-            dataSource.setMaxConnections(2);
+            dataSource.setMaxConnections(1);
             runTests(arguments, dataSource);
             // stop psql with 'docker-compose stop postgres'
+        } else if (match(arguments, "mysql")) {
+            // start mysql first with 'docker-compose up -d mysql'
+            final MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
+            dataSource.setURL("jdbc:mysql://localhost:51000/example");
+            dataSource.setUser("example");
+            dataSource.setPassword("example");
+            runTests(arguments, dataSource);
+            // stop mysql with 'docker-compose stop mysql'
         }
     }
 
@@ -73,8 +82,12 @@ public class ExampleApp {
     }
 
     private static void createSchema(final SchemaRepository schemaRepository) {
-        schemaRepository.createCompaniesTable();
-        schemaRepository.createPersonsTable();
+        try {
+            schemaRepository.createCompaniesTable();
+            schemaRepository.createPersonsTable();
+        } catch (final RuntimeException exception) {
+            // do nothing
+        }
     }
 
     private static void writeCompanies(final CompanyRepository companyRepository) {
