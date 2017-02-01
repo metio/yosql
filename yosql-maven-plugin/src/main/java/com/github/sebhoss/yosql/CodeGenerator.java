@@ -431,7 +431,7 @@ public class CodeGenerator {
                         .addParameter(TypicalParameters.parameter(consumerType, TypicalNames.ACTION))
                         .returns(boolean.class)
                         .addCode(startTryBlock())
-                        .beginControlFlow("if ($N.next())", TypicalNames.RESULT)
+                        .beginControlFlow("if ($N.next())", TypicalNames.RESULT_SET)
                         .addStatement("$N.accept(resultSetToMap($N))", TypicalNames.ACTION, TypicalNames.RESULT)
                         .addStatement("return $L", true)
                         .endControlFlow()
