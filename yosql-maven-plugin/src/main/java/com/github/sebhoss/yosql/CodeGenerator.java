@@ -265,7 +265,7 @@ public class CodeGenerator {
                     .addCode(TypicalCodeBlocks.getMetaData())
                     .addCode(TypicalCodeBlocks.getColumnCount())
                     .addCode(TypicalCodeBlocks.newResultState(resultState))
-                    .addStatement("return resultSetToList($N)", "result")
+                    .addStatement("return resultSetToList($N)", TypicalNames.RESULT)
                     .endControlFlow()
                     .endControlFlow()
                     .addCode(maybeCatchAndRethrow(configuration))
@@ -389,9 +389,9 @@ public class CodeGenerator {
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(TypicalCodeBlocks.newResultState(resultState))
-                .addStatement("final $T resultList = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS,
+                .addStatement("final $T $N = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS, TypicalNames.RESULT_LIST,
                         TypicalNames.RESULT)
-                .addStatement("return $N.stream()", "resultList")
+                .addStatement("return $N.stream()", TypicalNames.RESULT_LIST)
                 .endControlFlow()
                 .endControlFlow()
                 .addCode(maybeCatchAndRethrow(configuration))
@@ -424,7 +424,7 @@ public class CodeGenerator {
                 TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
         final ParameterizedTypeName consumerType = ParameterizedTypeName.get(TypicalTypes.CONSUMER,
                 WildcardTypeName.supertypeOf(TypicalTypes.MAP_OF_STRING_AND_OBJECTS));
-        final TypeSpec spliterator = TypeSpec
+        return TypeSpec
                 .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
                 .addSuperinterface(superinterface)
                 .addMethod(TypicalMethods.implementation("tryAdvance")
@@ -440,11 +440,10 @@ public class CodeGenerator {
                         .addCode(catchAndRethrow())
                         .build())
                 .build();
-        return spliterator;
     }
 
     private TypeSpec lazyStreamCloser() {
-        final TypeSpec closer = TypeSpec.anonymousClassBuilder("")
+        return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(Runnable.class)
                 .addMethod(TypicalMethods.implementation("run")
                         .returns(void.class)
@@ -456,7 +455,6 @@ public class CodeGenerator {
                         .addCode(catchAndRethrow())
                         .build())
                 .build();
-        return closer;
     }
 
     private MethodSpec resultSetToList() {
