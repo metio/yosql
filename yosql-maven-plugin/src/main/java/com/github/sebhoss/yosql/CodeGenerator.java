@@ -73,9 +73,13 @@ public class CodeGenerator {
     public void generateUtilities(final List<SqlStatement> allStatements) {
         if (allStatements.stream()
                 .map(SqlStatement::getConfiguration)
+                .anyMatch(config -> SqlStatementType.READING == config.getType())) {
+            resultStateGenerator.generateResultStateClass();
+        }
+        if (allStatements.stream()
+                .map(SqlStatement::getConfiguration)
                 .filter(config -> SqlStatementType.READING == config.getType())
                 .anyMatch(config -> config.isGenerateRxJavaApi())) {
-            resultStateGenerator.generateResultStateClass();
             flowStateGenerator.generateFlowStateClass();
         }
     }
