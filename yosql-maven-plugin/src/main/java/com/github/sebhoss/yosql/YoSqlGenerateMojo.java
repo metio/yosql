@@ -239,6 +239,14 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                       sqlFilesCharset;
 
     /**
+     * The target Java source version (default: <strong>1.8</strong>). A value
+     * lower than 1.8 disables the generation of the 'java.util.Stream' based
+     * API.
+     */
+    @Parameter(required = true, defaultValue = "1.8")
+    private String                       java;
+
+    /**
      * Optional list of converters that are applied to input parameters.
      */
     @Parameter(required = false)
@@ -286,6 +294,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     private void initializePluginConfig() {
         final Instant preInit = Instant.now();
+        final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1, java.length()));
+
         runtimeConfig.setLogger(() -> getLog());
 
         runtimeConfig.setOutputBaseDirectory(outputBaseDirectory);
@@ -299,8 +309,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
         runtimeConfig.setGenerateStandardApi(generateStandardApi);
         runtimeConfig.setGenerateBatchApi(generateBatchApi);
-        runtimeConfig.setGenerateStreamEagerApi(generateEagerStreamApi);
-        runtimeConfig.setGenerateStreamLazyApi(generateLazyStreamApi);
+        runtimeConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? generateEagerStreamApi : false);
+        runtimeConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? generateLazyStreamApi : false);
         if (generateRxJavaApi == null) {
             runtimeConfig.setGenerateRxJavaApi(project.getDependencies().stream().anyMatch(isRxJava2()));
         } else {
