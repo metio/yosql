@@ -232,8 +232,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                       sqlStatementSeparator;
 
     /**
-     * The separator to split SQL statements inside a single .sql file (default:
-     * <strong>utf-8</strong>).
+     * The charset to use while reading .sql files (default:
+     * <strong>UTF-8</strong>).
      */
     @Parameter(required = true, defaultValue = "UTF-8")
     private String                       sqlFilesCharset;
