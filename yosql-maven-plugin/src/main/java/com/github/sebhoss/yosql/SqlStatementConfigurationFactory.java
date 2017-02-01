@@ -30,11 +30,12 @@ public class SqlStatementConfigurationFactory {
     public SqlStatementConfiguration createStatementConfiguration(
             final SqlSourceFile source,
             final String yaml,
-            final Map<String, List<Integer>> parameterIndices) {
+            final Map<String, List<Integer>> parameterIndices,
+            final int statementInFile) {
         final SqlStatementConfiguration configuration = loadOrCreateConfig(yaml);
         final String fileName = getFileNameWithoutExtension(source.getPathToSqlFile());
 
-        name(configuration, fileName);
+        name(configuration, fileName, statementInFile);
         batchNamePrefix(configuration);
         batchNameSuffix(configuration);
         streamNamePrefix(configuration);
@@ -58,9 +59,9 @@ public class SqlStatementConfigurationFactory {
         return configuration;
     }
 
-    private void name(final SqlStatementConfiguration configuration, final String fileName) {
+    private void name(final SqlStatementConfiguration configuration, final String fileName, final int statementInFile) {
         if (nullOrEmpty(configuration.getName())) {
-            configuration.setName(fileName);
+            configuration.setName(statementInFile == 0 ? fileName : fileName + statementInFile);
         }
     }
 

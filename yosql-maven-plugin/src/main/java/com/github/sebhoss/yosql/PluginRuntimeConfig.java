@@ -36,6 +36,8 @@ public class PluginRuntimeConfig {
     private String[]      allowedWritePrefixes;
     private String[]      allowedReadPrefixes;
     private boolean       validateMethodNamePrefixes;
+    private String        sqlStatementSeparator;
+    private String        sqlFilesCharset;
 
     /**
      * @return the outputBaseDirectory
@@ -357,4 +359,21 @@ public class PluginRuntimeConfig {
     public void setValidateMethodNamePrefixes(final boolean validateMethodNamePrefixes) {
         this.validateMethodNamePrefixes = validateMethodNamePrefixes;
     }
+
+    public String getSqlStatementSeparator() {
+        return sqlStatementSeparator;
+    }
+
+    public void setSqlStatementSeparator(final String sqlStatementSeperator) {
+        sqlStatementSeparator = sqlStatementSeperator;
+    }
+
+    public String getSqlFilesCharset() {
+        return sqlFilesCharset;
+    }
+
+    public void setSqlFilesCharset(final String sqlFilesCharset) {
+        this.sqlFilesCharset = sqlFilesCharset;
+    }
+
 }

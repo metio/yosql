@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -226,6 +225,20 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                       rxJavaArtifactId;
 
     /**
+     * The separator to split SQL statements inside a single .sql file (default:
+     * <strong>";"</strong>).
+     */
+    @Parameter(required = true, defaultValue = ";")
+    private String                       sqlStatementSeparator;
+
+    /**
+     * The separator to split SQL statements inside a single .sql file (default:
+     * <strong>utf-8</strong>).
+     */
+    @Parameter(required = true, defaultValue = "UTF-8")
+    private String                       sqlFilesCharset;
+
+    /**
      * Optional list of converters that are applied to input parameters.
      */
     @Parameter(required = false)
@@ -278,6 +291,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setOutputBaseDirectory(outputBaseDirectory);
         runtimeConfig.setBasePackageName(basePackageName);
         runtimeConfig.setUtilityPackageName(utilityPackageName);
+        runtimeConfig.setSqlStatementSeparator(sqlStatementSeparator);
+        runtimeConfig.setSqlFilesCharset(sqlFilesCharset);
 
         runtimeConfig.setRepositoryNameSuffix(repositoryNameSuffix);
         runtimeConfig.setRepositorySqlStatements(repositorySqlStatements);
@@ -334,7 +349,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         final FileSet filesToParse = Optional.ofNullable(sqlFiles)
                 .orElse(YoSqlConfiguration.defaultSqlFileSet(project.getBasedir()));
         final List<SqlStatement> allStatements = fileSetResolver.resolveFiles(filesToParse)
-                .map(sqlFileParser::parse)
+                .flatMap(sqlFileParser::parse)
                 .sorted(Comparator.comparing(statement -> statement.getConfiguration().getName()))
                 .collect(Collectors.toList());
         final Instant postParse = Instant.now();
@@ -346,12 +361,11 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     private void generateRepositories(final List<SqlStatement> allStatements) {
         final Instant preGenerate = Instant.now();
-        final Map<String, List<SqlStatement>> repositories = allStatements.stream()
-                .collect(groupingBy(SqlStatement::getRepository));
-        repositories.forEach(codeGenerator::generateRepository);
+        allStatements.stream()
+                .collect(groupingBy(SqlStatement::getRepository))
+                .forEach(codeGenerator::generateRepository);
         final Instant postGenerate = Instant.now();
-        getLog().debug(String.format("Time spent generating [%s] repositories (ms): %s",
-                repositories.size(),
+        getLog().debug(String.format("Time spent generating repositories (ms): %s",
                 Duration.between(preGenerate, postGenerate).toMillis()));
     }
 
