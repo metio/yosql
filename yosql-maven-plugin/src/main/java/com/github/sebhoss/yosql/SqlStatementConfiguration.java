@@ -38,6 +38,8 @@ public class SqlStatementConfiguration {
     private String             methodRxJavaSuffix;
     private String             methodLazyName;
     private String             methodEagerName;
+    private boolean            methodCatchAndRethrow;
+    private boolean            methodCatchAndRethrowOverwritten;
 
     public Iterable<ParameterSpec> getParameterSpecs() {
         return getParameterSpecs(TypicalParameters::ofSqlParameter);
@@ -347,6 +349,29 @@ public class SqlStatementConfiguration {
     public void setGenerateRxJavaApi(final boolean generateRxJavaApi) {
         this.generateRxJavaApi = generateRxJavaApi;
         generateRxJavaApiOverwritten = true;
+    }
+
+    /**
+     * @return the methodCatchAndRethrow
+     */
+    public boolean isMethodCatchAndRethrow() {
+        return methodCatchAndRethrow;
+    }
+
+    /**
+     * @param methodCatchAndRethrow
+     *            the methodCatchAndRethrow to set
+     */
+    public void setMethodCatchAndRethrow(final boolean methodCatchAndRethrow) {
+        this.methodCatchAndRethrow = methodCatchAndRethrow;
+        methodCatchAndRethrowOverwritten = true;
+    }
+
+    /**
+     * @return <code>true</code> if 'streamLazy' was not overwritten.
+     */
+    protected boolean isUsingPluginCatchAndRethrowConfig() {
+        return !methodCatchAndRethrowOverwritten;
     }
 
 }

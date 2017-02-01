@@ -53,6 +53,7 @@ public class SqlStatementConfigurationFactory {
         streamEager(configuration);
         streamLazy(configuration);
         rxJava(configuration);
+        catchAndRethrow(configuration);
         repository(source, configuration);
         parameters(source, parameterIndices, configuration);
 
@@ -189,6 +190,12 @@ public class SqlStatementConfigurationFactory {
             } else {
                 configuration.setGenerateRxJavaApi(runtimeConfig.isGenerateRxJavaApi());
             }
+        }
+    }
+
+    private void catchAndRethrow(final SqlStatementConfiguration configuration) {
+        if (configuration.isUsingPluginCatchAndRethrowConfig()) {
+            configuration.setMethodCatchAndRethrow(runtimeConfig.isMethodCatchAndRethrow());
         }
     }
 

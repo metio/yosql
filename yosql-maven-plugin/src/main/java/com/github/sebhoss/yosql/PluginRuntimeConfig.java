@@ -390,7 +390,7 @@ public class PluginRuntimeConfig {
         this.methodCatchAndRethrow = methodCatchAndRethrow;
     }
 
-    public boolean getMethodCatchAndRethrow() {
+    public boolean isMethodCatchAndRethrow() {
         return methodCatchAndRethrow;
     }
 

@@ -21,5 +21,9 @@ public class TypicalNames {
     public static final String INDICES                   = "indices";
     public static final String JDBC_INDEX                = "jdbcIndex";
     public static final String BATCH                     = "batch";
+    public static final String ROW                       = "row";
+    public static final String RESULT                    = "result";
+    public static final String LIST                      = "list";
+    public static final String ACTION                    = "action";
 
 }
