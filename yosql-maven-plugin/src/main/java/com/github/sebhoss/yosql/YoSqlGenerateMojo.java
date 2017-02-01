@@ -247,6 +247,24 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                       java;
 
     /**
+     * The logging API to use (default: <strong>none</strong> which does not
+     * generate any logging statements at all). Possible other values are "jdk",
+     * "log4j", "slf4j".
+     */
+    @Parameter(required = true, defaultValue = "none")
+    private String                       loggingApi;
+
+    /**
+     * Whether generated methods should catch SqlExceptions and rethrow them as
+     * RuntimeExceptions (default: <strong>true</strong>). If set to
+     * <strong>false</strong>, this will cause methods to declare that they
+     * throw a checked exception which in turn will force all its users to
+     * handle the exception.
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private boolean                      methodCatchAndRethrow;
+
+    /**
      * Optional list of converters that are applied to input parameters.
      */
     @Parameter(required = false)
@@ -316,6 +334,14 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         } else {
             runtimeConfig.setGenerateRxJavaApi(generateRxJavaApi);
         }
+        if (loggingApi != null) {
+            try {
+                runtimeConfig.setLoggingApi(LoggingAPI.valueOf(loggingApi.toUpperCase()));
+            } catch (final IllegalArgumentException exception) {
+                runtimeConfig.setLoggingApi(LoggingAPI.NONE);
+                pluginErrors.add(exception);
+            }
+        }
 
         runtimeConfig.setMethodBatchPrefix(methodBatchPrefix);
         runtimeConfig.setMethodBatchSuffix(methodBatchSuffix);
@@ -325,6 +351,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setMethodStreamSuffix(methodStreamSuffix);
         runtimeConfig.setMethodEagerName(methodEagerName);
         runtimeConfig.setMethodLazyName(methodLazyName);
+        runtimeConfig.setMethodCatchAndRethrow(methodCatchAndRethrow);
 
         runtimeConfig.setAllowedReadPrefixes(allowedReadPrefixes());
         runtimeConfig.setAllowedWritePrefixes(allowedWritePrefixes());

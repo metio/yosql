@@ -38,6 +38,8 @@ public class PluginRuntimeConfig {
     private boolean       validateMethodNamePrefixes;
     private String        sqlStatementSeparator;
     private String        sqlFilesCharset;
+    private LoggingAPI    loggingApi;
+    private boolean       methodCatchAndRethrow;
 
     /**
      * @return the outputBaseDirectory
@@ -374,6 +376,22 @@ public class PluginRuntimeConfig {
 
     public void setSqlFilesCharset(final String sqlFilesCharset) {
         this.sqlFilesCharset = sqlFilesCharset;
+    }
+
+    public void setLoggingApi(final LoggingAPI loggingApi) {
+        this.loggingApi = loggingApi;
+    }
+
+    public LoggingAPI getLoggingApi() {
+        return loggingApi;
+    }
+
+    public void setMethodCatchAndRethrow(final boolean methodCatchAndRethrow) {
+        this.methodCatchAndRethrow = methodCatchAndRethrow;
+    }
+
+    public boolean getMethodCatchAndRethrow() {
+        return methodCatchAndRethrow;
     }
 
 }
