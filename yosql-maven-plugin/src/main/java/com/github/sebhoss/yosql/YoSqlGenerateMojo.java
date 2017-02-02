@@ -26,6 +26,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import com.github.sebhoss.yosql.generator.FlowStateGenerator;
+import com.github.sebhoss.yosql.generator.ResultStateGenerator;
+import com.squareup.javapoet.ClassName;
+
 /**
  * TODO:
  * <ul>
@@ -248,11 +252,11 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                       java;
 
     /**
-     * The logging API to use (default: <strong>none</strong> which does not
-     * generate any logging statements at all). Possible other values are "jdk",
-     * "log4j", "slf4j".
+     * The logging API to use (default: <strong>auto</strong> which picks the
+     * logging API based on the projects dependencies). Possible other values
+     * are "jdk", "log4j", "slf4j" and "none".
      */
-    @Parameter(required = true, defaultValue = "none")
+    @Parameter(required = true, defaultValue = "auto")
     private String                       loggingApi;
 
     /**
@@ -311,6 +315,38 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         }
     }
 
+    private List<SqlStatement> parseAllSqlFiles() {
+        final Instant preParse = Instant.now();
+        final FileSet filesToParse = Optional.ofNullable(sqlFiles)
+                .orElse(YoSqlConfiguration.defaultSqlFileSet(project.getBasedir()));
+        final List<SqlStatement> allStatements = fileSetResolver.resolveFiles(filesToParse)
+                .flatMap(sqlFileParser::parse)
+                .sorted(Comparator.comparing(statement -> statement.getConfiguration().getName()))
+                .collect(Collectors.toList());
+        final Instant postParse = Instant.now();
+        getLog().debug(String.format("Time spent parsing [%s] statements (ms): %s",
+                allStatements.size(), Duration.between(preParse, postParse).toMillis()));
+        return allStatements;
+    }
+
+    private void generateRepositories(final List<SqlStatement> allStatements) {
+        final Instant preGenerate = Instant.now();
+        allStatements.stream()
+                .collect(groupingBy(SqlStatement::getRepository))
+                .forEach(codeGenerator::generateRepository);
+        final Instant postGenerate = Instant.now();
+        getLog().debug(String.format("Time spent generating repositories (ms): %s",
+                Duration.between(preGenerate, postGenerate).toMillis()));
+    }
+
+    private void generateUtilities(final List<SqlStatement> allStatements) {
+        final Instant preGenerate = Instant.now();
+        codeGenerator.generateUtilities(allStatements);
+        final Instant postGenerate = Instant.now();
+        getLog().debug("Time spent generating utilities (ms): "
+                + Duration.between(preGenerate, postGenerate).toMillis());
+    }
+
     private void initializePluginConfig() {
         final Instant preInit = Instant.now();
         final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1, java.length()));
@@ -335,7 +371,15 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         } else {
             runtimeConfig.setGenerateRxJavaApi(generateRxJavaApi);
         }
-        if (loggingApi != null) {
+        if (loggingApi == null || "auto".equals(loggingApi.toLowerCase())) {
+            if (project.getDependencies().stream().anyMatch(isLog4J())) {
+                runtimeConfig.setLoggingApi(LoggingAPI.LOG4J);
+            } else if (project.getDependencies().stream().anyMatch(isSlf4j())) {
+                runtimeConfig.setLoggingApi(LoggingAPI.SLF4J);
+            } else {
+                runtimeConfig.setLoggingApi(LoggingAPI.JDK);
+            }
+        } else {
             try {
                 runtimeConfig.setLoggingApi(LoggingAPI.valueOf(loggingApi.toUpperCase()));
             } catch (final IllegalArgumentException exception) {
@@ -357,6 +401,10 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setAllowedReadPrefixes(allowedReadPrefixes());
         runtimeConfig.setAllowedWritePrefixes(allowedWritePrefixes());
         runtimeConfig.setValidateMethodNamePrefixes(methodValidateNamePrefixes);
+
+        final String utilPackage = basePackageName + "." + utilityPackageName;
+        runtimeConfig.setFlowStateClass(ClassName.get(utilPackage, FlowStateGenerator.FLOW_STATE_CLASS_NAME));
+        runtimeConfig.setResultStateClass(ClassName.get(utilPackage, ResultStateGenerator.RESULT_STATE_CLASS_NAME));
 
         final Instant postInit = Instant.now();
         getLog().debug("Time spent initializing (ms): " + Duration.between(preInit, postInit).toMillis());
@@ -382,37 +430,14 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 && rxJavaArtifactId.equals(dependency.getArtifactId());
     }
 
-    private List<SqlStatement> parseAllSqlFiles() {
-        final Instant preParse = Instant.now();
-        final FileSet filesToParse = Optional.ofNullable(sqlFiles)
-                .orElse(YoSqlConfiguration.defaultSqlFileSet(project.getBasedir()));
-        final List<SqlStatement> allStatements = fileSetResolver.resolveFiles(filesToParse)
-                .flatMap(sqlFileParser::parse)
-                .sorted(Comparator.comparing(statement -> statement.getConfiguration().getName()))
-                .collect(Collectors.toList());
-        final Instant postParse = Instant.now();
-        getLog().debug(String.format("Time spent parsing [%s] statements (ms): %s",
-                allStatements.size(),
-                Duration.between(preParse, postParse).toMillis()));
-        return allStatements;
+    private Predicate<? super Dependency> isLog4J() {
+        return dependency -> rxJavaGroupId.equals(dependency.getGroupId())
+                && rxJavaArtifactId.equals(dependency.getArtifactId());
     }
 
-    private void generateRepositories(final List<SqlStatement> allStatements) {
-        final Instant preGenerate = Instant.now();
-        allStatements.stream()
-                .collect(groupingBy(SqlStatement::getRepository))
-                .forEach(codeGenerator::generateRepository);
-        final Instant postGenerate = Instant.now();
-        getLog().debug(String.format("Time spent generating repositories (ms): %s",
-                Duration.between(preGenerate, postGenerate).toMillis()));
-    }
-
-    private void generateUtilities(final List<SqlStatement> allStatements) {
-        final Instant preGenerate = Instant.now();
-        codeGenerator.generateUtilities(allStatements);
-        final Instant postGenerate = Instant.now();
-        getLog().debug("Time spent generating utilities (ms): "
-                + Duration.between(preGenerate, postGenerate).toMillis());
+    private Predicate<? super Dependency> isSlf4j() {
+        return dependency -> rxJavaGroupId.equals(dependency.getGroupId())
+                && rxJavaArtifactId.equals(dependency.getArtifactId());
     }
 
 }

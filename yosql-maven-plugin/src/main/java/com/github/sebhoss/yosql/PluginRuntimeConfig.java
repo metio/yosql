@@ -9,6 +9,8 @@ import javax.inject.Singleton;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.logging.Log;
 
+import com.squareup.javapoet.ClassName;
+
 @Named
 @Singleton
 public class PluginRuntimeConfig {
@@ -40,6 +42,8 @@ public class PluginRuntimeConfig {
     private String        sqlFilesCharset;
     private LoggingAPI    loggingApi;
     private boolean       methodCatchAndRethrow;
+    private ClassName     flowStateClass;
+    private ClassName     resultStateClass;
 
     /**
      * @return the outputBaseDirectory
@@ -392,6 +396,22 @@ public class PluginRuntimeConfig {
 
     public boolean isMethodCatchAndRethrow() {
         return methodCatchAndRethrow;
+    }
+
+    public void setFlowStateClass(final ClassName flowStateClass) {
+        this.flowStateClass = flowStateClass;
+    }
+
+    public ClassName getFlowStateClass() {
+        return flowStateClass;
+    }
+
+    public void setResultStateClass(final ClassName resultStateClass) {
+        this.resultStateClass = resultStateClass;
+    }
+
+    public ClassName getResultStateClass() {
+        return resultStateClass;
     }
 
 }

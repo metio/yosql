@@ -40,6 +40,7 @@ public class SqlStatementConfiguration {
     private String             methodEagerName;
     private boolean            methodCatchAndRethrow;
     private boolean            methodCatchAndRethrowOverwritten;
+    private String             vendor;
 
     public Iterable<ParameterSpec> getParameterSpecs() {
         return getParameterSpecs(TypicalParameters::ofSqlParameter);
@@ -372,6 +373,52 @@ public class SqlStatementConfiguration {
      */
     protected boolean isUsingPluginCatchAndRethrowConfig() {
         return !methodCatchAndRethrowOverwritten;
+    }
+
+    /**
+     * @return the vendor
+     */
+    public String getVendor() {
+        return vendor;
+    }
+
+    /**
+     * @param vendor
+     *            the vendor to set
+     */
+    public void setVendor(final String vendor) {
+        this.vendor = vendor;
+    }
+
+    public void merge(final SqlStatement statement) {
+        final SqlStatementConfiguration other = statement.getConfiguration();
+        name = name != null ? name : other.name;
+        repository = repository != null ? repository : other.repository;
+        type = type != null ? type : other.type;
+        parameters = parameters != null && !parameters.isEmpty() ? parameters : other.parameters;
+        resultConverter = resultConverter != null ? resultConverter : other.resultConverter;
+        generateStandardApi = generateStandardApi || other.generateStandardApi;
+        generateStandardApiOverwritten = generateStandardApiOverwritten || other.generateStandardApiOverwritten;
+        generateBatchApi = generateBatchApi || other.generateBatchApi;
+        generateBatchApiOverwritten = generateBatchApiOverwritten || other.generateBatchApiOverwritten;
+        generateRxJavaApi = generateRxJavaApi || other.generateRxJavaApi;
+        generateRxJavaApiOverwritten = generateRxJavaApiOverwritten || other.generateRxJavaApiOverwritten;
+        generateStreamEagerApi = generateStreamEagerApi || other.generateStreamEagerApi;
+        generateStreamEagerApiOverwritten = generateStreamEagerApiOverwritten
+                || other.generateStreamEagerApiOverwritten;
+        generateStreamLazyApi = generateStreamLazyApi || other.generateStreamLazyApi;
+        generateStreamLazyApiOverwritten = generateStreamLazyApiOverwritten || other.generateStreamLazyApiOverwritten;
+        methodBatchPrefix = methodBatchPrefix != null ? methodBatchPrefix : other.methodBatchPrefix;
+        methodBatchSuffix = methodBatchSuffix != null ? methodBatchSuffix : other.methodBatchSuffix;
+        methodStreamPrefix = methodStreamPrefix != null ? methodStreamPrefix : other.methodStreamPrefix;
+        methodStreamSuffix = methodStreamSuffix != null ? methodStreamSuffix : other.methodStreamSuffix;
+        methodRxJavaPrefix = methodRxJavaPrefix != null ? methodRxJavaPrefix : other.methodRxJavaPrefix;
+        methodRxJavaSuffix = methodRxJavaSuffix != null ? methodRxJavaSuffix : other.methodRxJavaSuffix;
+        methodLazyName = methodLazyName != null ? methodLazyName : other.methodLazyName;
+        methodEagerName = methodEagerName != null ? methodEagerName : other.methodEagerName;
+        methodCatchAndRethrow = methodCatchAndRethrow || other.methodCatchAndRethrow;
+        methodCatchAndRethrowOverwritten = methodCatchAndRethrowOverwritten || other.methodCatchAndRethrowOverwritten;
+        vendor = vendor != null ? vendor : other.vendor;
     }
 
 }

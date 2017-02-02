@@ -6,8 +6,10 @@ public enum LoggingAPI {
 
     JDK,
 
-    LOG4j,
+    LOG4J,
 
-    SLF4J
+    SLF4J,
+
+    AUTO
 
 }

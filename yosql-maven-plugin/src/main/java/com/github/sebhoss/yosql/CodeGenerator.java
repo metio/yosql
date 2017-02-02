@@ -53,20 +53,20 @@ public class CodeGenerator {
     private final FlowStateGenerator   flowStateGenerator;
     private final PluginRuntimeConfig  runtimeConfig;
     private final ResultStateGenerator resultStateGenerator;
-
-    private ClassName                  flowState;
-    private ClassName                  resultState;
+    private final TypicalCodeBlocks    codeBlocks;
 
     @Inject
     public CodeGenerator(
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
             final PluginErrors pluginErrors,
-            final PluginRuntimeConfig runtimeConfig) {
+            final PluginRuntimeConfig runtimeConfig,
+            final TypicalCodeBlocks codeBlocks) {
         this.flowStateGenerator = flowStateGenerator;
         this.resultStateGenerator = resultStateGenerator;
         this.pluginErrors = pluginErrors;
         this.runtimeConfig = runtimeConfig;
+        this.codeBlocks = codeBlocks;
     }
 
     public void generateUtilities(final List<SqlStatement> allStatements) {
@@ -93,11 +93,6 @@ public class CodeGenerator {
      */
     public void generateRepository(final String repositoryName,
             final List<SqlStatement> sqlStatements) {
-        flowState = ClassName.get(runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
-                FlowStateGenerator.FLOW_STATE_CLASS_NAME);
-        resultState = ClassName.get(runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
-                ResultStateGenerator.RESULT_STATE_CLASS_NAME);
-
         final String className = getClassName(repositoryName);
         final String packageName = getPackageName(repositoryName);
         final TypeSpec repository = TypeSpec.classBuilder(className)
@@ -127,7 +122,8 @@ public class CodeGenerator {
                     config.getParameters().stream()
                             .filter(SqlParameter::hasIndices)
                             .forEach(param -> builder.addStatement("$N.put($S, $L)",
-                                    TypicalFields.constantSqlStatementParametersFieldName(config), param.getName(),
+                                    TypicalFields.constantSqlStatementParameterParameterIndexFieldName(config),
+                                    param.getName(),
                                     indexArray(param)));
                 });
         return builder.build();
@@ -163,7 +159,7 @@ public class CodeGenerator {
                         .map(CodeGenerator::asConstantSqlField),
                 sqlStatements.stream()
                         .filter(stmt -> !stmt.getConfiguration().getParameters().isEmpty())
-                        .map(CodeGenerator::asConstantSqlNamedParamsField));
+                        .map(CodeGenerator::asConstantSqlParameterIndexField));
         final Stream<FieldSpec> fields = Stream.of(asDataSourceField());
         return Stream.concat(constants, fields)
                 .collect(Collectors.toList());
@@ -173,14 +169,18 @@ public class CodeGenerator {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         return FieldSpec.builder(String.class, TypicalFields.constantSqlStatementFieldName(configuration))
                 .addModifiers(TypicalModifiers.CONSTANT_FIELD)
-                .initializer("$S", sqlStatement.getStatement().replaceAll(SqlFileParser.PATTERN.pattern(), "?"))
+                .initializer("$S", replaceNamedParameters(sqlStatement))
                 .build();
     }
 
-    private static FieldSpec asConstantSqlNamedParamsField(final SqlStatement sqlStatement) {
+    private static String replaceNamedParameters(final SqlStatement sqlStatement) {
+        return sqlStatement.getStatement().replaceAll(SqlFileParser.PATTERN.pattern(), "?");
+    }
+
+    private static FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         return FieldSpec.builder(TypicalTypes.MAP_OF_STRING_AND_NUMBERS,
-                TypicalFields.constantSqlStatementParametersFieldName(configuration))
+                TypicalFields.constantSqlStatementParameterParameterIndexFieldName(configuration))
                 .addModifiers(TypicalModifiers.CONSTANT_FIELD)
                 .initializer("new $T<>($L)", HashMap.class, sqlStatement.getConfiguration().getParameters().size())
                 .build();
@@ -193,45 +193,52 @@ public class CodeGenerator {
     }
 
     private Iterable<MethodSpec> asMethods(final List<SqlStatement> sqlStatements) {
-        final Stream<MethodSpec> constructors = Stream.of(constructor());
-        final Stream<MethodSpec> singleQueries = sqlStatements.stream()
+        final List<MethodSpec> methods = new ArrayList<>(sqlStatements.size());
+
+        methods.add(constructor());
+        sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isGenerateStandardApi())
-                .map(this::singleQuery);
-        final Stream<MethodSpec> batchQueries = sqlStatements.stream()
+                .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
+                .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
+                .forEach((methodName, statements) -> methods.add(standardReadApi(methodName, statements)));
+        sqlStatements.stream()
+                .filter(statement -> statement.getConfiguration().isGenerateStandardApi())
+                .filter(statement -> SqlStatementType.WRITING == statement.getConfiguration().getType())
+                .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
+                .forEach((methodName, statements) -> methods.add(standardWriteApi(methodName, statements)));
+        sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isGenerateBatchApi())
                 .filter(statement -> statement.getConfiguration().hasParameters())
                 .filter(statement -> SqlStatementType.WRITING == statement.getConfiguration().getType())
-                .map(this::batchQuery);
-        final Stream<MethodSpec> streamQueries = Stream.concat(sqlStatements.stream()
+                .map(this::batchQuery)
+                .forEach(methods::add);
+        sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isGenerateStreamEagerApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
-                .map(this::streamQueryEager), sqlStatements.stream()
-                        .filter(statement -> statement.getConfiguration().isGenerateStreamLazyApi())
-                        .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
-                        .map(this::streamQueryLazy));
-        final Stream<MethodSpec> rxJavaQueries = sqlStatements.stream()
+                .map(this::streamEagerApi)
+                .forEach(methods::add);
+        sqlStatements.stream()
+                .filter(statement -> statement.getConfiguration().isGenerateStreamLazyApi())
+                .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
+                .map(this::streamLazyApi)
+                .forEach(methods::add);
+        sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isGenerateRxJavaApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
-                .map(this::flowWithBackpressure);
-
+                .map(this::rxJava2)
+                .forEach(methods::add);
         sqlStatements.stream()
-                .anyMatch(this::shouldBuildResultToMapHelperMethod);
+                .filter(statement -> shouldBuildResultToListHelperMethod(statement))
+                .map(statement -> resultSetToList())
+                .limit(1)
+                .forEach(methods::add);
+        sqlStatements.stream()
+                .filter(statement -> shouldBuildResultToMapHelperMethod(statement))
+                .map(statement -> resultSetToMap())
+                .limit(1)
+                .forEach(methods::add);
 
-        final Stream<MethodSpec> utilities = Stream.concat(
-                sqlStatements.stream()
-                        .filter(statement -> shouldBuildResultToListHelperMethod(statement))
-                        .map(statement -> resultSetToList())
-                        .limit(1),
-                sqlStatements.stream()
-                        .filter(statement -> shouldBuildResultToMapHelperMethod(statement))
-                        .map(statement -> resultSetToMap())
-                        .limit(1));
-        return Stream.concat(constructors,
-                Stream.concat(singleQueries,
-                        Stream.concat(batchQueries,
-                                Stream.concat(streamQueries,
-                                        Stream.concat(rxJavaQueries, utilities)))))
-                .collect(Collectors.toList());
+        return methods;
     }
 
     private static MethodSpec constructor() {
@@ -252,44 +259,52 @@ public class CodeGenerator {
                         && SqlStatementType.READING == statement.getConfiguration().getType();
     }
 
-    private MethodSpec singleQuery(final SqlStatement sqlStatement) {
-        final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
-        if (SqlStatementType.READING == configuration.getType()) {
-            return TypicalMethods.publicMethod(configuration.getName())
-                    .returns(TypicalTypes.LIST_OF_MAPS)
-                    .addParameters(configuration.getParameterSpecs())
-                    .addExceptions(sqlException(configuration))
-                    .addCode(tryConnectAndPrepare(configuration))
-                    .addCode(setParameters(configuration))
-                    .addCode(tryExecute())
-                    .addCode(TypicalCodeBlocks.getMetaData())
-                    .addCode(TypicalCodeBlocks.getColumnCount())
-                    .addCode(TypicalCodeBlocks.newResultState(resultState))
-                    .addStatement("return resultSetToList($N)", TypicalNames.RESULT)
-                    .endControlFlow()
-                    .endControlFlow()
-                    .addCode(maybeCatchAndRethrow(configuration))
-                    .build();
-        } else {
-            return TypicalMethods.publicMethod(configuration.getName())
-                    .returns(int.class)
-                    .addExceptions(sqlException(configuration))
-                    .addParameters(configuration.getParameterSpecs())
-                    .addCode(tryConnectAndPrepare(configuration))
-                    .addCode(setParameters(configuration))
-                    .addStatement("return $N.executeUpdate()", TypicalNames.PREPARED_STATEMENT)
-                    .endControlFlow()
-                    .addCode(maybeCatchAndRethrow(configuration))
-                    .build();
-        }
+    private MethodSpec standardReadApi(final String methodName, final List<SqlStatement> sqlStatements) {
+        final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        return TypicalMethods.publicMethod(methodName)
+                .returns(TypicalTypes.LIST_OF_MAPS)
+                .addParameters(configuration.getParameterSpecs())
+                .addExceptions(sqlException(configuration))
+                .addCode(tryConnectAndPrepare(configuration))
+                // .addCode(tryConnectAndPrepare(configuration))
+                .addCode(setParameters(configuration))
+                .addCode(tryExecute())
+                .addCode(TypicalCodeBlocks.getMetaData())
+                .addCode(TypicalCodeBlocks.getColumnCount())
+                .addCode(codeBlocks.newResultState())
+                .addStatement("return resultSetToList($N)", TypicalNames.RESULT)
+                .endControlFlow()
+                .endControlFlow()
+                .addCode(maybeCatchAndRethrow(configuration))
+                .build();
     }
 
-    private MethodSpec flowWithBackpressure(final SqlStatement sqlStatement) {
+    private MethodSpec standardWriteApi(final String methodName, final List<SqlStatement> sqlStatements) {
+        final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        return TypicalMethods.publicMethod(configuration.getName())
+                .returns(int.class)
+                .addExceptions(sqlException(configuration))
+                .addParameters(configuration.getParameterSpecs())
+                .addCode(tryConnectAndPrepare(configuration))
+                .addCode(setParameters(configuration))
+                .addStatement("return $N.executeUpdate()", TypicalNames.PREPARED_STATEMENT)
+                .endControlFlow()
+                .addCode(maybeCatchAndRethrow(configuration))
+                .build();
+    }
+
+    private SqlStatementConfiguration mergeConfigs(final List<SqlStatement> sqlStatements) {
+        final SqlStatementConfiguration configuration = new SqlStatementConfiguration();
+        sqlStatements.forEach(configuration::merge);
+        return configuration;
+    }
+
+    private MethodSpec rxJava2(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
 
-        final TypeSpec initialState = createFlowState(configuration, flowState);
-        final TypeSpec generator = createFlowGenerator(flowState);
-        final TypeSpec disposer = createFlowDisposer(flowState);
+        final TypeSpec initialState = createFlowState(configuration);
+        final TypeSpec generator = createFlowGenerator();
+        final TypeSpec disposer = createFlowDisposer();
 
         return TypicalMethods.publicMethod(configuration.getFlowableName())
                 .returns(TypicalTypes.FLOWABLE_OF_MAPS)
@@ -298,13 +313,14 @@ public class CodeGenerator {
                 .build();
     }
 
-    private TypeSpec createFlowState(final SqlStatementConfiguration configuration, final ClassName flowState) {
+    private TypeSpec createFlowState(final SqlStatementConfiguration configuration) {
         final ClassName callable = ClassName.get(Callable.class);
-        final ParameterizedTypeName initialStateType = ParameterizedTypeName.get(callable, flowState);
+        final ParameterizedTypeName initialStateType = ParameterizedTypeName.get(callable,
+                runtimeConfig.getFlowStateClass());
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(initialStateType)
                 .addMethod(TypicalMethods.implementation("call")
-                        .returns(flowState)
+                        .returns(runtimeConfig.getFlowStateClass())
                         .addException(Exception.class)
                         .addCode(TypicalCodeBlocks.getConnection())
                         .addCode(TypicalCodeBlocks.prepareStatement(configuration))
@@ -312,22 +328,24 @@ public class CodeGenerator {
                         .addCode(TypicalCodeBlocks.executeQuery())
                         .addCode(TypicalCodeBlocks.getMetaData())
                         .addCode(TypicalCodeBlocks.getColumnCount())
-                        .addCode(TypicalCodeBlocks.newFlowState(flowState))
+                        .addCode(codeBlocks.newFlowState())
                         .build())
                 .build();
     }
 
-    private TypeSpec createFlowGenerator(final ClassName flowState) {
+    private TypeSpec createFlowGenerator() {
         final ClassName biConsumer = ClassName.get(io.reactivex.functions.BiConsumer.class);
         final ClassName rawEmitter = ClassName.get(Emitter.class);
         final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter,
                 TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
-        final ParameterizedTypeName generatorType = ParameterizedTypeName.get(biConsumer, flowState, emitter);
+        final ParameterizedTypeName generatorType = ParameterizedTypeName.get(biConsumer,
+                runtimeConfig.getFlowStateClass(), emitter);
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(generatorType)
                 .addMethod(TypicalMethods.implementation("accept")
-                        .addParameter(flowState, TypicalNames.STATE, TypicalModifiers.PARAMETER)
-                        .addParameter(emitter, TypicalNames.EMITTER, TypicalModifiers.PARAMETER)
+                        .addParameter(
+                                TypicalParameters.parameter(runtimeConfig.getFlowStateClass(), TypicalNames.STATE))
+                        .addParameter(TypicalParameters.parameter(emitter, TypicalNames.EMITTER))
                         .returns(void.class)
                         .addException(Exception.class)
                         .addCode(startTryBlock())
@@ -343,13 +361,15 @@ public class CodeGenerator {
                 .build();
     }
 
-    private TypeSpec createFlowDisposer(final ClassName flowState) {
+    private TypeSpec createFlowDisposer() {
         final ClassName consumerClass = ClassName.get(io.reactivex.functions.Consumer.class);
-        final ParameterizedTypeName disposerType = ParameterizedTypeName.get(consumerClass, flowState);
+        final ParameterizedTypeName disposerType = ParameterizedTypeName.get(consumerClass,
+                runtimeConfig.getFlowStateClass());
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(disposerType)
                 .addMethod(TypicalMethods.implementation("accept")
-                        .addParameter(TypicalParameters.parameter(flowState, TypicalNames.STATE))
+                        .addParameter(
+                                TypicalParameters.parameter(runtimeConfig.getFlowStateClass(), TypicalNames.STATE))
                         .returns(void.class)
                         .addException(Exception.class)
                         .addStatement("$N.close()", TypicalNames.STATE)
@@ -376,7 +396,7 @@ public class CodeGenerator {
                 .build();
     }
 
-    private MethodSpec streamQueryEager(final SqlStatement sqlStatement) {
+    private MethodSpec streamEagerApi(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         return MethodSpec.methodBuilder(configuration.getStreamEagerName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
@@ -388,7 +408,7 @@ public class CodeGenerator {
                 .addCode(tryExecute())
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
-                .addCode(TypicalCodeBlocks.newResultState(resultState))
+                .addCode(codeBlocks.newResultState())
                 .addStatement("final $T $N = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS, TypicalNames.RESULT_LIST,
                         TypicalNames.RESULT)
                 .addStatement("return $N.stream()", TypicalNames.RESULT_LIST)
@@ -398,7 +418,7 @@ public class CodeGenerator {
                 .build();
     }
 
-    private MethodSpec streamQueryLazy(final SqlStatement sqlStatement) {
+    private MethodSpec streamLazyApi(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         return MethodSpec.methodBuilder(configuration.getStreamLazyName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
@@ -411,7 +431,7 @@ public class CodeGenerator {
                 .addCode(TypicalCodeBlocks.executeQuery())
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
-                .addCode(TypicalCodeBlocks.newResultState(resultState))
+                .addCode(codeBlocks.newResultState())
                 .addCode(TypicalCodeBlocks.streamStatefull(lazyStreamSpliterator(), lazyStreamCloser()))
                 .addCode(endMaybeTry(configuration))
                 .addCode(maybeCatchAndRethrow(configuration))
@@ -460,7 +480,7 @@ public class CodeGenerator {
     private MethodSpec resultSetToList() {
         return MethodSpec.methodBuilder("resultSetToList")
                 .addModifiers(TypicalModifiers.PRIVATE_METHOD)
-                .addParameter(TypicalParameters.parameter(resultState, TypicalNames.RESULT))
+                .addParameter(TypicalParameters.parameter(runtimeConfig.getResultStateClass(), TypicalNames.RESULT))
                 .addException(SQLException.class)
                 .returns(TypicalTypes.LIST_OF_MAPS)
                 .addStatement("final $T $N = new $T<>()", TypicalTypes.LIST_OF_MAPS, TypicalNames.LIST, ArrayList.class)
@@ -474,7 +494,7 @@ public class CodeGenerator {
     private MethodSpec resultSetToMap() {
         return MethodSpec.methodBuilder("resultSetToMap")
                 .addModifiers(TypicalModifiers.PRIVATE_METHOD)
-                .addParameter(TypicalParameters.parameter(resultState, TypicalNames.RESULT))
+                .addParameter(TypicalParameters.parameter(runtimeConfig.getResultStateClass(), TypicalNames.RESULT))
                 .addException(SQLException.class)
                 .returns(TypicalTypes.MAP_OF_STRING_AND_OBJECTS)
                 .addStatement("final $T $N = new $T<>($N.getColumnCount())", TypicalTypes.MAP_OF_STRING_AND_OBJECTS,
@@ -528,7 +548,8 @@ public class CodeGenerator {
         if (parameters != null && !parameters.isEmpty()) {
             for (final SqlParameter parameter : configuration.getParameters()) {
                 builder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
-                        TypicalFields.constantSqlStatementParametersFieldName(configuration), parameter.getName())
+                        TypicalFields.constantSqlStatementParameterParameterIndexFieldName(configuration),
+                        parameter.getName())
                         .add(CodeBlock.builder().addStatement(codeStatement,
                                 parameterSetter.apply(parameter.getName())).build())
                         .endControlFlow();
