@@ -63,6 +63,13 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
+    public static CodeBlock prepareStatement() {
+        return CodeBlock.builder()
+                .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
+                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION, TypicalNames.QUERY)
+                .build();
+    }
+
     public static CodeBlock newFlowable(final TypeSpec initialState, final TypeSpec generator,
             final TypeSpec disposer) {
         return CodeBlock.builder()

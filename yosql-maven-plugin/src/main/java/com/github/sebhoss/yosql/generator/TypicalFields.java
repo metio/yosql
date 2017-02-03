@@ -12,9 +12,9 @@ public class TypicalFields {
         return constantSqlStatementFieldName(configuration) + "_RAW" + getVendor(configuration);
     }
 
-    public static final String constantSqlStatementParameterParameterIndexFieldName(
+    public static final String constantSqlStatementParameterIndexFieldName(
             final SqlStatementConfiguration configuration) {
-        return constantSqlStatementFieldName(configuration) + "_PARAMETER_INDEX" + getVendor(configuration);
+        return constantSqlStatementFieldName(configuration) + "_PARAMETER_INDEX";
     }
 
     private static final String getVendor(final SqlStatementConfiguration configuration) {

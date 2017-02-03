@@ -26,5 +26,7 @@ public class TypicalNames {
     public static final String RESULT_LIST               = "resultList";
     public static final String LIST                      = "list";
     public static final String ACTION                    = "action";
+    public static final String DATABASE_PRODUCT_NAME     = "databaseProductName";
+    public static final String QUERY                     = "query";
 
 }

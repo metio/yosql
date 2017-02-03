@@ -395,7 +395,7 @@ public class SqlStatementConfiguration {
         name = name != null ? name : other.name;
         repository = repository != null ? repository : other.repository;
         type = type != null ? type : other.type;
-        parameters = parameters != null && !parameters.isEmpty() ? parameters : other.parameters;
+        parameters = mergeParameters(other.parameters);
         resultConverter = resultConverter != null ? resultConverter : other.resultConverter;
         generateStandardApi = generateStandardApi || other.generateStandardApi;
         generateStandardApiOverwritten = generateStandardApiOverwritten || other.generateStandardApiOverwritten;
@@ -419,6 +419,27 @@ public class SqlStatementConfiguration {
         methodCatchAndRethrow = methodCatchAndRethrow || other.methodCatchAndRethrow;
         methodCatchAndRethrowOverwritten = methodCatchAndRethrowOverwritten || other.methodCatchAndRethrowOverwritten;
         vendor = vendor != null ? vendor : other.vendor;
+    }
+
+    private List<SqlParameter> mergeParameters(final List<SqlParameter> otherParameters) {
+        final List<SqlParameter> params = parameters != null && !parameters.isEmpty() ? parameters : otherParameters;
+        params.stream()
+                .forEach(param -> {
+                    otherParameters.stream()
+                            .filter(op -> param.getName().equals(op.getName()))
+                            .findFirst()
+                            .ifPresent(otherParam -> {
+                                if (param.getName() == null
+                                        || !param.getName().isEmpty()
+                                        || "java.lang.Object".equals(param.getType())) {
+                                    param.setType(otherParam.getType());
+                                }
+                                if (param.getConverter() == null || !param.getConverter().isEmpty()) {
+                                    param.setConverter(otherParam.getConverter());
+                                }
+                            });
+                });
+        return params;
     }
 
 }
