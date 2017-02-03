@@ -34,8 +34,6 @@ import com.squareup.javapoet.ClassName;
  * TODO:
  * <ul>
  * <li>Factory/Spring/CDI/Guice(?)</li>
- * <li>compile statement inline vs. load at runtime (from a different module)
- * </li>
  * <li>generate converter for result</li>
  * <li>configure global converters in POM</li>
  * <li>error log w/ full SQL statement (+ parameter substitution), so users can
@@ -61,13 +59,13 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private FileSet                      sqlFiles;
 
     /**
-     * The output directory for the resolved templates
+     * The output directory for the generated classes
      */
     @Parameter(required = true, defaultValue = "${project.build.directory}/generated-sources/yosql")
     private File                         outputBaseDirectory;
 
     /**
-     * The package name for utilities (default: <strong>util</strong>).
+     * The package name for utility classes (default: <strong>util</strong>).
      */
     @Parameter(required = true, defaultValue = "util")
     private String                       utilityPackageName;
@@ -82,7 +80,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     /**
      * Controls whether the SQL statements should be inlined in the generated
      * repositories or loaded at runtime (default: <strong>inline</strong>).
-     * Other possible value is <strong>load</strong>.
+     * Other possible value is <strong>load</strong>. TODO: implement 'load'
      */
     @Parameter(required = true, defaultValue = "inline")
     private String                       repositorySqlStatements;
