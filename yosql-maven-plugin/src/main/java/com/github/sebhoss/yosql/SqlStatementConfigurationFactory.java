@@ -56,6 +56,8 @@ public class SqlStatementConfigurationFactory {
         catchAndRethrow(configuration);
         repository(source, configuration);
         parameters(source, parameterIndices, configuration);
+        // parameterConverters();
+        resultConverter(configuration);
 
         return configuration;
     }
@@ -238,6 +240,22 @@ public class SqlStatementConfigurationFactory {
                                 .mapToInt(Integer::intValue)
                                 .toArray()));
             }
+        }
+    }
+
+    private void resultConverter(final SqlStatementConfiguration configuration) {
+        if (configuration.getResultConverter() == null) {
+            runtimeConfig.getResultRowConverters().stream()
+                    // TODO: expose "resultRow" as mojo parameter
+                    .filter(config -> "resultRow".equals(config.getAlias()))
+                    .limit(1)
+                    .forEach(config -> {
+                        final ResultRowConverter converter = new ResultRowConverter();
+                        converter.name = config.getAlias();
+                        converter.converterType = config.getConverterClass();
+                        converter.resultType = config.getResultType();
+                        configuration.setResultConverter(converter);
+                    });
         }
     }
 

@@ -1,8 +1,16 @@
 package com.github.sebhoss.yosql.generator;
 
 import com.github.sebhoss.yosql.SqlStatementConfiguration;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.TypeName;
 
 public class TypicalFields {
+
+    public static final FieldSpec privateField(final TypeName type, final String name) {
+        return FieldSpec.builder(type, name)
+                .addModifiers(TypicalModifiers.PRIVATE_FIELD)
+                .build();
+    }
 
     public static final String constantSqlStatementFieldName(final SqlStatementConfiguration configuration) {
         return configuration.getName().replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase() + getVendor(configuration);

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.Arrays;
 
 import javax.sql.DataSource;
 
@@ -41,6 +42,10 @@ public final class TypicalParameters {
 
     public static ParameterSpec index() {
         return parameter(TypeName.INT, TypicalNames.INDEX);
+    }
+
+    public static Iterable<ParameterSpec> resultState(final TypeName type) {
+        return Arrays.asList(parameter(type, TypicalNames.RESULT));
     }
 
     public static ParameterSpec parameter(final Class<?> type, final String name) {

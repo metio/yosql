@@ -19,7 +19,7 @@ public class SqlStatementConfiguration {
     private String             repository;
     private SqlStatementType   type;
     private List<SqlParameter> parameters = new ArrayList<>();
-    private String             resultConverter;
+    private ResultRowConverter    resultConverter;
     private boolean            generateStandardApi;
     private boolean            generateStandardApiOverwritten;
     private boolean            generateBatchApi;
@@ -232,11 +232,11 @@ public class SqlStatementConfiguration {
         this.parameters = parameters;
     }
 
-    public String getResultConverter() {
+    public ResultRowConverter getResultConverter() {
         return resultConverter;
     }
 
-    public void setResultConverter(final String resultConverter) {
+    public void setResultConverter(final ResultRowConverter resultConverter) {
         this.resultConverter = resultConverter;
     }
 

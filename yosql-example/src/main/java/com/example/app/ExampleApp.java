@@ -3,7 +3,6 @@ package com.example.app;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
@@ -14,6 +13,7 @@ import org.postgresql.ds.PGPoolingDataSource;
 import com.example.persistence.CompanyRepository;
 import com.example.persistence.PersonRepository;
 import com.example.persistence.SchemaRepository;
+import com.example.persistence.util.ResultRow;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import io.reactivex.Flowable;
@@ -123,21 +123,21 @@ public class ExampleApp {
 
         System.out.println("streamLazyQueryAllCompanies----------------------");
         timed(() -> {
-            try (Stream<Map<String, Object>> companies = companyRepository.queryAllCompaniesStreamLazy()) {
+            try (Stream<ResultRow> companies = companyRepository.queryAllCompaniesStreamLazy()) {
                 companies.forEach(System.out::println);
             }
         });
 
         System.out.println("streamLazyFindCompanies----------------------");
         timed(() -> {
-            try (Stream<Map<String, Object>> companies = companyRepository.findCompaniesStreamLazy(112, 999)) {
+            try (Stream<ResultRow> companies = companyRepository.findCompaniesStreamLazy(112, 999)) {
                 companies.forEach(System.out::println);
             }
         });
 
         System.out.println("findPersonStreamLazy----------------------");
         timed(() -> {
-            try (Stream<Map<String, Object>> persons = personRepository.findPersonStreamLazy("test")) {
+            try (Stream<ResultRow> persons = personRepository.findPersonStreamLazy("test")) {
                 persons.forEach(System.out::println);
             }
         });

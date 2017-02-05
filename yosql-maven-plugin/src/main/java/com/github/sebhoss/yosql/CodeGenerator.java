@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Spliterator;
@@ -25,7 +24,10 @@ import javax.inject.Singleton;
 import javax.sql.DataSource;
 
 import com.github.sebhoss.yosql.generator.FlowStateGenerator;
+import com.github.sebhoss.yosql.generator.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.ResultStateGenerator;
+import com.github.sebhoss.yosql.generator.ToMapResultConverterGenerator;
+import com.github.sebhoss.yosql.generator.ToResultRowConverterGenerator;
 import com.github.sebhoss.yosql.generator.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.TypicalFields;
 import com.github.sebhoss.yosql.generator.TypicalMethods;
@@ -51,21 +53,30 @@ import io.reactivex.Emitter;
 @Singleton
 public class CodeGenerator {
 
-    private final PluginErrors         pluginErrors;
-    private final FlowStateGenerator   flowStateGenerator;
-    private final PluginRuntimeConfig  runtimeConfig;
-    private final ResultStateGenerator resultStateGenerator;
-    private final TypicalCodeBlocks    codeBlocks;
+    private final PluginErrors                  pluginErrors;
+    private final FlowStateGenerator            flowStateGenerator;
+    private final PluginRuntimeConfig           runtimeConfig;
+    private final ResultStateGenerator          resultStateGenerator;
+    private final ToMapResultConverterGenerator toMapResultConverterGenerator;
+    private final ToResultRowConverterGenerator toResultRowConverterGenerator;
+    private final ResultRowGenerator            resultRowGenerator;
+    private final TypicalCodeBlocks             codeBlocks;
 
     @Inject
     public CodeGenerator(
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
+            final ToMapResultConverterGenerator toMapResultConverterGenerator,
+            final ToResultRowConverterGenerator toResultRowConverterGenerator,
+            final ResultRowGenerator resultRowGenerator,
             final PluginErrors pluginErrors,
             final PluginRuntimeConfig runtimeConfig,
             final TypicalCodeBlocks codeBlocks) {
         this.flowStateGenerator = flowStateGenerator;
         this.resultStateGenerator = resultStateGenerator;
+        this.toMapResultConverterGenerator = toMapResultConverterGenerator;
+        this.toResultRowConverterGenerator = toResultRowConverterGenerator;
+        this.resultRowGenerator = resultRowGenerator;
         this.pluginErrors = pluginErrors;
         this.runtimeConfig = runtimeConfig;
         this.codeBlocks = codeBlocks;
@@ -83,6 +94,15 @@ public class CodeGenerator {
                 .anyMatch(config -> config.isGenerateRxJavaApi())) {
             flowStateGenerator.generateFlowStateClass();
         }
+        toMapResultConverterGenerator.generateToMapResultConverterClass();
+        toResultRowConverterGenerator.generateToResultRowConverterClass();
+        resultRowGenerator.generateResultRowClass();
+
+        // allStatements.stream()
+        // .filter(statement -> shouldBuildResultToMapHelperMethod(statement))
+        // .map(statement ->
+        // toMapResultConverterGenerator.generateToMapResultConverterClass())
+        // .limit(1);
     }
 
     /**
@@ -162,7 +182,8 @@ public class CodeGenerator {
                 sqlStatements.stream()
                         .filter(stmt -> !stmt.getConfiguration().getParameters().isEmpty())
                         .map(CodeGenerator::asConstantSqlParameterIndexField));
-        final Stream<FieldSpec> fields = Stream.of(asDataSourceField());
+        final Stream<FieldSpec> fields = Stream.concat(Stream.of(asDataSourceField()),
+                converterFields(sqlStatements));
         return Stream.concat(constants, fields)
                 .collect(Collectors.toList());
     }
@@ -194,10 +215,24 @@ public class CodeGenerator {
                 .build();
     }
 
+    private Stream<FieldSpec> converterFields(final List<SqlStatement> sqlStatements) {
+        return sqlStatements.stream()
+                .map(SqlStatement::getConfiguration)
+                .map(SqlStatementConfiguration::getResultConverter)
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(converter -> {
+                    final ClassName converterClass = ClassName.bestGuess(converter.converterType);
+                    return FieldSpec.builder(converterClass, converter.name)
+                            .addModifiers(TypicalModifiers.PRIVATE_FIELD)
+                            .build();
+                });
+    }
+
     private Iterable<MethodSpec> asMethods(final List<SqlStatement> sqlStatements) {
         final List<MethodSpec> methods = new ArrayList<>(sqlStatements.size());
 
-        methods.add(constructor());
+        methods.add(constructor(sqlStatements));
         sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isGenerateStandardApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
@@ -229,42 +264,36 @@ public class CodeGenerator {
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                 .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
                 .forEach((methodName, statements) -> methods.add(rxJava2(statements)));
-        sqlStatements.stream()
-                .filter(statement -> shouldBuildResultToListHelperMethod(statement))
-                .map(statement -> resultSetToList())
-                .limit(1)
-                .forEach(methods::add);
-        sqlStatements.stream()
-                .filter(statement -> shouldBuildResultToMapHelperMethod(statement))
-                .map(statement -> resultSetToMap())
-                .limit(1)
-                .forEach(methods::add);
 
         return methods;
     }
 
-    private static MethodSpec constructor() {
+    private MethodSpec constructor(final List<SqlStatement> sqlStatements) {
+        final Builder builder = CodeBlock.builder();
+        sqlStatements.stream()
+                .map(SqlStatement::getConfiguration)
+                .map(SqlStatementConfiguration::getResultConverter)
+                .filter(Objects::nonNull)
+                .distinct()
+                .forEach(converter -> {
+                    final ClassName converterClass = ClassName.bestGuess(converter.converterType);
+                    builder.addStatement("this.$N = new $T()", converter.name, converterClass);
+                });
+
         return TypicalMethods.constructor()
                 .addParameter(TypicalParameters.dataSource())
                 .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.DATA_SOURCE))
+                .addCode(builder.build())
                 .build();
-    }
-
-    private boolean shouldBuildResultToMapHelperMethod(final SqlStatement statement) {
-        return statement.getConfiguration().isGenerateStreamLazyApi()
-                || shouldBuildResultToListHelperMethod(statement);
-    }
-
-    private boolean shouldBuildResultToListHelperMethod(final SqlStatement statement) {
-        return statement.getConfiguration().isGenerateStreamEagerApi()
-                || statement.getConfiguration().isGenerateStandardApi()
-                        && SqlStatementType.READING == statement.getConfiguration().getType();
     }
 
     private MethodSpec standardReadApi(final String methodName, final List<SqlStatement> sqlStatements) {
         final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        final ResultRowConverter converter = configuration.getResultConverter();
+        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
         return TypicalMethods.publicMethod(methodName)
-                .returns(TypicalTypes.LIST_OF_MAPS)
+                .returns(listOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(sqlException(configuration))
                 .addCode(tryConnect())
@@ -275,7 +304,11 @@ public class CodeGenerator {
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(codeBlocks.newResultState())
-                .addStatement("return resultSetToList($N)", TypicalNames.RESULT)
+                .addStatement("final $T $N = new $T<>()", listOfResults, TypicalNames.LIST, ArrayList.class)
+                .beginControlFlow("while ($N.next())", TypicalNames.RESULT)
+                .addStatement("$N.add($N.asUserType($N))", TypicalNames.LIST, converter.name, TypicalNames.RESULT)
+                .endControlFlow()
+                .addStatement("return $N", TypicalNames.LIST)
                 .endControlFlow()
                 .endControlFlow()
                 .endControlFlow()
@@ -356,13 +389,16 @@ public class CodeGenerator {
 
     private MethodSpec rxJava2(final List<SqlStatement> sqlStatements) {
         final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        final ResultRowConverter converter = configuration.getResultConverter();
+        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ParameterizedTypeName flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
 
         final TypeSpec initialState = createFlowState(configuration, sqlStatements);
-        final TypeSpec generator = createFlowGenerator();
+        final TypeSpec generator = createFlowGenerator(converter);
         final TypeSpec disposer = createFlowDisposer();
 
         return TypicalMethods.publicMethod(configuration.getFlowableName())
-                .returns(TypicalTypes.FLOWABLE_OF_MAPS)
+                .returns(flowReturn)
                 .addParameters(configuration.getParameterSpecs())
                 .addCode(TypicalCodeBlocks.newFlowable(initialState, generator, disposer))
                 .build();
@@ -390,11 +426,11 @@ public class CodeGenerator {
                 .build();
     }
 
-    private TypeSpec createFlowGenerator() {
+    private TypeSpec createFlowGenerator(final ResultRowConverter converter) {
+        final ClassName resultType = ClassName.bestGuess(converter.resultType);
         final ClassName biConsumer = ClassName.get(io.reactivex.functions.BiConsumer.class);
         final ClassName rawEmitter = ClassName.get(Emitter.class);
-        final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter,
-                TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
+        final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter, resultType);
         final ParameterizedTypeName generatorType = ParameterizedTypeName.get(biConsumer,
                 runtimeConfig.getFlowStateClass(), emitter);
         return TypeSpec.anonymousClassBuilder("")
@@ -407,7 +443,7 @@ public class CodeGenerator {
                         .addException(Exception.class)
                         .addCode(startTryBlock())
                         .beginControlFlow("if ($N.next())", TypicalNames.STATE)
-                        .addStatement("$N.onNext(resultSetToMap($N))", TypicalNames.EMITTER,
+                        .addStatement("$N.onNext($N.asUserType($N))", TypicalNames.EMITTER, converter.name,
                                 TypicalNames.STATE)
                         .nextControlFlow("else")
                         .addStatement("$N.onComplete()", TypicalNames.EMITTER)
@@ -458,9 +494,12 @@ public class CodeGenerator {
 
     private MethodSpec streamEagerApi(final List<SqlStatement> sqlStatements) {
         final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
-        return MethodSpec.methodBuilder(configuration.getStreamEagerName())
-                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                .returns(TypicalTypes.STREAM_OF_MAPS)
+        final ResultRowConverter converter = configuration.getResultConverter();
+        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
+        final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
+        return TypicalMethods.publicMethod(configuration.getStreamEagerName())
+                .returns(streamOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(sqlException(configuration))
                 .addCode(tryConnect())
@@ -471,9 +510,11 @@ public class CodeGenerator {
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(codeBlocks.newResultState())
-                .addStatement("final $T $N = resultSetToList($N)", TypicalTypes.LIST_OF_MAPS, TypicalNames.RESULT_LIST,
-                        TypicalNames.RESULT)
-                .addStatement("return $N.stream()", TypicalNames.RESULT_LIST)
+                .addStatement("final $T $N = new $T<>()", listOfResults, TypicalNames.LIST, ArrayList.class)
+                .beginControlFlow("while ($N.next())", TypicalNames.RESULT)
+                .addStatement("$N.add($N.asUserType($N))", TypicalNames.LIST, converter.name, TypicalNames.RESULT)
+                .endControlFlow()
+                .addStatement("return $N.stream()", TypicalNames.LIST)
                 .endControlFlow()
                 .endControlFlow()
                 .endControlFlow()
@@ -483,9 +524,11 @@ public class CodeGenerator {
 
     private MethodSpec streamLazyApi(final List<SqlStatement> sqlStatements) {
         final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
-        return MethodSpec.methodBuilder(configuration.getStreamLazyName())
-                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
-                .returns(TypicalTypes.STREAM_OF_MAPS)
+        final ResultRowConverter converter = configuration.getResultConverter();
+        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
+        return TypicalMethods.publicMethod(configuration.getStreamLazyName())
+                .returns(streamOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(sqlException(configuration))
                 .addCode(maybeTry(configuration))
@@ -497,18 +540,18 @@ public class CodeGenerator {
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(codeBlocks.newResultState())
-                .addCode(TypicalCodeBlocks.streamStatefull(lazyStreamSpliterator(), lazyStreamCloser()))
+                .addCode(TypicalCodeBlocks.streamStatefull(lazyStreamSpliterator(converter), lazyStreamCloser()))
                 .addCode(endMaybeTry(configuration))
                 .addCode(maybeCatchAndRethrow(configuration))
                 .build();
     }
 
-    private TypeSpec lazyStreamSpliterator() {
+    private TypeSpec lazyStreamSpliterator(final ResultRowConverter converter) {
         final ClassName spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
-        final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass,
-                TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
+        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
         final ParameterizedTypeName consumerType = ParameterizedTypeName.get(TypicalTypes.CONSUMER,
-                WildcardTypeName.supertypeOf(TypicalTypes.MAP_OF_STRING_AND_OBJECTS));
+                WildcardTypeName.supertypeOf(resultType));
         return TypeSpec
                 .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
                 .addSuperinterface(superinterface)
@@ -516,8 +559,9 @@ public class CodeGenerator {
                         .addParameter(TypicalParameters.parameter(consumerType, TypicalNames.ACTION))
                         .returns(boolean.class)
                         .addCode(startTryBlock())
-                        .beginControlFlow("if ($N.next())", TypicalNames.RESULT_SET)
-                        .addStatement("$N.accept(resultSetToMap($N))", TypicalNames.ACTION, TypicalNames.RESULT)
+                        .beginControlFlow("if ($N.next())", TypicalNames.RESULT)
+                        .addStatement("$N.accept($N.asUserType($N))", TypicalNames.ACTION, converter.name,
+                                TypicalNames.RESULT)
                         .addStatement("return $L", true)
                         .endControlFlow()
                         .addStatement("return $L", false)
@@ -539,37 +583,6 @@ public class CodeGenerator {
                         .endControlFlow()
                         .addCode(catchAndRethrow())
                         .build())
-                .build();
-    }
-
-    private MethodSpec resultSetToList() {
-        return MethodSpec.methodBuilder("resultSetToList")
-                .addModifiers(TypicalModifiers.PRIVATE_METHOD)
-                .addParameter(TypicalParameters.parameter(runtimeConfig.getResultStateClass(), TypicalNames.RESULT))
-                .addException(SQLException.class)
-                .returns(TypicalTypes.LIST_OF_MAPS)
-                .addStatement("final $T $N = new $T<>()", TypicalTypes.LIST_OF_MAPS, TypicalNames.LIST, ArrayList.class)
-                .beginControlFlow("while ($N.next())", TypicalNames.RESULT)
-                .addStatement("$N.add($N($N))", TypicalNames.LIST, "resultSetToMap", TypicalNames.RESULT)
-                .endControlFlow()
-                .addStatement("return $N", TypicalNames.LIST)
-                .build();
-    }
-
-    private MethodSpec resultSetToMap() {
-        return MethodSpec.methodBuilder("resultSetToMap")
-                .addModifiers(TypicalModifiers.PRIVATE_METHOD)
-                .addParameter(TypicalParameters.parameter(runtimeConfig.getResultStateClass(), TypicalNames.RESULT))
-                .addException(SQLException.class)
-                .returns(TypicalTypes.MAP_OF_STRING_AND_OBJECTS)
-                .addStatement("final $T $N = new $T<>($N.getColumnCount())", TypicalTypes.MAP_OF_STRING_AND_OBJECTS,
-                        TypicalNames.ROW, LinkedHashMap.class, TypicalNames.RESULT)
-                .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
-                        TypicalNames.INDEX, TypicalNames.INDEX, TypicalNames.RESULT, TypicalNames.INDEX)
-                .addStatement("$N.put($N.getColumnName($N), $N.getObject($N))", TypicalNames.ROW, "result",
-                        TypicalNames.INDEX, TypicalNames.RESULT, TypicalNames.INDEX)
-                .endControlFlow()
-                .addStatement("return $N", TypicalNames.ROW)
                 .build();
     }
 

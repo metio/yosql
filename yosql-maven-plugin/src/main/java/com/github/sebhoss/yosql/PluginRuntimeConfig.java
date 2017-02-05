@@ -1,6 +1,7 @@
 package com.github.sebhoss.yosql;
 
 import java.io.File;
+import java.util.List;
 import java.util.function.Supplier;
 
 import javax.inject.Named;
@@ -15,35 +16,37 @@ import com.squareup.javapoet.ClassName;
 @Singleton
 public class PluginRuntimeConfig {
 
-    private FileSet       sqlFiles;
-    private File          outputBaseDirectory;
-    private String        repositorySqlStatements;
-    private boolean       generateBatchApi;
-    private boolean       generateRxJavaApi;
-    private String        methodBatchPrefix;
-    private boolean       generateStreamEagerApi;
-    private boolean       generateStreamLazyApi;
-    private String        methodStreamPrefix;
-    private String        methodStreamSuffix;
-    private String        methodRxJavaPrefix;
-    private String        methodRxJavaSuffix;
-    private String        repositoryNameSuffix;
-    private String        methodLazyName;
-    private String        methodEagerName;
-    private boolean       generateStandardApi;
-    private String        utilityPackageName;
-    private String        basePackageName;
-    private Supplier<Log> logSupplier;
-    private String        methodBatchSuffix;
-    private String[]      allowedWritePrefixes;
-    private String[]      allowedReadPrefixes;
-    private boolean       validateMethodNamePrefixes;
-    private String        sqlStatementSeparator;
-    private String        sqlFilesCharset;
-    private LoggingAPI    loggingApi;
-    private boolean       methodCatchAndRethrow;
-    private ClassName     flowStateClass;
-    private ClassName     resultStateClass;
+    private FileSet                               sqlFiles;
+    private File                                  outputBaseDirectory;
+    private String                                repositorySqlStatements;
+    private boolean                               generateBatchApi;
+    private boolean                               generateRxJavaApi;
+    private String                                methodBatchPrefix;
+    private boolean                               generateStreamEagerApi;
+    private boolean                               generateStreamLazyApi;
+    private String                                methodStreamPrefix;
+    private String                                methodStreamSuffix;
+    private String                                methodRxJavaPrefix;
+    private String                                methodRxJavaSuffix;
+    private String                                repositoryNameSuffix;
+    private String                                methodLazyName;
+    private String                                methodEagerName;
+    private boolean                               generateStandardApi;
+    private String                                utilityPackageName;
+    private String                                basePackageName;
+    private Supplier<Log>                         logSupplier;
+    private String                                methodBatchSuffix;
+    private String[]                              allowedWritePrefixes;
+    private String[]                              allowedReadPrefixes;
+    private boolean                               validateMethodNamePrefixes;
+    private String                                sqlStatementSeparator;
+    private String                                sqlFilesCharset;
+    private LoggingAPI                            loggingApi;
+    private boolean                               methodCatchAndRethrow;
+    private ClassName                             flowStateClass;
+    private ClassName                             resultStateClass;
+    private ClassName                             toMapResultConverterClass;
+    private List<ResultRowConverterConfiguration> resultRowConverters;
 
     /**
      * @return the outputBaseDirectory
@@ -412,6 +415,36 @@ public class PluginRuntimeConfig {
 
     public ClassName getResultStateClass() {
         return resultStateClass;
+    }
+
+    /**
+     * @return the toMapResultConverterClass
+     */
+    public ClassName getToMapResultConverterClass() {
+        return toMapResultConverterClass;
+    }
+
+    /**
+     * @param toMapResultConverterClass
+     *            the toMapResultConverterClass to set
+     */
+    public void setToMapResultConverterClass(final ClassName toMapResultConverterClass) {
+        this.toMapResultConverterClass = toMapResultConverterClass;
+    }
+
+    /**
+     * @return the resultRowConverters
+     */
+    public List<ResultRowConverterConfiguration> getResultRowConverters() {
+        return resultRowConverters;
+    }
+
+    /**
+     * @param resultRowConverters
+     *            the resultRowConverters to set
+     */
+    public void setResultRowConverters(final List<ResultRowConverterConfiguration> resultRowConverters) {
+        this.resultRowConverters = resultRowConverters;
     }
 
 }
