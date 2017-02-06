@@ -30,7 +30,6 @@ import org.apache.maven.project.MavenProject;
 import com.github.sebhoss.yosql.generator.FlowStateGenerator;
 import com.github.sebhoss.yosql.generator.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.ResultStateGenerator;
-import com.github.sebhoss.yosql.generator.ToMapResultConverterGenerator;
 import com.github.sebhoss.yosql.generator.ToResultRowConverterGenerator;
 import com.squareup.javapoet.ClassName;
 
@@ -427,8 +426,6 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         final String utilPackage = basePackageName + "." + utilityPackageName;
         runtimeConfig.setFlowStateClass(ClassName.get(utilPackage, FlowStateGenerator.FLOW_STATE_CLASS_NAME));
         runtimeConfig.setResultStateClass(ClassName.get(utilPackage, ResultStateGenerator.RESULT_STATE_CLASS_NAME));
-        runtimeConfig.setToMapResultConverterClass(
-                ClassName.get(utilPackage, ToMapResultConverterGenerator.TO_MAP_RESULT_CONVERTER_CLASS_NAME));
 
         final ResultRowConverter toResultRow = new ResultRowConverter();
         toResultRow.setAlias(RESULT_ROW_CONVERTER);

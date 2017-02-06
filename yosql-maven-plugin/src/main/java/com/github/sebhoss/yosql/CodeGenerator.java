@@ -26,7 +26,6 @@ import javax.sql.DataSource;
 import com.github.sebhoss.yosql.generator.FlowStateGenerator;
 import com.github.sebhoss.yosql.generator.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.ResultStateGenerator;
-import com.github.sebhoss.yosql.generator.ToMapResultConverterGenerator;
 import com.github.sebhoss.yosql.generator.ToResultRowConverterGenerator;
 import com.github.sebhoss.yosql.generator.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.TypicalFields;
@@ -57,7 +56,6 @@ public class CodeGenerator {
     private final FlowStateGenerator            flowStateGenerator;
     private final PluginRuntimeConfig           runtimeConfig;
     private final ResultStateGenerator          resultStateGenerator;
-    private final ToMapResultConverterGenerator toMapResultConverterGenerator;
     private final ToResultRowConverterGenerator toResultRowConverterGenerator;
     private final ResultRowGenerator            resultRowGenerator;
     private final TypicalCodeBlocks             codeBlocks;
@@ -66,7 +64,6 @@ public class CodeGenerator {
     public CodeGenerator(
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
-            final ToMapResultConverterGenerator toMapResultConverterGenerator,
             final ToResultRowConverterGenerator toResultRowConverterGenerator,
             final ResultRowGenerator resultRowGenerator,
             final PluginErrors pluginErrors,
@@ -74,7 +71,6 @@ public class CodeGenerator {
             final TypicalCodeBlocks codeBlocks) {
         this.flowStateGenerator = flowStateGenerator;
         this.resultStateGenerator = resultStateGenerator;
-        this.toMapResultConverterGenerator = toMapResultConverterGenerator;
         this.toResultRowConverterGenerator = toResultRowConverterGenerator;
         this.resultRowGenerator = resultRowGenerator;
         this.pluginErrors = pluginErrors;
@@ -94,15 +90,12 @@ public class CodeGenerator {
                 .anyMatch(config -> config.isGenerateRxJavaApi())) {
             flowStateGenerator.generateFlowStateClass();
         }
-        toMapResultConverterGenerator.generateToMapResultConverterClass();
-        toResultRowConverterGenerator.generateToResultRowConverterClass();
-        resultRowGenerator.generateResultRowClass();
-
-        // allStatements.stream()
-        // .filter(statement -> shouldBuildResultToMapHelperMethod(statement))
-        // .map(statement ->
-        // toMapResultConverterGenerator.generateToMapResultConverterClass())
-        // .limit(1);
+        if (resultConverters(allStatements)
+                .anyMatch(converter -> converter.getConverterType().endsWith(
+                        ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME))) {
+            toResultRowConverterGenerator.generateToResultRowConverterClass();
+            resultRowGenerator.generateResultRowClass();
+        }
     }
 
     /**

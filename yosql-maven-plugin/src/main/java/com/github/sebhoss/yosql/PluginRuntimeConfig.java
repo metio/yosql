@@ -45,7 +45,6 @@ public class PluginRuntimeConfig {
     private boolean                  methodCatchAndRethrow;
     private ClassName                flowStateClass;
     private ClassName                resultStateClass;
-    private ClassName                toMapResultConverterClass;
     private List<ResultRowConverter> resultRowConverters;
     private String                   defaultRowConverter;
 
@@ -416,21 +415,6 @@ public class PluginRuntimeConfig {
 
     public ClassName getResultStateClass() {
         return resultStateClass;
-    }
-
-    /**
-     * @return the toMapResultConverterClass
-     */
-    public ClassName getToMapResultConverterClass() {
-        return toMapResultConverterClass;
-    }
-
-    /**
-     * @param toMapResultConverterClass
-     *            the toMapResultConverterClass to set
-     */
-    public void setToMapResultConverterClass(final ClassName toMapResultConverterClass) {
-        this.toMapResultConverterClass = toMapResultConverterClass;
     }
 
     /**
