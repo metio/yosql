@@ -47,6 +47,7 @@ public class PluginRuntimeConfig {
     private ClassName                             resultStateClass;
     private ClassName                             toMapResultConverterClass;
     private List<ResultRowConverterConfiguration> resultRowConverters;
+    private String                                defaultRowConverter;
 
     /**
      * @return the outputBaseDirectory
@@ -445,6 +446,14 @@ public class PluginRuntimeConfig {
      */
     public void setResultRowConverters(final List<ResultRowConverterConfiguration> resultRowConverters) {
         this.resultRowConverters = resultRowConverters;
+    }
+
+    public void setDefaultRowConverter(final String defaultRowConverter) {
+        this.defaultRowConverter = defaultRowConverter;
+    }
+
+    public String getDefaultRowConverter() {
+        return defaultRowConverter;
     }
 
 }

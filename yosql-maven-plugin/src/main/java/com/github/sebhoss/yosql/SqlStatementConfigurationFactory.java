@@ -246,8 +246,8 @@ public class SqlStatementConfigurationFactory {
     private void resultConverter(final SqlStatementConfiguration configuration) {
         if (configuration.getResultConverter() == null) {
             runtimeConfig.getResultRowConverters().stream()
-                    // TODO: expose "resultRow" as mojo parameter
-                    .filter(config -> "resultRow".equals(config.getAlias()))
+                    .filter(config -> runtimeConfig.getDefaultRowConverter().equals(config.getAlias())
+                            || runtimeConfig.getDefaultRowConverter().equals(config.getConverterClass()))
                     .limit(1)
                     .forEach(config -> {
                         final ResultRowConverter converter = new ResultRowConverter();

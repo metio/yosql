@@ -38,8 +38,6 @@ import com.squareup.javapoet.ClassName;
  * TODO:
  * <ul>
  * <li>Factory/Spring/CDI/Guice(?)</li>
- * <li>generate converter for result</li>
- * <li>configure global converters in POM</li>
  * <li>error log w/ full SQL statement (+ parameter substitution), so users can
  * write that into a different log file.</li>
  * <li>allow to overwrite error log messages through fixed location of
@@ -51,6 +49,7 @@ import com.squareup.javapoet.ClassName;
  * <li>support single DB vendor statements that do nothing for all other
  * vendors</li>
  * <li>support unnamed params ('?') as varargs argument</li>
+ * <li>parameter converter</li>
  * </ul>
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = false)
@@ -285,6 +284,14 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     @Parameter(required = false)
     private final List<ResultRowConverterConfiguration> resultRowConverters = new ArrayList<>();
 
+    /**
+     * The default row converter which is being used if no custom converter is
+     * specified for a statement. Can be either the alias or fully-qualified
+     * name of a converter. Default 'resultRow'.
+     */
+    @Parameter(required = true, defaultValue = "resultRow")
+    private String                                      defaultRowConverter;
+
     @Parameter(property = "project", defaultValue = "${project}", readonly = true, required = true)
     private MavenProject                                project;
 
@@ -426,6 +433,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 utilPackage + "." + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
         resultRowConverters.add(toResultRow);
         runtimeConfig.setResultRowConverters(resultRowConverters);
+        runtimeConfig.setDefaultRowConverter(defaultRowConverter);
 
         final Instant postInit = Instant.now();
         getLog().debug("Time spent initializing (ms): " + Duration.between(preInit, postInit).toMillis());
