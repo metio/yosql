@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql.generator;
+package com.github.sebhoss.yosql.helpers;
 
 import javax.lang.model.element.Modifier;
 

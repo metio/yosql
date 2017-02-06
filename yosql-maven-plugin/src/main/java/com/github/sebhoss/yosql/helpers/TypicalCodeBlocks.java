@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql.generator;
+package com.github.sebhoss.yosql.helpers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

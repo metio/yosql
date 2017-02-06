@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql.generator;
+package com.github.sebhoss.yosql.helpers;
 
 import com.github.sebhoss.yosql.SqlStatementConfiguration;
 import com.squareup.javapoet.FieldSpec;

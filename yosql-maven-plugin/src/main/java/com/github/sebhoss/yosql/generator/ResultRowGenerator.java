@@ -7,6 +7,12 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.helpers.TypicalFields;
+import com.github.sebhoss.yosql.helpers.TypicalMethods;
+import com.github.sebhoss.yosql.helpers.TypicalModifiers;
+import com.github.sebhoss.yosql.helpers.TypicalNames;
+import com.github.sebhoss.yosql.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.helpers.TypicalTypes;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
