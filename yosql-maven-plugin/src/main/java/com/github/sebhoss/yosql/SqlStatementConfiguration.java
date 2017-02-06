@@ -19,7 +19,7 @@ public class SqlStatementConfiguration {
     private String             repository;
     private SqlStatementType   type;
     private List<SqlParameter> parameters = new ArrayList<>();
-    private ResultRowConverter    resultConverter;
+    private ResultRowConverter resultConverter;
     private boolean            generateStandardApi;
     private boolean            generateStandardApiOverwritten;
     private boolean            generateBatchApi;
