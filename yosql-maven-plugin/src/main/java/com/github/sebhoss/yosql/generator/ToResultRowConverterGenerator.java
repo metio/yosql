@@ -55,9 +55,9 @@ public class ToResultRowConverterGenerator {
                         TypicalNames.ROW, resultRow, TypicalNames.RESULT)
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
                         TypicalNames.INDEX, TypicalNames.INDEX, TypicalNames.RESULT, TypicalNames.INDEX)
-                .addStatement("$N.setColumnValue($N.getColumnName($N), $N.getObject($N))", TypicalNames.ROW,
-                        TypicalNames.RESULT,
-                        TypicalNames.INDEX, TypicalNames.RESULT, TypicalNames.INDEX)
+                .addStatement("$N.setColumnValue($N.getColumnName($N), $N.getResultSet().getObject($N))",
+                        TypicalNames.ROW, TypicalNames.RESULT, TypicalNames.INDEX, TypicalNames.RESULT,
+                        TypicalNames.INDEX)
                 .endControlFlow()
                 .addStatement("return $N", TypicalNames.ROW)
                 .build();

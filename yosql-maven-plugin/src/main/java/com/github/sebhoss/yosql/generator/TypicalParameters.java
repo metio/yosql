@@ -44,6 +44,10 @@ public final class TypicalParameters {
         return parameter(TypeName.INT, TypicalNames.INDEX);
     }
 
+    public static ParameterSpec columnLabel() {
+        return parameter(TypicalTypes.STRING, TypicalNames.COLUMN_LABEL);
+    }
+
     public static Iterable<ParameterSpec> resultState(final TypeName type) {
         return Arrays.asList(parameter(type, TypicalNames.RESULT));
     }

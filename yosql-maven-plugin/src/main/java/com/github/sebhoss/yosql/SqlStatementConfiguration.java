@@ -390,6 +390,12 @@ public class SqlStatementConfiguration {
         this.vendor = vendor;
     }
 
+    public static SqlStatementConfiguration merge(final List<SqlStatement> statements) {
+        final SqlStatementConfiguration configuration = new SqlStatementConfiguration();
+        statements.forEach(configuration::merge);
+        return configuration;
+    }
+
     public void merge(final SqlStatement statement) {
         final SqlStatementConfiguration other = statement.getConfiguration();
         name = name != null ? name : other.name;

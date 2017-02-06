@@ -28,5 +28,6 @@ public class TypicalNames {
     public static final String ACTION                    = "action";
     public static final String DATABASE_PRODUCT_NAME     = "databaseProductName";
     public static final String QUERY                     = "query";
+    public static final String COLUMN_LABEL              = "columnLabel";
 
 }

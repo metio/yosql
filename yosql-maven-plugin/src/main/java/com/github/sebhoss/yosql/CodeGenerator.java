@@ -216,14 +216,10 @@ public class CodeGenerator {
     }
 
     private Stream<FieldSpec> converterFields(final List<SqlStatement> sqlStatements) {
-        return sqlStatements.stream()
-                .map(SqlStatement::getConfiguration)
-                .map(SqlStatementConfiguration::getResultConverter)
-                .filter(Objects::nonNull)
-                .distinct()
+        return resultConverters(sqlStatements)
                 .map(converter -> {
-                    final ClassName converterClass = ClassName.bestGuess(converter.converterType);
-                    return FieldSpec.builder(converterClass, converter.name)
+                    final ClassName converterClass = ClassName.bestGuess(converter.getConverterType());
+                    return FieldSpec.builder(converterClass, converter.getAlias())
                             .addModifiers(TypicalModifiers.PRIVATE_FIELD)
                             .build();
                 });
@@ -270,15 +266,10 @@ public class CodeGenerator {
 
     private MethodSpec constructor(final List<SqlStatement> sqlStatements) {
         final Builder builder = CodeBlock.builder();
-        sqlStatements.stream()
-                .map(SqlStatement::getConfiguration)
-                .map(SqlStatementConfiguration::getResultConverter)
-                .filter(Objects::nonNull)
-                .distinct()
-                .forEach(converter -> {
-                    final ClassName converterClass = ClassName.bestGuess(converter.converterType);
-                    builder.addStatement("this.$N = new $T()", converter.name, converterClass);
-                });
+        resultConverters(sqlStatements).forEach(converter -> {
+            final ClassName converterClass = ClassName.bestGuess(converter.getConverterType());
+            builder.addStatement("this.$N = new $T()", converter.getAlias(), converterClass);
+        });
 
         return TypicalMethods.constructor()
                 .addParameter(TypicalParameters.dataSource())
@@ -287,10 +278,19 @@ public class CodeGenerator {
                 .build();
     }
 
+    private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
+        return sqlStatements.stream()
+                .map(SqlStatement::getConfiguration)
+                .filter(config -> SqlStatementType.READING == config.getType())
+                .map(SqlStatementConfiguration::getResultConverter)
+                .filter(Objects::nonNull)
+                .distinct();
+    }
+
     private MethodSpec standardReadApi(final String methodName, final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
         return TypicalMethods.publicMethod(methodName)
                 .returns(listOfResults)
@@ -306,7 +306,7 @@ public class CodeGenerator {
                 .addCode(codeBlocks.newResultState())
                 .addStatement("final $T $N = new $T<>()", listOfResults, TypicalNames.LIST, ArrayList.class)
                 .beginControlFlow("while ($N.next())", TypicalNames.RESULT)
-                .addStatement("$N.add($N.asUserType($N))", TypicalNames.LIST, converter.name, TypicalNames.RESULT)
+                .addStatement("$N.add($N.asUserType($N))", TypicalNames.LIST, converter.getAlias(), TypicalNames.RESULT)
                 .endControlFlow()
                 .addStatement("return $N", TypicalNames.LIST)
                 .endControlFlow()
@@ -365,7 +365,7 @@ public class CodeGenerator {
     }
 
     private MethodSpec standardWriteApi(final String methodName, final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
         return TypicalMethods.publicMethod(configuration.getName())
                 .returns(int.class)
                 .addExceptions(sqlException(configuration))
@@ -381,16 +381,10 @@ public class CodeGenerator {
                 .build();
     }
 
-    private SqlStatementConfiguration mergeConfigs(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = new SqlStatementConfiguration();
-        sqlStatements.forEach(configuration::merge);
-        return configuration;
-    }
-
     private MethodSpec rxJava2(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
 
         final TypeSpec initialState = createFlowState(configuration, sqlStatements);
@@ -427,7 +421,7 @@ public class CodeGenerator {
     }
 
     private TypeSpec createFlowGenerator(final ResultRowConverter converter) {
-        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ClassName biConsumer = ClassName.get(io.reactivex.functions.BiConsumer.class);
         final ClassName rawEmitter = ClassName.get(Emitter.class);
         final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter, resultType);
@@ -443,7 +437,7 @@ public class CodeGenerator {
                         .addException(Exception.class)
                         .addCode(startTryBlock())
                         .beginControlFlow("if ($N.next())", TypicalNames.STATE)
-                        .addStatement("$N.onNext($N.asUserType($N))", TypicalNames.EMITTER, converter.name,
+                        .addStatement("$N.onNext($N.asUserType($N))", TypicalNames.EMITTER, converter.getAlias(),
                                 TypicalNames.STATE)
                         .nextControlFlow("else")
                         .addStatement("$N.onComplete()", TypicalNames.EMITTER)
@@ -471,7 +465,7 @@ public class CodeGenerator {
     }
 
     private MethodSpec batchApi(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
         return MethodSpec.methodBuilder(configuration.getBatchName())
                 .addModifiers(TypicalModifiers.PUBLIC_METHOD)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
@@ -493,9 +487,9 @@ public class CodeGenerator {
     }
 
     private MethodSpec streamEagerApi(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
         final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
         return TypicalMethods.publicMethod(configuration.getStreamEagerName())
@@ -512,7 +506,7 @@ public class CodeGenerator {
                 .addCode(codeBlocks.newResultState())
                 .addStatement("final $T $N = new $T<>()", listOfResults, TypicalNames.LIST, ArrayList.class)
                 .beginControlFlow("while ($N.next())", TypicalNames.RESULT)
-                .addStatement("$N.add($N.asUserType($N))", TypicalNames.LIST, converter.name, TypicalNames.RESULT)
+                .addStatement("$N.add($N.asUserType($N))", TypicalNames.LIST, converter.getAlias(), TypicalNames.RESULT)
                 .endControlFlow()
                 .addStatement("return $N.stream()", TypicalNames.LIST)
                 .endControlFlow()
@@ -523,9 +517,9 @@ public class CodeGenerator {
     }
 
     private MethodSpec streamLazyApi(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = mergeConfigs(sqlStatements);
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
         return TypicalMethods.publicMethod(configuration.getStreamLazyName())
                 .returns(streamOfResults)
@@ -548,7 +542,7 @@ public class CodeGenerator {
 
     private TypeSpec lazyStreamSpliterator(final ResultRowConverter converter) {
         final ClassName spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
-        final ClassName resultType = ClassName.bestGuess(converter.resultType);
+        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
         final ParameterizedTypeName consumerType = ParameterizedTypeName.get(TypicalTypes.CONSUMER,
                 WildcardTypeName.supertypeOf(resultType));
@@ -560,7 +554,7 @@ public class CodeGenerator {
                         .returns(boolean.class)
                         .addCode(startTryBlock())
                         .beginControlFlow("if ($N.next())", TypicalNames.RESULT)
-                        .addStatement("$N.accept($N.asUserType($N))", TypicalNames.ACTION, converter.name,
+                        .addStatement("$N.accept($N.asUserType($N))", TypicalNames.ACTION, converter.getAlias(),
                                 TypicalNames.RESULT)
                         .addStatement("return $L", true)
                         .endControlFlow()

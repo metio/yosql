@@ -1,6 +1,8 @@
 package com.github.sebhoss.yosql;
 
 import java.nio.file.Path;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +14,7 @@ public class SqlFileParserSimpleTest {
 
     @Before
     public void setUp() {
-        parser = new SqlFileParser(new PluginErrors(), null);
+        parser = new SqlFileParser(new PluginErrors(), null, null);
     }
 
     @Test
@@ -21,7 +23,7 @@ public class SqlFileParserSimpleTest {
         final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
 
         // when
-        final SqlStatement statement = parser.parse(new SqlSourceFile(sqlFile, null));
+        final Stream<SqlStatement> statement = parser.parse(new SqlSourceFile(sqlFile, null));
 
         // then
         Assert.assertNotNull(statement);
@@ -33,8 +35,9 @@ public class SqlFileParserSimpleTest {
         final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
 
         // when
-        final SqlStatement statement = parser.parse(new SqlSourceFile(sqlFile, null));
-        final SqlStatementConfiguration configuration = statement.getConfiguration();
+        final Stream<SqlStatement> statement = parser.parse(new SqlSourceFile(sqlFile, null));
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration
+                .merge(statement.collect(Collectors.toList()));
 
         // then
         Assert.assertNotNull(configuration);
@@ -46,8 +49,8 @@ public class SqlFileParserSimpleTest {
         final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
 
         // when
-        final SqlStatement statement = parser.parse(new SqlSourceFile(sqlFile, null));
-        final String sqlStatement = statement.getStatement();
+        final Stream<SqlStatement> statements = parser.parse(new SqlSourceFile(sqlFile, null));
+        final String sqlStatement = statements.map(SqlStatement::getStatement).findFirst().orElse(null);
 
         // then
         Assert.assertNotNull(sqlStatement);
@@ -59,8 +62,9 @@ public class SqlFileParserSimpleTest {
         final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
 
         // when
-        final SqlStatement statement = parser.parse(new SqlSourceFile(sqlFile, null));
-        final SqlStatementConfiguration configuration = statement.getConfiguration();
+        final Stream<SqlStatement> statement = parser.parse(new SqlSourceFile(sqlFile, null));
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration
+                .merge(statement.collect(Collectors.toList()));
 
         // then
         Assert.assertEquals("simple", configuration.getName());

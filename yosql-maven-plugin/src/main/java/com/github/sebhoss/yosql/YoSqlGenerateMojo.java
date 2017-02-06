@@ -58,6 +58,8 @@ import com.squareup.javapoet.ClassName;
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class YoSqlGenerateMojo extends AbstractMojo {
 
+    private static final String                         RESULT_ROW_CONVERTER = "resultRowConverter";
+
     /**
      * The SQL files to load (.sql)
      */
@@ -279,20 +281,20 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * Optional list of converters that are applied to input parameters.
      */
     @Parameter(required = false)
-    private final List<ParameterConverterConfiguration> parameterConverters = new ArrayList<>();
+    private final List<ParameterConverterConfiguration> parameterConverters  = new ArrayList<>();
 
     /**
      * Optional list of converters that are applied to input parameters.
      */
     @Parameter(required = false)
-    private final List<ResultRowConverterConfiguration> resultRowConverters = new ArrayList<>();
+    private final List<ResultRowConverter>              resultRowConverters  = new ArrayList<>();
 
     /**
      * The default row converter which is being used if no custom converter is
      * specified for a statement. Can be either the alias or fully-qualified
      * name of a converter. Default 'resultRow'.
      */
-    @Parameter(required = true, defaultValue = "resultRow")
+    @Parameter(required = true, defaultValue = RESULT_ROW_CONVERTER)
     private String                                      defaultRowConverter;
 
     @Parameter(property = "project", defaultValue = "${project}", readonly = true, required = true)
@@ -428,12 +430,11 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setToMapResultConverterClass(
                 ClassName.get(utilPackage, ToMapResultConverterGenerator.TO_MAP_RESULT_CONVERTER_CLASS_NAME));
 
-        final ResultRowConverterConfiguration toResultRow = new ResultRowConverterConfiguration();
-        toResultRow.setAlias("resultRow");
-        toResultRow.setResultType(
-                utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
-        toResultRow.setConverterClass(
-                utilPackage + "." + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
+        final ResultRowConverter toResultRow = new ResultRowConverter();
+        toResultRow.setAlias(RESULT_ROW_CONVERTER);
+        toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
+        toResultRow.setConverterType(utilPackage + "."
+                + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
         resultRowConverters.add(toResultRow);
         runtimeConfig.setResultRowConverters(resultRowConverters);
         runtimeConfig.setDefaultRowConverter(defaultRowConverter);

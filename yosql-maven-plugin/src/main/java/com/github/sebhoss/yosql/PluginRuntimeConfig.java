@@ -16,38 +16,38 @@ import com.squareup.javapoet.ClassName;
 @Singleton
 public class PluginRuntimeConfig {
 
-    private FileSet                               sqlFiles;
-    private File                                  outputBaseDirectory;
-    private String                                repositorySqlStatements;
-    private boolean                               generateBatchApi;
-    private boolean                               generateRxJavaApi;
-    private String                                methodBatchPrefix;
-    private boolean                               generateStreamEagerApi;
-    private boolean                               generateStreamLazyApi;
-    private String                                methodStreamPrefix;
-    private String                                methodStreamSuffix;
-    private String                                methodRxJavaPrefix;
-    private String                                methodRxJavaSuffix;
-    private String                                repositoryNameSuffix;
-    private String                                methodLazyName;
-    private String                                methodEagerName;
-    private boolean                               generateStandardApi;
-    private String                                utilityPackageName;
-    private String                                basePackageName;
-    private Supplier<Log>                         logSupplier;
-    private String                                methodBatchSuffix;
-    private String[]                              allowedWritePrefixes;
-    private String[]                              allowedReadPrefixes;
-    private boolean                               validateMethodNamePrefixes;
-    private String                                sqlStatementSeparator;
-    private String                                sqlFilesCharset;
-    private LoggingAPI                            loggingApi;
-    private boolean                               methodCatchAndRethrow;
-    private ClassName                             flowStateClass;
-    private ClassName                             resultStateClass;
-    private ClassName                             toMapResultConverterClass;
-    private List<ResultRowConverterConfiguration> resultRowConverters;
-    private String                                defaultRowConverter;
+    private FileSet                  sqlFiles;
+    private File                     outputBaseDirectory;
+    private String                   repositorySqlStatements;
+    private boolean                  generateBatchApi;
+    private boolean                  generateRxJavaApi;
+    private String                   methodBatchPrefix;
+    private boolean                  generateStreamEagerApi;
+    private boolean                  generateStreamLazyApi;
+    private String                   methodStreamPrefix;
+    private String                   methodStreamSuffix;
+    private String                   methodRxJavaPrefix;
+    private String                   methodRxJavaSuffix;
+    private String                   repositoryNameSuffix;
+    private String                   methodLazyName;
+    private String                   methodEagerName;
+    private boolean                  generateStandardApi;
+    private String                   utilityPackageName;
+    private String                   basePackageName;
+    private Supplier<Log>            logSupplier;
+    private String                   methodBatchSuffix;
+    private String[]                 allowedWritePrefixes;
+    private String[]                 allowedReadPrefixes;
+    private boolean                  validateMethodNamePrefixes;
+    private String                   sqlStatementSeparator;
+    private String                   sqlFilesCharset;
+    private LoggingAPI               loggingApi;
+    private boolean                  methodCatchAndRethrow;
+    private ClassName                flowStateClass;
+    private ClassName                resultStateClass;
+    private ClassName                toMapResultConverterClass;
+    private List<ResultRowConverter> resultRowConverters;
+    private String                   defaultRowConverter;
 
     /**
      * @return the outputBaseDirectory
@@ -436,7 +436,7 @@ public class PluginRuntimeConfig {
     /**
      * @return the resultRowConverters
      */
-    public List<ResultRowConverterConfiguration> getResultRowConverters() {
+    public List<ResultRowConverter> getResultRowConverters() {
         return resultRowConverters;
     }
 
@@ -444,7 +444,7 @@ public class PluginRuntimeConfig {
      * @param resultRowConverters
      *            the resultRowConverters to set
      */
-    public void setResultRowConverters(final List<ResultRowConverterConfiguration> resultRowConverters) {
+    public void setResultRowConverters(final List<ResultRowConverter> resultRowConverters) {
         this.resultRowConverters = resultRowConverters;
     }
 

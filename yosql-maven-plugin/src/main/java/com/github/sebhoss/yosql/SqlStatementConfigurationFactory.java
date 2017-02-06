@@ -246,16 +246,31 @@ public class SqlStatementConfigurationFactory {
     private void resultConverter(final SqlStatementConfiguration configuration) {
         if (configuration.getResultConverter() == null) {
             runtimeConfig.getResultRowConverters().stream()
-                    .filter(config -> runtimeConfig.getDefaultRowConverter().equals(config.getAlias())
-                            || runtimeConfig.getDefaultRowConverter().equals(config.getConverterClass()))
+                    .filter(converter -> runtimeConfig.getDefaultRowConverter().equals(converter.getAlias())
+                            || runtimeConfig.getDefaultRowConverter().equals(converter.getConverterType()))
                     .limit(1)
-                    .forEach(config -> {
-                        final ResultRowConverter converter = new ResultRowConverter();
-                        converter.name = config.getAlias();
-                        converter.converterType = config.getConverterClass();
-                        converter.resultType = config.getResultType();
-                        configuration.setResultConverter(converter);
-                    });
+                    .forEach(configuration::setResultConverter);
+        } else {
+            final ResultRowConverter resultConverter = configuration.getResultConverter();
+            if (resultConverter.getAlias() == null || resultConverter.getAlias().isEmpty()) {
+                resultConverter.setAlias(runtimeConfig.getResultRowConverters().stream()
+                        .filter(converter -> converter.getConverterType().equals(resultConverter.getConverterType()))
+                        .map(converter -> converter.getAlias())
+                        .findAny().orElse(""));
+            }
+            if (resultConverter.getConverterType() == null || resultConverter.getConverterType().isEmpty()) {
+                resultConverter.setConverterType(runtimeConfig.getResultRowConverters().stream()
+                        .filter(converter -> converter.getAlias().equals(resultConverter.getAlias()))
+                        .map(converter -> converter.getConverterType())
+                        .findAny().orElse(""));
+            }
+            if (resultConverter.getResultType() == null || resultConverter.getResultType().isEmpty()) {
+                resultConverter.setResultType(runtimeConfig.getResultRowConverters().stream()
+                        .filter(converter -> converter.getAlias().equals(resultConverter.getAlias())
+                                || converter.getConverterType().equals(resultConverter.getConverterType()))
+                        .map(converter -> converter.getResultType())
+                        .findAny().orElse(""));
+            }
         }
     }
 

@@ -74,13 +74,13 @@ public class ResultStateGenerator {
     }
 
     private Iterable<MethodSpec> methods() {
-        final List<MethodSpec> fields = new ArrayList<>();
-        fields.add(constructor());
-        fields.add(next());
-        fields.add(getColumnName());
-        fields.add(getObject());
-        fields.add(getColumnCount());
-        return fields;
+        final List<MethodSpec> methods = new ArrayList<>();
+        methods.add(constructor());
+        methods.add(next());
+        methods.add(getColumnName());
+        methods.add(getResultSet());
+        methods.add(getColumnCount());
+        return methods;
     }
 
     private MethodSpec constructor() {
@@ -111,12 +111,10 @@ public class ResultStateGenerator {
                 .build();
     }
 
-    private MethodSpec getObject() {
-        return TypicalMethods.publicMethod("getObject")
-                .returns(Object.class)
-                .addParameter(TypicalParameters.index())
-                .addException(SQLException.class)
-                .addStatement("return $N.getObject($N)", TypicalNames.RESULT_SET, TypicalNames.INDEX)
+    private MethodSpec getResultSet() {
+        return TypicalMethods.publicMethod("getResultSet")
+                .returns(ResultSet.class)
+                .addStatement("return $N", TypicalNames.RESULT_SET)
                 .build();
     }
 
