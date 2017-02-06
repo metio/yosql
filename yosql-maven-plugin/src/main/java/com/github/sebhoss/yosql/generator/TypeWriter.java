@@ -8,6 +8,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.PluginErrors;
+import com.github.sebhoss.yosql.PluginRuntimeConfig;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
@@ -15,11 +16,15 @@ import com.squareup.javapoet.TypeSpec;
 @Singleton
 public class TypeWriter {
 
-    private final PluginErrors pluginErrors;
+    private final PluginErrors        pluginErrors;
+    private final PluginRuntimeConfig runtimeConfig;
 
     @Inject
-    public TypeWriter(final PluginErrors pluginErrors) {
+    public TypeWriter(
+            final PluginErrors pluginErrors,
+            final PluginRuntimeConfig runtimeConfig) {
         this.pluginErrors = pluginErrors;
+        this.runtimeConfig = runtimeConfig;
     }
 
     public void writeType(
@@ -30,6 +35,8 @@ public class TypeWriter {
             JavaFile.builder(packageName, typeSpec).build().writeTo(baseDirectory);
         } catch (final IOException exception) {
             pluginErrors.add(exception);
+            runtimeConfig.getLogger().error(String.format("Could not write [%s.%s] into [%s]",
+                    packageName, typeSpec.name, baseDirectory));
         }
     }
 
