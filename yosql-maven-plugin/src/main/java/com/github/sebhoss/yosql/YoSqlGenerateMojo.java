@@ -50,9 +50,12 @@ import com.squareup.javapoet.ClassName;
  * vendors</li>
  * <li>support unnamed params ('?') as varargs argument</li>
  * <li>parameter converter</li>
+ * <li>RETURNING statements</li>
+ * <li>support symbols: "!" for write, "<" for returning, none (by default) for
+ * read
  * </ul>
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = false)
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class YoSqlGenerateMojo extends AbstractMojo {
 
     /**
