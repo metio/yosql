@@ -83,6 +83,8 @@ public class ExampleApp {
 
     private static void createSchema(final SchemaRepository schemaRepository) {
         try {
+            schemaRepository.dropCompaniesTable();
+            schemaRepository.dropPersonsTable();
             schemaRepository.createCompaniesTable();
             schemaRepository.createPersonsTable();
         } catch (final RuntimeException exception) {
