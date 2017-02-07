@@ -1,8 +1,364 @@
-Java port of https://github.com/krisajenkins/yesql
+= yosql
 
-libs:
-- https://github.com/square/javapoet
-- http://simpleflatmapper.org/
+link:https://github.com/krisajenkins/yesql[yesql] inspired, zero-dependency solution for using SQL in Java projects. Implemented as a Maven plugin that takes .sql files as inputs and generates the matching Java code to execute the SQL statements defined inside your .sql files.
 
-links:
-- https://github.com/bwajtr/java-persistence-frameworks-comparison
+== Usage
+
+The plugin is just a prototype right now and has not seen any official release yet. Thus you have to build it locally first:
+
+[source, shell]
+----
+$ git clone https://github.com/sebhoss/yosql.git
+$ cd yosql
+$ mvn install -pl yosql-maven-plugin -DskipTests
+----
+
+Once installed, following the next 3 steps to generate some Java code.
+
+1. Add the plugin to your *pom.xml*:
+
+[source, xml]
+----
+  <build>
+    <plugins>
+      ...
+      <plugin>
+        <groupId>com.github.sebhoss.yosql</groupId>
+        <artifactId>yosql-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </plugin>
+      ...
+    </plugins>
+  </build>
+----
+
+2. Add .sql files in *src/main/yosql* and write SQL statements into them.
+
+[source]
+----
+project/
+├── pom.xml
+└── src/
+    └── main/
+        └── yosql/
+            └── user/
+                ├── findUser.sql
+                └── addUser.sql
+            └── item/
+                ├── queryAllItems.sql
+                └── createItemTable.sql
+----
+
+3. Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
+
+The above configuration is enough to generate two repositories: *UserRepository* and *ItemRepository*. Each of them will have regular Java methods to execute the SQL statements defined in those .sql files. The `UserRepository` for example exposes these methods (based on *findUser.sql*):
+
+[source, java]
+----
+// eagerly loads all results and puts them into the result list
+List<ResultRow> findUser(Object userId)
+
+// same as above, but calls 'list.stream()' on the result list
+Stream<ResultRow> findUserStreamEager(Object userId)
+
+// lazily loads all rows in a stateful stream (e.g. the Stream needs to be closed after consumption)
+Stream<ResultRow> findUserStreamLazy(Object userId)
+----
+
+In case your project declares a dependency to RxJava2 (`io.reactivex.rxjava2:rxjava2`), the following additional method will be generated:
+
+[source, java]
+----
+// lazily loads all rows in a stateful flow which closes automatically
+Flowable<ResultRow> findUserFlow(Object userId)
+----
+
+You can enable/disable the generation of each of these methods both in the plugin configuration and for each statement individually.
+
+The *addUser.sql* file might contain a writing statement (e.g. `INSERT INTO ...`) which generates the following Java methods in the same `UserRepository`:
+
+[source, java]
+----
+// writes a single new user
+int addUser(Object userId, Object name)
+
+// batches multiple writes of new users
+int[] addUserBatch(Object[] userId, Object[] name)
+----
+
+The SQL statements in your .sql files are just plain SQL, e.g. `findUser.sql` could look like this
+
+[source, sql]
+----
+SELECT  *
+FROM    users
+WHERE   id = :userId
+----
+
+and `addUser.sql` like this:
+
+[source, sql]
+----
+INSERT INTO users (id, name)
+VALUES (:userId, :name)
+----
+
+In order to customize the generated code, e.g. change the type of the parameters, a YAML frontmatter can be specified for each SQL statement like this:
+
+[source, sql]
+----
+-- parameters:
+--   - name: userId
+--     type: int
+SELECT  *
+FROM    users
+WHERE   id = :userId
+----
+
+This changes the generated code to this:
+
+[source, java]
+----
+// uses 'int' instead of 'Object'
+List<ResultRow> findUser(int userId)
+Stream<ResultRow> findUserStreamEager(int userId)
+Stream<ResultRow> findUserStreamLazy(int userId)
+Flowable<ResultRow> findUserFlow(int userId)
+----
+
+Changing the result type is possible with the help of a converter:
+
+[source, sql]
+----
+-- parameters:
+--   - name: userId
+--     type: int
+-- resultConverter:
+--   converterType: my.own.UserConverter
+--   resultType: my.own.User
+SELECT  *
+FROM    users
+WHERE   id = :userId
+----
+
+Which in turn changes the generated code into this:
+
+[source, java]
+----
+// uses 'User' instead of 'ResultRow' & 'int' instead of 'Object'
+List<User> findUser(int userId)
+Stream<User> findUserStreamEager(int userId)
+Stream<User> findUserStreamLazy(int userId)
+Flowable<User> findUserFlow(int userId)
+----
+
+
+`my.own.UserConverter` could look like this:
+
+[source, java]
+----
+package my.own;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import my.own.User;
+import my.own.persistence.util.ResultState;
+
+public class UserConverter {
+
+    public final User asUserType(final ResultState result) throws SQLException {
+        final ResultSet resultSet = result.getResultSet();
+        final User pojo = new User();
+        pojo.setId(resultSet.getInt("id"));
+        pojo.setName(resultSet.getString("name"));
+        return pojo;
+    }
+
+}
+----
+
+Vendor specific statements are support as well. Just add a *vendor* key to your frontmatter like this:
+
+[source, sql]
+----
+-- name: findUsers
+-- vendor: Oracle
+SELECT  *
+FROM    (
+    SELECT ROWNUM rn, data.*
+    FROM (
+        SELECT  *
+        FROM    users
+        WHERE   id = :userId
+    ) data
+    WHERE   rn <=  :offset + :limit
+)
+WHERE rn >= :offset
+;
+
+-- name: findUsers
+-- vendor: PostgreSQL
+SELECT  *
+FROM    users
+WHERE   id = :userId
+OFFSET  :offset
+FETCH NEXT :limit ROWS ONLY
+;
+
+-- name: findUsers
+SELECT  *
+FROM    users
+WHERE   id = :userId
+OFFSET  :offset
+LIMIT   :limit
+;
+----
+
+The first two statements specify a vendor which means that those queries will only be executed when running against the specified database. In case you want to specify a fallback-query that is used whenever no other vendor matches, specify another statement with the same name but no vendor.
+
+Take a look in the *yosql-example* module that contains multiple example .sql files and a small application that uses the generated repositories. A complete list of configuration options follows below.
+
+== Configuration Options
+
+The plugin offers several ways to influence how the generated code looks like. The following options can be applied both globally in the plugin configuration or individually for each SQL statement.
+
+.Method options
+|===
+|Configuration Key|Default Value|Description
+
+|methodAllowedReadPrefixes
+|methodAllowedWritePrefixes
+|methodBatchPrefix
+|methodBatchSuffix
+|methodCatchAndRethrow
+|methodEagerName
+|methodEagerStreamApi
+|methodLazyName
+|methodLazyStreamApi
+|methodRxJavaApi
+|methodRxJavaPrefix
+|methodRxJavaSuffix
+|methodStreamPrefix
+|methodStreamSuffix
+|methodValidateNamePrefixes
+
+|select, read, query, find
+|update, insert, delete, create, write, add, remove, merge, drop
+|
+|Batch
+|true
+|Eager
+|true
+|Lazy
+|true
+|_auto detect_
+|
+|Flow
+|
+|Stream
+|true
+
+|Whether generated methods should catch `SqlException`s and rethrow them as `RuntimeException`s. If set to *false*, this will cause methods to declare that they throw a checked exception which in turn will force all its users to handle the exception themselves.
+|The allow method name prefixes for writing methods.
+|The allow method name prefixes for writing methods.
+|The method name prefix to apply to all batch methods.
+|The method name suffix to apply to all batch methods.
+|The method name suffix to apply to all eager stream methods.
+|Controls whether an eager `Stream` based method should be generated. If the target Java version is set to anything below 1.8, defaults to *false*
+|The method name suffix to apply to all lazy stream methods (default: *Lazy*).
+|Controls whether a lazy `Stream` based method should be generated. If the target Java version is set to anything below 1.8, defaults to *false*
+|Controls whether a RxJava `io.reactivex.Flowable` based method should be generated. In case `io.reactivex.rxjava2:rxjava` is a declared dependency, defaults to *true*.
+|The method name prefix to apply to all RxJava methods.
+|The method name suffix to apply to all RxJava methods.
+|The method name prefix to apply to all stream methods.
+|The method name suffix to apply to all stream methods.
+|Controls whether method names are validated according to `methodAllowedReadPrefixes` and `methodAllowedWritePrefixes`.
+
+|===
+
+These options can only be applied on individual SQL statements
+
+.SQL statement options
+|===
+|Configuration Key|Default Value|Description
+
+|name
+|repository
+|parameters
+|resultConverter
+|vendor
+
+|_auto detect_
+|_auto detect_
+|_auto detect_
+|`defaultRowConverter`
+|
+
+|The name of the SQL statement. Defaults to the name of the file that contains the SQL statement. If multiple SQL statements are found inside the file, a numeric suffix starting with *1* will be added after each name. The name will further be enhanced by `methodBatchPrefix`, `methodBatchSuffix`, `methodEagerName`, `methodLazyName`, `methodRxJavaPrefix`, `methodRxJavaSuffix`, `methodStreamPrefix` and `methodStreamSuffix` (depending on which applies).
+|The fully qualified name of the target repository this SQL statement is supposed to end up with. Defaults to the repository implied by the directory that contains the .sql file which contains the SQL statement and the `basePackageName`.
+|A list of (name: `String`, type: `Type`) tuples that specify the types for input parameters. The plugin performs a quick validation to verify that no unknown parameter (one that does not exist in the SQL statement) is part of that list and fails the build if unknown parameters are found.
+|The row converter to apply for each row in the result set. Defaults to the `defaultRowConverter` specified in the plugin configuration.
+|The name of the database product that the SQL statement is written for. Typical values are *PostgreSQL*, *H2*, *MySQL*", *Oracle*, *DB2*, *Microsoft SQL Server*, *Apache Derby*, *HSQL Database Engine*.
+|===
+
+
+Plugin only options can only be applied globally in the plugin configuration.
+
+.Plugin options
+|===
+|Configuration Key|Default Value|Description
+
+|sqlFiles
+|outputBaseDirectory
+|basePackageName
+|utilityPackageName
+|java
+|repositoryNameSuffix
+|defaultRowConverter
+|sqlFilesCharset
+|sqlStatementSeparator
+|rxJavaGroupId
+|rxJavaArtifactId
+|resultRowConverters
+
+|src/main/yosql/**/*.sql
+|${project.build.directory}/generated-sources/yosql
+|com.example.persistence
+|util
+|1.8
+|Repository
+|resultRowConverter
+|UTF-8
+|;
+|io.reactivex.rxjava2
+|rxjava
+|
+
+|The .sql files to include.
+|The output directory for the generated classes
+|The base package name for the generated code.
+|The utility package name for the generated utilities.
+|The target Java source version for the generated code.
+|The repository name suffix to use for all generated repositories.
+|The default row converter to use for each statement that returns a value and does not specify a converter itself. Can either be the alias of a converter or the fully qualified name of a converter.
+|The character set to use while reading .sql files.
+|The SQL statement separator to use to split multiple SQL statement inside a single .sql file.
+|The groupId to match for automatic RxJava detection.
+|The artifactId to match for automatic RxJava detection.
+|List of globally configured row converters for result sets. The `ToResultRowConverter` is always added with the alias `resultRowConverter`
+|===
+
+== License
+
+To the extent possible under law, the author(s) have dedicated all copyright
+and related and neighboring rights to this software to the public domain
+worldwide. This software is distributed without any warranty.
+
+You should have received a copy of the CC0 Public Domain Dedication along
+with this software. If not, see http://creativecommons.org/publicdomain/zero/1.0/.
+
+== Mirrors
+
+* https://github.com/sebhoss/yosql
+* https://bitbucket.org/sebhoss/yosql
