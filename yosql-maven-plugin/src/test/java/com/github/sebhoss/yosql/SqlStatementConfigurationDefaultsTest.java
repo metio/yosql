@@ -19,7 +19,7 @@ public class SqlStatementConfigurationDefaultsTest {
 
     @Test
     public void shouldEnableBatchModeByDefault() {
-        Assert.assertTrue(configuration.isGenerateBatchApi());
+        Assert.assertTrue(configuration.isMethodBatchApi());
     }
 
     @Test
@@ -29,8 +29,8 @@ public class SqlStatementConfigurationDefaultsTest {
 
     @Test
     public void shouldEnableStreamModeByDefault() {
-        Assert.assertTrue(configuration.isGenerateStreamEagerApi());
-        Assert.assertTrue(configuration.isGenerateStreamLazyApi());
+        Assert.assertTrue(configuration.isMethodEagerStreamApi());
+        Assert.assertTrue(configuration.isMethodStreamLazyApi());
     }
 
     @Test

@@ -151,16 +151,16 @@ public class SqlStatementConfigurationFactory {
 
     private void standard(final SqlStatementConfiguration configuration) {
         if (configuration.isUsingPluginSingleConfig()) {
-            configuration.setGenerateStandardApi(runtimeConfig.isGenerateStandardApi());
+            configuration.setMethodStandardApi(runtimeConfig.isGenerateStandardApi());
         }
     }
 
     private void batch(final SqlStatementConfiguration configuration) {
         if (configuration.isUsingPluginBatchConfig()) {
             if (SqlStatementType.READING == configuration.getType()) {
-                configuration.setGenerateBatchApi(false);
+                configuration.setMethodBatchApi(false);
             } else {
-                configuration.setGenerateBatchApi(runtimeConfig.isGenerateBatchApi());
+                configuration.setMethodBatchApi(runtimeConfig.isGenerateBatchApi());
             }
         }
     }
@@ -168,9 +168,9 @@ public class SqlStatementConfigurationFactory {
     private void streamEager(final SqlStatementConfiguration configuration) {
         if (configuration.isUsingPluginStreamEagerConfig()) {
             if (SqlStatementType.WRITING == configuration.getType()) {
-                configuration.setGenerateStreamEagerApi(false);
+                configuration.setMethodEagerStreamApi(false);
             } else {
-                configuration.setGenerateStreamEagerApi(runtimeConfig.isGenerateStreamEagerApi());
+                configuration.setMethodEagerStreamApi(runtimeConfig.isGenerateStreamEagerApi());
             }
         }
     }
@@ -178,9 +178,9 @@ public class SqlStatementConfigurationFactory {
     private void streamLazy(final SqlStatementConfiguration configuration) {
         if (configuration.isUsingPluginStreamLazyConfig()) {
             if (SqlStatementType.WRITING == configuration.getType()) {
-                configuration.setGenerateStreamLazyApi(false);
+                configuration.setMethodStreamLazyApi(false);
             } else {
-                configuration.setGenerateStreamLazyApi(runtimeConfig.isGenerateStreamLazyApi());
+                configuration.setMethodStreamLazyApi(runtimeConfig.isGenerateStreamLazyApi());
             }
         }
     }
@@ -188,9 +188,9 @@ public class SqlStatementConfigurationFactory {
     private void rxJava(final SqlStatementConfiguration configuration) {
         if (configuration.isUsingPluginRxJavaConfig()) {
             if (SqlStatementType.WRITING == configuration.getType()) {
-                configuration.setGenerateRxJavaApi(false);
+                configuration.setMethodRxJavaApi(false);
             } else {
-                configuration.setGenerateRxJavaApi(runtimeConfig.isGenerateRxJavaApi());
+                configuration.setMethodRxJavaApi(runtimeConfig.isGenerateRxJavaApi());
             }
         }
     }

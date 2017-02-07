@@ -21,15 +21,15 @@ public class SqlStatementConfiguration {
     private List<SqlParameter> parameters = new ArrayList<>();
     // TODO: rename to resultRowConverter
     private ResultRowConverter resultConverter;
-    private boolean            generateStandardApi;
+    private boolean            methodStandardApi;
     private boolean            generateStandardApiOverwritten;
-    private boolean            generateBatchApi;
+    private boolean            methodBatchApi;
     private boolean            generateBatchApiOverwritten;
-    private boolean            generateRxJavaApi;
+    private boolean            methodRxJavaApi;
     private boolean            generateRxJavaApiOverwritten;
-    private boolean            generateStreamEagerApi;
+    private boolean            methodEagerStreamApi;
     private boolean            generateStreamEagerApiOverwritten;
-    private boolean            generateStreamLazyApi;
+    private boolean            methodStreamLazyApi;
     private boolean            generateStreamLazyApiOverwritten;
     private String             methodBatchPrefix;
     private String             methodBatchSuffix;
@@ -93,27 +93,27 @@ public class SqlStatementConfiguration {
     }
 
     /**
-     * @return the generateStandardApi
+     * @return the methodStandardApi
      */
-    public boolean isGenerateStandardApi() {
-        return generateStandardApi;
+    public boolean isMethodStandardApi() {
+        return methodStandardApi;
     }
 
     /**
-     * @param generateStandardApi
-     *            the generateStandardApi to set
+     * @param methodStandardApi
+     *            the methodStandardApi to set
      */
-    public void setGenerateStandardApi(final boolean generateStandardApi) {
-        this.generateStandardApi = generateStandardApi;
+    public void setMethodStandardApi(final boolean methodStandardApi) {
+        this.methodStandardApi = methodStandardApi;
         generateStandardApiOverwritten = true;
     }
 
-    public boolean isGenerateBatchApi() {
-        return generateBatchApi;
+    public boolean isMethodBatchApi() {
+        return methodBatchApi;
     }
 
-    public void setGenerateBatchApi(final boolean generateBatchApi) {
-        this.generateBatchApi = generateBatchApi;
+    public void setMethodBatchApi(final boolean methodBatchApi) {
+        this.methodBatchApi = methodBatchApi;
         generateBatchApiOverwritten = true;
     }
 
@@ -171,34 +171,34 @@ public class SqlStatementConfiguration {
     }
 
     /**
-     * @return the streamEager
+     * @return the methodEagerStreamApi
      */
-    public boolean isGenerateStreamEagerApi() {
-        return generateStreamEagerApi;
+    public boolean isMethodEagerStreamApi() {
+        return methodEagerStreamApi;
     }
 
     /**
-     * @param generateStreamEagerApi
-     *            the generateStreamEagerApi to set
+     * @param methodEagerStreamApi
+     *            the methodEagerStreamApi to set
      */
-    public void setGenerateStreamEagerApi(final boolean generateStreamEagerApi) {
-        this.generateStreamEagerApi = generateStreamEagerApi;
+    public void setMethodEagerStreamApi(final boolean methodEagerStreamApi) {
+        this.methodEagerStreamApi = methodEagerStreamApi;
         generateStreamEagerApiOverwritten = true;
     }
 
     /**
-     * @return the generateStreamLazyApi
+     * @return the methodStreamLazyApi
      */
-    public boolean isGenerateStreamLazyApi() {
-        return generateStreamLazyApi;
+    public boolean isMethodStreamLazyApi() {
+        return methodStreamLazyApi;
     }
 
     /**
-     * @param generateStreamLazyApi
-     *            the generateStreamLazyApi to set
+     * @param methodStreamLazyApi
+     *            the methodStreamLazyApi to set
      */
-    public void setGenerateStreamLazyApi(final boolean generateStreamLazyApi) {
-        this.generateStreamLazyApi = generateStreamLazyApi;
+    public void setMethodStreamLazyApi(final boolean methodStreamLazyApi) {
+        this.methodStreamLazyApi = methodStreamLazyApi;
         generateStreamLazyApiOverwritten = true;
     }
 
@@ -338,18 +338,18 @@ public class SqlStatementConfiguration {
     }
 
     /**
-     * @return the generateRxJavaApi
+     * @return the methodRxJavaApi
      */
-    public boolean isGenerateRxJavaApi() {
-        return generateRxJavaApi;
+    public boolean isMethodRxJavaApi() {
+        return methodRxJavaApi;
     }
 
     /**
-     * @param generateRxJavaApi
-     *            the generateRxJavaApi to set
+     * @param methodRxJavaApi
+     *            the methodRxJavaApi to set
      */
-    public void setGenerateRxJavaApi(final boolean generateRxJavaApi) {
-        this.generateRxJavaApi = generateRxJavaApi;
+    public void setMethodRxJavaApi(final boolean methodRxJavaApi) {
+        this.methodRxJavaApi = methodRxJavaApi;
         generateRxJavaApiOverwritten = true;
     }
 
@@ -404,16 +404,16 @@ public class SqlStatementConfiguration {
         type = type != null ? type : other.type;
         parameters = mergeParameters(other.parameters);
         resultConverter = resultConverter != null ? resultConverter : other.resultConverter;
-        generateStandardApi = generateStandardApi || other.generateStandardApi;
+        methodStandardApi = methodStandardApi || other.methodStandardApi;
         generateStandardApiOverwritten = generateStandardApiOverwritten || other.generateStandardApiOverwritten;
-        generateBatchApi = generateBatchApi || other.generateBatchApi;
+        methodBatchApi = methodBatchApi || other.methodBatchApi;
         generateBatchApiOverwritten = generateBatchApiOverwritten || other.generateBatchApiOverwritten;
-        generateRxJavaApi = generateRxJavaApi || other.generateRxJavaApi;
+        methodRxJavaApi = methodRxJavaApi || other.methodRxJavaApi;
         generateRxJavaApiOverwritten = generateRxJavaApiOverwritten || other.generateRxJavaApiOverwritten;
-        generateStreamEagerApi = generateStreamEagerApi || other.generateStreamEagerApi;
+        methodEagerStreamApi = methodEagerStreamApi || other.methodEagerStreamApi;
         generateStreamEagerApiOverwritten = generateStreamEagerApiOverwritten
                 || other.generateStreamEagerApiOverwritten;
-        generateStreamLazyApi = generateStreamLazyApi || other.generateStreamLazyApi;
+        methodStreamLazyApi = methodStreamLazyApi || other.methodStreamLazyApi;
         generateStreamLazyApiOverwritten = generateStreamLazyApiOverwritten || other.generateStreamLazyApiOverwritten;
         methodBatchPrefix = methodBatchPrefix != null ? methodBatchPrefix : other.methodBatchPrefix;
         methodBatchSuffix = methodBatchSuffix != null ? methodBatchSuffix : other.methodBatchSuffix;

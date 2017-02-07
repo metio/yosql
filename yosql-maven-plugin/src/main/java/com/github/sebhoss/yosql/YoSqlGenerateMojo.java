@@ -130,28 +130,29 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                                      methodBatchSuffix;
 
     /**
-     * Controls whether the generated repositories should offer eager
-     * {@link Stream}s as return types (default: <strong>true</strong>).
+     * Controls whether an eager {@link Stream} based method should be generated
+     * (default: <strong>true</strong>). If the target Java version is set to
+     * anything below 1.8, defaults to <strong>false</strong>
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                                     generateEagerStreamApi;
+    private boolean                                     methodEagerStreamApi;
 
     /**
-     * Controls whether the generated repositories should offer lazy
-     * {@link Stream}s as return types (default: <strong>true</strong>).
+     * Controls whether a lazy {@link Stream} based method should be generated
+     * (default: <strong>true</strong>). If the target Java version is set to
+     * anything below 1.8, defaults to <strong>false</strong>
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                                     generateLazyStreamApi;
+    private boolean                                     methodLazyStreamApi;
 
     /**
-     * Controls whether the generated repositories should offer RxJava
-     * {@link io.reactivex.Flowable}s as return types (default:
-     * <strong>false</strong>). In case
+     * Controls whether a RxJava {@link io.reactivex.Flowable} based method
+     * should be generated (default: <strong>false</strong>). In case
      * <strong>io.reactivex.rxjava2:rxjava</strong> is a declared dependency,
      * defaults to <strong>true</strong>.
      */
     @Parameter(required = false)
-    private Boolean                                     generateRxJavaApi;
+    private Boolean                                     methodRxJavaApi;
 
     /**
      * The method name prefix to apply to all stream methods (default:
@@ -390,12 +391,12 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
         runtimeConfig.setGenerateStandardApi(generateStandardApi);
         runtimeConfig.setGenerateBatchApi(generateBatchApi);
-        runtimeConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? generateEagerStreamApi : false);
-        runtimeConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? generateLazyStreamApi : false);
-        if (generateRxJavaApi == null) {
+        runtimeConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? methodEagerStreamApi : false);
+        runtimeConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? methodLazyStreamApi : false);
+        if (methodRxJavaApi == null) {
             runtimeConfig.setGenerateRxJavaApi(project.getDependencies().stream().anyMatch(isRxJava2()));
         } else {
-            runtimeConfig.setGenerateRxJavaApi(generateRxJavaApi);
+            runtimeConfig.setGenerateRxJavaApi(methodRxJavaApi);
         }
         if (loggingApi == null || "auto".equals(loggingApi.toLowerCase())) {
             if (project.getDependencies().stream().anyMatch(isLog4J())) {

@@ -1,8 +1,8 @@
 --
 -- name: findItemByName
--- generateStandardApi: false
--- generateStreamEagerApi: false
--- generateStreamLazyApi: false
+-- methodStandardApi: false
+-- methodStreamEagerApi: false
+-- methodStreamLazyApi: false
 -- parameters:
 --   - name: name
 --     type: java.lang.String
@@ -17,9 +17,9 @@ where   name = :name
 --
 -- name: findItemByName
 -- vendor: H2
--- generateStandardApi: false
--- generateStreamEagerApi: false
--- generateStreamLazyApi: false
+-- methodStandardApi: false
+-- methodStreamEagerApi: false
+-- methodStreamLazyApi: false
 -- parameters:
 --   - name: name
 --     type: java.lang.String
@@ -33,9 +33,9 @@ where   other_name = :name
 
 --
 -- name: findItemByAllNames
--- generateStandardApi: false
--- generateStreamEagerApi: false
--- generateStreamLazyApi: false
+-- methodStandardApi: false
+-- methodStreamEagerApi: false
+-- methodStreamLazyApi: false
 -- parameters:
 --   - name: name
 --     type: java.lang.String
@@ -51,9 +51,9 @@ where   name = :name
 
 --
 -- name: findItemBySnakeCaseName
--- generateStandardApi: false
--- generateStreamEagerApi: false
--- generateStreamLazyApi: false
+-- methodStandardApi: false
+-- methodStreamEagerApi: false
+-- methodStreamLazyApi: false
 -- parameters:
 --   - name: name_of_item
 --     type: java.lang.String

@@ -86,7 +86,7 @@ public class CodeGenerator {
         if (allStatements.stream()
                 .map(SqlStatement::getConfiguration)
                 .filter(config -> SqlStatementType.READING == config.getType())
-                .anyMatch(config -> config.isGenerateRxJavaApi())) {
+                .anyMatch(config -> config.isMethodRxJavaApi())) {
             flowStateGenerator.generateFlowStateClass();
         }
         if (resultConverters(allStatements)
@@ -193,33 +193,33 @@ public class CodeGenerator {
 
         methods.add(constructor(sqlStatements));
         sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isGenerateStandardApi())
+                .filter(statement -> statement.getConfiguration().isMethodStandardApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                 .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
                 .forEach((methodName, statements) -> methods.add(standardApi.standardReadApi(methodName, statements)));
         sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isGenerateStandardApi())
+                .filter(statement -> statement.getConfiguration().isMethodStandardApi())
                 .filter(statement -> SqlStatementType.WRITING == statement.getConfiguration().getType())
                 .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
                 .forEach((methodName, statements) -> methods.add(standardApi.standardWriteApi(methodName, statements)));
         sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isGenerateBatchApi())
+                .filter(statement -> statement.getConfiguration().isMethodBatchApi())
                 .filter(statement -> statement.getConfiguration().hasParameters())
                 .filter(statement -> SqlStatementType.WRITING == statement.getConfiguration().getType())
                 .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
                 .forEach((methodName, statements) -> methods.add(batchApi.generateMethod(methodName, statements)));
         sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isGenerateStreamEagerApi())
+                .filter(statement -> statement.getConfiguration().isMethodEagerStreamApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                 .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
                 .forEach((methodName, statements) -> methods.add(java8Api.streamEagerApi(statements)));
         sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isGenerateStreamLazyApi())
+                .filter(statement -> statement.getConfiguration().isMethodStreamLazyApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                 .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
                 .forEach((methodName, statements) -> methods.add(java8Api.streamLazyApi(statements)));
         sqlStatements.stream()
-                .filter(statement -> statement.getConfiguration().isGenerateRxJavaApi())
+                .filter(statement -> statement.getConfiguration().isMethodRxJavaApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                 .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
                 .forEach((methodName, statements) -> methods.add(rxJava2Api.rxJava2Method(statements)));
