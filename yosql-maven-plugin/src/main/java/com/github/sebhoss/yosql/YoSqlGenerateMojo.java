@@ -205,23 +205,23 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     /**
      * The allow method name prefixes for writing methods (default:
      * <strong>"update, insert, delete, create, write, add, remove,
-     * merge"</strong>).
+     * merge,drop"</strong>).
      */
     @Parameter(required = true, defaultValue = "update,insert,delete,create,write,add,remove,merge,drop")
     private String                                      methodAllowedWritePrefixes;
 
     /**
      * The allow method name prefixes for writing methods (default:
-     * <strong>"update, insert, delete, create, write, add, remove,
-     * merge"</strong>).
+     * <strong>"select,read,query,find"</strong>).
      */
     @Parameter(required = true, defaultValue = "select,read,query,find")
     private String                                      methodAllowedReadPrefixes;
 
     /**
      * Controls whether method names are validated according to
-     * <strong>allowedReadPrefixes</strong> and
-     * <strong>allowedWritePrefixes</strong> (default: <strong>true</strong>).
+     * <strong>methodAllowedReadPrefixes</strong> and
+     * <strong>methodAllowedWritePrefixes</strong> (default:
+     * <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
     private boolean                                     methodValidateNamePrefixes;
