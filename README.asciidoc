@@ -186,8 +186,8 @@ Vendor specific statements are support as well. Just add a *vendor* key to your 
 -- vendor: Oracle
 SELECT  *
 FROM    (
-    SELECT ROWNUM rn, data.*
-    FROM (
+    SELECT  ROWNUM rn, data.*
+    FROM    (
         SELECT  *
         FROM    users
         WHERE   id = :userId
