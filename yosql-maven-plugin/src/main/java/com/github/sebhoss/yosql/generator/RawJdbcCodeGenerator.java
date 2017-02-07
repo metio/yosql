@@ -45,7 +45,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
-public class DefaultCodeGenerator implements CodeGenerator {
+public class RawJdbcCodeGenerator implements CodeGenerator {
 
     private final TypeWriter                    typeWriter;
     private final FlowStateGenerator            flowStateGenerator;
@@ -59,7 +59,7 @@ public class DefaultCodeGenerator implements CodeGenerator {
     private final StandardMethodAPI             standardApi;
 
     @Inject
-    public DefaultCodeGenerator(
+    public RawJdbcCodeGenerator(
             final TypeWriter typeWriter,
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
@@ -113,7 +113,8 @@ public class DefaultCodeGenerator implements CodeGenerator {
      *            The SQL statements to be included in the repository.
      */
     @Override
-    public void generateRepository(final String repositoryName,
+    public void generateRepository(
+            final String repositoryName,
             final List<SqlStatement> sqlStatements) {
         final String className = TypicalNames.getClassName(repositoryName);
         final String packageName = TypicalNames.getPackageName(repositoryName);
@@ -121,7 +122,7 @@ public class DefaultCodeGenerator implements CodeGenerator {
                 .addModifiers(TypicalModifiers.PUBLIC_CLASS)
                 .addFields(asFields(sqlStatements))
                 .addMethods(asMethods(sqlStatements))
-                .addAnnotation(TypicalAnnotations.generatedAnnotation(DefaultCodeGenerator.class))
+                .addAnnotation(TypicalAnnotations.generatedAnnotation(RawJdbcCodeGenerator.class))
                 .addStaticBlock(staticInitializer(sqlStatements))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, repository);
@@ -153,10 +154,10 @@ public class DefaultCodeGenerator implements CodeGenerator {
     private Iterable<FieldSpec> asFields(final List<SqlStatement> sqlStatements) {
         final Stream<FieldSpec> constants = Stream.concat(
                 sqlStatements.stream()
-                        .map(DefaultCodeGenerator::asConstantSqlField),
+                        .map(RawJdbcCodeGenerator::asConstantSqlField),
                 sqlStatements.stream()
                         .filter(stmt -> !stmt.getConfiguration().getParameters().isEmpty())
-                        .map(DefaultCodeGenerator::asConstantSqlParameterIndexField));
+                        .map(RawJdbcCodeGenerator::asConstantSqlParameterIndexField));
         final Stream<FieldSpec> fields = Stream.concat(Stream.of(asDataSourceField()),
                 converterFields(sqlStatements));
         return Stream.concat(constants, fields)

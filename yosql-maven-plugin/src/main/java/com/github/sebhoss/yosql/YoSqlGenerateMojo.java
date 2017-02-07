@@ -27,7 +27,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import com.github.sebhoss.yosql.generator.DefaultCodeGenerator;
+import com.github.sebhoss.yosql.generator.RawJdbcCodeGenerator;
 import com.github.sebhoss.yosql.generator.utils.FlowStateGenerator;
 import com.github.sebhoss.yosql.generator.utils.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.utils.ResultStateGenerator;
@@ -318,7 +318,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private final PluginPreconditions                   preconditions;
     private final FileSetResolver                       fileSetResolver;
     private final SqlFileParser                         sqlFileParser;
-    private final DefaultCodeGenerator                  codeGenerator;
+    private final RawJdbcCodeGenerator                  codeGenerator;
     private final PluginRuntimeConfig                   runtimeConfig;
     // private final PlexusContainer beanLocator;
 
@@ -328,7 +328,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             final PluginPreconditions preconditions,
             final FileSetResolver fileSetResolver,
             final SqlFileParser sqlFileParser,
-            final DefaultCodeGenerator codeGenerator,
+            final RawJdbcCodeGenerator codeGenerator,
             final PluginRuntimeConfig runtimeConfig) {
         this.pluginErrors = pluginErrors;
         this.preconditions = preconditions;
