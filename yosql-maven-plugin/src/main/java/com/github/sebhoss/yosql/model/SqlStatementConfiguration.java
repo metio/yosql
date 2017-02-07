@@ -27,7 +27,7 @@ public class SqlStatementConfiguration {
     private boolean            generateBatchApiOverwritten;
     private boolean            methodRxJavaApi;
     private boolean            generateRxJavaApiOverwritten;
-    private boolean            methodEagerStreamApi;
+    private boolean            methodStreamEagerApi;
     private boolean            generateStreamEagerApiOverwritten;
     private boolean            methodStreamLazyApi;
     private boolean            generateStreamLazyApiOverwritten;
@@ -171,18 +171,18 @@ public class SqlStatementConfiguration {
     }
 
     /**
-     * @return the methodEagerStreamApi
+     * @return the methodStreamEagerApi
      */
-    public boolean isMethodEagerStreamApi() {
-        return methodEagerStreamApi;
+    public boolean isMethodStreamEagerApi() {
+        return methodStreamEagerApi;
     }
 
     /**
-     * @param methodEagerStreamApi
-     *            the methodEagerStreamApi to set
+     * @param methodStreamEagerApi
+     *            the methodStreamEagerApi to set
      */
-    public void setMethodEagerStreamApi(final boolean methodEagerStreamApi) {
-        this.methodEagerStreamApi = methodEagerStreamApi;
+    public void setMethodStreamEagerApi(final boolean methodStreamEagerApi) {
+        this.methodStreamEagerApi = methodStreamEagerApi;
         generateStreamEagerApiOverwritten = true;
     }
 
@@ -410,7 +410,7 @@ public class SqlStatementConfiguration {
         generateBatchApiOverwritten = generateBatchApiOverwritten || other.generateBatchApiOverwritten;
         methodRxJavaApi = methodRxJavaApi || other.methodRxJavaApi;
         generateRxJavaApiOverwritten = generateRxJavaApiOverwritten || other.generateRxJavaApiOverwritten;
-        methodEagerStreamApi = methodEagerStreamApi || other.methodEagerStreamApi;
+        methodStreamEagerApi = methodStreamEagerApi || other.methodStreamEagerApi;
         generateStreamEagerApiOverwritten = generateStreamEagerApiOverwritten
                 || other.generateStreamEagerApiOverwritten;
         methodStreamLazyApi = methodStreamLazyApi || other.methodStreamLazyApi;

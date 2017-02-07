@@ -176,9 +176,9 @@ public class SqlStatementConfigurationFactory {
     private void streamEager(final SqlStatementConfiguration configuration) {
         if (configuration.isUsingPluginStreamEagerConfig()) {
             if (SqlStatementType.WRITING == configuration.getType()) {
-                configuration.setMethodEagerStreamApi(false);
+                configuration.setMethodStreamEagerApi(false);
             } else {
-                configuration.setMethodEagerStreamApi(runtimeConfig.isGenerateStreamEagerApi());
+                configuration.setMethodStreamEagerApi(runtimeConfig.isGenerateStreamEagerApi());
             }
         }
     }

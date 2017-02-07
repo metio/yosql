@@ -31,7 +31,7 @@ public class SqlStatementConfigurationDefaultsTest {
 
     @Test
     public void shouldEnableStreamModeByDefault() {
-        Assert.assertTrue(configuration.isMethodEagerStreamApi());
+        Assert.assertTrue(configuration.isMethodStreamEagerApi());
         Assert.assertTrue(configuration.isMethodStreamLazyApi());
     }
 

@@ -55,7 +55,7 @@ public class SqlStatement {
     }
 
     public boolean shouldGenerateStreamEagerAPI() {
-        return configuration.isMethodEagerStreamApi()
+        return configuration.isMethodStreamEagerApi()
                 && isReading();
     }
 
