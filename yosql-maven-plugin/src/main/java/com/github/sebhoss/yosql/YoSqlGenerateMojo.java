@@ -305,6 +305,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private final SqlFileParser                         sqlFileParser;
     private final CodeGenerator                         codeGenerator;
     private final PluginRuntimeConfig                   runtimeConfig;
+    // private final PlexusContainer beanLocator;
 
     @Inject
     YoSqlGenerateMojo(

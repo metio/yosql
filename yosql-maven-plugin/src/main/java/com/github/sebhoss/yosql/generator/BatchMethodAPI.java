@@ -2,8 +2,7 @@ package com.github.sebhoss.yosql.generator;
 
 import java.util.List;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.codehaus.plexus.component.annotations.Component;
 
 import com.github.sebhoss.yosql.SqlStatement;
 import com.github.sebhoss.yosql.SqlStatementConfiguration;
@@ -12,9 +11,8 @@ import com.github.sebhoss.yosql.helpers.TypicalModifiers;
 import com.github.sebhoss.yosql.helpers.TypicalTypes;
 import com.squareup.javapoet.MethodSpec;
 
-@Named
-@Singleton
-public class BatchMethodAPI {
+@Component(role = MethodGenerator.class, hint = "batch")
+public class BatchMethodAPI implements MethodGenerator {
 
     public MethodSpec batchApi(final List<SqlStatement> sqlStatements) {
         final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
@@ -31,6 +29,16 @@ public class BatchMethodAPI {
                 .addCode(TypicalCodeBlocks.endTryBlock(2))
                 .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
                 .build();
+    }
+
+    @Override
+    public MethodSpec generateMethod(final String methodName, final List<SqlStatement> statements) {
+        return batchApi(statements);
+    }
+
+    @Override
+    public String getName() {
+        return "batch";
     }
 
 }
