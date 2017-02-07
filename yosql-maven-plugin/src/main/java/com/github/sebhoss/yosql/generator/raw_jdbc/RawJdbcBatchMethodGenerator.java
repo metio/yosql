@@ -1,20 +1,21 @@
-package com.github.sebhoss.yosql.generator.jdbc;
+package com.github.sebhoss.yosql.generator.raw_jdbc;
 
 import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 
-import com.github.sebhoss.yosql.generator.MethodGenerator;
-import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
-import com.github.sebhoss.yosql.helpers.TypicalModifiers;
-import com.github.sebhoss.yosql.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.generator.BatchMethodGenerator;
+import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
+import com.github.sebhoss.yosql.generator.helpers.TypicalModifiers;
+import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
 import com.squareup.javapoet.MethodSpec;
 
-@Component(role = MethodGenerator.class, hint = "batch")
-public class BatchMethodAPI implements MethodGenerator {
+@Component(role = BatchMethodGenerator.class, hint = "raw-jdbc")
+public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
 
+    @Override
     public MethodSpec batchApi(final List<SqlStatement> sqlStatements) {
         final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
         return MethodSpec.methodBuilder(configuration.getBatchName())
@@ -30,16 +31,6 @@ public class BatchMethodAPI implements MethodGenerator {
                 .addCode(TypicalCodeBlocks.endTryBlock(2))
                 .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
                 .build();
-    }
-
-    @Override
-    public MethodSpec generateMethod(final String methodName, final List<SqlStatement> statements) {
-        return batchApi(statements);
-    }
-
-    @Override
-    public String getName() {
-        return "batch";
     }
 
 }

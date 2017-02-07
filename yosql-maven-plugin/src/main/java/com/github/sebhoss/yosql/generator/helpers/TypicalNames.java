@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql.helpers;
+package com.github.sebhoss.yosql.generator.helpers;
 
 public class TypicalNames {
 

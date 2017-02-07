@@ -6,14 +6,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.generator.CommonGenerator;
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.TypeWriter;
-import com.github.sebhoss.yosql.helpers.TypicalFields;
-import com.github.sebhoss.yosql.helpers.TypicalMethods;
-import com.github.sebhoss.yosql.helpers.TypicalModifiers;
-import com.github.sebhoss.yosql.helpers.TypicalNames;
-import com.github.sebhoss.yosql.helpers.TypicalParameters;
-import com.github.sebhoss.yosql.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.generator.helpers.TypicalFields;
+import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
+import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
+import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -25,13 +24,13 @@ public class ResultRowGenerator {
 
     public static final String        RESULT_ROW_CLASS_NAME = "ResultRow";
 
-    private final CommonGenerator     commonGenerator;
+    private final AnnotationGenerator     commonGenerator;
     private final TypeWriter          typeWriter;
     private final PluginRuntimeConfig runtimeConfig;
 
     @Inject
     public ResultRowGenerator(
-            final CommonGenerator commonGenerator,
+            final AnnotationGenerator commonGenerator,
             final TypeWriter typeWriter,
             final PluginRuntimeConfig runtimeConfig) {
         this.commonGenerator = commonGenerator;
@@ -41,13 +40,12 @@ public class ResultRowGenerator {
 
     public void generateResultRowClass() {
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
-        final TypeSpec type = TypeSpec.classBuilder(RESULT_ROW_CLASS_NAME)
-                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+        final TypeSpec type = TypicalTypes.publicClass(RESULT_ROW_CLASS_NAME)
                 .addField(row())
                 .addMethod(constructor())
                 .addMethod(setColumnValue())
                 .addMethod(toStringMethod())
-                .addAnnotation(commonGenerator.generatedAnnotation(ResultRowGenerator.class))
+                .addAnnotation(commonGenerator.generated(ResultRowGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }

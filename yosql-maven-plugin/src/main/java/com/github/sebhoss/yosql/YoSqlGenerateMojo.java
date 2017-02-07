@@ -27,7 +27,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import com.github.sebhoss.yosql.generator.RawJdbcCodeGenerator;
+import com.github.sebhoss.yosql.generator.raw_jdbc.RawJdbcCodeGenerator;
 import com.github.sebhoss.yosql.generator.utils.FlowStateGenerator;
 import com.github.sebhoss.yosql.generator.utils.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.utils.ResultStateGenerator;

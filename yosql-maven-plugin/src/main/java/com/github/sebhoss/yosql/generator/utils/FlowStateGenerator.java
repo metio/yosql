@@ -10,13 +10,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.generator.CommonGenerator;
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.TypeWriter;
-import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
-import com.github.sebhoss.yosql.helpers.TypicalMethods;
-import com.github.sebhoss.yosql.helpers.TypicalModifiers;
-import com.github.sebhoss.yosql.helpers.TypicalNames;
-import com.github.sebhoss.yosql.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
+import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
+import com.github.sebhoss.yosql.generator.helpers.TypicalModifiers;
+import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
+import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -29,13 +30,13 @@ public class FlowStateGenerator {
 
     public static final String        FLOW_STATE_CLASS_NAME = "FlowState";
 
-    private final CommonGenerator     commonGenerator;
+    private final AnnotationGenerator     commonGenerator;
     private final TypeWriter          typeWriter;
     private final PluginRuntimeConfig runtimeConfig;
 
     @Inject
     public FlowStateGenerator(
-            final CommonGenerator commonGenerator,
+            final AnnotationGenerator commonGenerator,
             final TypeWriter typeWriter,
             final PluginRuntimeConfig runtimeConfig) {
         this.commonGenerator = commonGenerator;
@@ -46,12 +47,11 @@ public class FlowStateGenerator {
     public void generateFlowStateClass() {
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
         final ClassName superclass = ClassName.get(packageName, ResultStateGenerator.RESULT_STATE_CLASS_NAME);
-        final TypeSpec type = TypeSpec.classBuilder(FLOW_STATE_CLASS_NAME)
-                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+        final TypeSpec type = TypicalTypes.publicClass(FLOW_STATE_CLASS_NAME)
                 .superclass(superclass)
                 .addFields(fields())
                 .addMethods(methods())
-                .addAnnotation(commonGenerator.generatedAnnotation(FlowStateGenerator.class))
+                .addAnnotation(commonGenerator.generated(FlowStateGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }

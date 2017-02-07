@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql.generator.jdbc;
+package com.github.sebhoss.yosql.generator.raw_jdbc;
 
 import java.util.List;
 
@@ -6,9 +6,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
-import com.github.sebhoss.yosql.helpers.TypicalMethods;
-import com.github.sebhoss.yosql.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.generator.StandardMethodGenerator;
+import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
+import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
+import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
@@ -18,16 +19,17 @@ import com.squareup.javapoet.ParameterizedTypeName;
 
 @Named
 @Singleton
-public class StandardMethodAPI {
+public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     private final TypicalCodeBlocks codeBlocks;
 
     @Inject
-    public StandardMethodAPI(final TypicalCodeBlocks codeBlocks) {
+    public RawJdbcStandardMethodGenerator(final TypicalCodeBlocks codeBlocks) {
         this.codeBlocks = codeBlocks;
     }
 
-    public MethodSpec standardReadApi(final String methodName, final List<SqlStatement> statements) {
+    @Override
+    public MethodSpec standardReadMethod(final String methodName, final List<SqlStatement> statements) {
         final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
@@ -50,7 +52,8 @@ public class StandardMethodAPI {
                 .build();
     }
 
-    public MethodSpec standardWriteApi(final String methodName, final List<SqlStatement> statements) {
+    @Override
+    public MethodSpec standardWriteMethod(final String methodName, final List<SqlStatement> statements) {
         final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         return TypicalMethods.publicMethod(configuration.getName())
                 .returns(int.class)

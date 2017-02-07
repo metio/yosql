@@ -10,13 +10,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.generator.CommonGenerator;
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.TypeWriter;
-import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
-import com.github.sebhoss.yosql.helpers.TypicalMethods;
-import com.github.sebhoss.yosql.helpers.TypicalModifiers;
-import com.github.sebhoss.yosql.helpers.TypicalNames;
-import com.github.sebhoss.yosql.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
+import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
+import com.github.sebhoss.yosql.generator.helpers.TypicalModifiers;
+import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
+import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -28,13 +29,13 @@ public class ResultStateGenerator {
 
     public static final String        RESULT_STATE_CLASS_NAME = "ResultState";
 
-    private final CommonGenerator     commonGenerator;
+    private final AnnotationGenerator     commonGenerator;
     private final TypeWriter          typeWriter;
     private final PluginRuntimeConfig runtimeConfig;
 
     @Inject
     public ResultStateGenerator(
-            final CommonGenerator commonGenerator,
+            final AnnotationGenerator commonGenerator,
             final TypeWriter typeWriter,
             final PluginRuntimeConfig runtimeConfig) {
         this.commonGenerator = commonGenerator;
@@ -43,11 +44,10 @@ public class ResultStateGenerator {
     }
 
     public void generateResultStateClass() {
-        final TypeSpec type = TypeSpec.classBuilder(RESULT_STATE_CLASS_NAME)
-                .addModifiers(TypicalModifiers.OPEN_CLASS)
+        final TypeSpec type = TypicalTypes.publicClass(RESULT_STATE_CLASS_NAME)
                 .addFields(fields())
                 .addMethods(methods())
-                .addAnnotation(commonGenerator.generatedAnnotation(ResultStateGenerator.class))
+                .addAnnotation(commonGenerator.generated(ResultStateGenerator.class))
                 .build();
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);

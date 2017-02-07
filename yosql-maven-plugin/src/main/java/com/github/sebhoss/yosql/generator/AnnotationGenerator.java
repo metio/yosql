@@ -1,14 +1,18 @@
-package com.github.sebhoss.yosql.helpers;
+package com.github.sebhoss.yosql.generator;
 
 import java.time.ZonedDateTime;
 
 import javax.annotation.Generated;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import com.squareup.javapoet.AnnotationSpec;
 
-public final class TypicalAnnotations {
+@Named
+@Singleton
+public class AnnotationGenerator {
 
-    public static final AnnotationSpec generatedAnnotation(final Class<?> generatorClass) {
+    public AnnotationSpec generated(final Class<?> generatorClass) {
         return AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", generatorClass.getName())
                 .addMember("date", "$S", ZonedDateTime.now().toString())

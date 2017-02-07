@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.github.sebhoss.yosql.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.squareup.javapoet.ParameterSpec;
 
 public class SqlStatementConfiguration {

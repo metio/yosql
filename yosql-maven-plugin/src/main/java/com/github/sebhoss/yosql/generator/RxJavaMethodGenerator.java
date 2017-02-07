@@ -5,8 +5,8 @@ import java.util.List;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.MethodSpec;
 
-public interface MethodGenerator {
+public interface RxJavaMethodGenerator {
 
-    Iterable<MethodSpec> asMethods(List<SqlStatement> sqlStatementsInRepository);
+    MethodSpec rxJava2ReadMethod(List<SqlStatement> statements);
 
 }

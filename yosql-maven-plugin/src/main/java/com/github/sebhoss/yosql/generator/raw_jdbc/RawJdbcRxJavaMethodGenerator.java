@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql.generator.jdbc;
+package com.github.sebhoss.yosql.generator.raw_jdbc;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -7,11 +7,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
-import com.github.sebhoss.yosql.helpers.TypicalMethods;
-import com.github.sebhoss.yosql.helpers.TypicalNames;
-import com.github.sebhoss.yosql.helpers.TypicalParameters;
-import com.github.sebhoss.yosql.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.generator.RxJavaMethodGenerator;
+import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
+import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
+import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
+import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
@@ -25,20 +26,21 @@ import io.reactivex.Emitter;
 
 @Named
 @Singleton
-public class RxJava2MethodAPI {
+public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
 
     private final PluginRuntimeConfig runtimeConfig;
     private final TypicalCodeBlocks   codeBlocks;
 
     @Inject
-    public RxJava2MethodAPI(
+    public RawJdbcRxJavaMethodGenerator(
             final PluginRuntimeConfig runtimeConfig,
             final TypicalCodeBlocks codeBlocks) {
         this.runtimeConfig = runtimeConfig;
         this.codeBlocks = codeBlocks;
     }
 
-    public MethodSpec rxJava2Method(final List<SqlStatement> statements) {
+    @Override
+    public MethodSpec rxJava2ReadMethod(final List<SqlStatement> statements) {
         final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());

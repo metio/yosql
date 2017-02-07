@@ -6,12 +6,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.generator.CommonGenerator;
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.TypeWriter;
-import com.github.sebhoss.yosql.helpers.TypicalMethods;
-import com.github.sebhoss.yosql.helpers.TypicalModifiers;
-import com.github.sebhoss.yosql.helpers.TypicalNames;
-import com.github.sebhoss.yosql.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
+import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
+import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
+import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -23,13 +23,13 @@ public class ToResultRowConverterGenerator {
 
     public static final String        TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
 
-    private final CommonGenerator     commonGenerator;
+    private final AnnotationGenerator     commonGenerator;
     private final TypeWriter          typeWriter;
     private final PluginRuntimeConfig runtimeConfig;
 
     @Inject
     public ToResultRowConverterGenerator(
-            final CommonGenerator commonGenerator,
+            final AnnotationGenerator commonGenerator,
             final TypeWriter typeWriter,
             final PluginRuntimeConfig runtimeConfig) {
         this.commonGenerator = commonGenerator;
@@ -39,10 +39,9 @@ public class ToResultRowConverterGenerator {
 
     public void generateToResultRowConverterClass() {
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
-        final TypeSpec type = TypeSpec.classBuilder(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
-                .addModifiers(TypicalModifiers.PUBLIC_METHOD)
+        final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
                 .addMethod(asUserType())
-                .addAnnotation(commonGenerator.generatedAnnotation(ToResultRowConverterGenerator.class))
+                .addAnnotation(commonGenerator.generated(ToResultRowConverterGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }

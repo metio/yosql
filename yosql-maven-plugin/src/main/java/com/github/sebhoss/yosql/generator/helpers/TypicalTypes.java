@@ -1,9 +1,10 @@
-package com.github.sebhoss.yosql.helpers;
+package com.github.sebhoss.yosql.generator.helpers;
 
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 
 public class TypicalTypes {
 
@@ -46,4 +47,8 @@ public class TypicalTypes {
     public static final TypeName  FLOWABLE_OF_MAPS          = ParameterizedTypeName.get(FLOWABLE,
             TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
 
+    public static final TypeSpec.Builder publicClass(final String name) {
+        return TypeSpec.classBuilder(name)
+                .addModifiers(TypicalModifiers.PUBLIC_CLASS);
+    }
 }
