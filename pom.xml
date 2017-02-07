@@ -16,7 +16,7 @@
   </modules>
 
   <properties>
-    <version.bom>9999.99.99-SNAPSHOT</version.bom>
+    <version.bom>2016.08.20-000508</version.bom>
   </properties>
 
   <dependencyManagement>
