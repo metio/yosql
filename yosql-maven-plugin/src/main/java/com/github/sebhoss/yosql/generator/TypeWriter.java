@@ -30,8 +30,7 @@ public class TypeWriter extends AbstractComponent {
             final TypeSpec typeSpec) {
         try {
             JavaFile.builder(packageName, typeSpec).build().writeTo(baseDirectory);
-            log().info(String.format("Generated [%s.%s] in [%s]",
-                    packageName, typeSpec.name, baseDirectory));
+            log().info(String.format("Generated [%s.%s]", packageName, typeSpec.name));
         } catch (final IOException exception) {
             addError(exception);
             log().error(String.format("Could not write [%s.%s] into [%s]",
