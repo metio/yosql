@@ -27,10 +27,20 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import com.github.sebhoss.yosql.generator.FlowStateGenerator;
-import com.github.sebhoss.yosql.generator.ResultRowGenerator;
-import com.github.sebhoss.yosql.generator.ResultStateGenerator;
-import com.github.sebhoss.yosql.generator.ToResultRowConverterGenerator;
+import com.github.sebhoss.yosql.generator.DefaultCodeGenerator;
+import com.github.sebhoss.yosql.generator.utils.FlowStateGenerator;
+import com.github.sebhoss.yosql.generator.utils.ResultRowGenerator;
+import com.github.sebhoss.yosql.generator.utils.ResultStateGenerator;
+import com.github.sebhoss.yosql.generator.utils.ToResultRowConverterGenerator;
+import com.github.sebhoss.yosql.model.LoggingAPI;
+import com.github.sebhoss.yosql.model.ParameterConverterConfiguration;
+import com.github.sebhoss.yosql.model.ResultRowConverter;
+import com.github.sebhoss.yosql.model.SqlStatement;
+import com.github.sebhoss.yosql.parser.FileSetResolver;
+import com.github.sebhoss.yosql.parser.SqlFileParser;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+import com.github.sebhoss.yosql.plugin.PluginPreconditions;
+import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.ClassName;
 
 /**
@@ -308,7 +318,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private final PluginPreconditions                   preconditions;
     private final FileSetResolver                       fileSetResolver;
     private final SqlFileParser                         sqlFileParser;
-    private final DefaultCodeGenerator                         codeGenerator;
+    private final DefaultCodeGenerator                  codeGenerator;
     private final PluginRuntimeConfig                   runtimeConfig;
     // private final PlexusContainer beanLocator;
 
@@ -344,8 +354,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     private List<SqlStatement> parseAllSqlFiles() {
         final Instant preParse = Instant.now();
-        final FileSet filesToParse = Optional.ofNullable(sqlFiles)
-                .orElse(YoSqlConfiguration.defaultSqlFileSet(project.getBasedir()));
+        final FileSet filesToParse = Optional.ofNullable(sqlFiles).orElse(defaultSqlFileSet());
         final List<SqlStatement> allStatements = fileSetResolver.resolveFiles(filesToParse)
                 .flatMap(sqlFileParser::parse)
                 .sorted(Comparator.comparing(statement -> statement.getConfiguration().getName()))
@@ -354,6 +363,13 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         getLog().debug(String.format("Time spent parsing [%s] statements (ms): %s",
                 allStatements.size(), Duration.between(preParse, postParse).toMillis()));
         return allStatements;
+    }
+
+    private FileSet defaultSqlFileSet() {
+        final FileSet fileSet = new FileSet();
+        fileSet.setDirectory(project.getBasedir().getAbsolutePath() + "/src/main/yosql");
+        fileSet.addInclude("**/*.sql");
+        return fileSet;
     }
 
     private void generateRepositories(final List<SqlStatement> allStatements) {

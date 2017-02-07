@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
-import com.github.sebhoss.yosql.SqlFileParser;
-import com.github.sebhoss.yosql.SqlParameter;
-import com.github.sebhoss.yosql.SqlStatement;
+import com.github.sebhoss.yosql.model.SqlParameter;
+import com.github.sebhoss.yosql.model.SqlStatement;
+import com.github.sebhoss.yosql.parser.SqlFileParser;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;

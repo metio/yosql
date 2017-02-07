@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.model;
 
 public class SqlParameter {
 
@@ -46,7 +46,7 @@ public class SqlParameter {
         this.indices = indices;
     }
 
-    protected boolean hasIndices() {
+    public boolean hasIndices() {
         return indices != null && indices.length > 0;
     }
 

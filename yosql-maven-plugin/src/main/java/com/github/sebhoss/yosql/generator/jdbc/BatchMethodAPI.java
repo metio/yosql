@@ -1,14 +1,15 @@
-package com.github.sebhoss.yosql.generator;
+package com.github.sebhoss.yosql.generator.jdbc;
 
 import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 
-import com.github.sebhoss.yosql.SqlStatement;
-import com.github.sebhoss.yosql.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.generator.MethodGenerator;
 import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.helpers.TypicalModifiers;
 import com.github.sebhoss.yosql.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.model.SqlStatement;
+import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
 import com.squareup.javapoet.MethodSpec;
 
 @Component(role = MethodGenerator.class, hint = "batch")

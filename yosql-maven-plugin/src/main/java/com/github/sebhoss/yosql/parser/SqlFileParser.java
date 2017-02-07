@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.parser;
 
 import static java.util.stream.Collectors.joining;
 
@@ -22,6 +22,12 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import com.github.sebhoss.yosql.model.SqlSourceFile;
+import com.github.sebhoss.yosql.model.SqlStatement;
+import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 
 @Named
 @Singleton

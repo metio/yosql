@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -282,7 +282,7 @@ public class SqlStatementConfiguration {
     /**
      * @return <code>true</code> if 'single' was not overwritten.
      */
-    protected boolean isUsingPluginSingleConfig() {
+    public boolean isUsingPluginSingleConfig() {
         return !generateStandardApiOverwritten;
     }
 
@@ -290,21 +290,21 @@ public class SqlStatementConfiguration {
      * @return <code>true</code> if 'generateBatchApi' was not overwritten and
      *         the plugin configuration should be used.
      */
-    protected boolean isUsingPluginBatchConfig() {
+    public boolean isUsingPluginBatchConfig() {
         return !generateBatchApiOverwritten;
     }
 
     /**
      * @return <code>true</code> if 'streamEager' was not overwritten.
      */
-    protected boolean isUsingPluginStreamEagerConfig() {
+    public boolean isUsingPluginStreamEagerConfig() {
         return !generateStreamEagerApiOverwritten;
     }
 
     /**
      * @return <code>true</code> if 'streamLazy' was not overwritten.
      */
-    protected boolean isUsingPluginStreamLazyConfig() {
+    public boolean isUsingPluginStreamLazyConfig() {
         return !generateStreamLazyApiOverwritten;
     }
 
@@ -372,7 +372,7 @@ public class SqlStatementConfiguration {
     /**
      * @return <code>true</code> if 'streamLazy' was not overwritten.
      */
-    protected boolean isUsingPluginCatchAndRethrowConfig() {
+    public boolean isUsingPluginCatchAndRethrowConfig() {
         return !methodCatchAndRethrowOverwritten;
     }
 

@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.plugin;
 
 import java.io.File;
 import java.util.List;
@@ -10,6 +10,8 @@ import javax.inject.Singleton;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.logging.Log;
 
+import com.github.sebhoss.yosql.model.LoggingAPI;
+import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.squareup.javapoet.ClassName;
 
 @Named

@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.parser;
 
 import static java.util.stream.Collectors.joining;
 
@@ -13,6 +13,9 @@ import javax.inject.Singleton;
 
 import org.apache.maven.model.FileSet;
 import org.codehaus.plexus.util.FileUtils;
+
+import com.github.sebhoss.yosql.model.SqlSourceFile;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
 
 @Named
 @Singleton

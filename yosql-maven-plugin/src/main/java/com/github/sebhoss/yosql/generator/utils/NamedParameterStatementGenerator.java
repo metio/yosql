@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql.generator;
+package com.github.sebhoss.yosql.generator.utils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,10 +11,12 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.lang.model.element.Modifier;
 
-import com.github.sebhoss.yosql.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.generator.CommonGenerator;
+import com.github.sebhoss.yosql.generator.TypeWriter;
 import com.github.sebhoss.yosql.helpers.TypicalModifiers;
 import com.github.sebhoss.yosql.helpers.TypicalNames;
 import com.github.sebhoss.yosql.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;

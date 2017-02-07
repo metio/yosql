@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.model;
 
 public interface SqlInputConverter<USER_TYPE, DATABASE_TYPE> {
 

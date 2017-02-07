@@ -18,10 +18,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.PluginRuntimeConfig;
-import com.github.sebhoss.yosql.SqlParameter;
-import com.github.sebhoss.yosql.SqlStatement;
-import com.github.sebhoss.yosql.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlParameter;
+import com.github.sebhoss.yosql.model.SqlStatement;
+import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;

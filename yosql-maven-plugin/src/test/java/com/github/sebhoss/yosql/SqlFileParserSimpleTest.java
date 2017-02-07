@@ -8,6 +8,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.sebhoss.yosql.model.SqlSourceFile;
+import com.github.sebhoss.yosql.model.SqlStatement;
+import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.parser.SqlFileParser;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+
 public class SqlFileParserSimpleTest {
 
     private SqlFileParser parser;

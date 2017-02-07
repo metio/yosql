@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.parser;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -12,6 +12,14 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.yaml.snakeyaml.Yaml;
+
+import com.github.sebhoss.yosql.model.ResultRowConverter;
+import com.github.sebhoss.yosql.model.SqlParameter;
+import com.github.sebhoss.yosql.model.SqlSourceFile;
+import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlStatementType;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 
 @Named
 @Singleton

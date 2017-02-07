@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.plugin;
 
 import static java.util.Objects.requireNonNull;
 

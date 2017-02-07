@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql.generator;
+package com.github.sebhoss.yosql.generator.jdbc;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -7,15 +7,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.PluginRuntimeConfig;
-import com.github.sebhoss.yosql.ResultRowConverter;
-import com.github.sebhoss.yosql.SqlStatement;
-import com.github.sebhoss.yosql.SqlStatementConfiguration;
 import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.helpers.TypicalMethods;
 import com.github.sebhoss.yosql.helpers.TypicalNames;
 import com.github.sebhoss.yosql.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.model.ResultRowConverter;
+import com.github.sebhoss.yosql.model.SqlStatement;
+import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;

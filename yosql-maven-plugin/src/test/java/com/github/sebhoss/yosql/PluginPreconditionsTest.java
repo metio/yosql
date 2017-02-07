@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+import com.github.sebhoss.yosql.plugin.PluginPreconditions;
+
 import java.io.File;
 import java.io.IOException;
 

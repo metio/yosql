@@ -7,9 +7,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.AbstractComponent;
-import com.github.sebhoss.yosql.PluginErrors;
-import com.github.sebhoss.yosql.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.plugin.AbstractComponent;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 

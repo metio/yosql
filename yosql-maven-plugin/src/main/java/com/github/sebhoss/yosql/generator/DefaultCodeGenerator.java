@@ -1,4 +1,4 @@
-package com.github.sebhoss.yosql;
+package com.github.sebhoss.yosql.generator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,15 +13,14 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 
-import com.github.sebhoss.yosql.generator.BatchMethodAPI;
-import com.github.sebhoss.yosql.generator.FlowStateGenerator;
-import com.github.sebhoss.yosql.generator.Java8MethodAPI;
-import com.github.sebhoss.yosql.generator.ResultRowGenerator;
-import com.github.sebhoss.yosql.generator.ResultStateGenerator;
-import com.github.sebhoss.yosql.generator.RxJava2MethodAPI;
-import com.github.sebhoss.yosql.generator.StandardMethodAPI;
-import com.github.sebhoss.yosql.generator.ToResultRowConverterGenerator;
-import com.github.sebhoss.yosql.generator.TypeWriter;
+import com.github.sebhoss.yosql.generator.jdbc.BatchMethodAPI;
+import com.github.sebhoss.yosql.generator.jdbc.Java8MethodAPI;
+import com.github.sebhoss.yosql.generator.jdbc.RxJava2MethodAPI;
+import com.github.sebhoss.yosql.generator.jdbc.StandardMethodAPI;
+import com.github.sebhoss.yosql.generator.utils.FlowStateGenerator;
+import com.github.sebhoss.yosql.generator.utils.ResultRowGenerator;
+import com.github.sebhoss.yosql.generator.utils.ResultStateGenerator;
+import com.github.sebhoss.yosql.generator.utils.ToResultRowConverterGenerator;
 import com.github.sebhoss.yosql.helpers.TypicalAnnotations;
 import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.helpers.TypicalFields;
@@ -30,6 +29,13 @@ import com.github.sebhoss.yosql.helpers.TypicalModifiers;
 import com.github.sebhoss.yosql.helpers.TypicalNames;
 import com.github.sebhoss.yosql.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.model.ResultRowConverter;
+import com.github.sebhoss.yosql.model.SqlParameter;
+import com.github.sebhoss.yosql.model.SqlStatement;
+import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlStatementType;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
@@ -39,7 +45,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
-public class DefaultCodeGenerator {
+public class DefaultCodeGenerator implements CodeGenerator {
 
     private final TypeWriter                    typeWriter;
     private final FlowStateGenerator            flowStateGenerator;
@@ -77,6 +83,7 @@ public class DefaultCodeGenerator {
         this.standardApi = standardApi;
     }
 
+    @Override
     public void generateUtilities(final List<SqlStatement> allStatements) {
         if (allStatements.stream()
                 .map(SqlStatement::getConfiguration)
@@ -105,6 +112,7 @@ public class DefaultCodeGenerator {
      * @param sqlStatements
      *            The SQL statements to be included in the repository.
      */
+    @Override
     public void generateRepository(final String repositoryName,
             final List<SqlStatement> sqlStatements) {
         final String className = TypicalNames.getClassName(repositoryName);

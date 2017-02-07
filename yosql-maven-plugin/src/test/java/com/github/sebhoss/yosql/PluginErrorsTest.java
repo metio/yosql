@@ -7,6 +7,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+
 /**
  * Unit tests for {@link PluginErrors}.
  */

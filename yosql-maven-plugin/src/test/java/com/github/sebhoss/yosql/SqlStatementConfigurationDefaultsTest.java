@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+
 /**
  * Unit test that verifies the default values for
  * {@link SqlStatementConfiguration}.
