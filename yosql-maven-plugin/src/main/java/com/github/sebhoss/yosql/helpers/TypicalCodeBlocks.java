@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -20,6 +22,7 @@ import com.github.sebhoss.yosql.PluginRuntimeConfig;
 import com.github.sebhoss.yosql.SqlParameter;
 import com.github.sebhoss.yosql.SqlStatement;
 import com.github.sebhoss.yosql.SqlStatementConfiguration;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
 import com.squareup.javapoet.TypeName;
@@ -337,6 +340,13 @@ public class TypicalCodeBlocks {
 
     private static CodeBlock close(final String resource) {
         return CodeBlock.builder().addStatement("$N.close()", resource).build();
+    }
+
+    public static Iterable<TypeName> sqlException(final SqlStatementConfiguration configuration) {
+        if (!configuration.isMethodCatchAndRethrow()) {
+            return Arrays.asList(ClassName.get(SQLException.class));
+        }
+        return Collections.emptyList();
     }
 
     private final PluginRuntimeConfig runtimeConfig;
