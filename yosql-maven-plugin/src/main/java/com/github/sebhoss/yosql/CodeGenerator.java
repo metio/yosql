@@ -1,6 +1,5 @@
 package com.github.sebhoss.yosql;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import com.github.sebhoss.yosql.generator.FlowStateGenerator;
 import com.github.sebhoss.yosql.generator.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.ResultStateGenerator;
 import com.github.sebhoss.yosql.generator.ToResultRowConverterGenerator;
+import com.github.sebhoss.yosql.generator.TypeWriter;
 import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.helpers.TypicalFields;
 import com.github.sebhoss.yosql.helpers.TypicalMethods;
@@ -39,7 +39,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -52,7 +51,7 @@ import io.reactivex.Emitter;
 @Singleton
 public class CodeGenerator {
 
-    private final PluginErrors                  pluginErrors;
+    private final TypeWriter                    typeWriter;
     private final FlowStateGenerator            flowStateGenerator;
     private final PluginRuntimeConfig           runtimeConfig;
     private final ResultStateGenerator          resultStateGenerator;
@@ -62,6 +61,7 @@ public class CodeGenerator {
 
     @Inject
     public CodeGenerator(
+            final TypeWriter typeWriter,
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
             final ToResultRowConverterGenerator toResultRowConverterGenerator,
@@ -69,11 +69,11 @@ public class CodeGenerator {
             final PluginErrors pluginErrors,
             final PluginRuntimeConfig runtimeConfig,
             final TypicalCodeBlocks codeBlocks) {
+        this.typeWriter = typeWriter;
         this.flowStateGenerator = flowStateGenerator;
         this.resultStateGenerator = resultStateGenerator;
         this.toResultRowConverterGenerator = toResultRowConverterGenerator;
         this.resultRowGenerator = resultRowGenerator;
-        this.pluginErrors = pluginErrors;
         this.runtimeConfig = runtimeConfig;
         this.codeBlocks = codeBlocks;
     }
@@ -117,15 +117,7 @@ public class CodeGenerator {
                 .addAnnotation(generatedAnnotation())
                 .addStaticBlock(staticInitializer(sqlStatements))
                 .build();
-        final JavaFile javaFile = JavaFile.builder(packageName, repository).build();
-
-        try {
-            javaFile.writeTo(runtimeConfig.getOutputBaseDirectory().toPath());
-            runtimeConfig.getLogger().info(String.format("Generated [%s.%s] using %s statements", packageName,
-                    className, sqlStatements.size()));
-        } catch (final IOException exception) {
-            pluginErrors.add(exception);
-        }
+        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, repository);
     }
 
     private static CodeBlock staticInitializer(final List<SqlStatement> sqlStatements) {

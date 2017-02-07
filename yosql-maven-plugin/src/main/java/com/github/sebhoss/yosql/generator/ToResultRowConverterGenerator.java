@@ -43,8 +43,6 @@ public class ToResultRowConverterGenerator {
                 .addAnnotation(commonGenerator.generatedAnnotation(ToResultRowConverterGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
-        runtimeConfig.getLogger()
-                .info(String.format("Generated [%s.%s]", packageName, TO_RESULT_ROW_CONVERTER_CLASS_NAME));
     }
 
     private MethodSpec asUserType() {

@@ -49,7 +49,6 @@ public class ResultStateGenerator {
                 .build();
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
-        runtimeConfig.getLogger().info(String.format("Generated [%s.%s]", packageName, RESULT_STATE_CLASS_NAME));
     }
 
     private Iterable<FieldSpec> fields() {

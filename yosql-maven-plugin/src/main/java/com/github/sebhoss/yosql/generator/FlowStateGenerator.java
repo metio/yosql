@@ -52,7 +52,6 @@ public class FlowStateGenerator {
                 .addAnnotation(commonGenerator.generatedAnnotation(FlowStateGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
-        runtimeConfig.getLogger().info(String.format("Generated [%s.%s]", packageName, FLOW_STATE_CLASS_NAME));
     }
 
     private Iterable<FieldSpec> fields() {

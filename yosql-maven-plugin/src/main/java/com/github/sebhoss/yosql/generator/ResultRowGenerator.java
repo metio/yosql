@@ -48,8 +48,6 @@ public class ResultRowGenerator {
                 .addAnnotation(commonGenerator.generatedAnnotation(ResultRowGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
-        runtimeConfig.getLogger()
-                .info(String.format("Generated [%s.%s]", packageName, RESULT_ROW_CLASS_NAME));
     }
 
     private FieldSpec row() {
