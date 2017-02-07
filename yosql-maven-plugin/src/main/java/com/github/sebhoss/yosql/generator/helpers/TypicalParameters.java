@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.parser.SqlFileParser;
-import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
@@ -63,42 +62,11 @@ public final class TypicalParameters {
     }
 
     public static ParameterSpec ofSqlParameter(final SqlParameter parameter) {
-        return parameter(guessTypeName(parameter.getType()), parameter.getName());
+        return parameter(TypicalTypes.guessTypeName(parameter.getType()), parameter.getName());
     }
 
     public static ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
-        return parameter(guessBatchTypeName(parameter.getType()), parameter.getName());
-    }
-
-    private static TypeName guessBatchTypeName(final String type) {
-        return ArrayTypeName.of(guessTypeName(type));
-    }
-
-    private static TypeName guessTypeName(final String type) {
-        if (type.contains(".")) {
-            return ClassName.bestGuess(type);
-        } else {
-            switch (type) {
-            case "boolean":
-                return TypeName.BOOLEAN;
-            case "byte":
-                return TypeName.BYTE;
-            case "short":
-                return TypeName.SHORT;
-            case "long":
-                return TypeName.LONG;
-            case "char":
-                return TypeName.CHAR;
-            case "float":
-                return TypeName.FLOAT;
-            case "double":
-                return TypeName.DOUBLE;
-            case "int":
-                return TypeName.INT;
-            default:
-                return TypeName.OBJECT;
-            }
-        }
+        return parameter(TypicalTypes.guessBatchTypeName(parameter.getType()), parameter.getName());
     }
 
     public static final String replaceNamedParameters(final SqlStatement sqlStatement) {

@@ -51,4 +51,36 @@ public class TypicalTypes {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.PUBLIC_CLASS);
     }
+
+    public static TypeName guessBatchTypeName(final String type) {
+        return ArrayTypeName.of(guessTypeName(type));
+    }
+
+    public static TypeName guessTypeName(final String type) {
+        if (type.contains(".")) {
+            return ClassName.bestGuess(type);
+        } else {
+            switch (type) {
+            case "boolean":
+                return TypeName.BOOLEAN;
+            case "byte":
+                return TypeName.BYTE;
+            case "short":
+                return TypeName.SHORT;
+            case "long":
+                return TypeName.LONG;
+            case "char":
+                return TypeName.CHAR;
+            case "float":
+                return TypeName.FLOAT;
+            case "double":
+                return TypeName.DOUBLE;
+            case "int":
+                return TypeName.INT;
+            default:
+                return TypeName.OBJECT;
+            }
+        }
+    }
+
 }
