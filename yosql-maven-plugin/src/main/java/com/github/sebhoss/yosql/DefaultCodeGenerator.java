@@ -39,7 +39,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
-public class CodeGenerator {
+public class DefaultCodeGenerator {
 
     private final TypeWriter                    typeWriter;
     private final FlowStateGenerator            flowStateGenerator;
@@ -53,7 +53,7 @@ public class CodeGenerator {
     private final StandardMethodAPI             standardApi;
 
     @Inject
-    public CodeGenerator(
+    public DefaultCodeGenerator(
             final TypeWriter typeWriter,
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
@@ -113,7 +113,7 @@ public class CodeGenerator {
                 .addModifiers(TypicalModifiers.PUBLIC_CLASS)
                 .addFields(asFields(sqlStatements))
                 .addMethods(asMethods(sqlStatements))
-                .addAnnotation(TypicalAnnotations.generatedAnnotation(CodeGenerator.class))
+                .addAnnotation(TypicalAnnotations.generatedAnnotation(DefaultCodeGenerator.class))
                 .addStaticBlock(staticInitializer(sqlStatements))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, repository);
@@ -145,10 +145,10 @@ public class CodeGenerator {
     private Iterable<FieldSpec> asFields(final List<SqlStatement> sqlStatements) {
         final Stream<FieldSpec> constants = Stream.concat(
                 sqlStatements.stream()
-                        .map(CodeGenerator::asConstantSqlField),
+                        .map(DefaultCodeGenerator::asConstantSqlField),
                 sqlStatements.stream()
                         .filter(stmt -> !stmt.getConfiguration().getParameters().isEmpty())
-                        .map(CodeGenerator::asConstantSqlParameterIndexField));
+                        .map(DefaultCodeGenerator::asConstantSqlParameterIndexField));
         final Stream<FieldSpec> fields = Stream.concat(Stream.of(asDataSourceField()),
                 converterFields(sqlStatements));
         return Stream.concat(constants, fields)

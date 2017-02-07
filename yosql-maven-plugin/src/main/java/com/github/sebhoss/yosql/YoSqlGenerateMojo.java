@@ -308,7 +308,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private final PluginPreconditions                   preconditions;
     private final FileSetResolver                       fileSetResolver;
     private final SqlFileParser                         sqlFileParser;
-    private final CodeGenerator                         codeGenerator;
+    private final DefaultCodeGenerator                         codeGenerator;
     private final PluginRuntimeConfig                   runtimeConfig;
     // private final PlexusContainer beanLocator;
 
@@ -318,7 +318,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             final PluginPreconditions preconditions,
             final FileSetResolver fileSetResolver,
             final SqlFileParser sqlFileParser,
-            final CodeGenerator codeGenerator,
+            final DefaultCodeGenerator codeGenerator,
             final PluginRuntimeConfig runtimeConfig) {
         this.pluginErrors = pluginErrors;
         this.preconditions = preconditions;
