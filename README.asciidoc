@@ -15,7 +15,7 @@ $ mvn install -pl yosql-maven-plugin -DskipTests
 
 Once installed, following the next 3 steps to generate some Java code.
 
-1. Add the plugin to your *pom.xml*:
+1) Add the plugin to your *pom.xml*:
 
 [source, xml]
 ----
@@ -32,7 +32,7 @@ Once installed, following the next 3 steps to generate some Java code.
   </build>
 ----
 
-2. Add .sql files in *src/main/yosql* and write SQL statements into them.
+2) Add .sql files in *src/main/yosql* and write SQL statements into them.
 
 [source]
 ----
@@ -49,7 +49,7 @@ project/
                 └── createItemTable.sql
 ----
 
-3. Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
+3) Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
 
 The above configuration is enough to generate two repositories: *UserRepository* and *ItemRepository*. Each of them will have regular Java methods to execute the SQL statements defined in those .sql files. The `UserRepository` for example exposes these methods (based on *findUser.sql*):
 
