@@ -27,10 +27,8 @@ public class StandardAPI {
         this.codeBlocks = codeBlocks;
     }
 
-    public MethodSpec standardReadApi(
-            final String methodName,
-            final List<SqlStatement> sqlStatements,
-            final SqlStatementConfiguration configuration) {
+    public MethodSpec standardReadApi(final String methodName, final List<SqlStatement> statements) {
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
@@ -39,7 +37,7 @@ public class StandardAPI {
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
                 .addCode(TypicalCodeBlocks.tryPrepare())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.tryExecute())
@@ -52,14 +50,14 @@ public class StandardAPI {
                 .build();
     }
 
-    public MethodSpec standardWriteApi(final String methodName, final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
+    public MethodSpec standardWriteApi(final String methodName, final List<SqlStatement> statements) {
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         return TypicalMethods.publicMethod(configuration.getName())
                 .returns(int.class)
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addParameters(configuration.getParameterSpecs())
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
                 .addCode(TypicalCodeBlocks.tryPrepare())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.executeUpdate())

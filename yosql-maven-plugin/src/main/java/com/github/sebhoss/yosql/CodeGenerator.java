@@ -196,8 +196,7 @@ public class CodeGenerator {
                 .filter(statement -> statement.getConfiguration().isGenerateStandardApi())
                 .filter(statement -> SqlStatementType.READING == statement.getConfiguration().getType())
                 .collect(Collectors.groupingBy(statement -> statement.getConfiguration().getName()))
-                .forEach((methodName, statements) -> methods.add(standardApi.standardReadApi(methodName, statements,
-                        SqlStatementConfiguration.merge(statements))));
+                .forEach((methodName, statements) -> methods.add(standardApi.standardReadApi(methodName, statements)));
         sqlStatements.stream()
                 .filter(statement -> statement.getConfiguration().isGenerateStandardApi())
                 .filter(statement -> SqlStatementType.WRITING == statement.getConfiguration().getType())

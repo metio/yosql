@@ -33,8 +33,8 @@ public class Java8API {
         this.codeBlocks = codeBlocks;
     }
 
-    public MethodSpec streamEagerApi(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
+    public MethodSpec streamEagerApi(final List<SqlStatement> statements) {
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
@@ -44,7 +44,7 @@ public class Java8API {
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
                 .addCode(TypicalCodeBlocks.tryPrepare())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.tryExecute())
@@ -57,8 +57,8 @@ public class Java8API {
                 .build();
     }
 
-    public MethodSpec streamLazyApi(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
+    public MethodSpec streamLazyApi(final List<SqlStatement> statements) {
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
@@ -68,7 +68,7 @@ public class Java8API {
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.maybeTry(configuration))
                 .addCode(TypicalCodeBlocks.getConnection())
-                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
                 .addCode(TypicalCodeBlocks.prepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.executeQuery())

@@ -38,13 +38,13 @@ public class RxJava2API {
         this.codeBlocks = codeBlocks;
     }
 
-    public MethodSpec rxJava2Method(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
+    public MethodSpec rxJava2Method(final List<SqlStatement> statements) {
+        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
 
-        final TypeSpec initialState = createFlowState(configuration, sqlStatements);
+        final TypeSpec initialState = createFlowState(configuration, statements);
         final TypeSpec generator = createFlowGenerator(converter);
         final TypeSpec disposer = createFlowDisposer();
 
@@ -55,8 +55,9 @@ public class RxJava2API {
                 .build();
     }
 
-    private TypeSpec createFlowState(final SqlStatementConfiguration configuration,
-            final List<SqlStatement> sqlStatements) {
+    private TypeSpec createFlowState(
+            final SqlStatementConfiguration configuration,
+            final List<SqlStatement> statements) {
         final ClassName callable = ClassName.get(Callable.class);
         final ParameterizedTypeName initialStateType = ParameterizedTypeName.get(callable,
                 runtimeConfig.getFlowStateClass());
@@ -66,7 +67,7 @@ public class RxJava2API {
                         .returns(runtimeConfig.getFlowStateClass())
                         .addException(Exception.class)
                         .addCode(TypicalCodeBlocks.getConnection())
-                        .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                        .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
                         .addCode(TypicalCodeBlocks.prepareStatement())
                         .addCode(TypicalCodeBlocks.setParameters(configuration))
                         .addCode(TypicalCodeBlocks.executeQuery())
