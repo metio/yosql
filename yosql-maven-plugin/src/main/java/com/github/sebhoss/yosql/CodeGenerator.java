@@ -108,8 +108,8 @@ public class CodeGenerator {
      */
     public void generateRepository(final String repositoryName,
             final List<SqlStatement> sqlStatements) {
-        final String className = getClassName(repositoryName);
-        final String packageName = getPackageName(repositoryName);
+        final String className = TypicalNames.getClassName(repositoryName);
+        final String packageName = TypicalNames.getPackageName(repositoryName);
         final TypeSpec repository = TypeSpec.classBuilder(className)
                 .addModifiers(TypicalModifiers.PUBLIC_CLASS)
                 .addFields(asFields(sqlStatements))
@@ -149,15 +149,6 @@ public class CodeGenerator {
                 .addMember("date", "$S", ZonedDateTime.now().toString())
                 .addMember("comments", "$S", "DO NOT EDIT")
                 .build();
-    }
-
-    private String getPackageName(final String repositoryName) {
-        return repositoryName.substring(0, repositoryName.lastIndexOf("."));
-    }
-
-    private String getClassName(final String repositoryName) {
-        return repositoryName.substring(repositoryName.lastIndexOf(".") + 1,
-                repositoryName.length());
     }
 
     private Iterable<FieldSpec> asFields(final List<SqlStatement> sqlStatements) {
