@@ -105,7 +105,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                                     generateStandardApi;
+    private boolean                                     methodStandardApi;
 
     /**
      * Controls whether the generated repositories should contain batch methods
@@ -113,7 +113,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                                     generateBatchApi;
+    private boolean                                     methodBatchApi;
 
     /**
      * The method name prefix to apply to all batch methods (default:
@@ -389,8 +389,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         runtimeConfig.setRepositoryNameSuffix(repositoryNameSuffix);
         runtimeConfig.setRepositorySqlStatements(repositorySqlStatements);
 
-        runtimeConfig.setGenerateStandardApi(generateStandardApi);
-        runtimeConfig.setGenerateBatchApi(generateBatchApi);
+        runtimeConfig.setGenerateStandardApi(methodStandardApi);
+        runtimeConfig.setGenerateBatchApi(methodBatchApi);
         runtimeConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? methodEagerStreamApi : false);
         runtimeConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? methodLazyStreamApi : false);
         if (methodRxJavaApi == null) {
