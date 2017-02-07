@@ -319,7 +319,7 @@ public class TypicalCodeBlocks {
     }
 
     public static CodeBlock returnFalse() {
-        return CodeBlock.builder().addStatement("return $L", true).build();
+        return CodeBlock.builder().addStatement("return $L", false).build();
     }
 
     public static CodeBlock closeResultSet() {
