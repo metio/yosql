@@ -313,7 +313,7 @@ These options can only be applied on individual SQL statements
 
 |vendor
 |
-|The name of the database product that the SQL statement is written for. Typical values are *PostgreSQL*, *H2*, *MySQL*", *Oracle*, *DB2*, *Microsoft SQL Server*, *Apache Derby*, *HSQL Database Engine*.
+|The name of the database product that the SQL statement is written for. Typical values are *PostgreSQL*, *H2*, *MySQL*, *Oracle*, *DB2*, *Microsoft SQL Server*, *Apache Derby*, *HSQL Database Engine*.
 |===
 
 
