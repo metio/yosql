@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.sebhoss.yosql.model.SqlStatement;
 
-public interface CodeGenerator {
+public interface RepositoryGenerator {
 
     /**
      * Generates a single repository.
@@ -15,7 +15,5 @@ public interface CodeGenerator {
      *            The SQL statements to be included in the repository.
      */
     void generateRepository(String repositoryName, List<SqlStatement> statements);
-
-    void generateUtilities(List<SqlStatement> statements);
 
 }

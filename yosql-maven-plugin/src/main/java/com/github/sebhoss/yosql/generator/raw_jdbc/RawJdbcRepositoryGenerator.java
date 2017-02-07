@@ -7,7 +7,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.generator.AnnotationGenerator;
-import com.github.sebhoss.yosql.generator.CodeGenerator;
+import com.github.sebhoss.yosql.generator.RepositoryGenerator;
 import com.github.sebhoss.yosql.generator.TypeWriter;
 import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
@@ -18,17 +18,16 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
-public class RawJdbcCodeGenerator implements CodeGenerator {
+public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
 
     private final TypeWriter                      typeWriter;
     private final PluginRuntimeConfig             runtimeConfig;
-    private final DefaultUtilitiesGenerator       utilsGenerator;
     private final RawJdbcMethodGenerator          methodGenerator;
     private final RawJdbcRepositoryFieldGenerator fieldGenerator;
     private final AnnotationGenerator             annotationGenerator;
 
     @Inject
-    public RawJdbcCodeGenerator(
+    public RawJdbcRepositoryGenerator(
             final TypeWriter typeWriter,
             final PluginRuntimeConfig runtimeConfig,
             final AnnotationGenerator annotationGenerator,
@@ -39,13 +38,7 @@ public class RawJdbcCodeGenerator implements CodeGenerator {
         this.runtimeConfig = runtimeConfig;
         this.annotationGenerator = annotationGenerator;
         this.methodGenerator = methodGenerator;
-        this.utilsGenerator = utilsGenerator;
         this.fieldGenerator = fieldGenerator;
-    }
-
-    @Override
-    public void generateUtilities(final List<SqlStatement> allStatements) {
-        utilsGenerator.generateUtilities(allStatements);
     }
 
     @Override
@@ -57,7 +50,7 @@ public class RawJdbcCodeGenerator implements CodeGenerator {
         final TypeSpec repository = TypicalTypes.publicClass(className)
                 .addFields(fieldGenerator.asFields(sqlStatements))
                 .addMethods(methodGenerator.asMethods(sqlStatements))
-                .addAnnotation(annotationGenerator.generated(RawJdbcCodeGenerator.class))
+                .addAnnotation(annotationGenerator.generated(RawJdbcRepositoryGenerator.class))
                 .addStaticBlock(fieldGenerator.staticInitializer(sqlStatements))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, repository);

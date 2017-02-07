@@ -27,7 +27,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import com.github.sebhoss.yosql.generator.raw_jdbc.RawJdbcCodeGenerator;
+import com.github.sebhoss.yosql.generator.raw_jdbc.RawJdbcRepositoryGenerator;
+import com.github.sebhoss.yosql.generator.utils.DefaultUtilitiesGenerator;
 import com.github.sebhoss.yosql.generator.utils.FlowStateGenerator;
 import com.github.sebhoss.yosql.generator.utils.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.utils.ResultStateGenerator;
@@ -318,8 +319,9 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private final PluginPreconditions                   preconditions;
     private final FileSetResolver                       fileSetResolver;
     private final SqlFileParser                         sqlFileParser;
-    private final RawJdbcCodeGenerator                  codeGenerator;
+    private final RawJdbcRepositoryGenerator                  codeGenerator;
     private final PluginRuntimeConfig                   runtimeConfig;
+    private final DefaultUtilitiesGenerator             utilsGenerator;
     // private final PlexusContainer beanLocator;
 
     @Inject
@@ -328,14 +330,16 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             final PluginPreconditions preconditions,
             final FileSetResolver fileSetResolver,
             final SqlFileParser sqlFileParser,
-            final RawJdbcCodeGenerator codeGenerator,
-            final PluginRuntimeConfig runtimeConfig) {
+            final RawJdbcRepositoryGenerator codeGenerator,
+            final PluginRuntimeConfig runtimeConfig,
+            final DefaultUtilitiesGenerator utilsGenerator) {
         this.pluginErrors = pluginErrors;
         this.preconditions = preconditions;
         this.fileSetResolver = fileSetResolver;
         this.sqlFileParser = sqlFileParser;
         this.codeGenerator = codeGenerator;
         this.runtimeConfig = runtimeConfig;
+        this.utilsGenerator = utilsGenerator;
     }
 
     @Override
@@ -384,7 +388,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     private void generateUtilities(final List<SqlStatement> allStatements) {
         final Instant preGenerate = Instant.now();
-        codeGenerator.generateUtilities(allStatements);
+        utilsGenerator.generateUtilities(allStatements);
         final Instant postGenerate = Instant.now();
         getLog().debug("Time spent generating utilities (ms): "
                 + Duration.between(preGenerate, postGenerate).toMillis());
