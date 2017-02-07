@@ -251,17 +251,9 @@ The plugin offers several ways to influence how the generated code looks like. T
 |Eager
 |The method name suffix to apply to all eager stream methods.
 
-|methodEagerStreamApi
-|true
-|Controls whether an eager `Stream` based method should be generated. If the target Java version is set to anything below 1.8, defaults to *false*
-
 |methodLazyName
 |Lazy
 |The method name suffix to apply to all lazy stream methods.
-
-|methodLazyStreamApi
-|true
-|Controls whether a lazy `Stream` based method should be generated. If the target Java version is set to anything below 1.8, defaults to *false*
 
 |methodRxJavaApi
 |_auto detect_
@@ -274,6 +266,14 @@ The plugin offers several ways to influence how the generated code looks like. T
 |methodRxJavaSuffix
 |Flow
 |The method name suffix to apply to all RxJava methods.
+
+|methodStreamEagerApi
+|true
+|Controls whether an eager `Stream` based method should be generated. If the target Java version is set to anything below 1.8, defaults to *false*
+
+|methodStreamLazyApi
+|true
+|Controls whether a lazy `Stream` based method should be generated. If the target Java version is set to anything below 1.8, defaults to *false*
 
 |methodStreamPrefix
 |

@@ -145,7 +145,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * anything below 1.8, defaults to <strong>false</strong>
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                                     methodEagerStreamApi;
+    private boolean                                     methodStreamEagerApi;
 
     /**
      * Controls whether a lazy {@link Stream} based method should be generated
@@ -153,7 +153,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * anything below 1.8, defaults to <strong>false</strong>
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                                     methodLazyStreamApi;
+    private boolean                                     methodStreamLazyApi;
 
     /**
      * Controls whether a RxJava {@link io.reactivex.Flowable} based method
@@ -407,8 +407,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
         runtimeConfig.setGenerateStandardApi(methodStandardApi);
         runtimeConfig.setGenerateBatchApi(methodBatchApi);
-        runtimeConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? methodEagerStreamApi : false);
-        runtimeConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? methodLazyStreamApi : false);
+        runtimeConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? methodStreamEagerApi : false);
+        runtimeConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? methodStreamLazyApi : false);
         if (methodRxJavaApi == null) {
             runtimeConfig.setGenerateRxJavaApi(project.getDependencies().stream().anyMatch(isRxJava2()));
         } else {
