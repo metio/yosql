@@ -317,7 +317,7 @@ public class SqlStatementConfiguration {
     /**
      * @return <code>true</code> if 'parameters' has at least one parameter.
      */
-    protected boolean hasParameters() {
+    public boolean hasParameters() {
         return parameters != null && !parameters.isEmpty();
     }
 

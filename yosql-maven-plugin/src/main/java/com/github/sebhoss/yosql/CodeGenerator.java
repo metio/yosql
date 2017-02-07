@@ -1,7 +1,6 @@
 package com.github.sebhoss.yosql;
 
 import java.sql.SQLException;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,12 +10,10 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.annotation.Generated;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -27,6 +24,7 @@ import com.github.sebhoss.yosql.generator.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.ResultStateGenerator;
 import com.github.sebhoss.yosql.generator.ToResultRowConverterGenerator;
 import com.github.sebhoss.yosql.generator.TypeWriter;
+import com.github.sebhoss.yosql.helpers.TypicalAnnotations;
 import com.github.sebhoss.yosql.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.helpers.TypicalFields;
 import com.github.sebhoss.yosql.helpers.TypicalMethods;
@@ -34,7 +32,6 @@ import com.github.sebhoss.yosql.helpers.TypicalModifiers;
 import com.github.sebhoss.yosql.helpers.TypicalNames;
 import com.github.sebhoss.yosql.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.helpers.TypicalTypes;
-import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
@@ -114,7 +111,7 @@ public class CodeGenerator {
                 .addModifiers(TypicalModifiers.PUBLIC_CLASS)
                 .addFields(asFields(sqlStatements))
                 .addMethods(asMethods(sqlStatements))
-                .addAnnotation(generatedAnnotation())
+                .addAnnotation(TypicalAnnotations.generatedAnnotation(CodeGenerator.class))
                 .addStaticBlock(staticInitializer(sqlStatements))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, repository);
@@ -143,14 +140,6 @@ public class CodeGenerator {
                 .collect(Collectors.joining(", ", "new int[] { ", " }"));
     }
 
-    private static AnnotationSpec generatedAnnotation() {
-        return AnnotationSpec.builder(Generated.class)
-                .addMember("value", "$S", CodeGenerator.class.getName())
-                .addMember("date", "$S", ZonedDateTime.now().toString())
-                .addMember("comments", "$S", "DO NOT EDIT")
-                .build();
-    }
-
     private Iterable<FieldSpec> asFields(final List<SqlStatement> sqlStatements) {
         final Stream<FieldSpec> constants = Stream.concat(
                 sqlStatements.stream()
@@ -168,12 +157,8 @@ public class CodeGenerator {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         return FieldSpec.builder(String.class, TypicalFields.constantSqlStatementFieldName(configuration))
                 .addModifiers(TypicalModifiers.CONSTANT_FIELD)
-                .initializer("$S", replaceNamedParameters(sqlStatement))
+                .initializer("$S", TypicalParameters.replaceNamedParameters(sqlStatement))
                 .build();
-    }
-
-    private static String replaceNamedParameters(final SqlStatement sqlStatement) {
-        return sqlStatement.getStatement().replaceAll(SqlFileParser.PATTERN.pattern(), "?");
     }
 
     private static FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
@@ -272,72 +257,18 @@ public class CodeGenerator {
                 .returns(listOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(sqlException(configuration))
-                .addCode(tryConnect())
-                .addCode(pickVendorQuery(sqlStatements))
-                .addCode(tryPrepare())
-                .addCode(setParameters(configuration))
-                .addCode(tryExecute())
+                .addCode(TypicalCodeBlocks.tryConnect())
+                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.tryPrepare())
+                .addCode(TypicalCodeBlocks.setParameters(configuration))
+                .addCode(TypicalCodeBlocks.tryExecute())
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(codeBlocks.newResultState())
-                .addStatement("final $T $N = new $T<>()", listOfResults, TypicalNames.LIST, ArrayList.class)
-                .beginControlFlow("while ($N.next())", TypicalNames.RESULT)
-                .addStatement("$N.add($N.asUserType($N))", TypicalNames.LIST, converter.getAlias(), TypicalNames.RESULT)
-                .endControlFlow()
-                .addStatement("return $N", TypicalNames.LIST)
-                .endControlFlow()
-                .endControlFlow()
-                .endControlFlow()
-                .addCode(maybeCatchAndRethrow(configuration))
+                .addCode(TypicalCodeBlocks.returnAsList(listOfResults, converter.getAlias()))
+                .addCode(TypicalCodeBlocks.endTryBlock(3))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
                 .build();
-    }
-
-    private CodeBlock pickVendorQuery(final List<SqlStatement> sqlStatements) {
-        final Builder builder = CodeBlock.builder();
-        if (sqlStatements.size() > 1) {
-            builder.addStatement("final $T $N = $N.getMetaData().getDatabaseProductName()",
-                    String.class, TypicalNames.DATABASE_PRODUCT_NAME, TypicalNames.CONNECTION)
-                    .addStatement("$T $N = null", String.class, TypicalNames.QUERY)
-                    .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_NUMBERS, TypicalNames.INDEX)
-                    .beginControlFlow("switch ($N)", TypicalNames.DATABASE_PRODUCT_NAME);
-            sqlStatements.stream()
-                    .map(SqlStatement::getConfiguration)
-                    .filter(config -> Objects.nonNull(config.getVendor()))
-                    .forEach(config -> {
-                        builder.add("case $S:\n", config.getVendor())
-                                .addStatement("$N = $N", TypicalNames.QUERY,
-                                        TypicalFields.constantSqlStatementFieldName(config));
-                        if (config.hasParameters()) {
-                            builder.addStatement("$N = $N", TypicalNames.INDEX,
-                                    TypicalFields.constantSqlStatementParameterIndexFieldName(config));
-                        }
-                        builder.addStatement("break");
-                    });
-            sqlStatements.stream()
-                    .map(SqlStatement::getConfiguration)
-                    .filter(config -> Objects.isNull(config.getVendor()))
-                    .limit(1)
-                    .forEach(config -> {
-                        builder.add("default:\n")
-                                .addStatement("$N = $N", TypicalNames.QUERY,
-                                        TypicalFields.constantSqlStatementFieldName(config));
-                        if (config.hasParameters()) {
-                            builder.addStatement("$N = $N", TypicalNames.INDEX,
-                                    TypicalFields.constantSqlStatementParameterIndexFieldName(config));
-                        }
-                        builder.addStatement("break");
-                    });
-            builder.endControlFlow();
-        } else {
-            final SqlStatementConfiguration configuration = sqlStatements.get(0).getConfiguration();
-            builder.addStatement("final $T $N = $N", String.class, TypicalNames.QUERY,
-                    TypicalFields.constantSqlStatementFieldName(configuration));
-            if (configuration.hasParameters()) {
-                builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_NUMBERS, TypicalNames.INDEX,
-                        TypicalFields.constantSqlStatementParameterIndexFieldName(configuration));
-            }
-        }
-        return builder.build();
     }
 
     private MethodSpec standardWriteApi(final String methodName, final List<SqlStatement> sqlStatements) {
@@ -346,14 +277,13 @@ public class CodeGenerator {
                 .returns(int.class)
                 .addExceptions(sqlException(configuration))
                 .addParameters(configuration.getParameterSpecs())
-                .addCode(tryConnect())
-                .addCode(pickVendorQuery(sqlStatements))
-                .addCode(tryPrepare())
-                .addCode(setParameters(configuration))
-                .addStatement("return $N.executeUpdate()", TypicalNames.PREPARED_STATEMENT)
-                .endControlFlow()
-                .endControlFlow()
-                .addCode(maybeCatchAndRethrow(configuration))
+                .addCode(TypicalCodeBlocks.tryConnect())
+                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.tryPrepare())
+                .addCode(TypicalCodeBlocks.setParameters(configuration))
+                .addCode(TypicalCodeBlocks.executeUpdate())
+                .addCode(TypicalCodeBlocks.endTryBlock(2))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
                 .build();
     }
 
@@ -385,9 +315,9 @@ public class CodeGenerator {
                         .returns(runtimeConfig.getFlowStateClass())
                         .addException(Exception.class)
                         .addCode(TypicalCodeBlocks.getConnection())
-                        .addCode(pickVendorQuery(sqlStatements))
+                        .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
                         .addCode(TypicalCodeBlocks.prepareStatement())
-                        .addCode(setParameters(configuration))
+                        .addCode(TypicalCodeBlocks.setParameters(configuration))
                         .addCode(TypicalCodeBlocks.executeQuery())
                         .addCode(TypicalCodeBlocks.getMetaData())
                         .addCode(TypicalCodeBlocks.getColumnCount())
@@ -411,15 +341,16 @@ public class CodeGenerator {
                         .addParameter(TypicalParameters.parameter(emitter, TypicalNames.EMITTER))
                         .returns(void.class)
                         .addException(Exception.class)
-                        .addCode(startTryBlock())
-                        .beginControlFlow("if ($N.next())", TypicalNames.STATE)
+                        .addCode(TypicalCodeBlocks.startTryBlock())
+                        .addCode(TypicalCodeBlocks.ifHasNext())
                         .addStatement("$N.onNext($N.asUserType($N))", TypicalNames.EMITTER, converter.getAlias(),
                                 TypicalNames.STATE)
-                        .nextControlFlow("else")
+                        .addCode(TypicalCodeBlocks.nextElse())
                         .addStatement("$N.onComplete()", TypicalNames.EMITTER)
-                        .endControlFlow()
-                        .endControlFlow()
-                        .addCode(catchAndDo("$N.onError($N)", TypicalNames.EMITTER, TypicalNames.EXCEPTION))
+                        .addCode(TypicalCodeBlocks.endIf())
+                        .addCode(TypicalCodeBlocks.endTryBlock())
+                        .addCode(TypicalCodeBlocks.catchAndDo("$N.onError($N)", TypicalNames.EMITTER,
+                                TypicalNames.EXCEPTION))
                         .build())
                 .build();
     }
@@ -431,11 +362,11 @@ public class CodeGenerator {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(disposerType)
                 .addMethod(TypicalMethods.implementation("accept")
-                        .addParameter(
-                                TypicalParameters.parameter(runtimeConfig.getFlowStateClass(), TypicalNames.STATE))
+                        .addParameter(TypicalParameters.parameter(
+                                runtimeConfig.getFlowStateClass(), TypicalNames.STATE))
                         .returns(void.class)
                         .addException(Exception.class)
-                        .addStatement("$N.close()", TypicalNames.STATE)
+                        .addCode(TypicalCodeBlocks.closeState())
                         .build())
                 .build();
     }
@@ -447,18 +378,13 @@ public class CodeGenerator {
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(configuration.getBatchParameterSpecs())
                 .addExceptions(sqlException(configuration))
-                .addCode(tryConnect())
-                .addCode(pickVendorQuery(sqlStatements))
-                .addCode(tryPrepare())
-                .beginControlFlow("for (int $N = 0; $N < $N.length; $N++)", TypicalNames.BATCH, TypicalNames.BATCH,
-                        configuration.getParameters().get(0).getName(), TypicalNames.BATCH)
-                .addCode(setBatchParameters(configuration))
-                .addStatement("$N.addBatch()", TypicalNames.PREPARED_STATEMENT)
-                .endControlFlow()
-                .addStatement("return $N.executeBatch()", TypicalNames.PREPARED_STATEMENT)
-                .endControlFlow()
-                .endControlFlow()
-                .addCode(maybeCatchAndRethrow(configuration))
+                .addCode(TypicalCodeBlocks.tryConnect())
+                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.tryPrepare())
+                .addCode(TypicalCodeBlocks.prepareBatch(configuration))
+                .addCode(TypicalCodeBlocks.executeBatch())
+                .addCode(TypicalCodeBlocks.endTryBlock(2))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
                 .build();
     }
 
@@ -472,23 +398,17 @@ public class CodeGenerator {
                 .returns(streamOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(sqlException(configuration))
-                .addCode(tryConnect())
-                .addCode(pickVendorQuery(sqlStatements))
-                .addCode(tryPrepare())
-                .addCode(setParameters(configuration))
-                .addCode(tryExecute())
+                .addCode(TypicalCodeBlocks.tryConnect())
+                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.tryPrepare())
+                .addCode(TypicalCodeBlocks.setParameters(configuration))
+                .addCode(TypicalCodeBlocks.tryExecute())
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(codeBlocks.newResultState())
-                .addStatement("final $T $N = new $T<>()", listOfResults, TypicalNames.LIST, ArrayList.class)
-                .beginControlFlow("while ($N.next())", TypicalNames.RESULT)
-                .addStatement("$N.add($N.asUserType($N))", TypicalNames.LIST, converter.getAlias(), TypicalNames.RESULT)
-                .endControlFlow()
-                .addStatement("return $N.stream()", TypicalNames.LIST)
-                .endControlFlow()
-                .endControlFlow()
-                .endControlFlow()
-                .addCode(maybeCatchAndRethrow(configuration))
+                .addCode(TypicalCodeBlocks.returnAsStream(listOfResults, converter.getAlias()))
+                .addCode(TypicalCodeBlocks.endTryBlock(3))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
                 .build();
     }
 
@@ -501,18 +421,18 @@ public class CodeGenerator {
                 .returns(streamOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(sqlException(configuration))
-                .addCode(maybeTry(configuration))
+                .addCode(TypicalCodeBlocks.maybeTry(configuration))
                 .addCode(TypicalCodeBlocks.getConnection())
-                .addCode(pickVendorQuery(sqlStatements))
+                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
                 .addCode(TypicalCodeBlocks.prepareStatement())
-                .addCode(setParameters(configuration))
+                .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.executeQuery())
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(codeBlocks.newResultState())
                 .addCode(TypicalCodeBlocks.streamStatefull(lazyStreamSpliterator(converter), lazyStreamCloser()))
-                .addCode(endMaybeTry(configuration))
-                .addCode(maybeCatchAndRethrow(configuration))
+                .addCode(TypicalCodeBlocks.endMaybeTry(configuration))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
                 .build();
     }
 
@@ -528,15 +448,15 @@ public class CodeGenerator {
                 .addMethod(TypicalMethods.implementation("tryAdvance")
                         .addParameter(TypicalParameters.parameter(consumerType, TypicalNames.ACTION))
                         .returns(boolean.class)
-                        .addCode(startTryBlock())
-                        .beginControlFlow("if ($N.next())", TypicalNames.RESULT)
+                        .addCode(TypicalCodeBlocks.startTryBlock())
+                        .addCode(TypicalCodeBlocks.ifHasNext())
                         .addStatement("$N.accept($N.asUserType($N))", TypicalNames.ACTION, converter.getAlias(),
-                                TypicalNames.RESULT)
-                        .addStatement("return $L", true)
-                        .endControlFlow()
-                        .addStatement("return $L", false)
-                        .endControlFlow()
-                        .addCode(catchAndRethrow())
+                                TypicalNames.STATE)
+                        .addCode(TypicalCodeBlocks.returnTrue())
+                        .addCode(TypicalCodeBlocks.endIf())
+                        .addCode(TypicalCodeBlocks.returnFalse())
+                        .addCode(TypicalCodeBlocks.endTryBlock())
+                        .addCode(TypicalCodeBlocks.catchAndRethrow())
                         .build())
                 .build();
     }
@@ -546,102 +466,14 @@ public class CodeGenerator {
                 .addSuperinterface(Runnable.class)
                 .addMethod(TypicalMethods.implementation("run")
                         .returns(void.class)
-                        .addCode(startTryBlock())
-                        .addStatement("$N.close()", TypicalNames.RESULT_SET)
-                        .addStatement("$N.close()", TypicalNames.PREPARED_STATEMENT)
-                        .addStatement("$N.close()", TypicalNames.CONNECTION)
-                        .endControlFlow()
-                        .addCode(catchAndRethrow())
+                        .addCode(TypicalCodeBlocks.startTryBlock())
+                        .addCode(TypicalCodeBlocks.closeResultSet())
+                        .addCode(TypicalCodeBlocks.closePrepareStatement())
+                        .addCode(TypicalCodeBlocks.closeConnection())
+                        .addCode(TypicalCodeBlocks.endTryBlock())
+                        .addCode(TypicalCodeBlocks.catchAndRethrow())
                         .build())
                 .build();
-    }
-
-    private static CodeBlock tryExecute() {
-        return CodeBlock.builder()
-                .beginControlFlow("try ($L)", TypicalCodeBlocks.executeQuery())
-                .build();
-    }
-
-    private static CodeBlock tryConnect() {
-        return CodeBlock.builder()
-                .beginControlFlow("try ($L)", TypicalCodeBlocks.getConnection())
-                .build();
-    }
-
-    private static CodeBlock tryPrepare() {
-        return CodeBlock.builder()
-                .beginControlFlow("try ($L)", TypicalCodeBlocks.prepareStatement())
-                .build();
-    }
-
-    private static CodeBlock setParameters(final SqlStatementConfiguration configuration) {
-        return parameterAssignment(configuration, "$N.setObject($N, $N)",
-                parameterName -> new String[] { TypicalNames.PREPARED_STATEMENT,
-                        TypicalNames.JDBC_INDEX, parameterName });
-    }
-
-    private static CodeBlock setBatchParameters(final SqlStatementConfiguration configuration) {
-        return parameterAssignment(configuration, "$N.setObject($N, $N[$N])",
-                parameterName -> new String[] { TypicalNames.PREPARED_STATEMENT,
-                        TypicalNames.JDBC_INDEX, parameterName, TypicalNames.BATCH });
-    }
-
-    private static CodeBlock parameterAssignment(
-            final SqlStatementConfiguration configuration,
-            final String codeStatement,
-            final Function<String, Object[]> parameterSetter) {
-        final com.squareup.javapoet.CodeBlock.Builder builder = CodeBlock.builder();
-        final List<SqlParameter> parameters = configuration.getParameters();
-        if (parameters != null && !parameters.isEmpty()) {
-            for (final SqlParameter parameter : configuration.getParameters()) {
-                builder.beginControlFlow("for (final int $N : $N.get($S))", TypicalNames.JDBC_INDEX,
-                        TypicalNames.INDEX, parameter.getName())
-                        .add(CodeBlock.builder().addStatement(codeStatement,
-                                parameterSetter.apply(parameter.getName())).build())
-                        .endControlFlow();
-            }
-        }
-        return builder.build();
-    }
-
-    private CodeBlock maybeTry(final SqlStatementConfiguration configuration) {
-        if (configuration.isMethodCatchAndRethrow()) {
-            return startTryBlock();
-        }
-        return CodeBlock.builder().build();
-    }
-
-    private CodeBlock endMaybeTry(final SqlStatementConfiguration configuration) {
-        if (configuration.isMethodCatchAndRethrow()) {
-            return endTryBlock();
-        }
-        return CodeBlock.builder().build();
-    }
-
-    private CodeBlock startTryBlock() {
-        return CodeBlock.builder().beginControlFlow("try").build();
-    }
-
-    private CodeBlock endTryBlock() {
-        return CodeBlock.builder().endControlFlow().build();
-    }
-
-    private CodeBlock maybeCatchAndRethrow(final SqlStatementConfiguration configuration) {
-        if (configuration.isMethodCatchAndRethrow()) {
-            return catchAndRethrow();
-        }
-        return CodeBlock.builder().build();
-    }
-
-    private CodeBlock catchAndRethrow() {
-        return catchAndDo("throw new $T($N)", RuntimeException.class, TypicalNames.EXCEPTION);
-    }
-
-    private CodeBlock catchAndDo(final String format, final Object... args) {
-        return CodeBlock.builder()
-                .beginControlFlow("catch (final $T $N)", SQLException.class, TypicalNames.EXCEPTION)
-                .addStatement(format, args)
-                .endControlFlow().build();
     }
 
     private Iterable<TypeName> sqlException(final SqlStatementConfiguration configuration) {

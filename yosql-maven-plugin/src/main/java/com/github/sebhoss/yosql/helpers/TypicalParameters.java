@@ -8,7 +8,9 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
+import com.github.sebhoss.yosql.SqlFileParser;
 import com.github.sebhoss.yosql.SqlParameter;
+import com.github.sebhoss.yosql.SqlStatement;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
@@ -97,6 +99,10 @@ public final class TypicalParameters {
                 return TypeName.OBJECT;
             }
         }
+    }
+
+    public static final String replaceNamedParameters(final SqlStatement sqlStatement) {
+        return sqlStatement.getStatement().replaceAll(SqlFileParser.PATTERN.pattern(), "?");
     }
 
 }
