@@ -18,12 +18,12 @@ import com.squareup.javapoet.ParameterizedTypeName;
 
 @Named
 @Singleton
-public class StandardAPI {
+public class StandardMethodAPI {
 
     private final TypicalCodeBlocks codeBlocks;
 
     @Inject
-    public StandardAPI(final TypicalCodeBlocks codeBlocks) {
+    public StandardMethodAPI(final TypicalCodeBlocks codeBlocks) {
         this.codeBlocks = codeBlocks;
     }
 

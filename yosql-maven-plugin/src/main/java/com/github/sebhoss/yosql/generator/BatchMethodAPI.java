@@ -14,7 +14,7 @@ import com.squareup.javapoet.MethodSpec;
 
 @Named
 @Singleton
-public class BatchAPI {
+public class BatchMethodAPI {
 
     public MethodSpec batchApi(final List<SqlStatement> sqlStatements) {
         final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);

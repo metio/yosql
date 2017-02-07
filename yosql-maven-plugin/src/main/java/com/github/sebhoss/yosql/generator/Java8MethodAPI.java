@@ -24,12 +24,12 @@ import com.squareup.javapoet.WildcardTypeName;
 
 @Named
 @Singleton
-public class Java8API {
+public class Java8MethodAPI {
 
     private final TypicalCodeBlocks codeBlocks;
 
     @Inject
-    public Java8API(final TypicalCodeBlocks codeBlocks) {
+    public Java8MethodAPI(final TypicalCodeBlocks codeBlocks) {
         this.codeBlocks = codeBlocks;
     }
 

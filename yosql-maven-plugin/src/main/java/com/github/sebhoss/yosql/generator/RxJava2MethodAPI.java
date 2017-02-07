@@ -25,13 +25,13 @@ import io.reactivex.Emitter;
 
 @Named
 @Singleton
-public class RxJava2API {
+public class RxJava2MethodAPI {
 
     private final PluginRuntimeConfig runtimeConfig;
     private final TypicalCodeBlocks   codeBlocks;
 
     @Inject
-    public RxJava2API(
+    public RxJava2MethodAPI(
             final PluginRuntimeConfig runtimeConfig,
             final TypicalCodeBlocks codeBlocks) {
         this.runtimeConfig = runtimeConfig;

@@ -13,13 +13,13 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 
-import com.github.sebhoss.yosql.generator.BatchAPI;
+import com.github.sebhoss.yosql.generator.BatchMethodAPI;
 import com.github.sebhoss.yosql.generator.FlowStateGenerator;
-import com.github.sebhoss.yosql.generator.Java8API;
+import com.github.sebhoss.yosql.generator.Java8MethodAPI;
 import com.github.sebhoss.yosql.generator.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.ResultStateGenerator;
-import com.github.sebhoss.yosql.generator.RxJava2API;
-import com.github.sebhoss.yosql.generator.StandardAPI;
+import com.github.sebhoss.yosql.generator.RxJava2MethodAPI;
+import com.github.sebhoss.yosql.generator.StandardMethodAPI;
 import com.github.sebhoss.yosql.generator.ToResultRowConverterGenerator;
 import com.github.sebhoss.yosql.generator.TypeWriter;
 import com.github.sebhoss.yosql.helpers.TypicalAnnotations;
@@ -47,10 +47,10 @@ public class CodeGenerator {
     private final ResultStateGenerator          resultStateGenerator;
     private final ToResultRowConverterGenerator toResultRowConverterGenerator;
     private final ResultRowGenerator            resultRowGenerator;
-    private final RxJava2API                    rxJava2Api;
-    private final Java8API                      java8Api;
-    private final BatchAPI                      batchApi;
-    private final StandardAPI                   standardApi;
+    private final RxJava2MethodAPI              rxJava2Api;
+    private final Java8MethodAPI                java8Api;
+    private final BatchMethodAPI                batchApi;
+    private final StandardMethodAPI             standardApi;
 
     @Inject
     public CodeGenerator(
@@ -61,10 +61,10 @@ public class CodeGenerator {
             final ResultRowGenerator resultRowGenerator,
             final PluginErrors pluginErrors,
             final PluginRuntimeConfig runtimeConfig,
-            final RxJava2API rxJava2Api,
-            final Java8API java8Api,
-            final BatchAPI batchApi,
-            final StandardAPI standardApi) {
+            final RxJava2MethodAPI rxJava2Api,
+            final Java8MethodAPI java8Api,
+            final BatchMethodAPI batchApi,
+            final StandardMethodAPI standardApi) {
         this.typeWriter = typeWriter;
         this.flowStateGenerator = flowStateGenerator;
         this.resultStateGenerator = resultStateGenerator;
