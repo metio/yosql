@@ -52,6 +52,10 @@ import com.squareup.javapoet.ClassName;
  * <li>RETURNING statements</li>
  * <li>support symbols: "!" for write, "<" for returning, none (by default) for
  * read
+ * <li>Use http://simpleflatmapper.org/ for mapping between results & beans</li>
+ * <li>Write perf test for
+ * https://github.com/bwajtr/java-persistence-frameworks-comparison</li>
+ * <li>SQL statement name converter to align with Java naming rules</li>
  * </ul>
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
@@ -203,7 +207,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * <strong>"update, insert, delete, create, write, add, remove,
      * merge"</strong>).
      */
-    @Parameter(required = true, defaultValue = "update,insert,delete,create,write,add,remove,merge")
+    @Parameter(required = true, defaultValue = "update,insert,delete,create,write,add,remove,merge,drop")
     private String                                      methodAllowedWritePrefixes;
 
     /**
