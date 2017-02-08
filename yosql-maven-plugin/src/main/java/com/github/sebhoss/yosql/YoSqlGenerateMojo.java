@@ -57,8 +57,6 @@ import com.squareup.javapoet.ClassName;
  * allow to overwrite those defaults w/ user-project settings</li>
  * <li>sql file/repository layout: directory as repo with single statement files
  * or multi statement files as repo.</li>
- * <li>support single DB vendor statements that do nothing for all other
- * vendors</li>
  * <li>support unnamed params ('?') as varargs argument</li>
  * <li>parameter converter</li>
  * <li>RETURNING statements</li>
