@@ -16,7 +16,7 @@ import com.squareup.javapoet.ClassName;
 
 @Named
 @Singleton
-public class PluginRuntimeConfig {
+public class PluginConfig {
 
     private FileSet                  sqlFiles;
     private File                     outputBaseDirectory;

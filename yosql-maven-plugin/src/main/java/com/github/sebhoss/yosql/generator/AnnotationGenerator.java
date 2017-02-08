@@ -9,17 +9,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.AnnotationSpec;
 
 @Named
 @Singleton
 public class AnnotationGenerator {
 
-    private final PluginRuntimeConfig runtimeConfig;
+    private final PluginConfig runtimeConfig;
 
     @Inject
-    public AnnotationGenerator(final PluginRuntimeConfig runtimeConfig) {
+    public AnnotationGenerator(final PluginConfig runtimeConfig) {
         this.runtimeConfig = runtimeConfig;
     }
 

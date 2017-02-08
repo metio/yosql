@@ -21,7 +21,7 @@ import javax.inject.Singleton;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
-import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
@@ -349,10 +349,10 @@ public class TypicalCodeBlocks {
         return Collections.emptyList();
     }
 
-    private final PluginRuntimeConfig runtimeConfig;
+    private final PluginConfig runtimeConfig;
 
     @Inject
-    public TypicalCodeBlocks(final PluginRuntimeConfig runtimeConfig) {
+    public TypicalCodeBlocks(final PluginConfig runtimeConfig) {
         this.runtimeConfig = runtimeConfig;
     }
 

@@ -40,9 +40,9 @@ import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.parser.FileSetResolver;
 import com.github.sebhoss.yosql.parser.SqlFileParser;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 import com.github.sebhoss.yosql.plugin.PluginPreconditions;
-import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
 import com.squareup.javapoet.ClassName;
 
 /**
@@ -342,7 +342,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private final FileSetResolver                       fileSetResolver;
     private final SqlFileParser                         sqlFileParser;
     private final RawJdbcRepositoryGenerator            codeGenerator;
-    private final PluginRuntimeConfig                   runtimeConfig;
+    private final PluginConfig                          runtimeConfig;
     private final DefaultUtilitiesGenerator             utilsGenerator;
     // private final PlexusContainer beanLocator;
 
@@ -353,7 +353,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             final FileSetResolver fileSetResolver,
             final SqlFileParser sqlFileParser,
             final RawJdbcRepositoryGenerator codeGenerator,
-            final PluginRuntimeConfig runtimeConfig,
+            final PluginConfig runtimeConfig,
             final DefaultUtilitiesGenerator utilsGenerator) {
         this.pluginErrors = pluginErrors;
         this.preconditions = preconditions;

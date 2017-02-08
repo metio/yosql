@@ -17,7 +17,7 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
-import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -29,13 +29,13 @@ import io.reactivex.Emitter;
 @Singleton
 public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
 
-    private final PluginRuntimeConfig runtimeConfig;
+    private final PluginConfig runtimeConfig;
     private final TypicalCodeBlocks   codeBlocks;
     private final AnnotationGenerator annotations;
 
     @Inject
     public RawJdbcRxJavaMethodGenerator(
-            final PluginRuntimeConfig runtimeConfig,
+            final PluginConfig runtimeConfig,
             final TypicalCodeBlocks codeBlocks,
             final AnnotationGenerator annotations) {
         this.runtimeConfig = runtimeConfig;

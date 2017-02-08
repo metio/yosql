@@ -13,7 +13,7 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.generator.utils.DefaultUtilitiesGenerator;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.TypeSpec;
 
 @Named
@@ -21,7 +21,7 @@ import com.squareup.javapoet.TypeSpec;
 public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
 
     private final TypeWriter                      typeWriter;
-    private final PluginRuntimeConfig             runtimeConfig;
+    private final PluginConfig                    runtimeConfig;
     private final RawJdbcMethodGenerator          methodGenerator;
     private final RawJdbcRepositoryFieldGenerator fieldGenerator;
     private final AnnotationGenerator             annotationGenerator;
@@ -29,7 +29,7 @@ public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
     @Inject
     public RawJdbcRepositoryGenerator(
             final TypeWriter typeWriter,
-            final PluginRuntimeConfig runtimeConfig,
+            final PluginConfig runtimeConfig,
             final AnnotationGenerator annotationGenerator,
             final RawJdbcMethodGenerator methodGenerator,
             final DefaultUtilitiesGenerator utilsGenerator,

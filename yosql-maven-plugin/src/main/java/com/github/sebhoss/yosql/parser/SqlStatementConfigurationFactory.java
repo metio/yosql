@@ -19,7 +19,7 @@ import com.github.sebhoss.yosql.model.SqlSourceFile;
 import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
 import com.github.sebhoss.yosql.model.SqlStatementType;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
-import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 
 @Named
 @Singleton
@@ -27,10 +27,10 @@ public class SqlStatementConfigurationFactory {
 
     private final Yaml                yamlParser = new Yaml();
     private final PluginErrors        pluginErrors;
-    private final PluginRuntimeConfig runtimeConfig;
+    private final PluginConfig runtimeConfig;
 
     @Inject
-    public SqlStatementConfigurationFactory(final PluginErrors pluginErrors, final PluginRuntimeConfig runtimeConfig) {
+    public SqlStatementConfigurationFactory(final PluginErrors pluginErrors, final PluginConfig runtimeConfig) {
         this.pluginErrors = pluginErrors;
         this.runtimeConfig = runtimeConfig;
     }

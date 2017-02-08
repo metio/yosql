@@ -12,7 +12,7 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
 import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
-import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -25,13 +25,13 @@ public class ToResultRowConverterGenerator {
 
     private final AnnotationGenerator commonGenerator;
     private final TypeWriter          typeWriter;
-    private final PluginRuntimeConfig runtimeConfig;
+    private final PluginConfig runtimeConfig;
 
     @Inject
     public ToResultRowConverterGenerator(
             final AnnotationGenerator commonGenerator,
             final TypeWriter typeWriter,
-            final PluginRuntimeConfig runtimeConfig) {
+            final PluginConfig runtimeConfig) {
         this.commonGenerator = commonGenerator;
         this.typeWriter = typeWriter;
         this.runtimeConfig = runtimeConfig;

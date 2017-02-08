@@ -9,7 +9,7 @@ import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.plugin.AbstractComponent;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
-import com.github.sebhoss.yosql.plugin.PluginRuntimeConfig;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
@@ -20,7 +20,7 @@ public class TypeWriter extends AbstractComponent {
     @Inject
     public TypeWriter(
             final PluginErrors pluginErrors,
-            final PluginRuntimeConfig runtimeConfig) {
+            final PluginConfig runtimeConfig) {
         super(runtimeConfig, pluginErrors);
     }
 
