@@ -23,16 +23,16 @@ public class ToResultRowConverterGenerator {
 
     public static final String        TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
 
-    private final AnnotationGenerator commonGenerator;
+    private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;
-    private final PluginConfig runtimeConfig;
+    private final PluginConfig        runtimeConfig;
 
     @Inject
     public ToResultRowConverterGenerator(
-            final AnnotationGenerator commonGenerator,
+            final AnnotationGenerator annotations,
             final TypeWriter typeWriter,
             final PluginConfig runtimeConfig) {
-        this.commonGenerator = commonGenerator;
+        this.annotations = annotations;
         this.typeWriter = typeWriter;
         this.runtimeConfig = runtimeConfig;
     }
@@ -41,7 +41,7 @@ public class ToResultRowConverterGenerator {
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
         final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
                 .addMethod(asUserType())
-                .addAnnotations(commonGenerator.generatedClass(ToResultRowConverterGenerator.class))
+                .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }

@@ -29,16 +29,16 @@ public class ResultStateGenerator {
 
     public static final String        RESULT_STATE_CLASS_NAME = "ResultState";
 
-    private final AnnotationGenerator commonGenerator;
+    private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;
-    private final PluginConfig runtimeConfig;
+    private final PluginConfig        runtimeConfig;
 
     @Inject
     public ResultStateGenerator(
-            final AnnotationGenerator commonGenerator,
+            final AnnotationGenerator annotations,
             final TypeWriter typeWriter,
             final PluginConfig runtimeConfig) {
-        this.commonGenerator = commonGenerator;
+        this.annotations = annotations;
         this.typeWriter = typeWriter;
         this.runtimeConfig = runtimeConfig;
     }
@@ -47,7 +47,7 @@ public class ResultStateGenerator {
         final TypeSpec type = TypicalTypes.openClass(RESULT_STATE_CLASS_NAME)
                 .addFields(fields())
                 .addMethods(methods())
-                .addAnnotations(commonGenerator.generatedClass(ResultStateGenerator.class))
+                .addAnnotations(annotations.generatedClass(ResultStateGenerator.class))
                 .build();
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);

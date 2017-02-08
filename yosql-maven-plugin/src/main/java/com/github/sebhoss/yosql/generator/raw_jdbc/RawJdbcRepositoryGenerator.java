@@ -24,19 +24,19 @@ public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
     private final PluginConfig                    runtimeConfig;
     private final RawJdbcMethodGenerator          methodGenerator;
     private final RawJdbcRepositoryFieldGenerator fieldGenerator;
-    private final AnnotationGenerator             annotationGenerator;
+    private final AnnotationGenerator             annotations;
 
     @Inject
     public RawJdbcRepositoryGenerator(
             final TypeWriter typeWriter,
             final PluginConfig runtimeConfig,
-            final AnnotationGenerator annotationGenerator,
+            final AnnotationGenerator annotations,
             final RawJdbcMethodGenerator methodGenerator,
             final DefaultUtilitiesGenerator utilsGenerator,
             final RawJdbcRepositoryFieldGenerator fieldGenerator) {
         this.typeWriter = typeWriter;
         this.runtimeConfig = runtimeConfig;
-        this.annotationGenerator = annotationGenerator;
+        this.annotations = annotations;
         this.methodGenerator = methodGenerator;
         this.fieldGenerator = fieldGenerator;
     }
@@ -50,7 +50,7 @@ public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
         final TypeSpec repository = TypicalTypes.publicClass(className)
                 .addFields(fieldGenerator.asFields(sqlStatements))
                 .addMethods(methodGenerator.asMethods(sqlStatements))
-                .addAnnotations(annotationGenerator.generatedClass(RawJdbcRepositoryGenerator.class))
+                .addAnnotations(annotations.generatedClass(RawJdbcRepositoryGenerator.class))
                 .addStaticBlock(fieldGenerator.staticInitializer(sqlStatements))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, repository);

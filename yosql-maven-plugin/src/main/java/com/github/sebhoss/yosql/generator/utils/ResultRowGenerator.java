@@ -24,16 +24,16 @@ public class ResultRowGenerator {
 
     public static final String        RESULT_ROW_CLASS_NAME = "ResultRow";
 
-    private final AnnotationGenerator commonGenerator;
+    private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;
-    private final PluginConfig runtimeConfig;
+    private final PluginConfig        runtimeConfig;
 
     @Inject
     public ResultRowGenerator(
-            final AnnotationGenerator commonGenerator,
+            final AnnotationGenerator annotations,
             final TypeWriter typeWriter,
             final PluginConfig runtimeConfig) {
-        this.commonGenerator = commonGenerator;
+        this.annotations = annotations;
         this.typeWriter = typeWriter;
         this.runtimeConfig = runtimeConfig;
     }
@@ -45,7 +45,7 @@ public class ResultRowGenerator {
                 .addMethod(constructor())
                 .addMethod(setColumnValue())
                 .addMethod(toStringMethod())
-                .addAnnotations(commonGenerator.generatedClass(ResultRowGenerator.class))
+                .addAnnotations(annotations.generatedClass(ResultRowGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }

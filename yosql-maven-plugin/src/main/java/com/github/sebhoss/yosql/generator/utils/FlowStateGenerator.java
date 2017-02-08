@@ -30,16 +30,16 @@ public class FlowStateGenerator {
 
     public static final String        FLOW_STATE_CLASS_NAME = "FlowState";
 
-    private final AnnotationGenerator commonGenerator;
+    private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;
-    private final PluginConfig runtimeConfig;
+    private final PluginConfig        runtimeConfig;
 
     @Inject
     public FlowStateGenerator(
-            final AnnotationGenerator commonGenerator,
+            final AnnotationGenerator annotations,
             final TypeWriter typeWriter,
             final PluginConfig runtimeConfig) {
-        this.commonGenerator = commonGenerator;
+        this.annotations = annotations;
         this.typeWriter = typeWriter;
         this.runtimeConfig = runtimeConfig;
     }
@@ -51,7 +51,7 @@ public class FlowStateGenerator {
                 .superclass(superclass)
                 .addFields(fields())
                 .addMethods(methods())
-                .addAnnotations(commonGenerator.generatedClass(FlowStateGenerator.class))
+                .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }
