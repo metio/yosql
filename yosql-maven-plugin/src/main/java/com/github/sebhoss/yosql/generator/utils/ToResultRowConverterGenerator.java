@@ -23,7 +23,7 @@ public class ToResultRowConverterGenerator {
 
     public static final String        TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
 
-    private final AnnotationGenerator     commonGenerator;
+    private final AnnotationGenerator commonGenerator;
     private final TypeWriter          typeWriter;
     private final PluginRuntimeConfig runtimeConfig;
 
@@ -41,7 +41,7 @@ public class ToResultRowConverterGenerator {
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
         final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
                 .addMethod(asUserType())
-                .addAnnotation(commonGenerator.generated(ToResultRowConverterGenerator.class))
+                .addAnnotations(commonGenerator.generatedClass(ToResultRowConverterGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }

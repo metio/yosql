@@ -52,6 +52,11 @@ public class TypicalTypes {
                 .addModifiers(TypicalModifiers.PUBLIC_CLASS);
     }
 
+    public static final TypeSpec.Builder openClass(final String name) {
+        return TypeSpec.classBuilder(name)
+                .addModifiers(TypicalModifiers.OPEN_CLASS);
+    }
+
     public static TypeName guessBatchTypeName(final String type) {
         return ArrayTypeName.of(guessTypeName(type));
     }

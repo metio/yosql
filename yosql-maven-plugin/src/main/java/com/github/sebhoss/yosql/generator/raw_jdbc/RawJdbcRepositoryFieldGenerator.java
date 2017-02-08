@@ -7,8 +7,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.sql.DataSource;
 
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.RepositoryFieldGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalFields;
 import com.github.sebhoss.yosql.generator.helpers.TypicalModifiers;
@@ -24,7 +28,16 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 
+@Named
+@Singleton
 public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator {
+
+    private final AnnotationGenerator annotationGenerator;
+
+    @Inject
+    public RawJdbcRepositoryFieldGenerator(final AnnotationGenerator annotationGenerator) {
+        this.annotationGenerator = annotationGenerator;
+    }
 
     @Override
     public CodeBlock staticInitializer(final List<SqlStatement> statements) {
@@ -54,35 +67,38 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
     public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
         final Stream<FieldSpec> constants = Stream.concat(
                 statements.stream()
-                        .map(RawJdbcRepositoryFieldGenerator::asConstantSqlField),
+                        .map(this::asConstantSqlField),
                 statements.stream()
                         .filter(stmt -> stmt.getConfiguration().hasParameters())
-                        .map(RawJdbcRepositoryFieldGenerator::asConstantSqlParameterIndexField));
+                        .map(this::asConstantSqlParameterIndexField));
         final Stream<FieldSpec> fields = Stream.concat(Stream.of(asDataSourceField()),
                 converterFields(statements));
         return Stream.concat(constants, fields)
                 .collect(Collectors.toList());
     }
 
-    private static FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {
+    private FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         return FieldSpec.builder(String.class, TypicalFields.constantSqlStatementFieldName(configuration))
+                .addAnnotations(annotationGenerator.generatedField(RawJdbcRepositoryFieldGenerator.class))
                 .addModifiers(TypicalModifiers.CONSTANT_FIELD)
                 .initializer("$S", TypicalParameters.replaceNamedParameters(sqlStatement))
                 .build();
     }
 
-    private static FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
+    private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
         final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
         return FieldSpec.builder(TypicalTypes.MAP_OF_STRING_AND_NUMBERS,
                 TypicalFields.constantSqlStatementParameterIndexFieldName(configuration))
+                .addAnnotations(annotationGenerator.generatedField(RawJdbcRepositoryFieldGenerator.class))
                 .addModifiers(TypicalModifiers.CONSTANT_FIELD)
                 .initializer("new $T<>($L)", HashMap.class, sqlStatement.getConfiguration().getParameters().size())
                 .build();
     }
 
-    private static FieldSpec asDataSourceField() {
+    private FieldSpec asDataSourceField() {
         return FieldSpec.builder(DataSource.class, TypicalNames.DATA_SOURCE)
+                .addAnnotations(annotationGenerator.generatedField(RawJdbcRepositoryFieldGenerator.class))
                 .addModifiers(TypicalModifiers.PRIVATE_FIELD)
                 .build();
     }
@@ -92,6 +108,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
                 .map(converter -> {
                     final ClassName converterClass = ClassName.bestGuess(converter.getConverterType());
                     return FieldSpec.builder(converterClass, converter.getAlias())
+                            .addAnnotations(annotationGenerator.generatedField(RawJdbcRepositoryFieldGenerator.class))
                             .addModifiers(TypicalModifiers.PRIVATE_FIELD)
                             .build();
                 });

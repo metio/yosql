@@ -50,7 +50,7 @@ public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
         final TypeSpec repository = TypicalTypes.publicClass(className)
                 .addFields(fieldGenerator.asFields(sqlStatements))
                 .addMethods(methodGenerator.asMethods(sqlStatements))
-                .addAnnotation(annotationGenerator.generated(RawJdbcRepositoryGenerator.class))
+                .addAnnotations(annotationGenerator.generatedClass(RawJdbcRepositoryGenerator.class))
                 .addStaticBlock(fieldGenerator.staticInitializer(sqlStatements))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, repository);

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.Java8StreamMethodGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
@@ -27,11 +28,15 @@ import com.squareup.javapoet.WildcardTypeName;
 @Singleton
 public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator {
 
-    private final TypicalCodeBlocks codeBlocks;
+    private final TypicalCodeBlocks   codeBlocks;
+    private final AnnotationGenerator annotations;
 
     @Inject
-    public RawJdbcJava8StreamMethodGenerator(final TypicalCodeBlocks codeBlocks) {
+    public RawJdbcJava8StreamMethodGenerator(
+            final TypicalCodeBlocks codeBlocks,
+            final AnnotationGenerator annotations) {
         this.codeBlocks = codeBlocks;
+        this.annotations = annotations;
     }
 
     @Override
@@ -42,6 +47,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
         final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
         final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
         return TypicalMethods.publicMethod(configuration.getStreamEagerName())
+                .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
@@ -66,6 +72,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
         return TypicalMethods.publicMethod(configuration.getStreamLazyName())
+                .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
@@ -94,6 +101,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
                 .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
                 .addSuperinterface(superinterface)
                 .addMethod(TypicalMethods.implementation("tryAdvance")
+                        .addAnnotations(annotations.generatedMethod(getClass()))
                         .addParameter(TypicalParameters.parameter(consumerType, TypicalNames.ACTION))
                         .returns(boolean.class)
                         .addCode(TypicalCodeBlocks.startTryBlock())
@@ -113,6 +121,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(Runnable.class)
                 .addMethod(TypicalMethods.implementation("run")
+                        .addAnnotations(annotations.generatedMethod(getClass()))
                         .returns(void.class)
                         .addCode(TypicalCodeBlocks.startTryBlock())
                         .addCode(TypicalCodeBlocks.closeResultSet())

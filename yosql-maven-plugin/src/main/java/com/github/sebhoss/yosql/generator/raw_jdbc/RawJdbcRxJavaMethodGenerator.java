@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.RxJavaMethodGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
@@ -30,13 +31,16 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
 
     private final PluginRuntimeConfig runtimeConfig;
     private final TypicalCodeBlocks   codeBlocks;
+    private final AnnotationGenerator annotations;
 
     @Inject
     public RawJdbcRxJavaMethodGenerator(
             final PluginRuntimeConfig runtimeConfig,
-            final TypicalCodeBlocks codeBlocks) {
+            final TypicalCodeBlocks codeBlocks,
+            final AnnotationGenerator annotations) {
         this.runtimeConfig = runtimeConfig;
         this.codeBlocks = codeBlocks;
+        this.annotations = annotations;
     }
 
     @Override
@@ -51,6 +55,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         final TypeSpec disposer = createFlowDisposer();
 
         return TypicalMethods.publicMethod(configuration.getFlowableName())
+                .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(flowReturn)
                 .addParameters(configuration.getParameterSpecs())
                 .addCode(TypicalCodeBlocks.newFlowable(initialState, generator, disposer))
@@ -66,6 +71,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(initialStateType)
                 .addMethod(TypicalMethods.implementation("call")
+                        .addAnnotations(annotations.generatedMethod(getClass()))
                         .returns(runtimeConfig.getFlowStateClass())
                         .addException(Exception.class)
                         .addCode(TypicalCodeBlocks.getConnection())
@@ -90,6 +96,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(generatorType)
                 .addMethod(TypicalMethods.implementation("accept")
+                        .addAnnotations(annotations.generatedMethod(getClass()))
                         .addParameter(
                                 TypicalParameters.parameter(runtimeConfig.getFlowStateClass(), TypicalNames.STATE))
                         .addParameter(TypicalParameters.parameter(emitter, TypicalNames.EMITTER))
@@ -116,6 +123,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(disposerType)
                 .addMethod(TypicalMethods.implementation("accept")
+                        .addAnnotations(annotations.generatedMethod(getClass()))
                         .addParameter(TypicalParameters.parameter(runtimeConfig.getFlowStateClass(),
                                 TypicalNames.STATE))
                         .returns(void.class)

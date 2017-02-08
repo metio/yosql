@@ -24,7 +24,7 @@ public class ResultRowGenerator {
 
     public static final String        RESULT_ROW_CLASS_NAME = "ResultRow";
 
-    private final AnnotationGenerator     commonGenerator;
+    private final AnnotationGenerator commonGenerator;
     private final TypeWriter          typeWriter;
     private final PluginRuntimeConfig runtimeConfig;
 
@@ -45,7 +45,7 @@ public class ResultRowGenerator {
                 .addMethod(constructor())
                 .addMethod(setColumnValue())
                 .addMethod(toStringMethod())
-                .addAnnotation(commonGenerator.generated(ResultRowGenerator.class))
+                .addAnnotations(commonGenerator.generatedClass(ResultRowGenerator.class))
                 .build();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }

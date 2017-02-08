@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import com.github.sebhoss.yosql.generator.AbstractMethodGenerator;
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
 import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
@@ -26,17 +27,20 @@ public class RawJdbcMethodGenerator extends AbstractMethodGenerator {
     private final RawJdbcJava8StreamMethodGenerator java8StreamMethodGenerator;
     private final RawJdbcBatchMethodGenerator       batchMethodGenerator;
     private final RawJdbcStandardMethodGenerator    standardMethodGenerator;
+    private final AnnotationGenerator               annotations;
 
     @Inject
     public RawJdbcMethodGenerator(
             final RawJdbcRxJavaMethodGenerator rxJavaMethodGenerator,
             final RawJdbcJava8StreamMethodGenerator java8StreamMethodGenerator,
             final RawJdbcBatchMethodGenerator batchMethodGenerator,
-            final RawJdbcStandardMethodGenerator standardMethodGenerator) {
+            final RawJdbcStandardMethodGenerator standardMethodGenerator,
+            final AnnotationGenerator annotations) {
         this.rxJavaMethodGenerator = rxJavaMethodGenerator;
         this.java8StreamMethodGenerator = java8StreamMethodGenerator;
         this.batchMethodGenerator = batchMethodGenerator;
         this.standardMethodGenerator = standardMethodGenerator;
+        this.annotations = annotations;
     }
 
     @Override
@@ -48,6 +52,7 @@ public class RawJdbcMethodGenerator extends AbstractMethodGenerator {
         });
 
         return TypicalMethods.constructor()
+                .addAnnotations(annotations.generatedMethod(getClass()))
                 .addParameter(TypicalParameters.dataSource())
                 .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.DATA_SOURCE))
                 .addCode(builder.build())

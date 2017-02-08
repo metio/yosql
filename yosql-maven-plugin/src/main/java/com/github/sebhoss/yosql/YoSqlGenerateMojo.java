@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Generated;
 import javax.inject.Inject;
 
 import org.apache.maven.model.Dependency;
@@ -312,6 +313,27 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = RESULT_ROW_CONVERTER)
     private String                                      defaultRowConverter;
 
+    /**
+     * Controls whether {@link Generated} annotations should be added to the
+     * generated repositories.
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private boolean                                     classGeneratedAnnotation;
+
+    /**
+     * Controls whether {@link Generated} annotations should be added to the
+     * generated fields.
+     */
+    @Parameter(required = true, defaultValue = "false")
+    private boolean                                     fieldGeneratedAnnotation;
+
+    /**
+     * Controls whether {@link Generated} annotations should be added to the
+     * generated methods.
+     */
+    @Parameter(required = true, defaultValue = "false")
+    private boolean                                     methodGeneratedAnnotation;
+
     @Parameter(property = "project", defaultValue = "${project}", readonly = true, required = true)
     private MavenProject                                project;
 
@@ -319,7 +341,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private final PluginPreconditions                   preconditions;
     private final FileSetResolver                       fileSetResolver;
     private final SqlFileParser                         sqlFileParser;
-    private final RawJdbcRepositoryGenerator                  codeGenerator;
+    private final RawJdbcRepositoryGenerator            codeGenerator;
     private final PluginRuntimeConfig                   runtimeConfig;
     private final DefaultUtilitiesGenerator             utilsGenerator;
     // private final PlexusContainer beanLocator;
@@ -408,6 +430,9 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
         runtimeConfig.setRepositoryNameSuffix(repositoryNameSuffix);
         runtimeConfig.setRepositorySqlStatements(repositorySqlStatements);
+        runtimeConfig.setClassGeneratedAnnotation(classGeneratedAnnotation);
+        runtimeConfig.setFieldGeneratedAnnotation(fieldGeneratedAnnotation);
+        runtimeConfig.setMethodGeneratedAnnotation(methodGeneratedAnnotation);
 
         runtimeConfig.setGenerateStandardApi(methodStandardApi);
         runtimeConfig.setGenerateBatchApi(methodBatchApi);

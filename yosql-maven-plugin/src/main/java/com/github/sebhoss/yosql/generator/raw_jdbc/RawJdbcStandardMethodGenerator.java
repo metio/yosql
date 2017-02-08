@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.StandardMethodGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
@@ -21,11 +22,15 @@ import com.squareup.javapoet.ParameterizedTypeName;
 @Singleton
 public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
 
-    private final TypicalCodeBlocks codeBlocks;
+    private final TypicalCodeBlocks   codeBlocks;
+    private final AnnotationGenerator annotations;
 
     @Inject
-    public RawJdbcStandardMethodGenerator(final TypicalCodeBlocks codeBlocks) {
+    public RawJdbcStandardMethodGenerator(
+            final TypicalCodeBlocks codeBlocks,
+            final AnnotationGenerator annotations) {
         this.codeBlocks = codeBlocks;
+        this.annotations = annotations;
     }
 
     @Override
@@ -35,6 +40,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
         return TypicalMethods.publicMethod(methodName)
+                .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
@@ -56,6 +62,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
     public MethodSpec standardWriteMethod(final String methodName, final List<SqlStatement> statements) {
         final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
         return TypicalMethods.publicMethod(configuration.getName())
+                .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(int.class)
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addParameters(configuration.getParameterSpecs())

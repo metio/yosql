@@ -29,7 +29,7 @@ public class ResultStateGenerator {
 
     public static final String        RESULT_STATE_CLASS_NAME = "ResultState";
 
-    private final AnnotationGenerator     commonGenerator;
+    private final AnnotationGenerator commonGenerator;
     private final TypeWriter          typeWriter;
     private final PluginRuntimeConfig runtimeConfig;
 
@@ -44,10 +44,10 @@ public class ResultStateGenerator {
     }
 
     public void generateResultStateClass() {
-        final TypeSpec type = TypicalTypes.publicClass(RESULT_STATE_CLASS_NAME)
+        final TypeSpec type = TypicalTypes.openClass(RESULT_STATE_CLASS_NAME)
                 .addFields(fields())
                 .addMethods(methods())
-                .addAnnotation(commonGenerator.generated(ResultStateGenerator.class))
+                .addAnnotations(commonGenerator.generatedClass(ResultStateGenerator.class))
                 .build();
         final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
         typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);

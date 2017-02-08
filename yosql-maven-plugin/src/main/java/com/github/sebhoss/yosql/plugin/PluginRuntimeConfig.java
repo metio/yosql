@@ -49,6 +49,9 @@ public class PluginRuntimeConfig {
     private ClassName                resultStateClass;
     private List<ResultRowConverter> resultRowConverters;
     private String                   defaultRowConverter;
+    private boolean                  classGeneratedAnnotation;
+    private boolean                  fieldGeneratedAnnotation;
+    private boolean                  methodGeneratedAnnotation;
 
     /**
      * @return the outputBaseDirectory
@@ -440,6 +443,30 @@ public class PluginRuntimeConfig {
 
     public String getDefaultRowConverter() {
         return defaultRowConverter;
+    }
+
+    public boolean isClassGeneratedAnnotation() {
+        return classGeneratedAnnotation;
+    }
+
+    public boolean isFieldGeneratedAnnotation() {
+        return fieldGeneratedAnnotation;
+    }
+
+    public boolean isMethodGeneratedAnnotation() {
+        return methodGeneratedAnnotation;
+    }
+
+    public void setClassGeneratedAnnotation(final boolean classGeneratedAnnotation) {
+        this.classGeneratedAnnotation = classGeneratedAnnotation;
+    }
+
+    public void setFieldGeneratedAnnotation(final boolean fieldGeneratedAnnotation) {
+        this.fieldGeneratedAnnotation = fieldGeneratedAnnotation;
+    }
+
+    public void setMethodGeneratedAnnotation(final boolean methodGeneratedAnnotation) {
+        this.methodGeneratedAnnotation = methodGeneratedAnnotation;
     }
 
 }
