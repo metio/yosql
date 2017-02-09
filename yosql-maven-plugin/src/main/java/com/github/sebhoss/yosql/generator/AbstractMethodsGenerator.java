@@ -6,7 +6,7 @@ import java.util.List;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.MethodSpec;
 
-public abstract class AbstractMethodGenerator implements MethodGenerator {
+public abstract class AbstractMethodsGenerator implements MethodsGenerator {
 
     @Override
     public final Iterable<MethodSpec> asMethods(final List<SqlStatement> sqlStatementsInRepository) {

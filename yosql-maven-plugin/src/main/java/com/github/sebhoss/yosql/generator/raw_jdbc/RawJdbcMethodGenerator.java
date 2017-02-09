@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import com.github.sebhoss.yosql.generator.AbstractMethodGenerator;
+import com.github.sebhoss.yosql.generator.AbstractMethodsGenerator;
 import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
@@ -21,7 +21,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
 import com.squareup.javapoet.MethodSpec;
 
-public class RawJdbcMethodGenerator extends AbstractMethodGenerator {
+public class RawJdbcMethodGenerator extends AbstractMethodsGenerator {
 
     private final RawJdbcRxJavaMethodGenerator      rxJavaMethodGenerator;
     private final RawJdbcJava8StreamMethodGenerator java8StreamMethodGenerator;
