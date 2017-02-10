@@ -81,7 +81,7 @@ public class SqlFileParser {
         final String rawSqlStatement = sql.toString();
         final String rawYaml = yaml.toString();
 
-        final Map<String, List<Integer>> parameterIndices = extractParameterNames(rawSqlStatement);
+        final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
         final SqlStatementConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
 
@@ -101,7 +101,7 @@ public class SqlFileParser {
                 });
     }
 
-    private Map<String, List<Integer>> extractParameterNames(final String sqlStatement) {
+    private Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {
         final Map<String, List<Integer>> indices = new LinkedHashMap<>();
         final Matcher matcher = PATTERN.matcher(sqlStatement);
         int counter = 0;
