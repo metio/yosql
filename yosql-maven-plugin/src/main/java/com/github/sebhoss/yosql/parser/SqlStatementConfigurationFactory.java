@@ -298,22 +298,34 @@ public class SqlStatementConfigurationFactory {
         } else {
             final ResultRowConverter resultConverter = configuration.getResultConverter();
             if (resultConverter.getAlias() == null || resultConverter.getAlias().isEmpty()) {
-                resultConverter.setAlias(getConverterFieldOrEmptyString(
-                        converter -> converterTypeMatches(resultConverter, converter),
-                        ResultRowConverter::getAlias));
+                resultConverter.setAlias(getDefaultAlias(resultConverter));
             }
             if (resultConverter.getConverterType() == null || resultConverter.getConverterType().isEmpty()) {
-                resultConverter.setConverterType(getConverterFieldOrEmptyString(
-                        converter -> aliasMatches(resultConverter, converter),
-                        ResultRowConverter::getConverterType));
+                resultConverter.setConverterType(getDefaultConverterType(resultConverter));
             }
             if (resultConverter.getResultType() == null || resultConverter.getResultType().isEmpty()) {
-                resultConverter.setResultType(getConverterFieldOrEmptyString(
-                        converter -> aliasMatches(resultConverter, converter)
-                                || converterTypeMatches(resultConverter, converter),
-                        ResultRowConverter::getResultType));
+                resultConverter.setResultType(getDefaultResultType(resultConverter));
             }
         }
+    }
+
+    private String getDefaultAlias(final ResultRowConverter resultConverter) {
+        return getConverterFieldOrEmptyString(
+                converter -> converterTypeMatches(resultConverter, converter),
+                ResultRowConverter::getAlias);
+    }
+
+    private String getDefaultConverterType(final ResultRowConverter resultConverter) {
+        return getConverterFieldOrEmptyString(
+                converter -> aliasMatches(resultConverter, converter),
+                ResultRowConverter::getConverterType);
+    }
+
+    private String getDefaultResultType(final ResultRowConverter resultConverter) {
+        return getConverterFieldOrEmptyString(
+                converter -> aliasMatches(resultConverter, converter)
+                        || converterTypeMatches(resultConverter, converter),
+                ResultRowConverter::getResultType);
     }
 
     private boolean aliasMatches(final ResultRowConverter resultConverter, final ResultRowConverter converter) {
