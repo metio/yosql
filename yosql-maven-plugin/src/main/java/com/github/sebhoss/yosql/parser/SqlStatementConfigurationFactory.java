@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -18,21 +21,21 @@ import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlSourceFile;
 import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
 import com.github.sebhoss.yosql.model.SqlStatementType;
-import com.github.sebhoss.yosql.plugin.PluginErrors;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
 
 @Named
 @Singleton
 public class SqlStatementConfigurationFactory {
 
-    private final Yaml                yamlParser = new Yaml();
-    private final PluginErrors        pluginErrors;
-    private final PluginConfig runtimeConfig;
+    private final Yaml         yamlParser = new Yaml();
+    private final PluginErrors pluginErrors;
+    private final PluginConfig pluginConfig;
 
     @Inject
-    public SqlStatementConfigurationFactory(final PluginErrors pluginErrors, final PluginConfig runtimeConfig) {
+    public SqlStatementConfigurationFactory(final PluginErrors pluginErrors, final PluginConfig pluginConfig) {
         this.pluginErrors = pluginErrors;
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
     }
 
     public SqlStatementConfiguration createStatementConfiguration(
@@ -78,55 +81,55 @@ public class SqlStatementConfigurationFactory {
 
     private void batchNamePrefix(final SqlStatementConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodBatchPrefix())) {
-            configuration.setMethodBatchPrefix(runtimeConfig.getMethodBatchPrefix());
+            configuration.setMethodBatchPrefix(pluginConfig.getMethodBatchPrefix());
         }
     }
 
     private void batchNameSuffix(final SqlStatementConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodBatchSuffix())) {
-            configuration.setMethodBatchSuffix(runtimeConfig.getMethodBatchSuffix());
+            configuration.setMethodBatchSuffix(pluginConfig.getMethodBatchSuffix());
         }
     }
 
     private void streamNamePrefix(final SqlStatementConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodStreamPrefix())) {
-            configuration.setMethodStreamPrefix(runtimeConfig.getMethodStreamPrefix());
+            configuration.setMethodStreamPrefix(pluginConfig.getMethodStreamPrefix());
         }
     }
 
     private void streamNameSuffix(final SqlStatementConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodStreamSuffix())) {
-            configuration.setMethodStreamSuffix(runtimeConfig.getMethodStreamSuffix());
+            configuration.setMethodStreamSuffix(pluginConfig.getMethodStreamSuffix());
         }
     }
 
     private void rxJavaNamePrefix(final SqlStatementConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodReactivePrefix())) {
-            configuration.setMethodReactivePrefix(runtimeConfig.getMethodRxJavaPrefix());
+            configuration.setMethodReactivePrefix(pluginConfig.getMethodRxJavaPrefix());
         }
     }
 
     private void rxJavaNameSuffix(final SqlStatementConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodReactiveSuffix())) {
-            configuration.setMethodReactiveSuffix(runtimeConfig.getMethodRxJavaSuffix());
+            configuration.setMethodReactiveSuffix(pluginConfig.getMethodRxJavaSuffix());
         }
     }
 
     private void lazyName(final SqlStatementConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodLazyName())) {
-            configuration.setMethodLazyName(runtimeConfig.getMethodLazyName());
+            configuration.setMethodLazyName(pluginConfig.getMethodLazyName());
         }
     }
 
     private void eagerName(final SqlStatementConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodEagerName())) {
-            configuration.setMethodEagerName(runtimeConfig.getMethodEagerName());
+            configuration.setMethodEagerName(pluginConfig.getMethodEagerName());
         }
     }
 
     private void type(final SqlStatementConfiguration configuration) {
         if (configuration.getType() == null) {
-            if (startsWith(configuration.getName(), runtimeConfig.getAllowedWritePrefixes())) {
+            if (startsWith(configuration.getName(), pluginConfig.getAllowedWritePrefixes())) {
                 configuration.setType(SqlStatementType.WRITING);
             } else {
                 configuration.setType(SqlStatementType.READING);
@@ -135,22 +138,22 @@ public class SqlStatementConfigurationFactory {
     }
 
     private void validateNames(final SqlSourceFile source, final SqlStatementConfiguration configuration) {
-        if (runtimeConfig.isValidateMethodNamePrefixes()) {
+        if (pluginConfig.shouldValidateMethodNamePrefixes()) {
             switch (configuration.getType()) {
             case READING:
-                if (!startsWith(configuration.getName(), runtimeConfig.getAllowedReadPrefixes())) {
+                if (!startsWith(configuration.getName(), pluginConfig.getAllowedReadPrefixes())) {
                     final String msg = String.format("[%s] has invalid READ prefix in its name [%s]",
                             source.getPathToSqlFile(), configuration.getName());
                     pluginErrors.add(new IllegalArgumentException(msg));
-                    runtimeConfig.getLogger().error(msg);
+                    pluginConfig.getLogger().error(msg);
                 }
                 break;
             case WRITING:
-                if (!startsWith(configuration.getName(), runtimeConfig.getAllowedWritePrefixes())) {
+                if (!startsWith(configuration.getName(), pluginConfig.getAllowedWritePrefixes())) {
                     final String msg = String.format("[%s] has invalid WRITE prefix in its name [%s]",
                             source.getPathToSqlFile(), configuration.getName());
                     pluginErrors.add(new IllegalArgumentException(msg));
-                    runtimeConfig.getLogger().error(msg);
+                    pluginConfig.getLogger().error(msg);
                 }
                 break;
             }
@@ -158,77 +161,96 @@ public class SqlStatementConfigurationFactory {
     }
 
     private void standard(final SqlStatementConfiguration configuration) {
-        if (configuration.isUsingPluginSingleConfig()) {
-            configuration.setMethodStandardApi(runtimeConfig.isGenerateStandardApi());
+        if (configuration.shouldUsePluginStandardConfig()) {
+            configuration.setMethodStandardApi(pluginConfig.isGenerateStandardApi());
         }
     }
 
     private void batch(final SqlStatementConfiguration configuration) {
-        if (configuration.isUsingPluginBatchConfig()) {
+        if (configuration.shouldUsePluginBatchConfig()) {
             if (SqlStatementType.READING == configuration.getType()) {
                 configuration.setMethodBatchApi(false);
             } else {
-                configuration.setMethodBatchApi(runtimeConfig.isGenerateBatchApi());
+                configuration.setMethodBatchApi(pluginConfig.isGenerateBatchApi());
             }
         }
     }
 
     private void streamEager(final SqlStatementConfiguration configuration) {
-        if (configuration.isUsingPluginStreamEagerConfig()) {
+        if (configuration.shouldUsePluginStreamEagerConfig()) {
             if (SqlStatementType.WRITING == configuration.getType()) {
                 configuration.setMethodStreamEagerApi(false);
             } else {
-                configuration.setMethodStreamEagerApi(runtimeConfig.isGenerateStreamEagerApi());
+                configuration.setMethodStreamEagerApi(pluginConfig.isGenerateStreamEagerApi());
             }
         }
     }
 
     private void streamLazy(final SqlStatementConfiguration configuration) {
-        if (configuration.isUsingPluginStreamLazyConfig()) {
+        if (configuration.shouldUsePluginStreamLazyConfig()) {
             if (SqlStatementType.WRITING == configuration.getType()) {
                 configuration.setMethodStreamLazyApi(false);
             } else {
-                configuration.setMethodStreamLazyApi(runtimeConfig.isGenerateStreamLazyApi());
+                configuration.setMethodStreamLazyApi(pluginConfig.isGenerateStreamLazyApi());
             }
         }
     }
 
     private void rxJava(final SqlStatementConfiguration configuration) {
-        if (configuration.isUsingPluginRxJavaConfig()) {
+        if (configuration.shouldUsePluginRxJavaConfig()) {
             if (SqlStatementType.WRITING == configuration.getType()) {
                 configuration.setMethodRxJavaApi(false);
             } else {
-                configuration.setMethodRxJavaApi(runtimeConfig.isGenerateRxJavaApi());
+                configuration.setMethodRxJavaApi(pluginConfig.isGenerateRxJavaApi());
             }
         }
     }
 
     private void catchAndRethrow(final SqlStatementConfiguration configuration) {
-        if (configuration.isUsingPluginCatchAndRethrowConfig()) {
-            configuration.setMethodCatchAndRethrow(runtimeConfig.isMethodCatchAndRethrow());
+        if (configuration.shouldUsePluginCatchAndRethrowConfig()) {
+            configuration.setMethodCatchAndRethrow(pluginConfig.isMethodCatchAndRethrow());
         }
     }
 
     private void repository(final SqlSourceFile source, final SqlStatementConfiguration configuration) {
-        if (configuration.getRepository() == null || configuration.getRepository().isEmpty()) {
-            final Path relativePathToSqlFile = source.getBaseDirectory().relativize(source.getPathToSqlFile());
-            final String rawRepositoryName = relativePathToSqlFile.getParent().toString();
-            final String dottedRepositoryName = rawRepositoryName.replace("/", ".");
-            final String upperCaseName = dottedRepositoryName.substring(0, 1).toUpperCase() +
-                    dottedRepositoryName.substring(1, dottedRepositoryName.length());
-            final String fullRepositoryName = upperCaseName.endsWith(runtimeConfig.getRepositoryNameSuffix())
-                    ? upperCaseName
-                    : upperCaseName + runtimeConfig.getRepositoryNameSuffix();
-            configuration.setRepository(runtimeConfig.getBasePackageName() + "." + fullRepositoryName);
+        if (configuration.hasRepository()) {
+            final String repositoryName = calculateRepositoryNameFromUserInput(configuration);
+            configuration.setRepository(repositoryName);
         } else {
-            final String userGivenRepository = configuration.getRepository();
-            final String actualRepository = userGivenRepository.startsWith(runtimeConfig.getBasePackageName())
-                    ? userGivenRepository : runtimeConfig.getBasePackageName() + "." + userGivenRepository;
-            final String fullRepositoryName = actualRepository.endsWith(runtimeConfig.getRepositoryNameSuffix())
-                    ? actualRepository
-                    : actualRepository + runtimeConfig.getRepositoryNameSuffix();
+            final String fullRepositoryName = calculateRepositoryNameFromParentFolder(source);
             configuration.setRepository(fullRepositoryName);
         }
+    }
+
+    private String calculateRepositoryNameFromParentFolder(final SqlSourceFile source) {
+        final Path relativePathToSqlFile = source.getBaseDirectory().relativize(source.getPathToSqlFile());
+        final String rawRepositoryName = relativePathToSqlFile.getParent().toString();
+        final String dottedRepositoryName = rawRepositoryName.replace("/", ".");
+        final String upperCaseName = upperCaseFirstLetter(dottedRepositoryName);
+        final String actualRepository = repositoryInBasePackage(upperCaseName);
+        final String fullRepositoryName = repositoryWithNameSuffix(actualRepository);
+        return fullRepositoryName;
+    }
+
+    private String upperCaseFirstLetter(final String name) {
+        return name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
+    }
+
+    private String calculateRepositoryNameFromUserInput(final SqlStatementConfiguration configuration) {
+        final String userGivenRepository = configuration.getRepository();
+        final String actualRepository = repositoryInBasePackage(userGivenRepository);
+        return repositoryWithNameSuffix(actualRepository);
+    }
+
+    private String repositoryWithNameSuffix(final String repository) {
+        return repository.endsWith(pluginConfig.getRepositoryNameSuffix())
+                ? repository
+                : repository + pluginConfig.getRepositoryNameSuffix();
+    }
+
+    private String repositoryInBasePackage(final String repository) {
+        return repository.startsWith(pluginConfig.getBasePackageName())
+                ? repository : pluginConfig.getBasePackageName() + "." + repository;
     }
 
     private void parameters(final SqlSourceFile source, final Map<String, List<Integer>> parameterIndices,
@@ -236,50 +258,94 @@ public class SqlStatementConfigurationFactory {
         if (parametersAreValid(source, parameterIndices, configuration)) {
             for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
                 final String parameterName = entry.getKey();
-                if (!configuration.getParameters().stream()
-                        .anyMatch(parameter -> parameterName.equals(parameter.getName()))) {
+                if (isMissingParameter(configuration, parameterName)) {
                     final SqlParameter sqlParameter = new SqlParameter();
                     sqlParameter.setName(parameterName);
                     configuration.getParameters().add(sqlParameter);
                 }
-                configuration.getParameters().stream()
-                        .filter(parameter -> parameterName.equals(parameter.getName()))
-                        .forEach(parameter -> parameter.setIndices(entry.getValue().stream()
-                                .mapToInt(Integer::intValue)
-                                .toArray()));
+                updateIndices(configuration.getParameters(), entry.getValue(), parameterName);
             }
         }
     }
 
+    private void updateIndices(
+            final List<SqlParameter> parameters,
+            final List<Integer> numbers,
+            final String parameterName) {
+        parameters.stream()
+                .filter(nameMatches(parameterName))
+                .forEach(parameter -> parameter.setIndices(asArray(numbers)));
+    }
+
+    private int[] asArray(final List<Integer> numbers) {
+        return numbers.stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
+    }
+
+    private boolean isMissingParameter(final SqlStatementConfiguration configuration, final String parameterName) {
+        return !configuration.getParameters().stream()
+                .anyMatch(nameMatches(parameterName));
+    }
+
+    private Predicate<? super SqlParameter> nameMatches(final String parameterName) {
+        return parameter -> parameterName.equals(parameter.getName());
+    }
+
     private void resultConverter(final SqlStatementConfiguration configuration) {
         if (configuration.getResultConverter() == null) {
-            runtimeConfig.getResultRowConverters().stream()
-                    .filter(converter -> runtimeConfig.getDefaultRowConverter().equals(converter.getAlias())
-                            || runtimeConfig.getDefaultRowConverter().equals(converter.getConverterType()))
-                    .limit(1)
-                    .forEach(configuration::setResultConverter);
+            getDefaultRowConverter().ifPresent(configuration::setResultConverter);
         } else {
             final ResultRowConverter resultConverter = configuration.getResultConverter();
             if (resultConverter.getAlias() == null || resultConverter.getAlias().isEmpty()) {
-                resultConverter.setAlias(runtimeConfig.getResultRowConverters().stream()
-                        .filter(converter -> converter.getConverterType().equals(resultConverter.getConverterType()))
-                        .map(converter -> converter.getAlias())
-                        .findAny().orElse(""));
+                resultConverter.setAlias(getConverterFieldOrEmptyString(
+                        converter -> converterTypeMatches(resultConverter, converter),
+                        ResultRowConverter::getAlias));
             }
             if (resultConverter.getConverterType() == null || resultConverter.getConverterType().isEmpty()) {
-                resultConverter.setConverterType(runtimeConfig.getResultRowConverters().stream()
-                        .filter(converter -> converter.getAlias().equals(resultConverter.getAlias()))
-                        .map(converter -> converter.getConverterType())
-                        .findAny().orElse(""));
+                resultConverter.setConverterType(getConverterFieldOrEmptyString(
+                        converter -> aliasMatches(resultConverter, converter),
+                        ResultRowConverter::getConverterType));
             }
             if (resultConverter.getResultType() == null || resultConverter.getResultType().isEmpty()) {
-                resultConverter.setResultType(runtimeConfig.getResultRowConverters().stream()
-                        .filter(converter -> converter.getAlias().equals(resultConverter.getAlias())
-                                || converter.getConverterType().equals(resultConverter.getConverterType()))
-                        .map(converter -> converter.getResultType())
-                        .findAny().orElse(""));
+                resultConverter.setResultType(getConverterFieldOrEmptyString(
+                        converter -> aliasMatches(resultConverter, converter)
+                                || converterTypeMatches(resultConverter, converter),
+                        ResultRowConverter::getResultType));
             }
         }
+    }
+
+    private boolean aliasMatches(final ResultRowConverter resultConverter, final ResultRowConverter converter) {
+        return converter.getAlias().equals(resultConverter.getAlias());
+    }
+
+    private boolean converterTypeMatches(final ResultRowConverter resultConverter, final ResultRowConverter converter) {
+        return converter.getConverterType().equals(resultConverter.getConverterType());
+    }
+
+    private Optional<ResultRowConverter> getDefaultRowConverter() {
+        return getRowConverter(this::isDefaultConverter);
+    }
+
+    private boolean isDefaultConverter(final ResultRowConverter converter) {
+        return pluginConfig.getDefaultRowConverter().equals(converter.getAlias())
+                || pluginConfig.getDefaultRowConverter().equals(converter.getConverterType());
+    }
+
+    private Optional<ResultRowConverter> getRowConverter(final Predicate<ResultRowConverter> predicate) {
+        return pluginConfig.getResultRowConverters().stream()
+                .filter(predicate)
+                .findFirst();
+    }
+
+    private String getConverterFieldOrEmptyString(
+            final Predicate<ResultRowConverter> predicate,
+            final Function<ResultRowConverter, String> mapper) {
+        return pluginConfig.getResultRowConverters().stream()
+                .filter(predicate)
+                .map(mapper)
+                .findFirst().orElse("");
     }
 
     private boolean nullOrEmpty(final String object) {
@@ -300,7 +366,7 @@ public class SqlStatementConfigurationFactory {
                 .map(param -> String.format("[%s] declares unknown parameter [%s]",
                         source.getPathToSqlFile(), param.getName()))
                 .peek(msg -> pluginErrors.add(new IllegalArgumentException(msg)))
-                .peek(msg -> runtimeConfig.getLogger().error(msg))
+                .peek(msg -> pluginConfig.getLogger().error(msg))
                 .collect(Collectors.toList());
         return errors == null || errors.isEmpty();
     }

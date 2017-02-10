@@ -241,6 +241,10 @@ public class SqlStatementConfiguration {
         this.resultConverter = resultConverter;
     }
 
+    public boolean hasRepository() {
+        return repository != null && !repository.isEmpty();
+    }
+
     public String getRepository() {
         return repository;
     }
@@ -282,7 +286,7 @@ public class SqlStatementConfiguration {
     /**
      * @return <code>true</code> if 'single' was not overwritten.
      */
-    public boolean isUsingPluginSingleConfig() {
+    public boolean shouldUsePluginStandardConfig() {
         return !generateStandardApiOverwritten;
     }
 
@@ -290,28 +294,28 @@ public class SqlStatementConfiguration {
      * @return <code>true</code> if 'generateBatchApi' was not overwritten and
      *         the plugin configuration should be used.
      */
-    public boolean isUsingPluginBatchConfig() {
+    public boolean shouldUsePluginBatchConfig() {
         return !generateBatchApiOverwritten;
     }
 
     /**
      * @return <code>true</code> if 'streamEager' was not overwritten.
      */
-    public boolean isUsingPluginStreamEagerConfig() {
+    public boolean shouldUsePluginStreamEagerConfig() {
         return !generateStreamEagerApiOverwritten;
     }
 
     /**
      * @return <code>true</code> if 'streamLazy' was not overwritten.
      */
-    public boolean isUsingPluginStreamLazyConfig() {
+    public boolean shouldUsePluginStreamLazyConfig() {
         return !generateStreamLazyApiOverwritten;
     }
 
     /**
      * @return <code>true</code> if 'generateRxJavaApi' was not overwritten.
      */
-    public boolean isUsingPluginRxJavaConfig() {
+    public boolean shouldUsePluginRxJavaConfig() {
         return !generateRxJavaApiOverwritten;
     }
 
@@ -372,7 +376,7 @@ public class SqlStatementConfiguration {
     /**
      * @return <code>true</code> if 'streamLazy' was not overwritten.
      */
-    public boolean isUsingPluginCatchAndRethrowConfig() {
+    public boolean shouldUsePluginCatchAndRethrowConfig() {
         return !methodCatchAndRethrowOverwritten;
     }
 

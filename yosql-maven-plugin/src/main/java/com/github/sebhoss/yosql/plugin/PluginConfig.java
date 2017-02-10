@@ -362,7 +362,7 @@ public class PluginConfig {
     /**
      * @return the validateMethodNamePrefixes
      */
-    public boolean isValidateMethodNamePrefixes() {
+    public boolean shouldValidateMethodNamePrefixes() {
         return validateMethodNamePrefixes;
     }
 

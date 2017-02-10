@@ -26,8 +26,8 @@ import javax.inject.Singleton;
 import com.github.sebhoss.yosql.model.SqlSourceFile;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
-import com.github.sebhoss.yosql.plugin.PluginErrors;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
+import com.github.sebhoss.yosql.plugin.PluginErrors;
 
 @Named
 @Singleton
@@ -40,7 +40,7 @@ public class SqlFileParser {
 
     private final PluginErrors                     pluginErrors;
     private final SqlStatementConfigurationFactory factory;
-    private final PluginConfig              runtimeConfig;
+    private final PluginConfig                     runtimeConfig;
 
     @Inject
     public SqlFileParser(
