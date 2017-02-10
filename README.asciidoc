@@ -376,6 +376,10 @@ Plugin only options can only be applied globally in the plugin configuration.
 |List of globally configured row converters for result sets. The `ToResultRowConverter` is always added with the alias `resultRowConverter`
 |===
 
+== Alternatives
+
+* https://github.com/OpenGamma/ElSql
+
 == License
 
 To the extent possible under law, the author(s) have dedicated all copyright
