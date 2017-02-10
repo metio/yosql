@@ -243,6 +243,10 @@ The plugin offers several ways to influence how the generated code looks like. T
 |Batch
 |The method name suffix to apply to all batch methods.
 
+|methodAllowedCallPrefixes
+|call, execute
+|The allow method name prefixes for calling methods.
+
 |methodCatchAndRethrow
 |true
 |Whether generated methods should catch `SqlException`s and rethrow them as `RuntimeException`s. If set to *false*, this will cause methods to declare that they throw a checked exception which in turn will force all its users to handle the exception themselves.
