@@ -23,6 +23,10 @@ public class SqlStatement {
         return configuration;
     }
 
+    public String getName() {
+        return configuration.getName();
+    }
+
     public String getStatement() {
         return statement;
     }
