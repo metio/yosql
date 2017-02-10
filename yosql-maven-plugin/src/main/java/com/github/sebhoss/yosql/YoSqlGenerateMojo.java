@@ -35,7 +35,7 @@ import com.github.sebhoss.yosql.generator.utils.ResultRowGenerator;
 import com.github.sebhoss.yosql.generator.utils.ResultStateGenerator;
 import com.github.sebhoss.yosql.generator.utils.ToResultRowConverterGenerator;
 import com.github.sebhoss.yosql.model.LoggingAPI;
-import com.github.sebhoss.yosql.model.ParameterConverterConfiguration;
+import com.github.sebhoss.yosql.model.ParameterConverter;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.parser.FileSetResolver;
@@ -295,7 +295,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * Optional list of converters that are applied to input parameters.
      */
     @Parameter(required = false)
-    private final List<ParameterConverterConfiguration> parameterConverters  = new ArrayList<>();
+    private final List<ParameterConverter> parameterConverters  = new ArrayList<>();
 
     /**
      * Optional list of converters that are applied to input parameters.

@@ -1,10 +1,10 @@
 package com.github.sebhoss.yosql.model;
 
-public class ParameterConverterConfiguration {
+public class ParameterConverter {
 
     private String alias;
     private String parameterType;
-    private String converterClass;
+    private String converterType;
 
     public String getAlias() {
         return alias;
@@ -22,12 +22,12 @@ public class ParameterConverterConfiguration {
         this.parameterType = parameterType;
     }
 
-    public String getConverterClass() {
-        return converterClass;
+    public String getConverterType() {
+        return converterType;
     }
 
-    public void setConverterClass(final String converterClass) {
-        this.converterClass = converterClass;
+    public void setConverterType(final String converterType) {
+        this.converterType = converterType;
     }
 
 }
