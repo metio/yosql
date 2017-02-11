@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -67,7 +67,7 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
-    public static CodeBlock prepareBatch(final SqlStatementConfiguration configuration) {
+    public static CodeBlock prepareBatch(final SqlConfiguration configuration) {
         return CodeBlock.builder()
                 .beginControlFlow("for (int $N = 0; $N < $N.length; $N++)", TypicalNames.BATCH, TypicalNames.BATCH,
                         configuration.getParameters().get(0).getName(), TypicalNames.BATCH)
@@ -96,7 +96,7 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
-    public static CodeBlock prepareStatement(final SqlStatementConfiguration configuration) {
+    public static CodeBlock prepareStatement(final SqlConfiguration configuration) {
         return CodeBlock.builder()
                 .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
                         TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION,
@@ -142,20 +142,20 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
-    public static CodeBlock setParameters(final SqlStatementConfiguration configuration) {
+    public static CodeBlock setParameters(final SqlConfiguration configuration) {
         return parameterAssignment(configuration, "$N.setObject($N, $N)",
                 parameterName -> new String[] { TypicalNames.PREPARED_STATEMENT,
                         TypicalNames.JDBC_INDEX, parameterName });
     }
 
-    public static CodeBlock setBatchParameters(final SqlStatementConfiguration configuration) {
+    public static CodeBlock setBatchParameters(final SqlConfiguration configuration) {
         return parameterAssignment(configuration, "$N.setObject($N, $N[$N])",
                 parameterName -> new String[] { TypicalNames.PREPARED_STATEMENT,
                         TypicalNames.JDBC_INDEX, parameterName, TypicalNames.BATCH });
     }
 
     private static CodeBlock parameterAssignment(
-            final SqlStatementConfiguration configuration,
+            final SqlConfiguration configuration,
             final String codeStatement,
             final Function<String, Object[]> parameterSetter) {
         final com.squareup.javapoet.CodeBlock.Builder builder = CodeBlock.builder();
@@ -172,14 +172,14 @@ public class TypicalCodeBlocks {
         return builder.build();
     }
 
-    public static CodeBlock maybeTry(final SqlStatementConfiguration configuration) {
+    public static CodeBlock maybeTry(final SqlConfiguration configuration) {
         if (configuration.isMethodCatchAndRethrow()) {
             return startTryBlock();
         }
         return CodeBlock.builder().build();
     }
 
-    public static CodeBlock endMaybeTry(final SqlStatementConfiguration configuration) {
+    public static CodeBlock endMaybeTry(final SqlConfiguration configuration) {
         if (configuration.isMethodCatchAndRethrow()) {
             return endTryBlock();
         }
@@ -248,7 +248,7 @@ public class TypicalCodeBlocks {
         return CodeBlock.builder().endControlFlow().build();
     }
 
-    public static CodeBlock maybeCatchAndRethrow(final SqlStatementConfiguration configuration) {
+    public static CodeBlock maybeCatchAndRethrow(final SqlConfiguration configuration) {
         if (configuration.isMethodCatchAndRethrow()) {
             return catchAndRethrow();
         }
@@ -303,7 +303,7 @@ public class TypicalCodeBlocks {
                     });
             builder.endControlFlow();
         } else {
-            final SqlStatementConfiguration configuration = sqlStatements.get(0).getConfiguration();
+            final SqlConfiguration configuration = sqlStatements.get(0).getConfiguration();
             builder.addStatement("final $T $N = $N", String.class, TypicalNames.QUERY,
                     TypicalFields.constantSqlStatementFieldName(configuration));
             if (configuration.hasParameters()) {
@@ -342,7 +342,7 @@ public class TypicalCodeBlocks {
         return CodeBlock.builder().addStatement("$N.close()", resource).build();
     }
 
-    public static Iterable<TypeName> sqlException(final SqlStatementConfiguration configuration) {
+    public static Iterable<TypeName> sqlException(final SqlConfiguration configuration) {
         if (!configuration.isMethodCatchAndRethrow()) {
             return Arrays.asList(ClassName.get(SQLException.class));
         }

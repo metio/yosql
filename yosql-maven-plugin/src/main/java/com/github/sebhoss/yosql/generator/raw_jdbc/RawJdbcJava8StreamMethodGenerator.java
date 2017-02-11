@@ -17,7 +17,7 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -41,7 +41,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
 
     @Override
     public MethodSpec streamEagerApi(final List<SqlStatement> statements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
+        final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
@@ -67,7 +67,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
 
     @Override
     public MethodSpec streamLazyApi(final List<SqlStatement> statements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
+        final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);

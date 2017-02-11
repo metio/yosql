@@ -12,7 +12,7 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.squareup.javapoet.MethodSpec;
 
 @Component(role = BatchMethodGenerator.class, hint = "raw-jdbc")
@@ -27,7 +27,7 @@ public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
 
     @Override
     public MethodSpec batchApi(final List<SqlStatement> sqlStatements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(sqlStatements);
+        final SqlConfiguration configuration = SqlConfiguration.merge(sqlStatements);
         return TypicalMethods.publicMethod(configuration.getBatchName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(TypicalTypes.ARRAY_OF_INTS)

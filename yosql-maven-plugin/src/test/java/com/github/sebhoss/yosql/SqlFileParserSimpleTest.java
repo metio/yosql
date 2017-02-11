@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.github.sebhoss.yosql.model.SqlSourceFile;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.parser.SqlFileParser;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 
@@ -42,7 +42,7 @@ public class SqlFileParserSimpleTest {
 
         // when
         final Stream<SqlStatement> statement = parser.parse(new SqlSourceFile(sqlFile, null));
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration
+        final SqlConfiguration configuration = SqlConfiguration
                 .merge(statement.collect(Collectors.toList()));
 
         // then
@@ -56,7 +56,7 @@ public class SqlFileParserSimpleTest {
 
         // when
         final Stream<SqlStatement> statements = parser.parse(new SqlSourceFile(sqlFile, null));
-        final String sqlStatement = statements.map(SqlStatement::getStatement).findFirst().orElse(null);
+        final String sqlStatement = statements.map(SqlStatement::getRawStatement).findFirst().orElse(null);
 
         // then
         Assert.assertNotNull(sqlStatement);
@@ -69,7 +69,7 @@ public class SqlFileParserSimpleTest {
 
         // when
         final Stream<SqlStatement> statement = parser.parse(new SqlSourceFile(sqlFile, null));
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration
+        final SqlConfiguration configuration = SqlConfiguration
                 .merge(statement.collect(Collectors.toList()));
 
         // then

@@ -1,6 +1,6 @@
 package com.github.sebhoss.yosql.model;
 
-public enum SqlStatementType {
+public enum SqlType {
 
     READING, WRITING, CALLING;
 

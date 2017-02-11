@@ -22,8 +22,8 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
-import com.github.sebhoss.yosql.model.SqlStatementType;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
+import com.github.sebhoss.yosql.model.SqlType;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -44,7 +44,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
         final CodeBlock.Builder builder = CodeBlock.builder();
         statements.stream()
                 .map(SqlStatement::getConfiguration)
-                .filter(SqlStatementConfiguration::hasParameters)
+                .filter(SqlConfiguration::hasParameters)
                 .forEach(config -> {
                     config.getParameters().stream()
                             .filter(SqlParameter::hasIndices)
@@ -78,7 +78,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
     }
 
     private FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {
-        final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
+        final SqlConfiguration configuration = sqlStatement.getConfiguration();
         return FieldSpec.builder(String.class, TypicalFields.constantSqlStatementFieldName(configuration))
                 .addAnnotations(annotations.generatedField(RawJdbcRepositoryFieldGenerator.class))
                 .addModifiers(TypicalModifiers.CONSTANT_FIELD)
@@ -87,7 +87,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
     }
 
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
-        final SqlStatementConfiguration configuration = sqlStatement.getConfiguration();
+        final SqlConfiguration configuration = sqlStatement.getConfiguration();
         return FieldSpec.builder(TypicalTypes.MAP_OF_STRING_AND_NUMBERS,
                 TypicalFields.constantSqlStatementParameterIndexFieldName(configuration))
                 .addAnnotations(annotations.generatedField(RawJdbcRepositoryFieldGenerator.class))
@@ -117,8 +117,8 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
     private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
         return sqlStatements.stream()
                 .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlStatementType.READING == config.getType())
-                .map(SqlStatementConfiguration::getResultConverter)
+                .filter(config -> SqlType.READING == config.getType())
+                .map(SqlConfiguration::getResultConverter)
                 .filter(Objects::nonNull)
                 .distinct();
     }

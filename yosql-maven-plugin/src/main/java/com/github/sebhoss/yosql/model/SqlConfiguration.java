@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.squareup.javapoet.ParameterSpec;
 
-public class SqlStatementConfiguration {
+public class SqlConfiguration {
 
     private String             name;
     private String             repository;
-    private SqlStatementType   type;
+    private SqlType            type;
     private List<SqlParameter> parameters = new ArrayList<>();
     // TODO: rename to resultRowConverter
     private ResultRowConverter resultConverter;
@@ -329,7 +329,7 @@ public class SqlStatementConfiguration {
     /**
      * @return the type
      */
-    public SqlStatementType getType() {
+    public SqlType getType() {
         return type;
     }
 
@@ -337,7 +337,7 @@ public class SqlStatementConfiguration {
      * @param type
      *            the type to set
      */
-    public void setType(final SqlStatementType type) {
+    public void setType(final SqlType type) {
         this.type = type;
     }
 
@@ -395,14 +395,14 @@ public class SqlStatementConfiguration {
         this.vendor = vendor;
     }
 
-    public static SqlStatementConfiguration merge(final List<SqlStatement> statements) {
-        final SqlStatementConfiguration configuration = new SqlStatementConfiguration();
+    public static SqlConfiguration merge(final List<SqlStatement> statements) {
+        final SqlConfiguration configuration = new SqlConfiguration();
         statements.forEach(configuration::merge);
         return configuration;
     }
 
     public void merge(final SqlStatement statement) {
-        final SqlStatementConfiguration other = statement.getConfiguration();
+        final SqlConfiguration other = statement.getConfiguration();
         name = name != null ? name : other.name;
         repository = repository != null ? repository : other.repository;
         type = type != null ? type : other.type;

@@ -16,7 +16,7 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -45,7 +45,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
 
     @Override
     public MethodSpec rxJava2ReadMethod(final List<SqlStatement> statements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
+        final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
@@ -63,7 +63,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     }
 
     private TypeSpec createFlowState(
-            final SqlStatementConfiguration configuration,
+            final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final ClassName callable = ClassName.get(Callable.class);
         final ParameterizedTypeName initialStateType = ParameterizedTypeName.get(callable,

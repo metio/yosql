@@ -17,33 +17,33 @@ import javax.inject.Singleton;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.sebhoss.yosql.model.ResultRowConverter;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlSourceFile;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
-import com.github.sebhoss.yosql.model.SqlStatementType;
+import com.github.sebhoss.yosql.model.SqlType;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 
 @Named
 @Singleton
-public class ConfigurationFactory {
+public class SqlConfigurationFactory {
 
     private final Yaml         yamlParser = new Yaml();
     private final PluginErrors pluginErrors;
     private final PluginConfig pluginConfig;
 
     @Inject
-    public ConfigurationFactory(final PluginErrors pluginErrors, final PluginConfig pluginConfig) {
+    public SqlConfigurationFactory(final PluginErrors pluginErrors, final PluginConfig pluginConfig) {
         this.pluginErrors = pluginErrors;
         this.pluginConfig = pluginConfig;
     }
 
-    public SqlStatementConfiguration createStatementConfiguration(
+    public SqlConfiguration createStatementConfiguration(
             final SqlSourceFile source,
             final String yaml,
             final Map<String, List<Integer>> parameterIndices,
             final int statementInFile) {
-        final SqlStatementConfiguration configuration = loadOrCreateConfig(yaml);
+        final SqlConfiguration configuration = loadOrCreateConfig(yaml);
         final String fileName = getFileNameWithoutExtension(source.getPathToSqlFile());
 
         name(configuration, fileName, statementInFile);
@@ -73,92 +73,92 @@ public class ConfigurationFactory {
         return configuration;
     }
 
-    private void name(final SqlStatementConfiguration configuration, final String fileName, final int statementInFile) {
+    private void name(final SqlConfiguration configuration, final String fileName, final int statementInFile) {
         if (nullOrEmpty(configuration.getName())) {
             configuration.setName(statementInFile == 0 ? fileName : fileName + statementInFile);
         }
     }
 
-    private void batchNamePrefix(final SqlStatementConfiguration configuration) {
+    private void batchNamePrefix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodBatchPrefix())) {
             configuration.setMethodBatchPrefix(pluginConfig.getMethodBatchPrefix());
         }
     }
 
-    private void batchNameSuffix(final SqlStatementConfiguration configuration) {
+    private void batchNameSuffix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodBatchSuffix())) {
             configuration.setMethodBatchSuffix(pluginConfig.getMethodBatchSuffix());
         }
     }
 
-    private void streamNamePrefix(final SqlStatementConfiguration configuration) {
+    private void streamNamePrefix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodStreamPrefix())) {
             configuration.setMethodStreamPrefix(pluginConfig.getMethodStreamPrefix());
         }
     }
 
-    private void streamNameSuffix(final SqlStatementConfiguration configuration) {
+    private void streamNameSuffix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodStreamSuffix())) {
             configuration.setMethodStreamSuffix(pluginConfig.getMethodStreamSuffix());
         }
     }
 
-    private void rxJavaNamePrefix(final SqlStatementConfiguration configuration) {
+    private void rxJavaNamePrefix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodReactivePrefix())) {
             configuration.setMethodReactivePrefix(pluginConfig.getMethodRxJavaPrefix());
         }
     }
 
-    private void rxJavaNameSuffix(final SqlStatementConfiguration configuration) {
+    private void rxJavaNameSuffix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodReactiveSuffix())) {
             configuration.setMethodReactiveSuffix(pluginConfig.getMethodRxJavaSuffix());
         }
     }
 
-    private void lazyName(final SqlStatementConfiguration configuration) {
+    private void lazyName(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodLazyName())) {
             configuration.setMethodLazyName(pluginConfig.getMethodLazyName());
         }
     }
 
-    private void eagerName(final SqlStatementConfiguration configuration) {
+    private void eagerName(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodEagerName())) {
             configuration.setMethodEagerName(pluginConfig.getMethodEagerName());
         }
     }
 
-    private void type(final SqlStatementConfiguration configuration) {
+    private void type(final SqlConfiguration configuration) {
         if (configuration.getType() == null) {
             if (startsWith(configuration.getName(), pluginConfig.getAllowedWritePrefixes())) {
-                configuration.setType(SqlStatementType.WRITING);
+                configuration.setType(SqlType.WRITING);
             } else if (startsWith(configuration.getName(), pluginConfig.getAllowedReadPrefixes())) {
-                configuration.setType(SqlStatementType.READING);
+                configuration.setType(SqlType.READING);
             } else if (startsWith(configuration.getName(), pluginConfig.getAllowedCallPrefixes())) {
-                configuration.setType(SqlStatementType.CALLING);
+                configuration.setType(SqlType.CALLING);
             }
         }
     }
 
-    private void validateNames(final SqlSourceFile source, final SqlStatementConfiguration configuration) {
+    private void validateNames(final SqlSourceFile source, final SqlConfiguration configuration) {
         if (pluginConfig.shouldValidateMethodNamePrefixes()) {
             switch (configuration.getType()) {
             case READING:
                 if (!startsWith(configuration.getName(), pluginConfig.getAllowedReadPrefixes())) {
-                    final String msg = invalidPrefix(source, SqlStatementType.READING, configuration);
+                    final String msg = invalidPrefix(source, SqlType.READING, configuration);
                     pluginErrors.add(new IllegalArgumentException(msg));
                     pluginConfig.getLogger().error(msg);
                 }
                 break;
             case WRITING:
                 if (!startsWith(configuration.getName(), pluginConfig.getAllowedWritePrefixes())) {
-                    final String msg = invalidPrefix(source, SqlStatementType.WRITING, configuration);
+                    final String msg = invalidPrefix(source, SqlType.WRITING, configuration);
                     pluginErrors.add(new IllegalArgumentException(msg));
                     pluginConfig.getLogger().error(msg);
                 }
                 break;
             case CALLING:
                 if (!startsWith(configuration.getName(), pluginConfig.getAllowedCallPrefixes())) {
-                    final String msg = invalidPrefix(source, SqlStatementType.CALLING, configuration);
+                    final String msg = invalidPrefix(source, SqlType.CALLING, configuration);
                     pluginErrors.add(new IllegalArgumentException(msg));
                     pluginConfig.getLogger().error(msg);
                 }
@@ -175,21 +175,21 @@ public class ConfigurationFactory {
 
     private String invalidPrefix(
             final SqlSourceFile source,
-            final SqlStatementType type,
-            final SqlStatementConfiguration configuration) {
+            final SqlType type,
+            final SqlConfiguration configuration) {
         return String.format("[%s] has invalid %s prefix in its name [%s]",
                 source.getPathToSqlFile(), type, configuration.getName());
     }
 
-    private void standard(final SqlStatementConfiguration configuration) {
+    private void standard(final SqlConfiguration configuration) {
         if (configuration.shouldUsePluginStandardConfig()) {
             configuration.setMethodStandardApi(pluginConfig.isGenerateStandardApi());
         }
     }
 
-    private void batch(final SqlStatementConfiguration configuration) {
+    private void batch(final SqlConfiguration configuration) {
         if (configuration.shouldUsePluginBatchConfig()) {
-            if (SqlStatementType.READING == configuration.getType()) {
+            if (SqlType.READING == configuration.getType()) {
                 configuration.setMethodBatchApi(false);
             } else {
                 configuration.setMethodBatchApi(pluginConfig.isGenerateBatchApi());
@@ -197,9 +197,9 @@ public class ConfigurationFactory {
         }
     }
 
-    private void streamEager(final SqlStatementConfiguration configuration) {
+    private void streamEager(final SqlConfiguration configuration) {
         if (configuration.shouldUsePluginStreamEagerConfig()) {
-            if (SqlStatementType.WRITING == configuration.getType()) {
+            if (SqlType.WRITING == configuration.getType()) {
                 configuration.setMethodStreamEagerApi(false);
             } else {
                 configuration.setMethodStreamEagerApi(pluginConfig.isGenerateStreamEagerApi());
@@ -207,9 +207,9 @@ public class ConfigurationFactory {
         }
     }
 
-    private void streamLazy(final SqlStatementConfiguration configuration) {
+    private void streamLazy(final SqlConfiguration configuration) {
         if (configuration.shouldUsePluginStreamLazyConfig()) {
-            if (SqlStatementType.WRITING == configuration.getType()) {
+            if (SqlType.WRITING == configuration.getType()) {
                 configuration.setMethodStreamLazyApi(false);
             } else {
                 configuration.setMethodStreamLazyApi(pluginConfig.isGenerateStreamLazyApi());
@@ -217,9 +217,9 @@ public class ConfigurationFactory {
         }
     }
 
-    private void rxJava(final SqlStatementConfiguration configuration) {
+    private void rxJava(final SqlConfiguration configuration) {
         if (configuration.shouldUsePluginRxJavaConfig()) {
-            if (SqlStatementType.WRITING == configuration.getType()) {
+            if (SqlType.WRITING == configuration.getType()) {
                 configuration.setMethodRxJavaApi(false);
             } else {
                 configuration.setMethodRxJavaApi(pluginConfig.isGenerateRxJavaApi());
@@ -227,13 +227,13 @@ public class ConfigurationFactory {
         }
     }
 
-    private void catchAndRethrow(final SqlStatementConfiguration configuration) {
+    private void catchAndRethrow(final SqlConfiguration configuration) {
         if (configuration.shouldUsePluginCatchAndRethrowConfig()) {
             configuration.setMethodCatchAndRethrow(pluginConfig.isMethodCatchAndRethrow());
         }
     }
 
-    private void repository(final SqlSourceFile source, final SqlStatementConfiguration configuration) {
+    private void repository(final SqlSourceFile source, final SqlConfiguration configuration) {
         if (configuration.hasRepository()) {
             final String repositoryName = calculateRepositoryNameFromUserInput(configuration);
             configuration.setRepository(repositoryName);
@@ -257,7 +257,7 @@ public class ConfigurationFactory {
         return name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
     }
 
-    private String calculateRepositoryNameFromUserInput(final SqlStatementConfiguration configuration) {
+    private String calculateRepositoryNameFromUserInput(final SqlConfiguration configuration) {
         final String userGivenRepository = configuration.getRepository();
         final String actualRepository = repositoryInBasePackage(userGivenRepository);
         return repositoryWithNameSuffix(actualRepository);
@@ -275,7 +275,7 @@ public class ConfigurationFactory {
     }
 
     private void parameters(final SqlSourceFile source, final Map<String, List<Integer>> parameterIndices,
-            final SqlStatementConfiguration configuration) {
+            final SqlConfiguration configuration) {
         if (parametersAreValid(source, parameterIndices, configuration)) {
             for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
                 final String parameterName = entry.getKey();
@@ -304,7 +304,7 @@ public class ConfigurationFactory {
                 .toArray();
     }
 
-    private boolean isMissingParameter(final SqlStatementConfiguration configuration, final String parameterName) {
+    private boolean isMissingParameter(final SqlConfiguration configuration, final String parameterName) {
         return !configuration.getParameters().stream()
                 .anyMatch(nameMatches(parameterName));
     }
@@ -313,7 +313,7 @@ public class ConfigurationFactory {
         return parameter -> parameterName.equals(parameter.getName());
     }
 
-    private void resultConverter(final SqlStatementConfiguration configuration) {
+    private void resultConverter(final SqlConfiguration configuration) {
         if (configuration.getResultConverter() == null) {
             getDefaultRowConverter().ifPresent(configuration::setResultConverter);
         } else {
@@ -393,7 +393,7 @@ public class ConfigurationFactory {
     private boolean parametersAreValid(
             final SqlSourceFile source,
             final Map<String, List<Integer>> parameterIndices,
-            final SqlStatementConfiguration configuration) {
+            final SqlConfiguration configuration) {
         final List<String> errors = configuration.getParameters().stream()
                 .filter(param -> !parameterIndices.containsKey(param.getName()))
                 .map(param -> String.format("[%s] declares unknown parameter [%s]",
@@ -404,11 +404,11 @@ public class ConfigurationFactory {
         return errors == null || errors.isEmpty();
     }
 
-    private SqlStatementConfiguration loadOrCreateConfig(final String yaml) {
-        SqlStatementConfiguration configuration = yamlParser.loadAs(yaml,
-                SqlStatementConfiguration.class);
+    private SqlConfiguration loadOrCreateConfig(final String yaml) {
+        SqlConfiguration configuration = yamlParser.loadAs(yaml,
+                SqlConfiguration.class);
         if (configuration == null) {
-            configuration = new SqlStatementConfiguration();
+            configuration = new SqlConfiguration();
         }
         return configuration;
     }

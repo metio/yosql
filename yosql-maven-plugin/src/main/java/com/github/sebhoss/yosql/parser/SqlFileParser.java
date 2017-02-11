@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlSourceFile;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 
@@ -33,20 +33,20 @@ import com.github.sebhoss.yosql.plugin.PluginErrors;
 @Singleton
 public class SqlFileParser {
 
-    public static final String         PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
-    public static final Pattern        PATTERN         = Pattern.compile(PARAMETER_REGEX);
+    public static final String            PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
+    public static final Pattern           PATTERN         = Pattern.compile(PARAMETER_REGEX);
 
-    private static final String        NEWLINE         = "\n";
+    private static final String           NEWLINE         = "\n";
 
-    private final PluginErrors         pluginErrors;
-    private final ConfigurationFactory factory;
-    private final PluginConfig         pluginConfig;
+    private final PluginErrors            pluginErrors;
+    private final SqlConfigurationFactory factory;
+    private final PluginConfig            pluginConfig;
 
     @Inject
     public SqlFileParser(
             final PluginErrors pluginErrors,
             final PluginConfig pluginConfig,
-            final ConfigurationFactory factory) {
+            final SqlConfigurationFactory factory) {
         this.pluginErrors = pluginErrors;
         this.pluginConfig = pluginConfig;
         this.factory = factory;
@@ -82,7 +82,7 @@ public class SqlFileParser {
         final String rawYaml = yaml.toString();
 
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
-        final SqlStatementConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
+        final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
 
         return new SqlStatement(configuration, rawSqlStatement);

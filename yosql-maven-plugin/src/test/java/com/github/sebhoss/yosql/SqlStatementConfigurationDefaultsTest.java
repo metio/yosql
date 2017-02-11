@@ -4,19 +4,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 
 /**
  * Unit test that verifies the default values for
- * {@link SqlStatementConfiguration}.
+ * {@link SqlConfiguration}.
  */
 public class SqlStatementConfigurationDefaultsTest {
 
-    private SqlStatementConfiguration configuration;
+    private SqlConfiguration configuration;
 
     @Before
     public void setUp() {
-        configuration = new SqlStatementConfiguration();
+        configuration = new SqlConfiguration();
     }
 
     @Test

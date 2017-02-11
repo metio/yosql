@@ -13,7 +13,7 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -35,7 +35,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     @Override
     public MethodSpec standardReadMethod(final String methodName, final List<SqlStatement> statements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
+        final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
         final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
@@ -60,7 +60,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     @Override
     public MethodSpec standardWriteMethod(final String methodName, final List<SqlStatement> statements) {
-        final SqlStatementConfiguration configuration = SqlStatementConfiguration.merge(statements);
+        final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         return TypicalMethods.publicMethod(configuration.getName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(int.class)

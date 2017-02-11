@@ -14,8 +14,8 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlStatementConfiguration;
-import com.github.sebhoss.yosql.model.SqlStatementType;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
+import com.github.sebhoss.yosql.model.SqlType;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
@@ -62,8 +62,8 @@ public class RawJdbcMethodGenerator extends AbstractMethodsGenerator {
     private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
         return sqlStatements.stream()
                 .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlStatementType.READING == config.getType())
-                .map(SqlStatementConfiguration::getResultConverter)
+                .filter(config -> SqlType.READING == config.getType())
+                .map(SqlConfiguration::getResultConverter)
                 .filter(Objects::nonNull)
                 .distinct();
     }

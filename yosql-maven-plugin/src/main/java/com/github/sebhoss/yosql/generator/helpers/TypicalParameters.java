@@ -70,7 +70,7 @@ public final class TypicalParameters {
     }
 
     public static final String replaceNamedParameters(final SqlStatement sqlStatement) {
-        return sqlStatement.getStatement().replaceAll(SqlFileParser.PATTERN.pattern(), "?");
+        return sqlStatement.getRawStatement().replaceAll(SqlFileParser.PATTERN.pattern(), "?");
     }
 
 }

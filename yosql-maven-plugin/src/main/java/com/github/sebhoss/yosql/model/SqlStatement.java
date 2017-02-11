@@ -11,15 +11,15 @@ public class SqlStatement {
         return Collectors.groupingBy(statement -> statement.getConfiguration().getName());
     }
 
-    private final SqlStatementConfiguration configuration;
-    private final String                    statement;
+    private final SqlConfiguration configuration;
+    private final String           rawStatement;
 
-    public SqlStatement(final SqlStatementConfiguration configuration, final String statement) {
+    public SqlStatement(final SqlConfiguration configuration, final String rawStatement) {
         this.configuration = configuration;
-        this.statement = statement;
+        this.rawStatement = rawStatement;
     }
 
-    public SqlStatementConfiguration getConfiguration() {
+    public SqlConfiguration getConfiguration() {
         return configuration;
     }
 
@@ -27,8 +27,8 @@ public class SqlStatement {
         return configuration.getName();
     }
 
-    public String getStatement() {
-        return statement;
+    public String getRawStatement() {
+        return rawStatement;
     }
 
     public String getRepository() {
@@ -36,11 +36,11 @@ public class SqlStatement {
     }
 
     public boolean isReading() {
-        return SqlStatementType.READING == configuration.getType();
+        return SqlType.READING == configuration.getType();
     }
 
     public boolean isWriting() {
-        return SqlStatementType.WRITING == configuration.getType();
+        return SqlType.WRITING == configuration.getType();
     }
 
     public boolean shouldGenerateRxJavaAPI() {
