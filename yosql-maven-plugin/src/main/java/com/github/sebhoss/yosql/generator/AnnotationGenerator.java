@@ -16,16 +16,16 @@ import com.squareup.javapoet.AnnotationSpec;
 @Singleton
 public class AnnotationGenerator {
 
-    private final PluginConfig runtimeConfig;
+    private final PluginConfig pluginConfig;
 
     @Inject
-    public AnnotationGenerator(final PluginConfig runtimeConfig) {
-        this.runtimeConfig = runtimeConfig;
+    public AnnotationGenerator(final PluginConfig pluginConfig) {
+        this.pluginConfig = pluginConfig;
     }
 
     public Iterable<AnnotationSpec> generatedClass(final Class<?> generatorClass) {
         final List<AnnotationSpec> annotations = new ArrayList<>(1);
-        if (runtimeConfig.isClassGeneratedAnnotation()) {
+        if (pluginConfig.isClassGeneratedAnnotation()) {
             annotations.add(generated(generatorClass));
         }
         return annotations;
@@ -33,7 +33,7 @@ public class AnnotationGenerator {
 
     public Iterable<AnnotationSpec> generatedField(final Class<?> generatorClass) {
         final List<AnnotationSpec> annotations = new ArrayList<>(1);
-        if (runtimeConfig.isFieldGeneratedAnnotation()) {
+        if (pluginConfig.isFieldGeneratedAnnotation()) {
             annotations.add(generated(generatorClass));
         }
         return annotations;
@@ -41,7 +41,7 @@ public class AnnotationGenerator {
 
     public Iterable<AnnotationSpec> generatedMethod(final Class<?> generatorClass) {
         final List<AnnotationSpec> annotations = new ArrayList<>(1);
-        if (runtimeConfig.isMethodGeneratedAnnotation()) {
+        if (pluginConfig.isMethodGeneratedAnnotation()) {
             annotations.add(generated(generatorClass));
         }
         return annotations;

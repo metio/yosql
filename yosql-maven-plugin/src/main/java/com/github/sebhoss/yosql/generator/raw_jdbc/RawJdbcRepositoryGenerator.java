@@ -21,7 +21,7 @@ import com.squareup.javapoet.TypeSpec;
 public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
 
     private final TypeWriter                      typeWriter;
-    private final PluginConfig                    runtimeConfig;
+    private final PluginConfig                    pluginConfig;
     private final RawJdbcMethodGenerator          methodGenerator;
     private final RawJdbcRepositoryFieldGenerator fieldGenerator;
     private final AnnotationGenerator             annotations;
@@ -29,13 +29,13 @@ public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
     @Inject
     public RawJdbcRepositoryGenerator(
             final TypeWriter typeWriter,
-            final PluginConfig runtimeConfig,
+            final PluginConfig pluginConfig,
             final AnnotationGenerator annotations,
             final RawJdbcMethodGenerator methodGenerator,
             final DefaultUtilitiesGenerator utilsGenerator,
             final RawJdbcRepositoryFieldGenerator fieldGenerator) {
         this.typeWriter = typeWriter;
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
         this.annotations = annotations;
         this.methodGenerator = methodGenerator;
         this.fieldGenerator = fieldGenerator;
@@ -53,7 +53,7 @@ public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
                 .addAnnotations(annotations.generatedClass(RawJdbcRepositoryGenerator.class))
                 .addStaticBlock(fieldGenerator.staticInitializer(sqlStatements))
                 .build();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, repository);
+        typeWriter.writeType(pluginConfig.getOutputBaseDirectory().toPath(), packageName, repository);
     }
 
 }

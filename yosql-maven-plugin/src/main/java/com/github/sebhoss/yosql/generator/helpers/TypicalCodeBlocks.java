@@ -349,24 +349,24 @@ public class TypicalCodeBlocks {
         return Collections.emptyList();
     }
 
-    private final PluginConfig runtimeConfig;
+    private final PluginConfig pluginConfig;
 
     @Inject
-    public TypicalCodeBlocks(final PluginConfig runtimeConfig) {
-        this.runtimeConfig = runtimeConfig;
+    public TypicalCodeBlocks(final PluginConfig pluginConfig) {
+        this.pluginConfig = pluginConfig;
     }
 
     public CodeBlock newResultState() {
         return CodeBlock.builder()
-                .addStatement("final $T $N = new $T($N, $N, $N)", runtimeConfig.getResultStateClass(),
-                        TypicalNames.STATE, runtimeConfig.getResultStateClass(), TypicalNames.RESULT_SET,
+                .addStatement("final $T $N = new $T($N, $N, $N)", pluginConfig.getResultStateClass(),
+                        TypicalNames.STATE, pluginConfig.getResultStateClass(), TypicalNames.RESULT_SET,
                         TypicalNames.META_DATA, TypicalNames.COLUMN_COUNT)
                 .build();
     }
 
     public CodeBlock newFlowState() {
         return CodeBlock.builder()
-                .addStatement("return new $T($N, $N, $N, $N, $N)", runtimeConfig.getFlowStateClass(),
+                .addStatement("return new $T($N, $N, $N, $N, $N)", pluginConfig.getFlowStateClass(),
                         TypicalNames.CONNECTION, TypicalNames.PREPARED_STATEMENT, TypicalNames.RESULT_SET,
                         TypicalNames.META_DATA, TypicalNames.COLUMN_COUNT)
                 .build();

@@ -32,20 +32,20 @@ public class FlowStateGenerator {
 
     private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;
-    private final PluginConfig        runtimeConfig;
+    private final PluginConfig        pluginConfig;
 
     @Inject
     public FlowStateGenerator(
             final AnnotationGenerator annotations,
             final TypeWriter typeWriter,
-            final PluginConfig runtimeConfig) {
+            final PluginConfig pluginConfig) {
         this.annotations = annotations;
         this.typeWriter = typeWriter;
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
     }
 
     public void generateFlowStateClass() {
-        final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
+        final String packageName = pluginConfig.getBasePackageName() + "." + pluginConfig.getUtilityPackageName();
         final ClassName superclass = ClassName.get(packageName, ResultStateGenerator.RESULT_STATE_CLASS_NAME);
         final TypeSpec type = TypicalTypes.publicClass(FLOW_STATE_CLASS_NAME)
                 .superclass(superclass)
@@ -53,7 +53,7 @@ public class FlowStateGenerator {
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
                 .build();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
+        typeWriter.writeType(pluginConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }
 
     private Iterable<FieldSpec> fields() {

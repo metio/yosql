@@ -25,33 +25,33 @@ public class ToResultRowConverterGenerator {
 
     private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;
-    private final PluginConfig        runtimeConfig;
+    private final PluginConfig        pluginConfig;
 
     @Inject
     public ToResultRowConverterGenerator(
             final AnnotationGenerator annotations,
             final TypeWriter typeWriter,
-            final PluginConfig runtimeConfig) {
+            final PluginConfig pluginConfig) {
         this.annotations = annotations;
         this.typeWriter = typeWriter;
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
     }
 
     public void generateToResultRowConverterClass() {
-        final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
+        final String packageName = pluginConfig.getBasePackageName() + "." + pluginConfig.getUtilityPackageName();
         final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
                 .addMethod(asUserType())
                 .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
                 .build();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
+        typeWriter.writeType(pluginConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }
 
     private MethodSpec asUserType() {
         final ClassName resultRow = ClassName.get(
-                runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName(),
+                pluginConfig.getBasePackageName() + "." + pluginConfig.getUtilityPackageName(),
                 ResultRowGenerator.RESULT_ROW_CLASS_NAME);
         return TypicalMethods.publicMethod("asUserType")
-                .addParameters(TypicalParameters.resultState(runtimeConfig.getResultStateClass()))
+                .addParameters(TypicalParameters.resultState(pluginConfig.getResultStateClass()))
                 .addException(SQLException.class)
                 .returns(resultRow)
                 .addStatement("final $T $N = new $T($N.getColumnCount())", resultRow,

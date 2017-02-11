@@ -40,27 +40,27 @@ public class SqlFileParser {
 
     private final PluginErrors                     pluginErrors;
     private final SqlStatementConfigurationFactory factory;
-    private final PluginConfig                     runtimeConfig;
+    private final PluginConfig                     pluginConfig;
 
     @Inject
     public SqlFileParser(
             final PluginErrors pluginErrors,
-            final PluginConfig runtimeConfig,
+            final PluginConfig pluginConfig,
             final SqlStatementConfigurationFactory factory) {
         this.pluginErrors = pluginErrors;
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
         this.factory = factory;
     }
 
     public Stream<SqlStatement> parse(final SqlSourceFile source) {
         try {
-            final Charset charset = Charset.forName(runtimeConfig.getSqlFilesCharset());
+            final Charset charset = Charset.forName(pluginConfig.getSqlFilesCharset());
             final Path pathToSqlFile = source.getPathToSqlFile();
             final String rawText = Files.readAllLines(pathToSqlFile, charset).stream()
                     .filter(Objects::nonNull)
                     .filter(line -> !line.trim().isEmpty())
                     .collect(joining(NEWLINE));
-            final String[] rawStatements = rawText.split(runtimeConfig.getSqlStatementSeparator());
+            final String[] rawStatements = rawText.split(pluginConfig.getSqlStatementSeparator());
             final AtomicInteger counter = new AtomicInteger(0);
             return Arrays.stream(rawStatements).map(statement -> convert(source, statement, counter.getAndIncrement()));
         } catch (final Throwable exception) {

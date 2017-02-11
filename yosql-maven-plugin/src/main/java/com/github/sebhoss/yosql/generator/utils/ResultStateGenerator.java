@@ -31,16 +31,16 @@ public class ResultStateGenerator {
 
     private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;
-    private final PluginConfig        runtimeConfig;
+    private final PluginConfig        pluginConfig;
 
     @Inject
     public ResultStateGenerator(
             final AnnotationGenerator annotations,
             final TypeWriter typeWriter,
-            final PluginConfig runtimeConfig) {
+            final PluginConfig pluginConfig) {
         this.annotations = annotations;
         this.typeWriter = typeWriter;
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
     }
 
     public void generateResultStateClass() {
@@ -49,8 +49,8 @@ public class ResultStateGenerator {
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(ResultStateGenerator.class))
                 .build();
-        final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
+        final String packageName = pluginConfig.getBasePackageName() + "." + pluginConfig.getUtilityPackageName();
+        typeWriter.writeType(pluginConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }
 
     private Iterable<FieldSpec> fields() {

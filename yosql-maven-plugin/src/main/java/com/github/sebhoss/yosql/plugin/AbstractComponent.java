@@ -4,18 +4,18 @@ import org.apache.maven.plugin.logging.Log;
 
 public abstract class AbstractComponent {
 
-    protected final PluginConfig runtimeConfig;
-    protected final PluginErrors        pluginErrors;
+    protected final PluginConfig pluginConfig;
+    protected final PluginErrors pluginErrors;
 
     protected AbstractComponent(
-            final PluginConfig runtimeConfig,
+            final PluginConfig pluginConfig,
             final PluginErrors pluginErrors) {
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
         this.pluginErrors = pluginErrors;
     }
 
     protected Log log() {
-        return runtimeConfig.getLogger();
+        return pluginConfig.getLogger();
     }
 
     protected void addError(final Throwable throwable) {

@@ -20,8 +20,8 @@ public class TypeWriter extends AbstractComponent {
     @Inject
     public TypeWriter(
             final PluginErrors pluginErrors,
-            final PluginConfig runtimeConfig) {
-        super(runtimeConfig, pluginErrors);
+            final PluginConfig pluginConfig) {
+        super(pluginConfig, pluginErrors);
     }
 
     public void writeType(

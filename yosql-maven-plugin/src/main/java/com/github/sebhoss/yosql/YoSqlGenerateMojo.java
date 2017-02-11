@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,6 +68,10 @@ import com.squareup.javapoet.ClassName;
  * https://github.com/bwajtr/java-persistence-frameworks-comparison</li>
  * <li>SQL statement name converter to align with Java naming rules</li>
  * <li>https://github.com/zsoltherpai/fluent-jdbc</li>
+ * <li>https://github.com/bendem/sql-streams</li>
+ * <li>https://github.com/jtouzy/fastrecord</li>
+ * <li>https://github.com/pyranid/pyranid</li>
+ * <li>https://github.com/mjdbc/mjdbc</li>
  * </ul>
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
@@ -348,7 +353,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private final FileSetResolver            fileSetResolver;
     private final SqlFileParser              sqlFileParser;
     private final RawJdbcRepositoryGenerator codeGenerator;
-    private final PluginConfig               runtimeConfig;
+    private final PluginConfig               pluginConfig;
     private final DefaultUtilitiesGenerator  utilsGenerator;
     // private final PlexusContainer beanLocator;
 
@@ -359,14 +364,14 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             final FileSetResolver fileSetResolver,
             final SqlFileParser sqlFileParser,
             final RawJdbcRepositoryGenerator codeGenerator,
-            final PluginConfig runtimeConfig,
+            final PluginConfig pluginConfig,
             final DefaultUtilitiesGenerator utilsGenerator) {
         this.pluginErrors = pluginErrors;
         this.preconditions = preconditions;
         this.fileSetResolver = fileSetResolver;
         this.sqlFileParser = sqlFileParser;
         this.codeGenerator = codeGenerator;
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
         this.utilsGenerator = utilsGenerator;
     }
 
@@ -385,16 +390,11 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private List<SqlStatement> parseAllSqlFiles() {
-        final Instant preParse = Instant.now();
-        final FileSet filesToParse = Optional.ofNullable(sqlFiles).orElse(defaultSqlFileSet());
-        final List<SqlStatement> allStatements = fileSetResolver.resolveFiles(filesToParse)
-                .flatMap(sqlFileParser::parse)
-                .sorted(Comparator.comparing(SqlStatement::getName))
-                .collect(Collectors.toList());
-        final Instant postParse = Instant.now();
-        getLog().debug(String.format("Time spent parsing [%s] statements (ms): %s",
-                allStatements.size(), Duration.between(preParse, postParse).toMillis()));
-        return allStatements;
+        return timed("parse statements",
+                () -> fileSetResolver.resolveFiles(Optional.ofNullable(sqlFiles).orElse(defaultSqlFileSet()))
+                        .flatMap(sqlFileParser::parse)
+                        .sorted(Comparator.comparing(SqlStatement::getName))
+                        .collect(Collectors.toList()));
     }
 
     private FileSet defaultSqlFileSet() {
@@ -405,96 +405,109 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private void generateRepositories(final List<SqlStatement> allStatements) {
-        final Instant preGenerate = Instant.now();
-        allStatements.stream()
+        timed("generate repositories", () -> allStatements.stream()
                 .collect(groupingBy(SqlStatement::getRepository))
-                .forEach(codeGenerator::generateRepository);
-        final Instant postGenerate = Instant.now();
-        getLog().debug(String.format("Time spent generating repositories (ms): %s",
-                Duration.between(preGenerate, postGenerate).toMillis()));
+                .forEach(codeGenerator::generateRepository));
     }
 
     private void generateUtilities(final List<SqlStatement> allStatements) {
-        final Instant preGenerate = Instant.now();
-        utilsGenerator.generateUtilities(allStatements);
-        final Instant postGenerate = Instant.now();
-        getLog().debug("Time spent generating utilities (ms): "
-                + Duration.between(preGenerate, postGenerate).toMillis());
+        timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
     }
 
     private void initializePluginConfig() {
-        final Instant preInit = Instant.now();
-        final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1, java.length()));
+        timed("initialize plugin config", () -> {
+            final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1, java.length()));
 
-        runtimeConfig.setLogger(() -> getLog());
+            pluginConfig.setLogger(() -> getLog());
 
-        runtimeConfig.setOutputBaseDirectory(outputBaseDirectory);
-        runtimeConfig.setBasePackageName(basePackageName);
-        runtimeConfig.setUtilityPackageName(utilityPackageName);
-        runtimeConfig.setSqlStatementSeparator(sqlStatementSeparator);
-        runtimeConfig.setSqlFilesCharset(sqlFilesCharset);
+            pluginConfig.setOutputBaseDirectory(outputBaseDirectory);
+            pluginConfig.setBasePackageName(basePackageName);
+            pluginConfig.setUtilityPackageName(utilityPackageName);
+            pluginConfig.setSqlStatementSeparator(sqlStatementSeparator);
+            pluginConfig.setSqlFilesCharset(sqlFilesCharset);
 
-        runtimeConfig.setRepositoryNameSuffix(repositoryNameSuffix);
-        runtimeConfig.setRepositorySqlStatements(repositorySqlStatements);
-        runtimeConfig.setClassGeneratedAnnotation(classGeneratedAnnotation);
-        runtimeConfig.setFieldGeneratedAnnotation(fieldGeneratedAnnotation);
-        runtimeConfig.setMethodGeneratedAnnotation(methodGeneratedAnnotation);
+            pluginConfig.setRepositoryNameSuffix(repositoryNameSuffix);
+            pluginConfig.setRepositorySqlStatements(repositorySqlStatements);
+            pluginConfig.setClassGeneratedAnnotation(classGeneratedAnnotation);
+            pluginConfig.setFieldGeneratedAnnotation(fieldGeneratedAnnotation);
+            pluginConfig.setMethodGeneratedAnnotation(methodGeneratedAnnotation);
 
-        runtimeConfig.setGenerateStandardApi(methodStandardApi);
-        runtimeConfig.setGenerateBatchApi(methodBatchApi);
-        runtimeConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? methodStreamEagerApi : false);
-        runtimeConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? methodStreamLazyApi : false);
-        if (methodRxJavaApi == null) {
-            runtimeConfig.setGenerateRxJavaApi(project.getDependencies().stream().anyMatch(isRxJava2()));
-        } else {
-            runtimeConfig.setGenerateRxJavaApi(methodRxJavaApi);
-        }
-        if (loggingApi == null || "auto".equals(loggingApi.toLowerCase())) {
-            if (project.getDependencies().stream().anyMatch(isLog4J())) {
-                runtimeConfig.setLoggingApi(LoggingAPI.LOG4J);
-            } else if (project.getDependencies().stream().anyMatch(isSlf4j())) {
-                runtimeConfig.setLoggingApi(LoggingAPI.SLF4J);
+            pluginConfig.setGenerateStandardApi(methodStandardApi);
+            pluginConfig.setGenerateBatchApi(methodBatchApi);
+            pluginConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? methodStreamEagerApi : false);
+            pluginConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? methodStreamLazyApi : false);
+            if (methodRxJavaApi == null) {
+                pluginConfig.setGenerateRxJavaApi(project.getDependencies().stream().anyMatch(isRxJava2()));
             } else {
-                runtimeConfig.setLoggingApi(LoggingAPI.JDK);
+                pluginConfig.setGenerateRxJavaApi(methodRxJavaApi);
             }
-        } else {
-            try {
-                runtimeConfig.setLoggingApi(LoggingAPI.valueOf(loggingApi.toUpperCase()));
-            } catch (final IllegalArgumentException exception) {
-                runtimeConfig.setLoggingApi(LoggingAPI.NONE);
-                pluginErrors.add(exception);
+            if (loggingApi == null || "auto".equals(loggingApi.toLowerCase())) {
+                if (project.getDependencies().stream().anyMatch(isLog4J())) {
+                    pluginConfig.setLoggingApi(LoggingAPI.LOG4J);
+                } else if (project.getDependencies().stream().anyMatch(isSlf4j())) {
+                    pluginConfig.setLoggingApi(LoggingAPI.SLF4J);
+                } else {
+                    pluginConfig.setLoggingApi(LoggingAPI.JDK);
+                }
+            } else {
+                try {
+                    pluginConfig.setLoggingApi(LoggingAPI.valueOf(loggingApi.toUpperCase()));
+                } catch (final IllegalArgumentException exception) {
+                    pluginConfig.setLoggingApi(LoggingAPI.NONE);
+                    pluginErrors.add(exception);
+                }
             }
+
+            pluginConfig.setMethodBatchPrefix(methodBatchPrefix);
+            pluginConfig.setMethodBatchSuffix(methodBatchSuffix);
+            pluginConfig.setMethodRxJavaPrefix(methodRxJavaPrefix);
+            pluginConfig.setMethodRxJavaSuffix(methodRxJavaSuffix);
+            pluginConfig.setMethodStreamPrefix(methodStreamPrefix);
+            pluginConfig.setMethodStreamSuffix(methodStreamSuffix);
+            pluginConfig.setMethodEagerName(methodEagerName);
+            pluginConfig.setMethodLazyName(methodLazyName);
+            pluginConfig.setMethodCatchAndRethrow(methodCatchAndRethrow);
+
+            pluginConfig.setAllowedReadPrefixes(allowedReadPrefixes());
+            pluginConfig.setAllowedWritePrefixes(allowedWritePrefixes());
+            pluginConfig.setValidateMethodNamePrefixes(methodValidateNamePrefixes);
+
+            final String utilPackage = basePackageName + "." + utilityPackageName;
+            pluginConfig.setFlowStateClass(ClassName.get(utilPackage, FlowStateGenerator.FLOW_STATE_CLASS_NAME));
+            pluginConfig.setResultStateClass(ClassName.get(utilPackage, ResultStateGenerator.RESULT_STATE_CLASS_NAME));
+
+            final ResultRowConverter toResultRow = new ResultRowConverter();
+            toResultRow.setAlias(RESULT_ROW_CONVERTER);
+            toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
+            toResultRow.setConverterType(utilPackage + "."
+                    + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
+            resultRowConverters.add(toResultRow);
+            pluginConfig.setResultRowConverters(resultRowConverters);
+            pluginConfig.setDefaultRowConverter(defaultRowConverter);
+        });
+    }
+
+    private void timed(final String taskName, final Runnable task) {
+        final Instant preRun = Instant.now();
+        task.run();
+        final Instant postRun = Instant.now();
+        if (getLog().isDebugEnabled()) {
+            final String message = String.format("Time spent running [%s]: %s (ms)",
+                    Duration.between(preRun, postRun).toMillis());
+            getLog().debug(message);
         }
+    }
 
-        runtimeConfig.setMethodBatchPrefix(methodBatchPrefix);
-        runtimeConfig.setMethodBatchSuffix(methodBatchSuffix);
-        runtimeConfig.setMethodRxJavaPrefix(methodRxJavaPrefix);
-        runtimeConfig.setMethodRxJavaSuffix(methodRxJavaSuffix);
-        runtimeConfig.setMethodStreamPrefix(methodStreamPrefix);
-        runtimeConfig.setMethodStreamSuffix(methodStreamSuffix);
-        runtimeConfig.setMethodEagerName(methodEagerName);
-        runtimeConfig.setMethodLazyName(methodLazyName);
-        runtimeConfig.setMethodCatchAndRethrow(methodCatchAndRethrow);
-
-        runtimeConfig.setAllowedReadPrefixes(allowedReadPrefixes());
-        runtimeConfig.setAllowedWritePrefixes(allowedWritePrefixes());
-        runtimeConfig.setValidateMethodNamePrefixes(methodValidateNamePrefixes);
-
-        final String utilPackage = basePackageName + "." + utilityPackageName;
-        runtimeConfig.setFlowStateClass(ClassName.get(utilPackage, FlowStateGenerator.FLOW_STATE_CLASS_NAME));
-        runtimeConfig.setResultStateClass(ClassName.get(utilPackage, ResultStateGenerator.RESULT_STATE_CLASS_NAME));
-
-        final ResultRowConverter toResultRow = new ResultRowConverter();
-        toResultRow.setAlias(RESULT_ROW_CONVERTER);
-        toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
-        toResultRow.setConverterType(utilPackage + "."
-                + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
-        resultRowConverters.add(toResultRow);
-        runtimeConfig.setResultRowConverters(resultRowConverters);
-        runtimeConfig.setDefaultRowConverter(defaultRowConverter);
-
-        final Instant postInit = Instant.now();
-        getLog().debug("Time spent initializing (ms): " + Duration.between(preInit, postInit).toMillis());
+    private <T> T timed(final String taskName, final Supplier<T> supplier) {
+        final Instant preRun = Instant.now();
+        final T value = supplier.get();
+        final Instant postRun = Instant.now();
+        if (getLog().isDebugEnabled()) {
+            final String message = String.format("Time spent running [%s]: %s (ms)",
+                    Duration.between(preRun, postRun).toMillis());
+            getLog().debug(message);
+        }
+        return value;
     }
 
     private String[] allowedWritePrefixes() {

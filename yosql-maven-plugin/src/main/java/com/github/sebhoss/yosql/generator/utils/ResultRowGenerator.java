@@ -26,20 +26,20 @@ public class ResultRowGenerator {
 
     private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;
-    private final PluginConfig        runtimeConfig;
+    private final PluginConfig        pluginConfig;
 
     @Inject
     public ResultRowGenerator(
             final AnnotationGenerator annotations,
             final TypeWriter typeWriter,
-            final PluginConfig runtimeConfig) {
+            final PluginConfig pluginConfig) {
         this.annotations = annotations;
         this.typeWriter = typeWriter;
-        this.runtimeConfig = runtimeConfig;
+        this.pluginConfig = pluginConfig;
     }
 
     public void generateResultRowClass() {
-        final String packageName = runtimeConfig.getBasePackageName() + "." + runtimeConfig.getUtilityPackageName();
+        final String packageName = pluginConfig.getBasePackageName() + "." + pluginConfig.getUtilityPackageName();
         final TypeSpec type = TypicalTypes.publicClass(RESULT_ROW_CLASS_NAME)
                 .addField(row())
                 .addMethod(constructor())
@@ -47,7 +47,7 @@ public class ResultRowGenerator {
                 .addMethod(toStringMethod())
                 .addAnnotations(annotations.generatedClass(ResultRowGenerator.class))
                 .build();
-        typeWriter.writeType(runtimeConfig.getOutputBaseDirectory().toPath(), packageName, type);
+        typeWriter.writeType(pluginConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }
 
     private FieldSpec row() {
