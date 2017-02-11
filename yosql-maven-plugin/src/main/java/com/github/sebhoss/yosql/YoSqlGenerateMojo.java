@@ -470,6 +470,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
             pluginConfig.setAllowedReadPrefixes(allowedReadPrefixes());
             pluginConfig.setAllowedWritePrefixes(allowedWritePrefixes());
+            pluginConfig.setAllowedCallPrefixes(allowedCallPrefixes());
             pluginConfig.setValidateMethodNamePrefixes(methodValidateNamePrefixes);
 
             final String utilPackage = basePackageName + "." + utilityPackageName;
@@ -508,6 +509,10 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             getLog().debug(message);
         }
         return value;
+    }
+
+    private String[] allowedCallPrefixes() {
+        return allowedPrefixes(methodAllowedCallPrefixes);
     }
 
     private String[] allowedWritePrefixes() {

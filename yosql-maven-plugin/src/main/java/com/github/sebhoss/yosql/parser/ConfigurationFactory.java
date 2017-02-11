@@ -26,14 +26,14 @@ import com.github.sebhoss.yosql.plugin.PluginErrors;
 
 @Named
 @Singleton
-public class SqlStatementConfigurationFactory {
+public class ConfigurationFactory {
 
     private final Yaml         yamlParser = new Yaml();
     private final PluginErrors pluginErrors;
     private final PluginConfig pluginConfig;
 
     @Inject
-    public SqlStatementConfigurationFactory(final PluginErrors pluginErrors, final PluginConfig pluginConfig) {
+    public ConfigurationFactory(final PluginErrors pluginErrors, final PluginConfig pluginConfig) {
         this.pluginErrors = pluginErrors;
         this.pluginConfig = pluginConfig;
     }
@@ -67,7 +67,7 @@ public class SqlStatementConfigurationFactory {
         catchAndRethrow(configuration);
         repository(source, configuration);
         parameters(source, parameterIndices, configuration);
-        // parameterConverters();
+        // parameterConverters(); // TODO: Configure parameter converters
         resultConverter(configuration);
 
         return configuration;
@@ -131,8 +131,10 @@ public class SqlStatementConfigurationFactory {
         if (configuration.getType() == null) {
             if (startsWith(configuration.getName(), pluginConfig.getAllowedWritePrefixes())) {
                 configuration.setType(SqlStatementType.WRITING);
-            } else {
+            } else if (startsWith(configuration.getName(), pluginConfig.getAllowedReadPrefixes())) {
                 configuration.setType(SqlStatementType.READING);
+            } else if (startsWith(configuration.getName(), pluginConfig.getAllowedCallPrefixes())) {
+                configuration.setType(SqlStatementType.CALLING);
             }
         }
     }
@@ -142,22 +144,41 @@ public class SqlStatementConfigurationFactory {
             switch (configuration.getType()) {
             case READING:
                 if (!startsWith(configuration.getName(), pluginConfig.getAllowedReadPrefixes())) {
-                    final String msg = String.format("[%s] has invalid READ prefix in its name [%s]",
-                            source.getPathToSqlFile(), configuration.getName());
+                    final String msg = invalidPrefix(source, SqlStatementType.READING, configuration);
                     pluginErrors.add(new IllegalArgumentException(msg));
                     pluginConfig.getLogger().error(msg);
                 }
                 break;
             case WRITING:
                 if (!startsWith(configuration.getName(), pluginConfig.getAllowedWritePrefixes())) {
-                    final String msg = String.format("[%s] has invalid WRITE prefix in its name [%s]",
-                            source.getPathToSqlFile(), configuration.getName());
+                    final String msg = invalidPrefix(source, SqlStatementType.WRITING, configuration);
                     pluginErrors.add(new IllegalArgumentException(msg));
                     pluginConfig.getLogger().error(msg);
                 }
                 break;
+            case CALLING:
+                if (!startsWith(configuration.getName(), pluginConfig.getAllowedCallPrefixes())) {
+                    final String msg = invalidPrefix(source, SqlStatementType.CALLING, configuration);
+                    pluginErrors.add(new IllegalArgumentException(msg));
+                    pluginConfig.getLogger().error(msg);
+                }
+                break;
+            default:
+                final String msg = String.format("[%s] has unsupported type [%s]",
+                        source.getPathToSqlFile(), configuration.getType());
+                pluginErrors.add(new IllegalArgumentException(msg));
+                pluginConfig.getLogger().error(msg);
+                break;
             }
         }
+    }
+
+    private String invalidPrefix(
+            final SqlSourceFile source,
+            final SqlStatementType type,
+            final SqlStatementConfiguration configuration) {
+        return String.format("[%s] has invalid %s prefix in its name [%s]",
+                source.getPathToSqlFile(), type, configuration.getName());
     }
 
     private void standard(final SqlStatementConfiguration configuration) {

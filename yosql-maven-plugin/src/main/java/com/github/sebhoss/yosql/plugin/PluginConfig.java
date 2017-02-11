@@ -52,6 +52,7 @@ public class PluginConfig {
     private boolean                  classGeneratedAnnotation;
     private boolean                  fieldGeneratedAnnotation;
     private boolean                  methodGeneratedAnnotation;
+    private String[]                 allowedCallPrefixes;
 
     /**
      * @return the outputBaseDirectory
@@ -467,6 +468,14 @@ public class PluginConfig {
 
     public void setMethodGeneratedAnnotation(final boolean methodGeneratedAnnotation) {
         this.methodGeneratedAnnotation = methodGeneratedAnnotation;
+    }
+
+    public String[] getAllowedCallPrefixes() {
+        return allowedCallPrefixes;
+    }
+
+    public void setAllowedCallPrefixes(final String[] allowedCallPrefixes) {
+        this.allowedCallPrefixes = allowedCallPrefixes;
     }
 
 }

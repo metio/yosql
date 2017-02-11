@@ -33,20 +33,20 @@ import com.github.sebhoss.yosql.plugin.PluginErrors;
 @Singleton
 public class SqlFileParser {
 
-    public static final String                     PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
-    public static final Pattern                    PATTERN         = Pattern.compile(PARAMETER_REGEX);
+    public static final String         PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
+    public static final Pattern        PATTERN         = Pattern.compile(PARAMETER_REGEX);
 
-    private static final String                    NEWLINE         = "\n";
+    private static final String        NEWLINE         = "\n";
 
-    private final PluginErrors                     pluginErrors;
-    private final SqlStatementConfigurationFactory factory;
-    private final PluginConfig                     pluginConfig;
+    private final PluginErrors         pluginErrors;
+    private final ConfigurationFactory factory;
+    private final PluginConfig         pluginConfig;
 
     @Inject
     public SqlFileParser(
             final PluginErrors pluginErrors,
             final PluginConfig pluginConfig,
-            final SqlStatementConfigurationFactory factory) {
+            final ConfigurationFactory factory) {
         this.pluginErrors = pluginErrors;
         this.pluginConfig = pluginConfig;
         this.factory = factory;
