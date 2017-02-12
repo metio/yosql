@@ -22,6 +22,10 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
                 .collect(SqlStatement.groupByName())
                 .forEach((methodName, statements) -> methods.add(standardWriteMethod(methodName, statements)));
         sqlStatementsInRepository.stream()
+                .filter(SqlStatement::shouldGenerateStandardCallAPI)
+                .collect(SqlStatement.groupByName())
+                .forEach((methodName, statements) -> methods.add(standardCallMethod(methodName, statements)));
+        sqlStatementsInRepository.stream()
                 .filter(SqlStatement::shouldGenerateBatchAPI)
                 .collect(SqlStatement.groupByName())
                 .forEach((methodName, statements) -> methods.add(batchWriteMethod(methodName, statements)));
@@ -46,6 +50,8 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
     protected abstract MethodSpec standardReadMethod(String methodName, List<SqlStatement> vendorStatements);
 
     protected abstract MethodSpec standardWriteMethod(String methodName, List<SqlStatement> vendorStatements);
+
+    protected abstract MethodSpec standardCallMethod(String methodName, List<SqlStatement> vendorStatements);
 
     protected abstract MethodSpec batchWriteMethod(String methodName, List<SqlStatement> vendorStatements);
 

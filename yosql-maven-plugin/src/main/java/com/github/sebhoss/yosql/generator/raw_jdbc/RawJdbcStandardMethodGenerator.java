@@ -12,8 +12,8 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
-import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
+import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -74,6 +74,12 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
                 .addCode(TypicalCodeBlocks.endTryBlock(2))
                 .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
                 .build();
+    }
+
+    @Override
+    public MethodSpec standardCallMethod(final String methodName, final List<SqlStatement> vendorStatements) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

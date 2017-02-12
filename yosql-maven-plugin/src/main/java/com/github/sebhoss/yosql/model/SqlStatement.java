@@ -43,6 +43,10 @@ public class SqlStatement {
         return SqlType.WRITING == configuration.getType();
     }
 
+    public boolean isCalling() {
+        return SqlType.CALLING == configuration.getType();
+    }
+
     public boolean shouldGenerateRxJavaAPI() {
         return configuration.isMethodRxJavaApi()
                 && isReading();
@@ -51,6 +55,11 @@ public class SqlStatement {
     public boolean shouldGenerateStandardReadAPI() {
         return configuration.isMethodStandardApi()
                 && isReading();
+    }
+
+    public boolean shouldGenerateStandardCallAPI() {
+        return configuration.isMethodStandardApi()
+                && isCalling();
     }
 
     public boolean shouldGenerateStandardWriteAPI() {

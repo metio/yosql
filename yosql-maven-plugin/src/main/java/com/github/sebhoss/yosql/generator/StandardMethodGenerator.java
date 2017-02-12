@@ -11,4 +11,6 @@ public interface StandardMethodGenerator {
 
     MethodSpec standardWriteMethod(String methodName, List<SqlStatement> statements);
 
+    MethodSpec standardCallMethod(String methodName, List<SqlStatement> statements);
+
 }
