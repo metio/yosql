@@ -494,7 +494,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         final Instant postRun = Instant.now();
         if (getLog().isDebugEnabled()) {
             final String message = String.format("Time spent running [%s]: %s (ms)",
-                    Duration.between(preRun, postRun).toMillis());
+                    taskName, Duration.between(preRun, postRun).toMillis());
             getLog().debug(message);
         }
     }
@@ -505,7 +505,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         final Instant postRun = Instant.now();
         if (getLog().isDebugEnabled()) {
             final String message = String.format("Time spent running [%s]: %s (ms)",
-                    Duration.between(preRun, postRun).toMillis());
+                    taskName, Duration.between(preRun, postRun).toMillis());
             getLog().debug(message);
         }
         return value;

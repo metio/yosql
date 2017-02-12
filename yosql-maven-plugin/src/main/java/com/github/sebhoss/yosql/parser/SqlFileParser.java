@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -56,9 +55,8 @@ public class SqlFileParser {
         try {
             final Charset charset = Charset.forName(pluginConfig.getSqlFilesCharset());
             final Path pathToSqlFile = source.getPathToSqlFile();
-            final String rawText = Files.readAllLines(pathToSqlFile, charset).stream()
-                    .filter(Objects::nonNull)
-                    .filter(line -> !line.trim().isEmpty())
+            final String rawText = Files.lines(pathToSqlFile, charset)
+                    .filter(this::isNotEmpty)
                     .collect(joining(NEWLINE));
             final String[] rawStatements = rawText.split(pluginConfig.getSqlStatementSeparator());
             final AtomicInteger counter = new AtomicInteger(0);
@@ -67,6 +65,10 @@ public class SqlFileParser {
             pluginErrors.add(exception);
             return Stream.empty();
         }
+    }
+
+    private boolean isNotEmpty(final String input) {
+        return input != null && !input.trim().isEmpty();
     }
 
     private SqlStatement convert(
