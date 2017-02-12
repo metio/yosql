@@ -20,6 +20,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.generator.logging.JdkLoggingGenerator;
+import com.github.sebhoss.yosql.model.LoggingAPI;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
@@ -59,13 +60,13 @@ public class TypicalCodeBlocks {
     public static CodeBlock executeQuery() {
         return CodeBlock.builder()
                 .addStatement("final $T $N = $N.executeQuery()", ResultSet.class, TypicalNames.RESULT_SET,
-                        TypicalNames.PREPARED_STATEMENT)
+                        TypicalNames.STATEMENT)
                 .build();
     }
 
     public static CodeBlock executeUpdate() {
         return CodeBlock.builder()
-                .addStatement("return $N.executeUpdate()", TypicalNames.PREPARED_STATEMENT)
+                .addStatement("return $N.executeUpdate()", TypicalNames.STATEMENT)
                 .build();
     }
 
@@ -81,13 +82,13 @@ public class TypicalCodeBlocks {
 
     public static CodeBlock executeBatch() {
         return CodeBlock.builder()
-                .addStatement("return $N.executeBatch()", TypicalNames.PREPARED_STATEMENT)
+                .addStatement("return $N.executeBatch()", TypicalNames.STATEMENT)
                 .build();
     }
 
     public static CodeBlock addBatch() {
         return CodeBlock.builder()
-                .addStatement("$N.addBatch()", TypicalNames.PREPARED_STATEMENT)
+                .addStatement("$N.addBatch()", TypicalNames.STATEMENT)
                 .build();
     }
 
@@ -101,7 +102,7 @@ public class TypicalCodeBlocks {
     public static CodeBlock prepareStatement(final SqlConfiguration configuration) {
         return CodeBlock.builder()
                 .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
-                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION,
+                        TypicalNames.STATEMENT, TypicalNames.CONNECTION,
                         TypicalFields.constantSqlStatementFieldName(configuration))
                 .build();
     }
@@ -109,14 +110,14 @@ public class TypicalCodeBlocks {
     public static CodeBlock prepareStatement() {
         return CodeBlock.builder()
                 .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
-                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION, TypicalNames.QUERY)
+                        TypicalNames.STATEMENT, TypicalNames.CONNECTION, TypicalNames.QUERY)
                 .build();
     }
 
     public static CodeBlock prepareCallable() {
         return CodeBlock.builder()
                 .addStatement("final $T $N = $N.prepareCall($N)", CallableStatement.class,
-                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION, TypicalNames.QUERY)
+                        TypicalNames.STATEMENT, TypicalNames.CONNECTION, TypicalNames.QUERY)
                 .build();
     }
 
@@ -159,13 +160,13 @@ public class TypicalCodeBlocks {
 
     public static CodeBlock setParameters(final SqlConfiguration configuration) {
         return parameterAssignment(configuration, "$N.setObject($N, $N)",
-                parameterName -> new String[] { TypicalNames.PREPARED_STATEMENT,
+                parameterName -> new String[] { TypicalNames.STATEMENT,
                         TypicalNames.JDBC_INDEX, parameterName });
     }
 
     public static CodeBlock setBatchParameters(final SqlConfiguration configuration) {
         return parameterAssignment(configuration, "$N.setObject($N, $N[$N])",
-                parameterName -> new String[] { TypicalNames.PREPARED_STATEMENT,
+                parameterName -> new String[] { TypicalNames.STATEMENT,
                         TypicalNames.JDBC_INDEX, parameterName, TypicalNames.BATCH });
     }
 
@@ -351,7 +352,7 @@ public class TypicalCodeBlocks {
     }
 
     public static CodeBlock closePrepareStatement() {
-        return close(TypicalNames.PREPARED_STATEMENT);
+        return close(TypicalNames.STATEMENT);
     }
 
     public static CodeBlock closeConnection() {
@@ -395,9 +396,34 @@ public class TypicalCodeBlocks {
     public CodeBlock newFlowState() {
         return CodeBlock.builder()
                 .addStatement("return new $T($N, $N, $N, $N, $N)", pluginConfig.getFlowStateClass(),
-                        TypicalNames.CONNECTION, TypicalNames.PREPARED_STATEMENT, TypicalNames.RESULT_SET,
+                        TypicalNames.CONNECTION, TypicalNames.STATEMENT, TypicalNames.RESULT_SET,
                         TypicalNames.META_DATA, TypicalNames.COLUMN_COUNT)
                 .build();
+    }
+
+    public CodeBlock logExecutedQuery(final SqlConfiguration configuration) {
+        final Builder builder = CodeBlock.builder();
+        if (LoggingAPI.NONE != pluginConfig.getLoggingApi()) {
+            builder.beginControlFlow("if ($L)", logging.shouldLogLow());
+            builder.add("final $T $N = $N", String.class, TypicalNames.EXECUTED_QUERY, TypicalNames.QUERY);
+            configuration.getParameters().stream()
+                    .forEach(parameter -> {
+                        if (TypicalTypes.guessTypeName(parameter.getType()).isPrimitive()) {
+                            builder
+                                    .add("\n        .replace($S, $T.valueOf($N))", ":" + parameter.getName(),
+                                            String.class, parameter.getName());
+                        } else {
+                            builder
+                                    .add("\n        .replace($S, $N == null ? $S : $N.toString())",
+                                            ":" + parameter.getName(), parameter.getName(), "null",
+                                            parameter.getName());
+                        }
+                    });
+            builder.add(";\n");
+            builder.add(logging.executingQuery());
+            builder.endControlFlow();
+        }
+        return builder.build();
     }
 
 }

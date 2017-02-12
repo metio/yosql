@@ -35,4 +35,16 @@ public class Slf4jLoggingGenerator implements LoggingGenerator {
         return null;
     }
 
+    @Override
+    public CodeBlock executingQuery() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public CodeBlock shouldLogLow() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

@@ -26,7 +26,7 @@ public final class TypicalParameters {
     }
 
     public static ParameterSpec preparedStatement() {
-        return parameter(PreparedStatement.class, TypicalNames.PREPARED_STATEMENT);
+        return parameter(PreparedStatement.class, TypicalNames.STATEMENT);
     }
 
     public static ParameterSpec resultSet() {

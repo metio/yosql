@@ -70,7 +70,7 @@ public class FlowStateGenerator {
     }
 
     private FieldSpec preparedStatementField() {
-        return FieldSpec.builder(PreparedStatement.class, TypicalNames.PREPARED_STATEMENT)
+        return FieldSpec.builder(PreparedStatement.class, TypicalNames.STATEMENT)
                 .addModifiers(TypicalModifiers.PRIVATE_FIELD)
                 .build();
     }
@@ -92,7 +92,7 @@ public class FlowStateGenerator {
                 .addStatement("super($N, $N, $N)", TypicalNames.RESULT_SET, TypicalNames.META_DATA,
                         TypicalNames.COLUMN_COUNT)
                 .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.CONNECTION))
-                .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.PREPARED_STATEMENT))
+                .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.STATEMENT))
                 .build();
     }
 
@@ -101,7 +101,7 @@ public class FlowStateGenerator {
                 .returns(void.class)
                 .addException(SQLException.class)
                 .addStatement("$N.close()", TypicalNames.RESULT_SET)
-                .addStatement("$N.close()", TypicalNames.PREPARED_STATEMENT)
+                .addStatement("$N.close()", TypicalNames.STATEMENT)
                 .addStatement("$N.close()", TypicalNames.CONNECTION)
                 .build();
     }

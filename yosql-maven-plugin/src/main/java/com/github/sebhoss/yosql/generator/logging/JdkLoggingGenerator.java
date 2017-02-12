@@ -1,5 +1,6 @@
 package com.github.sebhoss.yosql.generator.logging;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -65,9 +66,22 @@ public class JdkLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorDetected() {
         return CodeBlock.builder()
-                .addStatement("$N.fine(() -> String.format($S, $N))", TypicalNames.LOGGER,
+                .addStatement("$N.fine(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
                         "Detected database vendor [%s]", TypicalNames.DATABASE_PRODUCT_NAME)
                 .build();
+    }
+
+    @Override
+    public CodeBlock executingQuery() {
+        return CodeBlock.builder()
+                .addStatement("$N.fine(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                        "Executing query [%s]", TypicalNames.EXECUTED_QUERY)
+                .build();
+    }
+
+    @Override
+    public CodeBlock shouldLogLow() {
+        return CodeBlock.builder().add("$N.isLoggable($T.FINE)", TypicalNames.LOGGER, Level.class).build();
     }
 
 }

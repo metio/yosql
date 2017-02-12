@@ -78,6 +78,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                         .addCode(codeBlocks.pickVendorQuery(statements))
                         .addCode(TypicalCodeBlocks.prepareStatement())
                         .addCode(TypicalCodeBlocks.setParameters(configuration))
+                        .addCode(codeBlocks.logExecutedQuery(configuration))
                         .addCode(TypicalCodeBlocks.executeQuery())
                         .addCode(TypicalCodeBlocks.getMetaData())
                         .addCode(TypicalCodeBlocks.getColumnCount())

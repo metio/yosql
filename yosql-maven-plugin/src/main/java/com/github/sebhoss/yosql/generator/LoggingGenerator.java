@@ -14,4 +14,8 @@ public interface LoggingGenerator {
 
     CodeBlock vendorDetected();
 
+    CodeBlock executingQuery();
+
+    CodeBlock shouldLogLow();
+
 }
