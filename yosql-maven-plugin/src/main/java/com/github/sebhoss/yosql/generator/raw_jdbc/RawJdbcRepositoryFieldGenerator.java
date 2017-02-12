@@ -12,10 +12,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 
-import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.RepositoryFieldGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalFields;
-import com.github.sebhoss.yosql.generator.helpers.TypicalModifiers;
 import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
@@ -24,7 +22,6 @@ import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlType;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 
@@ -32,11 +29,11 @@ import com.squareup.javapoet.FieldSpec;
 @Singleton
 public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator {
 
-    private final AnnotationGenerator annotations;
+    private final TypicalFields fields;
 
     @Inject
-    public RawJdbcRepositoryFieldGenerator(final AnnotationGenerator annotations) {
-        this.annotations = annotations;
+    public RawJdbcRepositoryFieldGenerator(final TypicalFields fields) {
+        this.fields = fields;
     }
 
     @Override
@@ -79,39 +76,30 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
 
     private FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
-        return FieldSpec.builder(String.class, TypicalFields.constantSqlStatementFieldName(configuration))
-                .addAnnotations(annotations.generatedField(RawJdbcRepositoryFieldGenerator.class))
-                .addModifiers(TypicalModifiers.CONSTANT_FIELD)
+        return fields.prepareConstant(getClass(), String.class,
+                TypicalFields.constantSqlStatementFieldName(configuration))
                 .initializer("$S", TypicalParameters.replaceNamedParameters(sqlStatement))
                 .build();
     }
 
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
-        return FieldSpec.builder(TypicalTypes.MAP_OF_STRING_AND_NUMBERS,
+        return fields.prepareConstant(getClass(), TypicalTypes.MAP_OF_STRING_AND_NUMBERS,
                 TypicalFields.constantSqlStatementParameterIndexFieldName(configuration))
-                .addAnnotations(annotations.generatedField(RawJdbcRepositoryFieldGenerator.class))
-                .addModifiers(TypicalModifiers.CONSTANT_FIELD)
                 .initializer("new $T<>($L)", HashMap.class, sqlStatement.getConfiguration().getParameters().size())
                 .build();
     }
 
     private FieldSpec asDataSourceField() {
-        return FieldSpec.builder(DataSource.class, TypicalNames.DATA_SOURCE)
-                .addAnnotations(annotations.generatedField(RawJdbcRepositoryFieldGenerator.class))
-                .addModifiers(TypicalModifiers.PRIVATE_FIELD)
-                .build();
+        return fields.field(getClass(), DataSource.class, TypicalNames.DATA_SOURCE);
     }
 
     private Stream<FieldSpec> converterFields(final List<SqlStatement> sqlStatements) {
         return resultConverters(sqlStatements)
-                .map(converter -> {
-                    final ClassName converterClass = ClassName.bestGuess(converter.getConverterType());
-                    return FieldSpec.builder(converterClass, converter.getAlias())
-                            .addAnnotations(annotations.generatedField(RawJdbcRepositoryFieldGenerator.class))
-                            .addModifiers(TypicalModifiers.PRIVATE_FIELD)
-                            .build();
-                });
+                .map(converter -> fields.field(
+                        getClass(),
+                        TypicalTypes.guessTypeName(converter.getConverterType()),
+                        converter.getAlias()));
     }
 
     private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {

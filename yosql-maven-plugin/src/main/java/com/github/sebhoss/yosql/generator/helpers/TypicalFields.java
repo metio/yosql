@@ -1,9 +1,19 @@
 package com.github.sebhoss.yosql.generator.helpers;
 
+import java.lang.reflect.Type;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.FieldSpec.Builder;
 import com.squareup.javapoet.TypeName;
 
+@Named
+@Singleton
 public class TypicalFields {
 
     public static final FieldSpec privateField(final TypeName type, final String name) {
@@ -27,6 +37,41 @@ public class TypicalFields {
 
     private static final String getVendor(final SqlConfiguration configuration) {
         return configuration.getVendor() == null ? "" : "_" + configuration.getVendor().replace(" ", "_").toUpperCase();
+    }
+
+    private final AnnotationGenerator annotations;
+
+    @Inject
+    public TypicalFields(final AnnotationGenerator annotations) {
+        this.annotations = annotations;
+    }
+
+    public final FieldSpec field(final Class<?> generatorClass, final Type type, final String name) {
+        return field(generatorClass, TypeName.get(type), name);
+    }
+
+    public final FieldSpec field(final Class<?> generatorClass, final TypeName type, final String name) {
+        return prepareField(generatorClass, type, name)
+                .build();
+    }
+
+    public Builder prepareField(final Class<?> generatorClass, final TypeName type, final String name) {
+        return builder(generatorClass, type, name)
+                .addModifiers(TypicalModifiers.PRIVATE_FIELD);
+    }
+
+    public Builder prepareConstant(final Class<?> generatorClass, final Type type, final String name) {
+        return prepareConstant(generatorClass, TypeName.get(type), name);
+    }
+
+    public Builder prepareConstant(final Class<?> generatorClass, final TypeName type, final String name) {
+        return builder(generatorClass, type, name)
+                .addModifiers(TypicalModifiers.CONSTANT_FIELD);
+    }
+
+    private Builder builder(final Class<?> generatorClass, final TypeName type, final String name) {
+        return FieldSpec.builder(type, name)
+                .addAnnotations(annotations.generatedField(generatorClass));
     }
 
 }
