@@ -11,18 +11,22 @@ import com.github.sebhoss.yosql.generator.BatchMethodGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalCodeBlocks;
 import com.github.sebhoss.yosql.generator.helpers.TypicalMethods;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
-import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
+import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.MethodSpec;
 
 @Component(role = BatchMethodGenerator.class, hint = "raw-jdbc")
 public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
 
     private final AnnotationGenerator annotations;
+    private final TypicalCodeBlocks   codeBlocks;
 
     @Inject
-    public RawJdbcBatchMethodGenerator(final AnnotationGenerator annotations) {
+    public RawJdbcBatchMethodGenerator(
+            final AnnotationGenerator annotations,
+            final TypicalCodeBlocks codeBlocks) {
         this.annotations = annotations;
+        this.codeBlocks = codeBlocks;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
                 .addParameters(configuration.getBatchParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(codeBlocks.pickVendorQuery(sqlStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.prepareBatch(configuration))
                 .addCode(TypicalCodeBlocks.executeBatch())

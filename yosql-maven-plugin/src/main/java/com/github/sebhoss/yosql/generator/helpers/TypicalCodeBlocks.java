@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.github.sebhoss.yosql.generator.logging.JdkLoggingGenerator;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
@@ -280,11 +281,12 @@ public class TypicalCodeBlocks {
                 .endControlFlow().build();
     }
 
-    public static CodeBlock pickVendorQuery(final List<SqlStatement> sqlStatements) {
+    public CodeBlock pickVendorQuery(final List<SqlStatement> sqlStatements) {
         final Builder builder = CodeBlock.builder();
         if (sqlStatements.size() > 1) {
             builder.addStatement("final $T $N = $N.getMetaData().getDatabaseProductName()",
                     String.class, TypicalNames.DATABASE_PRODUCT_NAME, TypicalNames.CONNECTION)
+                    .add(logging.vendorDetected())
                     .addStatement("$T $N = null", String.class, TypicalNames.QUERY)
                     .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_NUMBERS, TypicalNames.INDEX)
                     .beginControlFlow("switch ($N)", TypicalNames.DATABASE_PRODUCT_NAME);
@@ -292,12 +294,15 @@ public class TypicalCodeBlocks {
                     .map(SqlStatement::getConfiguration)
                     .filter(config -> Objects.nonNull(config.getVendor()))
                     .forEach(config -> {
+                        final String fieldName = TypicalFields.constantSqlStatementFieldName(config);
                         builder.add("case $S:\n", config.getVendor())
-                                .addStatement("$N = $N", TypicalNames.QUERY,
-                                        TypicalFields.constantSqlStatementFieldName(config));
+                                .addStatement("$N = $N", TypicalNames.QUERY, fieldName)
+                                .add(logging.vendorQueryPicked(fieldName));
                         if (config.hasParameters()) {
-                            builder.addStatement("$N = $N", TypicalNames.INDEX,
-                                    TypicalFields.constantSqlStatementParameterIndexFieldName(config));
+                            final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
+                            builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
+                                    .add(logging.vendorIndexPicked(indexName));
+                            ;
                         }
                         builder.addStatement("break");
                     });
@@ -306,23 +311,28 @@ public class TypicalCodeBlocks {
                     .filter(config -> Objects.isNull(config.getVendor()))
                     .limit(1)
                     .forEach(config -> {
+                        final String fieldName = TypicalFields.constantSqlStatementFieldName(config);
                         builder.add("default:\n")
-                                .addStatement("$N = $N", TypicalNames.QUERY,
-                                        TypicalFields.constantSqlStatementFieldName(config));
+                                .addStatement("$N = $N", TypicalNames.QUERY, fieldName)
+                                .add(logging.vendorQueryPicked(fieldName));
                         if (config.hasParameters()) {
-                            builder.addStatement("$N = $N", TypicalNames.INDEX,
-                                    TypicalFields.constantSqlStatementParameterIndexFieldName(config));
+                            final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
+                            builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
+                                    .add(logging.vendorIndexPicked(indexName));
                         }
                         builder.addStatement("break");
                     });
             builder.endControlFlow();
         } else {
             final SqlConfiguration configuration = sqlStatements.get(0).getConfiguration();
-            builder.addStatement("final $T $N = $N", String.class, TypicalNames.QUERY,
-                    TypicalFields.constantSqlStatementFieldName(configuration));
+            final String fieldName = TypicalFields.constantSqlStatementFieldName(configuration);
+            builder.addStatement("final $T $N = $N", String.class, TypicalNames.QUERY, fieldName)
+                    .add(logging.queryPicked(fieldName));
             if (configuration.hasParameters()) {
+                final String indexFieldName = TypicalFields.constantSqlStatementParameterIndexFieldName(configuration);
                 builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_NUMBERS, TypicalNames.INDEX,
-                        TypicalFields.constantSqlStatementParameterIndexFieldName(configuration));
+                        indexFieldName)
+                        .add(logging.indexPicked(indexFieldName));
             }
         }
         return builder.build();
@@ -363,11 +373,15 @@ public class TypicalCodeBlocks {
         return Collections.emptyList();
     }
 
-    private final PluginConfig pluginConfig;
+    private final PluginConfig        pluginConfig;
+    private final JdkLoggingGenerator logging;
 
     @Inject
-    public TypicalCodeBlocks(final PluginConfig pluginConfig) {
+    public TypicalCodeBlocks(
+            final PluginConfig pluginConfig,
+            final JdkLoggingGenerator logging) {
         this.pluginConfig = pluginConfig;
+        this.logging = logging;
     }
 
     public CodeBlock newResultState() {

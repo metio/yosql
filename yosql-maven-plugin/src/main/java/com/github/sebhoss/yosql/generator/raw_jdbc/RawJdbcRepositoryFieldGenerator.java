@@ -17,11 +17,13 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalFields;
 import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
+import com.github.sebhoss.yosql.generator.logging.JdkLoggingGenerator;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlType;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 
@@ -29,11 +31,15 @@ import com.squareup.javapoet.FieldSpec;
 @Singleton
 public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator {
 
-    private final TypicalFields fields;
+    private final TypicalFields       fields;
+    private final JdkLoggingGenerator logging;
 
     @Inject
-    public RawJdbcRepositoryFieldGenerator(final TypicalFields fields) {
+    public RawJdbcRepositoryFieldGenerator(
+            final TypicalFields fields,
+            final JdkLoggingGenerator logging) {
         this.fields = fields;
+        this.logging = logging;
     }
 
     @Override
@@ -62,16 +68,23 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
 
     @Override
     public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
-        final Stream<FieldSpec> constants = Stream.concat(
-                statements.stream()
-                        .map(this::asConstantSqlField),
-                statements.stream()
-                        .filter(stmt -> stmt.getConfiguration().hasParameters())
-                        .map(this::asConstantSqlParameterIndexField));
+        final Stream<FieldSpec> constants = Stream.concat(statements.stream()
+                .limit(1)
+                .map(this::loggerField),
+                Stream.concat(
+                        statements.stream()
+                                .map(this::asConstantSqlField),
+                        statements.stream()
+                                .filter(stmt -> stmt.getConfiguration().hasParameters())
+                                .map(this::asConstantSqlParameterIndexField)));
         final Stream<FieldSpec> fields = Stream.concat(Stream.of(asDataSourceField()),
                 converterFields(statements));
         return Stream.concat(constants, fields)
                 .collect(Collectors.toList());
+    }
+
+    private FieldSpec loggerField(final SqlStatement sqlStatement) {
+        return logging.logger(ClassName.bestGuess(sqlStatement.getRepository()));
     }
 
     private FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {

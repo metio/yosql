@@ -16,8 +16,8 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
-import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
+import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -52,7 +52,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
                 .addParameters(configuration.getParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
+                .addCode(codeBlocks.pickVendorQuery(statements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.tryExecute())
@@ -78,7 +78,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.maybeTry(configuration))
                 .addCode(TypicalCodeBlocks.getConnection())
-                .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
+                .addCode(codeBlocks.pickVendorQuery(statements))
                 .addCode(TypicalCodeBlocks.prepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.executeQuery())

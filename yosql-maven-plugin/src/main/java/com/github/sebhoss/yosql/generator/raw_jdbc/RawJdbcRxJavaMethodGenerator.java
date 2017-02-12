@@ -15,8 +15,8 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
-import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
+import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -75,7 +75,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                         .returns(pluginConfig.getFlowStateClass())
                         .addException(Exception.class)
                         .addCode(TypicalCodeBlocks.getConnection())
-                        .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
+                        .addCode(codeBlocks.pickVendorQuery(statements))
                         .addCode(TypicalCodeBlocks.prepareStatement())
                         .addCode(TypicalCodeBlocks.setParameters(configuration))
                         .addCode(TypicalCodeBlocks.executeQuery())
