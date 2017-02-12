@@ -6,6 +6,7 @@ public class TypicalNames {
     public static final String CONNECTION                = "connection";
     public static final String SQL_STATEMENT             = "sqlStatement";
     public static final String PREPARED_STATEMENT        = "preparedStatement";
+    public static final String STATEMENT                 = "statement";
     public static final String NAMED_PARAMETER_STATEMENT = "namedParamStmt";
     public static final String RESULT_SET                = "resultSet";
     public static final String PATTERN                   = "pattern";

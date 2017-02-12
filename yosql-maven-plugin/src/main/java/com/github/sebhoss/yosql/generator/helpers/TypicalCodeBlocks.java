@@ -1,5 +1,6 @@
 package com.github.sebhoss.yosql.generator.helpers;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,9 +19,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -111,6 +112,13 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
+    public static CodeBlock prepareCallable() {
+        return CodeBlock.builder()
+                .addStatement("final $T $N = $N.prepareCall($N)", CallableStatement.class,
+                        TypicalNames.PREPARED_STATEMENT, TypicalNames.CONNECTION, TypicalNames.QUERY)
+                .build();
+    }
+
     public static CodeBlock newFlowable(final TypeSpec initialState, final TypeSpec generator,
             final TypeSpec disposer) {
         return CodeBlock.builder()
@@ -136,9 +144,15 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
-    public static CodeBlock tryPrepare() {
+    public static CodeBlock tryPrepareStatement() {
         return CodeBlock.builder()
                 .beginControlFlow("try ($L)", TypicalCodeBlocks.prepareStatement())
+                .build();
+    }
+
+    public static CodeBlock tryPrepareCallable() {
+        return CodeBlock.builder()
+                .beginControlFlow("try ($L)", TypicalCodeBlocks.prepareCallable())
                 .build();
     }
 

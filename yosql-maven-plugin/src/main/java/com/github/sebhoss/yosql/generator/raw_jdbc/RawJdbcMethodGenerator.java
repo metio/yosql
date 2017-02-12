@@ -62,7 +62,7 @@ public class RawJdbcMethodGenerator extends AbstractMethodsGenerator {
     private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
         return sqlStatements.stream()
                 .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlType.READING == config.getType())
+                .filter(config -> SqlType.READING == config.getType() || SqlType.CALLING == config.getType())
                 .map(SqlConfiguration::getResultConverter)
                 .filter(Objects::nonNull)
                 .distinct();

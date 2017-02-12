@@ -20,9 +20,9 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlType;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -117,7 +117,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
     private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
         return sqlStatements.stream()
                 .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlType.READING == config.getType())
+                .filter(config -> SqlType.READING == config.getType() || SqlType.CALLING == config.getType())
                 .map(SqlConfiguration::getResultConverter)
                 .filter(Objects::nonNull)
                 .distinct();

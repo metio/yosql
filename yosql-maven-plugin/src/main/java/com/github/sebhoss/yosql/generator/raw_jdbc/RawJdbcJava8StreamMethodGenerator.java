@@ -53,7 +53,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.tryConnect())
                 .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
-                .addCode(TypicalCodeBlocks.tryPrepare())
+                .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.tryExecute())
                 .addCode(TypicalCodeBlocks.getMetaData())

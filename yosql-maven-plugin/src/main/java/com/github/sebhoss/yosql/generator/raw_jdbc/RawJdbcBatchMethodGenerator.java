@@ -35,7 +35,7 @@ public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.tryConnect())
                 .addCode(TypicalCodeBlocks.pickVendorQuery(sqlStatements))
-                .addCode(TypicalCodeBlocks.tryPrepare())
+                .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.prepareBatch(configuration))
                 .addCode(TypicalCodeBlocks.executeBatch())
                 .addCode(TypicalCodeBlocks.endTryBlock(2))

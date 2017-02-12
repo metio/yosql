@@ -46,7 +46,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
                 .addExceptions(TypicalCodeBlocks.sqlException(configuration))
                 .addCode(TypicalCodeBlocks.tryConnect())
                 .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
-                .addCode(TypicalCodeBlocks.tryPrepare())
+                .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.tryExecute())
                 .addCode(TypicalCodeBlocks.getMetaData())
@@ -68,7 +68,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
                 .addParameters(configuration.getParameterSpecs())
                 .addCode(TypicalCodeBlocks.tryConnect())
                 .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
-                .addCode(TypicalCodeBlocks.tryPrepare())
+                .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(configuration))
                 .addCode(TypicalCodeBlocks.executeUpdate())
                 .addCode(TypicalCodeBlocks.endTryBlock(2))
@@ -77,9 +77,28 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
     }
 
     @Override
-    public MethodSpec standardCallMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        // TODO Auto-generated method stub
-        return null;
+    public MethodSpec standardCallMethod(final String methodName, final List<SqlStatement> statements) {
+        final SqlConfiguration configuration = SqlConfiguration.merge(statements);
+        final ResultRowConverter converter = configuration.getResultConverter();
+        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
+        final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
+        return TypicalMethods.publicMethod(methodName)
+                .addAnnotations(annotations.generatedMethod(getClass()))
+                .returns(listOfResults)
+                .addParameters(configuration.getParameterSpecs())
+                .addExceptions(TypicalCodeBlocks.sqlException(configuration))
+                .addCode(TypicalCodeBlocks.tryConnect())
+                .addCode(TypicalCodeBlocks.pickVendorQuery(statements))
+                .addCode(TypicalCodeBlocks.tryPrepareCallable())
+                .addCode(TypicalCodeBlocks.setParameters(configuration))
+                .addCode(TypicalCodeBlocks.tryExecute())
+                .addCode(TypicalCodeBlocks.getMetaData())
+                .addCode(TypicalCodeBlocks.getColumnCount())
+                .addCode(codeBlocks.newResultState())
+                .addCode(TypicalCodeBlocks.returnAsList(listOfResults, converter.getAlias()))
+                .addCode(TypicalCodeBlocks.endTryBlock(3))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
+                .build();
     }
 
 }
