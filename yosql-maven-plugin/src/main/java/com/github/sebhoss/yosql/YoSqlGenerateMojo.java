@@ -476,6 +476,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             final String utilPackage = basePackageName + "." + utilityPackageName;
             pluginConfig.setFlowStateClass(ClassName.get(utilPackage, FlowStateGenerator.FLOW_STATE_CLASS_NAME));
             pluginConfig.setResultStateClass(ClassName.get(utilPackage, ResultStateGenerator.RESULT_STATE_CLASS_NAME));
+            pluginConfig.setResultRowClass(ClassName.get(utilPackage, ResultRowGenerator.RESULT_ROW_CLASS_NAME));
 
             final ResultRowConverter toResultRow = new ResultRowConverter();
             toResultRow.setAlias(RESULT_ROW_CONVERTER);

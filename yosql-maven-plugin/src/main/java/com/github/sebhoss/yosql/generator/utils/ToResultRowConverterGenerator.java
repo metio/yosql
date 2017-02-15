@@ -13,7 +13,6 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
@@ -47,15 +46,12 @@ public class ToResultRowConverterGenerator {
     }
 
     private MethodSpec asUserType() {
-        final ClassName resultRow = ClassName.get(
-                pluginConfig.getBasePackageName() + "." + pluginConfig.getUtilityPackageName(),
-                ResultRowGenerator.RESULT_ROW_CLASS_NAME);
         return TypicalMethods.publicMethod("asUserType")
                 .addParameters(TypicalParameters.resultState(pluginConfig.getResultStateClass()))
                 .addException(SQLException.class)
-                .returns(resultRow)
-                .addStatement("final $T $N = new $T($N.getColumnCount())", resultRow,
-                        TypicalNames.ROW, resultRow, TypicalNames.RESULT)
+                .returns(pluginConfig.getResultRowClass())
+                .addStatement("final $T $N = new $T($N.getColumnCount())", pluginConfig.getResultRowClass(),
+                        TypicalNames.ROW, pluginConfig.getResultRowClass(), TypicalNames.RESULT)
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
                         TypicalNames.INDEX, TypicalNames.INDEX, TypicalNames.RESULT, TypicalNames.INDEX)
                 .addStatement("$N.setColumnValue($N.getColumnName($N), $N.getResultSet().getObject($N))",

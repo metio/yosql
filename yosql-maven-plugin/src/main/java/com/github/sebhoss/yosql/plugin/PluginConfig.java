@@ -47,6 +47,7 @@ public class PluginConfig {
     private boolean                  methodCatchAndRethrow;
     private ClassName                flowStateClass;
     private ClassName                resultStateClass;
+    private ClassName                resultRowClass;
     private List<ResultRowConverter> resultRowConverters;
     private String                   defaultRowConverter;
     private boolean                  classGeneratedAnnotation;
@@ -421,6 +422,14 @@ public class PluginConfig {
 
     public ClassName getResultStateClass() {
         return resultStateClass;
+    }
+
+    public void setResultRowClass(final ClassName resultRowClass) {
+        this.resultRowClass = resultRowClass;
+    }
+
+    public ClassName getResultRowClass() {
+        return resultRowClass;
     }
 
     /**

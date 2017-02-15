@@ -1,11 +1,10 @@
 package com.github.sebhoss.yosql.generator.raw_jdbc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,12 +50,17 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
                 .forEach(config -> {
                     config.getParameters().stream()
                             .filter(SqlParameter::hasIndices)
-                            .forEach(param -> builder.addStatement("$N.put($S, $L)",
-                                    TypicalFields.constantSqlStatementParameterIndexFieldName(config),
-                                    param.getName(),
-                                    indexArray(param)));
+                            .forEach(parameter -> addIndexArray(builder, parameter, config));
                 });
         return builder.build();
+    }
+
+    private void addIndexArray(final CodeBlock.Builder builder, final SqlParameter parameter,
+            final SqlConfiguration config) {
+        builder.addStatement("$N.put($S, $L)",
+                TypicalFields.constantSqlStatementParameterIndexFieldName(config),
+                parameter.getName(),
+                indexArray(parameter));
     }
 
     private static String indexArray(final SqlParameter param) {
@@ -67,20 +71,29 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
     }
 
     @Override
-    public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
-        final Stream<FieldSpec> constants = Stream.concat(statements.stream()
-                .limit(1)
-                .map(this::loggerField),
-                Stream.concat(
-                        statements.stream()
-                                .map(this::asConstantSqlField),
-                        statements.stream()
-                                .filter(stmt -> stmt.getConfiguration().hasParameters())
-                                .map(this::asConstantSqlParameterIndexField)));
-        final Stream<FieldSpec> fields = Stream.concat(Stream.of(asDataSourceField()),
-                converterFields(statements));
-        return Stream.concat(constants, fields)
-                .collect(Collectors.toList());
+    public Iterable<FieldSpec> asFields(final List<SqlStatement> statementsInRepository) {
+        final List<FieldSpec> repositoryFields = new ArrayList<>(statementsInRepository.size() * 2 + 2);
+
+        repositoryFields.add(asDataSourceField());
+        if (!statementsInRepository.isEmpty()) {
+            // doesn't matter which statement we pick since they all end up in
+            // the same repository anyway
+            repositoryFields.add(loggerField(statementsInRepository.get(0)));
+        }
+        for (final SqlStatement statement : statementsInRepository) {
+            repositoryFields.add(asConstantSqlField(statement));
+            repositoryFields.add(asConstantSqlParameterIndexField(statement));
+
+            final SqlConfiguration configuration = statement.getConfiguration();
+            if (SqlType.READING == configuration.getType() || SqlType.CALLING == configuration.getType()) {
+                final ResultRowConverter converter = configuration.getResultConverter();
+                if (converter != null) {
+                    repositoryFields.add(asConverterField(converter));
+                }
+            }
+        }
+
+        return repositoryFields;
     }
 
     private FieldSpec loggerField(final SqlStatement sqlStatement) {
@@ -107,21 +120,11 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
         return fields.field(getClass(), DataSource.class, TypicalNames.DATA_SOURCE);
     }
 
-    private Stream<FieldSpec> converterFields(final List<SqlStatement> sqlStatements) {
-        return resultConverters(sqlStatements)
-                .map(converter -> fields.field(
-                        getClass(),
-                        TypicalTypes.guessTypeName(converter.getConverterType()),
-                        converter.getAlias()));
-    }
-
-    private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
-        return sqlStatements.stream()
-                .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlType.READING == config.getType() || SqlType.CALLING == config.getType())
-                .map(SqlConfiguration::getResultConverter)
-                .filter(Objects::nonNull)
-                .distinct();
+    private FieldSpec asConverterField(final ResultRowConverter converter) {
+        return fields.field(
+                getClass(),
+                TypicalTypes.guessTypeName(converter.getConverterType()),
+                converter.getAlias());
     }
 
 }
