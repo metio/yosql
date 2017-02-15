@@ -82,7 +82,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                         .addCode(TypicalCodeBlocks.executeQuery())
                         .addCode(TypicalCodeBlocks.getMetaData())
                         .addCode(TypicalCodeBlocks.getColumnCount())
-                        .addCode(codeBlocks.newFlowState())
+                        .addCode(codeBlocks.returnNewFlowState())
                         .build())
                 .build();
     }

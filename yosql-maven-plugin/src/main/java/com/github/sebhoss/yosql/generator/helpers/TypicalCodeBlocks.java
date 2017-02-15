@@ -394,7 +394,7 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
-    public CodeBlock newFlowState() {
+    public CodeBlock returnNewFlowState() {
         return CodeBlock.builder()
                 .addStatement("return new $T($N, $N, $N, $N, $N)", pluginConfig.getFlowStateClass(),
                         TypicalNames.CONNECTION, TypicalNames.STATEMENT, TypicalNames.RESULT_SET,
