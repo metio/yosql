@@ -16,6 +16,6 @@ public interface LoggingGenerator {
 
     CodeBlock executingQuery();
 
-    CodeBlock shouldLogLow();
+    CodeBlock shouldLog();
 
 }

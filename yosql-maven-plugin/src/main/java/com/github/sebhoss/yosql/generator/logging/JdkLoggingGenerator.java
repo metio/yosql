@@ -80,7 +80,7 @@ public class JdkLoggingGenerator implements LoggingGenerator {
     }
 
     @Override
-    public CodeBlock shouldLogLow() {
+    public CodeBlock shouldLog() {
         return CodeBlock.builder().add("$N.isLoggable($T.FINE)", TypicalNames.LOGGER, Level.class).build();
     }
 

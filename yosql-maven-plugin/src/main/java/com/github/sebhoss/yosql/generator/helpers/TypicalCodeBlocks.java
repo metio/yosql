@@ -405,7 +405,7 @@ public class TypicalCodeBlocks {
     public CodeBlock logExecutedQuery(final SqlConfiguration configuration) {
         final Builder builder = CodeBlock.builder();
         if (pluginConfig.shouldLog()) {
-            builder.beginControlFlow("if ($L)", logging.shouldLogLow());
+            builder.beginControlFlow("if ($L)", logging.shouldLog());
             builder.add("final $T $N = $N", String.class, TypicalNames.EXECUTED_QUERY, TypicalNames.QUERY);
             configuration.getParameters().stream()
                     .forEach(parameter -> {
