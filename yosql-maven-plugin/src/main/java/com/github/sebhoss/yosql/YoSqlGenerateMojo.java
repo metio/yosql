@@ -72,6 +72,9 @@ import com.squareup.javapoet.ClassName;
  * <li>https://github.com/jtouzy/fastrecord</li>
  * <li>https://github.com/pyranid/pyranid</li>
  * <li>https://github.com/mjdbc/mjdbc</li>
+ * <li>classes for method*, repository*, etc. config parameters -> subelements
+ * in pom</li>
+ * <li>comment code blocks (e.g. intellij)</li>
  * </ul>
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
