@@ -47,7 +47,7 @@ public class AnnotationGenerator {
         return annotations;
     }
 
-    public AnnotationSpec generated(final Class<?> generatorClass) {
+    private AnnotationSpec generated(final Class<?> generatorClass) {
         return AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", generatorClass.getName())
                 .addMember("date", "$S", ZonedDateTime.now().toString())
