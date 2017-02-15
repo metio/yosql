@@ -21,7 +21,6 @@ import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.generator.LoggingGenerator;
 import com.github.sebhoss.yosql.generator.logging.JdkLoggingGenerator;
-import com.github.sebhoss.yosql.model.LoggingAPI;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
 import com.github.sebhoss.yosql.model.SqlStatement;
@@ -332,7 +331,8 @@ public class TypicalCodeBlocks {
                     .add(logging.queryPicked(fieldName));
             if (configuration.hasParameters()) {
                 final String indexFieldName = TypicalFields.constantSqlStatementParameterIndexFieldName(configuration);
-                builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, TypicalNames.INDEX,
+                builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
+                        TypicalNames.INDEX,
                         indexFieldName)
                         .add(logging.indexPicked(indexFieldName));
             }
@@ -404,7 +404,7 @@ public class TypicalCodeBlocks {
 
     public CodeBlock logExecutedQuery(final SqlConfiguration configuration) {
         final Builder builder = CodeBlock.builder();
-        if (LoggingAPI.NONE != pluginConfig.getLoggingApi()) {
+        if (pluginConfig.shouldLog()) {
             builder.beginControlFlow("if ($L)", logging.shouldLogLow());
             builder.add("final $T $N = $N", String.class, TypicalNames.EXECUTED_QUERY, TypicalNames.QUERY);
             configuration.getParameters().stream()

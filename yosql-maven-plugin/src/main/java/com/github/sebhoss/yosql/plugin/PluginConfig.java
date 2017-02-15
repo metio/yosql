@@ -400,6 +400,10 @@ public class PluginConfig {
         return loggingApi;
     }
 
+    public boolean shouldLog() {
+        return LoggingAPI.NONE != loggingApi;
+    }
+
     public void setMethodCatchAndRethrow(final boolean methodCatchAndRethrow) {
         this.methodCatchAndRethrow = methodCatchAndRethrow;
     }
