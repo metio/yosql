@@ -290,7 +290,7 @@ public class TypicalCodeBlocks {
                     String.class, TypicalNames.DATABASE_PRODUCT_NAME, TypicalNames.CONNECTION)
                     .add(logging.vendorDetected())
                     .addStatement("$T $N = null", String.class, TypicalNames.QUERY)
-                    .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_NUMBERS, TypicalNames.INDEX)
+                    .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, TypicalNames.INDEX)
                     .beginControlFlow("switch ($N)", TypicalNames.DATABASE_PRODUCT_NAME);
             sqlStatements.stream()
                     .map(SqlStatement::getConfiguration)
@@ -332,7 +332,7 @@ public class TypicalCodeBlocks {
                     .add(logging.queryPicked(fieldName));
             if (configuration.hasParameters()) {
                 final String indexFieldName = TypicalFields.constantSqlStatementParameterIndexFieldName(configuration);
-                builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_NUMBERS, TypicalNames.INDEX,
+                builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, TypicalNames.INDEX,
                         indexFieldName)
                         .add(logging.indexPicked(indexFieldName));
             }

@@ -21,6 +21,7 @@ import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import io.reactivex.Emitter;
@@ -47,7 +48,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     public MethodSpec rxJava2ReadMethod(final List<SqlStatement> statements) {
         final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
+        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ParameterizedTypeName flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
 
         final TypeSpec initialState = createFlowState(configuration, statements);

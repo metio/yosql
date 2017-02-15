@@ -116,7 +116,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
 
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
-        return fields.prepareConstant(getClass(), TypicalTypes.MAP_OF_STRING_AND_NUMBERS,
+        return fields.prepareConstant(getClass(), TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
                 TypicalFields.constantSqlStatementParameterIndexFieldName(configuration))
                 .initializer("new $T<>($L)", HashMap.class, sqlStatement.getConfiguration().getParameters().size())
                 .build();

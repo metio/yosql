@@ -21,8 +21,8 @@ import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.WildcardTypeName;
 
 @Named
 @Singleton
@@ -43,9 +43,9 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
     public MethodSpec streamEagerMethod(final List<SqlStatement> statements) {
         final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
-        final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
-        final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
+        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
+        final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
         return TypicalMethods.publicMethod(configuration.getStreamEagerName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
@@ -70,8 +70,8 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
     public MethodSpec streamLazyMethod(final List<SqlStatement> statements) {
         final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
-        final ParameterizedTypeName streamOfResults = ParameterizedTypeName.get(TypicalTypes.STREAM, resultType);
+        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
         return TypicalMethods.publicMethod(configuration.getStreamLazyName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
@@ -95,10 +95,9 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
 
     private TypeSpec lazyStreamSpliterator(final ResultRowConverter converter) {
         final ClassName spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
-        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
+        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
-        final ParameterizedTypeName consumerType = ParameterizedTypeName.get(TypicalTypes.CONSUMER,
-                WildcardTypeName.supertypeOf(resultType));
+        final ParameterizedTypeName consumerType = TypicalTypes.consumerOf(resultType);
         return TypeSpec
                 .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
                 .addSuperinterface(superinterface)

@@ -14,9 +14,9 @@ import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 
 @Named
 @Singleton
@@ -37,8 +37,8 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
     public MethodSpec standardReadMethod(final String methodName, final List<SqlStatement> statements) {
         final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
-        final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
+        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
@@ -82,8 +82,8 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
     public MethodSpec standardCallMethod(final String methodName, final List<SqlStatement> statements) {
         final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
-        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
-        final ParameterizedTypeName listOfResults = ParameterizedTypeName.get(TypicalTypes.LIST, resultType);
+        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
