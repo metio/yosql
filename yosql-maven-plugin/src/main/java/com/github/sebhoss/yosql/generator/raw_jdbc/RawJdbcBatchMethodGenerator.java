@@ -30,7 +30,7 @@ public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
     }
 
     @Override
-    public MethodSpec batchApi(final List<SqlStatement> sqlStatements) {
+    public MethodSpec batchMethod(final List<SqlStatement> sqlStatements) {
         final SqlConfiguration configuration = SqlConfiguration.merge(sqlStatements);
         return TypicalMethods.publicMethod(configuration.getBatchName())
                 .addAnnotations(annotations.generatedMethod(getClass()))

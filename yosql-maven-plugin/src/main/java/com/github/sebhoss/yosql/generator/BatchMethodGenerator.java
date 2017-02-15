@@ -7,6 +7,6 @@ import com.squareup.javapoet.MethodSpec;
 
 public interface BatchMethodGenerator {
 
-    MethodSpec batchApi(List<SqlStatement> sqlStatements);
+    MethodSpec batchMethod(List<SqlStatement> sqlStatements);
 
 }

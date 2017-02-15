@@ -7,8 +7,8 @@ import com.squareup.javapoet.MethodSpec;
 
 public interface Java8StreamMethodGenerator {
 
-    MethodSpec streamEagerApi(List<SqlStatement> statements);
+    MethodSpec streamEagerMethod(List<SqlStatement> statements);
 
-    MethodSpec streamLazyApi(List<SqlStatement> statements);
+    MethodSpec streamLazyMethod(List<SqlStatement> statements);
 
 }

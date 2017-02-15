@@ -40,7 +40,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
     }
 
     @Override
-    public MethodSpec streamEagerApi(final List<SqlStatement> statements) {
+    public MethodSpec streamEagerMethod(final List<SqlStatement> statements) {
         final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());
@@ -67,7 +67,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
     }
 
     @Override
-    public MethodSpec streamLazyApi(final List<SqlStatement> statements) {
+    public MethodSpec streamLazyMethod(final List<SqlStatement> statements) {
         final SqlConfiguration configuration = SqlConfiguration.merge(statements);
         final ResultRowConverter converter = configuration.getResultConverter();
         final ClassName resultType = ClassName.bestGuess(converter.getResultType());

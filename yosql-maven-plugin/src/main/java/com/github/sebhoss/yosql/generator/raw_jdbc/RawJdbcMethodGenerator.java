@@ -85,17 +85,17 @@ public class RawJdbcMethodGenerator extends AbstractMethodsGenerator {
 
     @Override
     protected MethodSpec batchWriteMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return batchMethodGenerator.batchApi(vendorStatements);
+        return batchMethodGenerator.batchMethod(vendorStatements);
     }
 
     @Override
     protected MethodSpec streamEagerReadMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return java8StreamMethodGenerator.streamEagerApi(vendorStatements);
+        return java8StreamMethodGenerator.streamEagerMethod(vendorStatements);
     }
 
     @Override
     protected MethodSpec streamLazyReadMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return java8StreamMethodGenerator.streamLazyApi(vendorStatements);
+        return java8StreamMethodGenerator.streamLazyMethod(vendorStatements);
     }
 
     @Override
