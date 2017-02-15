@@ -3,8 +3,10 @@ package com.github.sebhoss.yosql.generator.raw_jdbc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -81,17 +83,13 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
             repositoryFields.add(loggerField(statementsInRepository.get(0)));
         }
         for (final SqlStatement statement : statementsInRepository) {
+            repositoryFields.add(asConstantRawSqlField(statement));
             repositoryFields.add(asConstantSqlField(statement));
             repositoryFields.add(asConstantSqlParameterIndexField(statement));
-
-            final SqlConfiguration configuration = statement.getConfiguration();
-            if (SqlType.READING == configuration.getType() || SqlType.CALLING == configuration.getType()) {
-                final ResultRowConverter converter = configuration.getResultConverter();
-                if (converter != null) {
-                    repositoryFields.add(asConverterField(converter));
-                }
-            }
         }
+        resultConverters(statementsInRepository)
+                .map(this::asConverterField)
+                .forEach(repositoryFields::add);
 
         return repositoryFields;
     }
@@ -100,11 +98,19 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
         return logging.logger(ClassName.bestGuess(sqlStatement.getRepository()));
     }
 
+    private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
+        final SqlConfiguration configuration = sqlStatement.getConfiguration();
+        return fields.prepareConstant(getClass(), String.class,
+                TypicalFields.constantRawSqlStatementFieldName(configuration))
+                .initializer("$S", sqlStatement.getRawStatement())
+                .build();
+    }
+
     private FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
         return fields.prepareConstant(getClass(), String.class,
                 TypicalFields.constantSqlStatementFieldName(configuration))
-                .initializer("$S", TypicalParameters.replaceNamedParameters(sqlStatement))
+                .initializer("$S", TypicalParameters.replaceNamedParameters(sqlStatement.getRawStatement()))
                 .build();
     }
 
@@ -125,6 +131,15 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
                 getClass(),
                 TypicalTypes.guessTypeName(converter.getConverterType()),
                 converter.getAlias());
+    }
+
+    private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
+        return sqlStatements.stream()
+                .map(SqlStatement::getConfiguration)
+                .filter(config -> SqlType.READING == config.getType() || SqlType.CALLING == config.getType())
+                .map(SqlConfiguration::getResultConverter)
+                .filter(Objects::nonNull)
+                .distinct();
     }
 
 }
