@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.github.sebhoss.yosql.generator.LoggingGenerator;
 import com.github.sebhoss.yosql.generator.logging.JdkLoggingGenerator;
 import com.github.sebhoss.yosql.model.LoggingAPI;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
@@ -374,8 +375,8 @@ public class TypicalCodeBlocks {
         return Collections.emptyList();
     }
 
-    private final PluginConfig        pluginConfig;
-    private final JdkLoggingGenerator logging;
+    private final PluginConfig     pluginConfig;
+    private final LoggingGenerator logging;
 
     @Inject
     public TypicalCodeBlocks(
