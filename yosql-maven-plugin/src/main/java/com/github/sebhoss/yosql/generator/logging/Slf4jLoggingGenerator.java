@@ -7,7 +7,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
-import org.slf4j.event.Level;
+import org.slf4j.LoggerFactory;
 
 import com.github.sebhoss.yosql.generator.LoggingGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalFields;
@@ -30,14 +30,14 @@ public class Slf4jLoggingGenerator implements LoggingGenerator {
     @Override
     public Optional<FieldSpec> logger(final TypeName repoClass) {
         return Optional.of(fields.prepareConstant(getClass(), Logger.class, TypicalNames.LOGGER)
-                .initializer("$T.getLogger($T.class.getName())", Logger.class, repoClass)
+                .initializer("$T.getLogger($T.class)", LoggerFactory.class, repoClass)
                 .build());
     }
 
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER, "Picked query [%s]",
+                .addStatement("$N.debug(String.format($S, $S))", TypicalNames.LOGGER, "Picked query [%s]",
                         fieldName)
                 .build();
     }
@@ -45,7 +45,7 @@ public class Slf4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock indexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(String.format($S, $S))", TypicalNames.LOGGER,
                         "Picked index [%s]", fieldName)
                 .build();
     }
@@ -53,7 +53,7 @@ public class Slf4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorQueryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(String.format($S, $S))", TypicalNames.LOGGER,
                         "Picked query [%s]", fieldName)
                 .build();
     }
@@ -61,7 +61,7 @@ public class Slf4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorIndexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(String.format($S, $S))", TypicalNames.LOGGER,
                         "Picked index [%s]", fieldName)
                 .build();
     }
@@ -69,7 +69,7 @@ public class Slf4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorDetected() {
         return CodeBlock.builder()
-                .addStatement("$N.info(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                .addStatement("$N.info($T.format($S, $N))", TypicalNames.LOGGER, String.class,
                         "Detected database vendor [%s]", TypicalNames.DATABASE_PRODUCT_NAME)
                 .build();
     }
@@ -77,14 +77,14 @@ public class Slf4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock executingQuery() {
         return CodeBlock.builder()
-                .addStatement("$N.info(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                .addStatement("$N.info($T.format($S, $N))", TypicalNames.LOGGER, String.class,
                         "Executing query [%s]", TypicalNames.EXECUTED_QUERY)
                 .build();
     }
 
     @Override
     public CodeBlock shouldLog() {
-        return CodeBlock.builder().add("$N.isLoggable($T.INFO)", TypicalNames.LOGGER, Level.class).build();
+        return CodeBlock.builder().add("$N.isInfoEnabled()", TypicalNames.LOGGER).build();
     }
 
     @Override
