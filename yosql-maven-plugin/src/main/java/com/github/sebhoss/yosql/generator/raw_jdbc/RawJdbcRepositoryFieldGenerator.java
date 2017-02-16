@@ -77,15 +77,19 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
         final List<FieldSpec> repositoryFields = new ArrayList<>(statementsInRepository.size() * 2 + 2);
 
         repositoryFields.add(asDataSourceField());
-        if (!statementsInRepository.isEmpty()) {
+        if (logging.isEnabled() && !statementsInRepository.isEmpty()) {
             // doesn't matter which statement we pick since they all end up in
             // the same repository anyway
             repositoryFields.add(loggerField(statementsInRepository.get(0)));
         }
         for (final SqlStatement statement : statementsInRepository) {
-            repositoryFields.add(asConstantRawSqlField(statement));
+            if (logging.isEnabled()) {
+                repositoryFields.add(asConstantRawSqlField(statement));
+            }
             repositoryFields.add(asConstantSqlField(statement));
-            repositoryFields.add(asConstantSqlParameterIndexField(statement));
+            if (statement.getConfiguration().hasParameters()) {
+                repositoryFields.add(asConstantSqlParameterIndexField(statement));
+            }
         }
         resultConverters(statementsInRepository)
                 .map(this::asConverterField)

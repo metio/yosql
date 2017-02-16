@@ -40,4 +40,9 @@ public class NoOpLoggingGenerator implements LoggingGenerator {
         return CodeBlock.builder().build();
     }
 
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
 }

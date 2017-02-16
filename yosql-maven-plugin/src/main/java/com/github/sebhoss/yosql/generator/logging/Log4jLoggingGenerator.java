@@ -84,4 +84,9 @@ public class Log4jLoggingGenerator implements LoggingGenerator {
         return CodeBlock.builder().add("$N.isLoggable($T.FINE)", TypicalNames.LOGGER, Level.class).build();
     }
 
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }

@@ -18,4 +18,6 @@ public interface LoggingGenerator {
 
     CodeBlock shouldLog();
 
+    boolean isEnabled();
+
 }

@@ -84,4 +84,8 @@ public class JdkLoggingGenerator implements LoggingGenerator {
         return CodeBlock.builder().add("$N.isLoggable($T.FINE)", TypicalNames.LOGGER, Level.class).build();
     }
 
+    public boolean isEnabled() {
+        return true;
+    }
+
 }
