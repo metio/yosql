@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -477,14 +476,14 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             pluginConfig.setGenerateStreamEagerApi(parsedJavaVersion > 7 ? methodStreamEagerApi : false);
             pluginConfig.setGenerateStreamLazyApi(parsedJavaVersion > 7 ? methodStreamLazyApi : false);
             if (methodRxJavaApi == null) {
-                pluginConfig.setGenerateRxJavaApi(project.getDependencies().stream().anyMatch(isRxJava2()));
+                pluginConfig.setGenerateRxJavaApi(project.getDependencies().stream().anyMatch(this::isRxJava2));
             } else {
                 pluginConfig.setGenerateRxJavaApi(methodRxJavaApi);
             }
             if (loggingApi == null || "auto".equals(loggingApi.toLowerCase())) {
-                if (project.getDependencies().stream().anyMatch(isLog4J())) {
+                if (project.getDependencies().stream().anyMatch(this::isLog4J)) {
                     pluginConfig.setLoggingApi(LoggingAPI.LOG4J);
-                } else if (project.getDependencies().stream().anyMatch(isSlf4j())) {
+                } else if (project.getDependencies().stream().anyMatch(this::isSlf4j)) {
                     pluginConfig.setLoggingApi(LoggingAPI.SLF4J);
                 } else {
                     pluginConfig.setLoggingApi(LoggingAPI.JDK);
@@ -575,18 +574,18 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 .toArray(String[]::new);
     }
 
-    private Predicate<? super Dependency> isRxJava2() {
-        return dependency -> rxJavaGroupId.equals(dependency.getGroupId())
+    private boolean isRxJava2(final Dependency dependency) {
+        return rxJavaGroupId.equals(dependency.getGroupId())
                 && rxJavaArtifactId.equals(dependency.getArtifactId());
     }
 
-    private Predicate<? super Dependency> isLog4J() {
-        return dependency -> log4jGroupId.equals(dependency.getGroupId())
+    private boolean isLog4J(final Dependency dependency) {
+        return log4jGroupId.equals(dependency.getGroupId())
                 && log4jArtifactId.equals(dependency.getArtifactId());
     }
 
-    private Predicate<? super Dependency> isSlf4j() {
-        return dependency -> slf4jGroupId.equals(dependency.getGroupId())
+    private boolean isSlf4j(final Dependency dependency) {
+        return slf4jGroupId.equals(dependency.getGroupId())
                 && slf4jArtifactId.equals(dependency.getArtifactId());
     }
 
