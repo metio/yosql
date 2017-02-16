@@ -89,7 +89,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     }
 
     private TypeSpec createFlowGenerator(final ResultRowConverter converter) {
-        final ClassName resultType = ClassName.bestGuess(converter.getResultType());
+        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ClassName biConsumer = ClassName.get(io.reactivex.functions.BiConsumer.class);
         final ClassName rawEmitter = ClassName.get(Emitter.class);
         final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter, resultType);
