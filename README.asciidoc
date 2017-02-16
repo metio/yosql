@@ -343,6 +343,10 @@ Plugin only options can only be applied globally in the plugin configuration.
 |util
 |The utility package name for the generated utilities.
 
+|converterPackageName
+|converter
+|The converter package name for the generated converters.
+
 |java
 |1.8
 |The target Java source version for the generated code.

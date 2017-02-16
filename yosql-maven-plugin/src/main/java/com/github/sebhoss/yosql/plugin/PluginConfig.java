@@ -35,6 +35,7 @@ public class PluginConfig {
     private String                   methodEagerName;
     private boolean                  generateStandardApi;
     private String                   utilityPackageName;
+    private String                   converterPackageName;
     private String                   basePackageName;
     private Supplier<Log>            logSupplier;
     private String                   methodBatchSuffix;
@@ -297,6 +298,21 @@ public class PluginConfig {
      */
     public void setUtilityPackageName(final String utilityPackageName) {
         this.utilityPackageName = utilityPackageName;
+    }
+
+    /**
+     * @return the converterPackageName
+     */
+    public String getConverterPackageName() {
+        return converterPackageName;
+    }
+
+    /**
+     * @param converterPackageName
+     *            the converterPackageName to set
+     */
+    public void setConverterPackageName(final String converterPackageName) {
+        this.converterPackageName = converterPackageName;
     }
 
     /**

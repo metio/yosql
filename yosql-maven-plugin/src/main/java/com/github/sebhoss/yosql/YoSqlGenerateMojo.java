@@ -102,6 +102,13 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                           utilityPackageName;
 
     /**
+     * The package name for utility classes (default:
+     * <strong>converter</strong>).
+     */
+    @Parameter(required = true, defaultValue = "converter")
+    private String                           converterPackageName;
+
+    /**
      * The base package name for all generated classes (default:
      * <strong>com.example.persistence</strong>).
      */
@@ -427,6 +434,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             pluginConfig.setOutputBaseDirectory(outputBaseDirectory);
             pluginConfig.setBasePackageName(basePackageName);
             pluginConfig.setUtilityPackageName(utilityPackageName);
+            pluginConfig.setConverterPackageName(converterPackageName);
             pluginConfig.setSqlStatementSeparator(sqlStatementSeparator);
             pluginConfig.setSqlFilesCharset(sqlFilesCharset);
 
@@ -477,7 +485,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             pluginConfig.setAllowedCallPrefixes(allowedCallPrefixes());
             pluginConfig.setValidateMethodNamePrefixes(methodValidateNamePrefixes);
 
-            final String utilPackage = basePackageName + "." + utilityPackageName;
+            final String utilPackage = pluginConfig.getBasePackageName() + "." + pluginConfig.getUtilityPackageName();
             pluginConfig.setFlowStateClass(ClassName.get(utilPackage, FlowStateGenerator.FLOW_STATE_CLASS_NAME));
             pluginConfig.setResultStateClass(ClassName.get(utilPackage, ResultStateGenerator.RESULT_STATE_CLASS_NAME));
             pluginConfig.setResultRowClass(ClassName.get(utilPackage, ResultRowGenerator.RESULT_ROW_CLASS_NAME));
@@ -485,8 +493,12 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             final ResultRowConverter toResultRow = new ResultRowConverter();
             toResultRow.setAlias(RESULT_ROW_CONVERTER);
             toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
-            toResultRow.setConverterType(utilPackage + "."
-                    + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
+            toResultRow.setConverterType(
+                    pluginConfig.getBasePackageName()
+                            + "."
+                            + pluginConfig.getConverterPackageName()
+                            + "."
+                            + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
             resultRowConverters.add(toResultRow);
             pluginConfig.setResultRowConverters(resultRowConverters);
             pluginConfig.setDefaultRowConverter(defaultRowConverter);

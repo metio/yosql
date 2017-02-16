@@ -37,7 +37,7 @@ public class ToResultRowConverterGenerator {
     }
 
     public void generateToResultRowConverterClass() {
-        final String packageName = pluginConfig.getBasePackageName() + "." + pluginConfig.getUtilityPackageName();
+        final String packageName = pluginConfig.getBasePackageName() + "." + pluginConfig.getConverterPackageName();
         final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
                 .addMethod(asUserType())
                 .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
