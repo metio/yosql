@@ -40,8 +40,9 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
     }
 
     @Override
-    public MethodSpec streamEagerMethod(final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> statements) {
+    public MethodSpec streamEagerMethod(
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultConverter();
         final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
@@ -52,7 +53,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
                 .addParameters(mergedConfiguration.getParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(statements))
+                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
                 .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
@@ -67,8 +68,9 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
     }
 
     @Override
-    public MethodSpec streamLazyMethod(final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> statements) {
+    public MethodSpec streamLazyMethod(
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultConverter();
         final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
@@ -79,7 +81,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.maybeTry(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.getConnection())
-                .addCode(codeBlocks.pickVendorQuery(statements))
+                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
                 .addCode(TypicalCodeBlocks.prepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
                 .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))

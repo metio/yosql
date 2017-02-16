@@ -34,8 +34,10 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
     }
 
     @Override
-    public MethodSpec standardReadMethod(final String methodName, final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> statements) {
+    public MethodSpec standardReadMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultConverter();
         final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
@@ -45,7 +47,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
                 .addParameters(mergedConfiguration.getParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(statements))
+                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
                 .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
@@ -60,15 +62,17 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
     }
 
     @Override
-    public MethodSpec standardWriteMethod(final String methodName, final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> statements) {
+    public MethodSpec standardWriteMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
         return TypicalMethods.publicMethod(mergedConfiguration.getName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(int.class)
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
                 .addParameters(mergedConfiguration.getParameterSpecs())
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(statements))
+                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
                 .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))

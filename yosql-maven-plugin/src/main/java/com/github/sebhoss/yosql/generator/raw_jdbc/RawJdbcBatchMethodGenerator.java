@@ -30,14 +30,16 @@ public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
     }
 
     @Override
-    public MethodSpec batchMethod(final SqlConfiguration mergedConfiguration, final List<SqlStatement> sqlStatements) {
+    public MethodSpec batchMethod(
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
         return TypicalMethods.publicMethod(mergedConfiguration.getBatchName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(mergedConfiguration.getBatchParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(sqlStatements))
+                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.prepareBatch(mergedConfiguration))
                 .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))

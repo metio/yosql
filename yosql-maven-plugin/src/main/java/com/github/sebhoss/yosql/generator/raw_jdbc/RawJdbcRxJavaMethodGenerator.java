@@ -45,13 +45,14 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     }
 
     @Override
-    public MethodSpec rxJava2ReadMethod(final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> statements) {
+    public MethodSpec rxJava2ReadMethod(
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultConverter();
         final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ParameterizedTypeName flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
 
-        final TypeSpec initialState = createFlowState(mergedConfiguration, statements);
+        final TypeSpec initialState = createFlowState(mergedConfiguration, vendorStatements);
         final TypeSpec generator = createFlowGenerator(converter);
         final TypeSpec disposer = createFlowDisposer();
 
