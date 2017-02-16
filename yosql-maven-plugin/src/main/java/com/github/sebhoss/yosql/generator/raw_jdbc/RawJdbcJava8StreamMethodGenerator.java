@@ -40,56 +40,56 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
     }
 
     @Override
-    public MethodSpec streamEagerMethod(final List<SqlStatement> statements) {
-        final SqlConfiguration configuration = SqlConfiguration.merge(statements);
-        final ResultRowConverter converter = configuration.getResultConverter();
+    public MethodSpec streamEagerMethod(final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> statements) {
+        final ResultRowConverter converter = mergedConfiguration.getResultConverter();
         final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
-        return TypicalMethods.publicMethod(configuration.getStreamEagerName())
+        return TypicalMethods.publicMethod(mergedConfiguration.getStreamEagerName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
-                .addParameters(configuration.getParameterSpecs())
-                .addExceptions(TypicalCodeBlocks.sqlException(configuration))
+                .addParameters(mergedConfiguration.getParameterSpecs())
+                .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.tryConnect())
                 .addCode(codeBlocks.pickVendorQuery(statements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
-                .addCode(TypicalCodeBlocks.setParameters(configuration))
-                .addCode(codeBlocks.logExecutedQuery(configuration))
+                .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
+                .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.tryExecute())
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(codeBlocks.newResultState())
                 .addCode(TypicalCodeBlocks.returnAsStream(listOfResults, converter.getAlias()))
                 .addCode(TypicalCodeBlocks.endTryBlock(3))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))
                 .build();
     }
 
     @Override
-    public MethodSpec streamLazyMethod(final List<SqlStatement> statements) {
-        final SqlConfiguration configuration = SqlConfiguration.merge(statements);
-        final ResultRowConverter converter = configuration.getResultConverter();
+    public MethodSpec streamLazyMethod(final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> statements) {
+        final ResultRowConverter converter = mergedConfiguration.getResultConverter();
         final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
         final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
-        return TypicalMethods.publicMethod(configuration.getStreamLazyName())
+        return TypicalMethods.publicMethod(mergedConfiguration.getStreamLazyName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
-                .addParameters(configuration.getParameterSpecs())
-                .addExceptions(TypicalCodeBlocks.sqlException(configuration))
-                .addCode(TypicalCodeBlocks.maybeTry(configuration))
+                .addParameters(mergedConfiguration.getParameterSpecs())
+                .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
+                .addCode(TypicalCodeBlocks.maybeTry(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.getConnection())
                 .addCode(codeBlocks.pickVendorQuery(statements))
                 .addCode(TypicalCodeBlocks.prepareStatement())
-                .addCode(TypicalCodeBlocks.setParameters(configuration))
-                .addCode(codeBlocks.logExecutedQuery(configuration))
+                .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
+                .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.executeQuery())
                 .addCode(TypicalCodeBlocks.getMetaData())
                 .addCode(TypicalCodeBlocks.getColumnCount())
                 .addCode(codeBlocks.newResultState())
                 .addCode(TypicalCodeBlocks.streamStatefull(lazyStreamSpliterator(converter), lazyStreamCloser()))
-                .addCode(TypicalCodeBlocks.endMaybeTry(configuration))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
+                .addCode(TypicalCodeBlocks.endMaybeTry(mergedConfiguration))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))
                 .build();
     }
 

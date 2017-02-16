@@ -69,38 +69,59 @@ public class RawJdbcMethodGenerator extends AbstractMethodsGenerator {
     }
 
     @Override
-    protected MethodSpec standardReadMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return standardMethodGenerator.standardReadMethod(methodName, vendorStatements);
+    protected MethodSpec standardReadMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
+        return standardMethodGenerator.standardReadMethod(methodName, mergedConfiguration, vendorStatements);
     }
 
     @Override
-    protected MethodSpec standardWriteMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return standardMethodGenerator.standardWriteMethod(methodName, vendorStatements);
+    protected MethodSpec standardWriteMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
+        return standardMethodGenerator.standardWriteMethod(methodName, mergedConfiguration, vendorStatements);
     }
 
     @Override
-    protected MethodSpec standardCallMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return standardMethodGenerator.standardCallMethod(methodName, vendorStatements);
+    protected MethodSpec standardCallMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
+        return standardMethodGenerator.standardCallMethod(methodName, mergedConfiguration, vendorStatements);
     }
 
     @Override
-    protected MethodSpec batchWriteMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return batchMethodGenerator.batchMethod(vendorStatements);
+    protected MethodSpec batchWriteMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
+        return batchMethodGenerator.batchMethod(mergedConfiguration, vendorStatements);
     }
 
     @Override
-    protected MethodSpec streamEagerReadMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return java8StreamMethodGenerator.streamEagerMethod(vendorStatements);
+    protected MethodSpec streamEagerReadMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
+        return java8StreamMethodGenerator.streamEagerMethod(mergedConfiguration, vendorStatements);
     }
 
     @Override
-    protected MethodSpec streamLazyReadMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return java8StreamMethodGenerator.streamLazyMethod(vendorStatements);
+    protected MethodSpec streamLazyReadMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
+        return java8StreamMethodGenerator.streamLazyMethod(mergedConfiguration, vendorStatements);
     }
 
     @Override
-    protected MethodSpec rxJavaReadMethod(final String methodName, final List<SqlStatement> vendorStatements) {
-        return rxJavaMethodGenerator.rxJava2ReadMethod(vendorStatements);
+    protected MethodSpec rxJavaReadMethod(
+            final String methodName,
+            final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
+        return rxJavaMethodGenerator.rxJava2ReadMethod(mergedConfiguration, vendorStatements);
     }
 
 }

@@ -30,21 +30,20 @@ public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
     }
 
     @Override
-    public MethodSpec batchMethod(final List<SqlStatement> sqlStatements) {
-        final SqlConfiguration configuration = SqlConfiguration.merge(sqlStatements);
-        return TypicalMethods.publicMethod(configuration.getBatchName())
+    public MethodSpec batchMethod(final SqlConfiguration mergedConfiguration, final List<SqlStatement> sqlStatements) {
+        return TypicalMethods.publicMethod(mergedConfiguration.getBatchName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(TypicalTypes.ARRAY_OF_INTS)
-                .addParameters(configuration.getBatchParameterSpecs())
-                .addExceptions(TypicalCodeBlocks.sqlException(configuration))
+                .addParameters(mergedConfiguration.getBatchParameterSpecs())
+                .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.tryConnect())
                 .addCode(codeBlocks.pickVendorQuery(sqlStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
-                .addCode(TypicalCodeBlocks.prepareBatch(configuration))
-                .addCode(codeBlocks.logExecutedQuery(configuration))
+                .addCode(TypicalCodeBlocks.prepareBatch(mergedConfiguration))
+                .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.executeBatch())
                 .addCode(TypicalCodeBlocks.endTryBlock(2))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
+                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))
                 .build();
     }
 
