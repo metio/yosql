@@ -75,6 +75,7 @@ import com.squareup.javapoet.ClassName;
  * <li>classes for method*, repository*, etc. config parameters -> subelements
  * in pom</li>
  * <li>comment code blocks (e.g. intellij)</li>
+ * <li>generate interfaces (useful for tests?) + specify .impl folder</li>
  * </ul>
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
