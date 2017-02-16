@@ -276,6 +276,34 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                           rxJavaArtifactId;
 
     /**
+     * The groupId to match for automatic Log4j detection (default:
+     * <strong>"org.apache.logging.log4j"</strong>).
+     */
+    @Parameter(required = true, defaultValue = "org.apache.logging.log4j")
+    private String                           log4jGroupId;
+
+    /**
+     * The artifactId to match for automatic Log4j detection (default:
+     * <strong>"log4j-api"</strong>).
+     */
+    @Parameter(required = true, defaultValue = "log4j-api")
+    private String                           log4jArtifactId;
+
+    /**
+     * The groupId to match for automatic SLF4j detection (default:
+     * <strong>"org.slf4j"</strong>).
+     */
+    @Parameter(required = true, defaultValue = "org.slf4j")
+    private String                           slf4jGroupId;
+
+    /**
+     * The artifactId to match for automatic SLF4j detection (default:
+     * <strong>"slf4j-api"</strong>).
+     */
+    @Parameter(required = true, defaultValue = "slf4j-api")
+    private String                           slf4jArtifactId;
+
+    /**
      * The separator to split SQL statements inside a single .sql file (default:
      * <strong>";"</strong>).
      */
@@ -553,13 +581,13 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private Predicate<? super Dependency> isLog4J() {
-        return dependency -> rxJavaGroupId.equals(dependency.getGroupId())
-                && rxJavaArtifactId.equals(dependency.getArtifactId());
+        return dependency -> log4jGroupId.equals(dependency.getGroupId())
+                && log4jArtifactId.equals(dependency.getArtifactId());
     }
 
     private Predicate<? super Dependency> isSlf4j() {
-        return dependency -> rxJavaGroupId.equals(dependency.getGroupId())
-                && rxJavaArtifactId.equals(dependency.getArtifactId());
+        return dependency -> slf4jGroupId.equals(dependency.getGroupId())
+                && slf4jArtifactId.equals(dependency.getArtifactId());
     }
 
 }

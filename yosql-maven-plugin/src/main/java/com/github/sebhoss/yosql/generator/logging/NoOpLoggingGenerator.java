@@ -1,9 +1,23 @@
 package com.github.sebhoss.yosql.generator.logging;
 
+import java.util.Optional;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import com.github.sebhoss.yosql.generator.LoggingGenerator;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.TypeName;
 
+@Named
+@Singleton
 public class NoOpLoggingGenerator implements LoggingGenerator {
+
+    @Override
+    public Optional<FieldSpec> logger(final TypeName repoClass) {
+        return Optional.empty();
+    }
 
     @Override
     public CodeBlock queryPicked(final String fieldName) {

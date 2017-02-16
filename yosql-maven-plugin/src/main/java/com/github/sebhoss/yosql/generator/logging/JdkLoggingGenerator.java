@@ -1,5 +1,6 @@
 package com.github.sebhoss.yosql.generator.logging;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,10 +26,11 @@ public class JdkLoggingGenerator implements LoggingGenerator {
         this.fields = fields;
     }
 
-    public FieldSpec logger(final TypeName repoClass) {
-        return fields.prepareConstant(getClass(), Logger.class, TypicalNames.LOGGER)
+    @Override
+    public Optional<FieldSpec> logger(final TypeName repoClass) {
+        return Optional.of(fields.prepareConstant(getClass(), Logger.class, TypicalNames.LOGGER)
                 .initializer("$T.getLogger($T.class.getName())", Logger.class, repoClass)
-                .build();
+                .build());
     }
 
     @Override
@@ -84,6 +86,7 @@ public class JdkLoggingGenerator implements LoggingGenerator {
         return CodeBlock.builder().add("$N.isLoggable($T.FINE)", TypicalNames.LOGGER, Level.class).build();
     }
 
+    @Override
     public boolean isEnabled() {
         return true;
     }

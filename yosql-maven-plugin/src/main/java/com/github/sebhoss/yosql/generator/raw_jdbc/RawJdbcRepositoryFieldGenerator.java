@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -13,12 +14,13 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 
+import com.github.sebhoss.yosql.generator.LoggingGenerator;
 import com.github.sebhoss.yosql.generator.RepositoryFieldGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalFields;
 import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
-import com.github.sebhoss.yosql.generator.logging.JdkLoggingGenerator;
+import com.github.sebhoss.yosql.generator.logging.DelegatingLoggingGenerator;
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
@@ -32,13 +34,13 @@ import com.squareup.javapoet.FieldSpec;
 @Singleton
 public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator {
 
-    private final TypicalFields       fields;
-    private final JdkLoggingGenerator logging;
+    private final TypicalFields    fields;
+    private final LoggingGenerator logging;
 
     @Inject
     public RawJdbcRepositoryFieldGenerator(
             final TypicalFields fields,
-            final JdkLoggingGenerator logging) {
+            final DelegatingLoggingGenerator logging) {
         this.fields = fields;
         this.logging = logging;
     }
@@ -80,7 +82,8 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
         if (logging.isEnabled() && !statementsInRepository.isEmpty()) {
             // doesn't matter which statement we pick since they all end up in
             // the same repository anyway
-            repositoryFields.add(loggerField(statementsInRepository.get(0)));
+            final SqlStatement firstStatement = statementsInRepository.get(0);
+            loggerField(firstStatement).ifPresent(repositoryFields::add);
         }
         for (final SqlStatement statement : statementsInRepository) {
             if (logging.isEnabled()) {
@@ -98,7 +101,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
         return repositoryFields;
     }
 
-    private FieldSpec loggerField(final SqlStatement sqlStatement) {
+    private Optional<FieldSpec> loggerField(final SqlStatement sqlStatement) {
         return logging.logger(ClassName.bestGuess(sqlStatement.getRepository()));
     }
 

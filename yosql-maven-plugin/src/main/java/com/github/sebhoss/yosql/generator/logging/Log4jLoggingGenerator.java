@@ -1,10 +1,13 @@
 package com.github.sebhoss.yosql.generator.logging;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.github.sebhoss.yosql.generator.LoggingGenerator;
@@ -25,16 +28,17 @@ public class Log4jLoggingGenerator implements LoggingGenerator {
         this.fields = fields;
     }
 
-    public FieldSpec logger(final TypeName repoClass) {
-        return fields.prepareConstant(getClass(), Logger.class, TypicalNames.LOGGER)
-                .initializer("$T.getLogger($T.class.getName())", Logger.class, repoClass)
-                .build();
+    @Override
+    public Optional<FieldSpec> logger(final TypeName repoClass) {
+        return Optional.of(fields.prepareConstant(getClass(), Logger.class, TypicalNames.LOGGER)
+                .initializer("$T.getLogger($T.class.getName())", LogManager.class, repoClass)
+                .build());
     }
 
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", TypicalNames.LOGGER, "Picked query [%s]",
+                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER, "Picked query [%s]",
                         fieldName)
                 .build();
     }
@@ -42,7 +46,7 @@ public class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock indexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
                         "Picked index [%s]", fieldName)
                 .build();
     }
@@ -50,7 +54,7 @@ public class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorQueryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
                         "Picked query [%s]", fieldName)
                 .build();
     }
@@ -58,7 +62,7 @@ public class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorIndexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
                         "Picked index [%s]", fieldName)
                 .build();
     }
@@ -66,7 +70,7 @@ public class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorDetected() {
         return CodeBlock.builder()
-                .addStatement("$N.fine(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                .addStatement("$N.info(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
                         "Detected database vendor [%s]", TypicalNames.DATABASE_PRODUCT_NAME)
                 .build();
     }
@@ -74,14 +78,14 @@ public class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock executingQuery() {
         return CodeBlock.builder()
-                .addStatement("$N.fine(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                .addStatement("$N.info(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
                         "Executing query [%s]", TypicalNames.EXECUTED_QUERY)
                 .build();
     }
 
     @Override
     public CodeBlock shouldLog() {
-        return CodeBlock.builder().add("$N.isLoggable($T.FINE)", TypicalNames.LOGGER, Level.class).build();
+        return CodeBlock.builder().add("$N.isEnabled($T.INFO)", TypicalNames.LOGGER, Level.class).build();
     }
 
     @Override
