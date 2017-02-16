@@ -87,6 +87,9 @@ public class DelegatingLoggingGenerator implements LoggingGenerator {
         case JDK:
             generator = jdkLogging;
             break;
+        case AUTO:
+            generator = jdkLogging;
+            break;
         case LOG4J:
             generator = log4jLogging;
             break;
