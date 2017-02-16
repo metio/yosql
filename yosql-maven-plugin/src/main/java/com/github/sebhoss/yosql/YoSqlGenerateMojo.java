@@ -575,18 +575,23 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private boolean isRxJava2(final Dependency dependency) {
-        return rxJavaGroupId.equals(dependency.getGroupId())
-                && rxJavaArtifactId.equals(dependency.getArtifactId());
+        return matchesGroupAndArtifact(dependency, rxJavaGroupId, rxJavaArtifactId);
     }
 
     private boolean isLog4J(final Dependency dependency) {
-        return log4jGroupId.equals(dependency.getGroupId())
-                && log4jArtifactId.equals(dependency.getArtifactId());
+        return matchesGroupAndArtifact(dependency, log4jGroupId, log4jArtifactId);
     }
 
     private boolean isSlf4j(final Dependency dependency) {
-        return slf4jGroupId.equals(dependency.getGroupId())
-                && slf4jArtifactId.equals(dependency.getArtifactId());
+        return matchesGroupAndArtifact(dependency, slf4jGroupId, slf4jArtifactId);
+    }
+
+    private static boolean matchesGroupAndArtifact(
+            final Dependency dependency,
+            final String groupId,
+            final String artifactId) {
+        return groupId.equals(dependency.getGroupId())
+                && artifactId.equals(dependency.getArtifactId());
     }
 
 }
