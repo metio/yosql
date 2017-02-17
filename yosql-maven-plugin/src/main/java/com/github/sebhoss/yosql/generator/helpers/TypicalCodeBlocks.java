@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
@@ -353,11 +354,11 @@ public class TypicalCodeBlocks {
                     .forEach(parameter -> {
                         if (TypicalTypes.guessTypeName(parameter.getType()).isPrimitive()) {
                             builder
-                                    .add("\n        .replace($S, $T.valueOf($N))", ":" + parameter.getName(),
+                                    .add("\n$>.replace($S, $T.valueOf($N))$<", ":" + parameter.getName(),
                                             String.class, parameter.getName());
                         } else {
                             builder
-                                    .add("\n        .replace($S, $N == null ? $S : $N.toString())",
+                                    .add("\n$>.replace($S, $N == null ? $S : $N.toString())$<",
                                             ":" + parameter.getName(), parameter.getName(), "null",
                                             parameter.getName());
                         }
@@ -378,9 +379,11 @@ public class TypicalCodeBlocks {
         if (sqlStatements.size() > 1) {
             builder.addStatement("final $T $N = $N.getMetaData().getDatabaseProductName()",
                     String.class, TypicalNames.DATABASE_PRODUCT_NAME, TypicalNames.CONNECTION)
-                    .add(logging.vendorDetected())
-                    .addStatement("$T $N = null", String.class, TypicalNames.RAW_QUERY)
-                    .addStatement("$T $N = null", String.class, TypicalNames.QUERY)
+                    .add(logging.vendorDetected());
+            if (logging.isEnabled()) {
+                builder.addStatement("$T $N = null", String.class, TypicalNames.RAW_QUERY);
+            }
+            builder.addStatement("$T $N = null", String.class, TypicalNames.QUERY)
                     .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, TypicalNames.INDEX)
                     .beginControlFlow("switch ($N)", TypicalNames.DATABASE_PRODUCT_NAME);
             sqlStatements.stream()
@@ -389,7 +392,7 @@ public class TypicalCodeBlocks {
                     .forEach(config -> {
                         final String query = TypicalFields.constantSqlStatementFieldName(config);
                         builder.add("case $S:\n", config.getVendor())
-                                .addStatement("$N = $N", TypicalNames.QUERY, query)
+                                .addStatement("$>$N = $N", TypicalNames.QUERY, query)
                                 .add(logging.vendorQueryPicked(query));
                         if (logging.isEnabled()) {
                             final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
@@ -399,30 +402,34 @@ public class TypicalCodeBlocks {
                             final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
                             builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
                                     .add(logging.vendorIndexPicked(indexName));
-                            ;
                         }
-                        builder.addStatement("break");
+                        builder.addStatement("break$<");
                     });
-            sqlStatements.stream()
+            final Optional<SqlConfiguration> firstVendorlessConfig = sqlStatements.stream()
                     .map(SqlStatement::getConfiguration)
                     .filter(config -> Objects.isNull(config.getVendor()))
-                    .limit(1)
-                    .forEach(config -> {
-                        final String query = TypicalFields.constantSqlStatementFieldName(config);
-                        builder.add("default:\n")
-                                .addStatement("$N = $N", TypicalNames.QUERY, query)
-                                .add(logging.vendorQueryPicked(query));
-                        if (logging.isEnabled()) {
-                            final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
-                            builder.addStatement("$N = $N", TypicalNames.RAW_QUERY, rawQuery);
-                        }
-                        if (config.hasParameters()) {
-                            final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
-                            builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
-                                    .add(logging.vendorIndexPicked(indexName));
-                        }
-                        builder.addStatement("break");
-                    });
+                    .findFirst();
+            if (firstVendorlessConfig.isPresent()) {
+                final SqlConfiguration config = firstVendorlessConfig.get();
+                final String query = TypicalFields.constantSqlStatementFieldName(config);
+                builder.add("default:\n")
+                        .addStatement("$>$N = $N", TypicalNames.QUERY, query)
+                        .add(logging.vendorQueryPicked(query));
+                if (logging.isEnabled()) {
+                    final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
+                    builder.addStatement("$N = $N", TypicalNames.RAW_QUERY, rawQuery);
+                }
+                if (config.hasParameters()) {
+                    final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
+                    builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
+                            .add(logging.vendorIndexPicked(indexName));
+                }
+                builder.addStatement("break$<");
+            } else {
+                builder.add("default:\n")
+                        .addStatement("$>throw new $T($T.format($S, $N))$<", IllegalStateException.class, String.class,
+                                "No suitable query defined for vendor [%s]", TypicalNames.DATABASE_PRODUCT_NAME);
+            }
             builder.endControlFlow();
         } else {
             final SqlConfiguration configuration = sqlStatements.get(0).getConfiguration();
