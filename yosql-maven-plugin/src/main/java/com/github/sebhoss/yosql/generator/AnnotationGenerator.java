@@ -51,7 +51,7 @@ public class AnnotationGenerator {
         return AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", generatorClass.getName())
                 .addMember("date", "$S", ZonedDateTime.now().toString())
-                .addMember("comments", "$S", "DO NOT EDIT")
+                .addMember("comments", "$S", pluginConfig.getGeneratedAnnotationComment())
                 .build();
     }
 

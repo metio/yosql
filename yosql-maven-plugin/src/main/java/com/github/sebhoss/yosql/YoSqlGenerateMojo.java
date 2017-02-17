@@ -383,6 +383,12 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "false")
     private boolean                          methodGeneratedAnnotation;
 
+    /**
+     * Sets the comment used for {@link Generated} annotations.
+     */
+    @Parameter(required = true, defaultValue = "DO NOT EDIT")
+    private String                           generatedAnnotationComment;
+
     @Parameter(property = "project", defaultValue = "${project}", readonly = true, required = true)
     private MavenProject                     project;
 
@@ -470,6 +476,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             pluginConfig.setClassGeneratedAnnotation(classGeneratedAnnotation);
             pluginConfig.setFieldGeneratedAnnotation(fieldGeneratedAnnotation);
             pluginConfig.setMethodGeneratedAnnotation(methodGeneratedAnnotation);
+            pluginConfig.setGeneratedAnnotationComment(generatedAnnotationComment);
 
             pluginConfig.setGenerateStandardApi(methodStandardApi);
             pluginConfig.setGenerateBatchApi(methodBatchApi);

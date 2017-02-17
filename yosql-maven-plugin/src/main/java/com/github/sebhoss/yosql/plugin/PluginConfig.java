@@ -55,6 +55,7 @@ public class PluginConfig {
     private boolean                  fieldGeneratedAnnotation;
     private boolean                  methodGeneratedAnnotation;
     private String[]                 allowedCallPrefixes;
+    private String                   generatedAnnotationComment;
 
     /**
      * @return the outputBaseDirectory
@@ -505,6 +506,14 @@ public class PluginConfig {
 
     public void setAllowedCallPrefixes(final String[] allowedCallPrefixes) {
         this.allowedCallPrefixes = allowedCallPrefixes;
+    }
+
+    public void setGeneratedAnnotationComment(final String generatedAnnotationComment) {
+        this.generatedAnnotationComment = generatedAnnotationComment;
+    }
+
+    public String getGeneratedAnnotationComment() {
+        return generatedAnnotationComment;
     }
 
 }
