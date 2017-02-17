@@ -388,11 +388,13 @@ public class TypicalCodeBlocks {
                     .filter(config -> Objects.nonNull(config.getVendor()))
                     .forEach(config -> {
                         final String query = TypicalFields.constantSqlStatementFieldName(config);
-                        final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
                         builder.add("case $S:\n", config.getVendor())
                                 .addStatement("$N = $N", TypicalNames.QUERY, query)
-                                .addStatement("$N = $N", TypicalNames.RAW_QUERY, rawQuery)
                                 .add(logging.vendorQueryPicked(query));
+                        if (logging.isEnabled()) {
+                            final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
+                            builder.addStatement("$N = $N", TypicalNames.RAW_QUERY, rawQuery);
+                        }
                         if (config.hasParameters()) {
                             final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
                             builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
@@ -407,11 +409,13 @@ public class TypicalCodeBlocks {
                     .limit(1)
                     .forEach(config -> {
                         final String query = TypicalFields.constantSqlStatementFieldName(config);
-                        final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
                         builder.add("default:\n")
                                 .addStatement("$N = $N", TypicalNames.QUERY, query)
-                                .addStatement("$N = $N", TypicalNames.RAW_QUERY, rawQuery)
                                 .add(logging.vendorQueryPicked(query));
+                        if (logging.isEnabled()) {
+                            final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
+                            builder.addStatement("$N = $N", TypicalNames.RAW_QUERY, rawQuery);
+                        }
                         if (config.hasParameters()) {
                             final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
                             builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
@@ -423,10 +427,12 @@ public class TypicalCodeBlocks {
         } else {
             final SqlConfiguration configuration = sqlStatements.get(0).getConfiguration();
             final String query = TypicalFields.constantSqlStatementFieldName(configuration);
-            final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(configuration);
             builder.addStatement("final $T $N = $N", String.class, TypicalNames.QUERY, query)
-                    .addStatement("final $T $N = $N", String.class, TypicalNames.RAW_QUERY, rawQuery)
                     .add(logging.queryPicked(query));
+            if (logging.isEnabled()) {
+                final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(configuration);
+                builder.addStatement("final $T $N = $N", String.class, TypicalNames.RAW_QUERY, rawQuery);
+            }
             if (configuration.hasParameters()) {
                 final String indexFieldName = TypicalFields.constantSqlStatementParameterIndexFieldName(configuration);
                 builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
