@@ -49,8 +49,6 @@ import com.squareup.javapoet.ClassName;
  * TODO:
  * <ul>
  * <li>Factory/Spring/CDI/Guice(?)</li>
- * <li>error log w/ full SQL statement (+ parameter substitution), so users can
- * write that into a different log file.</li>
  * <li>allow to overwrite error log messages through fixed location of
  * .properties file</li>
  * <li>: provide default.properties for error logging (part of this project),
