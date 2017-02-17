@@ -56,6 +56,7 @@ public class PluginConfig {
     private boolean                  methodGeneratedAnnotation;
     private String[]                 allowedCallPrefixes;
     private String                   generatedAnnotationComment;
+    private boolean                  repositoryGenerateInterface;
 
     /**
      * @return the outputBaseDirectory
@@ -514,6 +515,14 @@ public class PluginConfig {
 
     public String getGeneratedAnnotationComment() {
         return generatedAnnotationComment;
+    }
+
+    public void setRepositoryGenerateInterface(final boolean repositoryGenerateInterface) {
+        this.repositoryGenerateInterface = repositoryGenerateInterface;
+    }
+
+    public boolean isRepositoryGenerateInterface() {
+        return repositoryGenerateInterface;
     }
 
 }

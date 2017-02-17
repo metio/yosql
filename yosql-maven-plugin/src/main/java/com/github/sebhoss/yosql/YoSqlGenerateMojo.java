@@ -230,6 +230,13 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                           repositoryNameSuffix;
 
     /**
+     * Controls whether an interface should be generated for each generated
+     * repository. (default: <strong>true</strong>).
+     */
+    @Parameter(required = true, defaultValue = "true")
+    private boolean                          repositoryGenerateInterface;
+
+    /**
      * The allow method name prefixes for writing methods (default:
      * <strong>"update, insert, delete, create, write, add, remove,
      * merge,drop"</strong>).
@@ -472,6 +479,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             pluginConfig.setSqlFilesCharset(sqlFilesCharset);
 
             pluginConfig.setRepositoryNameSuffix(repositoryNameSuffix);
+            pluginConfig.setRepositoryGenerateInterface(repositoryGenerateInterface);
             pluginConfig.setRepositorySqlStatements(repositorySqlStatements);
             pluginConfig.setClassGeneratedAnnotation(classGeneratedAnnotation);
             pluginConfig.setFieldGeneratedAnnotation(fieldGeneratedAnnotation);
