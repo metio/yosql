@@ -93,4 +93,12 @@ public class Log4jLoggingGenerator implements LoggingGenerator {
         return true;
     }
 
+    @Override
+    public CodeBlock entering(final String repository, final String method) {
+        return CodeBlock.builder()
+                .addStatement("$N.info(() -> $T.format($S, $S, $S))", TypicalNames.LOGGER, String.class,
+                        "Entering [%s#%s]", repository, method)
+                .build();
+    }
+
 }

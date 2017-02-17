@@ -59,4 +59,9 @@ public class NoOpLoggingGenerator implements LoggingGenerator {
         return false;
     }
 
+    @Override
+    public CodeBlock entering(final String repository, final String method) {
+        return CodeBlock.builder().build();
+    }
+
 }

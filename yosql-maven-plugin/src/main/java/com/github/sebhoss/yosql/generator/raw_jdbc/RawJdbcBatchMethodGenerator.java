@@ -38,6 +38,7 @@ public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(mergedConfiguration.getBatchParameterSpecs())
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
+                .addCode(codeBlocks.entering(mergedConfiguration.getRepository(), mergedConfiguration.getBatchName()))
                 .addCode(TypicalCodeBlocks.tryConnect())
                 .addCode(codeBlocks.pickVendorQuery(vendorStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())

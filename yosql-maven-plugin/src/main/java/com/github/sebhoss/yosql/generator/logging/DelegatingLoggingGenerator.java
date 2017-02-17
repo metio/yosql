@@ -81,6 +81,11 @@ public class DelegatingLoggingGenerator implements LoggingGenerator {
         return logging().isEnabled();
     }
 
+    @Override
+    public CodeBlock entering(final String repository, final String method) {
+        return logging().entering(repository, method);
+    }
+
     private LoggingGenerator logging() {
         LoggingGenerator generator = null;
         switch (config.getLoggingApi()) {

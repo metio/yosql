@@ -26,4 +26,6 @@ public interface LoggingGenerator {
 
     Optional<FieldSpec> logger(TypeName repoClass);
 
+    CodeBlock entering(String repository, String method);
+
 }

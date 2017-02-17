@@ -60,6 +60,8 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(flowReturn)
                 .addParameters(mergedConfiguration.getParameterSpecs())
+                .addCode(codeBlocks.entering(mergedConfiguration.getRepository(),
+                        mergedConfiguration.getFlowableName()))
                 .addCode(TypicalCodeBlocks.newFlowable(initialState, generator, disposer))
                 .build();
     }

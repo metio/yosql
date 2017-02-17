@@ -282,64 +282,6 @@ public class TypicalCodeBlocks {
                 .endControlFlow().build();
     }
 
-    public CodeBlock pickVendorQuery(final List<SqlStatement> sqlStatements) {
-        final Builder builder = CodeBlock.builder();
-        if (sqlStatements.size() > 1) {
-            builder.addStatement("final $T $N = $N.getMetaData().getDatabaseProductName()",
-                    String.class, TypicalNames.DATABASE_PRODUCT_NAME, TypicalNames.CONNECTION)
-                    .add(logging.vendorDetected())
-                    .addStatement("$T $N = null", String.class, TypicalNames.QUERY)
-                    .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, TypicalNames.INDEX)
-                    .beginControlFlow("switch ($N)", TypicalNames.DATABASE_PRODUCT_NAME);
-            sqlStatements.stream()
-                    .map(SqlStatement::getConfiguration)
-                    .filter(config -> Objects.nonNull(config.getVendor()))
-                    .forEach(config -> {
-                        final String fieldName = TypicalFields.constantSqlStatementFieldName(config);
-                        builder.add("case $S:\n", config.getVendor())
-                                .addStatement("$N = $N", TypicalNames.QUERY, fieldName)
-                                .add(logging.vendorQueryPicked(fieldName));
-                        if (config.hasParameters()) {
-                            final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
-                            builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
-                                    .add(logging.vendorIndexPicked(indexName));
-                            ;
-                        }
-                        builder.addStatement("break");
-                    });
-            sqlStatements.stream()
-                    .map(SqlStatement::getConfiguration)
-                    .filter(config -> Objects.isNull(config.getVendor()))
-                    .limit(1)
-                    .forEach(config -> {
-                        final String fieldName = TypicalFields.constantSqlStatementFieldName(config);
-                        builder.add("default:\n")
-                                .addStatement("$N = $N", TypicalNames.QUERY, fieldName)
-                                .add(logging.vendorQueryPicked(fieldName));
-                        if (config.hasParameters()) {
-                            final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
-                            builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
-                                    .add(logging.vendorIndexPicked(indexName));
-                        }
-                        builder.addStatement("break");
-                    });
-            builder.endControlFlow();
-        } else {
-            final SqlConfiguration configuration = sqlStatements.get(0).getConfiguration();
-            final String fieldName = TypicalFields.constantSqlStatementFieldName(configuration);
-            builder.addStatement("final $T $N = $N", String.class, TypicalNames.QUERY, fieldName)
-                    .add(logging.queryPicked(fieldName));
-            if (configuration.hasParameters()) {
-                final String indexFieldName = TypicalFields.constantSqlStatementParameterIndexFieldName(configuration);
-                builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
-                        TypicalNames.INDEX,
-                        indexFieldName)
-                        .add(logging.indexPicked(indexFieldName));
-            }
-        }
-        return builder.build();
-    }
-
     public static CodeBlock returnTrue() {
         return CodeBlock.builder().addStatement("return $L", true).build();
     }
@@ -406,7 +348,7 @@ public class TypicalCodeBlocks {
         final Builder builder = CodeBlock.builder();
         if (pluginConfig.shouldLog()) {
             builder.beginControlFlow("if ($L)", logging.shouldLog());
-            builder.add("final $T $N = $N", String.class, TypicalNames.EXECUTED_QUERY, TypicalNames.QUERY);
+            builder.add("final $T $N = $N", String.class, TypicalNames.EXECUTED_QUERY, TypicalNames.RAW_QUERY);
             configuration.getParameters().stream()
                     .forEach(parameter -> {
                         if (TypicalTypes.guessTypeName(parameter.getType()).isPrimitive()) {
@@ -423,6 +365,75 @@ public class TypicalCodeBlocks {
             builder.add(";\n");
             builder.add(logging.executingQuery());
             builder.endControlFlow();
+        }
+        return builder.build();
+    }
+
+    public CodeBlock entering(final String repository, final String method) {
+        return logging.entering(repository, method);
+    }
+
+    public CodeBlock pickVendorQuery(final List<SqlStatement> sqlStatements) {
+        final Builder builder = CodeBlock.builder();
+        if (sqlStatements.size() > 1) {
+            builder.addStatement("final $T $N = $N.getMetaData().getDatabaseProductName()",
+                    String.class, TypicalNames.DATABASE_PRODUCT_NAME, TypicalNames.CONNECTION)
+                    .add(logging.vendorDetected())
+                    .addStatement("$T $N = null", String.class, TypicalNames.RAW_QUERY)
+                    .addStatement("$T $N = null", String.class, TypicalNames.QUERY)
+                    .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, TypicalNames.INDEX)
+                    .beginControlFlow("switch ($N)", TypicalNames.DATABASE_PRODUCT_NAME);
+            sqlStatements.stream()
+                    .map(SqlStatement::getConfiguration)
+                    .filter(config -> Objects.nonNull(config.getVendor()))
+                    .forEach(config -> {
+                        final String query = TypicalFields.constantSqlStatementFieldName(config);
+                        final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
+                        builder.add("case $S:\n", config.getVendor())
+                                .addStatement("$N = $N", TypicalNames.QUERY, query)
+                                .addStatement("$N = $N", TypicalNames.RAW_QUERY, rawQuery)
+                                .add(logging.vendorQueryPicked(query));
+                        if (config.hasParameters()) {
+                            final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
+                            builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
+                                    .add(logging.vendorIndexPicked(indexName));
+                            ;
+                        }
+                        builder.addStatement("break");
+                    });
+            sqlStatements.stream()
+                    .map(SqlStatement::getConfiguration)
+                    .filter(config -> Objects.isNull(config.getVendor()))
+                    .limit(1)
+                    .forEach(config -> {
+                        final String query = TypicalFields.constantSqlStatementFieldName(config);
+                        final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(config);
+                        builder.add("default:\n")
+                                .addStatement("$N = $N", TypicalNames.QUERY, query)
+                                .addStatement("$N = $N", TypicalNames.RAW_QUERY, rawQuery)
+                                .add(logging.vendorQueryPicked(query));
+                        if (config.hasParameters()) {
+                            final String indexName = TypicalFields.constantSqlStatementParameterIndexFieldName(config);
+                            builder.addStatement("$N = $N", TypicalNames.INDEX, indexName)
+                                    .add(logging.vendorIndexPicked(indexName));
+                        }
+                        builder.addStatement("break");
+                    });
+            builder.endControlFlow();
+        } else {
+            final SqlConfiguration configuration = sqlStatements.get(0).getConfiguration();
+            final String query = TypicalFields.constantSqlStatementFieldName(configuration);
+            final String rawQuery = TypicalFields.constantRawSqlStatementFieldName(configuration);
+            builder.addStatement("final $T $N = $N", String.class, TypicalNames.QUERY, query)
+                    .addStatement("final $T $N = $N", String.class, TypicalNames.RAW_QUERY, rawQuery)
+                    .add(logging.queryPicked(query));
+            if (configuration.hasParameters()) {
+                final String indexFieldName = TypicalFields.constantSqlStatementParameterIndexFieldName(configuration);
+                builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
+                        TypicalNames.INDEX,
+                        indexFieldName)
+                        .add(logging.indexPicked(indexFieldName));
+            }
         }
         return builder.build();
     }

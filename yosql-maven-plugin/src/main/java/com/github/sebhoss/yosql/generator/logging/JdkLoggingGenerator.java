@@ -91,4 +91,11 @@ public class JdkLoggingGenerator implements LoggingGenerator {
         return true;
     }
 
+    @Override
+    public CodeBlock entering(final String repository, final String method) {
+        return CodeBlock.builder()
+                .addStatement("$N.entering($S, $S)", TypicalNames.LOGGER, repository, method)
+                .build();
+    }
+
 }
