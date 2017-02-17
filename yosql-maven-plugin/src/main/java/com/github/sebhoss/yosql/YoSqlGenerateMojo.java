@@ -556,18 +556,18 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private String[] allowedCallPrefixes() {
-        return allowedPrefixes(methodAllowedCallPrefixes);
+        return splitIntoArray(methodAllowedCallPrefixes);
     }
 
     private String[] allowedWritePrefixes() {
-        return allowedPrefixes(methodAllowedWritePrefixes);
+        return splitIntoArray(methodAllowedWritePrefixes);
     }
 
     private String[] allowedReadPrefixes() {
-        return allowedPrefixes(methodAllowedReadPrefixes);
+        return splitIntoArray(methodAllowedReadPrefixes);
     }
 
-    private String[] allowedPrefixes(final String input) {
+    private String[] splitIntoArray(final String input) {
         return Arrays.stream(input.split(","))
                 .filter(Objects::nonNull)
                 .map(String::trim)
