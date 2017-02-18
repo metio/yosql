@@ -8,10 +8,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlSourceFile;
 import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.model.SqlConfiguration;
+import com.github.sebhoss.yosql.parser.SqlConfigurationFactory;
 import com.github.sebhoss.yosql.parser.SqlFileParser;
+import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 
 public class SqlFileParserSimpleTest {
@@ -20,16 +22,25 @@ public class SqlFileParserSimpleTest {
 
     @Before
     public void setUp() {
-        parser = new SqlFileParser(new PluginErrors(), null, null);
+        final PluginErrors errors = new PluginErrors();
+        final PluginConfig config = new PluginConfig();
+        config.setSqlFilesCharset("UTF-8");
+        config.setSqlStatementSeparator(";");
+        config.setBasePackageName("com.example");
+        config.setUtilityPackageName("util");
+        config.setRepositoryNameSuffix("Repository");
+        final SqlConfigurationFactory factory = new SqlConfigurationFactory(errors, config);
+        parser = new SqlFileParser(errors, config, factory);
     }
 
     @Test
     public void shouldReturnNotNullResultAfterParsingSimpleSql() {
         // given
-        final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
+        final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple/simple.sql");
 
         // when
-        final Stream<SqlStatement> statement = parser.parse(new SqlSourceFile(sqlFile, null));
+        final Stream<SqlStatement> statement = parser
+                .parse(new SqlSourceFile(sqlFile, TestSqlFiles.getFullPath("/sql")));
 
         // then
         Assert.assertNotNull(statement);
@@ -38,10 +49,11 @@ public class SqlFileParserSimpleTest {
     @Test
     public void shouldReturnNotNullConfigurationAfterParsingSimpleSql() {
         // given
-        final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
+        final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple/simple.sql");
 
         // when
-        final Stream<SqlStatement> statement = parser.parse(new SqlSourceFile(sqlFile, null));
+        final Stream<SqlStatement> statement = parser
+                .parse(new SqlSourceFile(sqlFile, TestSqlFiles.getFullPath("/sql")));
         final SqlConfiguration configuration = SqlConfiguration
                 .merge(statement.collect(Collectors.toList()));
 
@@ -52,10 +64,11 @@ public class SqlFileParserSimpleTest {
     @Test
     public void shouldReturnNotNullStatementAfterParsingSimpleSql() {
         // given
-        final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
+        final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple/simple.sql");
 
         // when
-        final Stream<SqlStatement> statements = parser.parse(new SqlSourceFile(sqlFile, null));
+        final Stream<SqlStatement> statements = parser
+                .parse(new SqlSourceFile(sqlFile, TestSqlFiles.getFullPath("/sql")));
         final String sqlStatement = statements.map(SqlStatement::getRawStatement).findFirst().orElse(null);
 
         // then
@@ -65,10 +78,11 @@ public class SqlFileParserSimpleTest {
     @Test
     public void shouldReturnCorrectNameAfterParsingSimpleSql() {
         // given
-        final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple.sql");
+        final Path sqlFile = TestSqlFiles.getFullPath("/sql/simple/simple.sql");
 
         // when
-        final Stream<SqlStatement> statement = parser.parse(new SqlSourceFile(sqlFile, null));
+        final Stream<SqlStatement> statement = parser
+                .parse(new SqlSourceFile(sqlFile, TestSqlFiles.getFullPath("/sql")));
         final SqlConfiguration configuration = SqlConfiguration
                 .merge(statement.collect(Collectors.toList()));
 

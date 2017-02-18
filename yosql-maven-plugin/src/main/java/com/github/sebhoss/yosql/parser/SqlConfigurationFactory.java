@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -367,7 +368,9 @@ public class SqlConfigurationFactory {
     }
 
     private Optional<ResultRowConverter> getRowConverter(final Predicate<ResultRowConverter> predicate) {
-        return pluginConfig.getResultRowConverters().stream()
+        return Optional.ofNullable(pluginConfig.getResultRowConverters())
+                .map(List::stream)
+                .orElse(Stream.empty())
                 .filter(predicate)
                 .findFirst();
     }
@@ -386,7 +389,7 @@ public class SqlConfigurationFactory {
     }
 
     private boolean startsWith(final String fileName, final String... prefixes) {
-        return Arrays.stream(prefixes)
+        return prefixes != null && Arrays.stream(prefixes)
                 .anyMatch(fileName::startsWith);
     }
 
