@@ -16,7 +16,7 @@
   </modules>
 
   <properties>
-    <version.bom>2016.08.20-000508</version.bom>
+    <version.bom>2017.02.18-211726</version.bom>
   </properties>
 
   <dependencyManagement>
