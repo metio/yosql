@@ -75,7 +75,7 @@ import com.squareup.javapoet.ClassName;
  * <li>generate interfaces (useful for tests?) + specify .impl folder</li>
  * </ul>
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class YoSqlGenerateMojo extends AbstractMojo {
 
     private static final String              RESULT_ROW_CONVERTER = "resultRowConverter";
