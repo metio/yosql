@@ -115,9 +115,13 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
 
     private FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
+        final String rawStatement = sqlStatement.getRawStatement();
+        final String statement = TypicalParameters.replaceNamedParameters(rawStatement);
+        final String fieldValue = SqlType.CALLING == configuration.getType() ? String.format("{call %s}", statement)
+                : statement;
         return fields.prepareConstant(getClass(), String.class,
                 TypicalFields.constantSqlStatementFieldName(configuration))
-                .initializer("$S", TypicalParameters.replaceNamedParameters(sqlStatement.getRawStatement()))
+                .initializer("$S", fieldValue)
                 .build();
     }
 
