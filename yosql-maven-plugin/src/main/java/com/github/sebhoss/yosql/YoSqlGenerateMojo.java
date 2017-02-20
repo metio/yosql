@@ -88,7 +88,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     /**
      * Controls whether the SQL statements should be inlined in the generated
      * repositories or loaded at runtime (default: <strong>inline</strong>).
-     * Other possible value is <strong>load</strong>. TODO: implement 'load'
+     * Other possible value is <strong>load</strong>.
      */
     @Parameter(required = true, defaultValue = "inline")
     private String                           repositorySqlStatements;
