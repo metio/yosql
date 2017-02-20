@@ -46,34 +46,7 @@ import com.github.sebhoss.yosql.plugin.PluginPreconditions;
 import com.squareup.javapoet.ClassName;
 
 /**
- * TODO:
- * <ul>
- * <li>Factory/Spring/CDI/Guice(?)</li>
- * <li>allow to overwrite error log messages through fixed location of
- * .properties file</li>
- * <li>: provide default.properties for error logging (part of this project),
- * allow to overwrite those defaults w/ user-project settings</li>
- * <li>sql file/repository layout: directory as repo with single statement files
- * or multi statement files as repo.</li>
- * <li>support unnamed params ('?') as varargs argument</li>
- * <li>parameter converter</li>
- * <li>RETURNING statements</li>
- * <li>support symbols: "!" for write, "<" for returning, none (by default) for
- * read
- * <li>Use http://simpleflatmapper.org/ for mapping between results & beans</li>
- * <li>Write perf test for
- * https://github.com/bwajtr/java-persistence-frameworks-comparison</li>
- * <li>SQL statement name converter to align with Java naming rules</li>
- * <li>https://github.com/zsoltherpai/fluent-jdbc</li>
- * <li>https://github.com/bendem/sql-streams</li>
- * <li>https://github.com/jtouzy/fastrecord</li>
- * <li>https://github.com/pyranid/pyranid</li>
- * <li>https://github.com/mjdbc/mjdbc</li>
- * <li>classes for method*, repository*, etc. config parameters -> subelements
- * in pom</li>
- * <li>comment code blocks (e.g. intellij)</li>
- * <li>generate interfaces (useful for tests?) + specify .impl folder</li>
- * </ul>
+ * The *generate* goal generates Java code based on SQL files.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class YoSqlGenerateMojo extends AbstractMojo {
