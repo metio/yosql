@@ -21,6 +21,7 @@ import com.squareup.javapoet.TypeSpec;
 public class ToResultRowConverterGenerator {
 
     public static final String        TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
+    public static final String        RESULT_ROW_CONVERTER_ALIAS         = "resultRowConverter";
 
     private final AnnotationGenerator annotations;
     private final TypeWriter          typeWriter;

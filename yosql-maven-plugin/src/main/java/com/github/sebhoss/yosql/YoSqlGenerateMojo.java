@@ -51,8 +51,6 @@ import com.squareup.javapoet.ClassName;
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class YoSqlGenerateMojo extends AbstractMojo {
 
-    private static final String              RESULT_ROW_CONVERTER = "resultRowConverter";
-
     /**
      * The SQL files to load (.sql)
      */
@@ -324,20 +322,20 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * Optional list of converters that are applied to input parameters.
      */
     @Parameter(required = false)
-    private final List<ParameterConverter>   parameterConverters  = new ArrayList<>();
+    private final List<ParameterConverter>   parameterConverters = new ArrayList<>();
 
     /**
      * Optional list of converters that are applied to input parameters.
      */
     @Parameter(required = false)
-    private final List<ResultRowConverter>   resultRowConverters  = new ArrayList<>();
+    private final List<ResultRowConverter>   resultRowConverters = new ArrayList<>();
 
     /**
      * The default row converter which is being used if no custom converter is
      * specified for a statement. Can be either the alias or fully-qualified
      * name of a converter. Default 'resultRow'.
      */
-    @Parameter(required = true, defaultValue = RESULT_ROW_CONVERTER)
+    @Parameter(required = true, defaultValue = ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS)
     private String                           defaultRowConverter;
 
     /**
@@ -504,7 +502,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
             pluginConfig.setResultRowClass(ClassName.get(utilPackage, ResultRowGenerator.RESULT_ROW_CLASS_NAME));
 
             final ResultRowConverter toResultRow = new ResultRowConverter();
-            toResultRow.setAlias(RESULT_ROW_CONVERTER);
+            toResultRow.setAlias(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS);
             toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
             toResultRow.setConverterType(
                     pluginConfig.getBasePackageName()
