@@ -76,6 +76,13 @@ public class TypicalTypes {
     }
 
     public static TypeName guessTypeName(final String type) {
+        if (type.endsWith("[]")) {
+            return ArrayTypeName.of(guessType(type.substring(0, type.length() - 2)));
+        }
+        return guessType(type);
+    }
+
+    private static TypeName guessType(final String type) {
         if (type.contains(".")) {
             return ClassName.bestGuess(type);
         } else {
