@@ -119,16 +119,19 @@ public class TypicalTypes {
         final String rawPart = type.substring(0, type.indexOf("<"));
         final String genericPart = type.substring(type.indexOf("<") + 1, type.lastIndexOf(">"));
         final ClassName rawType = ClassName.bestGuess(rawPart);
-        TypeName[] typeArguments = null;
+        final TypeName[] typeArguments = guessGenericTypeArguments(genericPart);
+        return ParameterizedTypeName.get(rawType, typeArguments);
+    }
+
+    private static TypeName[] guessGenericTypeArguments(final String genericPart) {
         if (genericPart.contains(",")) {
-            typeArguments = Arrays.stream(genericPart.split(","))
+            return Arrays.stream(genericPart.split(","))
                     .map(String::trim)
                     .map(TypicalTypes::guessObjectType)
                     .toArray(TypeName[]::new);
         } else {
-            typeArguments = new TypeName[] { guessObjectType(genericPart) };
+            return new TypeName[] { guessObjectType(genericPart) };
         }
-        return ParameterizedTypeName.get(rawType, typeArguments);
     }
 
 }
