@@ -1,5 +1,7 @@
 package com.github.sebhoss.yosql.generator.helpers;
 
+import java.util.Arrays;
+
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -77,36 +79,56 @@ public class TypicalTypes {
 
     public static TypeName guessTypeName(final String type) {
         if (type.endsWith("[]")) {
-            return ArrayTypeName.of(guessType(type.substring(0, type.length() - 2)));
+            final String typeNameWithoutArraySuffix = type.substring(0, type.length() - 2);
+            return ArrayTypeName.of(guessType(typeNameWithoutArraySuffix));
         }
         return guessType(type);
     }
 
     private static TypeName guessType(final String type) {
-        if (type.contains(".")) {
-            return ClassName.bestGuess(type);
-        } else {
-            switch (type) {
-            case "boolean":
-                return TypeName.BOOLEAN;
-            case "byte":
-                return TypeName.BYTE;
-            case "short":
-                return TypeName.SHORT;
-            case "long":
-                return TypeName.LONG;
-            case "char":
-                return TypeName.CHAR;
-            case "float":
-                return TypeName.FLOAT;
-            case "double":
-                return TypeName.DOUBLE;
-            case "int":
-                return TypeName.INT;
-            default:
-                return TypeName.OBJECT;
-            }
+        switch (type) {
+        case "boolean":
+            return TypeName.BOOLEAN;
+        case "byte":
+            return TypeName.BYTE;
+        case "short":
+            return TypeName.SHORT;
+        case "long":
+            return TypeName.LONG;
+        case "char":
+            return TypeName.CHAR;
+        case "float":
+            return TypeName.FLOAT;
+        case "double":
+            return TypeName.DOUBLE;
+        case "int":
+            return TypeName.INT;
+        default:
+            return guessObjectType(type);
         }
+    }
+
+    private static TypeName guessObjectType(final String type) {
+        if (type.contains("<")) {
+            return guessGenericType(type);
+        }
+        return ClassName.bestGuess(type);
+    }
+
+    private static TypeName guessGenericType(final String type) {
+        final String rawPart = type.substring(0, type.indexOf("<"));
+        final String genericPart = type.substring(type.indexOf("<") + 1, type.lastIndexOf(">"));
+        final ClassName rawType = ClassName.bestGuess(rawPart);
+        TypeName[] typeArguments = null;
+        if (genericPart.contains(",")) {
+            typeArguments = Arrays.stream(genericPart.split(","))
+                    .map(String::trim)
+                    .map(TypicalTypes::guessObjectType)
+                    .toArray(TypeName[]::new);
+        } else {
+            typeArguments = new TypeName[] { guessObjectType(genericPart) };
+        }
+        return ParameterizedTypeName.get(rawType, typeArguments);
     }
 
 }

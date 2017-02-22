@@ -31,4 +31,40 @@ public class TypicalTypesTest {
         Assert.assertEquals("int[]", guessedType.toString());
     }
 
+    @Test
+    public void shouldGuessTypeOfGenericList() {
+        // given
+        final String givenType = "java.util.List<java.lang.Object>";
+
+        // when
+        final TypeName guessedType = TypicalTypes.guessTypeName(givenType);
+
+        // then
+        Assert.assertEquals("java.util.List<java.lang.Object>", guessedType.toString());
+    }
+
+    @Test
+    public void shouldGuessTypeOfGenericListOfGenericType() {
+        // given
+        final String givenType = "java.util.List<java.lang.Object<java.lang.Integer>>";
+
+        // when
+        final TypeName guessedType = TypicalTypes.guessTypeName(givenType);
+
+        // then
+        Assert.assertEquals("java.util.List<java.lang.Object<java.lang.Integer>>", guessedType.toString());
+    }
+
+    @Test
+    public void shouldGuessTypeOfGenericMap() {
+        // given
+        final String givenType = "java.util.Map<java.lang.String, java.lang.Object>";
+
+        // when
+        final TypeName guessedType = TypicalTypes.guessTypeName(givenType);
+
+        // then
+        Assert.assertEquals("java.util.Map<java.lang.String, java.lang.Object>", guessedType.toString());
+    }
+
 }
