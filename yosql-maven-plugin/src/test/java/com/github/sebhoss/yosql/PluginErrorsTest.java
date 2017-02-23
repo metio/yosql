@@ -1,3 +1,9 @@
+/*
+ * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+ * directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+ * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+ * in the LICENSE file.
+ */
 package com.github.sebhoss.yosql;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -17,7 +23,7 @@ public class PluginErrorsTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private PluginErrors pluginErrors;
+    private PluginErrors     pluginErrors;
 
     @Before
     public void setUp() {
@@ -55,7 +61,8 @@ public class PluginErrorsTest {
     }
 
     /**
-     * Ensures that no <code>NULL</code> {@link Throwable}s can be added. Those would otherwise cause another NullPointerException later down the line.
+     * Ensures that no <code>NULL</code> {@link Throwable}s can be added. Those
+     * would otherwise cause another NullPointerException later down the line.
      */
     @Test
     public void shouldNotAcceptNullThrowables() {
@@ -70,7 +77,8 @@ public class PluginErrorsTest {
     }
 
     /**
-     * Ensures that an actual exception is thrown in case a build-error is encountered.
+     * Ensures that an actual exception is thrown in case a build-error is
+     * encountered.
      */
     @Test
     public void shouldThrowMojoException() throws MojoExecutionException {

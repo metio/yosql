@@ -1,4 +1,13 @@
+/*
+ * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+ * directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+ * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+ * in the LICENSE file.
+ */
 package com.github.sebhoss.yosql;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Before;
@@ -10,16 +19,13 @@ import org.junit.rules.TemporaryFolder;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 import com.github.sebhoss.yosql.plugin.PluginPreconditions;
 
-import java.io.File;
-import java.io.IOException;
-
 public class PluginPreconditionsTest {
 
     @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    public ExpectedException    thrown = ExpectedException.none();
 
     @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    public TemporaryFolder      folder = new TemporaryFolder();
 
     private PluginPreconditions preconditions;
 
