@@ -21,8 +21,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.yaml.snakeyaml.Yaml;
-
 import com.github.sebhoss.yosql.model.ResultRowConverter;
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlParameter;
@@ -31,8 +29,11 @@ import com.github.sebhoss.yosql.model.SqlType;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 
+import org.yaml.snakeyaml.Yaml;
+
 @Named
 @Singleton
+@SuppressWarnings({ "javadoc", "nls" })
 public class SqlConfigurationFactory {
 
     private final Yaml         yamlParser = new Yaml();
@@ -50,7 +51,7 @@ public class SqlConfigurationFactory {
             final String yaml,
             final Map<String, List<Integer>> parameterIndices,
             final int statementInFile) {
-        final SqlConfiguration configuration = loadOrCreateConfig(yaml);
+        final SqlConfiguration configuration = loadConfig(yaml);
         final String fileName = getFileNameWithoutExtension(source.getPathToSqlFile());
 
         name(configuration, fileName, statementInFile);
@@ -80,7 +81,7 @@ public class SqlConfigurationFactory {
         return configuration;
     }
 
-    private void name(final SqlConfiguration configuration, final String fileName, final int statementInFile) {
+    private static void name(final SqlConfiguration configuration, final String fileName, final int statementInFile) {
         if (nullOrEmpty(configuration.getName())) {
             configuration.setName(statementInFile == 0 ? fileName : fileName + statementInFile);
         }
@@ -149,38 +150,38 @@ public class SqlConfigurationFactory {
     private void validateNames(final SqlSourceFile source, final SqlConfiguration configuration) {
         if (pluginConfig.shouldValidateMethodNamePrefixes()) {
             switch (configuration.getType()) {
-            case READING:
-                if (!startsWith(configuration.getName(), pluginConfig.getAllowedReadPrefixes())) {
-                    final String msg = invalidPrefix(source, SqlType.READING, configuration);
+                case READING:
+                    if (!startsWith(configuration.getName(), pluginConfig.getAllowedReadPrefixes())) {
+                        final String msg = invalidPrefix(source, SqlType.READING, configuration);
+                        pluginErrors.add(new IllegalArgumentException(msg));
+                        pluginConfig.getLogger().error(msg);
+                    }
+                    break;
+                case WRITING:
+                    if (!startsWith(configuration.getName(), pluginConfig.getAllowedWritePrefixes())) {
+                        final String msg = invalidPrefix(source, SqlType.WRITING, configuration);
+                        pluginErrors.add(new IllegalArgumentException(msg));
+                        pluginConfig.getLogger().error(msg);
+                    }
+                    break;
+                case CALLING:
+                    if (!startsWith(configuration.getName(), pluginConfig.getAllowedCallPrefixes())) {
+                        final String msg = invalidPrefix(source, SqlType.CALLING, configuration);
+                        pluginErrors.add(new IllegalArgumentException(msg));
+                        pluginConfig.getLogger().error(msg);
+                    }
+                    break;
+                default:
+                    final String msg = String.format("[%s] has unsupported type [%s]",
+                            source.getPathToSqlFile(), configuration.getType());
                     pluginErrors.add(new IllegalArgumentException(msg));
                     pluginConfig.getLogger().error(msg);
-                }
-                break;
-            case WRITING:
-                if (!startsWith(configuration.getName(), pluginConfig.getAllowedWritePrefixes())) {
-                    final String msg = invalidPrefix(source, SqlType.WRITING, configuration);
-                    pluginErrors.add(new IllegalArgumentException(msg));
-                    pluginConfig.getLogger().error(msg);
-                }
-                break;
-            case CALLING:
-                if (!startsWith(configuration.getName(), pluginConfig.getAllowedCallPrefixes())) {
-                    final String msg = invalidPrefix(source, SqlType.CALLING, configuration);
-                    pluginErrors.add(new IllegalArgumentException(msg));
-                    pluginConfig.getLogger().error(msg);
-                }
-                break;
-            default:
-                final String msg = String.format("[%s] has unsupported type [%s]",
-                        source.getPathToSqlFile(), configuration.getType());
-                pluginErrors.add(new IllegalArgumentException(msg));
-                pluginConfig.getLogger().error(msg);
-                break;
+                    break;
             }
         }
     }
 
-    private String invalidPrefix(
+    private static String invalidPrefix(
             final SqlSourceFile source,
             final SqlType type,
             final SqlConfiguration configuration) {
@@ -260,7 +261,7 @@ public class SqlConfigurationFactory {
         return fullRepositoryName;
     }
 
-    private String upperCaseFirstLetter(final String name) {
+    private static String upperCaseFirstLetter(final String name) {
         return name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
     }
 
@@ -296,7 +297,7 @@ public class SqlConfigurationFactory {
         }
     }
 
-    private void updateIndices(
+    private static void updateIndices(
             final List<SqlParameter> parameters,
             final List<Integer> numbers,
             final String parameterName) {
@@ -305,18 +306,18 @@ public class SqlConfigurationFactory {
                 .forEach(parameter -> parameter.setIndices(asArray(numbers)));
     }
 
-    private int[] asArray(final List<Integer> numbers) {
+    private static int[] asArray(final List<Integer> numbers) {
         return numbers.stream()
                 .mapToInt(Integer::intValue)
                 .toArray();
     }
 
-    private boolean isMissingParameter(final SqlConfiguration configuration, final String parameterName) {
+    private static boolean isMissingParameter(final SqlConfiguration configuration, final String parameterName) {
         return !configuration.getParameters().stream()
                 .anyMatch(nameMatches(parameterName));
     }
 
-    private Predicate<? super SqlParameter> nameMatches(final String parameterName) {
+    private static Predicate<? super SqlParameter> nameMatches(final String parameterName) {
         return parameter -> parameterName.equals(parameter.getName());
     }
 
@@ -356,11 +357,12 @@ public class SqlConfigurationFactory {
                 ResultRowConverter::getResultType);
     }
 
-    private boolean aliasMatches(final ResultRowConverter resultConverter, final ResultRowConverter converter) {
+    private static boolean aliasMatches(final ResultRowConverter resultConverter, final ResultRowConverter converter) {
         return converter.getAlias().equals(resultConverter.getAlias());
     }
 
-    private boolean converterTypeMatches(final ResultRowConverter resultConverter, final ResultRowConverter converter) {
+    private static boolean converterTypeMatches(final ResultRowConverter resultConverter,
+            final ResultRowConverter converter) {
         return converter.getConverterType().equals(resultConverter.getConverterType());
     }
 
@@ -390,11 +392,11 @@ public class SqlConfigurationFactory {
                 .findFirst().orElse("");
     }
 
-    private boolean nullOrEmpty(final String object) {
+    private static boolean nullOrEmpty(final String object) {
         return object == null || object.isEmpty();
     }
 
-    private boolean startsWith(final String fileName, final String... prefixes) {
+    private static boolean startsWith(final String fileName, final String... prefixes) {
         return prefixes != null && Arrays.stream(prefixes)
                 .anyMatch(fileName::startsWith);
     }
@@ -413,7 +415,7 @@ public class SqlConfigurationFactory {
         return errors == null || errors.isEmpty();
     }
 
-    private SqlConfiguration loadOrCreateConfig(final String yaml) {
+    private SqlConfiguration loadConfig(final String yaml) {
         SqlConfiguration configuration = yamlParser.loadAs(yaml,
                 SqlConfiguration.class);
         if (configuration == null) {
@@ -422,7 +424,7 @@ public class SqlConfigurationFactory {
         return configuration;
     }
 
-    private String getFileNameWithoutExtension(final Path path) {
+    private static String getFileNameWithoutExtension(final Path path) {
         final String fileName = path.getFileName().toString();
         return fileName.substring(0, fileName.lastIndexOf("."));
     }

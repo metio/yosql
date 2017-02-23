@@ -6,14 +6,22 @@
  */
 package com.github.sebhoss.yosql.generator.helpers;
 
+import com.squareup.javapoet.TypeName;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.squareup.javapoet.TypeName;
-
+/**
+ *
+ *
+ */
+@SuppressWarnings({ "nls", "static-method" })
 public class TypicalTypesTest {
 
+    /**
+     *
+     */
     @Test
     public void shouldGuessArrayType() {
         // given
@@ -26,6 +34,9 @@ public class TypicalTypesTest {
         Assert.assertEquals(givenType, guessedType.toString());
     }
 
+    /**
+     *
+     */
     @Test
     public void shouldGuessArrayTypeOfPrimitive() {
         // given
@@ -38,6 +49,9 @@ public class TypicalTypesTest {
         Assert.assertEquals(givenType, guessedType.toString());
     }
 
+    /**
+     *
+     */
     @Test
     public void shouldGuessTypeOfGenericList() {
         // given
@@ -50,6 +64,9 @@ public class TypicalTypesTest {
         Assert.assertEquals(givenType, guessedType.toString());
     }
 
+    /**
+     *
+     */
     @Test
     public void shouldGuessTypeOfGenericListOfGenericType() {
         // given
@@ -62,6 +79,9 @@ public class TypicalTypesTest {
         Assert.assertEquals(givenType, guessedType.toString());
     }
 
+    /**
+     *
+     */
     @Test
     public void shouldGuessTypeOfGenericMap() {
         // given
@@ -74,6 +94,9 @@ public class TypicalTypesTest {
         Assert.assertEquals(givenType, guessedType.toString());
     }
 
+    /**
+     *
+     */
     @Test
     @Ignore
     public void shouldGuessTypeOfGenericMapOfGenericMap() {

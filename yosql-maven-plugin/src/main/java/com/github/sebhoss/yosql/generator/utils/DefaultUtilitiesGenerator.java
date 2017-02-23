@@ -18,6 +18,7 @@ import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.model.SqlType;
 
+@SuppressWarnings({ "javadoc" })
 public class DefaultUtilitiesGenerator implements UtilitiesGenerator {
 
     private final FlowStateGenerator            flowStateGenerator;
@@ -55,7 +56,7 @@ public class DefaultUtilitiesGenerator implements UtilitiesGenerator {
         }
     }
 
-    private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
+    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
         return sqlStatements.stream()
                 .map(SqlStatement::getConfiguration)
                 .filter(config -> SqlType.READING == config.getType())

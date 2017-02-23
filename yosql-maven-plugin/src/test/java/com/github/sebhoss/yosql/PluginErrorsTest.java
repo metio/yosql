@@ -6,6 +6,8 @@
  */
 package com.github.sebhoss.yosql;
 
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,18 +15,23 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.github.sebhoss.yosql.plugin.PluginErrors;
-
 /**
  * Unit tests for {@link PluginErrors}.
  */
+@SuppressWarnings({ "nls" })
 public class PluginErrorsTest {
 
+    /**
+     *
+     */
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     private PluginErrors     pluginErrors;
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
         pluginErrors = new PluginErrors();
@@ -61,8 +68,8 @@ public class PluginErrorsTest {
     }
 
     /**
-     * Ensures that no <code>NULL</code> {@link Throwable}s can be added. Those
-     * would otherwise cause another NullPointerException later down the line.
+     * Ensures that no <code>NULL</code> {@link Throwable}s can be added. Those would otherwise cause another
+     * NullPointerException later down the line.
      */
     @Test
     public void shouldNotAcceptNullThrowables() {
@@ -77,8 +84,10 @@ public class PluginErrorsTest {
     }
 
     /**
-     * Ensures that an actual exception is thrown in case a build-error is
-     * encountered.
+     * Ensures that an actual exception is thrown in case a build-error is encountered.
+     *
+     * @throws MojoExecutionException
+     *             The exception thrown by `buildError`
      */
     @Test
     public void shouldThrowMojoException() throws MojoExecutionException {

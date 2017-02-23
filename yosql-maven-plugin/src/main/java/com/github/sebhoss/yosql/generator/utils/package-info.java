@@ -4,15 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package com.github.sebhoss.yosql.generator;
-
-import java.util.List;
-
-import com.github.sebhoss.yosql.model.SqlStatement;
-
-@SuppressWarnings({ "javadoc" })
-public interface UtilitiesGenerator {
-
-    void generateUtilities(List<SqlStatement> allStatements);
-
-}
+/**
+ * Utilities for code generation.
+ */
+package com.github.sebhoss.yosql.generator.utils;

@@ -36,6 +36,7 @@ import com.github.sebhoss.yosql.plugin.PluginErrors;
 
 @Named
 @Singleton
+@SuppressWarnings({ "javadoc", "nls" })
 public class SqlFileParser {
 
     public static final String            PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
@@ -96,7 +97,8 @@ public class SqlFileParser {
         return new SqlStatement(configuration, rawSqlStatement);
     }
 
-    private void splitUpYamlAndSql(final String rawStatement, final Consumer<String> yaml, final Consumer<String> sql) {
+    private static void splitUpYamlAndSql(final String rawStatement, final Consumer<String> yaml,
+            final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
                 .lines().forEach(line -> {
                     if (line.startsWith("--")) {
@@ -109,7 +111,7 @@ public class SqlFileParser {
                 });
     }
 
-    private Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {
+    private static Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {
         final Map<String, List<Integer>> indices = new LinkedHashMap<>();
         final Matcher matcher = PATTERN.matcher(sqlStatement);
         int counter = 0;

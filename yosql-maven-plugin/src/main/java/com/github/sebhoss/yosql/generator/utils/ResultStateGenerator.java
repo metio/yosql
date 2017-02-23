@@ -31,6 +31,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class ResultStateGenerator {
 
     public static final String        RESULT_STATE_CLASS_NAME = "ResultState";
@@ -59,7 +60,7 @@ public class ResultStateGenerator {
         typeWriter.writeType(pluginConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }
 
-    private Iterable<FieldSpec> fields() {
+    private static Iterable<FieldSpec> fields() {
         final List<FieldSpec> fields = new ArrayList<>();
         fields.add(resultSetField());
         fields.add(metaDataField());
@@ -67,25 +68,25 @@ public class ResultStateGenerator {
         return fields;
     }
 
-    private FieldSpec resultSetField() {
+    private static FieldSpec resultSetField() {
         return FieldSpec.builder(ResultSet.class, TypicalNames.RESULT_SET)
                 .addModifiers(TypicalModifiers.PROTECTED_FIELD)
                 .build();
     }
 
-    private FieldSpec metaDataField() {
+    private static FieldSpec metaDataField() {
         return FieldSpec.builder(ResultSetMetaData.class, TypicalNames.META_DATA)
                 .addModifiers(TypicalModifiers.PROTECTED_FIELD)
                 .build();
     }
 
-    private FieldSpec columnCountField() {
+    private static FieldSpec columnCountField() {
         return FieldSpec.builder(int.class, TypicalNames.COLUMN_COUNT)
                 .addModifiers(TypicalModifiers.PROTECTED_FIELD)
                 .build();
     }
 
-    private Iterable<MethodSpec> methods() {
+    private static Iterable<MethodSpec> methods() {
         final List<MethodSpec> methods = new ArrayList<>();
         methods.add(constructor());
         methods.add(next());
@@ -95,7 +96,7 @@ public class ResultStateGenerator {
         return methods;
     }
 
-    private MethodSpec constructor() {
+    private static MethodSpec constructor() {
         return TypicalMethods.constructor()
                 .addParameter(TypicalParameters.resultSet())
                 .addParameter(TypicalParameters.metaData())
@@ -106,7 +107,7 @@ public class ResultStateGenerator {
                 .build();
     }
 
-    private MethodSpec next() {
+    private static MethodSpec next() {
         return TypicalMethods.publicMethod("next")
                 .returns(boolean.class)
                 .addException(SQLException.class)
@@ -114,7 +115,7 @@ public class ResultStateGenerator {
                 .build();
     }
 
-    private MethodSpec getColumnName() {
+    private static MethodSpec getColumnName() {
         return TypicalMethods.publicMethod("getColumnName")
                 .returns(String.class)
                 .addParameter(TypicalParameters.index())
@@ -123,14 +124,14 @@ public class ResultStateGenerator {
                 .build();
     }
 
-    private MethodSpec getResultSet() {
+    private static MethodSpec getResultSet() {
         return TypicalMethods.publicMethod("getResultSet")
                 .returns(ResultSet.class)
                 .addStatement("return $N", TypicalNames.RESULT_SET)
                 .build();
     }
 
-    private MethodSpec getColumnCount() {
+    private static MethodSpec getColumnCount() {
         return TypicalMethods.publicMethod("getColumnCount")
                 .returns(int.class)
                 .addStatement("return $N", TypicalNames.COLUMN_COUNT)

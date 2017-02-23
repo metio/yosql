@@ -6,6 +6,7 @@
  */
 package com.github.sebhoss.yosql.model;
 
+@SuppressWarnings({ "javadoc" })
 public class ParameterConverter {
 
     private String alias;

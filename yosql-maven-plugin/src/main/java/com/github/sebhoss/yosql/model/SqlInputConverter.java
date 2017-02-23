@@ -6,6 +6,7 @@
  */
 package com.github.sebhoss.yosql.model;
 
+@SuppressWarnings({ "javadoc" })
 public interface SqlInputConverter<USER_TYPE, DATABASE_TYPE> {
 
     DATABASE_TYPE convert(USER_TYPE input);

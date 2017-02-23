@@ -6,6 +6,7 @@
  */
 package com.github.sebhoss.yosql.generator.helpers;
 
+@SuppressWarnings({ "nls", "javadoc" })
 public class TypicalNames {
 
     public static final String DATA_SOURCE           = "dataSource";

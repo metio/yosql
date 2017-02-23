@@ -17,13 +17,13 @@ import com.github.sebhoss.yosql.generator.RepositoryGenerator;
 import com.github.sebhoss.yosql.generator.TypeWriter;
 import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
 import com.github.sebhoss.yosql.generator.helpers.TypicalTypes;
-import com.github.sebhoss.yosql.generator.utils.DefaultUtilitiesGenerator;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "javadoc" })
 public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
 
     private final TypeWriter                      typeWriter;
@@ -38,7 +38,6 @@ public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
             final PluginConfig pluginConfig,
             final AnnotationGenerator annotations,
             final RawJdbcMethodGenerator methodGenerator,
-            final DefaultUtilitiesGenerator utilsGenerator,
             final RawJdbcRepositoryFieldGenerator fieldGenerator) {
         this.typeWriter = typeWriter;
         this.pluginConfig = pluginConfig;

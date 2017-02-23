@@ -34,6 +34,7 @@ import io.reactivex.Emitter;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
 
     private final PluginConfig        pluginConfig;

@@ -32,6 +32,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator {
 
     private final TypicalCodeBlocks   codeBlocks;

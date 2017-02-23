@@ -20,6 +20,7 @@ import com.squareup.javapoet.TypeName;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class TypicalFields {
 
     public static final FieldSpec privateField(final TypeName type, final String name) {

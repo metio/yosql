@@ -32,6 +32,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class FlowStateGenerator {
 
     public static final String        FLOW_STATE_CLASS_NAME = "FlowState";
@@ -62,33 +63,33 @@ public class FlowStateGenerator {
         typeWriter.writeType(pluginConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }
 
-    private Iterable<FieldSpec> fields() {
+    private static Iterable<FieldSpec> fields() {
         final List<FieldSpec> fields = new ArrayList<>();
         fields.add(connectionField());
         fields.add(preparedStatementField());
         return fields;
     }
 
-    private FieldSpec connectionField() {
+    private static FieldSpec connectionField() {
         return FieldSpec.builder(Connection.class, TypicalNames.CONNECTION)
                 .addModifiers(TypicalModifiers.PRIVATE_FIELD)
                 .build();
     }
 
-    private FieldSpec preparedStatementField() {
+    private static FieldSpec preparedStatementField() {
         return FieldSpec.builder(PreparedStatement.class, TypicalNames.STATEMENT)
                 .addModifiers(TypicalModifiers.PRIVATE_FIELD)
                 .build();
     }
 
-    private Iterable<MethodSpec> methods() {
+    private static Iterable<MethodSpec> methods() {
         final List<MethodSpec> fields = new ArrayList<>();
         fields.add(constructor());
         fields.add(close());
         return fields;
     }
 
-    private MethodSpec constructor() {
+    private static MethodSpec constructor() {
         return TypicalMethods.constructor()
                 .addParameter(TypicalParameters.connection())
                 .addParameter(TypicalParameters.preparedStatement())
@@ -102,7 +103,7 @@ public class FlowStateGenerator {
                 .build();
     }
 
-    private MethodSpec close() {
+    private static MethodSpec close() {
         return TypicalMethods.publicMethod("close")
                 .returns(void.class)
                 .addException(SQLException.class)

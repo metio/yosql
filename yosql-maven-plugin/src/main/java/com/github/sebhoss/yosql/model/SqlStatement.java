@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({ "javadoc" })
 public class SqlStatement {
 
     public static final Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByName() {

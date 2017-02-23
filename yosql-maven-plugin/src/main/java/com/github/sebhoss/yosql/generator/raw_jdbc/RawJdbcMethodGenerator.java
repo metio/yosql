@@ -27,6 +27,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
 import com.squareup.javapoet.MethodSpec;
 
+@SuppressWarnings({ "nls", "javadoc" })
 public class RawJdbcMethodGenerator extends AbstractMethodsGenerator {
 
     private final RawJdbcRxJavaMethodGenerator      rxJavaMethodGenerator;
@@ -65,7 +66,7 @@ public class RawJdbcMethodGenerator extends AbstractMethodsGenerator {
                 .build();
     }
 
-    private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
+    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
         return sqlStatements.stream()
                 .map(SqlStatement::getConfiguration)
                 .filter(config -> SqlType.READING == config.getType() || SqlType.CALLING == config.getType())

@@ -18,6 +18,7 @@ import com.squareup.javapoet.TypeName;
 
 @Named
 @Singleton
+@SuppressWarnings({ "javadoc" })
 public class NoOpLoggingGenerator implements LoggingGenerator {
 
     @Override

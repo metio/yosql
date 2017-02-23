@@ -10,10 +10,6 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlSourceFile;
 import com.github.sebhoss.yosql.model.SqlStatement;
@@ -22,10 +18,22 @@ import com.github.sebhoss.yosql.parser.SqlFileParser;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ *
+ *
+ */
+@SuppressWarnings({ "nls" })
 public class SqlFileParserSimpleTest {
 
     private SqlFileParser parser;
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
         final PluginErrors errors = new PluginErrors();
@@ -39,6 +47,9 @@ public class SqlFileParserSimpleTest {
         parser = new SqlFileParser(errors, config, factory);
     }
 
+    /**
+     *
+     */
     @Test
     public void shouldReturnNotNullResultAfterParsingSimpleSql() {
         // given
@@ -52,6 +63,9 @@ public class SqlFileParserSimpleTest {
         Assert.assertNotNull(statement);
     }
 
+    /**
+     *
+     */
     @Test
     public void shouldReturnNotNullConfigurationAfterParsingSimpleSql() {
         // given
@@ -67,6 +81,9 @@ public class SqlFileParserSimpleTest {
         Assert.assertNotNull(configuration);
     }
 
+    /**
+     *
+     */
     @Test
     public void shouldReturnNotNullStatementAfterParsingSimpleSql() {
         // given
@@ -81,6 +98,9 @@ public class SqlFileParserSimpleTest {
         Assert.assertNotNull(sqlStatement);
     }
 
+    /**
+     *
+     */
     @Test
     public void shouldReturnCorrectNameAfterParsingSimpleSql() {
         // given

@@ -38,6 +38,7 @@ import com.squareup.javapoet.FieldSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator {
 
     private final TypicalFields    fields;
@@ -65,7 +66,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
         return builder.build();
     }
 
-    private void addIndexArray(final CodeBlock.Builder builder, final SqlParameter parameter,
+    private static void addIndexArray(final CodeBlock.Builder builder, final SqlParameter parameter,
             final SqlConfiguration config) {
         builder.addStatement("$N.put($S, $L)",
                 TypicalFields.constantSqlStatementParameterIndexFieldName(config),
@@ -131,6 +132,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
                 .build();
     }
 
+    @SuppressWarnings("boxing")
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
         return fields.prepareConstant(getClass(), TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
@@ -150,7 +152,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
                 converter.getAlias());
     }
 
-    private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
+    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
         return sqlStatements.stream()
                 .map(SqlStatement::getConfiguration)
                 .filter(config -> SqlType.READING == config.getType() || SqlType.CALLING == config.getType())

@@ -8,6 +8,10 @@ package com.github.sebhoss.yosql.plugin;
 
 import org.apache.maven.plugin.logging.Log;
 
+/**
+ *
+ *
+ */
 public abstract class AbstractComponent {
 
     protected final PluginConfig pluginConfig;

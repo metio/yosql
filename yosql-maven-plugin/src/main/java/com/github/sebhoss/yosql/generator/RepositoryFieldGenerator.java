@@ -12,6 +12,7 @@ import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 
+@SuppressWarnings({ "javadoc" })
 public interface RepositoryFieldGenerator {
 
     CodeBlock staticInitializer(List<SqlStatement> statements);

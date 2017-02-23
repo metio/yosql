@@ -17,14 +17,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.maven.model.FileSet;
-import org.codehaus.plexus.util.FileUtils;
-
 import com.github.sebhoss.yosql.model.SqlSourceFile;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
 
+import org.apache.maven.model.FileSet;
+import org.codehaus.plexus.util.FileUtils;
+
 @Named
 @Singleton
+@SuppressWarnings({ "javadoc" })
 public class FileSetResolver {
 
     private final PluginErrors pluginErrors;
@@ -50,7 +51,7 @@ public class FileSetResolver {
     }
 
     private static String commaSeparated(final List<String> patterns) {
-        return patterns.stream().collect(joining(", "));
+        return patterns.stream().collect(joining(", ")); //$NON-NLS-1$
     }
 
 }

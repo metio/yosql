@@ -15,6 +15,7 @@ import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.MethodSpec;
 
+@SuppressWarnings({ "javadoc" })
 public abstract class AbstractMethodsGenerator implements MethodsGenerator {
 
     @Override

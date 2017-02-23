@@ -26,6 +26,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class ResultRowGenerator {
 
     public static final String        RESULT_ROW_CLASS_NAME = "ResultRow";
@@ -56,18 +57,18 @@ public class ResultRowGenerator {
         typeWriter.writeType(pluginConfig.getOutputBaseDirectory().toPath(), packageName, type);
     }
 
-    private FieldSpec row() {
+    private static FieldSpec row() {
         return TypicalFields.privateField(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, TypicalNames.ROW);
     }
 
-    private MethodSpec constructor() {
+    private static MethodSpec constructor() {
         return TypicalMethods.constructor()
                 .addParameter(TypicalParameters.columnCount())
                 .addStatement("$N = new $T<>($N)", TypicalNames.ROW, LinkedHashMap.class, TypicalNames.COLUMN_COUNT)
                 .build();
     }
 
-    private MethodSpec setColumnValue() {
+    private static MethodSpec setColumnValue() {
         return TypicalMethods.publicMethod("setColumnValue")
                 .addParameter(TypicalParameters.parameter(String.class, TypicalNames.NAME))
                 .addParameter(TypicalParameters.parameter(Object.class, TypicalNames.VALUE))
@@ -76,7 +77,7 @@ public class ResultRowGenerator {
                 .build();
     }
 
-    private MethodSpec toStringMethod() {
+    private static MethodSpec toStringMethod() {
         return TypicalMethods.implementation("toString")
                 .returns(String.class)
                 .addStatement("return $N.toString()", TypicalNames.ROW)

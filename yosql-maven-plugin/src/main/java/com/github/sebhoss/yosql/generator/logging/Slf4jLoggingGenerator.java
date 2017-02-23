@@ -12,9 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.sebhoss.yosql.generator.LoggingGenerator;
 import com.github.sebhoss.yosql.generator.helpers.TypicalFields;
 import com.github.sebhoss.yosql.generator.helpers.TypicalNames;
@@ -22,8 +19,12 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class Slf4jLoggingGenerator implements LoggingGenerator {
 
     private final TypicalFields fields;

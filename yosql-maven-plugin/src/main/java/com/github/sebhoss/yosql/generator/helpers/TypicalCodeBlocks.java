@@ -40,8 +40,13 @@ import com.squareup.javapoet.TypeSpec;
 
 import io.reactivex.Flowable;
 
+/**
+ *
+ *
+ */
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class TypicalCodeBlocks {
 
     public static CodeBlock setFieldToSelf(final String name) {

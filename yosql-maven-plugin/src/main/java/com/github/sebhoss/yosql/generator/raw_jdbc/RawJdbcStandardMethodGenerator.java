@@ -26,6 +26,7 @@ import com.squareup.javapoet.TypeName;
 
 @Named
 @Singleton
+@SuppressWarnings({ "javadoc" })
 public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     private final TypicalCodeBlocks   codeBlocks;

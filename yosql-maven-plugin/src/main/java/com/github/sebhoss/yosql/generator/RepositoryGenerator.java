@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.github.sebhoss.yosql.model.SqlStatement;
 
+@SuppressWarnings({ "javadoc" })
 public interface RepositoryGenerator {
 
     /**

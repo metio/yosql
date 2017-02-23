@@ -19,8 +19,6 @@
   <packaging>maven-plugin</packaging>
 
    <properties>
-    <version.org.apache.maven.plugins.maven-compiler-plugin>3.1</version.org.apache.maven.plugins.maven-compiler-plugin>
-    <version.org.apache.maven.plugins.maven-javadoc-plugin>2.10.1</version.org.apache.maven.plugins.maven-javadoc-plugin>
     <version.org.apache.maven.plugin-tools.maven-javadoc-plugin>3.2</version.org.apache.maven.plugin-tools.maven-javadoc-plugin>
     <version.org.apache.maven.plugin-tools.maven-plugin-annotations>3.5</version.org.apache.maven.plugin-tools.maven-plugin-annotations>
     <version.org.codehaus.mojo.maven-plugin-plugin>3.5</version.org.codehaus.mojo.maven-plugin-plugin>
@@ -87,7 +85,6 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>${version.org.apache.maven.plugins.maven-compiler-plugin}</version>
             <configuration>
                 <source>1.8</source>
                 <target>1.8</target>
@@ -123,12 +120,6 @@
               <goal>descriptor</goal>
             </goals>
           </execution>
-          <execution>
-            <id>generate-helpmojo</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
 
@@ -150,7 +141,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${version.org.apache.maven.plugins.maven-javadoc-plugin}</version>
         <configuration>
           <additionalparam>-Xdoclint:none</additionalparam>
           <tagletArtifacts>

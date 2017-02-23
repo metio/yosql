@@ -24,6 +24,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class ToResultRowConverterGenerator {
 
     public static final String        TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";

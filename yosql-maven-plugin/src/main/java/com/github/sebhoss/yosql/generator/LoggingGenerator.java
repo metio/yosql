@@ -12,6 +12,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 
+@SuppressWarnings({ "javadoc" })
 public interface LoggingGenerator {
 
     CodeBlock queryPicked(String fieldName);

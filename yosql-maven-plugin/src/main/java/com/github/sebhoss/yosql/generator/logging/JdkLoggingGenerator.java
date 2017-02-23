@@ -23,6 +23,7 @@ import com.squareup.javapoet.TypeName;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class JdkLoggingGenerator implements LoggingGenerator {
 
     private final TypicalFields fields;

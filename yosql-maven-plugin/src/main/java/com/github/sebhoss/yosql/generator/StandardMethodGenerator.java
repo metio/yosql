@@ -12,6 +12,7 @@ import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.MethodSpec;
 
+@SuppressWarnings({ "javadoc" })
 public interface StandardMethodGenerator {
 
     MethodSpec standardReadMethod(String methodName, SqlConfiguration mergedConfiguration,

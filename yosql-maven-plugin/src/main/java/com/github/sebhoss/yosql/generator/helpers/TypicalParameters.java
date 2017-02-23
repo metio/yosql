@@ -20,6 +20,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 
+@SuppressWarnings({ "nls", "javadoc" })
 public final class TypicalParameters {
 
     public static ParameterSpec dataSource() {

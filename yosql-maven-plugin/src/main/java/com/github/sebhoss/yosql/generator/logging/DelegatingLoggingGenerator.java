@@ -20,6 +20,7 @@ import com.squareup.javapoet.TypeName;
 
 @Named
 @Singleton
+@SuppressWarnings({ "javadoc" })
 public class DelegatingLoggingGenerator implements LoggingGenerator {
 
     private final PluginConfig          config;
@@ -95,21 +96,21 @@ public class DelegatingLoggingGenerator implements LoggingGenerator {
     private LoggingGenerator logging() {
         LoggingGenerator generator = null;
         switch (config.getLoggingApi()) {
-        case JDK:
-            generator = jdkLogging;
-            break;
-        case AUTO:
-            generator = jdkLogging;
-            break;
-        case LOG4J:
-            generator = log4jLogging;
-            break;
-        case SLF4J:
-            generator = slf4jLogging;
-            break;
-        default:
-            generator = noOpLogging;
-            break;
+            case JDK:
+                generator = jdkLogging;
+                break;
+            case AUTO:
+                generator = jdkLogging;
+                break;
+            case LOG4J:
+                generator = log4jLogging;
+                break;
+            case SLF4J:
+                generator = slf4jLogging;
+                break;
+            default:
+                generator = noOpLogging;
+                break;
         }
         return generator;
     }

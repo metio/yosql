@@ -21,6 +21,7 @@ import com.squareup.javapoet.TypeSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class TypeWriter extends AbstractComponent {
 
     @Inject

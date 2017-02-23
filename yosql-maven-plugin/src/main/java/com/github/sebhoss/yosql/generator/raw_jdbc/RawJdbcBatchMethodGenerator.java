@@ -9,8 +9,8 @@ package com.github.sebhoss.yosql.generator.raw_jdbc;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import org.codehaus.plexus.component.annotations.Component;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import com.github.sebhoss.yosql.generator.AnnotationGenerator;
 import com.github.sebhoss.yosql.generator.BatchMethodGenerator;
@@ -21,7 +21,9 @@ import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.MethodSpec;
 
-@Component(role = BatchMethodGenerator.class, hint = "raw-jdbc")
+@Named
+@Singleton
+@SuppressWarnings({ "javadoc" })
 public class RawJdbcBatchMethodGenerator implements BatchMethodGenerator {
 
     private final AnnotationGenerator annotations;

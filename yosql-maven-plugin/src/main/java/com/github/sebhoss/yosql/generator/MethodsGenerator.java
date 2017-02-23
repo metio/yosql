@@ -11,6 +11,7 @@ import java.util.List;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.MethodSpec;
 
+@SuppressWarnings({ "javadoc" })
 public interface MethodsGenerator {
 
     Iterable<MethodSpec> asMethods(List<SqlStatement> sqlStatementsInRepository);

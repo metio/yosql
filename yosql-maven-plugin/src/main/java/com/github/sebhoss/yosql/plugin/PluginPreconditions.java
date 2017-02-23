@@ -23,14 +23,17 @@ public class PluginPreconditions {
 
     private final PluginErrors pluginErrors;
 
+    /**
+     * @param pluginErrors
+     *            The plugin error handler to use.
+     */
     @Inject
     public PluginPreconditions(final PluginErrors pluginErrors) {
         this.pluginErrors = pluginErrors;
     }
 
     /**
-     * Asserts that a single directory is writable. In order to be writable, the
-     * directory has to:
+     * Asserts that a single directory is writable. In order to be writable, the directory has to:
      * <ul>
      * <li>exist</li>
      * <li>be a directory (not a file)</li>
@@ -42,6 +45,7 @@ public class PluginPreconditions {
      * @throws MojoExecutionException
      *             In case the directory is somehow not writeable.
      */
+    @SuppressWarnings("nls")
     public void assertDirectoryIsWriteable(final File directory) throws MojoExecutionException {
         if (!directory.exists()) {
             if (!directory.mkdirs()) {

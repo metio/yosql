@@ -15,6 +15,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 
+@SuppressWarnings({ "nls", "javadoc" })
 public class TypicalTypes {
 
     public static final ClassName OBJECT                          = ClassName.get("java.lang", "Object");
@@ -93,24 +94,24 @@ public class TypicalTypes {
 
     private static TypeName guessType(final String type) {
         switch (type) {
-        case "boolean":
-            return TypeName.BOOLEAN;
-        case "byte":
-            return TypeName.BYTE;
-        case "short":
-            return TypeName.SHORT;
-        case "long":
-            return TypeName.LONG;
-        case "char":
-            return TypeName.CHAR;
-        case "float":
-            return TypeName.FLOAT;
-        case "double":
-            return TypeName.DOUBLE;
-        case "int":
-            return TypeName.INT;
-        default:
-            return guessObjectType(type);
+            case "boolean":
+                return TypeName.BOOLEAN;
+            case "byte":
+                return TypeName.BYTE;
+            case "short":
+                return TypeName.SHORT;
+            case "long":
+                return TypeName.LONG;
+            case "char":
+                return TypeName.CHAR;
+            case "float":
+                return TypeName.FLOAT;
+            case "double":
+                return TypeName.DOUBLE;
+            case "int":
+                return TypeName.INT;
+            default:
+                return guessObjectType(type);
         }
     }
 
@@ -135,9 +136,9 @@ public class TypicalTypes {
                     .map(String::trim)
                     .map(TypicalTypes::guessObjectType)
                     .toArray(TypeName[]::new);
-        } else {
-            return new TypeName[] { guessObjectType(genericPart) };
         }
+
+        return new TypeName[] { guessObjectType(genericPart) };
     }
 
 }

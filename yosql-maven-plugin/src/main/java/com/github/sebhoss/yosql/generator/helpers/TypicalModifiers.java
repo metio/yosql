@@ -8,6 +8,7 @@ package com.github.sebhoss.yosql.generator.helpers;
 
 import javax.lang.model.element.Modifier;
 
+@SuppressWarnings({ "javadoc" })
 public class TypicalModifiers {
 
     public static final Modifier[] OPEN_CLASS         = new Modifier[] { Modifier.PUBLIC };

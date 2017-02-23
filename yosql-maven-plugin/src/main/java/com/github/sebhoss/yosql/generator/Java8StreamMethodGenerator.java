@@ -12,6 +12,7 @@ import com.github.sebhoss.yosql.model.SqlConfiguration;
 import com.github.sebhoss.yosql.model.SqlStatement;
 import com.squareup.javapoet.MethodSpec;
 
+@SuppressWarnings({ "javadoc" })
 public interface Java8StreamMethodGenerator {
 
     MethodSpec streamEagerMethod(SqlConfiguration mergedConfiguration, List<SqlStatement> statements);

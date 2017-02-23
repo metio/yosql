@@ -8,6 +8,7 @@ package com.github.sebhoss.yosql.generator.helpers;
 
 import com.squareup.javapoet.MethodSpec;
 
+@SuppressWarnings({ "javadoc" })
 public class TypicalMethods {
 
     public static MethodSpec.Builder publicMethod(final String name) {

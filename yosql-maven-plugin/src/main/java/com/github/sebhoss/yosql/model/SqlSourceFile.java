@@ -8,6 +8,7 @@ package com.github.sebhoss.yosql.model;
 
 import java.nio.file.Path;
 
+@SuppressWarnings({ "javadoc" })
 public class SqlSourceFile {
 
     private Path pathToSqlFile;

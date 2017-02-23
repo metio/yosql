@@ -20,6 +20,7 @@ import com.squareup.javapoet.AnnotationSpec;
 
 @Named
 @Singleton
+@SuppressWarnings({ "nls", "javadoc" })
 public class AnnotationGenerator {
 
     private final PluginConfig pluginConfig;

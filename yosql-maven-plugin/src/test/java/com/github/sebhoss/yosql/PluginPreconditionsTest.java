@@ -9,6 +9,9 @@ package com.github.sebhoss.yosql;
 import java.io.File;
 import java.io.IOException;
 
+import com.github.sebhoss.yosql.plugin.PluginErrors;
+import com.github.sebhoss.yosql.plugin.PluginPreconditions;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,24 +19,41 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-import com.github.sebhoss.yosql.plugin.PluginErrors;
-import com.github.sebhoss.yosql.plugin.PluginPreconditions;
-
+/**
+ *
+ *
+ */
+@SuppressWarnings({ "nls" })
 public class PluginPreconditionsTest {
 
+    /**
+     *
+     */
     @Rule
     public ExpectedException    thrown = ExpectedException.none();
 
+    /**
+     *
+     */
     @Rule
     public TemporaryFolder      folder = new TemporaryFolder();
 
     private PluginPreconditions preconditions;
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
         preconditions = new PluginPreconditions(new PluginErrors());
     }
 
+    /**
+     * @throws MojoExecutionException
+     *             For any kind of Mojo exception
+     * @throws IOException
+     *             For any kind of IO exception
+     */
     @Test
     public void shouldRejectMissingDirectory() throws MojoExecutionException, IOException {
         // given

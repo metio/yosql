@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import com.github.sebhoss.yosql.generator.helpers.TypicalParameters;
 import com.squareup.javapoet.ParameterSpec;
 
+@SuppressWarnings({ "javadoc" })
 public class SqlConfiguration {
 
     private String             name;
@@ -81,7 +82,7 @@ public class SqlConfiguration {
         return join(methodStreamPrefix, name, methodStreamSuffix, methodEagerName);
     }
 
-    private String join(final String... strings) {
+    private static String join(final String... strings) {
         final AtomicInteger hits = new AtomicInteger(0);
         return Arrays.stream(strings)
                 .filter(Objects::nonNull)
@@ -297,8 +298,7 @@ public class SqlConfiguration {
     }
 
     /**
-     * @return <code>true</code> if 'generateBatchApi' was not overwritten and
-     *         the plugin configuration should be used.
+     * @return <code>true</code> if 'generateBatchApi' was not overwritten and the plugin configuration should be used.
      */
     public boolean shouldUsePluginBatchConfig() {
         return !generateBatchApiOverwritten;
@@ -448,7 +448,7 @@ public class SqlConfiguration {
                             .ifPresent(otherParam -> {
                                 if (param.getName() == null
                                         || !param.getName().isEmpty()
-                                        || "java.lang.Object".equals(param.getType())) {
+                                        || "java.lang.Object".equals(param.getType())) { //$NON-NLS-1$
                                     param.setType(otherParam.getType());
                                 }
                                 if (param.getConverter() == null || !param.getConverter().isEmpty()) {
