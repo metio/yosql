@@ -1,6 +1,6 @@
 node {
 
-    def projectName = "sebhoss/maven-build-process"
+    def projectName = "sebhoss/yosql"
     def repositoryLocation = ".repository"
     def mavenVersion = "maven-latest"
     def mavenSettings = "repository.metio.wtf"
