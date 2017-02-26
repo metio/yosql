@@ -1,0 +1,101 @@
+node {
+
+    def projectName = "sebhoss/maven-build-process"
+    def repositoryLocation = ".repository"
+    def mavenVersion = "maven-latest"
+    def mavenSettings = "repository.metio.wtf"
+    def releaseTarget = "sonatype"
+    def skipLocalStaging = "false"
+    def githubCredentials = "build-metio-wtf-github"
+
+    stage('Cleanup') {
+        dir("${repositoryLocation}") {
+            deleteDir()
+        }
+    }
+
+    stage('Checkout') {
+        checkout scm
+    }
+
+    stage('Git config') {
+        withCredentials([
+                string(credentialsId: 'git.user.name', variable: 'GIT_USER'),
+                string(credentialsId: 'git.user.email', variable: 'GIT_EMAIL')]) {
+            sh "git config user.name '${GIT_USER}'"
+            sh "git config user.email '${GIT_EMAIL}'"
+        }
+    }
+
+    stage('Install') {
+        withMaven(
+                maven: "${mavenVersion}",
+                mavenSettingsConfig: "${mavenSettings}",
+                mavenLocalRepo: "${repositoryLocation}") {
+            sh """
+                mvn --batch-mode \
+                    --show-version \
+                    clean install \
+                    -Drelease=${releaseTarget}
+            """
+        }
+    }
+
+    stage('Sign') {
+        withCredentials([
+                string(credentialsId: 'pgp.secretkey', variable: 'PGP_KEY'),
+                string(credentialsId: 'pgp.passphrase', variable: 'PGP_PASSPHRASE')]) {
+            withMaven(
+                    maven: "${mavenVersion}",
+                    mavenSettingsConfig: "${mavenSettings}",
+                    mavenLocalRepo: "${repositoryLocation}") {
+                sh """
+                    mvn --batch-mode \
+                        --show-version \
+                        pgp:sign \
+                        -Dpgp.secretKey=keyfile:${PGP_KEY} \
+                        -Dpgp.passphrase=literal:'${PGP_PASSPHRASE}'
+                """
+            }
+        }
+    }
+
+    stage('Deploy') {
+        configFileProvider([configFile(fileId: "${mavenSettings}", variable: 'MAVEN_SETTINGS')]) {
+            withMaven(
+                    maven: "${mavenVersion}",
+                    mavenLocalRepo: "${repositoryLocation}") {
+                sh """
+                    mvn --batch-mode \
+                        --settings $MAVEN_SETTINGS \
+                        --show-version \
+                        nexus-staging-maven-plugin:deploy \
+                        -Drelease=${releaseTarget} \
+                        -DskipLocalStaging=${skipLocalStaging}
+                """
+            }
+        }
+    }
+
+    stage('Tag') {
+        withMaven(
+                maven: "${mavenVersion}",
+                mavenSettingsConfig: "${mavenSettings}",
+                mavenLocalRepo: "${repositoryLocation}") {
+            sh """
+                mvn --batch-mode \
+                    --show-version \
+                    scm:tag \
+                    -DpushChanges=false
+            """
+        }
+    }
+
+    stage('Git Push') {
+         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${githubCredentials}",
+                            usernameVariable: 'USERNAME', passwordVariable: 'TOKEN']]) {
+            sh "git push https://${TOKEN}:x-oauth-basic@github.com/${projectName}.git --tags"
+        }
+    }
+
+}
