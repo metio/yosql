@@ -42,6 +42,31 @@
   </licenses>
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!--                                DEVELOPERS                               -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- https://maven.apache.org/pom.html#Developers -->
+  <developers>
+    <developer>
+      <id>sebhoss</id>
+      <name>Sebastian Hoß</name>
+      <email>mail@shoss.de</email>
+      <url>https://seb.xn--ho-hia.de/</url>
+      <organization>metio.wtf</organization>
+      <organizationUrl>http://metio.wtf/</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>Europe/Berlin</timezone>
+      <properties>
+        <twitter>@sebhoss</twitter>
+        <github>@sebhoss</github>
+        <bitbucket>@sebhoss</bitbucket>
+        <gitlab>@sebastian.hoss</gitlab>
+      </properties>
+    </developer>
+  </developers>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <!--                                 MODULES                                 -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <!-- https://maven.apache.org/pom.html#Aggregation -->
