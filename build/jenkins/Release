@@ -27,52 +27,26 @@ node {
         }
     }
 
-    stage('Install') {
-        withMaven(
-                maven: "${mavenVersion}",
-                mavenSettingsConfig: "${mavenSettings}",
-                mavenLocalRepo: "${repositoryLocation}") {
-            sh """
-                mvn --batch-mode \
-                    --show-version \
-                    clean install \
-                    -Drelease=${releaseTarget}
-            """
-        }
-    }
-
-    stage('Sign') {
+    stage('Release') {
         withCredentials([
                 string(credentialsId: 'pgp.secretkey', variable: 'PGP_KEY'),
                 string(credentialsId: 'pgp.passphrase', variable: 'PGP_PASSPHRASE')]) {
-            withMaven(
-                    maven: "${mavenVersion}",
-                    mavenSettingsConfig: "${mavenSettings}",
-                    mavenLocalRepo: "${repositoryLocation}") {
-                sh """
-                    mvn --batch-mode \
-                        --show-version \
-                        pgp:sign \
-                        -Dpgp.secretKey=keyfile:${PGP_KEY} \
-                        -Dpgp.passphrase=literal:'${PGP_PASSPHRASE}'
-                """
-            }
-        }
-    }
-
-    stage('Deploy') {
-        configFileProvider([configFile(fileId: "${mavenSettings}", variable: 'MAVEN_SETTINGS')]) {
-            withMaven(
-                    maven: "${mavenVersion}",
-                    mavenLocalRepo: "${repositoryLocation}") {
-                sh """
-                    mvn --batch-mode \
-                        --settings $MAVEN_SETTINGS \
-                        --show-version \
-                        nexus-staging-maven-plugin:deploy \
-                        -Drelease=${releaseTarget} \
-                        -DskipLocalStaging=${skipLocalStaging}
-                """
+            configFileProvider([configFile(fileId: "${mavenSettings}", variable: 'MAVEN_SETTINGS')]) {
+                withMaven(
+                        maven: "${mavenVersion}",
+                        mavenLocalRepo: "${repositoryLocation}") {
+                    sh """
+                        mvn --batch-mode \
+                            --settings $MAVEN_SETTINGS \
+                            --show-version \
+                            clean deploy \
+                            -Prelease \
+                            -Drelease=${releaseTarget} \
+                            -DskipLocalStaging=${skipLocalStaging} \
+                            -Dpgp.secretKey=keyfile:${PGP_KEY} \
+                            -Dpgp.passphrase=literal:'${PGP_PASSPHRASE}'
+                    """
+                }
             }
         }
     }
