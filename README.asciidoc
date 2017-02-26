@@ -4,17 +4,6 @@ link:https://github.com/krisajenkins/yesql[yesql] inspired, zero-dependency solu
 
 == Usage
 
-The plugin is just a prototype right now and has not seen any official release yet. Thus you have to build it locally first:
-
-[source, shell]
-----
-$ git clone https://github.com/sebhoss/yosql.git
-$ cd yosql
-$ mvn install -pl yosql-maven-plugin -DskipTests
-----
-
-Once installed, following the next 3 steps to generate some Java code.
-
 1) Add the plugin to your *pom.xml*:
 
 [source, xml]
@@ -25,7 +14,7 @@ Once installed, following the next 3 steps to generate some Java code.
       <plugin>
         <groupId>com.github.sebhoss.yosql</groupId>
         <artifactId>yosql-maven-plugin</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.0.1</version>
       </plugin>
       ...
     </plugins>
