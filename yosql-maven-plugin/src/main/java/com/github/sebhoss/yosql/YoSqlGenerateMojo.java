@@ -24,23 +24,6 @@ import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.inject.Inject;
 
-import com.github.sebhoss.yosql.generator.raw_jdbc.RawJdbcRepositoryGenerator;
-import com.github.sebhoss.yosql.generator.utils.DefaultUtilitiesGenerator;
-import com.github.sebhoss.yosql.generator.utils.FlowStateGenerator;
-import com.github.sebhoss.yosql.generator.utils.ResultRowGenerator;
-import com.github.sebhoss.yosql.generator.utils.ResultStateGenerator;
-import com.github.sebhoss.yosql.generator.utils.ToResultRowConverterGenerator;
-import com.github.sebhoss.yosql.model.LoggingAPI;
-import com.github.sebhoss.yosql.model.ParameterConverter;
-import com.github.sebhoss.yosql.model.ResultRowConverter;
-import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.parser.FileSetResolver;
-import com.github.sebhoss.yosql.parser.SqlFileParser;
-import com.github.sebhoss.yosql.plugin.PluginConfig;
-import com.github.sebhoss.yosql.plugin.PluginErrors;
-import com.github.sebhoss.yosql.plugin.PluginPreconditions;
-import com.squareup.javapoet.ClassName;
-
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.AbstractMojo;
@@ -50,6 +33,23 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+
+import com.github.sebhoss.yosql.parser.FileSetResolver;
+import com.squareup.javapoet.ClassName;
+
+import de.xn__ho_hia.yosql.generator.raw_jdbc.RawJdbcRepositoryGenerator;
+import de.xn__ho_hia.yosql.generator.utils.DefaultUtilitiesGenerator;
+import de.xn__ho_hia.yosql.generator.utils.FlowStateGenerator;
+import de.xn__ho_hia.yosql.generator.utils.ResultRowGenerator;
+import de.xn__ho_hia.yosql.generator.utils.ResultStateGenerator;
+import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
+import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
+import de.xn__ho_hia.yosql.model.ExecutionErrors;
+import de.xn__ho_hia.yosql.model.LoggingAPI;
+import de.xn__ho_hia.yosql.model.ParameterConverter;
+import de.xn__ho_hia.yosql.model.ResultRowConverter;
+import de.xn__ho_hia.yosql.model.SqlStatement;
+import de.xn__ho_hia.yosql.parser.SqlFileParser;
 
 /**
  * The *generate* goal generates Java code based on SQL files.
@@ -336,26 +336,24 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     @Parameter(property = "project", defaultValue = "${project}", readonly = true, required = true)
     private MavenProject                     project;
 
-    private final PluginErrors               pluginErrors;
-    private final PluginPreconditions        preconditions;
+    private final ExecutionErrors               executionErrors;
     private final FileSetResolver            fileSetResolver;
     private final SqlFileParser              sqlFileParser;
     private final RawJdbcRepositoryGenerator codeGenerator;
-    private final PluginConfig               pluginConfig;
+    private final ExecutionConfiguration               pluginConfig;
     private final DefaultUtilitiesGenerator  utilsGenerator;
     // private final PlexusContainer beanLocator;
 
     @Inject
     YoSqlGenerateMojo(
-            final PluginErrors pluginErrors,
-            final PluginPreconditions preconditions,
+            final ExecutionErrors pluginErrors,
             final FileSetResolver fileSetResolver,
             final SqlFileParser sqlFileParser,
             final RawJdbcRepositoryGenerator codeGenerator,
-            final PluginConfig pluginConfig,
+            final ExecutionConfiguration pluginConfig,
             final DefaultUtilitiesGenerator utilsGenerator) {
-        this.pluginErrors = pluginErrors;
-        this.preconditions = preconditions;
+        this.executionErrors = pluginErrors;
+//        this.preconditions = preconditions;
         this.fileSetResolver = fileSetResolver;
         this.sqlFileParser = sqlFileParser;
         this.codeGenerator = codeGenerator;
@@ -365,15 +363,16 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        preconditions.assertDirectoryIsWriteable(outputBaseDirectory);
+    	// GeneratorPreconditions
+//        preconditions.assertDirectoryIsWriteable(outputBaseDirectory);
 
         initializePluginConfig();
         final List<SqlStatement> allStatements = parseAllSqlFiles();
         generateRepositories(allStatements);
         generateUtilities(allStatements);
 
-        if (pluginErrors.hasErrors()) {
-            pluginErrors.buildError("Error during code generation");
+        if (executionErrors.hasErrors()) {
+            executionErrors.throwWith(new MojoExecutionException( "Error during code generation"));
         }
     }
 
@@ -405,8 +404,6 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private void initializePluginConfig() {
         timed("initialize plugin config", () -> {
             final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1, java.length()));
-
-            pluginConfig.setLogger(() -> getLog());
 
             pluginConfig.setOutputBaseDirectory(outputBaseDirectory);
             pluginConfig.setBasePackageName(basePackageName);
@@ -445,7 +442,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                     pluginConfig.setLoggingApi(LoggingAPI.valueOf(loggingApi.toUpperCase()));
                 } catch (final IllegalArgumentException exception) {
                     pluginConfig.setLoggingApi(LoggingAPI.NONE);
-                    pluginErrors.add(exception);
+                    executionErrors.add(exception);
                 }
             }
 

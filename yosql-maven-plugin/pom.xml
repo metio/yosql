@@ -30,6 +30,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.github.sebhoss.yosql</groupId>
+      <artifactId>yosql-core</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
     </dependency>

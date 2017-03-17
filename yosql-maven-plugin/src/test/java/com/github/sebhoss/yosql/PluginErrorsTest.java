@@ -61,7 +61,7 @@ public class PluginErrorsTest {
         final Throwable throwable = new Throwable();
 
         // when
-        pluginErrors.add(throwable);
+        pluginErrors.illegalState(throwable);
 
         // then
         Assert.assertTrue(pluginErrors.hasErrors());
@@ -80,7 +80,7 @@ public class PluginErrorsTest {
         thrown.expect(NullPointerException.class);
 
         // then
-        pluginErrors.add(throwable);
+        pluginErrors.illegalState(throwable);
     }
 
     /**

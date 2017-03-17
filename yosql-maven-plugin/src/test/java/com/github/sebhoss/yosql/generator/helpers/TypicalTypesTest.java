@@ -8,6 +8,8 @@ package com.github.sebhoss.yosql.generator.helpers;
 
 import com.squareup.javapoet.TypeName;
 
+import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

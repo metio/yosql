@@ -10,13 +10,14 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.sebhoss.yosql.model.SqlConfiguration;
-import com.github.sebhoss.yosql.model.SqlSourceFile;
-import com.github.sebhoss.yosql.model.SqlStatement;
-import com.github.sebhoss.yosql.parser.SqlConfigurationFactory;
-import com.github.sebhoss.yosql.parser.SqlFileParser;
 import com.github.sebhoss.yosql.plugin.PluginConfig;
 import com.github.sebhoss.yosql.plugin.PluginErrors;
+
+import de.xn__ho_hia.yosql.model.SqlConfiguration;
+import de.xn__ho_hia.yosql.model.SqlSourceFile;
+import de.xn__ho_hia.yosql.model.SqlStatement;
+import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
+import de.xn__ho_hia.yosql.parser.SqlFileParser;
 
 import org.junit.Assert;
 import org.junit.Before;

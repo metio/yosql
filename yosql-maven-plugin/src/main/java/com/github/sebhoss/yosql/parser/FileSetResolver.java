@@ -14,24 +14,21 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import com.github.sebhoss.yosql.model.SqlSourceFile;
-import com.github.sebhoss.yosql.plugin.PluginErrors;
 
 import org.apache.maven.model.FileSet;
 import org.codehaus.plexus.util.FileUtils;
 
-@Named
-@Singleton
-@SuppressWarnings({ "javadoc" })
-public class FileSetResolver {
+import de.xn__ho_hia.yosql.model.ExecutionErrors;
+import de.xn__ho_hia.yosql.model.SqlSourceFile;
+import de.xn__ho_hia.yosql.parser.SqlFileResolver;
 
-    private final PluginErrors pluginErrors;
+@SuppressWarnings({ "javadoc" })
+public class FileSetResolver implements SqlFileResolver<FileSet> {
+
+    private final ExecutionErrors pluginErrors;
 
     @Inject
-    public FileSetResolver(final PluginErrors pluginErrors) {
+    public FileSetResolver(final ExecutionErrors pluginErrors) {
         this.pluginErrors = pluginErrors;
     }
 
