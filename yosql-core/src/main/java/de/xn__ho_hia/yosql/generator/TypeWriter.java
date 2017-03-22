@@ -14,21 +14,16 @@ import javax.inject.Inject;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
-import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 
 @SuppressWarnings({ "nls", "javadoc" })
 public class TypeWriter {
 
     private ExecutionErrors errors;
-	private ExecutionConfiguration configuration;
 
 	@Inject
-    public TypeWriter(
-            final ExecutionErrors errors,
-            final ExecutionConfiguration configuration) {
-				this.errors = errors;
-				this.configuration = configuration;
+    public TypeWriter(final ExecutionErrors errors) {
+		this.errors = errors;
     }
 
     public void writeType(

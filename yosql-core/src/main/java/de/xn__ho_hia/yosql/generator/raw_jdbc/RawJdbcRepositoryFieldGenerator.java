@@ -22,6 +22,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 
+import de.xn__ho_hia.javapoet.TypeGuesser;
 import de.xn__ho_hia.yosql.generator.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.RepositoryFieldGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
@@ -145,7 +146,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
     private FieldSpec asConverterField(final ResultRowConverter converter) {
         return fields.field(
                 getClass(),
-                TypicalTypes.guessTypeName(converter.getConverterType()),
+                TypeGuesser.guessTypeName(converter.getConverterType()),
                 converter.getAlias());
     }
 

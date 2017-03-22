@@ -30,6 +30,7 @@ import com.squareup.javapoet.CodeBlock.Builder;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import de.xn__ho_hia.javapoet.TypeGuesser;
 import de.xn__ho_hia.yosql.generator.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.logging.DelegatingLoggingGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
@@ -359,7 +360,7 @@ public class TypicalCodeBlocks {
             builder.add("final $T $N = $N", String.class, TypicalNames.EXECUTED_QUERY, TypicalNames.RAW_QUERY);
             sqlConfiguration.getParameters().stream()
                     .forEach(parameter -> {
-                        if (TypicalTypes.guessTypeName(parameter.getType()).isPrimitive()) {
+                        if (TypeGuesser.guessTypeName(parameter.getType()).isPrimitive()) {
                             builder
                                     .add("\n$>.replace($S, $T.valueOf($N))$<", ":" + parameter.getName(),
                                             String.class, parameter.getName());

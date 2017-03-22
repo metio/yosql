@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 
+import de.xn__ho_hia.javapoet.TypeGuesser;
 import de.xn__ho_hia.yosql.model.SqlParameter;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 
@@ -74,11 +76,11 @@ public final class TypicalParameters {
     }
 
     public static ParameterSpec ofSqlParameter(final SqlParameter parameter) {
-        return parameter(TypicalTypes.guessTypeName(parameter.getType()), parameter.getName());
+        return parameter(TypeGuesser.guessTypeName(parameter.getType()), parameter.getName());
     }
 
     public static ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
-        return parameter(TypicalTypes.guessBatchTypeName(parameter.getType()), parameter.getName());
+        return parameter(ArrayTypeName.of(TypeGuesser.guessTypeName(parameter.getType())), parameter.getName());
     }
 
     public static final String replaceNamedParameters(final String rawSqlStatement) {

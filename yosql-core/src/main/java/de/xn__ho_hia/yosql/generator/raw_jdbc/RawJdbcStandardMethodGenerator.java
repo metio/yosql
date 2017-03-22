@@ -14,6 +14,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
+import de.xn__ho_hia.javapoet.TypeGuesser;
 import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.StandardMethodGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
@@ -44,7 +45,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
-        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
@@ -93,7 +94,7 @@ public class RawJdbcStandardMethodGenerator implements StandardMethodGenerator {
     public MethodSpec standardCallMethod(final String methodName, final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> statements) {
         final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
-        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))

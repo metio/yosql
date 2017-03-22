@@ -6,8 +6,6 @@
  */
 package de.xn__ho_hia.yosql.generator.helpers;
 
-import java.util.Arrays;
-
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -78,67 +76,6 @@ public class TypicalTypes {
     public static final TypeSpec.Builder openClass(final String name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.OPEN_CLASS);
-    }
-
-    public static TypeName guessBatchTypeName(final String type) {
-        return ArrayTypeName.of(guessTypeName(type));
-    }
-
-    public static TypeName guessTypeName(final String type) {
-        if (type.endsWith("[]")) {
-            final String typeNameWithoutArraySuffix = type.substring(0, type.length() - 2);
-            return ArrayTypeName.of(guessType(typeNameWithoutArraySuffix));
-        }
-        return guessType(type);
-    }
-
-    private static TypeName guessType(final String type) {
-        switch (type) {
-            case "boolean":
-                return TypeName.BOOLEAN;
-            case "byte":
-                return TypeName.BYTE;
-            case "short":
-                return TypeName.SHORT;
-            case "long":
-                return TypeName.LONG;
-            case "char":
-                return TypeName.CHAR;
-            case "float":
-                return TypeName.FLOAT;
-            case "double":
-                return TypeName.DOUBLE;
-            case "int":
-                return TypeName.INT;
-            default:
-                return guessObjectType(type);
-        }
-    }
-
-    private static TypeName guessObjectType(final String type) {
-        if (type.contains("<")) {
-            return guessGenericType(type);
-        }
-        return ClassName.bestGuess(type);
-    }
-
-    private static TypeName guessGenericType(final String type) {
-        final String rawPart = type.substring(0, type.indexOf("<"));
-        final String genericPart = type.substring(type.indexOf("<") + 1, type.lastIndexOf(">"));
-        final ClassName rawType = ClassName.bestGuess(rawPart);
-        final TypeName[] typeArguments = guessGenericTypeArguments(genericPart);
-        return ParameterizedTypeName.get(rawType, typeArguments);
-    }
-
-    private static TypeName[] guessGenericTypeArguments(final String genericPart) {
-        if (genericPart.contains(",")) {
-            return Arrays.stream(genericPart.split(","))
-                    .map(String::trim)
-                    .map(TypicalTypes::guessObjectType)
-                    .toArray(TypeName[]::new);
-        }
-
-        return new TypeName[] { guessObjectType(genericPart) };
     }
 
 }

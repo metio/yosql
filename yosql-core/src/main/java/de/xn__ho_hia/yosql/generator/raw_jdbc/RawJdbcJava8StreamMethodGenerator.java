@@ -18,6 +18,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import de.xn__ho_hia.javapoet.TypeGuesser;
 import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.Java8StreamMethodGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
@@ -48,7 +49,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
-        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
         return TypicalMethods.publicMethod(mergedConfiguration.getStreamEagerName())
@@ -78,7 +79,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
-        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
         return TypicalMethods.publicMethod(mergedConfiguration.getStreamLazyName())
                 .addAnnotations(annotations.generatedMethod(getClass()))
@@ -105,7 +106,7 @@ public class RawJdbcJava8StreamMethodGenerator implements Java8StreamMethodGener
 
     private TypeSpec lazyStreamSpliterator(final ResultRowConverter converter) {
         final ClassName spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
-        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
         final ParameterizedTypeName consumerType = TypicalTypes.consumerOf(resultType);
         return TypeSpec

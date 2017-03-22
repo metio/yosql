@@ -17,6 +17,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import de.xn__ho_hia.javapoet.TypeGuesser;
 import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.RxJavaMethodGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
@@ -52,7 +53,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
-        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
 
         final TypeSpec initialState = createFlowState(mergedConfiguration, vendorStatements);
@@ -95,7 +96,7 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     }
 
     private TypeSpec createFlowGenerator(final ResultRowConverter converter) {
-        final TypeName resultType = TypicalTypes.guessTypeName(converter.getResultType());
+        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ClassName biConsumer = ClassName.get(io.reactivex.functions.BiConsumer.class);
         final ClassName rawEmitter = ClassName.get(Emitter.class);
         final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter, resultType);

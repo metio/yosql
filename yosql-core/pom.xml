@@ -18,6 +18,11 @@
       <artifactId>javapoet</artifactId>
     </dependency>
     <dependency>
+      <groupId>de.xn--ho-hia.javapoet</groupId>
+      <artifactId>javapoet-type-guesser</artifactId>
+      <version>2017.03.19-102611</version>
+    </dependency>
+    <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
     </dependency>
