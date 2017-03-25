@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -31,8 +29,6 @@ import de.xn__ho_hia.yosql.model.SqlParameter;
 import de.xn__ho_hia.yosql.model.SqlSourceFile;
 import de.xn__ho_hia.yosql.model.SqlType;
 
-@Named
-@Singleton
 @SuppressWarnings({ "javadoc", "nls" })
 public class SqlConfigurationFactory {
 
