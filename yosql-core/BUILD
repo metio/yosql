@@ -1,8 +1,20 @@
 load("@bazel_build_process//java:junit5_test.bzl", "junit5_test")
 
+VERSION="123";
+
+filegroup(
+  name = "yosql-core-raw-sources",
+  srcs = glob(["java/**/*.java"]),
+)
+
+filegroup(
+  name = "yosql-core-test-raw-sources",
+  srcs = glob(["javatest/**/*.java"]),
+)
+
 java_library(
   name = "yosql-core",
-  srcs = glob(["src/main/java/**/*.java"]),
+  srcs = [":yosql-core-raw-sources"],
   visibility = ["//visibility:public"],
   deps = [
     "//external:javapoet_type_guesser",
@@ -16,9 +28,33 @@ java_library(
   ],
 )
 
+genrule(
+  name = "yosql-core-sources",
+  srcs = [":yosql-core-raw-sources"],
+  visibility = ["//visibility:public"],
+  outs = ["yosql-core-sources.jar"],
+  cmd = "jar cf $@ $(SRCS)",
+)
+
+genrule(
+  name = "release-yosql-core-sources",
+  srcs = [":yosql-core-sources"],
+  visibility = ["//visibility:public"],
+  outs = ["yosql-core-sources-%s.jar" % VERSION],
+  cmd = "cp -T $< $@",
+)
+
+genrule(
+  name = "release-yosql-core",
+  srcs = [":yosql-core"],
+  visibility = ["//visibility:public"],
+  outs = ["yosql-core-%s.jar" % VERSION],
+  cmd = "cp -T $< $@",
+)
+
 java_library(
   name = "yosql-core-tests",
-  srcs = glob(["src/test/java/**/*.java"]),
+  srcs = [":yosql-core-test-raw-sources"],
   deps = [
     ":yosql-core",
     "//external:junit5_jupiter_api",
@@ -26,35 +62,11 @@ java_library(
 )
 
 junit5_test(
-  name = "de.xn__ho_hia.yosql.model.LoggingAPITest",
-  runtime_deps = [
-    ":yosql-core-tests",
-  ],
+  name = "de/xn__ho_hia/yosql/model/LoggingAPITest",
+  deps = [":yosql-core"]
 )
 
 junit5_test(
-  name = "de.xn__ho_hia.yosql.model.SqlTypeTest",
-  runtime_deps = [
-    ":yosql-core-tests",
-  ],
+  name = "de/xn__ho_hia/yosql/model/SqlTypeTest",
+  deps = [":yosql-core"]
 )
-
-java_test(
-  name = "alltests",
-  main_class = "org.junit.platform.console.ConsoleLauncher",
-  use_testrunner = False,
-  size = "small",
-  args = [
-    "--scan-class-path",
-  ],
-  runtime_deps = [
-    ":yosql-core-tests",
-    "//external:junit5_jupiter_engine",
-    "//external:junit5_platform_console",
-    "//external:junit5_platform_commons",
-    "//external:junit5_platform_engine",
-    "//external:junit5_platform_launcher",
-    "//external:opentest4j",
-  ],
-)
-
