@@ -62,12 +62,13 @@ public class SqlFileParser {
         try {
             final Charset charset = Charset.forName(pluginConfig.getSqlFilesCharset());
             final Path pathToSqlFile = source.getPathToSqlFile();
-            final String rawText = Files.lines(pathToSqlFile, charset)
-                    .filter(this::isNotEmpty)
+            try (final Stream<String> lines = Files.lines(pathToSqlFile, charset)) {
+                final String rawText = lines.filter(this::isNotEmpty)
                     .collect(joining(NEWLINE));
-            final String[] rawStatements = rawText.split(pluginConfig.getSqlStatementSeparator());
-            final AtomicInteger counter = new AtomicInteger(0);
-            return Arrays.stream(rawStatements).map(statement -> convert(source, statement, counter.getAndIncrement()));
+                final String[] rawStatements = rawText.split(pluginConfig.getSqlStatementSeparator());
+                final AtomicInteger counter = new AtomicInteger(0);
+                return Arrays.stream(rawStatements).map(statement -> convert(source, statement, counter.getAndIncrement()));
+            }
         } catch (final Throwable exception) {
             pluginErrors.add(exception);
             return Stream.empty();
