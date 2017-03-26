@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
+import de.xn__ho_hia.yosql.generator.GeneratorPreconditions;
 import de.xn__ho_hia.yosql.generator.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.TypeWriter;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
@@ -51,6 +52,9 @@ public class YoSqlCLI {
         final Path outputBaseDirectory = args != null && args.length > 1 ? Paths.get(args[1]) : Paths.get(".");
         final String basePackageName = args != null && args.length > 2 ? args[2] : null;
 
+        System.out.println("Input directory: " + inputBaseDirectory);
+        System.out.println("Output directory: " + outputBaseDirectory);
+
         final Builder configurationBuilder = YoSql.prepareDefaultConfiguration();
         if (basePackageName != null && !basePackageName.isEmpty()) {
             configurationBuilder.setBasePackageName(basePackageName);
@@ -62,7 +66,8 @@ public class YoSqlCLI {
         final ExecutionErrors errors = new ExecutionErrors();
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory);
-        final SqlFileResolver<Path> fileResolver = new PathBasedSqlFileResolver();
+        final GeneratorPreconditions preconditions = new GeneratorPreconditions(errors);
+        final SqlFileResolver<Path> fileResolver = new PathBasedSqlFileResolver(preconditions, errors);
         final TypeWriter typeWriter = new TypeWriter(errors);
         final AnnotationGenerator annotations = new AnnotationGenerator(configuration);
         final LoggingGenerator logging = new NoOpLoggingGenerator();
@@ -89,8 +94,7 @@ public class YoSqlCLI {
         final ResultRowGenerator resultRowGenerator = new ResultRowGenerator(annotations, typeWriter, configuration);
         final DefaultUtilitiesGenerator utilsGenerator = new DefaultUtilitiesGenerator(flowStateGenerator,
                 resultStateGenerator, toResultRowConverterGenerator, resultRowGenerator);
-        final YoSql<Path> yoSql = new YoSql<>(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors,
-                configuration);
+        final YoSql<Path> yoSql = new YoSql<>(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors);
 
         yoSql.generateFiles(inputBaseDirectory);
     }
