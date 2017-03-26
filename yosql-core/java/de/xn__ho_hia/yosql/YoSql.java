@@ -9,6 +9,7 @@ package de.xn__ho_hia.yosql;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -27,6 +28,7 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration.Builder;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
+import de.xn__ho_hia.yosql.model.ResultRowConverter;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 import de.xn__ho_hia.yosql.parser.SqlFileResolver;
@@ -55,8 +57,6 @@ public class YoSql<SOURCE> {
      *            The utilities generator to use.
      * @param errors
      *            The error collector to use.
-     * @param configuration
-     *            The configuration to use.
      */
     @Inject
     public YoSql(
@@ -64,8 +64,7 @@ public class YoSql<SOURCE> {
             final SqlFileParser sqlFileParser,
             final RepositoryGenerator repositoryGenerator,
             final UtilitiesGenerator utilsGenerator,
-            final ExecutionErrors errors,
-            final ExecutionConfiguration configuration) {
+            final ExecutionErrors errors) {
         this.fileResolver = fileResolver;
         this.sqlFileParser = sqlFileParser;
         this.repositoryGenerator = repositoryGenerator;
@@ -78,6 +77,17 @@ public class YoSql<SOURCE> {
      */
     @SuppressWarnings({ "nls" })
     public static Builder prepareDefaultConfiguration() {
+        final ArrayList<ResultRowConverter> rowConverters = new ArrayList<>();
+
+        final String utilPackage = "com.example.persistence.util";
+        final ResultRowConverter toResultRow = new ResultRowConverter();
+        toResultRow.setAlias(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS);
+        toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
+        toResultRow.setConverterType("com.example.persistence.converter"
+                + "."
+                + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
+        rowConverters.add(toResultRow);
+
         return ExecutionConfiguration.builder()
                 .setOutputBaseDirectory(Paths.get("."))
                 .setBasePackageName("com.example.persistence")
@@ -115,17 +125,18 @@ public class YoSql<SOURCE> {
                 .setDefaultRowConverter(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS)
                 .setDefaulFlowStateClassName(FlowStateGenerator.FLOW_STATE_CLASS_NAME)
                 .setDefaultResultStateClassName(ResultStateGenerator.RESULT_STATE_CLASS_NAME)
-                .setDefaultResultRowClassName(ResultRowGenerator.RESULT_ROW_CLASS_NAME);
+                .setDefaultResultRowClassName(ResultRowGenerator.RESULT_ROW_CLASS_NAME)
+                .setResultRowConverters(rowConverters);
     }
 
     /**
-     * @param inputBaseDirectory
-     *            The base directory that contains all SQL files.
+     * @param source
+     *            The source for SQL files.
      */
     @SuppressWarnings("nls")
-    public void generateFiles(final SOURCE inputBaseDirectory) {
+    public void generateFiles(final SOURCE source) {
         final List<SqlStatement> allStatements = Timer.timed("parse statements",
-                () -> fileResolver.resolveFiles(inputBaseDirectory)
+                () -> fileResolver.resolveFiles(source)
                         .flatMap(sqlFileParser::parse)
                         .sorted(Comparator.comparing(SqlStatement::getName))
                         .collect(Collectors.toList()));
