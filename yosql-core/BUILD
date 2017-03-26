@@ -24,7 +24,7 @@ java_library(
     "//external:rxjava2",
     "//external:log4j_api",
     "//external:log4j_core",
-    "//external:slf4j_api"
+    "//external:slf4j_api",
   ],
 )
 
