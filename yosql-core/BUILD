@@ -12,9 +12,35 @@ filegroup(
   srcs = glob(["javatest/**/*.java"]),
 )
 
+java_plugin(
+    name = "freebuilder_plugin",
+    processor_class = "org.inferred.freebuilder.processor.Processor",
+    deps = ["//external:freebuilder"],
+)
+
+java_library(
+    name = "freebuilder",
+    exported_plugins = [":freebuilder_plugin"],
+    exports = ["//external:freebuilder"],
+    visibility = ["//visibility:public"],
+)
+
+java_plugin(
+    name = "auto_plugin",
+    processor_class = "com.google.auto.value.processor.AutoValueProcessor",
+    deps = ["@com_google_auto_value_auto_value//jar"],
+)
+
+java_library(
+    name = "auto",
+    exported_plugins = [":auto_plugin"],
+    exports = ["@com_google_auto_value_auto_value//jar"],
+    visibility = ["//visibility:public"],
+)
+
 java_library(
   name = "yosql-core",
-  srcs = [":yosql-core-raw-sources"],
+  srcs = [":yosql-core-raw-sources",],
   visibility = ["//visibility:public"],
   deps = [
     "//external:javapoet_type_guesser",
@@ -25,6 +51,7 @@ java_library(
     "//external:log4j_api",
     "//external:log4j_core",
     "//external:slf4j_api",
+    ":auto",
   ],
 )
 
