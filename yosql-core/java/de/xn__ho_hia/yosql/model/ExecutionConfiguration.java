@@ -6,13 +6,17 @@
  */
 package de.xn__ho_hia.yosql.model;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.squareup.javapoet.ClassName;
 
-import de.xn__ho_hia.yosql.model.LoggingAPI;
-import de.xn__ho_hia.yosql.model.ResultRowConverter;
+import de.xn__ho_hia.yosql.generator.utils.FlowStateGenerator;
+import de.xn__ho_hia.yosql.generator.utils.ResultRowGenerator;
+import de.xn__ho_hia.yosql.generator.utils.ResultStateGenerator;
+import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
 
 /**
  *
@@ -20,49 +24,49 @@ import de.xn__ho_hia.yosql.model.ResultRowConverter;
  */
 public class ExecutionConfiguration {
 
-    private List<SqlSourceFile>                  sqlFiles;
-    private File                     outputBaseDirectory;
-    private String                   repositorySqlStatements;
-    private boolean                  generateBatchApi;
-    private boolean                  generateRxJavaApi;
-    private String                   methodBatchPrefix;
-    private boolean                  generateStreamEagerApi;
-    private boolean                  generateStreamLazyApi;
-    private String                   methodStreamPrefix;
-    private String                   methodStreamSuffix;
-    private String                   methodRxJavaPrefix;
-    private String                   methodRxJavaSuffix;
-    private String                   repositoryNameSuffix;
-    private String                   methodLazyName;
-    private String                   methodEagerName;
-    private boolean                  generateStandardApi;
-    private String                   utilityPackageName;
-    private String                   converterPackageName;
-    private String                   basePackageName;
-    private String                   methodBatchSuffix;
-    private String[]                 allowedWritePrefixes;
-    private String[]                 allowedReadPrefixes;
-    private boolean                  validateMethodNamePrefixes;
-    private String                   sqlStatementSeparator;
-    private String                   sqlFilesCharset;
-    private LoggingAPI               loggingApi;
-    private boolean                  methodCatchAndRethrow;
+    private List<SqlSourceFile>      sqlFiles;
+    private Path                     outputBaseDirectory;
+    private String                   repositorySqlStatements = "inline";
+    private boolean                  generateBatchApi = true;
+    private boolean                  generateRxJavaApi = true;
+    private String                   methodBatchPrefix = "";
+    private boolean                  generateStreamEagerApi = true;
+    private boolean                  generateStreamLazyApi = true;
+    private String                   methodStreamPrefix = "";
+    private String                   methodStreamSuffix = "Stream";
+    private String                   methodRxJavaPrefix = "";
+    private String                   methodRxJavaSuffix = "Flow";
+    private String                   repositoryNameSuffix = "Repository";
+    private String                   methodLazyName = "Lazy";
+    private String                   methodEagerName = "Eager";
+    private boolean                  generateStandardApi = true;
+    private String                   utilityPackageName = "util";
+    private String                   converterPackageName = "converter";
+    private String                   basePackageName = "com.example.persistence";
+    private String                   methodBatchSuffix = "Batch";
+    private String[]                 allowedWritePrefixes = {"update", "insert", "delete", "create", "write", "add", "remove", "merge", "drop"};
+    private String[]                 allowedReadPrefixes = {"select", "read", "query", "find"};
+    private boolean                  validateMethodNamePrefixes = true;
+    private String                   sqlStatementSeparator = ";";
+    private String                   sqlFilesCharset = "UTF-8";
+    private LoggingAPI               loggingApi = LoggingAPI.JDK;
+    private boolean                  methodCatchAndRethrow = true;
     private ClassName                flowStateClass;
     private ClassName                resultStateClass;
     private ClassName                resultRowClass;
-    private List<ResultRowConverter> resultRowConverters;
-    private String                   defaultRowConverter;
-    private boolean                  classGeneratedAnnotation;
-    private boolean                  fieldGeneratedAnnotation;
-    private boolean                  methodGeneratedAnnotation;
-    private String[]                 allowedCallPrefixes;
-    private String                   generatedAnnotationComment;
-    private boolean                  repositoryGenerateInterface;
+    private List<ResultRowConverter> resultRowConverters = new ArrayList<>();
+    private String                   defaultRowConverter = ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS;
+    private boolean                  classGeneratedAnnotation = true;
+    private boolean                  fieldGeneratedAnnotation = true;
+    private boolean                  methodGeneratedAnnotation = true;
+    private String[]                 allowedCallPrefixes = {"call", "execute"};
+    private String                   generatedAnnotationComment = "DO NOT EDIT";
+    private boolean                  repositoryGenerateInterface = true;
 
     /**
      * @return the outputBaseDirectory
      */
-    public File getOutputBaseDirectory() {
+    public Path getOutputBaseDirectory() {
         return outputBaseDirectory;
     }
 
@@ -70,7 +74,7 @@ public class ExecutionConfiguration {
      * @param outputBaseDirectory
      *            the outputBaseDirectory to set
      */
-    public void setOutputBaseDirectory(final File outputBaseDirectory) {
+    public void setOutputBaseDirectory(final Path outputBaseDirectory) {
         this.outputBaseDirectory = outputBaseDirectory;
     }
 
@@ -475,7 +479,8 @@ public class ExecutionConfiguration {
      * @return The name of the flow-state class
      */
     public ClassName getFlowStateClass() {
-        return flowStateClass;
+        return Optional.ofNullable(flowStateClass)
+            .orElse(ClassName.get(basePackageName + "." + utilityPackageName, FlowStateGenerator.FLOW_STATE_CLASS_NAME));
     }
 
     /**
@@ -490,7 +495,8 @@ public class ExecutionConfiguration {
      * @return The name of the result-state class
      */
     public ClassName getResultStateClass() {
-        return resultStateClass;
+        return Optional.ofNullable(resultStateClass)
+        		.orElse(ClassName.get(basePackageName + "." + utilityPackageName, ResultStateGenerator.RESULT_STATE_CLASS_NAME));
     }
 
     /**
@@ -505,7 +511,8 @@ public class ExecutionConfiguration {
      * @return The name of the result-row class
      */
     public ClassName getResultRowClass() {
-        return resultRowClass;
+        return Optional.ofNullable(resultRowClass)
+        		.orElse(ClassName.get(basePackageName + "." + utilityPackageName, ResultRowGenerator.RESULT_ROW_CLASS_NAME));
     }
 
     /**
