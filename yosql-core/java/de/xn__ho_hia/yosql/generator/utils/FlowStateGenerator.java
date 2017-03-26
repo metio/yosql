@@ -57,7 +57,7 @@ public class FlowStateGenerator {
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.getOutputBaseDirectory().toPath(), packageName, type);
+        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, type);
     }
 
     private static Iterable<FieldSpec> fields() {

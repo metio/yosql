@@ -45,7 +45,7 @@ public class RawJdbcRepositoryFieldGenerator implements RepositoryFieldGenerator
     @Inject
     public RawJdbcRepositoryFieldGenerator(
             final TypicalFields fields,
-            final DelegatingLoggingGenerator logging) {
+            final LoggingGenerator logging) {
         this.fields = fields;
         this.logging = logging;
     }

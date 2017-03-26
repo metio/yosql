@@ -54,7 +54,7 @@ public class ResultStateGenerator {
                 .addAnnotations(annotations.generatedClass(ResultStateGenerator.class))
                 .build();
         final String packageName = configuration.getBasePackageName() + "." + configuration.getUtilityPackageName();
-        typeWriter.writeType(configuration.getOutputBaseDirectory().toPath(), packageName, type);
+        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, type);
     }
 
     private static Iterable<FieldSpec> fields() {

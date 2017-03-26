@@ -47,7 +47,7 @@ public class ToResultRowConverterGenerator {
                 .addMethod(asUserType())
                 .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.getOutputBaseDirectory().toPath(), packageName, type);
+        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, type);
     }
 
     private MethodSpec asUserType() {

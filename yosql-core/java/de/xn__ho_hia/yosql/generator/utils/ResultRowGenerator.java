@@ -51,7 +51,7 @@ public class ResultRowGenerator {
                 .addMethod(toStringMethod())
                 .addAnnotations(annotations.generatedClass(ResultRowGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.getOutputBaseDirectory().toPath(), packageName, type);
+        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, type);
     }
 
     private static FieldSpec row() {
