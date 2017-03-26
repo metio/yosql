@@ -27,6 +27,24 @@ bind(
 )
 
 maven_jar(
+    name = "org_inferred_freebuilder",
+    artifact = "org.inferred:freebuilder:1.14",
+)
+bind(
+    name = "freebuilder",
+    actual = "@org_inferred_freebuilder//jar",
+)
+
+maven_jar(
+    name = "com_google_auto_value_auto_value",
+    artifact = "com.google.auto.value:auto-value:1.2",
+)
+bind(
+    name = "auto_value",
+    actual = "@com_google_auto_value_auto_value//jar",
+)
+
+maven_jar(
     name = "org_yaml_snakeyaml",
     artifact = "org.yaml:snakeyaml:1.17",
 )

@@ -19,8 +19,7 @@ public final class ExecutionErrors {
     private final List<Throwable> errors = new ArrayList<>();
 
     /**
-     * @return <code>true</code> if any {@link Throwable} was added using
-     *         {@link #add(Throwable)} before.
+     * @return <code>true</code> if any {@link Throwable} was added using {@link #add(Throwable)} before.
      */
     public boolean hasErrors() {
         return !errors.isEmpty();
@@ -36,13 +35,25 @@ public final class ExecutionErrors {
         errors.add(requireNonNull(throwable));
     }
 
-	public void illegalState(final String message, final Object... arguments) {
-		errors.add(new IllegalStateException(String.format(message, arguments)));
-	}
+    /**
+     * @param message
+     *            The message to include.
+     * @param arguments
+     *            The arguments to apply to the message.
+     */
+    public void illegalState(final String message, final Object... arguments) {
+        errors.add(new IllegalStateException(String.format(message, arguments)));
+    }
 
-	public <T extends Exception> void throwWith(final T exception) throws T {
-		errors.forEach(exception::addSuppressed);
-		throw exception;
-	}
+    /**
+     * @param exception
+     *            The parent exception to use.
+     * @throws T
+     *             The given exception enriched with all captured suppressed exceptions so far.
+     */
+    public <T extends Exception> void throwWith(final T exception) throws T {
+        errors.forEach(exception::addSuppressed);
+        throw exception;
+    }
 
 }

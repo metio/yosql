@@ -325,14 +325,14 @@ public class TypicalCodeBlocks {
         return Collections.emptyList();
     }
 
-    private final ExecutionConfiguration     configuration;
-    private final LoggingGenerator logging;
+    private final ExecutionConfiguration configuration;
+    private final LoggingGenerator       logging;
 
     @Inject
     public TypicalCodeBlocks(
             final ExecutionConfiguration pluginConfig,
             final LoggingGenerator logging) {
-        this.configuration = pluginConfig;
+        configuration = pluginConfig;
         this.logging = logging;
     }
 

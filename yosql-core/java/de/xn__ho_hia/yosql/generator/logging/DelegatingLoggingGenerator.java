@@ -24,11 +24,11 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "javadoc" })
 public class DelegatingLoggingGenerator implements LoggingGenerator {
 
-    private final ExecutionConfiguration          config;
-    private final JdkLoggingGenerator   jdkLogging;
-    private final Log4jLoggingGenerator log4jLogging;
-    private final Slf4jLoggingGenerator slf4jLogging;
-    private final NoOpLoggingGenerator  noOpLogging;
+    private final ExecutionConfiguration config;
+    private final JdkLoggingGenerator    jdkLogging;
+    private final Log4jLoggingGenerator  log4jLogging;
+    private final Slf4jLoggingGenerator  slf4jLogging;
+    private final NoOpLoggingGenerator   noOpLogging;
 
     @Inject
     public DelegatingLoggingGenerator(
@@ -96,7 +96,7 @@ public class DelegatingLoggingGenerator implements LoggingGenerator {
 
     private LoggingGenerator logging() {
         LoggingGenerator generator = null;
-        switch (config.getLoggingApi()) {
+        switch (config.loggingApi()) {
             case JDK:
                 generator = jdkLogging;
                 break;

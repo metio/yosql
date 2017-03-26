@@ -20,16 +20,16 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "nls", "javadoc" })
 public class AnnotationGenerator {
 
-    private final ExecutionConfiguration pluginConfig;
+    private final ExecutionConfiguration config;
 
     @Inject
-    public AnnotationGenerator(final ExecutionConfiguration pluginConfig) {
-        this.pluginConfig = pluginConfig;
+    public AnnotationGenerator(final ExecutionConfiguration config) {
+        this.config = config;
     }
 
     public Iterable<AnnotationSpec> generatedClass(final Class<?> generatorClass) {
         final List<AnnotationSpec> annotations = new ArrayList<>(1);
-        if (pluginConfig.isClassGeneratedAnnotation()) {
+        if (config.classGeneratedAnnotation()) {
             annotations.add(generated(generatorClass));
         }
         return annotations;
@@ -37,7 +37,7 @@ public class AnnotationGenerator {
 
     public Iterable<AnnotationSpec> generatedField(final Class<?> generatorClass) {
         final List<AnnotationSpec> annotations = new ArrayList<>(1);
-        if (pluginConfig.isFieldGeneratedAnnotation()) {
+        if (config.fieldGeneratedAnnotation()) {
             annotations.add(generated(generatorClass));
         }
         return annotations;
@@ -45,7 +45,7 @@ public class AnnotationGenerator {
 
     public Iterable<AnnotationSpec> generatedMethod(final Class<?> generatorClass) {
         final List<AnnotationSpec> annotations = new ArrayList<>(1);
-        if (pluginConfig.isMethodGeneratedAnnotation()) {
+        if (config.methodGeneratedAnnotation()) {
             annotations.add(generated(generatorClass));
         }
         return annotations;
@@ -55,7 +55,7 @@ public class AnnotationGenerator {
         return AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", generatorClass.getName())
                 .addMember("date", "$S", ZonedDateTime.now().toString())
-                .addMember("comments", "$S", pluginConfig.getGeneratedAnnotationComment())
+                .addMember("comments", "$S", config.generatedAnnotationComment())
                 .build();
     }
 

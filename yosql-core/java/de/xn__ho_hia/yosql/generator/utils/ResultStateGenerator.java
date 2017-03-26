@@ -31,11 +31,11 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "nls", "javadoc" })
 public class ResultStateGenerator {
 
-    public static final String        RESULT_STATE_CLASS_NAME = "ResultState";
+    public static final String           RESULT_STATE_CLASS_NAME = "ResultState";
 
-    private final AnnotationGenerator annotations;
-    private final TypeWriter          typeWriter;
-    private final ExecutionConfiguration        configuration;
+    private final AnnotationGenerator    annotations;
+    private final TypeWriter             typeWriter;
+    private final ExecutionConfiguration configuration;
 
     @Inject
     public ResultStateGenerator(
@@ -53,8 +53,8 @@ public class ResultStateGenerator {
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(ResultStateGenerator.class))
                 .build();
-        final String packageName = configuration.getBasePackageName() + "." + configuration.getUtilityPackageName();
-        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, type);
+        final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
+        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, type);
     }
 
     private static Iterable<FieldSpec> fields() {

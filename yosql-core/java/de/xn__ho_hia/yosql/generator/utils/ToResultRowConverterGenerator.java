@@ -24,12 +24,12 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "nls", "javadoc" })
 public class ToResultRowConverterGenerator {
 
-    public static final String        TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
-    public static final String        RESULT_ROW_CONVERTER_ALIAS         = "resultRowConverter";
+    public static final String           TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
+    public static final String           RESULT_ROW_CONVERTER_ALIAS         = "resultRowConverter";
 
-    private final AnnotationGenerator annotations;
-    private final TypeWriter          typeWriter;
-    private final ExecutionConfiguration        configuration;
+    private final AnnotationGenerator    annotations;
+    private final TypeWriter             typeWriter;
+    private final ExecutionConfiguration configuration;
 
     @Inject
     public ToResultRowConverterGenerator(
@@ -42,21 +42,21 @@ public class ToResultRowConverterGenerator {
     }
 
     public void generateToResultRowConverterClass() {
-        final String packageName = configuration.getBasePackageName() + "." + configuration.getConverterPackageName();
+        final String packageName = configuration.basePackageName() + "." + configuration.converterPackageName();
         final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
                 .addMethod(asUserType())
                 .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, type);
+        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, type);
     }
 
     private MethodSpec asUserType() {
         return TypicalMethods.publicMethod("asUserType")
-                .addParameters(TypicalParameters.resultState(configuration.getResultStateClass()))
+                .addParameters(TypicalParameters.resultState(configuration.resultStateClass()))
                 .addException(SQLException.class)
-                .returns(configuration.getResultRowClass())
-                .addStatement("final $T $N = new $T($N.getColumnCount())", configuration.getResultRowClass(),
-                        TypicalNames.ROW, configuration.getResultRowClass(), TypicalNames.RESULT)
+                .returns(configuration.resultRowClass())
+                .addStatement("final $T $N = new $T($N.getColumnCount())", configuration.resultRowClass(),
+                        TypicalNames.ROW, configuration.resultRowClass(), TypicalNames.RESULT)
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
                         TypicalNames.INDEX, TypicalNames.INDEX, TypicalNames.RESULT, TypicalNames.INDEX)
                 .addStatement("$N.setColumnValue($N.getColumnName($N), $N.getResultSet().getObject($N))",

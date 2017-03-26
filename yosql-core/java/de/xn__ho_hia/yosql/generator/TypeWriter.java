@@ -16,27 +16,41 @@ import com.squareup.javapoet.TypeSpec;
 
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 
-@SuppressWarnings({ "nls", "javadoc" })
+/**
+ * Writes a single {@link TypeSpec type} into a directory.
+ */
 public class TypeWriter {
 
-    private ExecutionErrors errors;
+    private final ExecutionErrors errors;
 
-	@Inject
+    /**
+     * @param errors
+     *            The errors to use.
+     */
+    @Inject
     public TypeWriter(final ExecutionErrors errors) {
-		this.errors = errors;
+        this.errors = errors;
     }
 
+    /**
+     * @param baseDirectory
+     *            The base directory to use.
+     * @param packageName
+     *            The package name to use.
+     * @param typeSpec
+     *            The type specification to write.
+     */
     public void writeType(
             final Path baseDirectory,
             final String packageName,
             final TypeSpec typeSpec) {
         try {
             JavaFile.builder(packageName, typeSpec).build().writeTo(baseDirectory);
-//            log().info(String.format("Generated [%s.%s]", packageName, typeSpec.name));
+            // log().info(String.format("Generated [%s.%s]", packageName, typeSpec.name));
         } catch (final IOException exception) {
             errors.add(exception);
-//            log().error(String.format("Could not write [%s.%s] into [%s]",
-//                    packageName, typeSpec.name, baseDirectory));
+            // log().error(String.format("Could not write [%s.%s] into [%s]",
+            // packageName, typeSpec.name, baseDirectory));
         }
     }
 

@@ -32,11 +32,11 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "nls", "javadoc" })
 public class FlowStateGenerator {
 
-    public static final String        FLOW_STATE_CLASS_NAME = "FlowState";
+    public static final String           FLOW_STATE_CLASS_NAME = "FlowState";
 
-    private final AnnotationGenerator annotations;
-    private final TypeWriter          typeWriter;
-    private final ExecutionConfiguration        configuration;
+    private final AnnotationGenerator    annotations;
+    private final TypeWriter             typeWriter;
+    private final ExecutionConfiguration configuration;
 
     @Inject
     public FlowStateGenerator(
@@ -49,7 +49,7 @@ public class FlowStateGenerator {
     }
 
     public void generateFlowStateClass() {
-        final String packageName = configuration.getBasePackageName() + "." + configuration.getUtilityPackageName();
+        final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
         final ClassName superclass = ClassName.get(packageName, ResultStateGenerator.RESULT_STATE_CLASS_NAME);
         final TypeSpec type = TypicalTypes.publicClass(FLOW_STATE_CLASS_NAME)
                 .superclass(superclass)
@@ -57,7 +57,7 @@ public class FlowStateGenerator {
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, type);
+        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, type);
     }
 
     private static Iterable<FieldSpec> fields() {

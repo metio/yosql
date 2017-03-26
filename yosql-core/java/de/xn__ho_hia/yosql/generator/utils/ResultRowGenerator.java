@@ -26,11 +26,11 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "nls", "javadoc" })
 public class ResultRowGenerator {
 
-    public static final String        RESULT_ROW_CLASS_NAME = "ResultRow";
+    public static final String           RESULT_ROW_CLASS_NAME = "ResultRow";
 
-    private final AnnotationGenerator annotations;
-    private final TypeWriter          typeWriter;
-    private final ExecutionConfiguration        configuration;
+    private final AnnotationGenerator    annotations;
+    private final TypeWriter             typeWriter;
+    private final ExecutionConfiguration configuration;
 
     @Inject
     public ResultRowGenerator(
@@ -43,7 +43,7 @@ public class ResultRowGenerator {
     }
 
     public void generateResultRowClass() {
-        final String packageName = configuration.getBasePackageName() + "." + configuration.getUtilityPackageName();
+        final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
         final TypeSpec type = TypicalTypes.publicClass(RESULT_ROW_CLASS_NAME)
                 .addField(row())
                 .addMethod(constructor())
@@ -51,7 +51,7 @@ public class ResultRowGenerator {
                 .addMethod(toStringMethod())
                 .addAnnotations(annotations.generatedClass(ResultRowGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, type);
+        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, type);
     }
 
     private static FieldSpec row() {

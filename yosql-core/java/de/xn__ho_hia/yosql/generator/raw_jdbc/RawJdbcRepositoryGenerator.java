@@ -24,7 +24,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
 
     private final TypeWriter                      typeWriter;
-    private final ExecutionConfiguration                    configuration;
+    private final ExecutionConfiguration          configuration;
     private final RawJdbcMethodGenerator          methodGenerator;
     private final RawJdbcRepositoryFieldGenerator fieldGenerator;
     private final AnnotationGenerator             annotations;
@@ -55,7 +55,7 @@ public class RawJdbcRepositoryGenerator implements RepositoryGenerator {
                 .addAnnotations(annotations.generatedClass(RawJdbcRepositoryGenerator.class))
                 .addStaticBlock(fieldGenerator.staticInitializer(sqlStatements))
                 .build();
-        typeWriter.writeType(configuration.getOutputBaseDirectory(), packageName, repository);
+        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, repository);
     }
 
 }

@@ -44,9 +44,9 @@ public class SqlFileParser {
 
     private static final String           NEWLINE         = "\n";
 
-    private final ExecutionErrors            pluginErrors;
+    private final ExecutionErrors         pluginErrors;
     private final SqlConfigurationFactory factory;
-    private final ExecutionConfiguration            pluginConfig;
+    private final ExecutionConfiguration  pluginConfig;
 
     @Inject
     public SqlFileParser(
@@ -60,14 +60,15 @@ public class SqlFileParser {
 
     public Stream<SqlStatement> parse(final SqlSourceFile source) {
         try {
-            final Charset charset = Charset.forName(pluginConfig.getSqlFilesCharset());
+            final Charset charset = Charset.forName(pluginConfig.sqlFilesCharset());
             final Path pathToSqlFile = source.getPathToSqlFile();
             try (final Stream<String> lines = Files.lines(pathToSqlFile, charset)) {
                 final String rawText = lines.filter(this::isNotEmpty)
-                    .collect(joining(NEWLINE));
-                final String[] rawStatements = rawText.split(pluginConfig.getSqlStatementSeparator());
+                        .collect(joining(NEWLINE));
+                final String[] rawStatements = rawText.split(pluginConfig.sqlStatementSeparator());
                 final AtomicInteger counter = new AtomicInteger(0);
-                return Arrays.stream(rawStatements).map(statement -> convert(source, statement, counter.getAndIncrement()));
+                return Arrays.stream(rawStatements)
+                        .map(statement -> convert(source, statement, counter.getAndIncrement()));
             }
         } catch (final Throwable exception) {
             pluginErrors.add(exception);
