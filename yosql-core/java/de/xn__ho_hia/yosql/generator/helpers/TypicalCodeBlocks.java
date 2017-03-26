@@ -32,7 +32,6 @@ import com.squareup.javapoet.TypeSpec;
 
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import de.xn__ho_hia.yosql.generator.LoggingGenerator;
-import de.xn__ho_hia.yosql.generator.logging.DelegatingLoggingGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlParameter;
