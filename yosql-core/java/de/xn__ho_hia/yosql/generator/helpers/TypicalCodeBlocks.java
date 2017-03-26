@@ -332,7 +332,7 @@ public class TypicalCodeBlocks {
     @Inject
     public TypicalCodeBlocks(
             final ExecutionConfiguration pluginConfig,
-            final DelegatingLoggingGenerator logging) {
+            final LoggingGenerator logging) {
         this.configuration = pluginConfig;
         this.logging = logging;
     }
