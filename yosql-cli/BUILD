@@ -10,5 +10,14 @@ java_binary(
   visibility = ["//visibility:public"],
   deps = [
     "//yosql-core",
+    "//external:javapoet_type_guesser",
+    "//external:javax_inject",
+    "//external:javax_annotation",
+    "//external:javapoet",
+    "//external:snakeyaml",
+    "//external:rxjava2",
+    "//external:log4j_api",
+    "//external:log4j_core",
+    "//external:slf4j_api",
   ],
 )
