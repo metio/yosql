@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.squareup.javapoet.ClassName;
 
@@ -62,8 +64,6 @@ public abstract class ExecutionConfiguration {
     abstract String defaultResultRowClassName();
 
     public abstract String repositorySqlStatements();
-
-    public abstract List<SqlSourceFile> sqlFiles();
 
     public abstract Path outputBaseDirectory();
 
@@ -127,10 +127,13 @@ public abstract class ExecutionConfiguration {
 
     public abstract LoggingAPI loggingApi();
 
+    @Nullable
     public abstract ClassName flowStateClass();
 
+    @Nullable
     public abstract ClassName resultStateClass();
 
+    @Nullable
     public abstract ClassName resultRowClass();
 
     public abstract String defaultRowConverter();
@@ -157,8 +160,6 @@ public abstract class ExecutionConfiguration {
         public abstract Builder setResultRowClass(ClassName value);
 
         public abstract Builder setRepositorySqlStatements(String value);
-
-        public abstract Builder setSqlFiles(List<SqlSourceFile> value);
 
         public abstract Builder setOutputBaseDirectory(Path value);
 
