@@ -26,6 +26,17 @@ bind(
     actual = "@javax_inject_javax_inject//jar",
 )
 
+
+maven_jar(
+    name = "javax_annotation_javax_annotation_api",
+    artifact = "com.google.code.findbugs:jsr305:3.0.0",
+)
+bind(
+    name = "javax_annotation",
+    actual = "@javax_annotation_javax_annotation_api//jar",
+)
+
+
 maven_jar(
     name = "org_inferred_freebuilder",
     artifact = "org.inferred:freebuilder:1.14",

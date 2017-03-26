@@ -45,6 +45,7 @@ java_library(
   deps = [
     "//external:javapoet_type_guesser",
     "//external:javax_inject",
+    "//external:javax_annotation",
     "//external:javapoet",
     "//external:snakeyaml",
     "//external:rxjava2",
