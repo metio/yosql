@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
+
+import de.xn__ho_hia.yosql.generator.GeneratorPreconditions;
+import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.SqlSourceFile;
 
 /**
@@ -15,17 +19,38 @@ import de.xn__ho_hia.yosql.model.SqlSourceFile;
  */
 public final class PathBasedSqlFileResolver implements SqlFileResolver<Path> {
 
+    private final GeneratorPreconditions preconditions;
+    private final ExecutionErrors        errors;
+
+    /**
+     * @param preconditions
+     *            The preconditions to use.
+     * @param errors
+     *            The error collector to use.
+     */
+    @Inject
+    public PathBasedSqlFileResolver(
+            final GeneratorPreconditions preconditions,
+            final ExecutionErrors errors) {
+        this.preconditions = preconditions;
+        this.errors = errors;
+    }
+
     @Override
     public Stream<SqlSourceFile> resolveFiles(final Path source) {
+        preconditions.assertDirectoryIsReadable(source);
+
         final List<SqlSourceFile> result = new ArrayList<>();
 
-        try (Stream<Path> paths = Files.walk(source, FileVisitOption.FOLLOW_LINKS)) {
-            paths.filter(path -> Files.isRegularFile(path))
-                    .filter(path -> path.toString().endsWith(".sql")) //$NON-NLS-1$
-                    .map(path -> new SqlSourceFile(path, source))
-                    .forEach(result::add);
-        } catch (final IOException e) {
-            e.printStackTrace();
+        if (!errors.hasErrors()) {
+            try (Stream<Path> paths = Files.walk(source, FileVisitOption.FOLLOW_LINKS)) {
+                paths.filter(path -> Files.isRegularFile(path))
+                        .filter(path -> path.toString().endsWith(".sql")) //$NON-NLS-1$
+                        .map(path -> new SqlSourceFile(path, source))
+                        .forEach(result::add);
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return result.stream();
