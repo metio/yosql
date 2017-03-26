@@ -54,4 +54,28 @@ public class GeneratorPreconditions {
         }
     }
 
+    /**
+     * Asserts that a single directory is writable. In order to be writable, the directory has to:
+     * <ul>
+     * <li>exist</li>
+     * <li>be a directory (not a file)</li>
+     * <li>be writable by the current process</li>
+     * </ul>
+     *
+     * @param directory
+     *            The directory to check
+     */
+    @SuppressWarnings("nls")
+    public void assertDirectoryIsReadable(final Path directory) {
+        if (!Files.exists(directory)) {
+            errors.illegalState("[%s] does not exist.", directory);
+        }
+        if (!Files.isDirectory(directory)) {
+            errors.illegalState("[%s] is not a directory.", directory);
+        }
+        if (!Files.isReadable(directory)) {
+            errors.illegalState("Don't have permission to read from [%s].", directory);
+        }
+    }
+
 }
