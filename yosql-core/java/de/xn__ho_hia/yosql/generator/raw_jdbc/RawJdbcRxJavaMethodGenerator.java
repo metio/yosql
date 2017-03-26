@@ -75,12 +75,12 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
             final List<SqlStatement> statements) {
         final ClassName callable = ClassName.get(Callable.class);
         final ParameterizedTypeName initialStateType = ParameterizedTypeName.get(callable,
-                configuration.flowStateClass());
+                configuration.getFlowStateClass());
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(initialStateType)
                 .addMethod(TypicalMethods.implementation("call")
                         .addAnnotations(annotations.generatedMethod(getClass()))
-                        .returns(configuration.flowStateClass())
+                        .returns(configuration.getFlowStateClass())
                         .addException(Exception.class)
                         .addCode(TypicalCodeBlocks.getConnection())
                         .addCode(codeBlocks.pickVendorQuery(statements))
@@ -101,13 +101,13 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         final ClassName rawEmitter = ClassName.get(Emitter.class);
         final ParameterizedTypeName emitter = ParameterizedTypeName.get(rawEmitter, resultType);
         final ParameterizedTypeName generatorType = ParameterizedTypeName.get(biConsumer,
-                configuration.flowStateClass(), emitter);
+                configuration.getFlowStateClass(), emitter);
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(generatorType)
                 .addMethod(TypicalMethods.implementation("accept")
                         .addAnnotations(annotations.generatedMethod(getClass()))
                         .addParameter(
-                                TypicalParameters.parameter(configuration.flowStateClass(), TypicalNames.STATE))
+                                TypicalParameters.parameter(configuration.getFlowStateClass(), TypicalNames.STATE))
                         .addParameter(TypicalParameters.parameter(emitter, TypicalNames.EMITTER))
                         .returns(void.class)
                         .addException(Exception.class)
@@ -128,12 +128,12 @@ public class RawJdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     private TypeSpec createFlowDisposer() {
         final ClassName consumerClass = ClassName.get(io.reactivex.functions.Consumer.class);
         final ParameterizedTypeName disposerType = ParameterizedTypeName.get(consumerClass,
-                configuration.flowStateClass());
+                configuration.getFlowStateClass());
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(disposerType)
                 .addMethod(TypicalMethods.implementation("accept")
                         .addAnnotations(annotations.generatedMethod(getClass()))
-                        .addParameter(TypicalParameters.parameter(configuration.flowStateClass(),
+                        .addParameter(TypicalParameters.parameter(configuration.getFlowStateClass(),
                                 TypicalNames.STATE))
                         .returns(void.class)
                         .addException(Exception.class)
