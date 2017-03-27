@@ -7,6 +7,7 @@
 package de.xn__ho_hia.yosql.generator;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Path;
 
 import javax.inject.Inject;
@@ -22,14 +23,20 @@ import de.xn__ho_hia.yosql.model.ExecutionErrors;
 public class TypeWriter {
 
     private final ExecutionErrors errors;
+    private final PrintStream     out;
 
     /**
      * @param errors
      *            The errors to use.
+     * @param out
+     *            The output to use for log messages.
      */
     @Inject
-    public TypeWriter(final ExecutionErrors errors) {
+    public TypeWriter(
+            final ExecutionErrors errors,
+            final PrintStream out) {
         this.errors = errors;
+        this.out = out;
     }
 
     /**
@@ -46,11 +53,11 @@ public class TypeWriter {
             final TypeSpec typeSpec) {
         try {
             JavaFile.builder(packageName, typeSpec).build().writeTo(baseDirectory);
-            // log().info(String.format("Generated [%s.%s]", packageName, typeSpec.name));
+            out.println(String.format("Generated [%s.%s]", packageName, typeSpec.name)); //$NON-NLS-1$
         } catch (final IOException exception) {
             errors.add(exception);
-            // log().error(String.format("Could not write [%s.%s] into [%s]",
-            // packageName, typeSpec.name, baseDirectory));
+            out.println(String.format("Could not write [%s.%s] into [%s]", //$NON-NLS-1$
+                    packageName, typeSpec.name, baseDirectory));
         }
     }
 

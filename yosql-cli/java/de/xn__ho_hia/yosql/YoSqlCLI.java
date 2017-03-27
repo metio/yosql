@@ -68,7 +68,7 @@ public class YoSqlCLI {
         final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory);
         final GeneratorPreconditions preconditions = new GeneratorPreconditions(errors);
         final SqlFileResolver<Path> fileResolver = new PathBasedSqlFileResolver(preconditions, errors);
-        final TypeWriter typeWriter = new TypeWriter(errors);
+        final TypeWriter typeWriter = new TypeWriter(errors, System.out);
         final AnnotationGenerator annotations = new AnnotationGenerator(configuration);
         final LoggingGenerator logging = new NoOpLoggingGenerator();
         final TypicalCodeBlocks codeBlocks = new TypicalCodeBlocks(configuration, logging);
