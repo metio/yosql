@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="yosql-core/java"/>
+	<classpathentry kind="src" path="yosql-core/javatest"/>
+	<classpathentry kind="src" path="yosql-cli/java"/>
+	<classpathentry kind="src" path="yosql-cli/javatest"/>
+	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/yosql-core/libyosql-core_sourcegenfiles">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/com_squareup_javapoet/jar/_ijar/jar/external/com_squareup_javapoet/jar/javapoet-1.8.0-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/javax_inject_javax_inject/jar/_ijar/jar/external/javax_inject_javax_inject/jar/javax.inject-1-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_yaml_snakeyaml/jar/_ijar/jar/external/org_yaml_snakeyaml/jar/snakeyaml-1.17-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/de_xn__ho_hia_javapoet_javapoet_type_guesser/jar/_ijar/jar/external/de_xn__ho_hia_javapoet_javapoet_type_guesser/jar/javapoet-type-guesser-2017.03.19-185842-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/io_reactivex_rxjava2_rxjava2/jar/_ijar/jar/external/io_reactivex_rxjava2_rxjava2/jar/rxjava-2.0.6-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_junit_jupiter_junit5_jupiter_api/jar/_ijar/jar/external/org_junit_jupiter_junit5_jupiter_api/jar/junit-jupiter-api-5.0.0-M3-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_apache_logging_log4j_log4j_api/jar/_ijar/jar/external/org_apache_logging_log4j_log4j_api/jar/log4j-api-2.8-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_apache_logging_log4j_log4j_core/jar/_ijar/jar/external/org_apache_logging_log4j_log4j_core/jar/log4j-core-2.8-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_slf4j_slf4j_api/jar/_ijar/jar/external/org_slf4j_slf4j_api/jar/slf4j-api-1.7.21-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_inferred_freebuilder/jar/_ijar/jar/external/org_inferred_freebuilder/jar/freebuilder-1.14-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/com_google_auto_value_auto_value/jar/_ijar/jar/external/com_google_auto_value_auto_value/jar/auto-value-1.2-ijar.jar"/>
+	<classpathentry kind="src" path="bazel-out/ide/generated">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="bazel-genfiles/external/javax_annotation_javax_annotation_api/jar/_ijar/jar/external/javax_annotation_javax_annotation_api/jar/jsr305-3.0.0-ijar.jar"/>
+	<classpathentry kind="output" path="bazel-out/ide/classes"/>
+</classpath>

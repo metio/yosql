@@ -1,7 +1,5 @@
 target/
 .settings/
-.classpath
-.project
 *.iml
 .ansible-git-*
 /bazel-*
