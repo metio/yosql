@@ -77,6 +77,8 @@
    <module>yosql-dependency</module>
    <module>yosql-gradle-plugin</module>
 -->
+  	<module>yosql-core</module>
+  	<module>yosql-cli</module>
   </modules>
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->

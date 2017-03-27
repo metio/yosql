@@ -1,8 +1,10 @@
 = yosql
 
-link:https://github.com/krisajenkins/yesql[yesql] inspired, zero-dependency solution for using SQL in Java projects. Implemented as a Maven plugin that takes .sql files as inputs and generates the matching Java code to execute the SQL statements defined inside your .sql files.
+link:https://github.com/krisajenkins/yesql[yesql] inspired, zero-dependency solution for Java & SQL. It expects a set of .sql files as inputs and produces the required Java code to call the SQL statements define in your .sql files.
 
 == Usage
+
+=== Maven 
 
 1) Add the plugin to your *pom.xml*:
 
@@ -39,6 +41,31 @@ project/
 ----
 
 3) Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
+
+=== Bazel
+
+1) Add git repository to your `WORKSPACE`:
+
+[source]
+----
+git_repository(
+    name = "yosql",
+    remote = "https://github.com/sebhoss/yosql.git",
+    commit = "....",
+)
+----
+
+2) Write .sql files in a directory of your choice (e.g. `/path/to/your/sql/files`)
+
+3) Call `bazel run @yosql/yosql-cli /path/to/your/sql/files /output/path`
+
+=== Standalone (CLI)
+
+1) Download the latest release
+
+2) Write .sql files in a directory of your choice (e.g. `/path/to/your/sql/files`)
+
+3) Call `java -jar yosql-cli.jar /path/to/your/sql/files /output/path`
 
 The above configuration is enough to generate two repositories: *UserRepository* and *ItemRepository*. The name is derived from the name of the folder that contains .sql files and can be configured as seen below. Each of them will have regular Java methods to execute the SQL statements defined in those .sql files. The `UserRepository` for example exposes these methods (based on *findUser.sql*):
 
