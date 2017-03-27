@@ -153,3 +153,12 @@ bind(
     name = "rxjava2",
     actual = "@io_reactivex_rxjava2_rxjava2//jar",
 )
+
+maven_jar(
+    name = "org_reactivestreams_reactive_streams",
+    artifact = "org.reactivestreams:reactive-streams:1.0.0.final",
+)
+bind(
+    name = "reactive_streams",
+    actual = "@org_reactivestreams_reactive_streams//jar",
+)

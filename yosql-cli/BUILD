@@ -16,6 +16,7 @@ java_binary(
     "//external:javapoet",
     "//external:snakeyaml",
     "//external:rxjava2",
+    "//external:reactive_streams",
     "//external:log4j_api",
     "//external:log4j_core",
     "//external:slf4j_api",
