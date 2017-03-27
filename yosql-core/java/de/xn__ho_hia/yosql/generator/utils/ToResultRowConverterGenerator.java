@@ -52,11 +52,11 @@ public class ToResultRowConverterGenerator {
 
     private MethodSpec asUserType() {
         return TypicalMethods.publicMethod("asUserType")
-                .addParameters(TypicalParameters.resultState(configuration.resultStateClass()))
+                .addParameters(TypicalParameters.resultState(configuration.getResultStateClass()))
                 .addException(SQLException.class)
-                .returns(configuration.resultRowClass())
-                .addStatement("final $T $N = new $T($N.getColumnCount())", configuration.resultRowClass(),
-                        TypicalNames.ROW, configuration.resultRowClass(), TypicalNames.RESULT)
+                .returns(configuration.getResultRowClass())
+                .addStatement("final $T $N = new $T($N.getColumnCount())", configuration.getResultRowClass(),
+                        TypicalNames.ROW, configuration.getResultRowClass(), TypicalNames.RESULT)
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
                         TypicalNames.INDEX, TypicalNames.INDEX, TypicalNames.RESULT, TypicalNames.INDEX)
                 .addStatement("$N.setColumnValue($N.getColumnName($N), $N.getResultSet().getObject($N))",
