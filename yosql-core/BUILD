@@ -5,8 +5,24 @@ filegroup(
   srcs = glob(["src/main/java/**/YoSql.java"]),
 )
 filegroup(
-  name = "yosql-core-generator-raw-sources",
-  srcs = glob(["src/main/java/**/generator/**/*.java"]),
+  name = "yosql-core-generator-api-raw-sources",
+  srcs = glob(["src/main/java/**/generator/*.java"]),
+)
+filegroup(
+  name = "yosql-core-generator-logging-raw-sources",
+  srcs = glob(["src/main/java/**/generator/logging/*.java"]),
+)
+filegroup(
+  name = "yosql-core-generator-helpers-raw-sources",
+  srcs = glob(["src/main/java/**/generator/helpers/*.java"]),
+)
+filegroup(
+  name = "yosql-core-generator-raw-jdbc-raw-sources",
+  srcs = glob(["src/main/java/**/generator/raw_jdbc/*.java"]),
+)
+filegroup(
+  name = "yosql-core-generator-utils-raw-sources",
+  srcs = glob(["src/main/java/**/generator/utils/*.java"]),
 )
 filegroup(
   name = "yosql-core-i18n-raw-sources",
@@ -24,7 +40,7 @@ filegroup(
   name = "yosql-core-utils-raw-sources",
   srcs = glob(
     ["src/main/java/**/utils/*.java"],
-    exclude = ["src/main/java/**/generator/utils/*.java"]
+    exclude = ["src/main/java/**/generator/utils/*.java"],
   ),
 )
 
@@ -55,6 +71,9 @@ java_library(
   deps = [
     "//external:cal10n",
   ],
+  exports = [
+    "//external:cal10n",
+  ],
 )
 java_library(
   name = "yosql-core-model",
@@ -65,6 +84,10 @@ java_library(
     "//external:javax_annotation",
     "//external:javapoet",
     ":auto",
+  ],
+  exports = [
+    "//external:javax_annotation",
+    "//external:javapoet",
   ],
 )
 java_library(
@@ -79,26 +102,81 @@ java_library(
     ":yosql-core-parser-raw-sources",
   ],
   deps = [
+    "//external:javax_inject",
     "//external:snakeyaml",
+    ":yosql-core-model",
+  ],
+  exports = [
+    "//external:snakeyaml",
+  ],
+)
+java_library(
+  name = "yosql-core-generator-api",
+  srcs = [
+    ":yosql-core-generator-api-raw-sources",
+  ],
+  deps = [
+    "//external:javax_inject",
+    ":yosql-core-model",
+  ],
+  exports = [
     "//external:javax_inject",
     ":yosql-core-model",
   ],
 )
 java_library(
-  name = "yosql-core-generator",
+  name = "yosql-core-generator-helpers",
   srcs = [
-    ":yosql-core-generator-raw-sources",
+    ":yosql-core-generator-helpers-raw-sources",
   ],
   deps = [
-    "//external:javax_inject",
-    "//external:javapoet",
     "//external:javapoet_type_guesser",
     "//external:rxjava2",
+    ":yosql-core-parser",
+    ":yosql-core-generator-api",
+  ],
+  exports = [
+    "//external:javapoet_type_guesser",
+    "//external:rxjava2",
+    "//external:reactive_streams",
+  ],
+)
+java_library(
+  name = "yosql-core-generator-logging",
+  srcs = [
+    ":yosql-core-generator-logging-raw-sources",
+  ],
+  deps = [
     "//external:log4j_api",
     "//external:log4j_core",
     "//external:slf4j_api",
-    ":yosql-core-model",
-    ":yosql-core-parser",
+    ":yosql-core-generator-api",
+    ":yosql-core-generator-helpers",
+  ],
+  exports = [
+    "//external:log4j_api",
+    "//external:log4j_core",
+    "//external:slf4j_api",
+  ],
+)
+java_library(
+  name = "yosql-core-generator-raw-jdbc",
+  srcs = [
+    ":yosql-core-generator-raw-jdbc-raw-sources",
+  ],
+  deps = [
+    ":yosql-core-generator-api",
+    ":yosql-core-generator-helpers",
+  ],
+)
+java_library(
+  name = "yosql-core-generator-utils",
+  srcs = [
+    ":yosql-core-generator-utils-raw-sources",
+  ],
+  deps = [
+    ":yosql-core-generator-api",
+    ":yosql-core-generator-helpers",
   ],
 )
 
@@ -109,30 +187,26 @@ java_library(
   ],
   visibility = ["//visibility:public"],
   deps = [
-    "//external:javax_inject",
     ":yosql-core-model",
     ":yosql-core-i18n",
     ":yosql-core-utils",
     ":yosql-core-parser",
-    ":yosql-core-generator",
+    ":yosql-core-generator-api",
+    ":yosql-core-generator-helpers",
+    ":yosql-core-generator-logging",
+    ":yosql-core-generator-raw-jdbc",
+    ":yosql-core-generator-utils",
   ],
   exports = [
-    "//external:javapoet_type_guesser",
-    "//external:javax_inject",
-    "//external:javax_annotation",
-    "//external:javapoet",
-    "//external:snakeyaml",
-    "//external:rxjava2",
-    "//external:reactive_streams",
-    "//external:log4j_api",
-    "//external:log4j_core",
-    "//external:slf4j_api",
-    "//external:cal10n",
     ":yosql-core-model",
     ":yosql-core-i18n",
     ":yosql-core-utils",
     ":yosql-core-parser",
-    ":yosql-core-generator",
+    ":yosql-core-generator-api",
+    ":yosql-core-generator-helpers",
+    ":yosql-core-generator-logging",
+    ":yosql-core-generator-raw-jdbc",
+    ":yosql-core-generator-utils",
   ],
 )
 
