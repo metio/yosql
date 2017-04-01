@@ -57,7 +57,7 @@ public class YoSqlCLI {
      *            The CLI arguments.
      */
     public static void main(final String[] args) {
-        final IMessageConveyor messages = new MessageConveyor(Locale.getDefault());
+        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
         final ExecutionConfiguration configuration = createConfiguration(args, messages);
         final YoSql yoSql = createYoSql(configuration);
 
@@ -68,18 +68,19 @@ public class YoSqlCLI {
     private static ExecutionConfiguration createConfiguration(final String[] args, final IMessageConveyor messages) {
         final ValueConverter<Path> pathConverter = new PathValueConverter();
         final OptionParser parser = new OptionParser();
-        final Path currentDirectory = Paths.get(".");
+        final Path currentDirectory = Paths.get(messages.getMessage(ConfigurationOptions.CURRENT_DIRECTORY));
         final OptionSpec<Path> inputBaseDirectory = parser
                 .accepts(messages.getMessage(ConfigurationOptions.INPUT_BASE_DIRECTORY))
                 .withRequiredArg()
                 .withValuesConvertedBy(pathConverter)
                 .defaultsTo(currentDirectory)
                 .describedAs(messages.getMessage(ConfigurationOptions.INPUT_BASE_DIRECTORY_DESCRIPTION));
-        final OptionSpec<Path> outputBaseDirectory = parser.accepts("outputBaseDirectory")
+        final OptionSpec<Path> outputBaseDirectory = parser
+                .accepts(messages.getMessage(ConfigurationOptions.OUTPUT_BASE_DIRECTORY))
                 .withRequiredArg()
                 .withValuesConvertedBy(pathConverter)
                 .defaultsTo(currentDirectory)
-                .describedAs("The output directory for all generated files");
+                .describedAs(messages.getMessage(ConfigurationOptions.INPUT_BASE_DIRECTORY_DESCRIPTION));
         final OptionSpec<String> basePackageName = parser.accepts("basePackageName")
                 .withRequiredArg()
                 .ofType(String.class)

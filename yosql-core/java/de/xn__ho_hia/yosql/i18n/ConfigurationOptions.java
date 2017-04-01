@@ -18,4 +18,19 @@ public enum ConfigurationOptions {
      */
     INPUT_BASE_DIRECTORY_DESCRIPTION,
 
+    /**
+     * The base output directory.
+     */
+    OUTPUT_BASE_DIRECTORY,
+
+    /**
+     * The description for {@link #OUTPUT_BASE_DIRECTORY}.
+     */
+    OUTPUT_BASE_DIRECTORY_DESCRIPTION,
+
+    /**
+     * The current directory.
+     */
+    CURRENT_DIRECTORY,
+
 }
