@@ -113,15 +113,19 @@ public class YoSqlCLI {
      */
     public static void main(final String[] args) {
         final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
-        final ExecutionConfiguration configuration = createConfiguration(args, messages);
-        final YoSql yoSql = createYoSql(configuration);
+        final ExecutionErrors errors = new ExecutionErrors();
+        final ExecutionConfiguration configuration = createConfiguration(args, messages, errors);
+        final YoSql yoSql = createYoSql(configuration, errors);
 
         yoSql.generateFiles();
     }
 
-    @SuppressWarnings("nls")
-    private static ExecutionConfiguration createConfiguration(final String[] args, final IMessageConveyor messages) {
-        final ValueConverter<Path> pathConverter = new PathValueConverter();
+    @SuppressWarnings({ "nls" })
+    private static ExecutionConfiguration createConfiguration(
+            final String[] args,
+            final IMessageConveyor messages,
+            final ExecutionErrors errors) {
+        final ValueConverter<Path> pathConverter = new PathValueConverter(errors);
         final OptionParser parser = new OptionParser();
         final Path currentDirectory = Paths.get(messages.getMessage(CURRENT_DIRECTORY));
         final OptionSpec<Path> inputBaseDirectory = parser
@@ -293,8 +297,7 @@ public class YoSqlCLI {
         return javaVersion;
     }
 
-    private static YoSql createYoSql(final ExecutionConfiguration configuration) {
-        final ExecutionErrors errors = new ExecutionErrors();
+    private static YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors) {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory);
         final GeneratorPreconditions preconditions = new GeneratorPreconditions(errors);

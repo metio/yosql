@@ -1,8 +1,10 @@
 package de.xn__ho_hia.yosql.cli;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import joptsimple.ValueConverter;
 
 /**
@@ -10,9 +12,24 @@ import joptsimple.ValueConverter;
  */
 public class PathValueConverter implements ValueConverter<Path> {
 
+    private final ExecutionErrors errors;
+
+    /**
+     * @param errors
+     *            The error collector to use.
+     */
+    public PathValueConverter(final ExecutionErrors errors) {
+        this.errors = errors;
+    }
+
     @Override
     public Path convert(final String arg0) {
-        return Paths.get(arg0);
+        try {
+            return Paths.get(arg0);
+        } catch (final InvalidPathException exception) {
+            errors.add(exception);
+            return null;
+        }
     }
 
     @Override
