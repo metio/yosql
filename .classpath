@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="yosql-core/src/main/resources"/>
 	<classpathentry kind="src" path="yosql-core/src/main/java"/>
+	<classpathentry kind="src" path="yosql-core/src/main/resources"/>
 	<classpathentry kind="src" path="yosql-core/src/test/java"/>
 	<classpathentry kind="src" path="yosql-cli/src/main/java"/>
 	<classpathentry kind="src" path="testutils/src/main/java"/>
