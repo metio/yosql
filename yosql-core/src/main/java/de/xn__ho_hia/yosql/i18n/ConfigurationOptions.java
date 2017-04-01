@@ -5,7 +5,7 @@ import ch.qos.cal10n.BaseName;
 /**
  * Enumeration of all known configuration options.
  */
-@BaseName("yosql-core/resources/configuration-options")
+@BaseName("configuration-options")
 public enum ConfigurationOptions {
 
     /**

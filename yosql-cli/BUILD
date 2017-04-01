@@ -1,6 +1,6 @@
 filegroup(
   name = "yosql-cli-raw-sources",
-  srcs = glob(["java/**/*.java"]),
+  srcs = glob(["src/main/java/**/*.java"]),
 )
 
 java_binary(
@@ -10,6 +10,8 @@ java_binary(
   visibility = ["//visibility:public"],
   deps = [
     "//yosql-core",
+    "//yosql-core:yosql-core-model",
+    "//yosql-core:yosql-core-i18n",
     "//external:javapoet_type_guesser",
     "//external:javax_inject",
     "//external:javax_annotation",
