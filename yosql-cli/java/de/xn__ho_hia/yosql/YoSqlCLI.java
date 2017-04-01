@@ -79,6 +79,7 @@ public class YoSqlCLI {
             configurationBuilder.setBasePackageName(packageName);
         }
         final ExecutionConfiguration configuration = configurationBuilder
+                .setInputBaseDirectory(input)
                 .setOutputBaseDirectory(output)
                 .build();
 
@@ -86,7 +87,7 @@ public class YoSqlCLI {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory);
         final GeneratorPreconditions preconditions = new GeneratorPreconditions(errors);
-        final SqlFileResolver<Path> fileResolver = new PathBasedSqlFileResolver(preconditions, errors);
+        final SqlFileResolver fileResolver = new PathBasedSqlFileResolver(preconditions, errors, configuration);
         final TypeWriter typeWriter = new TypeWriter(errors, System.out);
         final AnnotationGenerator annotations = new AnnotationGenerator(configuration);
         final LoggingGenerator logging = new NoOpLoggingGenerator();
@@ -113,9 +114,9 @@ public class YoSqlCLI {
         final ResultRowGenerator resultRowGenerator = new ResultRowGenerator(annotations, typeWriter, configuration);
         final DefaultUtilitiesGenerator utilsGenerator = new DefaultUtilitiesGenerator(flowStateGenerator,
                 resultStateGenerator, toResultRowConverterGenerator, resultRowGenerator);
-        final YoSql<Path> yoSql = new YoSql<>(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors);
+        final YoSql yoSql = new YoSql(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors);
 
-        yoSql.generateFiles(input);
+        yoSql.generateFiles();
     }
 
 }

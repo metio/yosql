@@ -35,16 +35,14 @@ import de.xn__ho_hia.yosql.parser.SqlFileResolver;
 import de.xn__ho_hia.yosql.utils.Timer;
 
 /**
- * @param <SOURCE>
- *            The type of the input source.
  */
-public class YoSql<SOURCE> {
+public class YoSql {
 
-    private final SqlFileResolver<SOURCE> fileResolver;
-    private final SqlFileParser           sqlFileParser;
-    private final RepositoryGenerator     repositoryGenerator;
-    private final UtilitiesGenerator      utilsGenerator;
-    private final ExecutionErrors         errors;
+    private final SqlFileResolver     fileResolver;
+    private final SqlFileParser       sqlFileParser;
+    private final RepositoryGenerator repositoryGenerator;
+    private final UtilitiesGenerator  utilsGenerator;
+    private final ExecutionErrors     errors;
 
     /**
      * @param fileResolver
@@ -60,7 +58,7 @@ public class YoSql<SOURCE> {
      */
     @Inject
     public YoSql(
-            final SqlFileResolver<SOURCE> fileResolver,
+            final SqlFileResolver fileResolver,
             final SqlFileParser sqlFileParser,
             final RepositoryGenerator repositoryGenerator,
             final UtilitiesGenerator utilsGenerator,
@@ -130,13 +128,11 @@ public class YoSql<SOURCE> {
     }
 
     /**
-     * @param source
-     *            The source for SQL files.
      */
     @SuppressWarnings("nls")
-    public void generateFiles(final SOURCE source) {
+    public void generateFiles() {
         final List<SqlStatement> allStatements = Timer.timed("parse statements",
-                () -> fileResolver.resolveFiles(source)
+                () -> fileResolver.resolveFiles()
                         .flatMap(sqlFileParser::parse)
                         .sorted(Comparator.comparing(SqlStatement::getName))
                         .collect(Collectors.toList()));

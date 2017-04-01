@@ -65,6 +65,8 @@ public abstract class ExecutionConfiguration {
 
     public abstract String repositorySqlStatements();
 
+    public abstract Path inputBaseDirectory();
+
     public abstract Path outputBaseDirectory();
 
     public abstract boolean generateStandardApi();
@@ -160,6 +162,8 @@ public abstract class ExecutionConfiguration {
         public abstract Builder setResultRowClass(ClassName value);
 
         public abstract Builder setRepositorySqlStatements(String value);
+
+        public abstract Builder setInputBaseDirectory(Path value);
 
         public abstract Builder setOutputBaseDirectory(Path value);
 
