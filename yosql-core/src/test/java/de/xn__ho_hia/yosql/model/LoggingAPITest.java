@@ -8,6 +8,7 @@ class LoggingAPITest {
 
     @Test
     void shouldDeclareKnownValues() {
+        System.out.println("executed"); //$NON-NLS-1$
         Assertions.assertNotNull(LoggingAPI.valueOf("NONE")); //$NON-NLS-1$
     }
 
