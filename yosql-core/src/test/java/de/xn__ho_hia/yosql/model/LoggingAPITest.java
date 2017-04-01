@@ -1,20 +1,20 @@
 package de.xn__ho_hia.yosql.model;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
 
-@SuppressWarnings("static-method")
-class LoggingAPITest {
+import de.xn__ho_hia.yosql.testutils.EnumTCK;
 
-    @Test
-    void shouldDeclareKnownValues() {
-        System.out.println("executed"); //$NON-NLS-1$
-        Assertions.assertNotNull(LoggingAPI.valueOf("NONE")); //$NON-NLS-1$
+class LoggingAPITest implements EnumTCK<LoggingAPI> {
+
+    @Override
+    public Class<LoggingAPI> getEnumClass() {
+        return LoggingAPI.class;
     }
 
-    @Test
-    void shouldDeclareKnownValues2() {
-        Assertions.assertNotNull(LoggingAPI.valueOf("JDK")); //$NON-NLS-1$
+    @Override
+    @SuppressWarnings("nls")
+    public Stream<String> validValues() {
+        return Stream.of("NONE", "JDK", "LOG4J", "SLF4J", "AUTO");
     }
 
 }

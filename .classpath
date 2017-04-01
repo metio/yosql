@@ -4,7 +4,8 @@
 	<classpathentry kind="src" path="yosql-core/src/main/java"/>
 	<classpathentry kind="src" path="yosql-core/src/test/java"/>
 	<classpathentry kind="src" path="yosql-cli/src/main/java"/>
-	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/yosql-core-model/libyosql-core-model_sourcegenfiles">
+	<classpathentry kind="src" path="testutils/src/main/java"/>
+	<classpathentry kind="src" path="bazel-bin/yosql-core/src/main/java/de/xn__ho_hia/yosql/model/_javac/yosql-core-model/libyosql-core-model_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
@@ -19,7 +20,6 @@
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_apache_logging_log4j_log4j_api/jar/_ijar/jar/external/org_apache_logging_log4j_log4j_api/jar/log4j-api-2.8-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_apache_logging_log4j_log4j_core/jar/_ijar/jar/external/org_apache_logging_log4j_log4j_core/jar/log4j-core-2.8-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_slf4j_slf4j_api/jar/_ijar/jar/external/org_slf4j_slf4j_api/jar/slf4j-api-1.7.21-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/org_inferred_freebuilder/jar/_ijar/jar/external/org_inferred_freebuilder/jar/freebuilder-1.14-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_google_auto_value_auto_value/jar/_ijar/jar/external/com_google_auto_value_auto_value/jar/auto-value-1.2-ijar.jar"/>
 	<classpathentry kind="src" path="bazel-out/ide/generated">
 		<attributes>

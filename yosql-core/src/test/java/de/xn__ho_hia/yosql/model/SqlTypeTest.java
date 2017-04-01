@@ -1,14 +1,20 @@
 package de.xn__ho_hia.yosql.model;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
 
-@SuppressWarnings({ "nls", "static-method" })
-class SqlTypeTest {
+import de.xn__ho_hia.yosql.testutils.EnumTCK;
 
-    @Test
-    void shouldDefineKnownValue() {
-        Assertions.assertNotNull(SqlType.valueOf("READING"));
+class SqlTypeTest implements EnumTCK<SqlType> {
+
+    @Override
+    public Class<SqlType> getEnumClass() {
+        return SqlType.class;
+    }
+
+    @Override
+    @SuppressWarnings("nls")
+    public Stream<String> validValues() {
+        return Stream.of("READING", "WRITING", "CALLING");
     }
 
 }
