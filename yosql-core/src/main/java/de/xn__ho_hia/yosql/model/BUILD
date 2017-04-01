@@ -24,7 +24,7 @@ java_library(
     "//yosql-core:__pkg__",
     "//yosql-core/src/main/java/de/xn__ho_hia/yosql/parser:__pkg__",
     "//yosql-core/src/main/java/de/xn__ho_hia/yosql/generator:__pkg__",
-    "//yosql-core/src/test/java:__pkg__",
+    "//yosql-core/src/test/java/de/xn__ho_hia/yosql/model:__pkg__",
   ],
   deps = [
     "//external:javax_annotation",
