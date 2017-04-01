@@ -9,6 +9,7 @@ package de.xn__ho_hia.yosql.parser;
 import static java.util.stream.Collectors.joining;
 
 import java.io.BufferedReader;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -25,52 +26,73 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@Named
-@Singleton
-@SuppressWarnings({ "javadoc", "nls" })
+/**
+ * Parses SQL statements inside .sql files.
+ */
 public class SqlFileParser {
 
-    public static final String            PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
+    /** The regex to extract parameters out of SQL statements. */
+    public static final String            PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";          //$NON-NLS-1$
+
+    /** The pattern to extract parameters out of SQL statements */
     public static final Pattern           PATTERN         = Pattern.compile(PARAMETER_REGEX);
 
-    private static final String           NEWLINE         = "\n";
+    private static final String           NEWLINE         = "\n";                            //$NON-NLS-1$
 
-    private final ExecutionErrors         pluginErrors;
+    private final ExecutionErrors         errors;
     private final SqlConfigurationFactory factory;
-    private final ExecutionConfiguration  pluginConfig;
+    private final ExecutionConfiguration  config;
 
+    private final PrintStream             out;
+
+    /**
+     * @param errors
+     *            The error collection to use.
+     * @param config
+     *            The configuration to use.
+     * @param factory
+     *            The SQL configuration factory to use.
+     * @param out
+     *            The output stream to use.
+     */
     @Inject
     public SqlFileParser(
-            final ExecutionErrors pluginErrors,
-            final ExecutionConfiguration pluginConfig,
-            final SqlConfigurationFactory factory) {
-        this.pluginErrors = pluginErrors;
-        this.pluginConfig = pluginConfig;
+            final ExecutionErrors errors,
+            final ExecutionConfiguration config,
+            final SqlConfigurationFactory factory,
+            final PrintStream out) {
+        this.errors = errors;
+        this.config = config;
         this.factory = factory;
+        this.out = out;
     }
 
+    /**
+     * @param source
+     *            The source file to parse.
+     * @return All parsed statements inside that source file.
+     */
     public Stream<SqlStatement> parse(final Path source) {
         try {
-            final Charset charset = Charset.forName(pluginConfig.sqlFilesCharset());
+            final Charset charset = Charset.forName(config.sqlFilesCharset());
             final Path pathToSqlFile = source;
             try (final Stream<String> lines = Files.lines(pathToSqlFile, charset)) {
                 final String rawText = lines.filter(this::isNotEmpty)
                         .collect(joining(NEWLINE));
-                final String[] rawStatements = rawText.split(pluginConfig.sqlStatementSeparator());
+                final String[] rawStatements = rawText.split(config.sqlStatementSeparator());
                 final AtomicInteger counter = new AtomicInteger(0);
                 return Arrays.stream(rawStatements)
-                        .map(statement -> convert(source, statement, counter.getAndIncrement()));
+                        .map(statement -> convert(source, statement, counter.getAndIncrement()))
+                        .peek(statement -> out.println(String.format("Parsed [%s#%s]", source, statement.getName()))); //$NON-NLS-1$
             }
         } catch (final Throwable exception) {
-            pluginErrors.add(exception);
+            errors.add(exception);
             return Stream.empty();
         }
     }
@@ -102,7 +124,7 @@ public class SqlFileParser {
             final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
                 .lines().forEach(line -> {
-                    if (line.startsWith("--")) {
+                    if (line.startsWith("--")) { //$NON-NLS-1$
                         yaml.accept(line.substring(2));
                         yaml.accept(NEWLINE);
                     } else {

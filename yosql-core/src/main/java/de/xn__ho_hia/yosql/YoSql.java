@@ -29,6 +29,7 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration.Builder;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
+import de.xn__ho_hia.yosql.model.SqlFileParsingException;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 import de.xn__ho_hia.yosql.parser.SqlFileResolver;
@@ -133,10 +134,12 @@ public class YoSql {
     public void generateFiles() {
         final List<SqlStatement> allStatements = Timer.timed("parse statements",
                 () -> fileResolver.resolveFiles()
-                        .stream()
                         .flatMap(sqlFileParser::parse)
                         .sorted(Comparator.comparing(SqlStatement::getName))
                         .collect(Collectors.toList()));
+        if (errors.hasErrors()) {
+            errors.throwWith(new SqlFileParsingException("Error during SQL file parsing"));
+        }
         Timer.timed("generate repositories", () -> allStatements.stream()
                 .collect(groupingBy(SqlStatement::getRepository))
                 .forEach(repositoryGenerator::generateRepository));

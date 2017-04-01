@@ -298,7 +298,7 @@ public class YoSqlCLI {
 
     private static YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors) {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
-        final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory);
+        final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory, System.out);
         final GeneratorPreconditions preconditions = new GeneratorPreconditions(errors);
         final SqlFileResolver fileResolver = new PathBasedSqlFileResolver(preconditions, errors, configuration);
         final TypeWriter typeWriter = new TypeWriter(errors, System.out);
