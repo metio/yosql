@@ -20,5 +20,6 @@ java_binary(
     "//external:log4j_api",
     "//external:log4j_core",
     "//external:slf4j_api",
+    "//external:jopt_simple",
   ],
 )

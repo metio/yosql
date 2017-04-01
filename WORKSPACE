@@ -162,3 +162,12 @@ bind(
     name = "reactive_streams",
     actual = "@org_reactivestreams_reactive_streams//jar",
 )
+
+maven_jar(
+    name = "net_sf_jopt_simple",
+    artifact = "net.sf.jopt-simple:jopt-simple:4.9",
+)
+bind(
+    name = "jopt_simple",
+    actual = "@net_sf_jopt_simple//jar",
+)
