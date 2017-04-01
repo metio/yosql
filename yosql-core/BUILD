@@ -1,12 +1,5 @@
 load("@bazel_build_process//java:junit5_test.bzl", "junit5_test")
 
-VERSION="123";
-
-filegroup(
-  name = "yosql-core-raw-sources",
-  srcs = glob(["src/main/java/**/*.java"]),
-)
-
 filegroup(
   name = "yosql-core-main-raw-sources",
   srcs = glob(["src/main/java/**/YoSql.java"]),
@@ -38,24 +31,6 @@ filegroup(
 filegroup(
     name = "config-options",
     srcs = ["src/main/resources/configuration-options_en.properties"],
-)
-
-filegroup(
-  name = "yosql-core-test-raw-sources",
-  srcs = glob(["src/test/java/**/*.java"]),
-)
-
-java_plugin(
-    name = "freebuilder_plugin",
-    processor_class = "org.inferred.freebuilder.processor.Processor",
-    deps = ["//external:freebuilder"],
-)
-
-java_library(
-    name = "freebuilder",
-    exported_plugins = [":freebuilder_plugin"],
-    exports = ["//external:freebuilder"],
-    visibility = ["//visibility:public"],
 )
 
 java_plugin(
@@ -135,7 +110,6 @@ java_library(
   visibility = ["//visibility:public"],
   deps = [
     "//external:javax_inject",
-    "//external:snakeyaml",
     ":yosql-core-model",
     ":yosql-core-i18n",
     ":yosql-core-utils",
