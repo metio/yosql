@@ -135,12 +135,13 @@ public class YoSql {
         final List<SqlStatement> allStatements = Timer.timed("parse statements",
                 () -> fileResolver.resolveFiles()
                         .flatMap(sqlFileParser::parse)
-                        .sorted(Comparator.comparing(SqlStatement::getName))
                         .collect(Collectors.toList()));
         if (errors.hasErrors()) {
             errors.throwWith(new SqlFileParsingException("Error during SQL file parsing"));
         }
         Timer.timed("generate repositories", () -> allStatements.stream()
+                .sorted(Comparator.comparing(SqlStatement::getRepository)
+                        .thenComparing(Comparator.comparing(SqlStatement::getName)))
                 .collect(groupingBy(SqlStatement::getRepository))
                 .forEach(repositoryGenerator::generateRepository));
         Timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
