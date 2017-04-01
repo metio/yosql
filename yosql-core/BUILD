@@ -77,7 +77,6 @@ java_library(
     ":yosql-core-i18n-raw-sources",
   ],
   resources = [":config-options"],
-  visibility = ["//yosql-cli:__pkg__"],
   deps = [
     "//external:cal10n",
   ],
@@ -87,7 +86,6 @@ java_library(
   srcs = [
     ":yosql-core-model-raw-sources",
   ],
-  visibility = ["//yosql-cli:__pkg__"],
   deps = [
     "//external:javax_annotation",
     "//external:javapoet",
@@ -99,14 +97,12 @@ java_library(
   srcs = [
     ":yosql-core-utils-raw-sources",
   ],
-  visibility = ["//yosql-cli:__pkg__"],
 )
 java_library(
   name = "yosql-core-parser",
   srcs = [
     ":yosql-core-parser-raw-sources",
   ],
-  visibility = ["//yosql-cli:__pkg__"],
   deps = [
     "//external:snakeyaml",
     "//external:javax_inject",
@@ -118,7 +114,6 @@ java_library(
   srcs = [
     ":yosql-core-generator-raw-sources",
   ],
-  visibility = ["//yosql-cli:__pkg__"],
   deps = [
     "//external:javax_inject",
     "//external:javapoet",
