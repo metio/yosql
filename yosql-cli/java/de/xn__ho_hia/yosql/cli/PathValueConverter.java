@@ -17,7 +17,7 @@ public class PathValueConverter implements ValueConverter<Path> {
 
     @Override
     public String valuePattern() {
-        return null; // TODO: what's a value pattern?
+        return "/path/to/your/files"; //$NON-NLS-1$
     }
 
     @Override
