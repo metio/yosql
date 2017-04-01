@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,11 +47,9 @@ public final class PathBasedSqlFileResolver implements SqlFileResolver {
         final Path source = configuration.inputBaseDirectory();
         preconditions.assertDirectoryIsReadable(source);
 
-        List<Path> result = null;
-
         if (!errors.hasErrors()) {
             try (Stream<Path> paths = Files.walk(source, FileVisitOption.FOLLOW_LINKS)) {
-                result = paths.filter(path -> Files.isRegularFile(path))
+                return paths.filter(path -> Files.isRegularFile(path))
                         .filter(path -> path.toString().endsWith(".sql")) //$NON-NLS-1$
                         .collect(Collectors.toList());
             } catch (final IOException | SecurityException exception) {
@@ -60,8 +57,7 @@ public final class PathBasedSqlFileResolver implements SqlFileResolver {
             }
         }
 
-        return Optional.ofNullable(result)
-                .orElse(Collections.emptyList());
+        return Collections.emptyList();
     }
 
 }
