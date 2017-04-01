@@ -49,7 +49,7 @@ public final class PathBasedSqlFileResolver implements SqlFileResolver {
 
         if (!errors.hasErrors()) {
             try (Stream<Path> paths = Files.walk(source, FileVisitOption.FOLLOW_LINKS)) {
-                return paths.filter(path -> Files.isRegularFile(path))
+                return paths.filter(Files::isRegularFile)
                         .filter(path -> path.toString().endsWith(".sql")) //$NON-NLS-1$
                         .collect(Collectors.toList());
             } catch (final IOException | SecurityException exception) {
