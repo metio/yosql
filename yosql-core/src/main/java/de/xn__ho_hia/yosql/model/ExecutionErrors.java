@@ -46,6 +46,16 @@ public final class ExecutionErrors {
     }
 
     /**
+     * @param message
+     *            The message to include.
+     * @param arguments
+     *            The arguments to apply to the message.
+     */
+    public void illegalArgument(final String message, final Object... arguments) {
+        errors.add(new IllegalArgumentException(String.format(message, arguments)));
+    }
+
+    /**
      * @param exception
      *            The parent exception to use.
      * @throws T

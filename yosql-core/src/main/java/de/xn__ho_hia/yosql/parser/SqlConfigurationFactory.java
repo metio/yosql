@@ -146,41 +146,29 @@ public class SqlConfigurationFactory {
             switch (configuration.getType()) {
                 case READING:
                     if (!startsWith(configuration.getName(), config.allowedReadPrefixes())) {
-                        final String msg = invalidPrefix(source, SqlType.READING, configuration);
-                        errors.add(new IllegalArgumentException(msg));
-                        // pluginConfig.getLogger().error(msg);
+                        invalidPrefix(source, SqlType.READING, configuration.getName());
                     }
                     break;
                 case WRITING:
                     if (!startsWith(configuration.getName(), config.allowedWritePrefixes())) {
-                        final String msg = invalidPrefix(source, SqlType.WRITING, configuration);
-                        errors.add(new IllegalArgumentException(msg));
-                        // pluginConfig.getLogger().error(msg);
+                        invalidPrefix(source, SqlType.WRITING, configuration.getName());
                     }
                     break;
                 case CALLING:
                     if (!startsWith(configuration.getName(), config.allowedCallPrefixes())) {
-                        final String msg = invalidPrefix(source, SqlType.CALLING, configuration);
-                        errors.add(new IllegalArgumentException(msg));
-                        // pluginConfig.getLogger().error(msg);
+                        invalidPrefix(source, SqlType.CALLING, configuration.getName());
                     }
                     break;
                 default:
-                    final String msg = String.format("[%s] has unsupported type [%s]",
+                    errors.illegalArgument("[%s] has unsupported type [%s]",
                             source, configuration.getType());
-                    errors.add(new IllegalArgumentException(msg));
-                    // pluginConfig.getLogger().error(msg);
                     break;
             }
         }
     }
 
-    private static String invalidPrefix(
-            final Path source,
-            final SqlType type,
-            final SqlConfiguration configuration) {
-        return String.format("[%s] has invalid %s prefix in its name [%s]",
-                source, type, configuration.getName());
+    private void invalidPrefix(final Path source, final SqlType sqlType, final String name) {
+        errors.illegalArgument("[%s] has invalid %s prefix in its name [%s]", source, sqlType, name);
     }
 
     private void standard(final SqlConfiguration configuration) {
