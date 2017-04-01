@@ -7,8 +7,8 @@
 package de.xn__ho_hia.yosql;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import de.xn__ho_hia.yosql.cli.PathValueConverter;
 import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.GeneratorPreconditions;
 import de.xn__ho_hia.yosql.generator.LoggingGenerator;
@@ -29,7 +29,6 @@ import de.xn__ho_hia.yosql.generator.utils.ResultRowGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ResultStateGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
-import de.xn__ho_hia.yosql.model.ExecutionConfiguration.Builder;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.parser.PathBasedSqlFileResolver;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
@@ -38,6 +37,7 @@ import de.xn__ho_hia.yosql.parser.SqlFileResolver;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import joptsimple.ValueConverter;
 
 /**
  *
@@ -49,40 +49,83 @@ public class YoSqlCLI {
      * @param args
      *            The CLI arguments.
      */
-    @SuppressWarnings("nls")
     public static void main(final String[] args) {
+        final ExecutionConfiguration configuration = createConfiguration(args);
+        final YoSql yoSql = createYoSql(configuration);
+
+        yoSql.generateFiles();
+    }
+
+    @SuppressWarnings("nls")
+    private static ExecutionConfiguration createConfiguration(final String[] args) {
+        final ValueConverter<Path> pathConverter = new PathValueConverter();
         final OptionParser parser = new OptionParser();
-        final OptionSpec<String> inputBaseDirectory = parser.accepts("inputBaseDirectory").withOptionalArg()
-                .ofType(String.class).defaultsTo(".");
-        final OptionSpec<String> outputBaseDirectory = parser.accepts("outputBaseDirectory").withOptionalArg()
-                .ofType(String.class).defaultsTo(".");
-        final OptionSpec<String> basePackageName = parser.accepts("basePackageName").withOptionalArg()
-                .ofType(String.class).defaultsTo("com.example.persistence");
-        parser.accepts("utilityPackageName");
-        parser.accepts("converterPackageName");
-        parser.accepts("java");
-        parser.accepts("repositoryNameSuffix");
+        final OptionSpec<Path> inputBaseDirectory = parser.accepts("inputBaseDirectory")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo(".")
+                .withValuesConvertedBy(pathConverter)
+                .describedAs("The input directory for .sql files");
+        final OptionSpec<Path> outputBaseDirectory = parser.accepts("outputBaseDirectory")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo(".")
+                .withValuesConvertedBy(pathConverter)
+                .describedAs("The output directory for all generated files");
+        final OptionSpec<String> basePackageName = parser.accepts("basePackageName")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo("com.example.persistence")
+                .describedAs("The base package name for the generated code.");
+        final OptionSpec<String> utilityPackageName = parser.accepts("utilityPackageName")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo("util")
+                .describedAs("The package name suffix for the generated utilities.");
+        final OptionSpec<String> converterPackageName = parser.accepts("converterPackageName")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo("converter")
+                .describedAs("The package name suffix for the generated converters.");
+        final OptionSpec<String> java = parser.accepts("java")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo("1.8")
+                .describedAs("The target Java source version for the generated code.");
+        final OptionSpec<String> repositoryNameSuffix = parser.accepts("repositoryNameSuffix")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo("Repository")
+                .describedAs("The repository name suffix to use for all generated repositories.");
+        final OptionSpec<String> sqlFilesCharset = parser.accepts("sqlFilesCharset")
+                .withRequiredArg()
+                .ofType(String.class)
+                .describedAs("The character set to use while reading .sql files.");
+        final OptionSpec<String> sqlStatementSeparator = parser.accepts("sqlStatementSeparator")
+                .withRequiredArg()
+                .ofType(String.class)
+                .describedAs(
+                        "The SQL statement separator to use to split multiple SQL statement inside a single .sql file.");
         parser.accepts("defaultRowConverter");
-        parser.accepts("sqlFilesCharset");
-        parser.accepts("sqlStatementSeparator");
+
         final OptionSet options = parser.parse(args);
+        final int javaVersion = Integer.parseInt(options.valueOf(java));
 
-        final Path input = Paths.get(options.valueOf(inputBaseDirectory));
-        final Path output = Paths.get(options.valueOf(outputBaseDirectory));
-        final String packageName = options.valueOf(basePackageName);
-
-        System.out.println("Input directory: " + input);
-        System.out.println("Output directory: " + output);
-
-        final Builder configurationBuilder = YoSql.prepareDefaultConfiguration();
-        if (packageName != null && !packageName.isEmpty()) {
-            configurationBuilder.setBasePackageName(packageName);
-        }
-        final ExecutionConfiguration configuration = configurationBuilder
-                .setInputBaseDirectory(input)
-                .setOutputBaseDirectory(output)
+        return YoSql.prepareDefaultConfiguration()
+                .setInputBaseDirectory(options.valueOf(inputBaseDirectory))
+                .setOutputBaseDirectory(options.valueOf(outputBaseDirectory))
+                .setBasePackageName(options.valueOf(basePackageName))
+                .setUtilityPackageName(options.valueOf(utilityPackageName))
+                .setConverterPackageName(options.valueOf(converterPackageName))
+                .setRepositoryNameSuffix(options.valueOf(repositoryNameSuffix))
+                .setSqlFilesCharset(options.valueOf(sqlFilesCharset))
+                .setSqlStatementSeparator(options.valueOf(sqlStatementSeparator))
+                .setGenerateStreamEagerApi(javaVersion >= 8)
+                .setGenerateStreamLazyApi(javaVersion >= 8)
                 .build();
+    }
 
+    private static YoSql createYoSql(final ExecutionConfiguration configuration) {
         final ExecutionErrors errors = new ExecutionErrors();
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory);
@@ -114,9 +157,8 @@ public class YoSqlCLI {
         final ResultRowGenerator resultRowGenerator = new ResultRowGenerator(annotations, typeWriter, configuration);
         final DefaultUtilitiesGenerator utilsGenerator = new DefaultUtilitiesGenerator(flowStateGenerator,
                 resultStateGenerator, toResultRowConverterGenerator, resultRowGenerator);
-        final YoSql yoSql = new YoSql(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors);
 
-        yoSql.generateFiles();
+        return new YoSql(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors);
     }
 
 }
