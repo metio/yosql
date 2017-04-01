@@ -7,6 +7,7 @@ java_binary(
   name = "yosql-cli",
   main_class = "de.xn__ho_hia.yosql.YoSqlCLI",
   srcs = [":yosql-cli-raw-sources"],
+  resources = ["//yosql-core/resources:config-options"],
   visibility = ["//visibility:public"],
   deps = [
     "//yosql-core",

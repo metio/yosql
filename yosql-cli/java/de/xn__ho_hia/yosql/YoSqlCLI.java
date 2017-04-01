@@ -6,6 +6,62 @@
  */
 package de.xn__ho_hia.yosql;
 
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.BASE_PACKAGE_NAME;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.BASE_PACKAGE_NAME_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.BASE_PACKAGE_NAME_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CONVERTER_PACKAGE_NAME;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CONVERTER_PACKAGE_NAME_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CONVERTER_PACKAGE_NAME_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CURRENT_DIRECTORY;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.GENERATE_STANDARD_API;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.GENERATE_STANDARD_API_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.GENERATE_STANDARD_API_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.INPUT_BASE_DIRECTORY;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.INPUT_BASE_DIRECTORY_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_SUFFIX;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_SUFFIX_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_SUFFIX_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_EAGER_NAME;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_EAGER_NAME_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_EAGER_NAME_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_LAZY_NAME;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_LAZY_NAME_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_LAZY_NAME_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_PREFIX;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_PREFIX_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_PREFIX_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_SUFFIX;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_SUFFIX_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_SUFFIX_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.OUTPUT_BASE_DIRECTORY;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.REPOSITORY_NAME_SUFFIX;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.REPOSITORY_NAME_SUFFIX_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.REPOSITORY_NAME_SUFFIX_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_FILES_CHARSET;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_FILES_CHARSET_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_FILES_CHARSET_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_STATEMENT_SEPARATOR;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_STATEMENT_SEPARATOR_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_STATEMENT_SEPARATOR_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME_DESCRIPTION;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -33,7 +89,6 @@ import de.xn__ho_hia.yosql.generator.utils.FlowStateGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ResultRowGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ResultStateGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
-import de.xn__ho_hia.yosql.i18n.ConfigurationOptions;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
@@ -68,107 +123,121 @@ public class YoSqlCLI {
     private static ExecutionConfiguration createConfiguration(final String[] args, final IMessageConveyor messages) {
         final ValueConverter<Path> pathConverter = new PathValueConverter();
         final OptionParser parser = new OptionParser();
-        final Path currentDirectory = Paths.get(messages.getMessage(ConfigurationOptions.CURRENT_DIRECTORY));
+        final Path currentDirectory = Paths.get(messages.getMessage(CURRENT_DIRECTORY));
         final OptionSpec<Path> inputBaseDirectory = parser
-                .accepts(messages.getMessage(ConfigurationOptions.INPUT_BASE_DIRECTORY))
+                .accepts(messages.getMessage(INPUT_BASE_DIRECTORY))
                 .withRequiredArg()
                 .withValuesConvertedBy(pathConverter)
                 .defaultsTo(currentDirectory)
-                .describedAs(messages.getMessage(ConfigurationOptions.INPUT_BASE_DIRECTORY_DESCRIPTION));
+                .describedAs(messages.getMessage(INPUT_BASE_DIRECTORY_DESCRIPTION));
         final OptionSpec<Path> outputBaseDirectory = parser
-                .accepts(messages.getMessage(ConfigurationOptions.OUTPUT_BASE_DIRECTORY))
+                .accepts(messages.getMessage(OUTPUT_BASE_DIRECTORY))
                 .withRequiredArg()
                 .withValuesConvertedBy(pathConverter)
                 .defaultsTo(currentDirectory)
-                .describedAs(messages.getMessage(ConfigurationOptions.INPUT_BASE_DIRECTORY_DESCRIPTION));
-        final OptionSpec<String> basePackageName = parser.accepts("basePackageName")
+                .describedAs(messages.getMessage(INPUT_BASE_DIRECTORY_DESCRIPTION));
+        final OptionSpec<String> basePackageName = parser
+                .accepts(messages.getMessage(BASE_PACKAGE_NAME))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("com.example.persistence")
-                .describedAs("The base package name for the generated code.");
-        final OptionSpec<String> utilityPackageName = parser.accepts("utilityPackageName")
+                .defaultsTo(messages.getMessage(BASE_PACKAGE_NAME_DEFAULT))
+                .describedAs(messages.getMessage(BASE_PACKAGE_NAME_DESCRIPTION));
+        final OptionSpec<String> utilityPackageName = parser
+                .accepts(messages.getMessage(UTILITY_PACKAGE_NAME))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("util")
-                .describedAs("The package name suffix for the generated utilities.");
-        final OptionSpec<String> converterPackageName = parser.accepts("converterPackageName")
+                .defaultsTo(messages.getMessage(UTILITY_PACKAGE_NAME_DEFAULT))
+                .describedAs(messages.getMessage(UTILITY_PACKAGE_NAME_DESCRIPTION));
+        final OptionSpec<String> converterPackageName = parser
+                .accepts(messages.getMessage(CONVERTER_PACKAGE_NAME))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("converter")
-                .describedAs("The package name suffix for the generated converters.");
-        final OptionSpec<String> java = parser.accepts("java")
+                .defaultsTo(messages.getMessage(CONVERTER_PACKAGE_NAME_DEFAULT))
+                .describedAs(messages.getMessage(CONVERTER_PACKAGE_NAME_DESCRIPTION));
+        final OptionSpec<String> java = parser
+                .accepts(messages.getMessage(JAVA))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("1.8")
-                .describedAs("The target Java source version for the generated code.");
-        final OptionSpec<String> repositoryNameSuffix = parser.accepts("repositoryNameSuffix")
+                .defaultsTo(messages.getMessage(JAVA_DEFAULT))
+                .describedAs(messages.getMessage(JAVA_DESCRIPTION));
+        final OptionSpec<String> repositoryNameSuffix = parser
+                .accepts(messages.getMessage(REPOSITORY_NAME_SUFFIX))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("Repository")
-                .describedAs("The repository name suffix to use for all generated repositories.");
-        final OptionSpec<String> sqlFilesCharset = parser.accepts("sqlFilesCharset")
+                .defaultsTo(messages.getMessage(REPOSITORY_NAME_SUFFIX_DEFAULT))
+                .describedAs(messages.getMessage(REPOSITORY_NAME_SUFFIX_DESCRIPTION));
+        final OptionSpec<String> sqlFilesCharset = parser
+                .accepts(messages.getMessage(SQL_FILES_CHARSET))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("UTF-8")
-                .describedAs("The character set to use while reading .sql files.");
-        final OptionSpec<String> sqlStatementSeparator = parser.accepts("sqlStatementSeparator")
+                .defaultsTo(messages.getMessage(SQL_FILES_CHARSET_DEFAULT))
+                .describedAs(messages.getMessage(SQL_FILES_CHARSET_DESCRIPTION));
+        final OptionSpec<String> sqlStatementSeparator = parser
+                .accepts(messages.getMessage(SQL_STATEMENT_SEPARATOR))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo(";")
-                .describedAs(
-                        "The SQL statement separator to use to split multiple SQL statement inside a single .sql file.");
-        final OptionSpec<String> defaultRowConverter = parser.accepts("defaultRowConverter")
+                .defaultsTo(messages.getMessage(SQL_STATEMENT_SEPARATOR_DEFAULT))
+                .describedAs(messages.getMessage(SQL_STATEMENT_SEPARATOR_DESCRIPTION));
+        final OptionSpec<String> defaultRowConverter = parser
+                .accepts(messages.getMessage(DEFAULT_ROW_CONVERTER))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS)
-                .describedAs(
-                        "The default row converter to use for each statement that returns a value and does not specify a converter itself. Can either be the alias of a converter or the fully qualified name of a converter.");
-        final OptionSpec<String> methodBatchPrefix = parser.accepts("methodBatchPrefix")
+                .defaultsTo(messages.getMessage(DEFAULT_ROW_CONVERTER_DEFAULT))
+                .describedAs(messages.getMessage(DEFAULT_ROW_CONVERTER_DESCRIPTION));
+        final OptionSpec<String> methodBatchPrefix = parser
+                .accepts(messages.getMessage(METHOD_BATCH_PREFIX))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("")
-                .describedAs("The method name prefix to apply to all batch methods.");
-        final OptionSpec<String> methodBatchSuffix = parser.accepts("methodBatchSuffix")
+                .defaultsTo(messages.getMessage(METHOD_BATCH_PREFIX_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_BATCH_PREFIX_DESCRIPTION));
+        final OptionSpec<String> methodBatchSuffix = parser
+                .accepts(messages.getMessage(METHOD_BATCH_SUFFIX))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("Batch")
-                .describedAs("The method name suffix to apply to all batch methods.");
-        final OptionSpec<String> methodStreamPrefix = parser.accepts("methodStreamPrefix")
+                .defaultsTo(messages.getMessage(METHOD_BATCH_SUFFIX_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_BATCH_SUFFIX_DESCRIPTION));
+        final OptionSpec<String> methodStreamPrefix = parser
+                .accepts(messages.getMessage(METHOD_STREAM_PREFIX))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("")
-                .describedAs("The method name prefix to apply to all stream methods.");
-        final OptionSpec<String> methodStreamSuffix = parser.accepts("methodStreamSuffix")
+                .defaultsTo(messages.getMessage(METHOD_STREAM_PREFIX_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_STREAM_PREFIX_DESCRIPTION));
+        final OptionSpec<String> methodStreamSuffix = parser
+                .accepts(messages.getMessage(METHOD_STREAM_SUFFIX))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("Stream")
-                .describedAs("The method name suffix to apply to all stream methods.");
-        final OptionSpec<String> methodRxJavaPrefix = parser.accepts("methodRxJavaPrefix")
+                .defaultsTo(messages.getMessage(METHOD_STREAM_SUFFIX_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_STREAM_SUFFIX_DESCRIPTION));
+        final OptionSpec<String> methodRxJavaPrefix = parser
+                .accepts(messages.getMessage(METHOD_RXJAVA_PREFIX))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("")
-                .describedAs("The method name prefix to apply to all stream methods.");
-        final OptionSpec<String> methodRxJavaSuffix = parser.accepts("methodRxJavaSuffix")
+                .defaultsTo(messages.getMessage(METHOD_RXJAVA_PREFIX_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_RXJAVA_PREFIX_DESCRIPTION));
+        final OptionSpec<String> methodRxJavaSuffix = parser
+                .accepts(messages.getMessage(METHOD_RXJAVA_SUFFIX))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("Flow")
-                .describedAs("The method name suffix to apply to all stream methods.");
-        final OptionSpec<String> methodEagerName = parser.accepts("methodEagerName")
+                .defaultsTo(messages.getMessage(METHOD_RXJAVA_SUFFIX_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_RXJAVA_SUFFIX_DESCRIPTION));
+        final OptionSpec<String> methodEagerName = parser
+                .accepts(messages.getMessage(METHOD_EAGER_NAME))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("Eager")
-                .describedAs("The method name suffix to apply to all eager stream methods.");
-        final OptionSpec<String> methodLazyName = parser.accepts("methodLazyName")
+                .defaultsTo(messages.getMessage(METHOD_EAGER_NAME_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_EAGER_NAME_DESCRIPTION));
+        final OptionSpec<String> methodLazyName = parser
+                .accepts(messages.getMessage(METHOD_LAZY_NAME))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("Lazy")
-                .describedAs("The method name suffix to apply to all lazy stream methods.");
-        final OptionSpec<Boolean> generateStandardApi = parser.accepts("generateStandardApi")
+                .defaultsTo(messages.getMessage(METHOD_LAZY_NAME_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_LAZY_NAME_DESCRIPTION));
+        final OptionSpec<Boolean> generateStandardApi = parser
+                .accepts(messages.getMessage(GENERATE_STANDARD_API))
                 .withRequiredArg()
                 .ofType(Boolean.class)
-                .defaultsTo(Boolean.TRUE)
-                .describedAs(
-                        "Controls whether the generated repositories should contain standard methods that. Standard methods execute depending on the type of the query and could either be a single 'executeQuery' on a PreparedStatement in case of SQL SELECT statements or a single call to 'executeUpdate' for SQL UPDATE statements.");
+                .defaultsTo(Boolean.valueOf(messages.getMessage(GENERATE_STANDARD_API_DEFAULT)))
+                .describedAs(messages.getMessage(GENERATE_STANDARD_API_DESCRIPTION));
 
         final OptionSet options = parser.parse(args);
         final int javaVersion = parseJavaVersion(options.valueOf(java));
