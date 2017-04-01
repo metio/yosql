@@ -133,6 +133,7 @@ public class YoSql {
     public void generateFiles() {
         final List<SqlStatement> allStatements = Timer.timed("parse statements",
                 () -> fileResolver.resolveFiles()
+                        .stream()
                         .flatMap(sqlFileParser::parse)
                         .sorted(Comparator.comparing(SqlStatement::getName))
                         .collect(Collectors.toList()));

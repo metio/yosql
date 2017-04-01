@@ -25,7 +25,6 @@ import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlParameter;
-import de.xn__ho_hia.yosql.model.SqlSourceFile;
 import de.xn__ho_hia.yosql.model.SqlType;
 
 @SuppressWarnings({ "javadoc", "nls" })
@@ -42,12 +41,12 @@ public class SqlConfigurationFactory {
     }
 
     public SqlConfiguration createStatementConfiguration(
-            final SqlSourceFile source,
+            final Path source,
             final String yaml,
             final Map<String, List<Integer>> parameterIndices,
             final int statementInFile) {
         final SqlConfiguration configuration = loadConfig(yaml);
-        final String fileName = getFileNameWithoutExtension(source.getPathToSqlFile());
+        final String fileName = getFileNameWithoutExtension(source);
 
         name(configuration, fileName, statementInFile);
         batchNamePrefix(configuration);
@@ -142,7 +141,7 @@ public class SqlConfigurationFactory {
         }
     }
 
-    private void validateNames(final SqlSourceFile source, final SqlConfiguration configuration) {
+    private void validateNames(final Path source, final SqlConfiguration configuration) {
         if (config.validateMethodNamePrefixes()) {
             switch (configuration.getType()) {
                 case READING:
@@ -168,7 +167,7 @@ public class SqlConfigurationFactory {
                     break;
                 default:
                     final String msg = String.format("[%s] has unsupported type [%s]",
-                            source.getPathToSqlFile(), configuration.getType());
+                            source, configuration.getType());
                     errors.add(new IllegalArgumentException(msg));
                     // pluginConfig.getLogger().error(msg);
                     break;
@@ -177,11 +176,11 @@ public class SqlConfigurationFactory {
     }
 
     private static String invalidPrefix(
-            final SqlSourceFile source,
+            final Path source,
             final SqlType type,
             final SqlConfiguration configuration) {
         return String.format("[%s] has invalid %s prefix in its name [%s]",
-                source.getPathToSqlFile(), type, configuration.getName());
+                source, type, configuration.getName());
     }
 
     private void standard(final SqlConfiguration configuration) {
@@ -236,7 +235,7 @@ public class SqlConfigurationFactory {
         }
     }
 
-    private void repository(final SqlSourceFile source, final SqlConfiguration configuration) {
+    private void repository(final Path source, final SqlConfiguration configuration) {
         if (configuration.hasRepository()) {
             final String repositoryName = calculateRepositoryNameFromUserInput(configuration);
             configuration.setRepository(repositoryName);
@@ -246,8 +245,8 @@ public class SqlConfigurationFactory {
         }
     }
 
-    private String calculateRepositoryNameFromParentFolder(final SqlSourceFile source) {
-        final Path relativePathToSqlFile = config.inputBaseDirectory().relativize(source.getPathToSqlFile());
+    private String calculateRepositoryNameFromParentFolder(final Path source) {
+        final Path relativePathToSqlFile = config.inputBaseDirectory().relativize(source);
         final String rawRepositoryName = relativePathToSqlFile.getParent().toString();
         final String dottedRepositoryName = rawRepositoryName.replace("/", ".");
         final String upperCaseName = upperCaseFirstLetter(dottedRepositoryName);
@@ -278,7 +277,7 @@ public class SqlConfigurationFactory {
                 : config.basePackageName() + "." + repository;
     }
 
-    private void parameters(final SqlSourceFile source, final Map<String, List<Integer>> parameterIndices,
+    private void parameters(final Path source, final Map<String, List<Integer>> parameterIndices,
             final SqlConfiguration configuration) {
         if (parametersAreValid(source, parameterIndices, configuration)) {
             for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
@@ -398,13 +397,13 @@ public class SqlConfigurationFactory {
     }
 
     private boolean parametersAreValid(
-            final SqlSourceFile source,
+            final Path source,
             final Map<String, List<Integer>> parameterIndices,
             final SqlConfiguration configuration) {
         final List<String> parameterErrors = configuration.getParameters().stream()
                 .filter(param -> !parameterIndices.containsKey(param.getName()))
                 .map(param -> String.format("[%s] declares unknown parameter [%s]",
-                        source.getPathToSqlFile(), param.getName()))
+                        source, param.getName()))
                 .peek(msg -> errors.add(new IllegalArgumentException(msg)))
                 // .peek(msg -> pluginConfig.getLogger().error(msg))
                 .collect(Collectors.toList());

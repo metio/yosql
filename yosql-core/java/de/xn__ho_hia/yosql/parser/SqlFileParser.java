@@ -31,7 +31,6 @@ import javax.inject.Singleton;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
-import de.xn__ho_hia.yosql.model.SqlSourceFile;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 @Named
@@ -58,10 +57,10 @@ public class SqlFileParser {
         this.factory = factory;
     }
 
-    public Stream<SqlStatement> parse(final SqlSourceFile source) {
+    public Stream<SqlStatement> parse(final Path source) {
         try {
             final Charset charset = Charset.forName(pluginConfig.sqlFilesCharset());
-            final Path pathToSqlFile = source.getPathToSqlFile();
+            final Path pathToSqlFile = source;
             try (final Stream<String> lines = Files.lines(pathToSqlFile, charset)) {
                 final String rawText = lines.filter(this::isNotEmpty)
                         .collect(joining(NEWLINE));
@@ -81,7 +80,7 @@ public class SqlFileParser {
     }
 
     private SqlStatement convert(
-            final SqlSourceFile source,
+            final Path source,
             final String rawStatement,
             final int statementInFile) {
         final StringBuilder yaml = new StringBuilder();
