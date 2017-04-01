@@ -35,6 +35,9 @@ import de.xn__ho_hia.yosql.parser.PathBasedSqlFileResolver;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 import de.xn__ho_hia.yosql.parser.SqlFileResolver;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
 
 /**
  *
@@ -48,19 +51,35 @@ public class YoSqlCLI {
      */
     @SuppressWarnings("nls")
     public static void main(final String[] args) {
-        final Path inputBaseDirectory = args != null && args.length > 0 ? Paths.get(args[0]) : Paths.get(".");
-        final Path outputBaseDirectory = args != null && args.length > 1 ? Paths.get(args[1]) : Paths.get(".");
-        final String basePackageName = args != null && args.length > 2 ? args[2] : null;
+        final OptionParser parser = new OptionParser();
+        final OptionSpec<String> inputBaseDirectory = parser.accepts("inputBaseDirectory").withOptionalArg()
+                .ofType(String.class).defaultsTo(".");
+        final OptionSpec<String> outputBaseDirectory = parser.accepts("outputBaseDirectory").withOptionalArg()
+                .ofType(String.class).defaultsTo(".");
+        final OptionSpec<String> basePackageName = parser.accepts("basePackageName").withOptionalArg()
+                .ofType(String.class).defaultsTo("com.example.persistence");
+        parser.accepts("utilityPackageName");
+        parser.accepts("converterPackageName");
+        parser.accepts("java");
+        parser.accepts("repositoryNameSuffix");
+        parser.accepts("defaultRowConverter");
+        parser.accepts("sqlFilesCharset");
+        parser.accepts("sqlStatementSeparator");
+        final OptionSet options = parser.parse(args);
 
-        System.out.println("Input directory: " + inputBaseDirectory);
-        System.out.println("Output directory: " + outputBaseDirectory);
+        final Path input = Paths.get(options.valueOf(inputBaseDirectory));
+        final Path output = Paths.get(options.valueOf(outputBaseDirectory));
+        final String packageName = options.valueOf(basePackageName);
+
+        System.out.println("Input directory: " + input);
+        System.out.println("Output directory: " + output);
 
         final Builder configurationBuilder = YoSql.prepareDefaultConfiguration();
-        if (basePackageName != null && !basePackageName.isEmpty()) {
-            configurationBuilder.setBasePackageName(basePackageName);
+        if (packageName != null && !packageName.isEmpty()) {
+            configurationBuilder.setBasePackageName(packageName);
         }
         final ExecutionConfiguration configuration = configurationBuilder
-                .setOutputBaseDirectory(outputBaseDirectory)
+                .setOutputBaseDirectory(output)
                 .build();
 
         final ExecutionErrors errors = new ExecutionErrors();
@@ -96,7 +115,7 @@ public class YoSqlCLI {
                 resultStateGenerator, toResultRowConverterGenerator, resultRowGenerator);
         final YoSql<Path> yoSql = new YoSql<>(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors);
 
-        yoSql.generateFiles(inputBaseDirectory);
+        yoSql.generateFiles(input);
     }
 
 }
