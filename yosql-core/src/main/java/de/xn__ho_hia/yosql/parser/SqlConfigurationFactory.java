@@ -237,14 +237,19 @@ public class SqlConfigurationFactory {
         final Path relativePathToSqlFile = config.inputBaseDirectory().relativize(source);
         final String rawRepositoryName = relativePathToSqlFile.getParent().toString();
         final String dottedRepositoryName = rawRepositoryName.replace("/", ".");
-        final String upperCaseName = upperCaseFirstLetter(dottedRepositoryName);
+        final String upperCaseName = upperCaseFirstLetterInLastSegment(dottedRepositoryName);
         final String actualRepository = repositoryInBasePackage(upperCaseName);
         final String fullRepositoryName = repositoryWithNameSuffix(actualRepository);
         return fullRepositoryName;
     }
 
-    private static String upperCaseFirstLetter(final String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
+    private static String upperCaseFirstLetterInLastSegment(final String name) {
+        if (name.contains(".")) {
+            return name.substring(0, name.lastIndexOf(".") + 1)
+                    + name.substring(name.lastIndexOf(".") + 1, name.lastIndexOf(".") + 2).toUpperCase()
+                    + name.substring(name.lastIndexOf(".") + 2);
+        }
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     private String calculateRepositoryNameFromUserInput(final SqlConfiguration configuration) {
