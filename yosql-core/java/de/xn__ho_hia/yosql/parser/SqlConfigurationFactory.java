@@ -247,7 +247,7 @@ public class SqlConfigurationFactory {
     }
 
     private String calculateRepositoryNameFromParentFolder(final SqlSourceFile source) {
-        final Path relativePathToSqlFile = source.getBaseDirectory().relativize(source.getPathToSqlFile());
+        final Path relativePathToSqlFile = config.inputBaseDirectory().relativize(source.getPathToSqlFile());
         final String rawRepositoryName = relativePathToSqlFile.getParent().toString();
         final String dottedRepositoryName = rawRepositoryName.replace("/", ".");
         final String upperCaseName = upperCaseFirstLetter(dottedRepositoryName);
