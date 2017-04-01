@@ -102,8 +102,7 @@ import joptsimple.OptionSpec;
 import joptsimple.ValueConverter;
 
 /**
- *
- *
+ * Command line interface for YoSQL.
  */
 public class YoSqlCLI {
 
