@@ -41,6 +41,7 @@ java_library(
 java_library(
   name = "yosql-core",
   srcs = [":yosql-core-raw-sources",],
+  resources = ["//yosql-core/resources:config-options"],
   visibility = ["//visibility:public"],
   deps = [
     "//external:javapoet_type_guesser",
@@ -52,6 +53,7 @@ java_library(
     "//external:log4j_api",
     "//external:log4j_core",
     "//external:slf4j_api",
+    "//external:cal10n",
     ":auto",
   ],
 )

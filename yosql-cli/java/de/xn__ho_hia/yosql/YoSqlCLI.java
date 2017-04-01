@@ -9,7 +9,10 @@ package de.xn__ho_hia.yosql;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Locale;
 
+import ch.qos.cal10n.IMessageConveyor;
+import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.cli.PathValueConverter;
 import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.GeneratorPreconditions;
@@ -30,6 +33,7 @@ import de.xn__ho_hia.yosql.generator.utils.FlowStateGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ResultRowGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ResultStateGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
+import de.xn__ho_hia.yosql.i18n.ConfigurationOptions;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
@@ -53,22 +57,24 @@ public class YoSqlCLI {
      *            The CLI arguments.
      */
     public static void main(final String[] args) {
-        final ExecutionConfiguration configuration = createConfiguration(args);
+        final IMessageConveyor messages = new MessageConveyor(Locale.getDefault());
+        final ExecutionConfiguration configuration = createConfiguration(args, messages);
         final YoSql yoSql = createYoSql(configuration);
 
         yoSql.generateFiles();
     }
 
     @SuppressWarnings("nls")
-    private static ExecutionConfiguration createConfiguration(final String[] args) {
+    private static ExecutionConfiguration createConfiguration(final String[] args, final IMessageConveyor messages) {
         final ValueConverter<Path> pathConverter = new PathValueConverter();
         final OptionParser parser = new OptionParser();
         final Path currentDirectory = Paths.get(".");
-        final OptionSpec<Path> inputBaseDirectory = parser.accepts("inputBaseDirectory")
+        final OptionSpec<Path> inputBaseDirectory = parser
+                .accepts(messages.getMessage(ConfigurationOptions.INPUT_BASE_DIRECTORY))
                 .withRequiredArg()
                 .withValuesConvertedBy(pathConverter)
                 .defaultsTo(currentDirectory)
-                .describedAs("The input directory for .sql files");
+                .describedAs(messages.getMessage(ConfigurationOptions.INPUT_BASE_DIRECTORY_DESCRIPTION));
         final OptionSpec<Path> outputBaseDirectory = parser.accepts("outputBaseDirectory")
                 .withRequiredArg()
                 .withValuesConvertedBy(pathConverter)

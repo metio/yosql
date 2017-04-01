@@ -9,6 +9,7 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="yosql-core/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_squareup_javapoet/jar/_ijar/jar/external/com_squareup_javapoet/jar/javapoet-1.8.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/javax_inject_javax_inject/jar/_ijar/jar/external/javax_inject_javax_inject/jar/javax.inject-1-ijar.jar"/>
@@ -29,5 +30,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="bazel-genfiles/external/javax_annotation_javax_annotation_api/jar/_ijar/jar/external/javax_annotation_javax_annotation_api/jar/jsr305-3.0.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/net_sf_jopt_simple/jar/_ijar/jar/external/net_sf_jopt_simple/jar/jopt-simple-4.9-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/ch_qos_cal10n_cal10n_api/jar/_ijar/jar/external/ch_qos_cal10n_cal10n_api/jar/cal10n-api-0.8.1-ijar.jar"/>
 	<classpathentry kind="output" path="bazel-out/ide/classes"/>
 </classpath>

@@ -171,3 +171,12 @@ bind(
     name = "jopt_simple",
     actual = "@net_sf_jopt_simple//jar",
 )
+
+maven_jar(
+    name = "ch_qos_cal10n_cal10n_api",
+    artifact = "ch.qos.cal10n:cal10n-api:0.8.1",
+)
+bind(
+    name = "cal10n",
+    actual = "@ch_qos_cal10n_cal10n_api//jar",
+)
