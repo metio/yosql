@@ -41,6 +41,7 @@ java_library(
 java_library(
   name = "yosql-core",
   srcs = [":yosql-core-raw-sources",],
+  resources = ["//yosql-core/resources:config-options"],
   visibility = ["//visibility:public"],
   deps = [
     "//external:javapoet_type_guesser",

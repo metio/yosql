@@ -63,8 +63,11 @@ public class SqlConfiguration {
         final AtomicInteger hits = new AtomicInteger(0);
         return Arrays.stream(strings)
                 .filter(Objects::nonNull)
-                .map(s -> hits.getAndIncrement() == 0 ? s : s.substring(0, 1).toUpperCase()
-                        + s.substring(1, s.length()))
+                .map(String::trim)
+                .filter(string -> !string.isEmpty())
+                .map(string -> hits.getAndIncrement() == 0
+                        ? string
+                        : string.substring(0, 1).toUpperCase() + string.substring(1))
                 .collect(Collectors.joining());
     }
 
