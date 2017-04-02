@@ -11,7 +11,7 @@ public class YoSqlWithMediumSampleBenchmark extends AbstractGenerateFilesBenchma
 
     /**
      * @throws IOException
-     *             In case anything goes wrong while creating a temporary directory.
+     *             In case anything goes wrong while creating .sql files.
      */
     @Setup
     public void generateSqlFiles() throws IOException {
