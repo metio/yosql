@@ -1,4 +1,4 @@
-package de.xn__ho_hia.yosql.generator;
+package de.xn__ho_hia.yosql.parser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 
 /**
- * Preconditios that have to be matched before code can be generated.
+ * Preconditios that have to be matched for SQL parsing to work.
  */
-public class GeneratorPreconditions {
+public class ParserPreconditions {
 
     private final ExecutionErrors errors;
 
@@ -20,7 +20,7 @@ public class GeneratorPreconditions {
      *            The error collector to use.
      */
     @Inject
-    public GeneratorPreconditions(final ExecutionErrors errors) {
+    public ParserPreconditions(final ExecutionErrors errors) {
         this.errors = errors;
     }
 

@@ -180,3 +180,28 @@ bind(
     name = "cal10n",
     actual = "@ch_qos_cal10n_cal10n_api//jar",
 )
+
+maven_jar(
+    name = "org_openjdk_jmh_jmh_core",
+    artifact = "org.openjdk.jmh:jmh-core:1.18",
+)
+bind(
+    name = "jmh_core",
+    actual = "@org_openjdk_jmh_jmh_core//jar",
+)
+maven_jar(
+    name = "org_openjdk_jmh_jmh_generator_annprocess",
+    artifact = "org.openjdk.jmh:jmh-generator-annprocess:1.18",
+)
+bind(
+    name = "jmh_generator_annprocess",
+    actual = "@org_openjdk_jmh_jmh_generator_annprocess//jar",
+)
+maven_jar(
+    name = "org_apache_commons_commons_math3",
+    artifact = "org.apache.commons:commons-math3:3.6.1",
+)
+bind(
+    name = "commons_math3",
+    actual = "@org_apache_commons_commons_math3//jar",
+)

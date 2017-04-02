@@ -62,6 +62,9 @@ import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME_DEFAULT;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME_DESCRIPTION;
 
+import java.io.BufferedOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -71,12 +74,11 @@ import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.cli.PathValueConverter;
 import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
-import de.xn__ho_hia.yosql.generator.GeneratorPreconditions;
 import de.xn__ho_hia.yosql.generator.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.TypeWriter;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
-import de.xn__ho_hia.yosql.generator.logging.NoOpLoggingGenerator;
+import de.xn__ho_hia.yosql.generator.logging.JdkLoggingGenerator;
 import de.xn__ho_hia.yosql.generator.raw_jdbc.RawJdbcBatchMethodGenerator;
 import de.xn__ho_hia.yosql.generator.raw_jdbc.RawJdbcJava8StreamMethodGenerator;
 import de.xn__ho_hia.yosql.generator.raw_jdbc.RawJdbcMethodGenerator;
@@ -92,10 +94,12 @@ import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
+import de.xn__ho_hia.yosql.parser.ParserPreconditions;
 import de.xn__ho_hia.yosql.parser.PathBasedSqlFileResolver;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 import de.xn__ho_hia.yosql.parser.SqlFileResolver;
+import de.xn__ho_hia.yosql.utils.Timer;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -109,8 +113,10 @@ public class YoSqlCLI {
     /**
      * @param args
      *            The CLI arguments.
+     * @throws Exception
+     *             In case anything goes wrong
      */
-    public static void main(final String[] args) {
+    public static void main(final String... args) throws Exception {
         final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
         final ExecutionErrors errors = new ExecutionErrors();
         final ExecutionConfiguration configuration = createConfiguration(args, messages, errors);
@@ -292,18 +298,21 @@ public class YoSqlCLI {
         if (versionParts.length > 1) {
             versionToParse = versionParts[1];
         }
-        final int javaVersion = Integer.parseInt(versionToParse);
-        return javaVersion;
+        return Integer.parseInt(versionToParse);
     }
 
-    private static YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors) {
+    private static YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors)
+            throws UnsupportedEncodingException {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
-        final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory, System.out);
-        final GeneratorPreconditions preconditions = new GeneratorPreconditions(errors);
+        final PrintStream output = new PrintStream(new BufferedOutputStream(System.out, 8192 * 4), true, "UTF-8"); //$NON-NLS-1$
+        // final Writer out = new BufferedWriter(new OutputStreamWriter(System.out));
+        final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory, output);
+        final ParserPreconditions preconditions = new ParserPreconditions(errors);
         final SqlFileResolver fileResolver = new PathBasedSqlFileResolver(preconditions, errors, configuration);
-        final TypeWriter typeWriter = new TypeWriter(errors, System.out);
+        final TypeWriter typeWriter = new TypeWriter(errors, output);
         final AnnotationGenerator annotations = new AnnotationGenerator(configuration);
-        final LoggingGenerator logging = new NoOpLoggingGenerator();
+        final TypicalFields fields = new TypicalFields(annotations);
+        final LoggingGenerator logging = new JdkLoggingGenerator(fields);
         final TypicalCodeBlocks codeBlocks = new TypicalCodeBlocks(configuration, logging);
         final RawJdbcRxJavaMethodGenerator rxJavaMethodGenerator = new RawJdbcRxJavaMethodGenerator(configuration,
                 codeBlocks, annotations);
@@ -315,7 +324,6 @@ public class YoSqlCLI {
                 annotations);
         final RawJdbcMethodGenerator methodGenerator = new RawJdbcMethodGenerator(rxJavaMethodGenerator,
                 java8StreamMethodGenerator, batchMethodGenerator, standardMethodGenerator, annotations);
-        final TypicalFields fields = new TypicalFields(annotations);
         final RawJdbcRepositoryFieldGenerator fieldGenerator = new RawJdbcRepositoryFieldGenerator(fields, logging);
         final RawJdbcRepositoryGenerator repositoryGenerator = new RawJdbcRepositoryGenerator(typeWriter, configuration,
                 annotations, methodGenerator, fieldGenerator);
@@ -327,8 +335,9 @@ public class YoSqlCLI {
         final ResultRowGenerator resultRowGenerator = new ResultRowGenerator(annotations, typeWriter, configuration);
         final DefaultUtilitiesGenerator utilsGenerator = new DefaultUtilitiesGenerator(flowStateGenerator,
                 resultStateGenerator, toResultRowConverterGenerator, resultRowGenerator);
+        final Timer timer = new Timer(output);
 
-        return new YoSql(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors);
+        return new YoSql(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer);
     }
 
 }

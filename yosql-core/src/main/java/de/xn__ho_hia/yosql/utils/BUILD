@@ -9,4 +9,7 @@ java_library(
     ":yosql-core-utils-raw-sources",
   ],
   visibility = ["//yosql-core:__pkg__"],
+  deps = [
+    "//external:javax_inject",
+  ],
 )

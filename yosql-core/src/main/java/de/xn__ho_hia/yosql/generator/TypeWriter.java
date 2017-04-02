@@ -53,7 +53,9 @@ public class TypeWriter {
             final TypeSpec typeSpec) {
         try {
             JavaFile.builder(packageName, typeSpec).build().writeTo(baseDirectory);
-            out.println(String.format("Generated [%s.%s]", packageName, typeSpec.name)); //$NON-NLS-1$
+            if (out != null) {
+                out.println(String.format("Generated [%s.%s]", packageName, typeSpec.name)); //$NON-NLS-1$
+            }
         } catch (final IOException exception) {
             errors.add(exception);
             out.println(String.format("Could not write [%s.%s] into [%s]", //$NON-NLS-1$

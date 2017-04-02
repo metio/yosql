@@ -7,14 +7,13 @@
 package de.xn__ho_hia.yosql;
 
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -46,6 +45,7 @@ public class YoSql {
     private final RepositoryGenerator repositoryGenerator;
     private final UtilitiesGenerator  utilsGenerator;
     private final ExecutionErrors     errors;
+    private final Timer               timer;
 
     /**
      * @param fileResolver
@@ -58,6 +58,8 @@ public class YoSql {
      *            The utilities generator to use.
      * @param errors
      *            The error collector to use.
+     * @param timer
+     *            The timer to use.
      */
     @Inject
     public YoSql(
@@ -65,12 +67,14 @@ public class YoSql {
             final SqlFileParser sqlFileParser,
             final RepositoryGenerator repositoryGenerator,
             final UtilitiesGenerator utilsGenerator,
-            final ExecutionErrors errors) {
+            final ExecutionErrors errors,
+            final Timer timer) {
         this.fileResolver = fileResolver;
         this.sqlFileParser = sqlFileParser;
         this.repositoryGenerator = repositoryGenerator;
         this.utilsGenerator = utilsGenerator;
         this.errors = errors;
+        this.timer = timer;
     }
 
     /**
@@ -131,22 +135,38 @@ public class YoSql {
     }
 
     /**
+     * @throws ExecutionException
+     *             For any errors during execution.
+     * @throws InterruptedException
+     *             For any errors during thread operation.
      */
     @SuppressWarnings("nls")
-    public void generateFiles() {
-        final List<SqlStatement> allStatements = Timer.timed("parse statements",
+    public void generateFiles() throws InterruptedException, ExecutionException {
+        final List<SqlStatement> allStatements = timer.timed("parse statements",
                 () -> fileResolver.resolveFiles()
                         .flatMap(sqlFileParser::parse)
                         .collect(Collectors.toList()));
         if (errors.hasErrors()) {
             errors.throwWith(new SqlFileParsingException("Error during SQL file parsing"));
         }
-        Timer.timed("generate repositories", () -> allStatements.stream()
-                .sorted(Comparator.comparing(SqlStatement::getRepository)
-                        .thenComparing(Comparator.comparing(SqlStatement::getName)))
-                .collect(groupingBy(SqlStatement::getRepository, LinkedHashMap::new, toList()))
-                .forEach(repositoryGenerator::generateRepository));
-        Timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
+        // CompletableFuture.runAsync(() -> timer.timed("generate repositories", () -> allStatements.stream()
+        // .collect(groupingBy(SqlStatement::getRepository))
+        // .entrySet()
+        // .parallelStream()
+        // .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
+        // repository.getValue()))))
+        // .thenRun(
+        // () -> timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements)))
+        // .join();
+        final ForkJoinPool forkJoinPool = new ForkJoinPool();
+        forkJoinPool.submit(() -> timer.timed("generate repositories", () -> allStatements.stream()
+                .collect(groupingBy(SqlStatement::getRepository))
+                .entrySet()
+                .parallelStream()
+                .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
+                        repository.getValue()))))
+                .get();
+        timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
 
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException("Error during code generation"));

@@ -48,7 +48,6 @@ public class SqlFileParser {
     private final ExecutionErrors         errors;
     private final SqlConfigurationFactory factory;
     private final ExecutionConfiguration  config;
-
     private final PrintStream             out;
 
     /**
@@ -88,8 +87,7 @@ public class SqlFileParser {
                 final String[] rawStatements = rawText.split(config.sqlStatementSeparator());
                 final AtomicInteger counter = new AtomicInteger(0);
                 return Arrays.stream(rawStatements)
-                        .map(statement -> convert(source, statement, counter.getAndIncrement()))
-                        .peek(statement -> out.println(String.format("Parsed [%s#%s]", source, statement.getName()))); //$NON-NLS-1$
+                        .map(statement -> convert(source, statement, counter.getAndIncrement()));
             }
         } catch (final Throwable exception) {
             errors.add(exception);
@@ -117,6 +115,10 @@ public class SqlFileParser {
         final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
 
+        if (out != null) {
+            out.printf("Parsed [%s#%s]", source, configuration.getName()); //$NON-NLS-1$
+            out.println();
+        }
         return new SqlStatement(configuration, rawSqlStatement);
     }
 

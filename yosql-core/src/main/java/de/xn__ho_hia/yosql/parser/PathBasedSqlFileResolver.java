@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import de.xn__ho_hia.yosql.generator.GeneratorPreconditions;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 
@@ -19,7 +18,7 @@ import de.xn__ho_hia.yosql.model.ExecutionErrors;
  */
 public final class PathBasedSqlFileResolver implements SqlFileResolver {
 
-    private final GeneratorPreconditions preconditions;
+    private final ParserPreconditions preconditions;
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration configuration;
 
@@ -33,7 +32,7 @@ public final class PathBasedSqlFileResolver implements SqlFileResolver {
      */
     @Inject
     public PathBasedSqlFileResolver(
-            final GeneratorPreconditions preconditions,
+            final ParserPreconditions preconditions,
             final ExecutionErrors errors,
             final ExecutionConfiguration configuration) {
         this.preconditions = preconditions;
