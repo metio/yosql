@@ -82,51 +82,27 @@ abstract class AbstractGenerateFilesBenchmark {
     protected void generateSqlFiles(final int numberOfRepositories) throws IOException {
         final Path inputDirectory = tempDirectory.resolve("input");
 
-        final InputStream callFunction = getClass().getResourceAsStream("/sql-files/usecases/callFunction.sql");
-        try (final BufferedReader callFunctionReader = new BufferedReader(new InputStreamReader(callFunction))) {
-            final String callFunctionRaw = callFunctionReader.lines().collect(Collectors.joining("\n"));
-            final Path callFunctionSqlFile = tempDirectory.resolve("callFunction.sql");
-            Files.write(callFunctionSqlFile, callFunctionRaw.getBytes(StandardCharsets.UTF_8));
-            for (int index = 0; index < numberOfRepositories; index++) {
-                final Path repositoryDirectory = inputDirectory.resolve("repository" + index);
-                Files.createDirectories(repositoryDirectory);
-                Files.copy(callFunctionSqlFile, repositoryDirectory.resolve("callFunction.sql"));
-            }
-        }
-        final InputStream insertData = getClass().getResourceAsStream("/sql-files/usecases/insertData.sql");
-        try (final BufferedReader insertDataReader = new BufferedReader(
-                new InputStreamReader(insertData, StandardCharsets.UTF_8))) {
-            final String insertDataRaw = insertDataReader.lines().collect(Collectors.joining("\n"));
-            final Path insertDataSqlFile = tempDirectory.resolve("insertData.sql");
-            Files.write(insertDataSqlFile, insertDataRaw.getBytes(StandardCharsets.UTF_8));
-            for (int index = 0; index < numberOfRepositories; index++) {
-                final Path repositoryDirectory = inputDirectory.resolve("repository" + index);
-                Files.createDirectories(repositoryDirectory);
-                Files.copy(insertDataSqlFile, repositoryDirectory.resolve("insertData.sql"));
-            }
-        }
-        final InputStream readData = getClass().getResourceAsStream("/sql-files/usecases/readData.sql");
-        try (final BufferedReader insertDataReader = new BufferedReader(
-                new InputStreamReader(readData, StandardCharsets.UTF_8))) {
-            final String insertDataRaw = insertDataReader.lines().collect(Collectors.joining("\n"));
-            final Path insertDataSqlFile = tempDirectory.resolve("readData.sql");
-            Files.write(insertDataSqlFile, insertDataRaw.getBytes(StandardCharsets.UTF_8));
-            for (int index = 0; index < numberOfRepositories; index++) {
-                final Path repositoryDirectory = inputDirectory.resolve("repository" + index);
-                Files.createDirectories(repositoryDirectory);
-                Files.copy(insertDataSqlFile, repositoryDirectory.resolve("readData.sql"));
-            }
-        }
-        final InputStream updateData = getClass().getResourceAsStream("/sql-files/usecases/updateData.sql");
+        prepareRepository(numberOfRepositories, inputDirectory, "callFunction.sql");
+        prepareRepository(numberOfRepositories, inputDirectory, "insertData.sql");
+        prepareRepository(numberOfRepositories, inputDirectory, "readData.sql");
+        prepareRepository(numberOfRepositories, inputDirectory, "updateData.sql");
+    }
+
+    @SuppressWarnings("nls")
+    private void prepareRepository(
+            final int numberOfRepositories,
+            final Path inputDirectory,
+            final String fileName) throws IOException {
+        final InputStream updateData = getClass().getResourceAsStream("/sql-files/usecases/" + fileName);
         try (final BufferedReader insertDataReader = new BufferedReader(
                 new InputStreamReader(updateData, StandardCharsets.UTF_8))) {
             final String insertDataRaw = insertDataReader.lines().collect(Collectors.joining("\n"));
-            final Path insertDataSqlFile = tempDirectory.resolve("updateData.sql");
+            final Path insertDataSqlFile = tempDirectory.resolve(fileName);
             Files.write(insertDataSqlFile, insertDataRaw.getBytes(StandardCharsets.UTF_8));
             for (int index = 0; index < numberOfRepositories; index++) {
                 final Path repositoryDirectory = inputDirectory.resolve("repository" + index);
                 Files.createDirectories(repositoryDirectory);
-                Files.copy(insertDataSqlFile, repositoryDirectory.resolve("updateData.sql"));
+                Files.copy(insertDataSqlFile, repositoryDirectory.resolve(fileName));
             }
         }
     }
