@@ -276,16 +276,31 @@ public enum ConfigurationOptions {
     /**
      * Generate standard API.
      */
-    GENERATE_STANDARD_API,
+    METHOD_STANDARD_API,
 
     /**
-     * The description for {@link #GENERATE_STANDARD_API}.
+     * The description for {@link #METHOD_STANDARD_API}.
      */
-    GENERATE_STANDARD_API_DESCRIPTION,
+    METHOD_STANDARD_API_DESCRIPTION,
 
     /**
-     * The default value for {@link #GENERATE_STANDARD_API}.
+     * The default value for {@link #METHOD_STANDARD_API}.
      */
-    GENERATE_STANDARD_API_DEFAULT,
+    METHOD_STANDARD_API_DEFAULT,
+
+    /**
+     * Generate batch API.
+     */
+    METHOD_BATCH_API,
+
+    /**
+     * The description for {@link #METHOD_BATCH_API}.
+     */
+    METHOD_BATCH_API_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_BATCH_API}.
+     */
+    METHOD_BATCH_API_DEFAULT,
 
 }

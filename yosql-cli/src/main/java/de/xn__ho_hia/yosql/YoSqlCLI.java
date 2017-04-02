@@ -16,14 +16,14 @@ import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CURRENT_DIRECTORY;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER_DEFAULT;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.GENERATE_STANDARD_API;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.GENERATE_STANDARD_API_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.GENERATE_STANDARD_API_DESCRIPTION;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.INPUT_BASE_DIRECTORY;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.INPUT_BASE_DIRECTORY_DESCRIPTION;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA_DEFAULT;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_API;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_API_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_API_DESCRIPTION;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX_DEFAULT;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX_DESCRIPTION;
@@ -42,6 +42,9 @@ import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_PREFIX
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX_DEFAULT;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STANDARD_API;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STANDARD_API_DEFAULT;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STANDARD_API_DESCRIPTION;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX_DEFAULT;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX_DESCRIPTION;
@@ -242,11 +245,17 @@ public class YoSqlCLI {
                 .defaultsTo(messages.getMessage(METHOD_LAZY_NAME_DEFAULT))
                 .describedAs(messages.getMessage(METHOD_LAZY_NAME_DESCRIPTION));
         final OptionSpec<Boolean> generateStandardApi = parser
-                .accepts(messages.getMessage(GENERATE_STANDARD_API))
+                .accepts(messages.getMessage(METHOD_STANDARD_API))
                 .withRequiredArg()
                 .ofType(Boolean.class)
-                .defaultsTo(Boolean.valueOf(messages.getMessage(GENERATE_STANDARD_API_DEFAULT)))
-                .describedAs(messages.getMessage(GENERATE_STANDARD_API_DESCRIPTION));
+                .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_STANDARD_API_DEFAULT)))
+                .describedAs(messages.getMessage(METHOD_STANDARD_API_DESCRIPTION));
+        final OptionSpec<Boolean> generateBatchApi = parser
+                .accepts(messages.getMessage(METHOD_BATCH_API))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_BATCH_API_DEFAULT)))
+                .describedAs(messages.getMessage(METHOD_BATCH_API_DESCRIPTION));
 
         final OptionSet options = parser.parse(args);
         final int javaVersion = parseJavaVersion(options.valueOf(java));
@@ -269,7 +278,7 @@ public class YoSqlCLI {
                 .setSqlFilesCharset(options.valueOf(sqlFilesCharset))
                 .setSqlStatementSeparator(options.valueOf(sqlStatementSeparator))
                 .setGenerateStandardApi(options.valueOf(generateStandardApi).booleanValue())
-                .setGenerateBatchApi(true)
+                .setGenerateBatchApi(options.valueOf(generateBatchApi).booleanValue())
                 .setGenerateStreamEagerApi(javaVersion >= 8)
                 .setGenerateStreamLazyApi(javaVersion >= 8)
                 .setGenerateRxJavaApi(true)
