@@ -6,64 +6,7 @@
  */
 package de.xn__ho_hia.yosql;
 
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.BASE_PACKAGE_NAME;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.BASE_PACKAGE_NAME_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.BASE_PACKAGE_NAME_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CONVERTER_PACKAGE_NAME;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CONVERTER_PACKAGE_NAME_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CONVERTER_PACKAGE_NAME_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.CURRENT_DIRECTORY;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.DEFAULT_ROW_CONVERTER_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.INPUT_BASE_DIRECTORY;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.INPUT_BASE_DIRECTORY_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.JAVA_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_API;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_API_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_API_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_PREFIX_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_SUFFIX;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_SUFFIX_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_BATCH_SUFFIX_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_EAGER_NAME;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_EAGER_NAME_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_EAGER_NAME_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_LAZY_NAME;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_LAZY_NAME_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_LAZY_NAME_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_PREFIX;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_PREFIX_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_PREFIX_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_RXJAVA_SUFFIX_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STANDARD_API;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STANDARD_API_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STANDARD_API_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_PREFIX_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_SUFFIX;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_SUFFIX_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.METHOD_STREAM_SUFFIX_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.OUTPUT_BASE_DIRECTORY;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.REPOSITORY_NAME_SUFFIX;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.REPOSITORY_NAME_SUFFIX_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.REPOSITORY_NAME_SUFFIX_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_FILES_CHARSET;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_FILES_CHARSET_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_FILES_CHARSET_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_STATEMENT_SEPARATOR;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_STATEMENT_SEPARATOR_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.SQL_STATEMENT_SEPARATOR_DESCRIPTION;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME_DEFAULT;
-import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.UTILITY_PACKAGE_NAME_DESCRIPTION;
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.*;
 
 import java.io.BufferedOutputStream;
 import java.io.PrintStream;
@@ -166,12 +109,6 @@ public class YoSqlCLI {
                 .ofType(String.class)
                 .defaultsTo(messages.getMessage(CONVERTER_PACKAGE_NAME_DEFAULT))
                 .describedAs(messages.getMessage(CONVERTER_PACKAGE_NAME_DESCRIPTION));
-        final OptionSpec<String> java = parser
-                .accepts(messages.getMessage(JAVA))
-                .withRequiredArg()
-                .ofType(String.class)
-                .defaultsTo(messages.getMessage(JAVA_DEFAULT))
-                .describedAs(messages.getMessage(JAVA_DESCRIPTION));
         final OptionSpec<String> repositoryNameSuffix = parser
                 .accepts(messages.getMessage(REPOSITORY_NAME_SUFFIX))
                 .withRequiredArg()
@@ -256,9 +193,33 @@ public class YoSqlCLI {
                 .ofType(Boolean.class)
                 .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_BATCH_API_DEFAULT)))
                 .describedAs(messages.getMessage(METHOD_BATCH_API_DESCRIPTION));
+        final OptionSpec<Boolean> generateRxJavaApi = parser
+                .accepts(messages.getMessage(METHOD_RXJAVA_API))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_RXJAVA_API_DEFAULT)))
+                .describedAs(messages.getMessage(METHOD_RXJAVA_API_DESCRIPTION));
+        final OptionSpec<Boolean> generateStreamEagerApi = parser
+                .accepts(messages.getMessage(METHOD_STREAM_EAGER_API))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_STREAM_EAGER_API_DEFAULT)))
+                .describedAs(messages.getMessage(METHOD_STREAM_EAGER_API_DESCRIPTION));
+        final OptionSpec<Boolean> generateStreamLazyApi = parser
+                .accepts(messages.getMessage(METHOD_STREAM_LAZY_API))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_STREAM_LAZY_API_DEFAULT)))
+                .describedAs(messages.getMessage(METHOD_STREAM_LAZY_API_DESCRIPTION));
+        final OptionSpec<String> allowedCallPrefixes = parser
+                .accepts(messages.getMessage(METHOD_ALLOWED_CALL_PREFIXES))
+                .withRequiredArg()
+                .withValuesSeparatedBy(",")
+                .ofType(String.class)
+                .defaultsTo(messages.getMessage(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT))
+                .describedAs(messages.getMessage(METHOD_ALLOWED_CALL_PREFIXES_DESCRIPTION));
 
         final OptionSet options = parser.parse(args);
-        final int javaVersion = parseJavaVersion(options.valueOf(java));
 
         return YoSql.prepareDefaultConfiguration()
                 .setInputBaseDirectory(options.valueOf(inputBaseDirectory))
@@ -279,10 +240,10 @@ public class YoSqlCLI {
                 .setSqlStatementSeparator(options.valueOf(sqlStatementSeparator))
                 .setGenerateStandardApi(options.valueOf(generateStandardApi).booleanValue())
                 .setGenerateBatchApi(options.valueOf(generateBatchApi).booleanValue())
-                .setGenerateStreamEagerApi(javaVersion >= 8)
-                .setGenerateStreamLazyApi(javaVersion >= 8)
-                .setGenerateRxJavaApi(true)
-                .setAllowedCallPrefixes(Arrays.asList("call", "execute"))
+                .setGenerateStreamEagerApi(options.valueOf(generateStreamEagerApi).booleanValue())
+                .setGenerateStreamLazyApi(options.valueOf(generateStreamLazyApi).booleanValue())
+                .setGenerateRxJavaApi(options.valueOf(generateRxJavaApi).booleanValue())
+                .setAllowedCallPrefixes(options.valuesOf(allowedCallPrefixes))
                 .setAllowedReadPrefixes(Arrays.asList("select", "read", "query", "find"))
                 .setAllowedWritePrefixes(Arrays.asList("update", "insert", "delete", "create", "write", "add", "remove",
                         "merge", "drop"))
@@ -299,15 +260,6 @@ public class YoSqlCLI {
                 .setDefaultResultRowClassName(ResultRowGenerator.RESULT_ROW_CLASS_NAME)
                 .setDefaultRowConverter(options.valueOf(defaultRowConverter))
                 .build();
-    }
-
-    private static int parseJavaVersion(final String givenJavaVersion) {
-        final String[] versionParts = givenJavaVersion.split("\\."); //$NON-NLS-1$
-        String versionToParse = versionParts[0];
-        if (versionParts.length > 1) {
-            versionToParse = versionParts[1];
-        }
-        return Integer.parseInt(versionToParse);
     }
 
     private static YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors)

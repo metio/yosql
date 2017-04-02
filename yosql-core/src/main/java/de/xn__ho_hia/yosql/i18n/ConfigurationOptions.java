@@ -303,4 +303,64 @@ public enum ConfigurationOptions {
      */
     METHOD_BATCH_API_DEFAULT,
 
+    /**
+     * Generate RxJava API.
+     */
+    METHOD_RXJAVA_API,
+
+    /**
+     * The description for {@link #METHOD_RXJAVA_API}.
+     */
+    METHOD_RXJAVA_API_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_RXJAVA_API}.
+     */
+    METHOD_RXJAVA_API_DEFAULT,
+
+    /**
+     * Generate eager stream API.
+     */
+    METHOD_STREAM_EAGER_API,
+
+    /**
+     * The description for {@link #METHOD_STREAM_EAGER_API}.
+     */
+    METHOD_STREAM_EAGER_API_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_STREAM_EAGER_API}.
+     */
+    METHOD_STREAM_EAGER_API_DEFAULT,
+
+    /**
+     * Generate lazy stream API.
+     */
+    METHOD_STREAM_LAZY_API,
+
+    /**
+     * The description for {@link #METHOD_STREAM_LAZY_API}.
+     */
+    METHOD_STREAM_LAZY_API_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_STREAM_LAZY_API}.
+     */
+    METHOD_STREAM_LAZY_API_DEFAULT,
+
+    /**
+     * Allowed call prefixes.
+     */
+    METHOD_ALLOWED_CALL_PREFIXES,
+
+    /**
+     * The description for {@link #METHOD_ALLOWED_CALL_PREFIXES}.
+     */
+    METHOD_ALLOWED_CALL_PREFIXES_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_ALLOWED_CALL_PREFIXES}.
+     */
+    METHOD_ALLOWED_CALL_PREFIXES_DEFAULT,
+
 }
