@@ -68,7 +68,7 @@ abstract class AbstractGenerateFilesBenchmark {
     }
 
     /**
-     * Benchmarks code generation with medium sample.
+     * Benchmarks code generation.
      *
      * @throws Exception
      *             In case anything goes wrong while generating files.
