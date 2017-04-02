@@ -112,10 +112,15 @@ public class SqlFileParser {
         final String rawYaml = yaml.toString();
 
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
-        final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
-                parameterIndices, statementInFile);
+        SqlConfiguration configuration = null;
+        try {
+            configuration = factory.createStatementConfiguration(source, rawYaml,
+                    parameterIndices, statementInFile);
+        } catch (final Throwable exception) {
+            errors.add(exception);
+        }
 
-        if (out != null) {
+        if (out != null && configuration != null) {
             out.printf("Parsed [%s#%s]", source, configuration.getName()); //$NON-NLS-1$
             out.println();
         }

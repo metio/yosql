@@ -363,4 +363,34 @@ public enum ConfigurationOptions {
      */
     METHOD_ALLOWED_CALL_PREFIXES_DEFAULT,
 
+    /**
+     * Allowed read prefixes.
+     */
+    METHOD_ALLOWED_READ_PREFIXES,
+
+    /**
+     * The description for {@link #METHOD_ALLOWED_READ_PREFIXES}.
+     */
+    METHOD_ALLOWED_READ_PREFIXES_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_ALLOWED_READ_PREFIXES}.
+     */
+    METHOD_ALLOWED_READ_PREFIXES_DEFAULT,
+
+    /**
+     * Allowed write prefixes.
+     */
+    METHOD_ALLOWED_WRITE_PREFIXES,
+
+    /**
+     * The description for {@link #METHOD_ALLOWED_WRITE_PREFIXES}.
+     */
+    METHOD_ALLOWED_WRITE_PREFIXES_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_ALLOWED_WRITE_PREFIXES}.
+     */
+    METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT,
+
 }

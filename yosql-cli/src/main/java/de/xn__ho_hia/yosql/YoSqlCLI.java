@@ -13,7 +13,6 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Locale;
 
 import ch.qos.cal10n.IMessageConveyor;
@@ -216,8 +215,22 @@ public class YoSqlCLI {
                 .withRequiredArg()
                 .withValuesSeparatedBy(",")
                 .ofType(String.class)
-                .defaultsTo(messages.getMessage(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT))
+                .defaultsTo(messages.getMessage(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT).split(","))
                 .describedAs(messages.getMessage(METHOD_ALLOWED_CALL_PREFIXES_DESCRIPTION));
+        final OptionSpec<String> allowedReadPrefixes = parser
+                .accepts(messages.getMessage(METHOD_ALLOWED_READ_PREFIXES))
+                .withRequiredArg()
+                .withValuesSeparatedBy(",")
+                .ofType(String.class)
+                .defaultsTo(messages.getMessage(METHOD_ALLOWED_READ_PREFIXES_DEFAULT).split(","))
+                .describedAs(messages.getMessage(METHOD_ALLOWED_READ_PREFIXES_DESCRIPTION));
+        final OptionSpec<String> allowedWritePrefixes = parser
+                .accepts(messages.getMessage(METHOD_ALLOWED_WRITE_PREFIXES))
+                .withRequiredArg()
+                .withValuesSeparatedBy(",")
+                .ofType(String.class)
+                .defaultsTo(messages.getMessage(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT).split(","))
+                .describedAs(messages.getMessage(METHOD_ALLOWED_WRITE_PREFIXES_DESCRIPTION));
 
         final OptionSet options = parser.parse(args);
 
@@ -244,9 +257,8 @@ public class YoSqlCLI {
                 .setGenerateStreamLazyApi(options.valueOf(generateStreamLazyApi).booleanValue())
                 .setGenerateRxJavaApi(options.valueOf(generateRxJavaApi).booleanValue())
                 .setAllowedCallPrefixes(options.valuesOf(allowedCallPrefixes))
-                .setAllowedReadPrefixes(Arrays.asList("select", "read", "query", "find"))
-                .setAllowedWritePrefixes(Arrays.asList("update", "insert", "delete", "create", "write", "add", "remove",
-                        "merge", "drop"))
+                .setAllowedReadPrefixes(options.valuesOf(allowedReadPrefixes))
+                .setAllowedWritePrefixes(options.valuesOf(allowedWritePrefixes))
                 .setValidateMethodNamePrefixes(true)
                 .setMethodCatchAndRethrow(true)
                 .setClassGeneratedAnnotation(true)
