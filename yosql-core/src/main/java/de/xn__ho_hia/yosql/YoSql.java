@@ -7,11 +7,13 @@
 package de.xn__ho_hia.yosql;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -142,7 +144,7 @@ public class YoSql {
         Timer.timed("generate repositories", () -> allStatements.stream()
                 .sorted(Comparator.comparing(SqlStatement::getRepository)
                         .thenComparing(Comparator.comparing(SqlStatement::getName)))
-                .collect(groupingBy(SqlStatement::getRepository))
+                .collect(groupingBy(SqlStatement::getRepository, LinkedHashMap::new, toList()))
                 .forEach(repositoryGenerator::generateRepository));
         Timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
 
