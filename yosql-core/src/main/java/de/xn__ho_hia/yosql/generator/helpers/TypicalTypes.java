@@ -68,12 +68,24 @@ public class TypicalTypes {
         return ParameterizedTypeName.get(CONSUMER, WildcardTypeName.supertypeOf(type));
     }
 
+    // TODO: remove?
     public static final TypeSpec.Builder publicClass(final String name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.PUBLIC_CLASS);
     }
 
+    public static final TypeSpec.Builder publicClass(final ClassName name) {
+        return TypeSpec.classBuilder(name)
+                .addModifiers(TypicalModifiers.PUBLIC_CLASS);
+    }
+
+    // TODO remove?
     public static final TypeSpec.Builder openClass(final String name) {
+        return TypeSpec.classBuilder(name)
+                .addModifiers(TypicalModifiers.OPEN_CLASS);
+    }
+
+    public static final TypeSpec.Builder openClass(final ClassName name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.OPEN_CLASS);
     }

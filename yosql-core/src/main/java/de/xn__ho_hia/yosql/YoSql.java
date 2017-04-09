@@ -20,9 +20,6 @@ import javax.inject.Inject;
 
 import de.xn__ho_hia.yosql.generator.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.UtilitiesGenerator;
-import de.xn__ho_hia.yosql.generator.utils.FlowStateGenerator;
-import de.xn__ho_hia.yosql.generator.utils.ResultRowGenerator;
-import de.xn__ho_hia.yosql.generator.utils.ResultStateGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
 import de.xn__ho_hia.yosql.model.CodeGenerationException;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
@@ -84,14 +81,15 @@ public class YoSql {
     public static Builder prepareDefaultConfiguration() {
         final ArrayList<ResultRowConverter> rowConverters = new ArrayList<>();
 
-        final String utilPackage = "com.example.persistence.util";
-        final ResultRowConverter toResultRow = new ResultRowConverter();
-        toResultRow.setAlias(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS);
-        toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
-        toResultRow.setConverterType("com.example.persistence.converter"
-                + "."
-                + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
-        rowConverters.add(toResultRow);
+        // TODO: externalize
+        // final String utilPackage = "com.example.persistence.util";
+        // final ResultRowConverter toResultRow = new ResultRowConverter();
+        // toResultRow.setAlias(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS);
+        // toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
+        // toResultRow.setConverterType("com.example.persistence.converter"
+        // + "."
+        // + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
+        // rowConverters.add(toResultRow);
 
         return ExecutionConfiguration.builder()
                 .setOutputBaseDirectory(Paths.get("."))
@@ -128,9 +126,6 @@ public class YoSql {
                 .setGeneratedAnnotationComment("DO NOT EDIT")
                 .setLoggingApi(LoggingAPI.JDK)
                 .setDefaultRowConverter(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS)
-                .setDefaulFlowStateClassName(FlowStateGenerator.FLOW_STATE_CLASS_NAME)
-                .setDefaultResultStateClassName(ResultStateGenerator.RESULT_STATE_CLASS_NAME)
-                .setDefaultResultRowClassName(ResultRowGenerator.RESULT_ROW_CLASS_NAME)
                 .setResultRowConverters(rowConverters);
     }
 

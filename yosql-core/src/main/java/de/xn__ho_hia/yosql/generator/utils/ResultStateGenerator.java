@@ -31,8 +31,6 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "nls", "javadoc" })
 public class ResultStateGenerator {
 
-    public static final String           RESULT_STATE_CLASS_NAME = "ResultState";
-
     private final AnnotationGenerator    annotations;
     private final TypeWriter             typeWriter;
     private final ExecutionConfiguration configuration;
@@ -48,7 +46,7 @@ public class ResultStateGenerator {
     }
 
     public void generateResultStateClass() {
-        final TypeSpec type = TypicalTypes.openClass(RESULT_STATE_CLASS_NAME)
+        final TypeSpec type = TypicalTypes.openClass(configuration.getResultStateClass())
                 .addFields(fields())
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(ResultStateGenerator.class))

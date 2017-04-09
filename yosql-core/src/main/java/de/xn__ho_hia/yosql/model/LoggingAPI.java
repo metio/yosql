@@ -7,34 +7,28 @@
 package de.xn__ho_hia.yosql.model;
 
 /**
- *
- *
+ * Configuration options for the logging API used in the generated code.
  */
 public enum LoggingAPI {
 
     /**
-     *
+     * Disables logging in any of the generated files.
      */
     NONE,
 
     /**
-     *
+     * Uses java.util.logging in the generated code.
      */
     JDK,
 
     /**
-     *
+     * Uses log4j in the generated code.
      */
     LOG4J,
 
     /**
-     *
+     * Uses slf4j in the generated code.
      */
     SLF4J,
-
-    /**
-     *
-     */
-    AUTO
 
 }

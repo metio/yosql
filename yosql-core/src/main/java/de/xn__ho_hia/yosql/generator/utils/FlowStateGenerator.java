@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -32,8 +31,6 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "nls", "javadoc" })
 public class FlowStateGenerator {
 
-    public static final String           FLOW_STATE_CLASS_NAME = "FlowState";
-
     private final AnnotationGenerator    annotations;
     private final TypeWriter             typeWriter;
     private final ExecutionConfiguration configuration;
@@ -50,9 +47,8 @@ public class FlowStateGenerator {
 
     public void generateFlowStateClass() {
         final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
-        final ClassName superclass = ClassName.get(packageName, ResultStateGenerator.RESULT_STATE_CLASS_NAME);
-        final TypeSpec type = TypicalTypes.publicClass(FLOW_STATE_CLASS_NAME)
-                .superclass(superclass)
+        final TypeSpec type = TypicalTypes.publicClass(configuration.getFlowStateClass())
+                .superclass(configuration.getResultStateClass())
                 .addFields(fields())
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))

@@ -26,8 +26,6 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 @SuppressWarnings({ "nls", "javadoc" })
 public class ResultRowGenerator {
 
-    public static final String           RESULT_ROW_CLASS_NAME = "ResultRow";
-
     private final AnnotationGenerator    annotations;
     private final TypeWriter             typeWriter;
     private final ExecutionConfiguration configuration;
@@ -44,7 +42,7 @@ public class ResultRowGenerator {
 
     public void generateResultRowClass() {
         final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
-        final TypeSpec type = TypicalTypes.publicClass(RESULT_ROW_CLASS_NAME)
+        final TypeSpec type = TypicalTypes.publicClass(configuration.getResultRowClass())
                 .addField(row())
                 .addMethod(constructor())
                 .addMethod(setColumnValue())

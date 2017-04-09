@@ -423,4 +423,139 @@ public enum ConfigurationOptions {
      */
     METHOD_CATCH_AND_RETHROW_DEFAULT,
 
+    /**
+     * The @Generated annotation for classes.
+     */
+    GENERATED_ANNOTATION_CLASS,
+
+    /**
+     * The description for {@link #GENERATED_ANNOTATION_CLASS}.
+     */
+    GENERATED_ANNOTATION_CLASS_DESCRIPTION,
+
+    /**
+     * The default value for {@link #GENERATED_ANNOTATION_CLASS}.
+     */
+    GENERATED_ANNOTATION_CLASS_DEFAULT,
+
+    /**
+     * The @Generated annotation for fields.
+     */
+    GENERATED_ANNOTATION_FIELD,
+
+    /**
+     * The description for {@link #GENERATED_ANNOTATION_FIELD}.
+     */
+    GENERATED_ANNOTATION_FIELD_DESCRIPTION,
+
+    /**
+     * The default value for {@link #GENERATED_ANNOTATION_FIELD}.
+     */
+    GENERATED_ANNOTATION_FIELD_DEFAULT,
+
+    /**
+     * The @Generated annotation for methods.
+     */
+    GENERATED_ANNOTATION_METHOD,
+
+    /**
+     * The description for {@link #GENERATED_ANNOTATION_METHOD}.
+     */
+    GENERATED_ANNOTATION_METHOD_DESCRIPTION,
+
+    /**
+     * The default value for {@link #GENERATED_ANNOTATION_METHOD}.
+     */
+    GENERATED_ANNOTATION_METHOD_DEFAULT,
+
+    /**
+     * The @Generated annotation comment.
+     */
+    GENERATED_ANNOTATION_COMMENT,
+
+    /**
+     * The description for {@link #GENERATED_ANNOTATION_COMMENT}.
+     */
+    GENERATED_ANNOTATION_COMMENT_DESCRIPTION,
+
+    /**
+     * The default value for {@link #GENERATED_ANNOTATION_COMMENT}.
+     */
+    GENERATED_ANNOTATION_COMMENT_DEFAULT,
+
+    /**
+     * Generate interfaces for repositories.
+     */
+    REPOSITORY_GENERATE_INTERFACE,
+
+    /**
+     * The description for {@link #REPOSITORY_GENERATE_INTERFACE}.
+     */
+    REPOSITORY_GENERATE_INTERFACE_DESCRIPTION,
+
+    /**
+     * The default value for {@link #REPOSITORY_GENERATE_INTERFACE}.
+     */
+    REPOSITORY_GENERATE_INTERFACE_DEFAULT,
+
+    /**
+     * Default name of flow state class.
+     */
+    DEFAULT_FLOW_STATE_CLASS_NAME,
+
+    /**
+     * The description for {@link #DEFAULT_FLOW_STATE_CLASS_NAME}.
+     */
+    DEFAULT_FLOW_STATE_CLASS_NAME_DESCRIPTION,
+
+    /**
+     * The default value for {@link #DEFAULT_FLOW_STATE_CLASS_NAME}.
+     */
+    DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT,
+
+    /**
+     * Default name of result state class.
+     */
+    DEFAULT_RESULT_STATE_CLASS_NAME,
+
+    /**
+     * The description for {@link #DEFAULT_RESULT_STATE_CLASS_NAME}.
+     */
+    DEFAULT_RESULT_STATE_CLASS_NAME_DESCRIPTION,
+
+    /**
+     * The default value for {@link #DEFAULT_RESULT_STATE_CLASS_NAME}.
+     */
+    DEFAULT_RESULT_STATE_CLASS_NAME_DEFAULT,
+
+    /**
+     * Default name of result row class.
+     */
+    DEFAULT_RESULT_ROW_CLASS_NAME,
+
+    /**
+     * The description for {@link #DEFAULT_RESULT_ROW_CLASS_NAME}.
+     */
+    DEFAULT_RESULT_ROW_CLASS_NAME_DESCRIPTION,
+
+    /**
+     * The default value for {@link #DEFAULT_RESULT_ROW_CLASS_NAME}.
+     */
+    DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT,
+
+    /**
+     * The logging API to use.
+     */
+    LOGGING_API,
+
+    /**
+     * The description for {@link #LOGGING_API}.
+     */
+    LOGGING_API_DESCRIPTION,
+
+    /**
+     * The default value for {@link #LOGGING_API}.
+     */
+    LOGGING_API_DEFAULT,
+
 }

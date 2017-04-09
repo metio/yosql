@@ -243,6 +243,60 @@ public class YoSqlCLI {
                 .ofType(Boolean.class)
                 .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_CATCH_AND_RETHROW_DEFAULT)))
                 .describedAs(messages.getMessage(METHOD_CATCH_AND_RETHROW_DESCRIPTION));
+        final OptionSpec<Boolean> classGeneratedAnnotation = parser
+                .accepts(messages.getMessage(GENERATED_ANNOTATION_CLASS))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(GENERATED_ANNOTATION_CLASS_DEFAULT)))
+                .describedAs(messages.getMessage(GENERATED_ANNOTATION_CLASS_DESCRIPTION));
+        final OptionSpec<Boolean> fieldGeneratedAnnotation = parser
+                .accepts(messages.getMessage(GENERATED_ANNOTATION_FIELD))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(GENERATED_ANNOTATION_FIELD_DEFAULT)))
+                .describedAs(messages.getMessage(GENERATED_ANNOTATION_FIELD_DESCRIPTION));
+        final OptionSpec<Boolean> methodGeneratedAnnotation = parser
+                .accepts(messages.getMessage(GENERATED_ANNOTATION_METHOD))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(GENERATED_ANNOTATION_METHOD_DEFAULT)))
+                .describedAs(messages.getMessage(GENERATED_ANNOTATION_METHOD_DESCRIPTION));
+        final OptionSpec<String> generatedAnnotationComment = parser
+                .accepts(messages.getMessage(GENERATED_ANNOTATION_COMMENT))
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo(messages.getMessage(GENERATED_ANNOTATION_COMMENT_DEFAULT))
+                .describedAs(messages.getMessage(GENERATED_ANNOTATION_COMMENT_DESCRIPTION));
+        final OptionSpec<Boolean> repositoryGenerateInterface = parser
+                .accepts(messages.getMessage(REPOSITORY_GENERATE_INTERFACE))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(REPOSITORY_GENERATE_INTERFACE_DEFAULT)))
+                .describedAs(messages.getMessage(REPOSITORY_GENERATE_INTERFACE_DESCRIPTION));
+        final OptionSpec<String> defaulFlowStateClassName = parser
+                .accepts(messages.getMessage(DEFAULT_FLOW_STATE_CLASS_NAME))
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo(messages.getMessage(DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT))
+                .describedAs(messages.getMessage(DEFAULT_FLOW_STATE_CLASS_NAME_DESCRIPTION));
+        final OptionSpec<String> defaultResultStateClassName = parser
+                .accepts(messages.getMessage(DEFAULT_RESULT_STATE_CLASS_NAME))
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo(messages.getMessage(DEFAULT_RESULT_STATE_CLASS_NAME_DEFAULT))
+                .describedAs(messages.getMessage(DEFAULT_RESULT_STATE_CLASS_NAME_DESCRIPTION));
+        final OptionSpec<String> defaultResultRowClassName = parser
+                .accepts(messages.getMessage(DEFAULT_RESULT_ROW_CLASS_NAME))
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo(messages.getMessage(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT))
+                .describedAs(messages.getMessage(DEFAULT_RESULT_ROW_CLASS_NAME_DESCRIPTION));
+        final OptionSpec<LoggingAPI> loggingApi = parser
+                .accepts(messages.getMessage(LOGGING_API))
+                .withRequiredArg()
+                .ofType(LoggingAPI.class)
+                .defaultsTo(LoggingAPI.valueOf(messages.getMessage(LOGGING_API_DEFAULT)))
+                .describedAs(messages.getMessage(LOGGING_API_DESCRIPTION));
 
         final OptionSet options = parser.parse(args);
 
@@ -273,15 +327,15 @@ public class YoSqlCLI {
                 .setAllowedWritePrefixes(options.valuesOf(allowedWritePrefixes))
                 .setValidateMethodNamePrefixes(options.valueOf(methodValidateNamePrefixes).booleanValue())
                 .setMethodCatchAndRethrow(options.valueOf(methodCatchAndRethrow).booleanValue())
-                .setClassGeneratedAnnotation(true)
-                .setFieldGeneratedAnnotation(true)
-                .setMethodGeneratedAnnotation(true)
-                .setRepositoryGenerateInterface(true)
-                .setGeneratedAnnotationComment("DO NOT EDIT")
-                .setLoggingApi(LoggingAPI.JDK)
-                .setDefaulFlowStateClassName(FlowStateGenerator.FLOW_STATE_CLASS_NAME)
-                .setDefaultResultStateClassName(ResultStateGenerator.RESULT_STATE_CLASS_NAME)
-                .setDefaultResultRowClassName(ResultRowGenerator.RESULT_ROW_CLASS_NAME)
+                .setClassGeneratedAnnotation(options.valueOf(classGeneratedAnnotation).booleanValue())
+                .setFieldGeneratedAnnotation(options.valueOf(fieldGeneratedAnnotation).booleanValue())
+                .setMethodGeneratedAnnotation(options.valueOf(methodGeneratedAnnotation).booleanValue())
+                .setGeneratedAnnotationComment(options.valueOf(generatedAnnotationComment))
+                .setRepositoryGenerateInterface(options.valueOf(repositoryGenerateInterface).booleanValue())
+                .setLoggingApi(options.valueOf(loggingApi))
+                .setDefaulFlowStateClassName(options.valueOf(defaulFlowStateClassName))
+                .setDefaultResultStateClassName(options.valueOf(defaultResultStateClassName))
+                .setDefaultResultRowClassName(options.valueOf(defaultResultRowClassName))
                 .setDefaultRowConverter(options.valueOf(defaultRowConverter))
                 .build();
     }

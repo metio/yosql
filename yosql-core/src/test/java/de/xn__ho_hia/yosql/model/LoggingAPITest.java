@@ -14,7 +14,7 @@ class LoggingAPITest implements EnumTCK<LoggingAPI> {
     @Override
     @SuppressWarnings("nls")
     public Stream<String> validValues() {
-        return Stream.of("NONE", "JDK", "LOG4J", "SLF4J", "AUTO");
+        return Stream.of("NONE", "JDK", "LOG4J", "SLF4J");
     }
 
 }
