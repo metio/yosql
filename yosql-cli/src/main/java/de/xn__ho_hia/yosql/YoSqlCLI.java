@@ -231,6 +231,12 @@ public class YoSqlCLI {
                 .ofType(String.class)
                 .defaultsTo(messages.getMessage(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT).split(","))
                 .describedAs(messages.getMessage(METHOD_ALLOWED_WRITE_PREFIXES_DESCRIPTION));
+        final OptionSpec<Boolean> methodValidateNamePrefixes = parser
+                .accepts(messages.getMessage(METHOD_VALIDATE_NAME_PREFIXES))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT)))
+                .describedAs(messages.getMessage(METHOD_VALIDATE_NAME_PREFIXES_DESCRIPTION));
 
         final OptionSet options = parser.parse(args);
 
@@ -259,7 +265,7 @@ public class YoSqlCLI {
                 .setAllowedCallPrefixes(options.valuesOf(allowedCallPrefixes))
                 .setAllowedReadPrefixes(options.valuesOf(allowedReadPrefixes))
                 .setAllowedWritePrefixes(options.valuesOf(allowedWritePrefixes))
-                .setValidateMethodNamePrefixes(true)
+                .setValidateMethodNamePrefixes(options.valueOf(methodValidateNamePrefixes).booleanValue())
                 .setMethodCatchAndRethrow(true)
                 .setClassGeneratedAnnotation(true)
                 .setFieldGeneratedAnnotation(true)

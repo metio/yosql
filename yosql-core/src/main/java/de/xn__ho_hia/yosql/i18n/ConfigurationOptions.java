@@ -393,4 +393,19 @@ public enum ConfigurationOptions {
      */
     METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT,
 
+    /**
+     * Validate method name prefix usage.
+     */
+    METHOD_VALIDATE_NAME_PREFIXES,
+
+    /**
+     * The description for {@link #METHOD_VALIDATE_NAME_PREFIXES}.
+     */
+    METHOD_VALIDATE_NAME_PREFIXES_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_VALIDATE_NAME_PREFIXES}.
+     */
+    METHOD_VALIDATE_NAME_PREFIXES_DEFAULT,
+
 }
