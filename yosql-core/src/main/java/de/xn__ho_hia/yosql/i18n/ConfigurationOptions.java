@@ -408,4 +408,19 @@ public enum ConfigurationOptions {
      */
     METHOD_VALIDATE_NAME_PREFIXES_DEFAULT,
 
+    /**
+     * Catch and rethrow exceptions.
+     */
+    METHOD_CATCH_AND_RETHROW,
+
+    /**
+     * The description for {@link #METHOD_CATCH_AND_RETHROW}.
+     */
+    METHOD_CATCH_AND_RETHROW_DESCRIPTION,
+
+    /**
+     * The default value for {@link #METHOD_CATCH_AND_RETHROW}.
+     */
+    METHOD_CATCH_AND_RETHROW_DEFAULT,
+
 }

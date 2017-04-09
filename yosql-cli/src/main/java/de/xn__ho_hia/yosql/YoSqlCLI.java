@@ -237,6 +237,12 @@ public class YoSqlCLI {
                 .ofType(Boolean.class)
                 .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT)))
                 .describedAs(messages.getMessage(METHOD_VALIDATE_NAME_PREFIXES_DESCRIPTION));
+        final OptionSpec<Boolean> methodCatchAndRethrow = parser
+                .accepts(messages.getMessage(METHOD_CATCH_AND_RETHROW))
+                .withRequiredArg()
+                .ofType(Boolean.class)
+                .defaultsTo(Boolean.valueOf(messages.getMessage(METHOD_CATCH_AND_RETHROW_DEFAULT)))
+                .describedAs(messages.getMessage(METHOD_CATCH_AND_RETHROW_DESCRIPTION));
 
         final OptionSet options = parser.parse(args);
 
@@ -266,7 +272,7 @@ public class YoSqlCLI {
                 .setAllowedReadPrefixes(options.valuesOf(allowedReadPrefixes))
                 .setAllowedWritePrefixes(options.valuesOf(allowedWritePrefixes))
                 .setValidateMethodNamePrefixes(options.valueOf(methodValidateNamePrefixes).booleanValue())
-                .setMethodCatchAndRethrow(true)
+                .setMethodCatchAndRethrow(options.valueOf(methodCatchAndRethrow).booleanValue())
                 .setClassGeneratedAnnotation(true)
                 .setFieldGeneratedAnnotation(true)
                 .setMethodGeneratedAnnotation(true)
