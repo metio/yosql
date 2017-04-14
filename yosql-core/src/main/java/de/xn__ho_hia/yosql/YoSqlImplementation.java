@@ -13,6 +13,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -157,8 +158,8 @@ public class YoSqlImplementation implements YoSql {
                     .thenApplyAsync(this::generateRepositories, executor)
                     .thenAcceptAsync(this::generateUtilities, executor)
                     .join();
-        } catch (final Throwable exception) {
-            errors.add(exception);
+        } catch (final Throwable throwable) {
+            errors.add(throwable);
         }
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException("Error during code generation"));
@@ -166,23 +167,33 @@ public class YoSqlImplementation implements YoSql {
     }
 
     private List<SqlStatement> parseFiles() {
+        List<SqlStatement> statements = Collections.emptyList();
+        try {
+            statements = timer.timed("parse files", //$NON-NLS-1$
+                    () -> fileResolver.resolveFiles()
+                            // .parallel()
+                            .flatMap(sqlFileParser::parse)
+                            .collect(toList()));
+        } catch (final Throwable throwable) {
+            errors.add(throwable);
+        }
         if (errors.hasErrors()) {
             errors.throwWith(new SqlFileParsingException("Error during SQL file parsing")); //$NON-NLS-1$
         }
-        return timer.timed("parse files", //$NON-NLS-1$
-                () -> fileResolver.resolveFiles()
-                        // .parallel()
-                        .flatMap(sqlFileParser::parse)
-                        .collect(toList()));
+        return statements;
     }
 
     private List<SqlStatement> generateRepositories(final List<SqlStatement> statements) {
-        timer.timed("generate repositories", () -> statements.stream() //$NON-NLS-1$
-                .collect(groupingBy(SqlStatement::getRepository))
-                .entrySet()
-                .parallelStream()
-                .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
-                        repository.getValue())));
+        timer.timed("generate repositories", () -> { //$NON-NLS-1$
+            if (statements != null && !statements.isEmpty()) {
+                statements.stream()
+                        .collect(groupingBy(SqlStatement::getRepository))
+                        .entrySet()
+                        .parallelStream()
+                        .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
+                                repository.getValue()));
+            }
+        });
         return statements;
     }
 
