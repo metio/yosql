@@ -15,7 +15,7 @@ public class YoSql2WithMediumSampleBenchmark extends AbstractYoSql2FullLifecycle
      */
     @Setup
     public void generateSqlFiles() throws IOException {
-        prepareRepositoriesForAllUseCases(100);
+        prepareRepositoriesForAllUseCases(50);
     }
 
 }

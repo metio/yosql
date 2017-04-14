@@ -15,7 +15,7 @@ public class YoSqlWithBigSampleBenchmark extends AbstractYoSqlFullLifecycleBench
      */
     @Setup
     public void generateSqlFiles() throws IOException {
-        prepareRepositoriesForAllUseCases(500);
+        prepareRepositoriesForAllUseCases(100);
     }
 
 }
