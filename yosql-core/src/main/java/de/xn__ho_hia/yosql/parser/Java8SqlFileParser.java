@@ -105,7 +105,9 @@ public final class Java8SqlFileParser implements SqlFileParser {
         return new SqlStatement(configuration, rawSqlStatement);
     }
 
-    private static void splitUpYamlAndSql(final String rawStatement, final Consumer<String> yaml,
+    private static void splitUpYamlAndSql(
+            final String rawStatement,
+            final Consumer<String> yaml,
             final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
                 .lines().forEach(line -> {
