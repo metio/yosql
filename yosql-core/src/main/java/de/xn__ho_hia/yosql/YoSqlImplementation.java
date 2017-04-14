@@ -170,15 +170,11 @@ public class YoSqlImplementation implements YoSql {
 
     private List<SqlStatement> parseFiles() {
         List<SqlStatement> statements = Collections.emptyList();
-        try {
-            statements = timer.timed("parse files", //$NON-NLS-1$
-                    () -> fileResolver.resolveFiles()
-                            // .parallel()
-                            .flatMap(sqlFileParser::parse)
-                            .collect(toList()));
-        } catch (final Throwable throwable) {
-            errors.add(throwable);
-        }
+        statements = timer.timed("parse files", //$NON-NLS-1$
+                () -> fileResolver.resolveFiles()
+                        // .parallel()
+                        .flatMap(sqlFileParser::parse)
+                        .collect(toList()));
         if (errors.hasErrors()) {
             errors.throwWith(new SqlFileParsingException("Error during SQL file parsing")); //$NON-NLS-1$
         }
