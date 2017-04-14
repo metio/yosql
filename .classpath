@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="yosql-core/src/main/java"/>
+	<classpathentry kind="src" path="yosql-testutils/src/main/java"/>
 	<classpathentry kind="src" path="yosql-core/src/main/resources"/>
 	<classpathentry kind="src" path="yosql-core/src/test/java"/>
 	<classpathentry kind="src" path="yosql-cli/src/main/java"/>
-	<classpathentry kind="src" path="testutils/src/main/java"/>
 	<classpathentry kind="src" path="bazel-bin/yosql-core/src/main/java/de/xn__ho_hia/yosql/model/_javac/yosql-core-model/libyosql-core-model_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
