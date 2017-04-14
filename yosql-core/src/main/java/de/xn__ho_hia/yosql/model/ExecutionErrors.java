@@ -63,6 +63,7 @@ public final class ExecutionErrors {
      */
     public <T extends Exception> void throwWith(final T exception) throws T {
         errors.forEach(exception::addSuppressed);
+        errors.clear();
         throw exception;
     }
 
