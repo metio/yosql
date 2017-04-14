@@ -1,13 +1,13 @@
-package de.xn__ho_hia.yosql.benchmark;
+package de.xn__ho_hia.yosql.benchmark.full_lifecycle;
 
 import java.io.IOException;
 
 import org.openjdk.jmh.annotations.Setup;
 
 /**
- * JMH based micro benchmark for YoSQL with a small sample size.
+ * JMH based micro benchmark for YoSQL with a big sample size.
  */
-public class YoSqlWithSmallSampleBenchmark extends AbstractGenerateFilesBenchmark {
+public class YoSqlWithBigSampleBenchmark extends AbstractFullLifecycleBenchmark {
 
     /**
      * @throws IOException
@@ -15,7 +15,7 @@ public class YoSqlWithSmallSampleBenchmark extends AbstractGenerateFilesBenchmar
      */
     @Setup
     public void generateSqlFiles() throws IOException {
-        generateSqlFiles(10);
+        prepareRepositoriesForAllUseCases(500);
     }
 
 }

@@ -30,7 +30,6 @@ import de.xn__ho_hia.yosql.model.SqlType;
 @SuppressWarnings({ "javadoc", "nls" })
 public class SqlConfigurationFactory {
 
-    private final Yaml                   yamlParser = new Yaml();
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration config;
 
@@ -45,10 +44,9 @@ public class SqlConfigurationFactory {
             final String yaml,
             final Map<String, List<Integer>> parameterIndices,
             final int statementInFile) {
-        final SqlConfiguration configuration = loadConfig(yaml);
-        final String fileName = getFileNameWithoutExtension(source);
+        final SqlConfiguration configuration = loadConfig(new Yaml(), yaml);
 
-        name(configuration, fileName, statementInFile);
+        name(configuration, source, statementInFile);
         batchNamePrefix(configuration);
         batchNameSuffix(configuration);
         streamNamePrefix(configuration);
@@ -75,8 +73,9 @@ public class SqlConfigurationFactory {
         return configuration;
     }
 
-    private static void name(final SqlConfiguration configuration, final String fileName, final int statementInFile) {
+    private static void name(final SqlConfiguration configuration, final Path source, final int statementInFile) {
         if (nullOrEmpty(configuration.getName())) {
+            final String fileName = getFileNameWithoutExtension(source);
             configuration.setName(statementInFile == 0 ? fileName : fileName + statementInFile);
         }
     }
@@ -287,11 +286,11 @@ public class SqlConfigurationFactory {
 
     private static void updateIndices(
             final List<SqlParameter> parameters,
-            final List<Integer> numbers,
+            final List<Integer> indices,
             final String parameterName) {
         parameters.stream()
                 .filter(nameMatches(parameterName))
-                .forEach(parameter -> parameter.setIndices(asArray(numbers)));
+                .forEach(parameter -> parameter.setIndices(asArray(indices)));
     }
 
     private static int[] asArray(final List<Integer> numbers) {
@@ -403,7 +402,7 @@ public class SqlConfigurationFactory {
         return parameterErrors == null || parameterErrors.isEmpty();
     }
 
-    private SqlConfiguration loadConfig(final String yaml) {
+    private static SqlConfiguration loadConfig(final Yaml yamlParser, final String yaml) {
         SqlConfiguration configuration = yamlParser.loadAs(yaml,
                 SqlConfiguration.class);
         if (configuration == null) {

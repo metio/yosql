@@ -1,16 +1,7 @@
-package de.xn__ho_hia.yosql.benchmark;
+package de.xn__ho_hia.yosql.benchmark.full_lifecycle;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -21,6 +12,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import de.xn__ho_hia.yosql.YoSql;
+import de.xn__ho_hia.yosql.benchmark.AbstractBenchmark;
 import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.TypeWriter;
@@ -41,6 +33,7 @@ import de.xn__ho_hia.yosql.generator.utils.ResultStateGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
+import de.xn__ho_hia.yosql.parser.Java8SqlFileParser;
 import de.xn__ho_hia.yosql.parser.ParserPreconditions;
 import de.xn__ho_hia.yosql.parser.PathBasedSqlFileResolver;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
@@ -51,20 +44,18 @@ import de.xn__ho_hia.yosql.utils.Timer;
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-abstract class AbstractGenerateFilesBenchmark {
+abstract class AbstractFullLifecycleBenchmark extends AbstractBenchmark {
 
-    private Path tempDirectory;
+    private YoSql yosql;
 
-    /**
-     * @throws IOException
-     *             In case anything goes wrong while creating a temporary directory.
-     */
     @Setup
-    @SuppressWarnings("nls")
-    public void setup() throws IOException {
-        tempDirectory = Files.createTempDirectory("yosql");
-        Files.createDirectories(tempDirectory.resolve("input"));
-        Files.createDirectories(tempDirectory.resolve("output"));
+    public final void setUpYoSql() {
+        final ExecutionConfiguration configuration = YoSql.defaultConfiguration()
+                .setInputBaseDirectory(inputDirectory)
+                .setOutputBaseDirectory(outputDirectory)
+                .build();
+        final ExecutionErrors errors = new ExecutionErrors();
+        yosql = createYoSql(configuration, errors);
     }
 
     /**
@@ -75,54 +66,14 @@ abstract class AbstractGenerateFilesBenchmark {
      */
     @Benchmark
     public final void benchmarkGenerateFiles() throws Exception {
-        generateJavaFiles();
-    }
-
-    @SuppressWarnings({ "nls" })
-    protected void generateSqlFiles(final int numberOfRepositories) throws IOException {
-        final Path inputDirectory = tempDirectory.resolve("input");
-
-        prepareRepository(numberOfRepositories, inputDirectory, "callFunction.sql");
-        prepareRepository(numberOfRepositories, inputDirectory, "insertData.sql");
-        prepareRepository(numberOfRepositories, inputDirectory, "readData.sql");
-        prepareRepository(numberOfRepositories, inputDirectory, "updateData.sql");
-    }
-
-    @SuppressWarnings("nls")
-    private void prepareRepository(
-            final int numberOfRepositories,
-            final Path inputDirectory,
-            final String fileName) throws IOException {
-        final InputStream updateData = getClass().getResourceAsStream("/sql-files/usecases/" + fileName);
-        try (final BufferedReader insertDataReader = new BufferedReader(
-                new InputStreamReader(updateData, StandardCharsets.UTF_8))) {
-            final String insertDataRaw = insertDataReader.lines().collect(Collectors.joining("\n"));
-            final Path insertDataSqlFile = tempDirectory.resolve(fileName);
-            Files.write(insertDataSqlFile, insertDataRaw.getBytes(StandardCharsets.UTF_8));
-            for (int index = 0; index < numberOfRepositories; index++) {
-                final Path repositoryDirectory = inputDirectory.resolve("repository" + index);
-                Files.createDirectories(repositoryDirectory);
-                Files.copy(insertDataSqlFile, repositoryDirectory.resolve(fileName));
-            }
-        }
-    }
-
-    @SuppressWarnings("nls")
-    protected void generateJavaFiles() throws InterruptedException, ExecutionException {
-        final ExecutionConfiguration configuration = YoSql.prepareDefaultConfiguration()
-                .setInputBaseDirectory(tempDirectory.resolve("input"))
-                .setOutputBaseDirectory(tempDirectory.resolve("output"))
-                .build();
-        final ExecutionErrors errors = new ExecutionErrors();
-        final YoSql yoSql = createYoSql(configuration, errors);
-        yoSql.generateFiles();
+        yosql.generateFiles();
     }
 
     protected static YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors) {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final PrintStream output = null;
         // final Writer out = new BufferedWriter(new OutputStreamWriter(System.out));
-        final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory, output);
+        final SqlFileParser sqlFileParser = new Java8SqlFileParser(errors, configuration, configurationFactory, output);
         final ParserPreconditions preconditions = new ParserPreconditions(errors);
         // TODO: resolve files from classpath?
         final SqlFileResolver fileResolver = new PathBasedSqlFileResolver(preconditions, errors, configuration);

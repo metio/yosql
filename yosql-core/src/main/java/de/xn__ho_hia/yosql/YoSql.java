@@ -6,21 +6,23 @@
  */
 package de.xn__ho_hia.yosql;
 
+import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.*;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import ch.qos.cal10n.IMessageConveyor;
+import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.generator.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.UtilitiesGenerator;
-import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
 import de.xn__ho_hia.yosql.model.CodeGenerationException;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration.Builder;
@@ -78,55 +80,69 @@ public class YoSql {
      * @return A configuration builder initialized with all default values.
      */
     @SuppressWarnings({ "nls" })
-    public static Builder prepareDefaultConfiguration() {
-        final ArrayList<ResultRowConverter> rowConverters = new ArrayList<>();
+    public static Builder defaultConfiguration() {
+        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
 
-        // TODO: externalize
-        // final String utilPackage = "com.example.persistence.util";
-        // final ResultRowConverter toResultRow = new ResultRowConverter();
-        // toResultRow.setAlias(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS);
-        // toResultRow.setResultType(utilPackage + "." + ResultRowGenerator.RESULT_ROW_CLASS_NAME);
-        // toResultRow.setConverterType("com.example.persistence.converter"
-        // + "."
-        // + ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME);
-        // rowConverters.add(toResultRow);
+        final String basePackageName = messages.getMessage(BASE_PACKAGE_NAME_DEFAULT);
+        final String utilityPackageName = messages.getMessage(UTILITY_PACKAGE_NAME_DEFAULT);
+        final String converterPackageName = messages.getMessage(CONVERTER_PACKAGE_NAME_DEFAULT);
+        final String defaultRowConverterAlias = messages.getMessage(DEFAULT_ROW_CONVERTER_DEFAULT);
+        final String defaultResultRowClassName = messages.getMessage(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT);
+
+        final ResultRowConverter toResultRow = new ResultRowConverter();
+        toResultRow.setAlias(defaultRowConverterAlias);
+        toResultRow.setResultType(String.join(".", basePackageName, utilityPackageName, defaultResultRowClassName));
+        toResultRow.setConverterType(String.join(".", basePackageName, converterPackageName,
+                messages.getMessage(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
 
         return ExecutionConfiguration.builder()
-                .setOutputBaseDirectory(Paths.get("."))
-                .setBasePackageName("com.example.persistence")
+                .setInputBaseDirectory(Paths.get(messages.getMessage(CURRENT_DIRECTORY)))
+                .setOutputBaseDirectory(Paths.get(messages.getMessage(CURRENT_DIRECTORY)))
+                .setBasePackageName(basePackageName)
+                .setUtilityPackageName(utilityPackageName)
+                .setConverterPackageName(converterPackageName)
+                // TODO: offer several ways how SQL statements are embedded in generated repositories?
                 .setRepositorySqlStatements("inline")
-                .setGenerateStandardApi(true)
-                .setGenerateBatchApi(true)
-                .setGenerateRxJavaApi(true)
-                .setGenerateStreamEagerApi(true)
-                .setGenerateStreamLazyApi(true)
-                .setMethodBatchPrefix("")
-                .setMethodBatchSuffix("Batch")
-                .setMethodStreamPrefix("")
-                .setMethodStreamSuffix("Stream")
-                .setMethodRxJavaPrefix("")
-                .setMethodRxJavaSuffix("Flow")
-                .setMethodEagerName("Eager")
-                .setMethodLazyName("Lazy")
-                .setRepositoryNameSuffix("Repository")
-                .setUtilityPackageName("util")
-                .setConverterPackageName("converter")
-                .setSqlStatementSeparator(";")
-                .setSqlFilesCharset("UTF-8")
-                .setAllowedCallPrefixes(Arrays.asList("call", "execute"))
-                .setAllowedReadPrefixes(Arrays.asList("select", "read", "query", "find"))
-                .setAllowedWritePrefixes(Arrays.asList("update", "insert", "delete", "create", "write", "add", "remove",
-                        "merge", "drop"))
-                .setValidateMethodNamePrefixes(true)
-                .setMethodCatchAndRethrow(true)
-                .setClassGeneratedAnnotation(true)
-                .setFieldGeneratedAnnotation(true)
-                .setMethodGeneratedAnnotation(true)
-                .setRepositoryGenerateInterface(true)
-                .setGeneratedAnnotationComment("DO NOT EDIT")
-                .setLoggingApi(LoggingAPI.JDK)
-                .setDefaultRowConverter(ToResultRowConverterGenerator.RESULT_ROW_CONVERTER_ALIAS)
-                .setResultRowConverters(rowConverters);
+                .setGenerateStandardApi(Boolean.parseBoolean(messages.getMessage(METHOD_STANDARD_API_DEFAULT)))
+                .setGenerateBatchApi(Boolean.parseBoolean(messages.getMessage(METHOD_BATCH_API_DEFAULT)))
+                .setGenerateRxJavaApi(Boolean.parseBoolean(messages.getMessage(METHOD_RXJAVA_API_DEFAULT)))
+                .setGenerateStreamEagerApi(Boolean.parseBoolean(messages.getMessage(METHOD_STREAM_EAGER_API_DEFAULT)))
+                .setGenerateStreamLazyApi(Boolean.parseBoolean(messages.getMessage(METHOD_STREAM_LAZY_API_DEFAULT)))
+                .setMethodBatchPrefix(messages.getMessage(METHOD_BATCH_PREFIX_DEFAULT))
+                .setMethodBatchSuffix(messages.getMessage(METHOD_BATCH_SUFFIX_DEFAULT))
+                .setMethodStreamPrefix(messages.getMessage(METHOD_STREAM_PREFIX_DEFAULT))
+                .setMethodStreamSuffix(messages.getMessage(METHOD_STREAM_SUFFIX_DEFAULT))
+                .setMethodRxJavaPrefix(messages.getMessage(METHOD_RXJAVA_PREFIX_DEFAULT))
+                .setMethodRxJavaSuffix(messages.getMessage(METHOD_RXJAVA_SUFFIX_DEFAULT))
+                .setMethodEagerName(messages.getMessage(METHOD_EAGER_NAME_DEFAULT))
+                .setMethodLazyName(messages.getMessage(METHOD_LAZY_NAME_DEFAULT))
+                .setRepositoryNameSuffix(messages.getMessage(REPOSITORY_NAME_SUFFIX_DEFAULT))
+                .setSqlStatementSeparator(messages.getMessage(SQL_STATEMENT_SEPARATOR_DEFAULT))
+                .setSqlFilesCharset(messages.getMessage(SQL_FILES_CHARSET_DEFAULT))
+                .setAllowedCallPrefixes(
+                        Arrays.asList(messages.getMessage(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT).split(",")))
+                .setAllowedReadPrefixes(
+                        Arrays.asList(messages.getMessage(METHOD_ALLOWED_READ_PREFIXES_DEFAULT).split(",")))
+                .setAllowedWritePrefixes(
+                        Arrays.asList(messages.getMessage(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT).split(",")))
+                .setValidateMethodNamePrefixes(
+                        Boolean.parseBoolean(messages.getMessage(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT)))
+                .setMethodCatchAndRethrow(Boolean.parseBoolean(messages.getMessage(METHOD_CATCH_AND_RETHROW_DEFAULT)))
+                .setClassGeneratedAnnotation(
+                        Boolean.parseBoolean(messages.getMessage(GENERATED_ANNOTATION_CLASS_DEFAULT)))
+                .setFieldGeneratedAnnotation(
+                        Boolean.parseBoolean(messages.getMessage(GENERATED_ANNOTATION_FIELD_DEFAULT)))
+                .setMethodGeneratedAnnotation(
+                        Boolean.parseBoolean(messages.getMessage(GENERATED_ANNOTATION_METHOD_DEFAULT)))
+                .setGeneratedAnnotationComment(messages.getMessage(GENERATED_ANNOTATION_COMMENT_DEFAULT))
+                .setRepositoryGenerateInterface(
+                        Boolean.parseBoolean(messages.getMessage(REPOSITORY_GENERATE_INTERFACE_DEFAULT)))
+                .setLoggingApi(LoggingAPI.valueOf(messages.getMessage(LOGGING_API_DEFAULT)))
+                .setDefaulFlowStateClassName(messages.getMessage(DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT))
+                .setDefaultResultStateClassName(messages.getMessage(DEFAULT_RESULT_STATE_CLASS_NAME_DEFAULT))
+                .setDefaultResultRowClassName(defaultResultRowClassName)
+                .setDefaultRowConverter(defaultRowConverterAlias)
+                .setResultRowConverters(Arrays.asList(toResultRow));
     }
 
     /**
@@ -137,13 +153,38 @@ public class YoSql {
      */
     @SuppressWarnings("nls")
     public void generateFiles() throws InterruptedException, ExecutionException {
-        final List<SqlStatement> allStatements = timer.timed("parse statements",
+        final ForkJoinPool forkJoinPool = new ForkJoinPool();
+        final List<SqlStatement> allStatements = forkJoinPool.submit(() -> timer.timed("parse statements",
                 () -> fileResolver.resolveFiles()
                         .flatMap(sqlFileParser::parse)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())))
+                .get();
+        // final List<SqlStatement> allStatements = timer.timed("parse statements",
+        // () -> fileResolver.resolveFiles()
+        // .flatMap(sqlFileParser::parse)
+        // .collect(Collectors.toList()));
+
         if (errors.hasErrors()) {
             errors.throwWith(new SqlFileParsingException("Error during SQL file parsing"));
         }
+
+        try {
+            forkJoinPool.submit(() -> timer.timed("generate repositories", () -> allStatements.stream()
+                    .collect(groupingBy(SqlStatement::getRepository))
+                    .entrySet()
+                    .parallelStream()
+                    .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
+                            repository.getValue()))))
+                    .get();
+            timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
+        } catch (final Throwable throwable) {
+            errors.add(throwable);
+        }
+
+        if (errors.hasErrors()) {
+            errors.throwWith(new CodeGenerationException("Error during code generation"));
+        }
+
         // CompletableFuture.runAsync(() -> timer.timed("generate repositories", () -> allStatements.stream()
         // .collect(groupingBy(SqlStatement::getRepository))
         // .entrySet()
@@ -153,19 +194,6 @@ public class YoSql {
         // .thenRun(
         // () -> timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements)))
         // .join();
-        final ForkJoinPool forkJoinPool = new ForkJoinPool();
-        forkJoinPool.submit(() -> timer.timed("generate repositories", () -> allStatements.stream()
-                .collect(groupingBy(SqlStatement::getRepository))
-                .entrySet()
-                .parallelStream()
-                .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
-                        repository.getValue()))))
-                .get();
-        timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
-
-        if (errors.hasErrors()) {
-            errors.throwWith(new CodeGenerationException("Error during code generation"));
-        }
     }
 
 }

@@ -84,24 +84,24 @@ public final class TypicalParameters {
     }
 
     public static final String replaceNamedParameters(final String rawSqlStatement) {
-        return rawSqlStatement.replaceAll(SqlFileParser.PATTERN.pattern(), "?");
+        return rawSqlStatement.replaceAll(SqlFileParser.PARAMETER_PATTERN.pattern(), "?");
     }
 
-	public static final Iterable<ParameterSpec> asParameterSpecs(List<SqlParameter> parameters) {
-	  return asParameterSpecs(parameters, TypicalParameters::ofSqlParameter);
-	}
+    public static final Iterable<ParameterSpec> asParameterSpecs(final List<SqlParameter> parameters) {
+        return asParameterSpecs(parameters, TypicalParameters::ofSqlParameter);
+    }
 
-	public static final Iterable<ParameterSpec> asBatchParameterSpecs(List<SqlParameter> parameters) {
-	  return asParameterSpecs(parameters, TypicalParameters::batchOfSqlParameter);
-	}
+    public static final Iterable<ParameterSpec> asBatchParameterSpecs(final List<SqlParameter> parameters) {
+        return asParameterSpecs(parameters, TypicalParameters::batchOfSqlParameter);
+    }
 
-	private static Iterable<ParameterSpec> asParameterSpecs(final List<SqlParameter> parameters,
-			final Function<SqlParameter, ParameterSpec> asParameter) {
-	  return Optional.ofNullable(parameters)
-	          .map(params -> params.stream()
-	                  .map(asParameter)
-	                  .collect(Collectors.toList()))
-	          .orElse(Collections.emptyList());
-	}
+    private static Iterable<ParameterSpec> asParameterSpecs(final List<SqlParameter> parameters,
+            final Function<SqlParameter, ParameterSpec> asParameter) {
+        return Optional.ofNullable(parameters)
+                .map(params -> params.stream()
+                        .map(asParameter)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+    }
 
 }

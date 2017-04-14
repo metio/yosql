@@ -558,4 +558,9 @@ public enum ConfigurationOptions {
      */
     LOGGING_API_DEFAULT,
 
+    /**
+     * The class name of the result row converter.
+     */
+    TO_RESULT_ROW_CONVERTER_CLASS_NAME,
+
 }

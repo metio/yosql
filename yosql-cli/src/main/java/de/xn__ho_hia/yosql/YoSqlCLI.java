@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Locale;
 
 import ch.qos.cal10n.IMessageConveyor;
@@ -39,6 +40,8 @@ import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
+import de.xn__ho_hia.yosql.model.ResultRowConverter;
+import de.xn__ho_hia.yosql.parser.Java8SqlFileParser;
 import de.xn__ho_hia.yosql.parser.ParserPreconditions;
 import de.xn__ho_hia.yosql.parser.PathBasedSqlFileResolver;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
@@ -299,8 +302,16 @@ public class YoSqlCLI {
                 .describedAs(messages.getMessage(LOGGING_API_DESCRIPTION));
 
         final OptionSet options = parser.parse(args);
+        final ResultRowConverter toResultRow = new ResultRowConverter();
+        toResultRow.setAlias(options.valueOf(defaultRowConverter));
+        toResultRow.setResultType(
+                String.join(".", options.valueOf(basePackageName), options.valueOf(utilityPackageName),
+                        options.valueOf(defaultResultRowClassName)));
+        toResultRow.setConverterType(
+                String.join(".", options.valueOf(basePackageName), options.valueOf(converterPackageName),
+                        messages.getMessage(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
 
-        return YoSql.prepareDefaultConfiguration()
+        return YoSql.defaultConfiguration()
                 .setInputBaseDirectory(options.valueOf(inputBaseDirectory))
                 .setOutputBaseDirectory(options.valueOf(outputBaseDirectory))
                 .setBasePackageName(options.valueOf(basePackageName))
@@ -337,6 +348,7 @@ public class YoSqlCLI {
                 .setDefaultResultStateClassName(options.valueOf(defaultResultStateClassName))
                 .setDefaultResultRowClassName(options.valueOf(defaultResultRowClassName))
                 .setDefaultRowConverter(options.valueOf(defaultRowConverter))
+                .setResultRowConverters(Arrays.asList(toResultRow))
                 .build();
     }
 
@@ -345,7 +357,8 @@ public class YoSqlCLI {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final PrintStream output = new PrintStream(new BufferedOutputStream(System.out, 8192 * 4), true, "UTF-8"); //$NON-NLS-1$
         // final Writer out = new BufferedWriter(new OutputStreamWriter(System.out));
-        final SqlFileParser sqlFileParser = new SqlFileParser(errors, configuration, configurationFactory, output);
+        final SqlFileParser sqlFileParser = new Java8SqlFileParser(errors, configuration, configurationFactory,
+                output);
         final ParserPreconditions preconditions = new ParserPreconditions(errors);
         final SqlFileResolver fileResolver = new PathBasedSqlFileResolver(preconditions, errors, configuration);
         final TypeWriter typeWriter = new TypeWriter(errors, output);

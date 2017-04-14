@@ -40,11 +40,11 @@ public class DefaultUtilitiesGenerator implements UtilitiesGenerator {
 
     @Override
     public void generateUtilities(final List<SqlStatement> allStatements) {
-        if (allStatements.stream()
+        if (allStatements.parallelStream()
                 .anyMatch(SqlStatement::isReading)) {
             resultStateGenerator.generateResultStateClass();
         }
-        if (allStatements.stream()
+        if (allStatements.parallelStream()
                 .anyMatch(SqlStatement::shouldGenerateRxJavaAPI)) {
             flowStateGenerator.generateFlowStateClass();
         }
@@ -57,7 +57,7 @@ public class DefaultUtilitiesGenerator implements UtilitiesGenerator {
     }
 
     private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
-        return sqlStatements.stream()
+        return sqlStatements.parallelStream()
                 .map(SqlStatement::getConfiguration)
                 .filter(config -> SqlType.READING == config.getType())
                 .map(SqlConfiguration::getResultRowConverter)

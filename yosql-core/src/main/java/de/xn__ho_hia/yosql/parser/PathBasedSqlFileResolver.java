@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -18,7 +16,7 @@ import de.xn__ho_hia.yosql.model.ExecutionErrors;
  */
 public final class PathBasedSqlFileResolver implements SqlFileResolver {
 
-    private final ParserPreconditions preconditions;
+    private final ParserPreconditions    preconditions;
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration configuration;
 
@@ -46,11 +44,11 @@ public final class PathBasedSqlFileResolver implements SqlFileResolver {
         preconditions.assertDirectoryIsReadable(source);
 
         if (!errors.hasErrors()) {
-            try (Stream<Path> paths = Files.walk(source, FileVisitOption.FOLLOW_LINKS)) {
-                final List<Path> statements = paths.filter(Files::isRegularFile)
-                        .filter(path -> path.toString().endsWith(".sql")) //$NON-NLS-1$
-                        .collect(Collectors.toList());
-                return statements.stream();
+            try {
+                return Files.walk(source, FileVisitOption.FOLLOW_LINKS)
+                        .parallel()
+                        .filter(Files::isRegularFile)
+                        .filter(path -> path.toString().endsWith(".sql")); //$NON-NLS-1$
             } catch (final IOException | SecurityException exception) {
                 errors.add(exception);
             }
