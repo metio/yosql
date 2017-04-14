@@ -154,8 +154,7 @@ public class YoSqlImplementation implements YoSql {
     public void generateFiles() {
         final Executor executor = Executors.newWorkStealingPool();
         supplyAsync(this::parseFiles, executor)
-                .thenApplyAsync(this::generateRepositories, executor)
-                .thenAcceptAsync(this::generateUtilities, executor)
+                .thenAcceptAsync(this::generateCode, executor)
                 .exceptionally(this::handleExceptions)
                 .join();
         if (errors.hasErrors()) {
@@ -180,7 +179,12 @@ public class YoSqlImplementation implements YoSql {
         return statements;
     }
 
-    private List<SqlStatement> generateRepositories(final List<SqlStatement> statements) {
+    private void generateCode(final List<SqlStatement> statements) {
+        generateRepositories(statements);
+        generateUtilities(statements);
+    }
+
+    private void generateRepositories(final List<SqlStatement> statements) {
         timer.timed("generate repositories", () -> { //$NON-NLS-1$
             if (statements != null && !statements.isEmpty()) {
                 statements.stream()
@@ -191,7 +195,6 @@ public class YoSqlImplementation implements YoSql {
                                 repository.getValue()));
             }
         });
-        return statements;
     }
 
     private void generateUtilities(final List<SqlStatement> statements) {
