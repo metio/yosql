@@ -104,8 +104,7 @@ public final class Java8SqlFileParser implements SqlFileParser {
         }
 
         if (out != null && configuration != null) {
-            out.printf("Parsed [%s#%s]", source, configuration.getName()); //$NON-NLS-1$
-            out.println();
+            out.println(String.format("Parsed [%s#%s]", source, configuration.getName())); //$NON-NLS-1$
         }
         return new SqlStatement(configuration, rawSqlStatement);
     }
