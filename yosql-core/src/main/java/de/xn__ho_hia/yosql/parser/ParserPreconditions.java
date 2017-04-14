@@ -69,9 +69,11 @@ public class ParserPreconditions {
     public void assertDirectoryIsReadable(final Path directory) {
         if (!Files.exists(directory)) {
             errors.illegalState("[%s] does not exist.", directory);
-        } else if (!Files.isDirectory(directory)) {
+        }
+        if (!Files.isDirectory(directory)) {
             errors.illegalState("[%s] is not a directory.", directory);
-        } else if (!Files.isReadable(directory)) {
+        }
+        if (!Files.isReadable(directory)) {
             errors.illegalState("[%s] no permission to read.", directory);
         }
     }
