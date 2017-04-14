@@ -56,6 +56,10 @@ build: ##@hacking Build everything
 test: ##@hacking Test everything
 	bazel test ...
 
+.PHONY: coverage
+coverage: ##@hacking Run code coverage
+	bazel test ...
+
 .PHONY: bench-lc-small-sample
 bench-lc-small-sample: ##@benchmark Run full codegen lifecycle against small sample (runtime is ~5min)
 	bazel run //benchmarks/jmh:yosql-jmh-benchmark -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithSmallSampleBenchmark
