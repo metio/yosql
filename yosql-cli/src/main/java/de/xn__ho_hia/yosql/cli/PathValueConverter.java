@@ -38,7 +38,7 @@ public class PathValueConverter implements ValueConverter<Path> {
     }
 
     @Override
-    public Class<? extends Path> valueType() {
+    public Class<Path> valueType() {
         return Path.class;
     }
 

@@ -165,7 +165,7 @@ bind(
 
 maven_jar(
     name = "net_sf_jopt_simple",
-    artifact = "net.sf.jopt-simple:jopt-simple:4.9",
+    artifact = "net.sf.jopt-simple:jopt-simple:4.6",
 )
 bind(
     name = "jopt_simple",
