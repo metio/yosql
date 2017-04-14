@@ -76,7 +76,7 @@ public class SqlConfigurationFactory {
     private static void name(final SqlConfiguration configuration, final Path source, final int statementInFile) {
         if (nullOrEmpty(configuration.getName())) {
             final String fileName = getFileNameWithoutExtension(source);
-            configuration.setName(statementInFile == 0 ? fileName : fileName + statementInFile);
+            configuration.setName(statementInFile == 1 ? fileName : fileName + statementInFile);
         }
     }
 
