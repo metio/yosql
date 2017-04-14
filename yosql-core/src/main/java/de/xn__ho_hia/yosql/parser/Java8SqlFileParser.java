@@ -12,11 +12,11 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -31,12 +31,13 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
  */
 public final class Java8SqlFileParser implements SqlFileParser {
 
-    private static final String           NEWLINE = "\n"; //$NON-NLS-1$
+    private static final String           NEWLINE = "\n";   //$NON-NLS-1$
 
     private final ExecutionErrors         errors;
     private final SqlConfigurationFactory factory;
     private final ExecutionConfiguration  config;
     private final PrintStream             out;
+    private final Pattern                 statementSplitter;
 
     /**
      * @param errors
@@ -58,6 +59,7 @@ public final class Java8SqlFileParser implements SqlFileParser {
         this.config = config;
         this.factory = factory;
         this.out = out;
+        statementSplitter = Pattern.compile(config.sqlStatementSeparator());
     }
 
     /**
@@ -71,9 +73,8 @@ public final class Java8SqlFileParser implements SqlFileParser {
             final Charset charset = Charset.forName(config.sqlFilesCharset());
             final Path pathToSqlFile = source;
             final String rawText = new String(Files.readAllBytes(pathToSqlFile), charset);
-            final String[] rawStatements = rawText.split(config.sqlStatementSeparator());
-            final AtomicInteger counter = new AtomicInteger(0);
-            return Arrays.stream(rawStatements)
+            final AtomicInteger counter = new AtomicInteger(1);
+            return statementSplitter.splitAsStream(rawText)
                     .parallel()
                     .map(statement -> convert(source, statement, counter.getAndIncrement()));
         } catch (final Throwable exception) {
@@ -95,15 +96,10 @@ public final class Java8SqlFileParser implements SqlFileParser {
         final String rawYaml = yaml.toString();
 
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
-        SqlConfiguration configuration = null;
-        try {
-            configuration = factory.createStatementConfiguration(source, rawYaml,
-                    parameterIndices, statementInFile);
-        } catch (final Throwable exception) {
-            errors.add(exception);
-        }
+        final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
+                parameterIndices, statementInFile);
 
-        if (out != null && configuration != null) {
+        if (out != null) {
             out.println(String.format("Parsed [%s#%s]", source, configuration.getName())); //$NON-NLS-1$
         }
         return new SqlStatement(configuration, rawSqlStatement);
