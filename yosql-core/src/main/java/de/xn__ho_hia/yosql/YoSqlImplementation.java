@@ -172,7 +172,6 @@ public class YoSqlImplementation implements YoSql {
         List<SqlStatement> statements = Collections.emptyList();
         statements = timer.timed("parse files", //$NON-NLS-1$
                 () -> fileResolver.resolveFiles()
-                        // .parallel()
                         .flatMap(sqlFileParser::parse)
                         .collect(toList()));
         if (errors.hasErrors()) {
