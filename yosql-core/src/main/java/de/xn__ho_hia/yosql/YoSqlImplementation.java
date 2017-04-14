@@ -152,18 +152,20 @@ public class YoSqlImplementation implements YoSql {
     @Override
     @SuppressWarnings("nls")
     public void generateFiles() {
-        try {
-            final Executor executor = Executors.newWorkStealingPool();
-            supplyAsync(this::parseFiles, executor)
-                    .thenApplyAsync(this::generateRepositories, executor)
-                    .thenAcceptAsync(this::generateUtilities, executor)
-                    .join();
-        } catch (final Throwable throwable) {
-            errors.add(throwable);
-        }
+        final Executor executor = Executors.newWorkStealingPool();
+        supplyAsync(this::parseFiles, executor)
+                .thenApplyAsync(this::generateRepositories, executor)
+                .thenAcceptAsync(this::generateUtilities, executor)
+                .exceptionally(this::handleExceptions)
+                .join();
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException("Error during code generation"));
         }
+    }
+
+    private Void handleExceptions(final Throwable throwable) {
+        errors.add(throwable.getCause());
+        return null;
     }
 
     private List<SqlStatement> parseFiles() {
