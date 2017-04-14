@@ -41,7 +41,7 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
-import de.xn__ho_hia.yosql.parser.Java8SqlFileParser;
+import de.xn__ho_hia.yosql.parser.DefaultSqlFileParser;
 import de.xn__ho_hia.yosql.parser.ParserPreconditions;
 import de.xn__ho_hia.yosql.parser.PathBasedSqlFileResolver;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
@@ -357,7 +357,7 @@ public class YoSqlCLI {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final PrintStream output = new PrintStream(new BufferedOutputStream(System.out, 8192 * 4), true, "UTF-8"); //$NON-NLS-1$
         // final Writer out = new BufferedWriter(new OutputStreamWriter(System.out));
-        final SqlFileParser sqlFileParser = new Java8SqlFileParser(errors, configuration, configurationFactory,
+        final SqlFileParser sqlFileParser = new DefaultSqlFileParser(errors, configuration, configurationFactory,
                 output);
         final ParserPreconditions preconditions = new ParserPreconditions(errors);
         final SqlFileResolver fileResolver = new PathBasedSqlFileResolver(preconditions, errors, configuration);

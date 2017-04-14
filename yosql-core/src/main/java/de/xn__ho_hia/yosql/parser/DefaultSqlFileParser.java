@@ -29,7 +29,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 /**
  * Parses SQL statements inside .sql files.
  */
-public final class Java8SqlFileParser implements SqlFileParser {
+public final class DefaultSqlFileParser implements SqlFileParser {
 
     private static final String           NEWLINE = "\n";   //$NON-NLS-1$
 
@@ -50,7 +50,7 @@ public final class Java8SqlFileParser implements SqlFileParser {
      *            The output stream to use.
      */
     @Inject
-    public Java8SqlFileParser(
+    public DefaultSqlFileParser(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
             final SqlConfigurationFactory factory,

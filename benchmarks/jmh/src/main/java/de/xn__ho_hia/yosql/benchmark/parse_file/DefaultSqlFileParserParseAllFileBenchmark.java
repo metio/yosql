@@ -5,13 +5,13 @@ import java.io.PrintStream;
 import de.xn__ho_hia.yosql.YoSql;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
-import de.xn__ho_hia.yosql.parser.Java8SqlFileParser;
+import de.xn__ho_hia.yosql.parser.DefaultSqlFileParser;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
 
 /**
- * JMH based micro benchmark for the {@link Java8SqlFileParser} running against each .sql file individually.
+ * JMH based micro benchmark for the {@link DefaultSqlFileParser} running against all .sql files.
  */
-public class Java8SqlFileParserParseEachFileBenchmark extends AbstractParseEachFileBenchmark {
+public class DefaultSqlFileParserParseAllFileBenchmark extends AbstractParseAllFileBenchmark {
 
     @Override
     public void setUpParser() throws Exception {
@@ -19,7 +19,7 @@ public class Java8SqlFileParserParseEachFileBenchmark extends AbstractParseEachF
         final ExecutionConfiguration configuration = YoSql.defaultConfiguration().build();
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final PrintStream output = null;
-        parser = new Java8SqlFileParser(errors, configuration, configurationFactory, output);
+        parser = new DefaultSqlFileParser(errors, configuration, configurationFactory, output);
     }
 
 }

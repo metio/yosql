@@ -29,7 +29,7 @@ import de.xn__ho_hia.yosql.generator.utils.ResultStateGenerator;
 import de.xn__ho_hia.yosql.generator.utils.ToResultRowConverterGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
-import de.xn__ho_hia.yosql.parser.Java8SqlFileParser;
+import de.xn__ho_hia.yosql.parser.DefaultSqlFileParser;
 import de.xn__ho_hia.yosql.parser.ParserPreconditions;
 import de.xn__ho_hia.yosql.parser.PathBasedSqlFileResolver;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
@@ -67,7 +67,7 @@ abstract class AbstractFullLifecycleBenchmark extends AbstractBenchmark {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final PrintStream output = null;
         // final Writer out = new BufferedWriter(new OutputStreamWriter(System.out));
-        final SqlFileParser sqlFileParser = new Java8SqlFileParser(errors, configuration, configurationFactory, output);
+        final SqlFileParser sqlFileParser = new DefaultSqlFileParser(errors, configuration, configurationFactory, output);
         final ParserPreconditions preconditions = new ParserPreconditions(errors);
         // TODO: resolve files from classpath?
         final SqlFileResolver fileResolver = new PathBasedSqlFileResolver(preconditions, errors, configuration);

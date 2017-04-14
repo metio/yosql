@@ -25,12 +25,12 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
-import de.xn__ho_hia.yosql.parser.Java8SqlFileParser;
+import de.xn__ho_hia.yosql.parser.DefaultSqlFileParser;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 
 /**
- * Alternative implementation for the {@link Java8SqlFileParser}. Used for benchmarking.
+ * Alternative implementation for the {@link DefaultSqlFileParser}. Used for benchmarking.
  */
 public final class Java8SqlFileParser2 implements SqlFileParser {
 
