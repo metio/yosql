@@ -7,14 +7,16 @@
 package de.xn__ho_hia.yosql;
 
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.*;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -150,31 +152,42 @@ public class YoSqlImplementation implements YoSql {
     @SuppressWarnings("nls")
     public void generateFiles() {
         try {
-            final ForkJoinPool forkJoinPool = new ForkJoinPool();
-            final List<SqlStatement> allStatements = forkJoinPool.submit(() -> timer.timed("parse statements",
-                    () -> fileResolver.resolveFiles()
-                            .flatMap(sqlFileParser::parse)
-                            .collect(Collectors.toList())))
-                    .get();
-            if (errors.hasErrors()) {
-                errors.throwWith(new SqlFileParsingException("Error during SQL file parsing"));
-            }
-
-            forkJoinPool.submit(() -> timer.timed("generate repositories", () -> allStatements.stream()
-                    .collect(groupingBy(SqlStatement::getRepository))
-                    .entrySet()
-                    .parallelStream()
-                    .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
-                            repository.getValue()))))
-                    .get();
-            timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
-        } catch (final Throwable throwable) {
-            errors.add(throwable);
+            final Executor executor = Executors.newWorkStealingPool();
+            supplyAsync(this::parseFiles, executor)
+                    .thenApplyAsync(this::generateRepositories, executor)
+                    .thenAcceptAsync(this::generateUtilities, executor)
+                    .join();
+        } catch (final Throwable exception) {
+            errors.add(exception);
         }
-
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException("Error during code generation"));
         }
+    }
+
+    private List<SqlStatement> parseFiles() {
+        if (errors.hasErrors()) {
+            errors.throwWith(new SqlFileParsingException("Error during SQL file parsing")); //$NON-NLS-1$
+        }
+        return timer.timed("parse files", //$NON-NLS-1$
+                () -> fileResolver.resolveFiles()
+                        // .parallel()
+                        .flatMap(sqlFileParser::parse)
+                        .collect(toList()));
+    }
+
+    private List<SqlStatement> generateRepositories(final List<SqlStatement> statements) {
+        timer.timed("generate repositories", () -> statements.stream() //$NON-NLS-1$
+                .collect(groupingBy(SqlStatement::getRepository))
+                .entrySet()
+                .parallelStream()
+                .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
+                        repository.getValue())));
+        return statements;
+    }
+
+    private void generateUtilities(final List<SqlStatement> statements) {
+        timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(statements)); //$NON-NLS-1$
     }
 
 }
