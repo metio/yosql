@@ -9,6 +9,7 @@ package de.xn__ho_hia.yosql.benchmark.full_lifecycle;
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.*;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -152,22 +152,26 @@ public class YoSqlImplementation2 implements YoSql {
     @Override
     @SuppressWarnings("nls")
     public void generateFiles() {
-        final Executor executor = Executors.newCachedThreadPool();
-        supplyAsync(() -> timer.timed("parse statements",
-                () -> fileResolver.resolveFiles()
-                        .flatMap(sqlFileParser::parse)
-                        .collect(Collectors.toList())),
-                executor)
-                        .thenApplyAsync(this::generateRepositories)
-                        .thenAcceptAsync(this::generateUtilities)
-                        .join();
+        try {
+            final Executor executor = Executors.newWorkStealingPool();
+            supplyAsync(() -> parseFiles(), executor)
+                    .thenApplyAsync(this::generateRepositories, executor)
+                    .thenAcceptAsync(this::generateUtilities, executor)
+                    .join();
+        } catch (final Throwable exception) {
+            errors.add(exception);
+        }
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException("Error during code generation"));
         }
     }
 
-    private void generateUtilities(final List<SqlStatement> statements) {
-        timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(statements)); //$NON-NLS-1$
+    private List<SqlStatement> parseFiles() {
+        return timer.timed("parse files", //$NON-NLS-1$
+                () -> fileResolver.resolveFiles()
+                        // .parallel()
+                        .flatMap(sqlFileParser::parse)
+                        .collect(toList()));
     }
 
     private List<SqlStatement> generateRepositories(final List<SqlStatement> statements) {
@@ -178,6 +182,10 @@ public class YoSqlImplementation2 implements YoSql {
                 .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
                         repository.getValue())));
         return statements;
+    }
+
+    private void generateUtilities(final List<SqlStatement> statements) {
+        timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(statements)); //$NON-NLS-1$
     }
 
 }

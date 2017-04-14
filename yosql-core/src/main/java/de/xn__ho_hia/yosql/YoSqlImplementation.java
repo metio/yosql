@@ -149,9 +149,8 @@ public class YoSqlImplementation implements YoSql {
     @Override
     @SuppressWarnings("nls")
     public void generateFiles() {
-        final ForkJoinPool forkJoinPool = new ForkJoinPool();
-
         try {
+            final ForkJoinPool forkJoinPool = new ForkJoinPool();
             final List<SqlStatement> allStatements = forkJoinPool.submit(() -> timer.timed("parse statements",
                     () -> fileResolver.resolveFiles()
                             .flatMap(sqlFileParser::parse)

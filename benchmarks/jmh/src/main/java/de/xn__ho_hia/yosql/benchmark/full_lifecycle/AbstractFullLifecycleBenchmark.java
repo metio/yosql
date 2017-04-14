@@ -1,12 +1,8 @@
 package de.xn__ho_hia.yosql.benchmark.full_lifecycle;
 
 import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -42,8 +38,6 @@ import de.xn__ho_hia.yosql.parser.SqlFileResolver;
 import de.xn__ho_hia.yosql.utils.Timer;
 
 @State(Scope.Benchmark)
-@BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
 abstract class AbstractFullLifecycleBenchmark extends AbstractBenchmark {
 
     private YoSql yosql;
