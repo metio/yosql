@@ -31,9 +31,13 @@ public abstract class AbstractBenchmark {
     @SuppressWarnings("nls")
     protected static final List<String> SUPPORTED_USE_CASES      = Arrays.asList(
             "callFunction.sql",
+            "callFunctionMultiple.sql",
             "insertData.sql",
+            "insertDataMultiple.sql",
             "readData.sql",
-            "updateData.sql");
+            "readDataMultiple.sql",
+            "updateData.sql",
+            "updateDataMultiple.sql");
 
     private Path                        tempDirectory;
     protected Path                      inputDirectory;

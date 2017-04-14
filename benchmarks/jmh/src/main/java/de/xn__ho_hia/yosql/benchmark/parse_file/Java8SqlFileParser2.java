@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.parser;
+package de.xn__ho_hia.yosql.benchmark.parse_file;
 
 import java.io.BufferedReader;
 import java.io.PrintStream;
@@ -25,11 +25,14 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
+import de.xn__ho_hia.yosql.parser.Java8SqlFileParser;
+import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
+import de.xn__ho_hia.yosql.parser.SqlFileParser;
 
 /**
- * Parses SQL statements inside .sql files.
+ * Alternative implementation for the {@link Java8SqlFileParser}. Used for benchmarking.
  */
-public final class Java8SqlFileParser implements SqlFileParser {
+public final class Java8SqlFileParser2 implements SqlFileParser {
 
     private static final String           NEWLINE = "\n"; //$NON-NLS-1$
 
@@ -49,7 +52,7 @@ public final class Java8SqlFileParser implements SqlFileParser {
      *            The output stream to use.
      */
     @Inject
-    public Java8SqlFileParser(
+    public Java8SqlFileParser2(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
             final SqlConfigurationFactory factory,
@@ -74,7 +77,7 @@ public final class Java8SqlFileParser implements SqlFileParser {
             final String[] rawStatements = rawText.split(config.sqlStatementSeparator());
             final AtomicInteger counter = new AtomicInteger(0);
             return Arrays.stream(rawStatements)
-                    .parallel()
+                    // .parallel() // CHANGED FROM ORIGINAL
                     .map(statement -> convert(source, statement, counter.getAndIncrement()));
         } catch (final Throwable exception) {
             errors.add(exception);

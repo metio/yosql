@@ -1,4 +1,1 @@
-SELECT	*
-FROM	person
-WHERE	id = :userId
-;
+MY_FUNCTION(:parameter);

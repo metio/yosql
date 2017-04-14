@@ -6,13 +6,12 @@ import de.xn__ho_hia.yosql.YoSql;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.parser.Java8SqlFileParser;
-import de.xn__ho_hia.yosql.parser.Java8SqlFileParser2;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
 
 /**
- * JMH based micro benchmark for the {@link Java8SqlFileParser}.
+ * JMH based micro benchmark for the {@link Java8SqlFileParser} running against all .sql files.
  */
-public class Java8SqlFileParser2ParseFileBenchmark extends AbstractParseFileBenchmark {
+public class Java8SqlFileParserParseAllFileBenchmark extends AbstractParseAllFileBenchmark {
 
     @Override
     public void setUpParser() throws Exception {
@@ -20,7 +19,7 @@ public class Java8SqlFileParser2ParseFileBenchmark extends AbstractParseFileBenc
         final ExecutionConfiguration configuration = YoSql.defaultConfiguration().build();
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final PrintStream output = null;
-        parser = new Java8SqlFileParser2(errors, configuration, configurationFactory, output);
+        parser = new Java8SqlFileParser(errors, configuration, configurationFactory, output);
     }
 
 }

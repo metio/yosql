@@ -6,7 +6,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 /**
- * Encapsulates common benchmark functionality for single use cases.
+ * Encapsulates common benchmark functionality for each use case invidually.
  */
 @State(Scope.Benchmark)
 public abstract class AbstractForEachUseCaseBenchmark extends AbstractBenchmark {
@@ -14,14 +14,25 @@ public abstract class AbstractForEachUseCaseBenchmark extends AbstractBenchmark 
     /**
      * The supported use cases for file parsing.
      */
-    @Param({ "callFunction.sql", "insertData.sql", "readData.sql", "updateData.sql" })
+    @Param({
+        //@formatter:off
+        "callFunction.sql"
+        ,"callFunctionMultiple.sql"
+        ,"insertData.sql"
+        ,"insertDataMultiple.sql"
+        ,"readData.sql"
+        ,"readDataMultiple.sql"
+        ,"updateData.sql"
+        ,"updateDataMultiple.sql"
+        //@formatter:on
+    })
     public String usecase;
 
     /**
-     * Prepares a single repository for each supported use case.
+     * Prepares a single repository for a single supported use case.
      */
     @Setup
-    public void generateSqlFiles() {
+    public void prepareRepositoryForUseCase() {
         prepareRepositories(1, usecase);
     }
 

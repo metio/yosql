@@ -5,7 +5,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 /**
- * Encapsulates common benchmark functionality for single use cases.
+ * Encapsulates common benchmark functionality for all use cases.
  */
 @State(Scope.Benchmark)
 public abstract class AbstractForAllUseCasesBenchmark extends AbstractBenchmark {

@@ -5,14 +5,14 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
-import de.xn__ho_hia.yosql.benchmark.AbstractForAllUseCasesBenchmark;
+import de.xn__ho_hia.yosql.benchmark.AbstractForEachUseCaseBenchmark;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 
 /**
- * Abstract benchmark for file parsing.
+ * Abstract benchmark for file parsing running against each .sql file individually.
  */
 @State(Scope.Benchmark)
-public abstract class AbstractParseFileBenchmark extends AbstractForAllUseCasesBenchmark {
+public abstract class AbstractParseEachFileBenchmark extends AbstractForEachUseCaseBenchmark {
 
     protected SqlFileParser parser;
 
@@ -29,9 +29,8 @@ public abstract class AbstractParseFileBenchmark extends AbstractForAllUseCasesB
      * Benchmarks file parsing.
      */
     @Benchmark
-    public final void benchmarkParseFiles() {
-        SUPPORTED_USE_CASES
-                .forEach(usecase -> parser.parse(inputDirectory.resolve(repositoryName(1)).resolve(usecase)));
+    public final void benchmarkParseFile() {
+        parser.parse(inputDirectory.resolve(repositoryName(1)).resolve(usecase));
     }
 
 }
