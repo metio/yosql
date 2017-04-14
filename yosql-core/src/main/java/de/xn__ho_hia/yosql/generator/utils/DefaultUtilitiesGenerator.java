@@ -40,19 +40,21 @@ public class DefaultUtilitiesGenerator implements UtilitiesGenerator {
 
     @Override
     public void generateUtilities(final List<SqlStatement> allStatements) {
-        if (allStatements.parallelStream()
-                .anyMatch(SqlStatement::isReading)) {
-            resultStateGenerator.generateResultStateClass();
-        }
-        if (allStatements.parallelStream()
-                .anyMatch(SqlStatement::shouldGenerateRxJavaAPI)) {
-            flowStateGenerator.generateFlowStateClass();
-        }
-        if (resultConverters(allStatements)
-                .anyMatch(converter -> converter.getConverterType().endsWith(
-                        ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME))) {
-            toResultRowConverterGenerator.generateToResultRowConverterClass();
-            resultRowGenerator.generateResultRowClass();
+        if (allStatements != null && !allStatements.isEmpty()) {
+            if (allStatements.parallelStream()
+                    .anyMatch(SqlStatement::isReading)) {
+                resultStateGenerator.generateResultStateClass();
+            }
+            if (allStatements.parallelStream()
+                    .anyMatch(SqlStatement::shouldGenerateRxJavaAPI)) {
+                flowStateGenerator.generateFlowStateClass();
+            }
+            if (resultConverters(allStatements)
+                    .anyMatch(converter -> converter.getConverterType().endsWith(
+                            ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME))) {
+                toResultRowConverterGenerator.generateToResultRowConverterClass();
+                resultRowGenerator.generateResultRowClass();
+            }
         }
     }
 
