@@ -49,6 +49,7 @@ public interface YoSql {
                 .setUtilityPackageName(utilityPackageName)
                 .setConverterPackageName(converterPackageName)
                 // TODO: offer several ways how SQL statements are embedded in generated repositories?
+                // see https://github.com/sebhoss/yosql/issues/18
                 .setRepositorySqlStatements("inline")
                 .setGenerateStandardApi(Boolean.parseBoolean(messages.getMessage(METHOD_STANDARD_API_DEFAULT)))
                 .setGenerateBatchApi(Boolean.parseBoolean(messages.getMessage(METHOD_BATCH_API_DEFAULT)))
