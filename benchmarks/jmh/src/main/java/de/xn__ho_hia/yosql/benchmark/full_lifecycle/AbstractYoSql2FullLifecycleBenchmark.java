@@ -25,7 +25,7 @@ abstract class AbstractYoSql2FullLifecycleBenchmark extends AbstractFullLifecycl
     protected YoSql createYoSql(final ExecutionErrors errors, final SqlFileParser sqlFileParser,
             final SqlFileResolver fileResolver, final RawJdbcRepositoryGenerator repositoryGenerator,
             final DefaultUtilitiesGenerator utilsGenerator, final Timer timer) {
-        return new YoSql2(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer);
+        return new YoSqlImplementation2(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer);
     }
 
 }

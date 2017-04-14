@@ -39,7 +39,7 @@ import de.xn__ho_hia.yosql.utils.Timer;
 /**
  * Alternative implementation of {@link YoSql} used for benchmarking.
  */
-public class YoSql2 implements YoSql {
+public class YoSqlImplementation2 implements YoSql {
 
     private final SqlFileResolver     fileResolver;
     private final SqlFileParser       sqlFileParser;
@@ -63,7 +63,7 @@ public class YoSql2 implements YoSql {
      *            The timer to use.
      */
     @Inject
-    public YoSql2(
+    public YoSqlImplementation2(
             final SqlFileResolver fileResolver,
             final SqlFileParser sqlFileParser,
             final RepositoryGenerator repositoryGenerator,
