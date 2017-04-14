@@ -1,6 +1,6 @@
 filegroup(
   name = "yosql-core-main-raw-sources",
-  srcs = glob(["src/main/java/**/YoSql.java"]),
+  srcs = glob(["src/main/java/**/YoSql*.java"]),
 )
 
 java_library(

@@ -7,7 +7,7 @@ import org.openjdk.jmh.annotations.Setup;
 /**
  * JMH based micro benchmark for YoSQL with a small sample size.
  */
-public class YoSqlWithSmallSampleBenchmark extends AbstractFullLifecycleBenchmark {
+public class YoSqlWithSmallSampleBenchmark extends AbstractYoSqlFullLifecycleBenchmark {
 
     /**
      * @throws IOException

@@ -26,7 +26,6 @@
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_slf4j_slf4j_api/jar/_ijar/jar/external/org_slf4j_slf4j_api/jar/slf4j-api-1.7.21-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_google_auto_value_auto_value/jar/_ijar/jar/external/com_google_auto_value_auto_value/jar/auto-value-1.2-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_openjdk_jmh_jmh_core/jar/_ijar/jar/external/org_openjdk_jmh_jmh_core/jar/jmh-core-1.18-ijar.jar"/>
-	<classpathentry kind="lib" path="yosql-cli/BUILD"/>
 	<classpathentry kind="src" path="bazel-out/ide/generated">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
@@ -34,7 +33,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="bazel-genfiles/external/javax_annotation_javax_annotation_api/jar/_ijar/jar/external/javax_annotation_javax_annotation_api/jar/jsr305-3.0.0-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/net_sf_jopt_simple/jar/_ijar/jar/external/net_sf_jopt_simple/jar/jopt-simple-4.9-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/net_sf_jopt_simple/jar/_ijar/jar/external/net_sf_jopt_simple/jar/jopt-simple-4.6-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/ch_qos_cal10n_cal10n_api/jar/_ijar/jar/external/ch_qos_cal10n_cal10n_api/jar/cal10n-api-0.8.1-ijar.jar"/>
 	<classpathentry kind="output" path="bazel-out/ide/classes"/>
 </classpath>

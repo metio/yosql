@@ -4,30 +4,85 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql;
+package de.xn__ho_hia.yosql.benchmark.full_lifecycle;
 
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.*;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.stream.Collectors.groupingBy;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
 
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
+import de.xn__ho_hia.yosql.YoSql;
+import de.xn__ho_hia.yosql.generator.RepositoryGenerator;
+import de.xn__ho_hia.yosql.generator.UtilitiesGenerator;
+import de.xn__ho_hia.yosql.model.CodeGenerationException;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration.Builder;
+import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
+import de.xn__ho_hia.yosql.model.SqlStatement;
+import de.xn__ho_hia.yosql.parser.SqlFileParser;
+import de.xn__ho_hia.yosql.parser.SqlFileResolver;
+import de.xn__ho_hia.yosql.utils.Timer;
 
 /**
+ * Alternative implementation of {@link YoSql} used for benchmarking.
  */
-public interface YoSql {
+public class YoSql2 implements YoSql {
+
+    private final SqlFileResolver     fileResolver;
+    private final SqlFileParser       sqlFileParser;
+    private final RepositoryGenerator repositoryGenerator;
+    private final UtilitiesGenerator  utilsGenerator;
+    private final ExecutionErrors     errors;
+    private final Timer               timer;
+
+    /**
+     * @param fileResolver
+     *            The file resolver to use.
+     * @param sqlFileParser
+     *            The SQL file parser to use.
+     * @param repositoryGenerator
+     *            The repository generator to use.
+     * @param utilsGenerator
+     *            The utilities generator to use.
+     * @param errors
+     *            The error collector to use.
+     * @param timer
+     *            The timer to use.
+     */
+    @Inject
+    public YoSql2(
+            final SqlFileResolver fileResolver,
+            final SqlFileParser sqlFileParser,
+            final RepositoryGenerator repositoryGenerator,
+            final UtilitiesGenerator utilsGenerator,
+            final ExecutionErrors errors,
+            final Timer timer) {
+        this.fileResolver = fileResolver;
+        this.sqlFileParser = sqlFileParser;
+        this.repositoryGenerator = repositoryGenerator;
+        this.utilsGenerator = utilsGenerator;
+        this.errors = errors;
+        this.timer = timer;
+    }
 
     /**
      * @return A configuration builder initialized with all default values.
      */
     @SuppressWarnings({ "nls" })
-    static Builder defaultConfiguration() {
+    public static Builder defaultConfiguration() {
         final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
 
         final String basePackageName = messages.getMessage(BASE_PACKAGE_NAME_DEFAULT);
@@ -94,6 +149,35 @@ public interface YoSql {
 
     /**
      */
-    void generateFiles();
+    @Override
+    @SuppressWarnings("nls")
+    public void generateFiles() {
+        final Executor executor = Executors.newCachedThreadPool();
+        supplyAsync(() -> timer.timed("parse statements",
+                () -> fileResolver.resolveFiles()
+                        .flatMap(sqlFileParser::parse)
+                        .collect(Collectors.toList())),
+                executor)
+                        .thenApplyAsync(this::generateRepositories)
+                        .thenAcceptAsync(this::generateUtilities)
+                        .join();
+        if (errors.hasErrors()) {
+            errors.throwWith(new CodeGenerationException("Error during code generation"));
+        }
+    }
+
+    private void generateUtilities(final List<SqlStatement> statements) {
+        timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(statements)); //$NON-NLS-1$
+    }
+
+    private List<SqlStatement> generateRepositories(final List<SqlStatement> statements) {
+        timer.timed("generate repositories", () -> statements.stream() //$NON-NLS-1$
+                .collect(groupingBy(SqlStatement::getRepository))
+                .entrySet()
+                .parallelStream()
+                .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
+                        repository.getValue())));
+        return statements;
+    }
 
 }

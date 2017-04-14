@@ -7,27 +7,79 @@
 package de.xn__ho_hia.yosql;
 
 import static de.xn__ho_hia.yosql.i18n.ConfigurationOptions.*;
+import static java.util.stream.Collectors.groupingBy;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
 
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
+import de.xn__ho_hia.yosql.generator.RepositoryGenerator;
+import de.xn__ho_hia.yosql.generator.UtilitiesGenerator;
+import de.xn__ho_hia.yosql.model.CodeGenerationException;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration.Builder;
+import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
+import de.xn__ho_hia.yosql.model.SqlFileParsingException;
+import de.xn__ho_hia.yosql.model.SqlStatement;
+import de.xn__ho_hia.yosql.parser.SqlFileParser;
+import de.xn__ho_hia.yosql.parser.SqlFileResolver;
+import de.xn__ho_hia.yosql.utils.Timer;
 
 /**
  */
-public interface YoSql {
+public class YoSqlImplementation implements YoSql {
+
+    private final SqlFileResolver     fileResolver;
+    private final SqlFileParser       sqlFileParser;
+    private final RepositoryGenerator repositoryGenerator;
+    private final UtilitiesGenerator  utilsGenerator;
+    private final ExecutionErrors     errors;
+    private final Timer               timer;
+
+    /**
+     * @param fileResolver
+     *            The file resolver to use.
+     * @param sqlFileParser
+     *            The SQL file parser to use.
+     * @param repositoryGenerator
+     *            The repository generator to use.
+     * @param utilsGenerator
+     *            The utilities generator to use.
+     * @param errors
+     *            The error collector to use.
+     * @param timer
+     *            The timer to use.
+     */
+    @Inject
+    public YoSqlImplementation(
+            final SqlFileResolver fileResolver,
+            final SqlFileParser sqlFileParser,
+            final RepositoryGenerator repositoryGenerator,
+            final UtilitiesGenerator utilsGenerator,
+            final ExecutionErrors errors,
+            final Timer timer) {
+        this.fileResolver = fileResolver;
+        this.sqlFileParser = sqlFileParser;
+        this.repositoryGenerator = repositoryGenerator;
+        this.utilsGenerator = utilsGenerator;
+        this.errors = errors;
+        this.timer = timer;
+    }
 
     /**
      * @return A configuration builder initialized with all default values.
      */
     @SuppressWarnings({ "nls" })
-    static Builder defaultConfiguration() {
+    public static Builder defaultConfiguration() {
         final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
 
         final String basePackageName = messages.getMessage(BASE_PACKAGE_NAME_DEFAULT);
@@ -94,6 +146,36 @@ public interface YoSql {
 
     /**
      */
-    void generateFiles();
+    @Override
+    @SuppressWarnings("nls")
+    public void generateFiles() {
+        final ForkJoinPool forkJoinPool = new ForkJoinPool();
+
+        try {
+            final List<SqlStatement> allStatements = forkJoinPool.submit(() -> timer.timed("parse statements",
+                    () -> fileResolver.resolveFiles()
+                            .flatMap(sqlFileParser::parse)
+                            .collect(Collectors.toList())))
+                    .get();
+            if (errors.hasErrors()) {
+                errors.throwWith(new SqlFileParsingException("Error during SQL file parsing"));
+            }
+
+            forkJoinPool.submit(() -> timer.timed("generate repositories", () -> allStatements.stream()
+                    .collect(groupingBy(SqlStatement::getRepository))
+                    .entrySet()
+                    .parallelStream()
+                    .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
+                            repository.getValue()))))
+                    .get();
+            timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(allStatements));
+        } catch (final Throwable throwable) {
+            errors.add(throwable);
+        }
+
+        if (errors.hasErrors()) {
+            errors.throwWith(new CodeGenerationException("Error during code generation"));
+        }
+    }
 
 }

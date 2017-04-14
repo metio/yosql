@@ -69,7 +69,7 @@ abstract class AbstractFullLifecycleBenchmark extends AbstractBenchmark {
         yosql.generateFiles();
     }
 
-    protected static YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors) {
+    protected YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors) {
         final SqlConfigurationFactory configurationFactory = new SqlConfigurationFactory(errors, configuration);
         final PrintStream output = null;
         // final Writer out = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -105,7 +105,11 @@ abstract class AbstractFullLifecycleBenchmark extends AbstractBenchmark {
                 resultStateGenerator, toResultRowConverterGenerator, resultRowGenerator);
         final Timer timer = new Timer(output);
 
-        return new YoSql(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer);
+        return createYoSql(errors, sqlFileParser, fileResolver, repositoryGenerator, utilsGenerator, timer);
     }
+
+    protected abstract YoSql createYoSql(ExecutionErrors errors, SqlFileParser sqlFileParser,
+            SqlFileResolver fileResolver, RawJdbcRepositoryGenerator repositoryGenerator,
+            DefaultUtilitiesGenerator utilsGenerator, Timer timer);
 
 }

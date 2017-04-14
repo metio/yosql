@@ -389,7 +389,7 @@ public class YoSqlCLI {
                 resultStateGenerator, toResultRowConverterGenerator, resultRowGenerator);
         final Timer timer = new Timer(output);
 
-        return new YoSql(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer);
+        return new YoSqlImplementation(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer);
     }
 
 }
