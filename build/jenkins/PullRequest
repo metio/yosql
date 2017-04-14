@@ -1,8 +1,6 @@
 node {
 
     def projectName = "sebhoss/yosql"
-    def repositoryLocation = ".repository"
-    def githubCredentials = "build-metio-wtf-github"
     def BAZEL_VERSION = "0.4.5"
     def INSTALLER_PLATFORM = "linux-x86_64"
     def URL = "https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-${INSTALLER_PLATFORM}.sh"
@@ -38,22 +36,6 @@ node {
             ${BASE}/binary/bazel \
                 --bazelrc=${BASE}/bin/bazel.bazelrc test ...
         """
-    }
-
-    stage('Git config') {
-        withCredentials([
-                string(credentialsId: 'git.user.name', variable: 'GIT_USER'),
-                string(credentialsId: 'git.user.email', variable: 'GIT_EMAIL')]) {
-            sh "git config user.name '${GIT_USER}'"
-            sh "git config user.email '${GIT_EMAIL}'"
-        }
-    }
-
-    stage('Git Push') {
-         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${githubCredentials}",
-                            usernameVariable: 'USERNAME', passwordVariable: 'TOKEN']]) {
-            sh "git push https://${TOKEN}:x-oauth-basic@github.com/${projectName}.git --tags"
-        }
     }
 
 }
