@@ -48,7 +48,7 @@ all: help
 help: ##@other Show this help
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
 
-.PHONY: install
+.PHONY: build
 build: ##@hacking Build everything
 	bazel build ...
 
