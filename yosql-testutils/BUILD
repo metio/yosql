@@ -4,7 +4,7 @@ filegroup(
 )
 
 java_library(
-  name = "testutils",
+  name = "yosql-testutils",
   srcs = [":testutils-raw-sources"],
   visibility = ["//visibility:public"],
   deps = [

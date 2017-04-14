@@ -5,6 +5,6 @@ load("@bazel_build_process//java:junit5_test.bzl", "junit5_test_in_package")
   package = "de.xn__ho_hia.yosql.i18n",
   deps = [
     "//yosql-core/src/main/java/de/xn__ho_hia/yosql/i18n:yosql-core-i18n",
-    "//testutils",
+    "//yosql-testutils",
   ],
 ) for file in glob(["*.java"])]
