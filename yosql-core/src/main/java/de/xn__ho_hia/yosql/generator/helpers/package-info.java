@@ -5,6 +5,6 @@
  * in the LICENSE file.
  */
 /**
- * Helpers for code generation.
+ * Helpers used during code generation.
  */
 package de.xn__ho_hia.yosql.generator.helpers;

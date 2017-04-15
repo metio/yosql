@@ -26,6 +26,7 @@ java_binary(
     "//external:commons_math3",
     "//external:jopt_simple",
     "//yosql-core",
+    "//yosql-core:dagger2",
     ":jmh",
   ],
 )

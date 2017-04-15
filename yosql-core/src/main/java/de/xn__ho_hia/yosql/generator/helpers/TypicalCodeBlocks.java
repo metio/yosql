@@ -31,7 +31,8 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import de.xn__ho_hia.yosql.generator.LoggingGenerator;
+import de.xn__ho_hia.yosql.dagger.Delegating;
+import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlParameter;
@@ -331,7 +332,7 @@ public class TypicalCodeBlocks {
     @Inject
     public TypicalCodeBlocks(
             final ExecutionConfiguration pluginConfig,
-            final LoggingGenerator logging) {
+            final @Delegating LoggingGenerator logging) {
         configuration = pluginConfig;
         this.logging = logging;
     }

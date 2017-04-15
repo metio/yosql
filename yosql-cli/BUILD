@@ -5,7 +5,7 @@ filegroup(
 
 java_binary(
   name = "yosql-cli",
-  main_class = "de.xn__ho_hia.yosql.YoSqlCLI",
+  main_class = "de.xn__ho_hia.yosql.cli.YoSqlCLI",
   srcs = [":yosql-cli-raw-sources"],
   visibility = ["//visibility:public"],
   deps = [

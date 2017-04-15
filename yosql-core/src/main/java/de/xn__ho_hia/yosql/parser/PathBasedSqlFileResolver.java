@@ -14,22 +14,14 @@ import de.xn__ho_hia.yosql.model.ExecutionErrors;
 /**
  * A SQL file resolver that starts at the given source, walks into every subdirectory and returns all .sql files.
  */
-public final class PathBasedSqlFileResolver implements SqlFileResolver {
+final class PathBasedSqlFileResolver implements SqlFileResolver {
 
     private final ParserPreconditions    preconditions;
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration configuration;
 
-    /**
-     * @param preconditions
-     *            The preconditions to use.
-     * @param errors
-     *            The error collector to use.
-     * @param configuration
-     *            The configuration to use.
-     */
     @Inject
-    public PathBasedSqlFileResolver(
+    PathBasedSqlFileResolver(
             final ParserPreconditions preconditions,
             final ExecutionErrors errors,
             final ExecutionConfiguration configuration) {

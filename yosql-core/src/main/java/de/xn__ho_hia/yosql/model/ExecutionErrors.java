@@ -11,12 +11,22 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Captures execution errors/throwables/exceptions.
  */
 public final class ExecutionErrors {
 
     private final List<Throwable> errors = new ArrayList<>();
+
+    /**
+     * Creates a new execution error instance.
+     */
+    @Inject
+    public ExecutionErrors() {
+        // for dagger
+    }
 
     /**
      * @return <code>true</code> if any {@link Throwable} was added using {@link #add(Throwable)} before.

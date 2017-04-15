@@ -14,7 +14,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.FieldSpec.Builder;
 import com.squareup.javapoet.TypeName;
 
-import de.xn__ho_hia.yosql.generator.AnnotationGenerator;
+import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 
 @SuppressWarnings({ "nls", "javadoc" })

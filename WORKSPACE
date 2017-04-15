@@ -205,3 +205,26 @@ bind(
     name = "commons_math3",
     actual = "@org_apache_commons_commons_math3//jar",
 )
+
+maven_jar(
+    name = "com_google_dagger_dagger",
+    artifact = "com.google.dagger:dagger:2.10",
+)
+bind(
+    name = "dagger",
+    actual = "@com_google_dagger_dagger//jar",
+)
+maven_jar(
+    name = "com_google_dagger_dagger_compiler",
+    artifact = "com.google.dagger:dagger-compiler:2.10",
+)
+bind(
+    name = "dagger-compiler",
+    actual = "@com_google_dagger_dagger_compiler//jar",
+)
+
+maven_jar(name = "dagger_producers", artifact = "com.google.dagger:dagger-producers:2.10")
+maven_jar(name = "google_java_format",     artifact = "com.google.googlejavaformat:google-java-format:1.3")
+maven_jar(name = "errorprone_javac",       artifact = "com.google.errorprone:javac:9-dev-r3297-1-shaded")
+maven_jar(name = "dagger_javapoet",        artifact = "com.squareup:javapoet:1.7.0")
+maven_jar(name = "guava", artifact = "com.google.guava:guava:21.0")

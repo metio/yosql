@@ -2,4 +2,5 @@
     <factorypathentry kind="WKSPJAR" id="/yosql/bazel-genfiles/external/org_inferred_freebuilder/jar/_ijar/jar/external/org_inferred_freebuilder/jar/freebuilder-1.14-ijar.jar" enabled="false" runInBatchMode="false"/>
     <factorypathentry kind="WKSPJAR" id="/yosql/bazel-genfiles/external/com_google_auto_value_auto_value/jar/_ijar/jar/external/com_google_auto_value_auto_value/jar/auto-value-1.2-ijar.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="false" runInBatchMode="false"/>
+    <factorypathentry kind="WKSPJAR" id="/yosql/bazel-genfiles/external/com_google_dagger_dagger_compiler/jar/_ijar/jar/external/com_google_dagger_dagger_compiler/jar/dagger-compiler-2.10-ijar.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>

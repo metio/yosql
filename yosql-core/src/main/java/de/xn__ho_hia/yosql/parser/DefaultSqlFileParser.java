@@ -27,9 +27,9 @@ import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 /**
- * Parses SQL statements inside .sql files.
+ * Default .sql file parser.
  */
-public final class DefaultSqlFileParser implements SqlFileParser {
+final class DefaultSqlFileParser implements SqlFileParser {
 
     private static final String           NEWLINE = "\n";   //$NON-NLS-1$
 
@@ -39,18 +39,8 @@ public final class DefaultSqlFileParser implements SqlFileParser {
     private final PrintStream             out;
     private final Pattern                 statementSplitter;
 
-    /**
-     * @param errors
-     *            The error collection to use.
-     * @param config
-     *            The configuration to use.
-     * @param factory
-     *            The SQL configuration factory to use.
-     * @param out
-     *            The output stream to use.
-     */
     @Inject
-    public DefaultSqlFileParser(
+    DefaultSqlFileParser(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
             final SqlConfigurationFactory factory,
@@ -62,11 +52,6 @@ public final class DefaultSqlFileParser implements SqlFileParser {
         statementSplitter = Pattern.compile(config.sqlStatementSeparator());
     }
 
-    /**
-     * @param source
-     *            The source file to parse.
-     * @return All parsed statements inside that source file.
-     */
     @Override
     public Stream<SqlStatement> parse(final Path source) {
         try {
