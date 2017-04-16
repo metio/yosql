@@ -5,8 +5,8 @@
 	<classpathentry kind="src" path="yosql-core/src/main/resources"/>
 	<classpathentry kind="src" path="yosql-core/src/test/java"/>
 	<classpathentry kind="src" path="yosql-cli/src/main/java"/>
-	<classpathentry kind="src" path="benchmarks/jmh/src/main/java"/>
-	<classpathentry kind="src" path="benchmarks/jmh/src/main/resources"/>
+	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/java"/>
+	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/resources"/>
 	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/model/libmodel_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
@@ -57,7 +57,7 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="bazel-bin/benchmarks/jmh/_javac/yosql-jmh-benchmark/yosql-jmh-benchmark_sourcegenfiles">
+	<classpathentry kind="src" path="bazel-bin/yosql-micro-benchmarks/_javac/yosql-jmh-benchmark/yosql-jmh-benchmark_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>

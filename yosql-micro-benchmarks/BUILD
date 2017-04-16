@@ -17,7 +17,7 @@ java_library(
 )
 
 java_binary(
-  name = "yosql-jmh-benchmark",
+  name = "yosql-micro-benchmarks",
   main_class = "org.openjdk.jmh.Main",
   srcs = glob(["src/main/java/**/*.java"]),
   resources = glob(["src/main/resources/**/*.sql"]),

@@ -62,27 +62,27 @@ coverage: ##@hacking Run code coverage
 
 .PHONY: bench-lc-small-sample
 bench-lc-small-sample: ##@benchmark Run full codegen lifecycle against small sample (runtime is ~5min)
-	bazel run //benchmarks/jmh:yosql-jmh-benchmark -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithSmallSampleBenchmark
+	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithSmallSampleBenchmark
 
 .PHONY: bench-lc-medium-sample
 bench-lc-medium-sample: ##@benchmark Run full codegen lifecycle against medium sample (runtime is ~15min)
-	bazel run //benchmarks/jmh:yosql-jmh-benchmark -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithMediumSampleBenchmark
+	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithMediumSampleBenchmark
 
 .PHONY: bench-lc-big-sample
 bench-lc-big-sample: ##@benchmark Run full codegen lifecycle against big sample (runtime is ~30min)
-	bazel run //benchmarks/jmh:yosql-jmh-benchmark -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithBigSampleBenchmark
+	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithBigSampleBenchmark
 
 .PHONY: bench-lc-large-sample
 bench-lc-large-sample: ##@benchmark Run full codegen lifecycle against large sample (runtime is ~1h)
-	bazel run //benchmarks/jmh:yosql-jmh-benchmark -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithBigSampleBenchmark
+	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithBigSampleBenchmark
 
 .PHONY: bench-parsing-each
 bench-parsing-each: ##@benchmark Run file parsing benchmark against each individual .sql file (runtime is ~30min)
-	bazel run //benchmarks/jmh:yosql-jmh-benchmark -- de.xn__ho_hia.yosql.benchmark.parse_file.DefaultSqlFileParserParseEachFileBenchmark
+	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.parse_file.DefaultSqlFileParserParseEachFileBenchmark
 
 .PHONY: bench-parsing-all
 bench-parsing-all: ##@benchmark Run file parsing benchmark against each individual .sql file (runtime is ~5min)
-	bazel run //benchmarks/jmh:yosql-jmh-benchmark -- de.xn__ho_hia.yosql.benchmark.parse_file.DefaultSqlFileParserParseAllFileBenchmark
+	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.parse_file.DefaultSqlFileParserParseAllFileBenchmark
 
 .PHONY: sign-waiver
 sign-waiver: ##@contributing Sign the WAIVER
