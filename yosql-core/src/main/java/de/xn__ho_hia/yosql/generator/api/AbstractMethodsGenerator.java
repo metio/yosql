@@ -32,30 +32,30 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
         return methods;
     }
 
-    private List<MethodSpec> asMethodSpecs(final String methodName, final SqlConfiguration merge,
-            final List<SqlStatement> statements) {
+    private List<MethodSpec> asMethodSpecs(final String methodName, final SqlConfiguration mergedConfiguration,
+            final List<SqlStatement> vendorStatements) {
         final List<MethodSpec> methods = new ArrayList<>();
-        for (final SqlStatement statement : statements) {
+        for (final SqlStatement statement : vendorStatements) {
             if (statement.shouldGenerateBatchAPI()) {
-                methods.add(batchWriteMethod(methodName, merge, statements));
+                methods.add(batchWriteMethod(methodName, mergedConfiguration, vendorStatements));
             }
             if (statement.shouldGenerateStandardReadAPI()) {
-                methods.add(standardReadMethod(methodName, merge, statements));
+                methods.add(standardReadMethod(methodName, mergedConfiguration, vendorStatements));
             }
             if (statement.shouldGenerateStandardWriteAPI()) {
-                methods.add(standardWriteMethod(methodName, merge, statements));
+                methods.add(standardWriteMethod(methodName, mergedConfiguration, vendorStatements));
             }
             if (statement.shouldGenerateStandardCallAPI()) {
-                methods.add(standardCallMethod(methodName, merge, statements));
+                methods.add(standardCallMethod(methodName, mergedConfiguration, vendorStatements));
             }
             if (statement.shouldGenerateStreamEagerAPI()) {
-                methods.add(streamEagerReadMethod(methodName, merge, statements));
+                methods.add(streamEagerReadMethod(methodName, mergedConfiguration, vendorStatements));
             }
             if (statement.shouldGenerateStreamLazyAPI()) {
-                methods.add(streamLazyReadMethod(methodName, merge, statements));
+                methods.add(streamLazyReadMethod(methodName, mergedConfiguration, vendorStatements));
             }
             if (statement.shouldGenerateRxJavaAPI()) {
-                methods.add(rxJavaReadMethod(methodName, merge, statements));
+                methods.add(rxJavaReadMethod(methodName, mergedConfiguration, vendorStatements));
             }
         }
         return methods;
