@@ -66,11 +66,15 @@ public final class Timer {
      * Prints the previously recorded timings.
      */
     public void printTimings() {
+        long totalRuntime = 0;
         for (final Entry<String, Duration> entry : timings.entrySet()) {
+            final Long runtimeInMilliseconds = Long.valueOf(entry.getValue().toMillis());
             final String message = String.format("Time spent running [%s]: %s (ms)", //$NON-NLS-1$
-                    entry.getKey(), Long.valueOf(entry.getValue().toMillis()));
+                    entry.getKey(), runtimeInMilliseconds);
             out.println(message);
+            totalRuntime += runtimeInMilliseconds.longValue();
         }
+        out.println(String.format("Total runtime: %s (ms)", Long.valueOf(totalRuntime))); //$NON-NLS-1$
     }
 
 }
