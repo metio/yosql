@@ -3,6 +3,9 @@ package de.xn__ho_hia.yosql.utils;
 import java.io.PrintStream;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 import javax.inject.Inject;
@@ -12,7 +15,8 @@ import javax.inject.Inject;
  */
 public final class Timer {
 
-    private final PrintStream out;
+    private final PrintStream           out;
+    private final Map<String, Duration> timings = new LinkedHashMap<>();
 
     /**
      * @param out
@@ -34,9 +38,7 @@ public final class Timer {
             final Instant preRun = Instant.now();
             task.run();
             final Instant postRun = Instant.now();
-            final String message = String.format("Time spent running [%s]: %s (ms)", //$NON-NLS-1$
-                    taskName, Long.valueOf(Duration.between(preRun, postRun).toMillis()));
-            out.println(message);
+            timings.put(taskName, Duration.between(preRun, postRun));
         } else {
             task.run();
         }
@@ -54,12 +56,21 @@ public final class Timer {
             final Instant preRun = Instant.now();
             final T value = supplier.get();
             final Instant postRun = Instant.now();
-            final String message = String.format("Time spent running [%s]: %s (ms)", //$NON-NLS-1$
-                    taskName, Long.valueOf(Duration.between(preRun, postRun).toMillis()));
-            out.println(message);
+            timings.put(taskName, Duration.between(preRun, postRun));
             return value;
         }
         return supplier.get();
+    }
+
+    /**
+     * Prints the previously recorded timings.
+     */
+    public void printTimings() {
+        for (final Entry<String, Duration> entry : timings.entrySet()) {
+            final String message = String.format("Time spent running [%s]: %s (ms)", //$NON-NLS-1$
+                    entry.getKey(), Long.valueOf(entry.getValue().toMillis()));
+            out.println(message);
+        }
     }
 
 }

@@ -62,6 +62,7 @@ final class YoSqlImplementation implements YoSql {
                 .thenAcceptAsync(this::generateCode, executor)
                 .exceptionally(this::handleExceptions)
                 .join();
+        timer.printTimings();
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException("Error during code generation")); //$NON-NLS-1$
         }
