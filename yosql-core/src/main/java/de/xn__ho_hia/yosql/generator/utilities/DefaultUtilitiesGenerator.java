@@ -44,11 +44,17 @@ final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
             if (flowStateClass == null && statement.shouldGenerateRxJavaAPI()) {
                 flowStateClass = flowStateGenerator.generateFlowStateClass();
             }
-            if (toResultRowConverterClass == null
+            if (toResultRowConverterClass == null && resultRowClass == null
                     && statement.getConfiguration().getResultRowConverter().getConverterType()
                             .endsWith(ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)) {
                 toResultRowConverterClass = toResultRowConverterGenerator.generateToResultRowConverterClass();
                 resultRowClass = resultRowGenerator.generateResultRowClass();
+            }
+            if (resultStateClass != null
+                    && flowStateClass != null
+                    && toResultRowConverterClass != null
+                    && resultRowClass != null) {
+                break;
             }
         }
         return Stream.of(resultStateClass, flowStateClass, toResultRowConverterClass, resultRowClass);
