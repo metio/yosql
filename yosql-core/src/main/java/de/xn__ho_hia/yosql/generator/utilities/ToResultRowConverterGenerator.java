@@ -14,12 +14,12 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
-import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalMethods;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalParameters;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
+import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 
 @SuppressWarnings("nls")
 final class ToResultRowConverterGenerator {
@@ -27,26 +27,23 @@ final class ToResultRowConverterGenerator {
     static final String                  TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
 
     private final AnnotationGenerator    annotations;
-    private final TypeWriter             typeWriter;
     private final ExecutionConfiguration configuration;
 
     @Inject
     ToResultRowConverterGenerator(
             final AnnotationGenerator annotations,
-            final TypeWriter typeWriter,
             final ExecutionConfiguration configuration) {
         this.annotations = annotations;
-        this.typeWriter = typeWriter;
         this.configuration = configuration;
     }
 
-    public void generateToResultRowConverterClass() {
+    public PackageTypeSpec generateToResultRowConverterClass() {
         final String packageName = configuration.basePackageName() + "." + configuration.converterPackageName();
         final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
                 .addMethod(asUserType())
                 .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, type);
+        return new PackageTypeSpec(type, packageName);
     }
 
     private MethodSpec asUserType() {

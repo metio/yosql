@@ -14,10 +14,9 @@ import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.api.FieldsGenerator;
 import de.xn__ho_hia.yosql.generator.api.MethodsGenerator;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
-import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
-import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
+import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 /**
@@ -25,39 +24,29 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
  */
 public final class GenericRepositoryGenerator implements RepositoryGenerator {
 
-    private final TypeWriter             typeWriter;
-    private final ExecutionConfiguration configuration;
-    private final MethodsGenerator       methods;
-    private final FieldsGenerator        fields;
-    private final AnnotationGenerator    annotations;
+    private final AnnotationGenerator annotations;
+    private final FieldsGenerator     fields;
+    private final MethodsGenerator    methods;
 
     /**
-     * @param typeWriter
-     *            The type writer to use.
-     * @param configuration
-     *            The configuration to use.
      * @param annotations
      *            The annotation generator to use.
-     * @param methods
-     *            The methods generator to use.
      * @param fields
      *            The fields generator to use.
+     * @param methods
+     *            The methods generator to use.
      */
     public GenericRepositoryGenerator(
-            final TypeWriter typeWriter,
-            final ExecutionConfiguration configuration,
             final AnnotationGenerator annotations,
-            final MethodsGenerator methods,
-            final FieldsGenerator fields) {
-        this.typeWriter = typeWriter;
-        this.configuration = configuration;
+            final FieldsGenerator fields,
+            final MethodsGenerator methods) {
         this.annotations = annotations;
         this.methods = methods;
         this.fields = fields;
     }
 
     @Override
-    public void generateRepository(
+    public PackageTypeSpec generateRepository(
             final String repositoryName,
             final List<SqlStatement> sqlStatements) {
         final String className = TypicalNames.getClassName(repositoryName);
@@ -68,7 +57,7 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
                 .addAnnotations(annotations.generatedClass(GenericRepositoryGenerator.class))
                 .addStaticBlock(fields.staticInitializer(sqlStatements))
                 .build();
-        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, repository);
+        return new PackageTypeSpec(repository, packageName);
     }
 
 }

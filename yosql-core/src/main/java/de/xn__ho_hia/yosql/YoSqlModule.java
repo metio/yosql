@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.dagger.Delegating;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
+import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
@@ -24,8 +25,10 @@ public class YoSqlModule {
             final @Delegating RepositoryGenerator repositoryGenerator,
             final UtilitiesGenerator utilsGenerator,
             final ExecutionErrors errors,
-            final Timer timer) {
-        return new YoSqlImplementation(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer);
+            final Timer timer,
+            final TypeWriter typeWriter) {
+        return new YoSqlImplementation(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer,
+                typeWriter);
     }
 
 }

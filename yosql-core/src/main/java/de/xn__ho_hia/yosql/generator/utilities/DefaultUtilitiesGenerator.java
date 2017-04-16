@@ -7,14 +7,11 @@
 package de.xn__ho_hia.yosql.generator.utilities;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
-import de.xn__ho_hia.yosql.model.ResultRowConverter;
-import de.xn__ho_hia.yosql.model.SqlConfiguration;
+import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
-import de.xn__ho_hia.yosql.model.SqlType;
 
 final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
 
@@ -35,30 +32,26 @@ final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
     }
 
     @Override
-    public void generateUtilities(final List<SqlStatement> allStatements) {
-        if (allStatements.parallelStream()
-                .anyMatch(SqlStatement::isReading)) {
-            resultStateGenerator.generateResultStateClass();
+    public Stream<PackageTypeSpec> generateUtilities(final List<SqlStatement> allStatements) {
+        PackageTypeSpec resultStateClass = null;
+        PackageTypeSpec flowStateClass = null;
+        PackageTypeSpec toResultRowConverterClass = null;
+        PackageTypeSpec resultRowClass = null;
+        for (final SqlStatement statement : allStatements) {
+            if (resultStateClass == null && statement.isReading()) {
+                resultStateClass = resultStateGenerator.generateResultStateClass();
+            }
+            if (flowStateClass == null && statement.shouldGenerateRxJavaAPI()) {
+                flowStateClass = flowStateGenerator.generateFlowStateClass();
+            }
+            if (toResultRowConverterClass == null
+                    && statement.getConfiguration().getResultRowConverter().getConverterType()
+                            .endsWith(ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)) {
+                toResultRowConverterClass = toResultRowConverterGenerator.generateToResultRowConverterClass();
+                resultRowClass = resultRowGenerator.generateResultRowClass();
+            }
         }
-        if (allStatements.parallelStream()
-                .anyMatch(SqlStatement::shouldGenerateRxJavaAPI)) {
-            flowStateGenerator.generateFlowStateClass();
-        }
-        if (resultConverters(allStatements)
-                .anyMatch(converter -> converter.getConverterType().endsWith(
-                        ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME))) {
-            toResultRowConverterGenerator.generateToResultRowConverterClass();
-            resultRowGenerator.generateResultRowClass();
-        }
-    }
-
-    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
-        return sqlStatements.parallelStream()
-                .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlType.READING == config.getType())
-                .map(SqlConfiguration::getResultRowConverter)
-                .filter(Objects::nonNull)
-                .distinct();
+        return Stream.of(resultStateClass, flowStateClass, toResultRowConverterClass, resultRowClass);
     }
 
 }

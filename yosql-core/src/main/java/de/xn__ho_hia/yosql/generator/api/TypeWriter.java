@@ -8,24 +8,28 @@ package de.xn__ho_hia.yosql.generator.api;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Path;
 
 import javax.inject.Inject;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
+import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
+import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 
 /**
  * Writes a single {@link TypeSpec type} into a directory.
  */
 public class TypeWriter {
 
-    private final ExecutionErrors errors;
-    private final PrintStream     out;
+    private final ExecutionErrors        errors;
+    private final PrintStream            out;
+    private final ExecutionConfiguration config;
 
     /**
+     * @param config
+     *            The configuration to use.
      * @param errors
      *            The errors to use.
      * @param out
@@ -33,33 +37,34 @@ public class TypeWriter {
      */
     @Inject
     public TypeWriter(
+            final ExecutionConfiguration config,
             final ExecutionErrors errors,
             final PrintStream out) {
+        this.config = config;
         this.errors = errors;
         this.out = out;
     }
 
     /**
-     * @param baseDirectory
-     *            The base directory to use.
-     * @param packageName
-     *            The package name to use.
      * @param typeSpec
      *            The type specification to write.
      */
-    public void writeType(
-            final Path baseDirectory,
-            final String packageName,
-            final TypeSpec typeSpec) {
+    @SuppressWarnings("nls")
+    public void writeType(final PackageTypeSpec typeSpec) {
         try {
-            JavaFile.builder(packageName, typeSpec).build().writeTo(baseDirectory);
+            JavaFile.builder(typeSpec.getPackageName(), typeSpec.getType())
+                    .build()
+                    .writeTo(config.outputBaseDirectory());
             if (out != null) {
-                out.println(String.format("Generated [%s.%s]", packageName, typeSpec.name)); //$NON-NLS-1$
+                out.println(String.format("Wrote [%s]",
+                        config.outputBaseDirectory()
+                                .resolve(typeSpec.getPackageName().replace(".", "/"))
+                                .resolve(typeSpec.getType().name.replace(".", "/") + ".java")));
             }
         } catch (final IOException exception) {
             errors.add(exception);
             out.println(String.format("Could not write [%s.%s] into [%s]", //$NON-NLS-1$
-                    packageName, typeSpec.name, baseDirectory));
+                    typeSpec.getPackageName(), typeSpec.getType().name, config.outputBaseDirectory()));
         }
     }
 

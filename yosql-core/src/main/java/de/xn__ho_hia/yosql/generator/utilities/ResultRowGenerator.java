@@ -15,32 +15,29 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
-import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalMethods;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalParameters;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
+import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 
 @SuppressWarnings("nls")
 final class ResultRowGenerator {
 
     private final AnnotationGenerator    annotations;
-    private final TypeWriter             typeWriter;
     private final ExecutionConfiguration configuration;
 
     @Inject
     ResultRowGenerator(
             final AnnotationGenerator annotations,
-            final TypeWriter typeWriter,
             final ExecutionConfiguration configuration) {
         this.annotations = annotations;
-        this.typeWriter = typeWriter;
         this.configuration = configuration;
     }
 
-    public void generateResultRowClass() {
+    public PackageTypeSpec generateResultRowClass() {
         final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
         final TypeSpec type = TypicalTypes.publicClass(configuration.getResultRowClass())
                 .addField(row())
@@ -49,7 +46,7 @@ final class ResultRowGenerator {
                 .addMethod(toStringMethod())
                 .addAnnotations(annotations.generatedClass(ResultRowGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, type);
+        return new PackageTypeSpec(type, packageName);
     }
 
     private static FieldSpec row() {

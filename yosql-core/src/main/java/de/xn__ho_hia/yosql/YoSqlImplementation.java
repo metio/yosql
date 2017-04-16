@@ -12,15 +12,19 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
+import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
 import de.xn__ho_hia.yosql.model.CodeGenerationException;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
+import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlFileParsingException;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
@@ -38,6 +42,7 @@ final class YoSqlImplementation implements YoSql {
     private final UtilitiesGenerator  utilsGenerator;
     private final ExecutionErrors     errors;
     private final Timer               timer;
+    private final TypeWriter          typeWriter;
 
     @Inject
     YoSqlImplementation(
@@ -46,20 +51,23 @@ final class YoSqlImplementation implements YoSql {
             final RepositoryGenerator repositoryGenerator,
             final UtilitiesGenerator utilsGenerator,
             final ExecutionErrors errors,
-            final Timer timer) {
+            final Timer timer,
+            final TypeWriter typeWriter) {
         this.fileResolver = fileResolver;
         this.sqlFileParser = sqlFileParser;
         this.repositoryGenerator = repositoryGenerator;
         this.utilsGenerator = utilsGenerator;
         this.errors = errors;
         this.timer = timer;
+        this.typeWriter = typeWriter;
     }
 
     @Override
     public void generateFiles() {
         final Executor executor = Executors.newWorkStealingPool();
         supplyAsync(this::parseFiles, executor)
-                .thenAcceptAsync(this::generateCode, executor)
+                .thenApplyAsync(this::generateCode, executor)
+                .thenAcceptAsync(this::writeIntoFiles, executor)
                 .exceptionally(this::handleExceptions)
                 .join();
         timer.printTimings();
@@ -85,28 +93,38 @@ final class YoSqlImplementation implements YoSql {
         return statements;
     }
 
-    private void generateCode(final List<SqlStatement> statements) {
-        generateRepositories(statements);
-        generateUtilities(statements);
+    private List<PackageTypeSpec> generateCode(final List<SqlStatement> statements) {
+        return Stream.concat(generateRepositories(statements), generateUtilities(statements))
+                .collect(toList());
     }
 
-    private void generateRepositories(final List<SqlStatement> statements) {
-        timer.timed("generate repositories", () -> { //$NON-NLS-1$
+    private Stream<PackageTypeSpec> generateRepositories(final List<SqlStatement> statements) {
+        return timer.timed("generate repositories", () -> { //$NON-NLS-1$
             if (statements != null && !statements.isEmpty()) {
-                statements.stream()
+                return statements.stream()
                         .collect(groupingBy(SqlStatement::getRepository))
                         .entrySet()
                         .parallelStream()
-                        .forEach(repository -> repositoryGenerator.generateRepository(repository.getKey(),
+                        .map(repository -> repositoryGenerator.generateRepository(repository.getKey(),
                                 repository.getValue()));
             }
+            return Stream.empty();
         });
     }
 
-    private void generateUtilities(final List<SqlStatement> statements) {
-        timer.timed("generate utilities", () -> { //$NON-NLS-1$
+    private Stream<PackageTypeSpec> generateUtilities(final List<SqlStatement> statements) {
+        return timer.timed("generate utilities", () -> { //$NON-NLS-1$
             if (statements != null && !statements.isEmpty()) {
-                utilsGenerator.generateUtilities(statements);
+                return utilsGenerator.generateUtilities(statements);
+            }
+            return Stream.empty();
+        });
+    }
+
+    private void writeIntoFiles(final List<PackageTypeSpec> statements) {
+        timer.timed("write types", () -> { //$NON-NLS-1$
+            if (statements != null && !statements.isEmpty()) {
+                statements.stream().filter(Objects::nonNull).forEach(typeWriter::writeType);
             }
         });
     }

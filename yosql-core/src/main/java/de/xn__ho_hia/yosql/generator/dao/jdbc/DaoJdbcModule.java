@@ -12,7 +12,6 @@ import de.xn__ho_hia.yosql.generator.api.MethodsGenerator;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.api.RxJavaMethodGenerator;
 import de.xn__ho_hia.yosql.generator.api.StandardMethodGenerator;
-import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.dao.generic.GenericMethodsGenerator;
 import de.xn__ho_hia.yosql.generator.dao.generic.GenericRepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
@@ -29,12 +28,10 @@ public class DaoJdbcModule {
     @JDBC
     @Provides
     RepositoryGenerator provideRepositoryGenerator(
-            final TypeWriter typeWriter,
-            final ExecutionConfiguration configuration,
             final AnnotationGenerator annotations,
-            final @JDBC MethodsGenerator methods,
-            final @JDBC FieldsGenerator fields) {
-        return new GenericRepositoryGenerator(typeWriter, configuration, annotations, methods, fields);
+            final @JDBC FieldsGenerator fields,
+            final @JDBC MethodsGenerator methods) {
+        return new GenericRepositoryGenerator(annotations, fields, methods);
     }
 
     @JDBC

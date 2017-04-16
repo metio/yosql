@@ -19,7 +19,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
-import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalMethods;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalModifiers;
@@ -27,33 +26,31 @@ import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalParameters;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
+import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 
 @SuppressWarnings("nls")
 final class FlowStateGenerator {
 
     private final AnnotationGenerator    annotations;
-    private final TypeWriter             typeWriter;
     private final ExecutionConfiguration configuration;
 
     @Inject
     FlowStateGenerator(
             final AnnotationGenerator annotations,
-            final TypeWriter typeWriter,
             final ExecutionConfiguration configuration) {
         this.annotations = annotations;
-        this.typeWriter = typeWriter;
         this.configuration = configuration;
     }
 
-    public void generateFlowStateClass() {
-        final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
+    public PackageTypeSpec generateFlowStateClass() {
         final TypeSpec type = TypicalTypes.publicClass(configuration.getFlowStateClass())
                 .superclass(configuration.getResultStateClass())
                 .addFields(fields())
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
                 .build();
-        typeWriter.writeType(configuration.outputBaseDirectory(), packageName, type);
+        return new PackageTypeSpec(type,
+                String.join(".", configuration.basePackageName(), configuration.utilityPackageName()));
     }
 
     private static Iterable<FieldSpec> fields() {

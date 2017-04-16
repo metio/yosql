@@ -7,12 +7,14 @@
 package de.xn__ho_hia.yosql.generator.api;
 
 import java.util.List;
+import java.util.stream.Stream;
 
+import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 @SuppressWarnings({ "javadoc" })
 public interface UtilitiesGenerator {
 
-    void generateUtilities(List<SqlStatement> statements);
+    Stream<PackageTypeSpec> generateUtilities(List<SqlStatement> statements);
 
 }
