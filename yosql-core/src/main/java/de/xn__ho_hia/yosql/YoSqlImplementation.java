@@ -124,7 +124,9 @@ final class YoSqlImplementation implements YoSql {
     private void writeIntoFiles(final List<PackageTypeSpec> statements) {
         timer.timed("write types", () -> { //$NON-NLS-1$
             if (statements != null && !statements.isEmpty()) {
-                statements.stream().filter(Objects::nonNull).forEach(typeWriter::writeType);
+                statements.parallelStream()
+                        .filter(Objects::nonNull)
+                        .forEach(typeWriter::writeType);
             }
         });
     }
