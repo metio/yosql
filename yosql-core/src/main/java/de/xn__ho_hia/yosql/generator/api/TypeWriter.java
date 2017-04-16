@@ -56,10 +56,10 @@ public class TypeWriter {
                     .build()
                     .writeTo(config.outputBaseDirectory());
             if (out != null) {
-                out.println(String.format("Wrote [%s]",
-                        config.outputBaseDirectory()
-                                .resolve(typeSpec.getPackageName().replace(".", "/"))
-                                .resolve(typeSpec.getType().name.replace(".", "/") + ".java")));
+                out.println(String.format("Wrote [%s/%s/%s]",
+                        config.outputBaseDirectory(),
+                        typeSpec.getPackageName().replace(".", "/"),
+                        typeSpec.getType().name.replace(".", "/") + ".java"));
             }
         } catch (final IOException exception) {
             errors.add(exception);
