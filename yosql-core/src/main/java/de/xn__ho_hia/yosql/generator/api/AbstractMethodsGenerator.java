@@ -25,41 +25,39 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
 
         methods.add(constructor(sqlStatementsInRepository));
         sqlStatementsInRepository.stream()
-                .filter(SqlStatement::shouldGenerateStandardReadAPI)
                 .collect(SqlStatement.groupByName())
                 .forEach((methodName, statements) -> methods
-                        .add(standardReadMethod(methodName, merge(statements), statements)));
-        sqlStatementsInRepository.stream()
-                .filter(SqlStatement::shouldGenerateStandardWriteAPI)
-                .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(standardWriteMethod(methodName, merge(statements), statements)));
-        sqlStatementsInRepository.stream()
-                .filter(SqlStatement::shouldGenerateStandardCallAPI)
-                .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(standardCallMethod(methodName, merge(statements), statements)));
-        sqlStatementsInRepository.stream()
-                .filter(SqlStatement::shouldGenerateBatchAPI)
-                .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(batchWriteMethod(methodName, merge(statements), statements)));
-        sqlStatementsInRepository.stream()
-                .filter(SqlStatement::shouldGenerateStreamEagerAPI)
-                .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(streamEagerReadMethod(methodName, merge(statements), statements)));
-        sqlStatementsInRepository.stream()
-                .filter(SqlStatement::shouldGenerateStreamLazyAPI)
-                .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(streamLazyReadMethod(methodName, merge(statements), statements)));
-        sqlStatementsInRepository.stream()
-                .filter(SqlStatement::shouldGenerateRxJavaAPI)
-                .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(rxJavaReadMethod(methodName, merge(statements), statements)));
+                        .addAll(asMethodSpecs(methodName, merge(statements), statements)));
 
+        return methods;
+    }
+
+    private List<MethodSpec> asMethodSpecs(final String methodName, final SqlConfiguration merge,
+            final List<SqlStatement> statements) {
+        final List<MethodSpec> methods = new ArrayList<>();
+        for (final SqlStatement statement : statements) {
+            if (statement.shouldGenerateBatchAPI()) {
+                methods.add(batchWriteMethod(methodName, merge, statements));
+            }
+            if (statement.shouldGenerateStandardReadAPI()) {
+                methods.add(standardReadMethod(methodName, merge, statements));
+            }
+            if (statement.shouldGenerateStandardWriteAPI()) {
+                methods.add(standardWriteMethod(methodName, merge, statements));
+            }
+            if (statement.shouldGenerateStandardCallAPI()) {
+                methods.add(standardCallMethod(methodName, merge, statements));
+            }
+            if (statement.shouldGenerateStreamEagerAPI()) {
+                methods.add(streamEagerReadMethod(methodName, merge, statements));
+            }
+            if (statement.shouldGenerateStreamLazyAPI()) {
+                methods.add(streamLazyReadMethod(methodName, merge, statements));
+            }
+            if (statement.shouldGenerateRxJavaAPI()) {
+                methods.add(rxJavaReadMethod(methodName, merge, statements));
+            }
+        }
         return methods;
     }
 
