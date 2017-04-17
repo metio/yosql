@@ -13,6 +13,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 import java.util.concurrent.ForkJoinWorkerThread;
@@ -65,13 +66,7 @@ final class YoSqlImplementation implements YoSql {
 
     @Override
     public void generateFiles() {
-        final ForkJoinWorkerThreadFactory factory = pool -> {
-            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
-            worker.setName("yosql-worker-" + worker.getPoolIndex()); //$NON-NLS-1$
-            return worker;
-        };
-        final ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
-
+        final Executor pool = createThreadPool();
         supplyAsync(this::parseFiles, pool)
                 .thenApplyAsync(this::generateCode, pool)
                 .thenAcceptAsync(this::writeIntoFiles, pool)
@@ -81,6 +76,16 @@ final class YoSqlImplementation implements YoSql {
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException("Error during code generation")); //$NON-NLS-1$
         }
+    }
+
+    private static Executor createThreadPool() {
+        final ForkJoinWorkerThreadFactory factory = pool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+            worker.setName("yosql-worker-" + worker.getPoolIndex()); //$NON-NLS-1$
+            return worker;
+        };
+        final ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
+        return pool;
     }
 
     private Void handleExceptions(final Throwable throwable) {
