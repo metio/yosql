@@ -1,4 +1,4 @@
-= yosql
+= yosql image:https://img.shields.io/badge/email-%40metio-brightgreen.svg?style=social&label=mail["Discuss on Google Groups", link="https://groups.google.com/forum/#!forum/metio"] image:https://img.shields.io/badge/irc-%23metio.wtf-brightgreen.svg?style=social&label=IRC["Chat on IRC", link="http://webchat.freenode.net/?channels=metio.wtf"]
 
 link:https://github.com/krisajenkins/yesql[yesql] inspired, zero-dependency solution for Java & SQL. It expects a set of .sql files as inputs and produces the required Java code to call the SQL statements define in your .sql files.
 
