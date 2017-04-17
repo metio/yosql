@@ -358,7 +358,6 @@ public class SqlConfigurationFactory {
     }
 
     private boolean isDefaultConverter(final ResultRowConverter converter) {
-        // resultRowConverter
         return config.defaultRowConverter().equals(converter.getAlias())
                 || config.defaultRowConverter().equals(converter.getConverterType());
     }
