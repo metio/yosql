@@ -39,7 +39,7 @@ public interface SqlFileParser {
     default Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {
         final Map<String, List<Integer>> indices = new LinkedHashMap<>();
         final Matcher matcher = PARAMETER_PATTERN.matcher(sqlStatement);
-        int counter = 0;
+        int counter = 1;
         while (matcher.find()) {
             final String parameterName = matcher.group().substring(1);
             indices.computeIfAbsent(parameterName, string -> new ArrayList<>(3))
