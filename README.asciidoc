@@ -63,7 +63,7 @@ project/
 git_repository(
     name = "yosql",
     remote = "https://github.com/sebhoss/yosql.git",
-    commit = "....",
+    tag = "0.0.1-bazel",
 )
 ----
 
