@@ -1,7 +1,5 @@
 package de.xn__ho_hia.yosql.benchmark.parse_file;
 
-import java.io.PrintStream;
-
 import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
@@ -20,9 +18,8 @@ final class AlternativeParserModule {
     SqlFileParser provideSqlFilePaser(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
-            final SqlConfigurationFactory factory,
-            final PrintStream out) {
-        return new AlternativeSqlFileParser(errors, config, factory, out);
+            final SqlConfigurationFactory factory) {
+        return new AlternativeSqlFileParser(errors, config, factory);
     }
 
 }

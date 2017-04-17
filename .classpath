@@ -84,5 +84,7 @@
 	<classpathentry kind="lib" path="bazel-genfiles/external/net_sf_jopt_simple/jar/_ijar/jar/external/net_sf_jopt_simple/jar/jopt-simple-4.6-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/ch_qos_cal10n_cal10n_api/jar/_ijar/jar/external/ch_qos_cal10n_cal10n_api/jar/cal10n-api-0.8.1-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_google_dagger_dagger/jar/_ijar/jar/external/com_google_dagger_dagger/jar/dagger-2.10-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/ch_qos_logback_logback_classic/jar/_ijar/jar/external/ch_qos_logback_logback_classic/jar/logback-classic-1.2.2-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/ch_qos_logback_logback_core/jar/_ijar/jar/external/ch_qos_logback_logback_core/jar/logback-core-1.2.2-ijar.jar"/>
 	<classpathentry kind="output" path="bazel-out/ide/classes"/>
 </classpath>

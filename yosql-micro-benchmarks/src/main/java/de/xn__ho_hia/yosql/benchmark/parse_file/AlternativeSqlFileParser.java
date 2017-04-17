@@ -7,7 +7,6 @@
 package de.xn__ho_hia.yosql.benchmark.parse_file;
 
 import java.io.BufferedReader;
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -38,18 +37,15 @@ final class AlternativeSqlFileParser implements SqlFileParser {
     private final ExecutionErrors         errors;
     private final SqlConfigurationFactory factory;
     private final ExecutionConfiguration  config;
-    private final PrintStream             out;
 
     @Inject
     AlternativeSqlFileParser(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
-            final SqlConfigurationFactory factory,
-            final PrintStream out) {
+            final SqlConfigurationFactory factory) {
         this.errors = errors;
         this.config = config;
         this.factory = factory;
-        this.out = out;
     }
 
     @Override
@@ -90,10 +86,6 @@ final class AlternativeSqlFileParser implements SqlFileParser {
             errors.add(exception);
         }
 
-        if (out != null && configuration != null) {
-            out.printf("Parsed [%s#%s]", source, configuration.getName()); //$NON-NLS-1$
-            out.println();
-        }
         return new SqlStatement(configuration, rawSqlStatement);
     }
 

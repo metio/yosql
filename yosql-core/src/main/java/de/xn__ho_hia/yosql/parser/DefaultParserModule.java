@@ -1,7 +1,5 @@
 package de.xn__ho_hia.yosql.parser;
 
-import java.io.PrintStream;
-
 import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
@@ -18,9 +16,8 @@ public final class DefaultParserModule {
     SqlFileParser provideSqlFilePaser(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
-            final SqlConfigurationFactory factory,
-            final PrintStream out) {
-        return new DefaultSqlFileParser(errors, config, factory, out);
+            final SqlConfigurationFactory factory) {
+        return new DefaultSqlFileParser(errors, config, factory);
     }
 
 }

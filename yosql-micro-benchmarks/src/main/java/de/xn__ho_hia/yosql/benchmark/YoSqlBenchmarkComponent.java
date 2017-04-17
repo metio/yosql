@@ -13,7 +13,7 @@ import de.xn__ho_hia.yosql.parser.DefaultResolverModule;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 
 @SuppressWarnings("javadoc")
-@Component(modules = { NoOpPrintStreamModule.class, BenchmarkConfigurationModule.class, DefaultParserModule.class,
+@Component(modules = { BenchmarkConfigurationModule.class, DefaultParserModule.class,
         DefaultResolverModule.class, DefaultUtilitiesModule.class, LoggingModule.class, DaoModule.class,
         I18nModule.class, ErrorModule.class, YoSqlModule.class })
 public interface YoSqlBenchmarkComponent {

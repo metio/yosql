@@ -29,7 +29,7 @@ public final class JOptConfigurationModule {
 
     /**
      * @param arguments
-     *            The CLI arguments to parse.
+     *            The CLI arguments to use.
      */
     public JOptConfigurationModule(final String[] arguments) {
         this.arguments = arguments;
@@ -45,6 +45,7 @@ public final class JOptConfigurationModule {
     ExecutionConfiguration provideExecutionConfiguration(final ValueConverter<Path> pathConverter,
             final IMessageConveyor messages) {
         final OptionParser parser = new OptionParser();
+        parser.allowsUnrecognizedOptions();
         final Path currentDirectory = Paths.get(messages.getMessage(CURRENT_DIRECTORY));
         final OptionSpec<Path> inputBaseDirectory = parser
                 .accepts(messages.getMessage(INPUT_BASE_DIRECTORY))

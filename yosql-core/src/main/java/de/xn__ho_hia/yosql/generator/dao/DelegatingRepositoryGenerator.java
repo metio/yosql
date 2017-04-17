@@ -1,9 +1,11 @@
 package de.xn__ho_hia.yosql.generator.dao;
 
-import java.io.PrintStream;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.xn__ho_hia.yosql.dagger.Delegating;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
@@ -17,23 +19,19 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 @Delegating
 final class DelegatingRepositoryGenerator implements RepositoryGenerator {
 
+    private static final Logger       LOG = LoggerFactory.getLogger("yosql.codegen.repository"); //$NON-NLS-1$
+
     private final RepositoryGenerator jdbcRepositoryGenerator;
-    private final PrintStream         out;
 
     @Inject
-    DelegatingRepositoryGenerator(
-            final @JDBC RepositoryGenerator jdbcRepositoryGenerator,
-            final PrintStream out) {
+    DelegatingRepositoryGenerator(final @JDBC RepositoryGenerator jdbcRepositoryGenerator) {
         this.jdbcRepositoryGenerator = jdbcRepositoryGenerator;
-        this.out = out;
     }
 
     @Override
     public PackageTypeSpec generateRepository(final String repositoryName, final List<SqlStatement> statements) {
         final PackageTypeSpec repository = jdbcRepositoryGenerator.generateRepository(repositoryName, statements);
-        if (out != null) {
-            out.println(String.format("Generated [%s.%s]", repository.getPackageName(), repository.getType().name)); //$NON-NLS-1$
-        }
+        LOG.debug("Generated [{}.{}]", repository.getPackageName(), repository.getType().name); //$NON-NLS-1$
         return repository;
     }
 

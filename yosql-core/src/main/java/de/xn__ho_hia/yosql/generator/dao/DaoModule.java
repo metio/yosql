@@ -1,7 +1,5 @@
 package de.xn__ho_hia.yosql.generator.dao;
 
-import java.io.PrintStream;
-
 import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.dagger.Delegating;
@@ -19,9 +17,8 @@ public class DaoModule {
     @Delegating
     @Provides
     RepositoryGenerator provideRepositoryGenerator(
-            final @JDBC RepositoryGenerator repositoryGenerator,
-            final PrintStream out) {
-        return new DelegatingRepositoryGenerator(repositoryGenerator, out);
+            final @JDBC RepositoryGenerator repositoryGenerator) {
+        return new DelegatingRepositoryGenerator(repositoryGenerator);
     }
 
 }

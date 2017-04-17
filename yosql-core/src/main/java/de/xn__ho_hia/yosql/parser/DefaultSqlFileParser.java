@@ -7,7 +7,6 @@
 package de.xn__ho_hia.yosql.parser;
 
 import java.io.BufferedReader;
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -21,6 +20,9 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
@@ -31,24 +33,23 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
  */
 final class DefaultSqlFileParser implements SqlFileParser {
 
-    private static final String           NEWLINE = "\n";   //$NON-NLS-1$
+    private static final Logger           LOG     = LoggerFactory.getLogger("yosql.parsing"); //$NON-NLS-1$
+
+    private static final String           NEWLINE = "\n";                                     //$NON-NLS-1$
 
     private final ExecutionErrors         errors;
     private final SqlConfigurationFactory factory;
     private final ExecutionConfiguration  config;
-    private final PrintStream             out;
     private final Pattern                 statementSplitter;
 
     @Inject
     DefaultSqlFileParser(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
-            final SqlConfigurationFactory factory,
-            final PrintStream out) {
+            final SqlConfigurationFactory factory) {
         this.errors = errors;
         this.config = config;
         this.factory = factory;
-        this.out = out;
         statementSplitter = Pattern.compile(config.sqlStatementSeparator());
     }
 
@@ -83,10 +84,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
         final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
-
-        if (out != null) {
-            out.println(String.format("Parsed [%s#%s]", source, configuration.getName())); //$NON-NLS-1$
-        }
+        LOG.debug("Parsed [{}#{}]", source, configuration.getName()); //$NON-NLS-1$
         return new SqlStatement(configuration, rawSqlStatement);
     }
 

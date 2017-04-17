@@ -7,12 +7,14 @@
 package de.xn__ho_hia.yosql.generator.api;
 
 import java.io.IOException;
-import java.io.PrintStream;
 
 import javax.inject.Inject;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
@@ -23,8 +25,9 @@ import de.xn__ho_hia.yosql.model.PackageTypeSpec;
  */
 public class TypeWriter {
 
+    private static final Logger          LOG = LoggerFactory.getLogger("yosql.codegen.output"); //$NON-NLS-1$
+
     private final ExecutionErrors        errors;
-    private final PrintStream            out;
     private final ExecutionConfiguration config;
 
     /**
@@ -32,17 +35,13 @@ public class TypeWriter {
      *            The configuration to use.
      * @param errors
      *            The errors to use.
-     * @param out
-     *            The output to use for log messages.
      */
     @Inject
     public TypeWriter(
             final ExecutionConfiguration config,
-            final ExecutionErrors errors,
-            final PrintStream out) {
+            final ExecutionErrors errors) {
         this.config = config;
         this.errors = errors;
-        this.out = out;
     }
 
     /**
@@ -55,16 +54,12 @@ public class TypeWriter {
             JavaFile.builder(typeSpec.getPackageName(), typeSpec.getType())
                     .build()
                     .writeTo(config.outputBaseDirectory());
-            if (out != null) {
-                out.println(String.format("Wrote [%s/%s/%s]",
-                        config.outputBaseDirectory(),
-                        typeSpec.getPackageName().replace(".", "/"),
-                        typeSpec.getType().name.replace(".", "/") + ".java"));
-            }
+            LOG.debug("Wrote [{}/{}/{}]", config.outputBaseDirectory(), typeSpec.getPackageName().replace(".", "/"),
+                    typeSpec.getType().name.replace(".", "/") + ".java");
         } catch (final IOException exception) {
             errors.add(exception);
-            out.println(String.format("Could not write [%s.%s] into [%s]", //$NON-NLS-1$
-                    typeSpec.getPackageName(), typeSpec.getType().name, config.outputBaseDirectory()));
+            LOG.error("Could not write [{}.{}] into [{}]",
+                    typeSpec.getPackageName(), typeSpec.getType().name, config.outputBaseDirectory());
         }
     }
 

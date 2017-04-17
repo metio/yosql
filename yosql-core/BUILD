@@ -108,6 +108,9 @@ java_library(
   ],
   deps = [
     "//external:javax_inject",
+    "//external:slf4j_api",
+    "//external:logback_classic",
+    "//external:logback_core",
   ],
 )
 
@@ -118,6 +121,9 @@ java_library(
   ],
   deps = [
     "//external:snakeyaml",
+    "//external:slf4j_api",
+    "//external:logback_classic",
+    "//external:logback_core",
     ":model",
     ":dagger2",
   ],
@@ -132,6 +138,9 @@ java_library(
     ":generator-api-raw-sources",
   ],
   deps = [
+    "//external:slf4j_api",
+    "//external:logback_classic",
+    "//external:logback_core",
     ":model",
   ],
   exports = [
@@ -166,6 +175,9 @@ java_library(
     ":generator-dao-raw-sources",
   ],
   deps = [
+    "//external:slf4j_api",
+    "//external:logback_classic",
+    "//external:logback_core",
     ":dagger",
     ":generator-api",
     ":generator-helpers",
@@ -237,11 +249,15 @@ java_library(
   ],
   deps = [
     "//external:slf4j_api",
+    "//external:logback_classic",
+    "//external:logback_core",
     ":generator-api",
     ":generator-helpers",
   ],
   exports = [
     "//external:slf4j_api",
+    "//external:logback_classic",
+    "//external:logback_core",
   ],
 )
 java_library(
@@ -266,6 +282,9 @@ java_library(
     ":generator-utils-raw-sources",
   ],
   deps = [
+    "//external:slf4j_api",
+    "//external:logback_classic",
+    "//external:logback_core",
     ":dagger2",
     ":generator-api",
     ":generator-helpers",
@@ -348,6 +367,8 @@ java_library(
   visibility = ["//visibility:public"],
   exports = [
     ":main",
+    "//external:slf4j_api",
+    "//external:logback_classic",
   ],
 )
 

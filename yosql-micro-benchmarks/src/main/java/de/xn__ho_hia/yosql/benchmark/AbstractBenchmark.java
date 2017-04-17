@@ -17,6 +17,10 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 
 /**
  * Encapsulates common benchmark functionality.
@@ -54,6 +58,9 @@ public abstract class AbstractBenchmark {
         outputDirectory = tempDirectory.resolve(OUTPUT_DIRECTORY);
         Files.createDirectories(inputDirectory);
         Files.createDirectories(outputDirectory);
+
+        final Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        root.setLevel(Level.OFF);
     }
 
     /**

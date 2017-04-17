@@ -6,23 +6,49 @@
  */
 package de.xn__ho_hia.yosql.cli;
 
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
+
 /**
  * Command line interface for YoSQL.
  */
 public class YoSqlCLI {
 
     /**
-     * @param args
+     * @param arguments
      *            The CLI arguments.
      * @throws Exception
      *             In case anything goes wrong
      */
-    public static void main(final String... args) throws Exception {
+    public static void main(final String... arguments) throws Exception {
+        setLogLevel(arguments);
+
         DaggerYoSqlCLIComponent.builder()
-                .jOptConfigurationModule(new JOptConfigurationModule(args))
+                .jOptConfigurationModule(new JOptConfigurationModule(arguments))
                 .build()
                 .yosql()
                 .generateFiles();
+    }
+
+    @SuppressWarnings("nls")
+    private static void setLogLevel(final String... arguments) {
+        final OptionParser parser = new OptionParser();
+        parser.allowsUnrecognizedOptions();
+        final OptionSpec<String> logLevel = parser
+                .accepts("logLevel")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo("INFO")
+                .describedAs("The logging level to use");
+
+        final Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        final OptionSet options = parser.parse(arguments);
+        root.setLevel(Level.valueOf(options.valueOf(logLevel).toUpperCase()));
     }
 
 }
