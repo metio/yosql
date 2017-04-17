@@ -1,7 +1,10 @@
 package de.xn__ho_hia.yosql.parser;
 
+import org.slf4j.cal10n.LocLogger;
+
 import dagger.Module;
 import dagger.Provides;
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Parser;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 
@@ -16,8 +19,9 @@ public final class DefaultParserModule {
     SqlFileParser provideSqlFilePaser(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
-            final SqlConfigurationFactory factory) {
-        return new DefaultSqlFileParser(errors, config, factory);
+            final SqlConfigurationFactory factory,
+            final @Parser LocLogger logger) {
+        return new DefaultSqlFileParser(errors, config, factory, logger);
     }
 
 }

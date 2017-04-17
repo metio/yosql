@@ -1,8 +1,11 @@
 package de.xn__ho_hia.yosql.generator.dao.jdbc;
 
+import org.slf4j.cal10n.LocLogger;
+
 import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.dagger.Delegating;
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Generator;
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.api.BatchMethodGenerator;
 import de.xn__ho_hia.yosql.generator.api.FieldsGenerator;
@@ -30,8 +33,9 @@ public class DaoJdbcModule {
     RepositoryGenerator provideRepositoryGenerator(
             final AnnotationGenerator annotations,
             final @JDBC FieldsGenerator fields,
-            final @JDBC MethodsGenerator methods) {
-        return new GenericRepositoryGenerator(annotations, fields, methods);
+            final @JDBC MethodsGenerator methods,
+            final @Generator LocLogger logger) {
+        return new GenericRepositoryGenerator(annotations, fields, methods, logger);
     }
 
     @JDBC

@@ -18,11 +18,9 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
+import org.slf4j.cal10n.LocLogger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
@@ -33,23 +31,23 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
  */
 final class DefaultSqlFileParser implements SqlFileParser {
 
-    private static final Logger           LOG     = LoggerFactory.getLogger("yosql.parser"); //$NON-NLS-1$
-
-    private static final String           NEWLINE = "\n";                                    //$NON-NLS-1$
+    private static final String           NEWLINE = "\n";   //$NON-NLS-1$
 
     private final ExecutionErrors         errors;
     private final SqlConfigurationFactory factory;
     private final ExecutionConfiguration  config;
     private final Pattern                 statementSplitter;
+    private final LocLogger               logger;
 
-    @Inject
     DefaultSqlFileParser(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
-            final SqlConfigurationFactory factory) {
+            final SqlConfigurationFactory factory,
+            final LocLogger logger) {
         this.errors = errors;
         this.config = config;
         this.factory = factory;
+        this.logger = logger;
         statementSplitter = Pattern.compile(config.sqlStatementSeparator());
     }
 
@@ -65,6 +63,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
                     .map(statement -> convert(source, statement, counter.getAndIncrement()));
         } catch (final Throwable exception) {
             errors.add(exception);
+            logger.debug(ApplicationEvents.FILE_PARSED_FAILED, source);
             return Stream.empty();
         }
     }
@@ -84,7 +83,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
         final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
-        LOG.debug("Parsed [{}#{}]", source, configuration.getName()); //$NON-NLS-1$
+        logger.debug(ApplicationEvents.FILE_PARSED_FINISHED, source, configuration.getName());
         return new SqlStatement(configuration, rawSqlStatement);
     }
 

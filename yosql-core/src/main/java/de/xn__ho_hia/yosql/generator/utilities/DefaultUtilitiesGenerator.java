@@ -9,31 +9,32 @@ package de.xn__ho_hia.yosql.generator.utilities;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.cal10n.LocLogger;
 
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
 
-    private static final Logger                 LOG = LoggerFactory.getLogger("yosql.codegen.utilities"); //$NON-NLS-1$
-
     private final FlowStateGenerator            flowStateGenerator;
     private final ResultStateGenerator          resultStateGenerator;
     private final ToResultRowConverterGenerator toResultRowConverterGenerator;
     private final ResultRowGenerator            resultRowGenerator;
+    private final LocLogger                     logger;
 
     DefaultUtilitiesGenerator(
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
             final ToResultRowConverterGenerator toResultRowConverterGenerator,
-            final ResultRowGenerator resultRowGenerator) {
+            final ResultRowGenerator resultRowGenerator,
+            final LocLogger logger) {
         this.flowStateGenerator = flowStateGenerator;
         this.resultStateGenerator = resultStateGenerator;
         this.toResultRowConverterGenerator = toResultRowConverterGenerator;
         this.resultRowGenerator = resultRowGenerator;
+        this.logger = logger;
     }
 
     @Override
@@ -45,20 +46,23 @@ final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
         for (final SqlStatement statement : allStatements) {
             if (resultStateClass == null && statement.isReading()) {
                 resultStateClass = resultStateGenerator.generateResultStateClass();
-                LOG.debug("Generated [{}.{}]", resultStateClass.getPackageName(), resultStateClass.getType().name); //$NON-NLS-1$
+                logger.debug(ApplicationEvents.TYPE_GENERATED, resultStateClass.getPackageName(),
+                        resultStateClass.getType().name);
             }
             if (flowStateClass == null && statement.shouldGenerateRxJavaAPI()) {
                 flowStateClass = flowStateGenerator.generateFlowStateClass();
-                LOG.debug("Generated [{}.{}]", flowStateClass.getPackageName(), flowStateClass.getType().name); //$NON-NLS-1$
+                logger.debug(ApplicationEvents.TYPE_GENERATED, flowStateClass.getPackageName(),
+                        flowStateClass.getType().name);
             }
             if (toResultRowConverterClass == null && resultRowClass == null
                     && statement.getConfiguration().getResultRowConverter().getConverterType()
                             .endsWith(ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)) {
                 toResultRowConverterClass = toResultRowConverterGenerator.generateToResultRowConverterClass();
-                LOG.debug("Generated [{}.{}]", toResultRowConverterClass.getPackageName(), //$NON-NLS-1$
+                logger.debug(ApplicationEvents.TYPE_GENERATED, toResultRowConverterClass.getPackageName(),
                         toResultRowConverterClass.getType().name);
                 resultRowClass = resultRowGenerator.generateResultRowClass();
-                LOG.debug("Generated [{}.{}]", resultRowClass.getPackageName(), resultRowClass.getType().name); //$NON-NLS-1$
+                logger.debug(ApplicationEvents.TYPE_GENERATED, resultRowClass.getPackageName(),
+                        resultRowClass.getType().name);
             }
             if (resultStateClass != null
                     && flowStateClass != null

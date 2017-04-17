@@ -7,6 +7,10 @@ filegroup(
   srcs = ["src/main/resources/configuration-options_en.properties"],
 )
 filegroup(
+  name = "application-events",
+  srcs = ["src/main/resources/application-events_en.properties"],
+)
+filegroup(
   name = "utils-raw-sources",
   srcs = glob(["src/main/java/**/yosql/utils/*.java"]),
 )
@@ -83,7 +87,10 @@ java_library(
   srcs = [
     ":model-raw-sources",
   ],
-  resources = [":config-options"],
+  resources = [
+    ":config-options",
+    ":application-events",
+  ],
   deps = [
     "//external:javax_annotation",
     "//external:javax_inject",
@@ -109,8 +116,11 @@ java_library(
   deps = [
     "//external:javax_inject",
     "//external:slf4j_api",
+    "//external:slf4j_ext",
     "//external:logback_classic",
     "//external:logback_core",
+    ":model",
+    ":dagger",
   ],
 )
 
@@ -122,9 +132,11 @@ java_library(
   deps = [
     "//external:snakeyaml",
     "//external:slf4j_api",
+    "//external:slf4j_ext",
     "//external:logback_classic",
     "//external:logback_core",
     ":model",
+    ":dagger",
     ":dagger2",
   ],
   exports = [
@@ -139,9 +151,11 @@ java_library(
   ],
   deps = [
     "//external:slf4j_api",
+    "//external:slf4j_ext",
     "//external:logback_classic",
     "//external:logback_core",
     ":model",
+    ":dagger",
   ],
   exports = [
     ":model",
@@ -156,6 +170,8 @@ java_library(
     ":generator-api",
     ":generator-helpers",
     "//external:slf4j_api",
+    "//external:slf4j_ext",
+    ":dagger",
   ],
 )
 java_library(
@@ -164,6 +180,7 @@ java_library(
     ":generator-dao-jdbc-raw-sources",
   ],
   deps = [
+    "//external:slf4j_ext",
     ":dagger",
     ":generator-api",
     ":generator-dao-generic",
@@ -284,9 +301,10 @@ java_library(
   ],
   deps = [
     "//external:slf4j_api",
+    "//external:slf4j_ext",
     "//external:logback_classic",
     "//external:logback_core",
-    ":dagger2",
+    ":dagger",
     ":generator-api",
     ":generator-helpers",
   ],
@@ -355,6 +373,8 @@ java_library(
     "//external:javax_inject",
     "//external:dagger",
     "//external:dagger-compiler",
+    "//external:slf4j_api",
+    "//external:slf4j_ext",
     ":dagger2",
     ":model",
   ],

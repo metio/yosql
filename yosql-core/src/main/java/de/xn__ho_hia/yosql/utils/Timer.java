@@ -9,24 +9,28 @@ import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.cal10n.LocLogger;
+
+import de.xn__ho_hia.yosql.dagger.LoggerModule;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 
 /**
  * Utility class to time how long certain executions take.
  */
 public final class Timer {
 
-    private static final Logger         LOG     = LoggerFactory.getLogger("yosql.timer"); //$NON-NLS-1$
-
     private final Map<String, Duration> timings = new LinkedHashMap<>();
+    private final LocLogger             logger;
 
     /**
      * Creates a new timer.
+     *
+     * @param logger
+     *            The logger to use.
      */
     @Inject
-    public Timer() {
-        // required by dagger
+    public Timer(final @LoggerModule.Timer LocLogger logger) {
+        this.logger = logger;
     }
 
     /**
@@ -36,7 +40,7 @@ public final class Timer {
      *            The task to run.
      */
     public void timed(final String taskName, final Runnable task) {
-        if (LOG.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             final Instant preRun = Instant.now();
             task.run();
             final Instant postRun = Instant.now();
@@ -54,7 +58,7 @@ public final class Timer {
      * @return The value provided by the supplier.
      */
     public <T> T timed(final String taskName, final Supplier<T> supplier) {
-        if (LOG.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             final Instant preRun = Instant.now();
             final T value = supplier.get();
             final Instant postRun = Instant.now();
@@ -68,14 +72,14 @@ public final class Timer {
      * Prints the previously recorded timings.
      */
     public void printTimings() {
-        if (LOG.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             long totalRuntime = 0;
             for (final Entry<String, Duration> entry : timings.entrySet()) {
                 final Long runtimeInMilliseconds = Long.valueOf(entry.getValue().toMillis());
-                LOG.info("Time spent running [{}]: {} (ms)", entry.getKey(), runtimeInMilliseconds); //$NON-NLS-1$
+                logger.info(ApplicationEvents.TASK_RUNTIME, entry.getKey(), runtimeInMilliseconds);
                 totalRuntime += runtimeInMilliseconds.longValue();
             }
-            LOG.info("Total runtime: {} (ms)", Long.valueOf(totalRuntime)); //$NON-NLS-1$
+            logger.info(ApplicationEvents.APPLICATION_RUNTIME, Long.valueOf(totalRuntime));
         }
     }
 

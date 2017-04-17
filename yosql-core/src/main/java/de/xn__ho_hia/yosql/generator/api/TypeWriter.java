@@ -13,9 +13,10 @@ import javax.inject.Inject;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.cal10n.LocLogger;
 
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Writer;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
@@ -25,23 +26,26 @@ import de.xn__ho_hia.yosql.model.PackageTypeSpec;
  */
 public class TypeWriter {
 
-    private static final Logger          LOG = LoggerFactory.getLogger("yosql.generator.writer"); //$NON-NLS-1$
-
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration config;
+    private final LocLogger              logger;
 
     /**
      * @param config
      *            The configuration to use.
      * @param errors
      *            The errors to use.
+     * @param logger
+     *            The logger to use.
      */
     @Inject
     public TypeWriter(
             final ExecutionConfiguration config,
-            final ExecutionErrors errors) {
+            final ExecutionErrors errors,
+            final @Writer LocLogger logger) {
         this.config = config;
         this.errors = errors;
+        this.logger = logger;
     }
 
     /**
@@ -54,12 +58,16 @@ public class TypeWriter {
             JavaFile.builder(typeSpec.getPackageName(), typeSpec.getType())
                     .build()
                     .writeTo(config.outputBaseDirectory());
-            LOG.debug("Wrote [{}/{}/{}]", config.outputBaseDirectory(), typeSpec.getPackageName().replace(".", "/"),
-                    typeSpec.getType().name.replace(".", "/") + ".java");
+            logger.debug(ApplicationEvents.FILE_WRITE_FINISHED,
+                    config.outputBaseDirectory(),
+                    typeSpec.getPackageName().replace(".", "/"),
+                    typeSpec.getType().name + ".java");
         } catch (final IOException exception) {
             errors.add(exception);
-            LOG.error("Could not write [{}.{}] into [{}]",
-                    typeSpec.getPackageName(), typeSpec.getType().name, config.outputBaseDirectory());
+            logger.error(ApplicationEvents.FILE_WRITE_FAILED,
+                    typeSpec.getPackageName(),
+                    typeSpec.getType().name,
+                    config.outputBaseDirectory());
         }
     }
 

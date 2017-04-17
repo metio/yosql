@@ -1,7 +1,10 @@
 package de.xn__ho_hia.yosql.generator.utilities;
 
+import org.slf4j.cal10n.LocLogger;
+
 import dagger.Module;
 import dagger.Provides;
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Utilities;
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
 
 /**
@@ -16,9 +19,10 @@ public final class DefaultUtilitiesModule {
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
             final ToResultRowConverterGenerator toResultRowConverterGenerator,
-            final ResultRowGenerator resultRowGenerator) {
+            final ResultRowGenerator resultRowGenerator,
+            final @Utilities LocLogger logger) {
         return new DefaultUtilitiesGenerator(flowStateGenerator, resultStateGenerator, toResultRowConverterGenerator,
-                resultRowGenerator);
+                resultRowGenerator, logger);
     }
 
 }

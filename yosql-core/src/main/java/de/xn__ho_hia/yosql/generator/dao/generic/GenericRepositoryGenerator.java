@@ -10,8 +10,7 @@ import java.util.List;
 
 import com.squareup.javapoet.TypeSpec;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.cal10n.LocLogger;
 
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.api.FieldsGenerator;
@@ -19,6 +18,7 @@ import de.xn__ho_hia.yosql.generator.api.MethodsGenerator;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
@@ -27,11 +27,10 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
  */
 public final class GenericRepositoryGenerator implements RepositoryGenerator {
 
-    private static final Logger       LOG = LoggerFactory.getLogger("yosql.generator.repository.generic"); //$NON-NLS-1$
-
     private final AnnotationGenerator annotations;
     private final FieldsGenerator     fields;
     private final MethodsGenerator    methods;
+    private final LocLogger           logger;
 
     /**
      * @param annotations
@@ -40,14 +39,18 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
      *            The fields generator to use.
      * @param methods
      *            The methods generator to use.
+     * @param logger
+     *            The logger to use.
      */
     public GenericRepositoryGenerator(
             final AnnotationGenerator annotations,
             final FieldsGenerator fields,
-            final MethodsGenerator methods) {
+            final MethodsGenerator methods,
+            final LocLogger logger) {
         this.annotations = annotations;
         this.methods = methods;
         this.fields = fields;
+        this.logger = logger;
     }
 
     @Override
@@ -62,7 +65,7 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
                 .addAnnotations(annotations.generatedClass(GenericRepositoryGenerator.class))
                 .addStaticBlock(fields.staticInitializer(sqlStatements))
                 .build();
-        LOG.debug("Generated [{}.{}]", packageName, repository.name); //$NON-NLS-1$
+        logger.debug(ApplicationEvents.TYPE_GENERATED, packageName, repository.name);
         return new PackageTypeSpec(repository, packageName);
     }
 
