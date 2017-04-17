@@ -4,6 +4,7 @@ Sebastian Hoß <https://seb.xn--ho-hia.de/[@sebhoss]>
 :project-name: yosql
 
 image:https://img.shields.io/badge/license-cc%20zero-000000.svg?style=flat-square["CC Zero", link="http://creativecommons.org/publicdomain/zero/1.0/"]
+image:https://www.openhub.net/p/{project-name}/widgets/project_thin_badge.gif["Open Hub statistics", link="https://www.openhub.net/p/{project-name}"]
 
 link:https://github.com/krisajenkins/yesql[yesql] inspired, zero-dependency solution for Java & SQL. It expects a set of .sql files as inputs and produces the required Java code to call the SQL statements define in your .sql files.
 
