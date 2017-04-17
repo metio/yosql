@@ -33,9 +33,9 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
  */
 final class DefaultSqlFileParser implements SqlFileParser {
 
-    private static final Logger           LOG     = LoggerFactory.getLogger("yosql.parsing"); //$NON-NLS-1$
+    private static final Logger           LOG     = LoggerFactory.getLogger("yosql.parser"); //$NON-NLS-1$
 
-    private static final String           NEWLINE = "\n";                                     //$NON-NLS-1$
+    private static final String           NEWLINE = "\n";                                    //$NON-NLS-1$
 
     private final ExecutionErrors         errors;
     private final SqlConfigurationFactory factory;

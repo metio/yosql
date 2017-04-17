@@ -10,6 +10,9 @@ import java.util.List;
 
 import com.squareup.javapoet.TypeSpec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.api.FieldsGenerator;
 import de.xn__ho_hia.yosql.generator.api.MethodsGenerator;
@@ -23,6 +26,8 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
  * Generic standard implementation of a {@link RepositoryGenerator}.
  */
 public final class GenericRepositoryGenerator implements RepositoryGenerator {
+
+    private static final Logger       LOG = LoggerFactory.getLogger("yosql.generator.repository.generic"); //$NON-NLS-1$
 
     private final AnnotationGenerator annotations;
     private final FieldsGenerator     fields;
@@ -57,6 +62,7 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
                 .addAnnotations(annotations.generatedClass(GenericRepositoryGenerator.class))
                 .addStaticBlock(fields.staticInitializer(sqlStatements))
                 .build();
+        LOG.debug("Generated [{}.{}]", packageName, repository.name); //$NON-NLS-1$
         return new PackageTypeSpec(repository, packageName);
     }
 

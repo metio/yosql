@@ -155,6 +155,7 @@ java_library(
   deps = [
     ":generator-api",
     ":generator-helpers",
+    "//external:slf4j_api",
   ],
 )
 java_library(

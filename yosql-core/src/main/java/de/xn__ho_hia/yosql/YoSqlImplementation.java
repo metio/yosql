@@ -13,8 +13,9 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -64,13 +65,19 @@ final class YoSqlImplementation implements YoSql {
 
     @Override
     public void generateFiles() {
-        final Executor executor = Executors.newWorkStealingPool();
-        supplyAsync(this::parseFiles, executor)
-                .thenApplyAsync(this::generateCode, executor)
-                .thenAcceptAsync(this::writeIntoFiles, executor)
+        final ForkJoinWorkerThreadFactory factory = pool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+            worker.setName("yosql-worker-" + worker.getPoolIndex()); //$NON-NLS-1$
+            return worker;
+        };
+        final ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
+
+        supplyAsync(this::parseFiles, pool)
+                .thenApplyAsync(this::generateCode, pool)
+                .thenAcceptAsync(this::writeIntoFiles, pool)
+                .thenRunAsync(timer::printTimings, pool)
                 .exceptionally(this::handleExceptions)
                 .join();
-        timer.printTimings();
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException("Error during code generation")); //$NON-NLS-1$
         }

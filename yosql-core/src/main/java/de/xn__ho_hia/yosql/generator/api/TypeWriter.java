@@ -25,7 +25,7 @@ import de.xn__ho_hia.yosql.model.PackageTypeSpec;
  */
 public class TypeWriter {
 
-    private static final Logger          LOG = LoggerFactory.getLogger("yosql.codegen.output"); //$NON-NLS-1$
+    private static final Logger          LOG = LoggerFactory.getLogger("yosql.generator.writer"); //$NON-NLS-1$
 
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration config;
