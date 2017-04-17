@@ -42,8 +42,15 @@ public final class JOptConfigurationModule {
     }
 
     @Provides
+    ValueConverter<ResultRowConverter> provideResultRowConverterConverter() {
+        return new ResultRowConverterValueConverter();
+    }
+
+    @Provides
     @SuppressWarnings("nls")
-    ExecutionConfiguration provideExecutionConfiguration(final ValueConverter<Path> pathConverter,
+    ExecutionConfiguration provideExecutionConfiguration(
+            final ValueConverter<Path> pathConverter,
+            final ValueConverter<ResultRowConverter> converterConverter,
             final IMessageConveyor messages) {
         final OptionParser parser = new OptionParser();
         parser.allowsUnrecognizedOptions();
@@ -271,7 +278,7 @@ public final class JOptConfigurationModule {
                 .accepts(messages.getMessage(RESULT_ROW_CONVERTERS))
                 .withOptionalArg()
                 .withValuesSeparatedBy(",")
-                .withValuesConvertedBy(new ResultRowConverterValueConverter())
+                .withValuesConvertedBy(converterConverter)
                 .describedAs(messages.getMessage(RESULT_ROW_CONVERTERS_DESCRIPTION));
 
         final OptionSet options = parser.parse(arguments);
