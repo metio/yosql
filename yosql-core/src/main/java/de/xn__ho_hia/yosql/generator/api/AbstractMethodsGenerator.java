@@ -25,39 +25,41 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
 
         methods.add(constructor(sqlStatementsInRepository));
         sqlStatementsInRepository.stream()
+                .filter(SqlStatement::shouldGenerateStandardReadAPI)
                 .collect(SqlStatement.groupByName())
                 .forEach((methodName, statements) -> methods
-                        .addAll(asMethodSpecs(methodName, merge(statements), statements)));
+                        .add(standardReadMethod(methodName, merge(statements), statements)));
+        sqlStatementsInRepository.stream()
+                .filter(SqlStatement::shouldGenerateStandardWriteAPI)
+                .collect(SqlStatement.groupByName())
+                .forEach((methodName, statements) -> methods
+                        .add(standardWriteMethod(methodName, merge(statements), statements)));
+        sqlStatementsInRepository.stream()
+                .filter(SqlStatement::shouldGenerateStandardCallAPI)
+                .collect(SqlStatement.groupByName())
+                .forEach((methodName, statements) -> methods
+                        .add(standardCallMethod(methodName, merge(statements), statements)));
+        sqlStatementsInRepository.stream()
+                .filter(SqlStatement::shouldGenerateBatchAPI)
+                .collect(SqlStatement.groupByName())
+                .forEach((methodName, statements) -> methods
+                        .add(batchWriteMethod(methodName, merge(statements), statements)));
+        sqlStatementsInRepository.stream()
+                .filter(SqlStatement::shouldGenerateStreamEagerAPI)
+                .collect(SqlStatement.groupByName())
+                .forEach((methodName, statements) -> methods
+                        .add(streamEagerReadMethod(methodName, merge(statements), statements)));
+        sqlStatementsInRepository.stream()
+                .filter(SqlStatement::shouldGenerateStreamLazyAPI)
+                .collect(SqlStatement.groupByName())
+                .forEach((methodName, statements) -> methods
+                        .add(streamLazyReadMethod(methodName, merge(statements), statements)));
+        sqlStatementsInRepository.stream()
+                .filter(SqlStatement::shouldGenerateRxJavaAPI)
+                .collect(SqlStatement.groupByName())
+                .forEach((methodName, statements) -> methods
+                        .add(rxJavaReadMethod(methodName, merge(statements), statements)));
 
-        return methods;
-    }
-
-    private List<MethodSpec> asMethodSpecs(final String methodName, final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> vendorStatements) {
-        final List<MethodSpec> methods = new ArrayList<>();
-        for (final SqlStatement statement : vendorStatements) {
-            if (statement.shouldGenerateBatchAPI()) {
-                methods.add(batchWriteMethod(methodName, mergedConfiguration, vendorStatements));
-            }
-            if (statement.shouldGenerateStandardReadAPI()) {
-                methods.add(standardReadMethod(methodName, mergedConfiguration, vendorStatements));
-            }
-            if (statement.shouldGenerateStandardWriteAPI()) {
-                methods.add(standardWriteMethod(methodName, mergedConfiguration, vendorStatements));
-            }
-            if (statement.shouldGenerateStandardCallAPI()) {
-                methods.add(standardCallMethod(methodName, mergedConfiguration, vendorStatements));
-            }
-            if (statement.shouldGenerateStreamEagerAPI()) {
-                methods.add(streamEagerReadMethod(methodName, mergedConfiguration, vendorStatements));
-            }
-            if (statement.shouldGenerateStreamLazyAPI()) {
-                methods.add(streamLazyReadMethod(methodName, mergedConfiguration, vendorStatements));
-            }
-            if (statement.shouldGenerateRxJavaAPI()) {
-                methods.add(rxJavaReadMethod(methodName, mergedConfiguration, vendorStatements));
-            }
-        }
         return methods;
     }
 

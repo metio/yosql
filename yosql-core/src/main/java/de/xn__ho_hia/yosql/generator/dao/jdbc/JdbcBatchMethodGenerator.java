@@ -49,7 +49,7 @@ final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
                 .addCode(codeBlocks.pickVendorQuery(vendorStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareStatement())
                 .addCode(TypicalCodeBlocks.prepareBatch(mergedConfiguration))
-                .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
+                .addCode(codeBlocks.logExecutedBatchQuery(mergedConfiguration))
                 .addCode(TypicalCodeBlocks.executeBatch())
                 .addCode(TypicalCodeBlocks.endTryBlock(2))
                 .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))

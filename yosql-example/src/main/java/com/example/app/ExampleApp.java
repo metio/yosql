@@ -13,19 +13,21 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
-import org.h2.jdbcx.JdbcDataSource;
-import org.postgresql.ds.PGPoolingDataSource;
-
 import com.example.persistence.CompanyRepository;
 import com.example.persistence.PersonRepository;
 import com.example.persistence.SchemaRepository;
 import com.example.persistence.util.ResultRow;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
+import org.h2.jdbcx.JdbcDataSource;
+import org.postgresql.ds.PGPoolingDataSource;
+
 import io.reactivex.Flowable;
 
+@SuppressWarnings({ "javadoc", "nls" })
 public class ExampleApp {
 
+    @SuppressWarnings("deprecation")
     public static final void main(final String[] arguments) throws Exception {
         if (match(arguments, "h2")) {
             final JdbcDataSource dataSource = new JdbcDataSource();

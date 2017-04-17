@@ -228,3 +228,29 @@ maven_jar(name = "google_java_format",     artifact = "com.google.googlejavaform
 maven_jar(name = "errorprone_javac",       artifact = "com.google.errorprone:javac:9-dev-r3297-1-shaded")
 maven_jar(name = "dagger_javapoet",        artifact = "com.squareup:javapoet:1.7.0")
 maven_jar(name = "guava", artifact = "com.google.guava:guava:21.0")
+
+
+maven_jar(
+    name = "com_h2database_h2",
+    artifact = "com.h2database:h2:1.4.194",
+)
+bind(
+    name = "h2",
+    actual = "@com_h2database_h2//jar",
+)
+maven_jar(
+    name = "org_postgresql_postgresql",
+    artifact = "org.postgresql:postgresql:42.0.0",
+)
+bind(
+    name = "postgresql",
+    actual = "@org_postgresql_postgresql//jar",
+)
+maven_jar(
+    name = "mysql_mysql_connector_java",
+    artifact = "mysql:mysql-connector-java:6.0.6",
+)
+bind(
+    name = "mysql",
+    actual = "@mysql_mysql_connector_java//jar",
+)

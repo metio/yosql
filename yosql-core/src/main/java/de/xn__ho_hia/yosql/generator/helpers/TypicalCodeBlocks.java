@@ -378,6 +378,31 @@ public class TypicalCodeBlocks {
         return builder.build();
     }
 
+    public CodeBlock logExecutedBatchQuery(final SqlConfiguration sqlConfiguration) {
+        final Builder builder = CodeBlock.builder();
+        if (configuration.shouldLog()) {
+            builder.beginControlFlow("if ($L)", logging.shouldLog());
+            builder.add("final $T $N = $N", String.class, TypicalNames.EXECUTED_QUERY, TypicalNames.RAW_QUERY);
+            sqlConfiguration.getParameters().stream()
+                    .forEach(parameter -> {
+                        if (TypeGuesser.guessTypeName(parameter.getType()).isPrimitive()) {
+                            builder
+                                    .add("\n$>.replace($S, $T.toString($N))$<", ":" + parameter.getName(),
+                                            Arrays.class, parameter.getName());
+                        } else {
+                            builder
+                                    .add("\n$>.replace($S, $N == null ? $S : $T.toString($N))$<",
+                                            ":" + parameter.getName(), parameter.getName(), "null",
+                                            Arrays.class, parameter.getName());
+                        }
+                    });
+            builder.add(";\n");
+            builder.add(logging.executingQuery());
+            builder.endControlFlow();
+        }
+        return builder.build();
+    }
+
     public CodeBlock entering(final String repository, final String method) {
         return logging.entering(repository, method);
     }

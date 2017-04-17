@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -60,10 +61,10 @@ final class DefaultSqlFileParser implements SqlFileParser {
             final AtomicInteger counter = new AtomicInteger(1);
             return statementSplitter.splitAsStream(rawText)
                     .parallel()
-                    .map(statement -> convert(source, statement, counter.getAndIncrement()));
+                    .map(statement -> convert(source, statement, counter.getAndIncrement()))
+                    .filter(Objects::nonNull);
         } catch (final Throwable exception) {
             errors.add(exception);
-            logger.debug(ApplicationEvents.FILE_PARSED_FAILED, source);
             return Stream.empty();
         }
     }
@@ -81,10 +82,16 @@ final class DefaultSqlFileParser implements SqlFileParser {
         final String rawYaml = yaml.toString();
 
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
-        final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
-                parameterIndices, statementInFile);
-        logger.debug(ApplicationEvents.FILE_PARSED_FINISHED, source, configuration.getName());
-        return new SqlStatement(configuration, rawSqlStatement);
+        try {
+            final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
+                    parameterIndices, statementInFile);
+            logger.debug(ApplicationEvents.FILE_PARSED_FINISHED, source, configuration.getName());
+            return new SqlStatement(configuration, rawSqlStatement);
+        } catch (final Throwable throwable) {
+            errors.add(throwable);
+            logger.debug(ApplicationEvents.FILE_PARSED_FAILED, source);
+            return null;
+        }
     }
 
     private static void splitUpYamlAndSql(

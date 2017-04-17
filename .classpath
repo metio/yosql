@@ -62,6 +62,13 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="yosql-example/src/main/java"/>
+	<classpathentry kind="src" path="yosql-example/src/main/yosql"/>
+	<classpathentry kind="src" path="bazel-genfiles/yosql-example">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_squareup_javapoet/jar/_ijar/jar/external/com_squareup_javapoet/jar/javapoet-1.8.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/javax_inject_javax_inject/jar/_ijar/jar/external/javax_inject_javax_inject/jar/javax.inject-1-ijar.jar"/>
@@ -75,6 +82,9 @@
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_google_auto_value_auto_value/jar/_ijar/jar/external/com_google_auto_value_auto_value/jar/auto-value-1.2-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_openjdk_jmh_jmh_core/jar/_ijar/jar/external/org_openjdk_jmh_jmh_core/jar/jmh-core-1.18-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_slf4j_slf4j_ext/jar/_ijar/jar/external/org_slf4j_slf4j_ext/jar/slf4j-ext-1.7.21-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/com_h2database_h2/jar/_ijar/jar/external/com_h2database_h2/jar/h2-1.4.194-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_postgresql_postgresql/jar/_ijar/jar/external/org_postgresql_postgresql/jar/postgresql-42.0.0-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/mysql_mysql_connector_java/jar/_ijar/jar/external/mysql_mysql_connector_java/jar/mysql-connector-java-6.0.6-ijar.jar"/>
 	<classpathentry kind="src" path="bazel-out/ide/generated">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
