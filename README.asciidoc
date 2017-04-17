@@ -94,6 +94,8 @@ genrule(
 
 3) Call `java -jar yosql-cli.jar --inputBaseDirectory /path/to/your/sql/files --outputBaseDirectory /output/path`
 
+'''
+
 The above configuration is enough to generate two repositories: *UserRepository* and *ItemRepository*. The name is derived from the name of the folder that contains .sql files and can be configured as seen below. Each of them will have regular Java methods to execute the SQL statements defined in those .sql files. The `UserRepository` for example exposes these methods (based on *findUser.sql*):
 
 [source, java]
