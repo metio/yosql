@@ -84,6 +84,18 @@ bench-parsing-each: ##@benchmark Run file parsing benchmark against each individ
 bench-parsing-all: ##@benchmark Run file parsing benchmark against each individual .sql file (runtime is ~5min)
 	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.parse_file.DefaultSqlFileParserParseAllFileBenchmark
 
+.PHONY: example-h2-all
+example-h2-all: ##@example Run all examples against H2 database
+	bazel run //yosql-example h2 standard stream rxjava
+
+.PHONY: example-psql-all
+example-psql-all: ##@example Run all examples against Postgres (use docker-compose.yml for env)
+	bazel run //yosql-example psql standard stream rxjava
+
+.PHONY: example-mysql-all
+example-mysql-all: ##@example Run all examples against MySQL (use docker-compose.yml for env)
+	bazel run //yosql-example mysql standard stream rxjava
+
 .PHONY: sign-waiver
 sign-waiver: ##@contributing Sign the WAIVER
 	gpg2 --no-version --armor --sign AUTHORS/WAIVER
