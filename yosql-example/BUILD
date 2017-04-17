@@ -27,7 +27,7 @@ genrule(
       --inputBaseDirectory yosql-example/src/main/yosql \
       --outputBaseDirectory $(@D) \
       --resultRowConverters itemConverter:com.example.app.converter.ToItemConverter:com.example.app.model.Item \
-      --logLevel debug
+      --logLevel off
   """,
   tools = ["//yosql-cli"],
 )
