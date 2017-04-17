@@ -85,6 +85,7 @@
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_h2database_h2/jar/_ijar/jar/external/com_h2database_h2/jar/h2-1.4.194-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_postgresql_postgresql/jar/_ijar/jar/external/org_postgresql_postgresql/jar/postgresql-42.0.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/mysql_mysql_connector_java/jar/_ijar/jar/external/mysql_mysql_connector_java/jar/mysql-connector-java-6.0.6-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_reactivestreams_reactive_streams/jar/_ijar/jar/external/org_reactivestreams_reactive_streams/jar/reactive-streams-1.0.0.final-ijar.jar"/>
 	<classpathentry kind="src" path="bazel-out/ide/generated">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
