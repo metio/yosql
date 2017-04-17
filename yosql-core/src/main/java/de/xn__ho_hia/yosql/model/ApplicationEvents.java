@@ -42,4 +42,40 @@ public enum ApplicationEvents {
      * Signals that a type was generated.
      */
     TYPE_GENERATED,
+
+    /**
+     * Signals that files are about to be parsed.
+     */
+    PARSE_FILES,
+
+    /**
+     * Signals that file parsing failed.
+     */
+    PARSE_FILES_FAILED,
+
+    /**
+     * Signals that code generation failed.
+     */
+    CODE_GENERATION_FAILED,
+
+    /**
+     * Signals that repositories are about to be generated.
+     */
+    GENERATE_REPOSITORIES,
+
+    /**
+     * Signals that utilities are about to be generated.
+     */
+    GENERATE_UTILITIES,
+
+    /**
+     * Signals that files are about to be written.
+     */
+    WRITE_FILES,
+
+    /**
+     * The name for the internal thread pool.
+     */
+    WORKER_POOL_NAME,
+
 }

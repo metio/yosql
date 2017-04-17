@@ -21,9 +21,11 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import ch.qos.cal10n.IMessageConveyor;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.CodeGenerationException;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
@@ -45,6 +47,7 @@ final class YoSqlImplementation implements YoSql {
     private final ExecutionErrors     errors;
     private final Timer               timer;
     private final TypeWriter          typeWriter;
+    private final IMessageConveyor    messages;
 
     @Inject
     YoSqlImplementation(
@@ -54,7 +57,8 @@ final class YoSqlImplementation implements YoSql {
             final UtilitiesGenerator utilsGenerator,
             final ExecutionErrors errors,
             final Timer timer,
-            final TypeWriter typeWriter) {
+            final TypeWriter typeWriter,
+            final IMessageConveyor messages) {
         this.fileResolver = fileResolver;
         this.sqlFileParser = sqlFileParser;
         this.repositoryGenerator = repositoryGenerator;
@@ -62,6 +66,7 @@ final class YoSqlImplementation implements YoSql {
         this.errors = errors;
         this.timer = timer;
         this.typeWriter = typeWriter;
+        this.messages = messages;
     }
 
     @Override
@@ -74,14 +79,16 @@ final class YoSqlImplementation implements YoSql {
                 .exceptionally(this::handleExceptions)
                 .join();
         if (errors.hasErrors()) {
-            errors.throwWith(new CodeGenerationException("Error during code generation")); //$NON-NLS-1$
+            errors.throwWith(new CodeGenerationException(
+                    messages.getMessage(ApplicationEvents.CODE_GENERATION_FAILED)));
         }
     }
 
-    private static Executor createThreadPool() {
+    private Executor createThreadPool() {
         final ForkJoinWorkerThreadFactory factory = pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
-            worker.setName("yosql-worker-" + worker.getPoolIndex()); //$NON-NLS-1$
+            worker.setName(messages.getMessage(ApplicationEvents.WORKER_POOL_NAME,
+                    Integer.valueOf(worker.getPoolIndex())));
             return worker;
         };
         final ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
@@ -95,12 +102,12 @@ final class YoSqlImplementation implements YoSql {
 
     private List<SqlStatement> parseFiles() {
         List<SqlStatement> statements = Collections.emptyList();
-        statements = timer.timed("parse files", //$NON-NLS-1$
+        statements = timer.timed(messages.getMessage(ApplicationEvents.PARSE_FILES),
                 () -> fileResolver.resolveFiles()
                         .flatMap(sqlFileParser::parse)
                         .collect(toList()));
         if (errors.hasErrors()) {
-            errors.throwWith(new SqlFileParsingException("Error during SQL file parsing")); //$NON-NLS-1$
+            errors.throwWith(new SqlFileParsingException(messages.getMessage(ApplicationEvents.PARSE_FILES_FAILED)));
         }
         return statements;
     }
@@ -111,7 +118,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private Stream<PackageTypeSpec> generateRepositories(final List<SqlStatement> statements) {
-        return timer.timed("generate repositories", () -> { //$NON-NLS-1$
+        return timer.timed(messages.getMessage(ApplicationEvents.GENERATE_REPOSITORIES), () -> {
             if (statements != null && !statements.isEmpty()) {
                 return statements.stream()
                         .collect(groupingBy(SqlStatement::getRepository))
@@ -125,7 +132,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private Stream<PackageTypeSpec> generateUtilities(final List<SqlStatement> statements) {
-        return timer.timed("generate utilities", () -> { //$NON-NLS-1$
+        return timer.timed(messages.getMessage(ApplicationEvents.GENERATE_UTILITIES), () -> {
             if (statements != null && !statements.isEmpty()) {
                 return utilsGenerator.generateUtilities(statements);
             }
@@ -134,7 +141,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private void writeIntoFiles(final List<PackageTypeSpec> statements) {
-        timer.timed("write types", () -> { //$NON-NLS-1$
+        timer.timed(messages.getMessage(ApplicationEvents.WRITE_FILES), () -> {
             if (statements != null && !statements.isEmpty()) {
                 statements.parallelStream()
                         .filter(Objects::nonNull)
