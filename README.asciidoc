@@ -10,7 +10,7 @@ image:https://www.openhub.net/p/{project-name}/widgets/project_thin_badge.gif["O
 
 '''
 
-link:https://github.com/krisajenkins/yesql[yesql] inspired, zero-dependency solution for Java & SQL. It expects a set of .sql files as inputs and produces the required Java code to call the SQL statements define in your .sql files.
+link:https://github.com/krisajenkins/yesql[yesql] inspired build tool that bridges the world of Java & SQL with zero runtime dependencies. It expects a set of .sql files as inputs and generates the required Java code to call the SQL statements define in those .sql files.
 
 '''
 
