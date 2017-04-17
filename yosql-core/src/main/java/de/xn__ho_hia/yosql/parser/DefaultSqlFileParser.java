@@ -65,6 +65,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
                     .filter(Objects::nonNull);
         } catch (final Throwable exception) {
             errors.add(exception);
+            logger.debug(ApplicationEvents.FILE_PARSED_FAILED, source);
             return Stream.empty();
         }
     }
@@ -82,16 +83,10 @@ final class DefaultSqlFileParser implements SqlFileParser {
         final String rawYaml = yaml.toString();
 
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
-        try {
-            final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
-                    parameterIndices, statementInFile);
-            logger.debug(ApplicationEvents.FILE_PARSED_FINISHED, source, configuration.getName());
-            return new SqlStatement(configuration, rawSqlStatement);
-        } catch (final Throwable throwable) {
-            errors.add(throwable);
-            logger.debug(ApplicationEvents.FILE_PARSED_FAILED, source);
-            return null;
-        }
+        final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
+                parameterIndices, statementInFile);
+        logger.debug(ApplicationEvents.FILE_PARSED_FINISHED, source, configuration.getName());
+        return new SqlStatement(configuration, rawSqlStatement);
     }
 
     private static void splitUpYamlAndSql(

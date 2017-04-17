@@ -559,6 +559,21 @@ public enum ConfigurationOptions {
     LOGGING_API_DEFAULT,
 
     /**
+     * The custom result row converters.
+     */
+    RESULT_ROW_CONVERTERS,
+
+    /**
+     * The description for {@link #RESULT_ROW_CONVERTERS}.
+     */
+    RESULT_ROW_CONVERTERS_DESCRIPTION,
+
+    /**
+     * The default value for {@link #RESULT_ROW_CONVERTERS}.
+     */
+    RESULT_ROW_CONVERTERS_DEFAULT,
+
+    /**
      * The class name of the result row converter.
      */
     TO_RESULT_ROW_CONVERTER_CLASS_NAME,

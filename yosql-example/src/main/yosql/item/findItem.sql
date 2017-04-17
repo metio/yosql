@@ -6,7 +6,7 @@
 -- parameters:
 --   - name: name
 --     type: java.lang.String
--- resultConverter:
+-- resultRowConverter:
 --   alias: itemConverter
 --
 select  *
@@ -23,7 +23,7 @@ where   name = :name
 -- parameters:
 --   - name: name
 --     type: java.lang.String
--- resultConverter:
+-- resultRowConverter:
 --   alias: itemConverter
 --
 select  *
@@ -39,7 +39,7 @@ where   other_name = :name
 -- parameters:
 --   - name: name
 --     type: java.lang.String
--- resultConverter:
+-- resultRowConverter:
 --   alias: itemConverter
 --
 select  *
@@ -57,7 +57,7 @@ where   name = :name
 -- parameters:
 --   - name: name_of_item
 --     type: java.lang.String
--- resultConverter:
+-- resultRowConverter:
 --   alias: itemConverter
 --
 select  *

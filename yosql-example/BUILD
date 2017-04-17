@@ -14,16 +14,20 @@ genrule(
     "com/example/persistence/SchemaRepository.java",
     "com/example/persistence/CompanyRepository.java",
     "com/example/persistence/PersonRepository.java",
+    "com/example/persistence/AdminRepository.java",
+    "com/example/persistence/UserRepository.java",
+    "com/example/persistence/ItemRepository.java",
     "com/example/persistence/util/ResultRow.java",
     "com/example/persistence/util/ResultState.java",
     "com/example/persistence/util/FlowState.java",
     "com/example/persistence/converter/ToResultRowConverter.java",
   ],
   cmd = """
-    ./$(location //yosql-cli) \
+    $(location //yosql-cli) \
       --inputBaseDirectory yosql-example/src/main/yosql \
       --outputBaseDirectory $(@D) \
-      --logLevel off
+      --resultRowConverters itemConverter:com.example.app.converter.ToItemConverter:com.example.app.model.Item \
+      --logLevel debug
   """,
   tools = ["//yosql-cli"],
 )

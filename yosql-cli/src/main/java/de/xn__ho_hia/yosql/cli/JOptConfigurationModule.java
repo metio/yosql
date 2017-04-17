@@ -4,7 +4,8 @@ import static de.xn__ho_hia.yosql.model.ConfigurationOptions.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
@@ -266,8 +267,15 @@ public final class JOptConfigurationModule {
                 .ofType(LoggingAPI.class)
                 .defaultsTo(LoggingAPI.valueOf(messages.getMessage(LOGGING_API_DEFAULT)))
                 .describedAs(messages.getMessage(LOGGING_API_DESCRIPTION));
+        final OptionSpec<ResultRowConverter> resultRowConverters = parser
+                .accepts(messages.getMessage(RESULT_ROW_CONVERTERS))
+                .withOptionalArg()
+                .withValuesSeparatedBy(",")
+                .withValuesConvertedBy(new ResultRowConverterValueConverter())
+                .describedAs(messages.getMessage(RESULT_ROW_CONVERTERS_DESCRIPTION));
 
         final OptionSet options = parser.parse(arguments);
+        final List<ResultRowConverter> resultConverters = new ArrayList<>();
         final ResultRowConverter toResultRow = new ResultRowConverter();
         toResultRow.setAlias(options.valueOf(defaultRowConverter));
         toResultRow.setResultType(
@@ -276,6 +284,8 @@ public final class JOptConfigurationModule {
         toResultRow.setConverterType(
                 String.join(".", options.valueOf(basePackageName), options.valueOf(converterPackageName),
                         messages.getMessage(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
+        resultConverters.add(toResultRow);
+        resultConverters.addAll(options.valuesOf(resultRowConverters));
 
         return ExecutionConfiguration.builder()
                 .setInputBaseDirectory(options.valueOf(inputBaseDirectory))
@@ -315,7 +325,7 @@ public final class JOptConfigurationModule {
                 .setDefaultResultStateClassName(options.valueOf(defaultResultStateClassName))
                 .setDefaultResultRowClassName(options.valueOf(defaultResultRowClassName))
                 .setDefaultRowConverter(options.valueOf(defaultRowConverter))
-                .setResultRowConverters(Arrays.asList(toResultRow))
+                .setResultRowConverters(resultConverters)
                 .build();
     }
 

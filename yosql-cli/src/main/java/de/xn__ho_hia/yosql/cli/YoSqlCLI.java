@@ -28,11 +28,16 @@ public class YoSqlCLI {
     public static void main(final String... arguments) throws Exception {
         setLogLevel(arguments);
 
-        DaggerYoSqlCLIComponent.builder()
-                .jOptConfigurationModule(new JOptConfigurationModule(arguments))
-                .build()
-                .yosql()
-                .generateFiles();
+        try {
+            DaggerYoSqlCLIComponent.builder()
+                    .jOptConfigurationModule(new JOptConfigurationModule(arguments))
+                    .build()
+                    .yosql()
+                    .generateFiles();
+        } catch (final Throwable throwable) {
+            throwable.printStackTrace();
+            System.exit(1);
+        }
     }
 
     @SuppressWarnings("nls")
