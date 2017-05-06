@@ -40,7 +40,7 @@ final class PathBasedSqlFileResolver implements SqlFileResolver {
                 return Files.walk(source, FileVisitOption.FOLLOW_LINKS)
                         .parallel()
                         .filter(Files::isRegularFile)
-                        .filter(path -> path.toString().endsWith(".sql")); //$NON-NLS-1$
+                        .filter(path -> path.toString().endsWith(configuration.sqlFilesSuffix()));
             } catch (final IOException | SecurityException exception) {
                 errors.add(exception);
             }

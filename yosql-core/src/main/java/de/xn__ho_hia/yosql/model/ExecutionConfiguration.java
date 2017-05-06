@@ -107,6 +107,8 @@ public abstract class ExecutionConfiguration {
 
     public abstract String sqlFilesCharset();
 
+    public abstract String sqlFilesSuffix();
+
     public abstract List<String> allowedWritePrefixes();
 
     public abstract List<String> allowedReadPrefixes();
@@ -208,6 +210,8 @@ public abstract class ExecutionConfiguration {
         public abstract Builder setSqlStatementSeparator(String value);
 
         public abstract Builder setSqlFilesCharset(String value);
+
+        public abstract Builder setSqlFilesSuffix(String value);
 
         public abstract Builder setAllowedWritePrefixes(List<String> value);
 

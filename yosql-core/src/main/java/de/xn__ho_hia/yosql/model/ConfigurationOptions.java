@@ -114,6 +114,21 @@ public enum ConfigurationOptions {
     REPOSITORY_NAME_SUFFIX_DEFAULT,
 
     /**
+     * The file name suffix for SQL files.
+     */
+    SQL_FILES_SUFFIX,
+
+    /**
+     * The description for {@link #SQL_FILES_SUFFIX}.
+     */
+    SQL_FILES_SUFFIX_DESCRIPTION,
+
+    /**
+     * The default value for {@link #SQL_FILES_SUFFIX}.
+     */
+    SQL_FILES_SUFFIX_DEFAULT,
+
+    /**
      * The charset for .sql files.
      */
     SQL_FILES_CHARSET,

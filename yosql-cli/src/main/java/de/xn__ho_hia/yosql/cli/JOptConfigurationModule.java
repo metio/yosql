@@ -58,7 +58,7 @@ public final class JOptConfigurationModule {
             final ValueConverter<ResultRowConverter> converterConverter,
             final IMessageConveyor messages) {
         final OptionParser parser = new OptionParser();
-        // parser.formatHelpWith(new BuiltinHelpFormatter(250, 10));
+        // parser.formatHelpWith(new BuiltinHelpFormatter(120, 5));
         parser.formatHelpWith(new YoSqlHelpFormatter());
         final String helpCommandName = messages.getMessage(HELP);
         parser.accepts(helpCommandName).forHelp();
@@ -294,6 +294,12 @@ public final class JOptConfigurationModule {
                 .ofType(String.class)
                 .defaultsTo("INFO")
                 .describedAs("The logging level to use while executing yosql-cli");
+        final OptionSpec<String> sqlFilesSuffix = parser
+                .accepts(messages.getMessage(SQL_FILES_SUFFIX))
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo(messages.getMessage(SQL_FILES_SUFFIX_DEFAULT))
+                .describedAs(messages.getMessage(SQL_FILES_SUFFIX_DESCRIPTION));
 
         final OptionSet options = parseOptions(parser, helpCommandName);
 
@@ -327,6 +333,7 @@ public final class JOptConfigurationModule {
                 .setMethodRxJavaSuffix(options.valueOf(methodRxJavaSuffix))
                 .setMethodEagerName(options.valueOf(methodEagerName))
                 .setMethodLazyName(options.valueOf(methodLazyName))
+                .setSqlFilesSuffix(options.valueOf(sqlFilesSuffix))
                 .setSqlFilesCharset(options.valueOf(sqlFilesCharset))
                 .setSqlStatementSeparator(options.valueOf(sqlStatementSeparator))
                 .setGenerateStandardApi(options.valueOf(generateStandardApi).booleanValue())
