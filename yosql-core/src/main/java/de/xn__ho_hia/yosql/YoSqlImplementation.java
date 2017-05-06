@@ -91,8 +91,7 @@ final class YoSqlImplementation implements YoSql {
                     Integer.valueOf(worker.getPoolIndex())));
             return worker;
         };
-        final ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
-        return pool;
+        return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
     }
 
     private Void handleExceptions(final Throwable throwable) {
