@@ -6,6 +6,11 @@
  */
 package de.xn__ho_hia.yosql.cli;
 
+import static de.xn__ho_hia.yosql.cli.CliEvents.HELP_REQUIRED;
+import static de.xn__ho_hia.yosql.cli.CliEvents.PROBLEM_DURING_OPTION_PARSING;
+
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +20,7 @@ import java.util.Map;
 
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
-import joptsimple.OptionException;
+import de.xn__ho_hia.yosql.YoSql;
 import joptsimple.OptionParser;
 import joptsimple.OptionSpec;
 
@@ -23,6 +28,8 @@ import joptsimple.OptionSpec;
  * Command line interface for YoSQL.
  */
 public class YoSqlCLI {
+
+    private static final PrintStream ERRORS = System.err;
 
     /**
      * @param arguments
@@ -32,33 +39,43 @@ public class YoSqlCLI {
      */
     public static void main(final String... arguments) throws Exception {
         try {
-            DaggerYoSqlCLIComponent.builder()
-                    .jOptConfigurationModule(new JOptConfigurationModule(arguments))
-                    .build()
-                    .yosql()
-                    .generateFiles();
+            generateFiles(arguments);
+            successfulTermination();
         } catch (final OptionParsingException exception) {
-            final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
             if (exception.couldNotParseOptions()) {
-                handleParsingException(exception, messages);
+                handleFailedOptions(exception.getParser(), exception.failedOptions());
+                abnormalTermination();
             } else {
-                System.err.println(messages.getMessage(CliEvents.HELP_REQUIRED));
+                printHelpText(exception.getParser());
+                successfulTermination();
             }
-            exception.getParser().printHelpOn(System.err);
         } catch (final Throwable throwable) {
-            throwable.printStackTrace();
-            System.exit(1);
+            handleUnknownException(throwable);
+            abnormalTermination();
         }
     }
 
-    private static void handleParsingException(final OptionParsingException exception,
-            final IMessageConveyor messages) {
-        final OptionException cause = exception.getCause();
-        final Collection<String> failedOptions = cause.options();
-        final OptionParser parser = exception.getParser();
+    private static void generateFiles(final String... arguments) {
+        final YoSqlCLIComponent yoSqlCli = DaggerYoSqlCLIComponent.builder()
+                .jOptConfigurationModule(new JOptConfigurationModule(arguments))
+                .build();
+        final YoSql yosql = yoSqlCli.yosql();
+        yosql.generateFiles();
+    }
+
+    private static void handleFailedOptions(final OptionParser parser, final Collection<String> failedOptions)
+            throws IOException {
+        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
         final Map<String, OptionSpec<?>> recognizedOptions = parser.recognizedOptions();
         final Collection<String> similarOptions = findSimilarOptions(failedOptions, recognizedOptions);
-        System.err.println(messages.getMessage(CliEvents.PROBLEM_DURING_OPTION_PARSING, failedOptions, similarOptions));
+        ERRORS.println(messages.getMessage(PROBLEM_DURING_OPTION_PARSING, failedOptions, similarOptions));
+        parser.printHelpOn(ERRORS);
+    }
+
+    private static void printHelpText(final OptionParser parser) throws IOException {
+        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
+        ERRORS.println(messages.getMessage(HELP_REQUIRED));
+        parser.printHelpOn(ERRORS);
     }
 
     private static Collection<String> findSimilarOptions(
@@ -80,6 +97,18 @@ public class YoSqlCLI {
             }
         }
         return similars;
+    }
+
+    private static void handleUnknownException(final Throwable throwable) {
+        throwable.printStackTrace(ERRORS);
+    }
+
+    private static void successfulTermination() {
+        System.exit(0);
+    }
+
+    private static void abnormalTermination() {
+        System.exit(1);
     }
 
 }

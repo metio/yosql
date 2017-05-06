@@ -1,11 +1,14 @@
 package de.xn__ho_hia.yosql.cli;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 
 class OptionParsingException extends RuntimeException {
 
-    private static final long     serialVersionUID = 1L;
+    private static final long     serialVersionUID = 2421471253723576932L;
 
     private final OptionParser    parser;
 
@@ -27,6 +30,10 @@ class OptionParsingException extends RuntimeException {
 
     public boolean couldNotParseOptions() {
         return exception != null;
+    }
+
+    public Collection<String> failedOptions() {
+        return exception != null ? exception.options() : Collections.emptyList();
     }
 
     @Override
