@@ -13,8 +13,13 @@ java_binary(
   srcs = [":yosql-cli-raw-sources"],
   visibility = ["//visibility:public"],
   deps = [
-    "//yosql-core",
     "//external:jopt_simple",
+    "//external:asciitable",
+    "//external:ascii_utf_themes",
+    "//external:skb_interfaces",
+    "//external:commons_lang3",
+    "//external:st4",
+    "//yosql-core",
   ],
   resources = [
     ":cli-events",

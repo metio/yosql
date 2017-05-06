@@ -18,7 +18,6 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
-import joptsimple.BuiltinHelpFormatter;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -59,7 +58,8 @@ public final class JOptConfigurationModule {
             final ValueConverter<ResultRowConverter> converterConverter,
             final IMessageConveyor messages) {
         final OptionParser parser = new OptionParser();
-        parser.formatHelpWith(new BuiltinHelpFormatter(250, 10));
+        // parser.formatHelpWith(new BuiltinHelpFormatter(250, 10));
+        parser.formatHelpWith(new YoSqlHelpFormatter());
         final String helpCommandName = messages.getMessage(HELP);
         parser.accepts(helpCommandName).forHelp();
         final Path currentDirectory = Paths.get(messages.getMessage(CURRENT_DIRECTORY));

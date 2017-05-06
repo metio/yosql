@@ -255,3 +255,46 @@ bind(
     name = "mysql",
     actual = "@mysql_mysql_connector_java//jar",
 )
+
+
+maven_jar(
+    name = "de_vandermeer_asciitable",
+    artifact = "de.vandermeer:asciitable:0.3.2",
+)
+bind(
+    name = "asciitable",
+    actual = "@de_vandermeer_asciitable//jar",
+)
+maven_jar(
+    name = "de_vandermeer_skb_interfaces",
+    artifact = "de.vandermeer:skb-interfaces:0.0.2",
+)
+bind(
+    name = "skb_interfaces",
+    actual = "@de_vandermeer_skb_interfaces//jar",
+)
+maven_jar(
+    name = "de_vandermeer_ascii_utf_themes",
+    artifact = "de.vandermeer:ascii-utf-themes:0.0.1",
+)
+bind(
+    name = "ascii_utf_themes",
+    actual = "@de_vandermeer_ascii_utf_themes//jar",
+)
+maven_jar(
+    name = "org_apache_commons_commons_lang3",
+    artifact = "org.apache.commons:commons-lang3:3.5",
+)
+bind(
+    name = "commons_lang3",
+    actual = "@org_apache_commons_commons_lang3//jar",
+)
+maven_jar(
+    name = "org_antlr_st4",
+    artifact = "org.antlr:ST4:4.0.8",
+)
+bind(
+    name = "st4",
+    actual = "@org_antlr_st4//jar",
+)
+

@@ -87,6 +87,10 @@
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_postgresql_postgresql/jar/_ijar/jar/external/org_postgresql_postgresql/jar/postgresql-42.0.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/mysql_mysql_connector_java/jar/_ijar/jar/external/mysql_mysql_connector_java/jar/mysql-connector-java-6.0.6-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_reactivestreams_reactive_streams/jar/_ijar/jar/external/org_reactivestreams_reactive_streams/jar/reactive-streams-1.0.0.final-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/de_vandermeer_asciitable/jar/_ijar/jar/external/de_vandermeer_asciitable/jar/asciitable-0.3.2-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/de_vandermeer_skb_interfaces/jar/_ijar/jar/external/de_vandermeer_skb_interfaces/jar/skb-interfaces-0.0.2-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/org_apache_commons_commons_lang3/jar/_ijar/jar/external/org_apache_commons_commons_lang3/jar/commons-lang3-3.5-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/de_vandermeer_ascii_utf_themes/jar/_ijar/jar/external/de_vandermeer_ascii_utf_themes/jar/ascii-utf-themes-0.0.1-ijar.jar"/>
 	<classpathentry kind="src" path="bazel-out/ide/generated">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
