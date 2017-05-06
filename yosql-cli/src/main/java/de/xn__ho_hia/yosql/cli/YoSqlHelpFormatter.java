@@ -23,15 +23,16 @@ class YoSqlHelpFormatter implements HelpFormatter {
         at.getContext().setGridTheme(TA_GridThemes.FULL);
 
         at.addRule();
-        at.addRow("NAME", "DESCRIPTION", "DEFAULTS");
+        at.addRow("Name", "Description", "Defaults");
         for (final Entry<String, ? extends OptionDescriptor> entry : options.entrySet()) {
             final String parameterName = entry.getKey();
             if (!parameterName.contains("arguments") && !"help".equalsIgnoreCase(parameterName)) {
                 at.addRule();
                 final OptionDescriptor value = entry.getValue();
-                at.addRow(parameterName, value.argumentDescription(), value.defaultValues().stream()
+                at.addRow("--" + parameterName, value.argumentDescription(), value.defaultValues().stream()
                         .filter(Objects::nonNull)
                         .map(Object::toString)
+                        // XXX: have to filter because AsciiTable runs into an infinite loop otherwise
                         .filter(string -> !"\u0000".equals(string))
                         .collect(Collectors.joining(", ")));
             }

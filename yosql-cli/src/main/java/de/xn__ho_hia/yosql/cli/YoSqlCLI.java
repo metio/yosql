@@ -38,8 +38,11 @@ public class YoSqlCLI {
                     .yosql()
                     .generateFiles();
         } catch (final OptionParsingException exception) {
+            final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
             if (exception.couldNotParseOptions()) {
-                handleParsingException(exception);
+                handleParsingException(exception, messages);
+            } else {
+                System.err.println(messages.getMessage(CliEvents.HELP_REQUIRED));
             }
             exception.getParser().printHelpOn(System.err);
         } catch (final Throwable throwable) {
@@ -48,13 +51,13 @@ public class YoSqlCLI {
         }
     }
 
-    private static void handleParsingException(final OptionParsingException exception) {
+    private static void handleParsingException(final OptionParsingException exception,
+            final IMessageConveyor messages) {
         final OptionException cause = exception.getCause();
         final Collection<String> failedOptions = cause.options();
         final OptionParser parser = exception.getParser();
         final Map<String, OptionSpec<?>> recognizedOptions = parser.recognizedOptions();
         final Collection<String> similarOptions = findSimilarOptions(failedOptions, recognizedOptions);
-        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
         System.err.println(messages.getMessage(CliEvents.PROBLEM_DURING_OPTION_PARSING, failedOptions, similarOptions));
     }
 

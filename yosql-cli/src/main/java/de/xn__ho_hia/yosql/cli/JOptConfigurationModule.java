@@ -74,7 +74,7 @@ public final class JOptConfigurationModule {
                 .withRequiredArg()
                 .withValuesConvertedBy(pathConverter)
                 .defaultsTo(currentDirectory)
-                .describedAs(messages.getMessage(INPUT_BASE_DIRECTORY_DESCRIPTION));
+                .describedAs(messages.getMessage(OUTPUT_BASE_DIRECTORY_DESCRIPTION));
         final OptionSpec<String> basePackageName = parser
                 .accepts(messages.getMessage(BASE_PACKAGE_NAME))
                 .withRequiredArg()
@@ -293,7 +293,7 @@ public final class JOptConfigurationModule {
                 .withRequiredArg()
                 .ofType(String.class)
                 .defaultsTo("INFO")
-                .describedAs("The logging level to use");
+                .describedAs("The logging level to use while executing yosql-cli");
 
         final OptionSet options = parseOptions(parser, helpCommandName);
 
@@ -356,13 +356,22 @@ public final class JOptConfigurationModule {
     private OptionSet parseOptions(final OptionParser parser, final String helpCommandName) {
         try {
             final OptionSet optionSet = parser.parse(arguments);
-            if (optionSet.has(helpCommandName)) {
+            if (optionSet.has(helpCommandName) || givenArgument(helpCommandName)) {
                 throw new OptionParsingException(parser);
             }
             return optionSet;
         } catch (final OptionException exception) {
             throw new OptionParsingException(parser, exception);
         }
+    }
+
+    private boolean givenArgument(final String targetValue) {
+        for (final String s : arguments) {
+            if (s.equals(targetValue)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
