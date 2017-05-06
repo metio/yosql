@@ -62,6 +62,7 @@ public class YoSqlCLI {
             } else if (matchesCommand(VERSION_COMMAND, arguments)) {
                 printVersionText();
             } else {
+                // when in doubt, generate files
                 generateFiles(generateParser, arguments);
             }
             successfulTermination();
@@ -99,8 +100,12 @@ public class YoSqlCLI {
                 abnormalTermination();
             }
         } else {
-            OUT.println(MESSAGES.getMessage(HELP_REQUIRED));
+            showGeneralHelp();
         }
+    }
+
+    private static void showGeneralHelp() {
+        OUT.println(MESSAGES.getMessage(HELP_REQUIRED));
     }
 
     private static void showHelpForGenerate() {
