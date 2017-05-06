@@ -18,7 +18,6 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
-import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -31,13 +30,17 @@ import joptsimple.ValueConverter;
 @SuppressWarnings("static-method")
 public final class JOptConfigurationModule {
 
-    private final String[] arguments;
+    private final String[]     arguments;
+    private final OptionParser parser;
 
     /**
+     * @param parser
+     *            The parser to use.
      * @param arguments
      *            The CLI arguments to use.
      */
-    public JOptConfigurationModule(final String[] arguments) {
+    public JOptConfigurationModule(final OptionParser parser, final String... arguments) {
+        this.parser = parser;
         this.arguments = arguments;
     }
 
@@ -57,13 +60,6 @@ public final class JOptConfigurationModule {
             final ValueConverter<Path> pathConverter,
             final ValueConverter<ResultRowConverter> converterConverter,
             final IMessageConveyor messages) {
-        final OptionParser parser = new OptionParser();
-        // parser.formatHelpWith(new BuiltinHelpFormatter(120, 5));
-        parser.formatHelpWith(new YoSqlHelpFormatter());
-        final String helpCommandName = messages.getMessage(HELP);
-        final String versionCommandName = messages.getMessage(VERSION);
-        parser.accepts(helpCommandName).forHelp();
-        parser.accepts(versionCommandName);
         final Path currentDirectory = Paths.get(messages.getMessage(CURRENT_DIRECTORY));
         final OptionSpec<Path> inputBaseDirectory = parser
                 .accepts(messages.getMessage(INPUT_BASE_DIRECTORY))
@@ -303,7 +299,7 @@ public final class JOptConfigurationModule {
                 .defaultsTo(messages.getMessage(SQL_FILES_SUFFIX_DEFAULT))
                 .describedAs(messages.getMessage(SQL_FILES_SUFFIX_DESCRIPTION));
 
-        final OptionSet options = parseOptions(parser, helpCommandName, versionCommandName);
+        final OptionSet options = parser.parse(arguments);
 
         final Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.valueOf(options.valueOf(logLevel).toUpperCase()));
@@ -360,32 +356,6 @@ public final class JOptConfigurationModule {
                 .setDefaultRowConverter(options.valueOf(defaultRowConverter))
                 .setResultRowConverters(resultConverters)
                 .build();
-    }
-
-    private OptionSet parseOptions(
-            final OptionParser parser,
-            final String helpCommandName,
-            final String versionCommandName) {
-        try {
-            final OptionSet optionSet = parser.parse(arguments);
-            if (optionSet.has(helpCommandName) || givenArgument(helpCommandName)) {
-                throw new OptionParsingException(parser);
-            } else if (optionSet.has(versionCommandName) || givenArgument(versionCommandName)) {
-                throw new OptionParsingException();
-            }
-            return optionSet;
-        } catch (final OptionException exception) {
-            throw new OptionParsingException(parser, exception);
-        }
-    }
-
-    private boolean givenArgument(final String targetValue) {
-        for (final String current : arguments) {
-            if (current.equals(targetValue)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

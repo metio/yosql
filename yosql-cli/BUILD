@@ -6,6 +6,10 @@ filegroup(
   name = "cli-events",
   srcs = ["src/main/resources/cli-events_en.properties"],
 )
+filegroup(
+  name = "commands",
+  srcs = ["src/main/resources/commands_en.properties"],
+)
 
 genrule(
   name = "gen_my_binary_version",
@@ -42,5 +46,6 @@ java_binary(
   ],
   resources = [
     ":cli-events",
+    ":commands",
   ],
 )

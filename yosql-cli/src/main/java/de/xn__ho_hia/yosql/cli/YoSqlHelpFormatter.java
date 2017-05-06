@@ -17,7 +17,8 @@ import joptsimple.OptionDescriptor;
 class YoSqlHelpFormatter implements HelpFormatter {
 
     @SuppressWarnings("nls")
-    private static final Set<String> IGNORED_OPTIONS = Stream.of("help", "version", "arguments")
+    private static final Set<String> IGNORED_OPTIONS = Stream
+            .of(YoSqlCLI.HELP_COMMAND, YoSqlCLI.VERSION_COMMAND, "[arguments]")
             .collect(Collectors.toSet());
 
     @Override
