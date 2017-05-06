@@ -58,6 +58,7 @@ public final class DefaultConfigurationModule {
                 .setMethodLazyName(messages.getMessage(METHOD_LAZY_NAME_DEFAULT))
                 .setRepositoryNameSuffix(messages.getMessage(REPOSITORY_NAME_SUFFIX_DEFAULT))
                 .setSqlStatementSeparator(messages.getMessage(SQL_STATEMENT_SEPARATOR_DEFAULT))
+                .setSqlFilesSuffix(messages.getMessage(SQL_FILES_SUFFIX_DEFAULT))
                 .setSqlFilesCharset(messages.getMessage(SQL_FILES_CHARSET_DEFAULT))
                 .setAllowedCallPrefixes(
                         Arrays.asList(messages.getMessage(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT).split(",")))
