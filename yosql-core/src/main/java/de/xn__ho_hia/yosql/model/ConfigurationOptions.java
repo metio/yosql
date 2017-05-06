@@ -29,6 +29,11 @@ public enum ConfigurationOptions {
     OUTPUT_BASE_DIRECTORY_DESCRIPTION,
 
     /**
+     * The help command.
+     */
+    HELP,
+
+    /**
      * The current directory.
      */
     CURRENT_DIRECTORY,

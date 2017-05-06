@@ -7,13 +7,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import ch.qos.cal10n.IMessageConveyor;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
+import joptsimple.BuiltinHelpFormatter;
+import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -53,7 +59,9 @@ public final class JOptConfigurationModule {
             final ValueConverter<ResultRowConverter> converterConverter,
             final IMessageConveyor messages) {
         final OptionParser parser = new OptionParser();
-        parser.allowsUnrecognizedOptions();
+        parser.formatHelpWith(new BuiltinHelpFormatter(250, 10));
+        final String helpCommandName = messages.getMessage(HELP);
+        parser.accepts(helpCommandName).forHelp();
         final Path currentDirectory = Paths.get(messages.getMessage(CURRENT_DIRECTORY));
         final OptionSpec<Path> inputBaseDirectory = parser
                 .accepts(messages.getMessage(INPUT_BASE_DIRECTORY))
@@ -280,8 +288,17 @@ public final class JOptConfigurationModule {
                 .withValuesSeparatedBy(",")
                 .withValuesConvertedBy(converterConverter)
                 .describedAs(messages.getMessage(RESULT_ROW_CONVERTERS_DESCRIPTION));
+        final OptionSpec<String> logLevel = parser
+                .accepts("logLevel")
+                .withRequiredArg()
+                .ofType(String.class)
+                .defaultsTo("INFO")
+                .describedAs("The logging level to use");
 
-        final OptionSet options = parser.parse(arguments);
+        final OptionSet options = parseOptions(parser, helpCommandName);
+
+        final Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        root.setLevel(Level.valueOf(options.valueOf(logLevel).toUpperCase()));
         final List<ResultRowConverter> resultConverters = new ArrayList<>();
         final ResultRowConverter toResultRow = new ResultRowConverter();
         toResultRow.setAlias(options.valueOf(defaultRowConverter));
@@ -334,6 +351,18 @@ public final class JOptConfigurationModule {
                 .setDefaultRowConverter(options.valueOf(defaultRowConverter))
                 .setResultRowConverters(resultConverters)
                 .build();
+    }
+
+    private OptionSet parseOptions(final OptionParser parser, final String helpCommandName) {
+        try {
+            final OptionSet optionSet = parser.parse(arguments);
+            if (optionSet.has(helpCommandName)) {
+                throw new OptionParsingException(parser);
+            }
+            return optionSet;
+        } catch (final OptionException exception) {
+            throw new OptionParsingException(parser, exception);
+        }
     }
 
 }

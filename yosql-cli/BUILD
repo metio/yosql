@@ -2,6 +2,10 @@ filegroup(
   name = "yosql-cli-raw-sources",
   srcs = glob(["src/main/java/**/*.java"]),
 )
+filegroup(
+  name = "cli-events",
+  srcs = ["src/main/resources/cli-events_en.properties"],
+)
 
 java_binary(
   name = "yosql-cli",
@@ -11,5 +15,8 @@ java_binary(
   deps = [
     "//yosql-core",
     "//external:jopt_simple",
+  ],
+  resources = [
+    ":cli-events",
   ],
 )
