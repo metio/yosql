@@ -380,8 +380,8 @@ public final class JOptConfigurationModule {
     }
 
     private boolean givenArgument(final String targetValue) {
-        for (final String s : arguments) {
-            if (s.equals(targetValue)) {
+        for (final String current : arguments) {
+            if (current.equals(targetValue)) {
                 return true;
             }
         }
