@@ -289,11 +289,11 @@ public final class JOptConfigurationModule {
                 .withValuesConvertedBy(converterConverter)
                 .describedAs(messages.getMessage(RESULT_ROW_CONVERTERS_DESCRIPTION));
         final OptionSpec<String> logLevel = parser
-                .accepts("logLevel")
+                .accepts(messages.getMessage(LOG_LEVEL))
                 .withRequiredArg()
                 .ofType(String.class)
-                .defaultsTo("INFO")
-                .describedAs("The logging level to use while executing yosql-cli");
+                .defaultsTo(messages.getMessage(LOG_LEVEL_DEFAULT))
+                .describedAs(messages.getMessage(LOG_LEVEL_DESCRIPTION));
         final OptionSpec<String> sqlFilesSuffix = parser
                 .accepts(messages.getMessage(SQL_FILES_SUFFIX))
                 .withRequiredArg()

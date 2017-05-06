@@ -579,6 +579,21 @@ public enum ConfigurationOptions {
     LOGGING_API_DEFAULT,
 
     /**
+     * The logging level for the YoSql CLI.
+     */
+    LOG_LEVEL,
+
+    /**
+     * The description for {@link #LOG_LEVEL}.
+     */
+    LOG_LEVEL_DESCRIPTION,
+
+    /**
+     * The default value for {@link #LOG_LEVEL}.
+     */
+    LOG_LEVEL_DEFAULT,
+
+    /**
      * The custom result row converters.
      */
     RESULT_ROW_CONVERTERS,
