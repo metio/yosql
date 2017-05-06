@@ -86,10 +86,10 @@ public class YoSqlCLI {
         Arrays.sort(array);
         for (final String option : failedOptions) {
             final int index = Math.abs(Arrays.binarySearch(array, option)) - 1;
-            similars.add(array[index]);
             if (index > 0) {
                 similars.add(array[index - 1]);
             }
+            similars.add(array[index]);
             if (index < array.length) {
                 similars.add(array[index + 1]);
             }
