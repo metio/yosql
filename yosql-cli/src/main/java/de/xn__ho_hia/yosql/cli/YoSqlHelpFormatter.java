@@ -3,7 +3,9 @@ package de.xn__ho_hia.yosql.cli;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.asciitable.CWC_LongestWordMin;
@@ -13,6 +15,10 @@ import joptsimple.HelpFormatter;
 import joptsimple.OptionDescriptor;
 
 class YoSqlHelpFormatter implements HelpFormatter {
+
+    @SuppressWarnings("nls")
+    private static final Set<String> IGNORED_OPTIONS = Stream.of("help", "version", "arguments")
+            .collect(Collectors.toSet());
 
     @Override
     @SuppressWarnings("nls")
@@ -26,7 +32,7 @@ class YoSqlHelpFormatter implements HelpFormatter {
         at.addRow("Name", "Description", "Defaults");
         for (final Entry<String, ? extends OptionDescriptor> entry : options.entrySet()) {
             final String parameterName = entry.getKey();
-            if (!parameterName.contains("arguments") && !"help".equalsIgnoreCase(parameterName)) {
+            if (!IGNORED_OPTIONS.contains(parameterName)) {
                 at.addRule();
                 final OptionDescriptor value = entry.getValue();
                 at.addRow("--" + parameterName, value.argumentDescription(), value.defaultValues().stream()
