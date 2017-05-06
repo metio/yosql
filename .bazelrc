@@ -1,1 +1,6 @@
 build --strategy=Javac=worker
+build --define BUILD_NUMBER=developer
+build --define RELEASE_VERSION=snapshot
+build --define GIT_REVISION=working-tree
+build --define BUILD_BY=$$`whoami`
+build --define BUILD_AT=$$`'date +%Y-%m-%d-%H%M%S'`

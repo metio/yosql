@@ -34,6 +34,11 @@ public enum ConfigurationOptions {
     HELP,
 
     /**
+     * The version command.
+     */
+    VERSION,
+
+    /**
      * The current directory.
      */
     CURRENT_DIRECTORY,

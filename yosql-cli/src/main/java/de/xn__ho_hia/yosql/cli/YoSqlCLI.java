@@ -7,6 +7,7 @@
 package de.xn__ho_hia.yosql.cli;
 
 import static de.xn__ho_hia.yosql.cli.CliEvents.HELP_REQUIRED;
+import static de.xn__ho_hia.yosql.cli.CliEvents.INFORMATION_NEEDED;
 import static de.xn__ho_hia.yosql.cli.CliEvents.PROBLEM_DURING_OPTION_PARSING;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
+import de.xn__ho_hia.yosql.BuildInfo;
 import joptsimple.OptionParser;
 import joptsimple.OptionSpec;
 
@@ -44,8 +46,11 @@ public class YoSqlCLI {
             if (exception.couldNotParseOptions()) {
                 handleFailedOptions(exception.getParser(), exception.failedOptions());
                 abnormalTermination();
-            } else {
-                printHelpText(exception.getParser());
+            } else if (exception.requiresHelp()) {
+                printUsageText(exception.getParser());
+                successfulTermination();
+            } else if (exception.needsInformation()) {
+                printInfoText();
                 successfulTermination();
             }
         } catch (final Throwable throwable) {
@@ -68,13 +73,7 @@ public class YoSqlCLI {
         final Map<String, OptionSpec<?>> recognizedOptions = parser.recognizedOptions();
         final Collection<String> similarOptions = findSimilarOptions(failedOptions, recognizedOptions);
         ERRORS.println(messages.getMessage(PROBLEM_DURING_OPTION_PARSING, failedOptions, similarOptions));
-        parser.printHelpOn(ERRORS);
-    }
-
-    private static void printHelpText(final OptionParser parser) throws IOException {
-        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
-        ERRORS.println(messages.getMessage(HELP_REQUIRED));
-        parser.printHelpOn(ERRORS);
+        printHelpText(parser);
     }
 
     private static Collection<String> findSimilarOptions(
@@ -96,6 +95,22 @@ public class YoSqlCLI {
             }
         }
         return similars;
+    }
+
+    private static void printUsageText(final OptionParser parser) throws IOException {
+        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
+        ERRORS.println(messages.getMessage(HELP_REQUIRED));
+        printHelpText(parser);
+    }
+
+    private static void printHelpText(final OptionParser parser) throws IOException {
+        parser.printHelpOn(ERRORS);
+    }
+
+    private static void printInfoText() {
+        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
+        ERRORS.println(messages.getMessage(INFORMATION_NEEDED,
+                BuildInfo.VERSION, BuildInfo.BUILD, BuildInfo.REVISION, BuildInfo.BUILD_BY, BuildInfo.BUILD_AT));
     }
 
     private static void handleUnknownException(final Throwable throwable) {

@@ -70,6 +70,11 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="bazel-genfiles/yosql-cli">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_squareup_javapoet/jar/_ijar/jar/external/com_squareup_javapoet/jar/javapoet-1.8.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/javax_inject_javax_inject/jar/_ijar/jar/external/javax_inject_javax_inject/jar/javax.inject-1-ijar.jar"/>

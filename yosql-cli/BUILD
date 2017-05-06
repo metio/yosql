@@ -7,10 +7,29 @@ filegroup(
   srcs = ["src/main/resources/cli-events_en.properties"],
 )
 
+genrule(
+  name = "gen_my_binary_version",
+  outs = ["de/xn__ho_hia/yosql/BuildInfo.java"],
+  cmd = """
+    cat > $@ <<EOF
+package de.xn__ho_hia.yosql;
+public class BuildInfo {
+  public static final String VERSION = "$(RELEASE_VERSION)";
+  public static final String BUILD = "$(BUILD_NUMBER)";
+  public static final String REVISION = "$(GIT_REVISION)";
+  public static final String BUILD_BY = "$(BUILD_BY)";
+  public static final String BUILD_AT = "$(BUILD_AT)";
+}
+EOF
+""")
+
 java_binary(
   name = "yosql-cli",
   main_class = "de.xn__ho_hia.yosql.cli.YoSqlCLI",
-  srcs = [":yosql-cli-raw-sources"],
+  srcs = [
+    ":yosql-cli-raw-sources",
+    ":de/xn__ho_hia/yosql/BuildInfo.java",
+  ],
   visibility = ["//visibility:public"],
   deps = [
     "//external:jopt_simple",

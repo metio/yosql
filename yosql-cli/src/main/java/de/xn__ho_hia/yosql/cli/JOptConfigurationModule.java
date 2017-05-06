@@ -61,7 +61,9 @@ public final class JOptConfigurationModule {
         // parser.formatHelpWith(new BuiltinHelpFormatter(120, 5));
         parser.formatHelpWith(new YoSqlHelpFormatter());
         final String helpCommandName = messages.getMessage(HELP);
+        final String versionCommandName = messages.getMessage(VERSION);
         parser.accepts(helpCommandName).forHelp();
+        parser.accepts(versionCommandName);
         final Path currentDirectory = Paths.get(messages.getMessage(CURRENT_DIRECTORY));
         final OptionSpec<Path> inputBaseDirectory = parser
                 .accepts(messages.getMessage(INPUT_BASE_DIRECTORY))
@@ -301,7 +303,7 @@ public final class JOptConfigurationModule {
                 .defaultsTo(messages.getMessage(SQL_FILES_SUFFIX_DEFAULT))
                 .describedAs(messages.getMessage(SQL_FILES_SUFFIX_DESCRIPTION));
 
-        final OptionSet options = parseOptions(parser, helpCommandName);
+        final OptionSet options = parseOptions(parser, helpCommandName, versionCommandName);
 
         final Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.valueOf(options.valueOf(logLevel).toUpperCase()));
@@ -360,11 +362,16 @@ public final class JOptConfigurationModule {
                 .build();
     }
 
-    private OptionSet parseOptions(final OptionParser parser, final String helpCommandName) {
+    private OptionSet parseOptions(
+            final OptionParser parser,
+            final String helpCommandName,
+            final String versionCommandName) {
         try {
             final OptionSet optionSet = parser.parse(arguments);
             if (optionSet.has(helpCommandName) || givenArgument(helpCommandName)) {
                 throw new OptionParsingException(parser);
+            } else if (optionSet.has(versionCommandName) || givenArgument(versionCommandName)) {
+                throw new OptionParsingException();
             }
             return optionSet;
         } catch (final OptionException exception) {

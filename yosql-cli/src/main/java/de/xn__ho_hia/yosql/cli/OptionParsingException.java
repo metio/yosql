@@ -24,6 +24,10 @@ class OptionParsingException extends RuntimeException {
         this(parser, null);
     }
 
+    public OptionParsingException() {
+        this(null);
+    }
+
     public OptionParser getParser() {
         return parser;
     }
@@ -39,6 +43,14 @@ class OptionParsingException extends RuntimeException {
     @Override
     public synchronized OptionException getCause() {
         return exception;
+    }
+
+    public boolean requiresHelp() {
+        return !couldNotParseOptions() && !needsInformation();
+    }
+
+    public boolean needsInformation() {
+        return parser == null;
     }
 
 }
