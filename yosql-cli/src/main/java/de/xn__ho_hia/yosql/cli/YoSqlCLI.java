@@ -20,7 +20,6 @@ import java.util.Map;
 
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
-import de.xn__ho_hia.yosql.YoSql;
 import joptsimple.OptionParser;
 import joptsimple.OptionSpec;
 
@@ -56,11 +55,11 @@ public class YoSqlCLI {
     }
 
     private static void generateFiles(final String... arguments) {
-        final YoSqlCLIComponent yoSqlCli = DaggerYoSqlCLIComponent.builder()
+        DaggerYoSqlCLIComponent.builder()
                 .jOptConfigurationModule(new JOptConfigurationModule(arguments))
-                .build();
-        final YoSql yosql = yoSqlCli.yosql();
-        yosql.generateFiles();
+                .build()
+                .yosql()
+                .generateFiles();
     }
 
     private static void handleFailedOptions(final OptionParser parser, final Collection<String> failedOptions)
