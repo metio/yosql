@@ -1,7 +1,6 @@
-git_repository(
+local_repository(
     name = "bazel_build_process",
-    remote = "https://github.com/sebhoss/bazel-build-process.git",
-    tag = "0.0.1",
+    path = "/home/sebhoss/git/sebhoss/bazel-build-process",
 )
 
 load("@bazel_tools//tools/build_defs/repo:maven_rules.bzl", "maven_jar")

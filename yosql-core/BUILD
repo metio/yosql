@@ -94,6 +94,10 @@ filegroup(
   name = "dagger-raw-sources",
   srcs = glob(["src/main/java/**/dagger/*.java"]),
 )
+filegroup(
+  name = "validation-files",
+  srcs = ["src/test/resources/TypicalCodeBlocksTest#shouldAssignFieldToValueWithSameName.txt"],
+)
 
 java_plugin(
     name = "auto_plugin",
@@ -432,3 +436,15 @@ load("@bazel_build_process//java:junit5_test.bzl", "junit5")
     "//yosql-testutils",
   ],
 ) for file in glob(["src/test/java/**/model/*Test.java"])]
+
+[junit5(
+  file = file,
+  deps = [
+    ":model",
+    ":generator-helpers",
+    "//yosql-testutils",
+  ],
+  data = [
+    ":validation-files",
+  ],
+) for file in glob(["src/test/java/**/generator/helpers/*Test.java"])]

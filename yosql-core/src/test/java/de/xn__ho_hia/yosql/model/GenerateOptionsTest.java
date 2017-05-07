@@ -2,10 +2,9 @@ package de.xn__ho_hia.yosql.model;
 
 import java.util.stream.Stream;
 
-import de.xn__ho_hia.yosql.model.GenerateOptions;
 import de.xn__ho_hia.yosql.testutils.EnumTCK;
 
-class ConfigurationOptionsTest implements EnumTCK<GenerateOptions> {
+class GenerateOptionsTest implements EnumTCK<GenerateOptions> {
 
     @Override
     public Class<GenerateOptions> getEnumClass() {
@@ -17,10 +16,7 @@ class ConfigurationOptionsTest implements EnumTCK<GenerateOptions> {
     public Stream<String> validValues() {
         return Stream.of(
                 "INPUT_BASE_DIRECTORY",
-                "INPUT_BASE_DIRECTORY_DESCRIPTION",
-                "OUTPUT_BASE_DIRECTORY",
-                "OUTPUT_BASE_DIRECTORY_DESCRIPTION",
-                "CURRENT_DIRECTORY");
+                "OUTPUT_BASE_DIRECTORY");
     }
 
 }
