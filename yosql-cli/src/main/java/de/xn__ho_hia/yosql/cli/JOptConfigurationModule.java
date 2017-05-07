@@ -6,10 +6,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
@@ -42,9 +38,7 @@ public final class JOptConfigurationModule {
 
     @Provides
     ExecutionConfiguration provideExecutionConfiguration(
-            final Translator messages,
             @UsedFor.Command(Commands.GENERATE) final OptionSet options,
-            @UsedFor.GenerateOption(LOG_LEVEL) final OptionSpec<String> logLevel,
             @UsedFor.GenerateOption(INPUT_BASE_DIRECTORY) final OptionSpec<Path> inputBaseDirectory,
             @UsedFor.GenerateOption(INPUT_BASE_DIRECTORY) final OptionSpec<Path> outputBaseDirectory,
             @UsedFor.GenerateOption(BASE_PACKAGE_NAME) final OptionSpec<String> basePackageName,
@@ -82,21 +76,7 @@ public final class JOptConfigurationModule {
             @UsedFor.GenerateOption(DEFAULT_RESULT_ROW_CLASS_NAME) final OptionSpec<String> defaultResultRowClassName,
             @UsedFor.GenerateOption(SQL_FILES_SUFFIX) final OptionSpec<String> sqlFilesSuffix,
             @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingAPI> loggingApi,
-            @UsedFor.GenerateOption(RESULT_ROW_CONVERTERS) final OptionSpec<ResultRowConverter> resultRowConverters) {
-        final Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        root.setLevel(Level.valueOf(options.valueOf(logLevel).toUpperCase()));
-        final List<ResultRowConverter> resultConverters = new ArrayList<>();
-        final ResultRowConverter toResultRow = new ResultRowConverter();
-        toResultRow.setAlias(options.valueOf(defaultRowConverter));
-        toResultRow.setResultType(
-                String.join(DOT, options.valueOf(basePackageName), options.valueOf(utilityPackageName),
-                        options.valueOf(defaultResultRowClassName)));
-        toResultRow.setConverterType(
-                String.join(DOT, options.valueOf(basePackageName), options.valueOf(converterPackageName),
-                        messages.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
-        resultConverters.add(toResultRow);
-        resultConverters.addAll(options.valuesOf(resultRowConverters));
-
+            final List<ResultRowConverter> resultConverters) {
         return ExecutionConfiguration.builder()
                 .setInputBaseDirectory(options.valueOf(inputBaseDirectory))
                 .setOutputBaseDirectory(options.valueOf(outputBaseDirectory))
@@ -138,6 +118,30 @@ public final class JOptConfigurationModule {
                 .setDefaultRowConverter(options.valueOf(defaultRowConverter))
                 .setResultRowConverters(resultConverters)
                 .build();
+    }
+
+    @Provides
+    List<ResultRowConverter> provideResultConverters(
+            final Translator messages,
+            @UsedFor.Command(Commands.GENERATE) final OptionSet options,
+            @UsedFor.GenerateOption(BASE_PACKAGE_NAME) final OptionSpec<String> basePackageName,
+            @UsedFor.GenerateOption(UTILITY_PACKAGE_NAME) final OptionSpec<String> utilityPackageName,
+            @UsedFor.GenerateOption(CONVERTER_PACKAGE_NAME) final OptionSpec<String> converterPackageName,
+            @UsedFor.GenerateOption(DEFAULT_ROW_CONVERTER) final OptionSpec<String> defaultRowConverter,
+            @UsedFor.GenerateOption(DEFAULT_RESULT_ROW_CLASS_NAME) final OptionSpec<String> defaultResultRowClassName,
+            @UsedFor.GenerateOption(RESULT_ROW_CONVERTERS) final OptionSpec<ResultRowConverter> resultRowConverters) {
+        final List<ResultRowConverter> resultConverters = new ArrayList<>();
+        final ResultRowConverter toResultRow = new ResultRowConverter();
+        toResultRow.setAlias(options.valueOf(defaultRowConverter));
+        toResultRow.setResultType(
+                String.join(DOT, options.valueOf(basePackageName), options.valueOf(utilityPackageName),
+                        options.valueOf(defaultResultRowClassName)));
+        toResultRow.setConverterType(
+                String.join(DOT, options.valueOf(basePackageName), options.valueOf(converterPackageName),
+                        messages.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
+        resultConverters.add(toResultRow);
+        resultConverters.addAll(options.valuesOf(resultRowConverters));
+        return resultConverters;
     }
 
 }

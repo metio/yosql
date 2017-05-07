@@ -2,6 +2,8 @@ package de.xn__ho_hia.yosql.cli;
 
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+
 import dagger.BindsInstance;
 import dagger.Component;
 import de.xn__ho_hia.yosql.YoSql;
@@ -74,6 +76,11 @@ public interface YoSqlCLIComponent {
      */
     @UsedFor.HelpOption(HelpOptions.COMMAND)
     OptionSpec<String> helpCommandOption();
+
+    /**
+     * @return The root logger.
+     */
+    Logger rootLogger();
 
     /**
      * The custom dagger builder to use.

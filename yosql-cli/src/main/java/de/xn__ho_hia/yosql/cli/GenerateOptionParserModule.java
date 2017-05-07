@@ -9,6 +9,10 @@ import java.nio.file.Paths;
 
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
 import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
@@ -515,6 +519,17 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
 
     @Provides
     @Singleton
+    Logger provideRootLogger(
+            @UsedFor.Command(Commands.GENERATE) final OptionSet options,
+            @UsedFor.GenerateOption(LOG_LEVEL) final OptionSpec<String> logLevel) {
+        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        root.setLevel(Level.valueOf(options.valueOf(logLevel).toUpperCase()));
+        return root;
+    }
+
+    @Provides
+    @Singleton
     @UsedFor.Command(GENERATE)
     YoSqlOptionParser provideYoSqlOptionParser(
             @UsedFor.Command(GENERATE) final OptionParser parser,
@@ -557,7 +572,8 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
             @UsedFor.GenerateOption(SQL_FILES_SUFFIX) final OptionSpec<String> sqlFilesSuffix,
             @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingAPI> loggingApi,
             @UsedFor.GenerateOption(RESULT_ROW_CONVERTERS) final OptionSpec<ResultRowConverter> resultRowConverters) {
-        return new YoSqlOptionParser(parser, logLevel, inputBaseDirectory, outputBaseDirectory, basePackageName,
+        return new YoSqlOptionParser(parser, logLevel, inputBaseDirectory, outputBaseDirectory,
+                basePackageName,
                 utilityPackageName, converterPackageName, repositoryNameSuffix, sqlFilesCharset, defaultRowConverter,
                 sqlStatementSeparator, methodBatchPrefix, methodBatchSuffix, methodStreamPrefix, methodStreamSuffix,
                 methodRxJavaPrefix, methodRxJavaSuffix, methodEagerName, methodLazyName, generateStandardApi,

@@ -71,9 +71,11 @@ public class YoSqlCLI {
     }
 
     private static YoSqlCLIComponent setupCLiComponent(final String... arguments) {
-        return DaggerYoSqlCLIComponent.builder()
+        final YoSqlCLIComponent component = DaggerYoSqlCLIComponent.builder()
                 .arguments(arguments)
                 .build();
+        assert component.rootLogger() != null;
+        return component;
     }
 
     private static boolean matchesCommand(final String commandName, final String[] arguments) {
