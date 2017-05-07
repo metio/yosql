@@ -6,9 +6,13 @@
  */
 package com.example.app;
 
+import java.io.PrintStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
@@ -19,10 +23,18 @@ import com.example.persistence.SchemaRepository;
 import com.example.persistence.util.ResultRow;
 import com.zaxxer.hikari.HikariDataSource;
 
+import de.vandermeer.asciitable.AsciiTable;
+import de.vandermeer.asciitable.CWC_LongestWordMin;
+import de.vandermeer.asciithemes.TA_GridThemes;
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 
 @SuppressWarnings({ "javadoc", "nls" })
 public class ExampleApp {
+
+    private static final PrintStream   OUT     = System.out;
+    private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
     @SuppressWarnings("deprecation")
     public static final void main(final String[] arguments) throws Exception {
@@ -84,98 +96,233 @@ public class ExampleApp {
     }
 
     private static void createSchema(final SchemaRepository schemaRepository) {
-        try {
-            schemaRepository.dropCompaniesTable();
-            schemaRepository.dropPersonsTable();
-            schemaRepository.createCompaniesTable();
-            schemaRepository.createPersonsTable();
-        } catch (final RuntimeException exception) {
-            // do nothing
-        }
+        final AsciiTable at = new AsciiTable();
+        at.setTextAlignment(TextAlignment.JUSTIFIED_LEFT);
+        at.getRenderer().setCWC(new CWC_LongestWordMin(new int[] { 30, 70, 20 }));
+        at.getContext().setGridTheme(TA_GridThemes.FULL);
+
+        at.addRule();
+        at.addRow("Create Schema", "", "");
+        at.addRule();
+        at.addRow("Id", "Name", "Time (ms)");
+        at.addRule();
+        final Duration dropCompaniesTable = time(schemaRepository::dropCompaniesTable);
+        at.addRow(COUNTER.incrementAndGet(), "dropCompaniesTable", dropCompaniesTable.toMillis());
+        at.addRule();
+        final Duration dropPersonsTable = time(schemaRepository::dropPersonsTable);
+        at.addRow(COUNTER.incrementAndGet(), "dropPersonsTable", dropPersonsTable.toMillis());
+        at.addRule();
+        final Duration createCompaniesTable = time(schemaRepository::createCompaniesTable);
+        at.addRow(COUNTER.incrementAndGet(), "createCompaniesTable", createCompaniesTable.toMillis());
+        at.addRule();
+        final Duration createPersonsTable = time(schemaRepository::createPersonsTable);
+        at.addRow(COUNTER.incrementAndGet(), "createPersonsTable", createPersonsTable.toMillis());
+        at.addRule();
+        at.addRule();
+
+        OUT.println(at.render());
     }
 
     private static void writeCompanies(final CompanyRepository companyRepository) {
-        companyRepository.insertCompany(123, "test");
-        companyRepository.insertCompanyBatch(new int[] { 456, 789 }, new String[] { "two", "three" });
-        companyRepository.insertCompanyBatch(new int[] { 91, 32 }, new String[] { "more", "other" });
-        companyRepository.insertCompany(47, "test");
-        companyRepository.insertCompanyBatch(new int[] { 56, 78 }, new String[] { "abc", "def" });
-        companyRepository.insertCompanyBatch(new int[] { 612, 768 }, new String[] { "123", "234" });
+        final AsciiTable at = new AsciiTable();
+        at.setTextAlignment(TextAlignment.JUSTIFIED_LEFT);
+        at.getRenderer().setCWC(new CWC_LongestWordMin(new int[] { 30, 70, 20 }));
+        at.getContext().setGridTheme(TA_GridThemes.FULL);
+
+        at.addRule();
+        at.addRow("Write Companies", "", "");
+        at.addRule();
+        at.addRow("Id", "Name", "Time (ms)");
+        at.addRule();
+        final Duration insertCompany1 = time(() -> companyRepository.insertCompany(123, "test"));
+        at.addRow(COUNTER.incrementAndGet(), "insertCompany1", insertCompany1.toMillis());
+        at.addRule();
+        final Duration insertCompanyBatch1 = time(
+                () -> companyRepository.insertCompanyBatch(new int[] { 456, 789 }, new String[] { "two", "three" }));
+        at.addRow(COUNTER.incrementAndGet(), "insertCompanyBatch1", insertCompanyBatch1.toMillis());
+        at.addRule();
+        final Duration insertCompanyBatch2 = time(
+                () -> companyRepository.insertCompanyBatch(new int[] { 91, 32 }, new String[] { "more", "other" }));
+        at.addRow(COUNTER.incrementAndGet(), "insertCompanyBatch2", insertCompanyBatch2.toMillis());
+        at.addRule();
+        final Duration insertCompany2 = time(() -> companyRepository.insertCompany(47, "test"));
+        at.addRow(COUNTER.incrementAndGet(), "insertCompany2", insertCompany2.toMillis());
+        at.addRule();
+        final Duration insertCompanyBatch3 = time(
+                () -> companyRepository.insertCompanyBatch(new int[] { 56, 78 }, new String[] { "abc", "def" }));
+        at.addRow(COUNTER.incrementAndGet(), "insertCompanyBatch3", insertCompanyBatch3.toMillis());
+        at.addRule();
+        final Duration insertCompanyBatch4 = time(
+                () -> companyRepository.insertCompanyBatch(new int[] { 612, 768 }, new String[] { "123", "234" }));
+        at.addRow(COUNTER.incrementAndGet(), "insertCompanyBatch4", insertCompanyBatch4.toMillis());
+        at.addRule();
+        at.addRule();
+
+        OUT.println(at.render());
     }
 
     private static void standardTests(
             final CompanyRepository companyRepository,
             final PersonRepository personRepository) {
-        System.out.println("queryAllCompanies----------------------");
-        timed(() -> companyRepository.queryAllCompanies().forEach(System.out::println));
+        final AsciiTable at = new AsciiTable();
+        at.setTextAlignment(TextAlignment.JUSTIFIED_LEFT);
+        at.getRenderer().setCWC(new CWC_LongestWordMin(new int[] { 30, 70, 20 }));
+        at.getContext().setGridTheme(TA_GridThemes.FULL);
 
-        System.out.println("findCompanyByName----------------------");
-        timed(() -> companyRepository.findCompanyByName("test").forEach(System.out::println));
+        at.addRule();
+        at.addRow("Standard Tests", "", "");
+        at.addRule();
+        at.addRow("Id", "Name", "Time (ms)");
+        at.addRule();
+        final Duration queryAllCompanies = time("queryAllCompanies", () -> companyRepository.queryAllCompanies());
+        at.addRow(COUNTER.incrementAndGet(), "queryAllCompanies", queryAllCompanies.toMillis());
+        at.addRule();
+        final Duration findCompanyByName = time("findCompanyByName", () -> companyRepository.findCompanyByName("test"));
+        at.addRow(COUNTER.incrementAndGet(), "findCompanyByName", findCompanyByName.toMillis());
+        at.addRule();
+        final Duration findCompanies = time("findCompanies", () -> companyRepository.findCompanies(30, 95));
+        at.addRow(COUNTER.incrementAndGet(), "findCompanies", findCompanies.toMillis());
+        at.addRule();
+        final Duration findPerson = time("findPerson", () -> personRepository.findPerson("test"));
+        at.addRow(COUNTER.incrementAndGet(), "findPerson", findPerson.toMillis());
+        at.addRule();
+        at.addRule();
 
-        System.out.println("findCompanies----------------------");
-        timed(() -> companyRepository.findCompanies(30, 95).forEach(System.out::println));
-
-        System.out.println("findPerson----------------------");
-        timed(() -> personRepository.findPerson("test").forEach(System.out::println));
+        OUT.println(at.render());
     }
 
     private static void streamTests(
             final CompanyRepository companyRepository,
             final PersonRepository personRepository) {
-        System.out.println("streamEagerQueryAllCompanies----------------------");
-        timed(() -> companyRepository.queryAllCompaniesStreamEager().forEach(System.out::println));
+        final AsciiTable at = new AsciiTable();
+        at.setTextAlignment(TextAlignment.JUSTIFIED_LEFT);
+        at.getRenderer().setCWC(new CWC_LongestWordMin(new int[] { 30, 70, 20 }));
+        at.getContext().setGridTheme(TA_GridThemes.FULL);
 
-        System.out.println("streamLazyQueryAllCompanies----------------------");
-        timed(() -> {
-            try (Stream<ResultRow> companies = companyRepository.queryAllCompaniesStreamLazy()) {
-                companies.forEach(System.out::println);
-            }
-        });
+        at.addRule();
+        at.addRow("Stream Tests", "", "");
+        at.addRule();
+        at.addRow("Id", "Name", "Time (ms)");
+        at.addRule();
+        final Duration queryAllCompaniesStreamEager = timeLazyStream("queryAllCompaniesStreamEager",
+                () -> companyRepository.queryAllCompaniesStreamEager());
+        at.addRow(COUNTER.incrementAndGet(), "queryAllCompaniesStreamEager", queryAllCompaniesStreamEager.toMillis());
+        at.addRule();
+        final Duration queryAllCompaniesStreamLazy = timeLazyStream("queryAllCompaniesStreamLazy",
+                () -> companyRepository.queryAllCompaniesStreamLazy());
+        at.addRow(COUNTER.incrementAndGet(), "queryAllCompaniesStreamLazy", queryAllCompaniesStreamLazy.toMillis());
+        at.addRule();
+        final Duration findCompaniesStreamLazy = timeLazyStream("findCompaniesStreamLazy",
+                () -> companyRepository.findCompaniesStreamLazy(112, 999));
+        at.addRow(COUNTER.incrementAndGet(), "findCompaniesStreamLazy", findCompaniesStreamLazy.toMillis());
+        at.addRule();
+        final Duration findPersonStreamLazy = timeLazyStream("findPersonStreamLazy",
+                () -> personRepository.findPersonStreamLazy("test"));
+        at.addRow(COUNTER.incrementAndGet(), "findPersonStreamLazy", findPersonStreamLazy.toMillis());
+        at.addRule();
+        at.addRule();
 
-        System.out.println("streamLazyFindCompanies----------------------");
-        timed(() -> {
-            try (Stream<ResultRow> companies = companyRepository.findCompaniesStreamLazy(112, 999)) {
-                companies.forEach(System.out::println);
-            }
-        });
-
-        System.out.println("findPersonStreamLazy----------------------");
-        timed(() -> {
-            try (Stream<ResultRow> persons = personRepository.findPersonStreamLazy("test")) {
-                persons.forEach(System.out::println);
-            }
-        });
+        OUT.println(at.render());
     }
 
     private static void rxJavaTests(
             final CompanyRepository companyRepository,
             final PersonRepository personRepository) {
-        System.out.println("findCompanies-fromIterable----------------------");
-        timed(() -> Flowable.fromIterable(companyRepository.findCompanies(30, 50))
-                .forEach(System.out::println));
+        final AsciiTable at = new AsciiTable();
+        at.setTextAlignment(TextAlignment.JUSTIFIED_LEFT);
+        at.getRenderer().setCWC(new CWC_LongestWordMin(new int[] { 30, 70, 20 }));
+        at.getContext().setGridTheme(TA_GridThemes.FULL);
 
-        System.out.println("queryAllCompaniesFlow----------------------");
-        timed(() -> companyRepository.queryAllCompaniesFlow()
-                .forEach(System.out::println));
-
-        System.out.println("findCompaniesFlow----------------------");
-        timed(() -> companyRepository.findCompaniesFlow(20, 120)
-                .forEach(System.out::println));
-
-        System.out.println("findCompanyByNameFlow----------------------");
-        timed(() -> companyRepository.findCompanyByNameFlow("test")
-                .forEach(System.out::println));
-
-        System.out.println("findPersonFlow----------------------");
-        timed(() -> personRepository.findPersonFlow("test")
-                .forEach(System.out::println));
+        at.addRule();
+        at.addRow("RxJava Tests", "", "");
+        at.addRule();
+        at.addRow("Id", "Name", "Time (ms)");
+        at.addRule();
+        final Duration queryAllCompaniesFlow = timeLazy("queryAllCompaniesFlow",
+                () -> companyRepository.queryAllCompaniesFlow());
+        at.addRow(COUNTER.incrementAndGet(), "queryAllCompaniesFlow", queryAllCompaniesFlow.toMillis());
+        at.addRule();
+        final Duration findCompaniesFlow = timeLazy("findCompaniesFlow",
+                () -> companyRepository.findCompaniesFlow(20, 120));
+        at.addRow(COUNTER.incrementAndGet(), "findCompaniesFlow", findCompaniesFlow.toMillis());
+        at.addRule();
+        final Duration findCompanyByNameFlow = timeLazy("findCompanyByNameFlow",
+                () -> companyRepository.findCompanyByNameFlow("test"));
+        at.addRow(COUNTER.incrementAndGet(), "findCompanyByNameFlow", findCompanyByNameFlow.toMillis());
+        at.addRule();
+        final Duration findPersonFlow = timeLazy("findPersonFlow", () -> personRepository.findPersonFlow("test"));
+        at.addRow(COUNTER.incrementAndGet(), "findPersonFlow", findPersonFlow.toMillis());
+        at.addRule();
+        at.addRule();
+        OUT.println(at.render());
     }
 
-    private static void timed(final Runnable runnable) {
-        final Instant starts = Instant.now();
-        runnable.run();
-        final Instant ends = Instant.now();
-        System.out.println(Duration.between(starts, ends).toMillis() + " ms");
+    private static Duration time(final Runnable run) {
+        final Instant start = Instant.now();
+        run.run();
+        final Instant stop = Instant.now();
+        return Duration.between(start, stop);
+    }
+
+    private static Duration time(final String name, final Supplier<List<ResultRow>> results) {
+        final AsciiTable at = new AsciiTable();
+        at.setTextAlignment(TextAlignment.JUSTIFIED_LEFT);
+        at.getRenderer().setCWC(new CWC_LongestWordMin(new int[] { 80 }));
+        at.getContext().setGridTheme(TA_GridThemes.FULL);
+
+        at.addRule();
+        at.addRow(name);
+        at.addRule();
+
+        final Instant start = Instant.now();
+        results.get().forEach(result -> {
+            at.addRow(result);
+            at.addRule();
+        });
+        final Instant stop = Instant.now();
+        OUT.println(at.render());
+        return Duration.between(start, stop);
+    }
+
+    private static Duration timeLazyStream(final String name, final Supplier<Stream<ResultRow>> results) {
+        final AsciiTable at = new AsciiTable();
+        at.setTextAlignment(TextAlignment.JUSTIFIED_LEFT);
+        at.getRenderer().setCWC(new CWC_LongestWordMin(new int[] { 80 }));
+        at.getContext().setGridTheme(TA_GridThemes.FULL);
+
+        at.addRule();
+        at.addRow(name);
+        at.addRule();
+
+        final Instant start = Instant.now();
+        results.get().forEach(result -> {
+            at.addRow(result);
+            at.addRule();
+        });
+        final Instant stop = Instant.now();
+        OUT.println(at.render());
+        return Duration.between(start, stop);
+    }
+
+    private static Duration timeLazy(final String name, final Supplier<Flowable<ResultRow>> results) {
+        final AsciiTable at = new AsciiTable();
+        at.setTextAlignment(TextAlignment.JUSTIFIED_LEFT);
+        at.getRenderer().setCWC(new CWC_LongestWordMin(new int[] { 80 }));
+        at.getContext().setGridTheme(TA_GridThemes.FULL);
+
+        at.addRule();
+        at.addRow(name);
+        at.addRule();
+
+        final Instant start = Instant.now();
+        final Disposable disposable = results.get().forEach(result -> {
+            at.addRow(result);
+            at.addRule();
+        });
+        disposable.dispose();
+        final Instant stop = Instant.now();
+        OUT.println(at.render());
+        return Duration.between(start, stop);
     }
 
 }

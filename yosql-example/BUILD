@@ -45,6 +45,11 @@ java_binary(
     "//external:postgresql",
     "//external:mysql",
     "//external:hikaricp",
+    "//external:asciitable",
+    "//external:ascii_utf_themes",
+    "//external:skb_interfaces",
+    "//external:commons_lang3",
+    "//external:st4",
     "//yosql-core",
   ],
 )
