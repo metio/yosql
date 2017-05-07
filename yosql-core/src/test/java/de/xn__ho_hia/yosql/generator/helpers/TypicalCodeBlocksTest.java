@@ -16,7 +16,6 @@ import org.junit.jupiter.api.TestInfo;
 class TypicalCodeBlocksTest {
 
     @Test
-    @SuppressWarnings("unused")
     public void shouldAssignFieldToValueWithSameName(final TestInfo testInfo) throws Exception {
         // given
         final String name = "test";
@@ -28,7 +27,6 @@ class TypicalCodeBlocksTest {
         Assertions.assertEquals(validationFile(testInfo), codeBlock.toString());
     }
 
-    @SuppressWarnings("unused")
     private static String validationFile(final TestInfo testInfo) throws Exception {
         final String testName = testInfo.getTestClass().map(Class::getSimpleName).orElse("") +
                 testInfo.getTestMethod().map(Method::getName).map("#"::concat).orElse("") +
