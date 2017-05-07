@@ -40,7 +40,7 @@ public final class JOptConfigurationModule {
     ExecutionConfiguration provideExecutionConfiguration(
             @UsedFor.Command(Commands.GENERATE) final OptionSet options,
             @UsedFor.GenerateOption(INPUT_BASE_DIRECTORY) final OptionSpec<Path> inputBaseDirectory,
-            @UsedFor.GenerateOption(INPUT_BASE_DIRECTORY) final OptionSpec<Path> outputBaseDirectory,
+            @UsedFor.GenerateOption(OUTPUT_BASE_DIRECTORY) final OptionSpec<Path> outputBaseDirectory,
             @UsedFor.GenerateOption(BASE_PACKAGE_NAME) final OptionSpec<String> basePackageName,
             @UsedFor.GenerateOption(UTILITY_PACKAGE_NAME) final OptionSpec<String> utilityPackageName,
             @UsedFor.GenerateOption(CONVERTER_PACKAGE_NAME) final OptionSpec<String> converterPackageName,
