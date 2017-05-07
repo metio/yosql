@@ -21,6 +21,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.BuildInfo;
@@ -74,7 +76,8 @@ public class YoSqlCLI {
         final YoSqlCLIComponent component = DaggerYoSqlCLIComponent.builder()
                 .arguments(arguments)
                 .build();
-        assert component.rootLogger() != null;
+        final Logger rootLogger = component.rootLogger();
+        assert rootLogger != null;
         return component;
     }
 
