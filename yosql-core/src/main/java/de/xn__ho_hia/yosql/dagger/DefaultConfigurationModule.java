@@ -1,6 +1,6 @@
 package de.xn__ho_hia.yosql.dagger;
 
-import static de.xn__ho_hia.yosql.model.ConfigurationOptions.*;
+import static de.xn__ho_hia.yosql.model.GenerateOptions.*;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public final class DefaultConfigurationModule {
 
     @Provides
     @SuppressWarnings("nls")
-    ExecutionConfiguration provideExecutionConfiguration(final IMessageConveyor messages) {
+    ExecutionConfiguration provideExecutionConfiguration(@NonLocalized final IMessageConveyor messages) {
         final String basePackageName = messages.getMessage(BASE_PACKAGE_NAME_DEFAULT);
         final String utilityPackageName = messages.getMessage(UTILITY_PACKAGE_NAME_DEFAULT);
         final String converterPackageName = messages.getMessage(CONVERTER_PACKAGE_NAME_DEFAULT);

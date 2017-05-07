@@ -1,6 +1,5 @@
 package de.xn__ho_hia.yosql;
 
-import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import de.xn__ho_hia.yosql.dagger.Delegating;
@@ -8,6 +7,7 @@ import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
+import de.xn__ho_hia.yosql.model.Translator;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 import de.xn__ho_hia.yosql.parser.SqlFileResolver;
 import de.xn__ho_hia.yosql.utils.Timer;
@@ -28,7 +28,7 @@ public class YoSqlModule {
             final ExecutionErrors errors,
             final Timer timer,
             final TypeWriter typeWriter,
-            final IMessageConveyor messages) {
+            final Translator messages) {
         return new YoSqlImplementation(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer,
                 typeWriter, messages);
     }

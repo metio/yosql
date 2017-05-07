@@ -3,12 +3,36 @@ filegroup(
   srcs = glob(["src/main/java/**/model/*.java"]),
 )
 filegroup(
-  name = "config-options",
-  srcs = ["src/main/resources/configuration-options_en.properties"],
-)
-filegroup(
   name = "application-events",
   srcs = ["src/main/resources/application-events_en.properties"],
+)
+filegroup(
+  name = "loggers",
+  srcs = ["src/main/resources/loggers_en.properties"],
+)
+filegroup(
+  name = "help-options",
+  srcs = ["src/main/resources/help-options_en.properties"],
+)
+filegroup(
+  name = "help-option-descriptions",
+  srcs = ["src/main/resources/help-option-descriptions_en.properties"],
+)
+filegroup(
+  name = "general-options",
+  srcs = ["src/main/resources/general-options_en.properties"],
+)
+filegroup(
+  name = "general-option-descriptions",
+  srcs = ["src/main/resources/general-option-descriptions_en.properties"],
+)
+filegroup(
+  name = "generate-options",
+  srcs = ["src/main/resources/generate-options_en.properties"],
+)
+filegroup(
+  name = "generate-option-descriptions",
+  srcs = ["src/main/resources/generate-option-descriptions_en.properties"],
 )
 filegroup(
   name = "utils-raw-sources",
@@ -88,8 +112,14 @@ java_library(
     ":model-raw-sources",
   ],
   resources = [
-    ":config-options",
     ":application-events",
+    ":loggers",
+    ":help-options",
+    ":help-option-descriptions",
+    ":general-options",
+    ":general-option-descriptions",
+    ":generate-options",
+    ":generate-option-descriptions",
   ],
   deps = [
     "//external:javax_annotation",

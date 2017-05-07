@@ -5,8 +5,8 @@ import ch.qos.cal10n.BaseName;
 /**
  * Enumeration of all known configuration options.
  */
-@BaseName("configuration-options")
-public enum ConfigurationOptions {
+@BaseName("generate-options")
+public enum GenerateOptions {
 
     /**
      * The base input directory.
@@ -14,19 +14,9 @@ public enum ConfigurationOptions {
     INPUT_BASE_DIRECTORY,
 
     /**
-     * The description for {@link #INPUT_BASE_DIRECTORY}.
-     */
-    INPUT_BASE_DIRECTORY_DESCRIPTION,
-
-    /**
      * The base output directory.
      */
     OUTPUT_BASE_DIRECTORY,
-
-    /**
-     * The description for {@link #OUTPUT_BASE_DIRECTORY}.
-     */
-    OUTPUT_BASE_DIRECTORY_DESCRIPTION,
 
     /**
      * The current directory.
@@ -39,11 +29,6 @@ public enum ConfigurationOptions {
     BASE_PACKAGE_NAME,
 
     /**
-     * The description for {@link #BASE_PACKAGE_NAME}.
-     */
-    BASE_PACKAGE_NAME_DESCRIPTION,
-
-    /**
      * The default value for {@link #BASE_PACKAGE_NAME}.
      */
     BASE_PACKAGE_NAME_DEFAULT,
@@ -52,11 +37,6 @@ public enum ConfigurationOptions {
      * The utility package name.
      */
     UTILITY_PACKAGE_NAME,
-
-    /**
-     * The description for {@link #UTILITY_PACKAGE_NAME}.
-     */
-    UTILITY_PACKAGE_NAME_DESCRIPTION,
 
     /**
      * The default value for {@link #UTILITY_PACKAGE_NAME}.
@@ -69,11 +49,6 @@ public enum ConfigurationOptions {
     CONVERTER_PACKAGE_NAME,
 
     /**
-     * The description for {@link #CONVERTER_PACKAGE_NAME}.
-     */
-    CONVERTER_PACKAGE_NAME_DESCRIPTION,
-
-    /**
      * The default value for {@link #CONVERTER_PACKAGE_NAME}.
      */
     CONVERTER_PACKAGE_NAME_DEFAULT,
@@ -82,11 +57,6 @@ public enum ConfigurationOptions {
      * The java version number.
      */
     JAVA,
-
-    /**
-     * The description for {@link #JAVA}.
-     */
-    JAVA_DESCRIPTION,
 
     /**
      * The default value for {@link #JAVA}.
@@ -99,11 +69,6 @@ public enum ConfigurationOptions {
     REPOSITORY_NAME_SUFFIX,
 
     /**
-     * The description for {@link #REPOSITORY_NAME_SUFFIX}.
-     */
-    REPOSITORY_NAME_SUFFIX_DESCRIPTION,
-
-    /**
      * The default value for {@link #REPOSITORY_NAME_SUFFIX}.
      */
     REPOSITORY_NAME_SUFFIX_DEFAULT,
@@ -112,11 +77,6 @@ public enum ConfigurationOptions {
      * The file name suffix for SQL files.
      */
     SQL_FILES_SUFFIX,
-
-    /**
-     * The description for {@link #SQL_FILES_SUFFIX}.
-     */
-    SQL_FILES_SUFFIX_DESCRIPTION,
 
     /**
      * The default value for {@link #SQL_FILES_SUFFIX}.
@@ -129,11 +89,6 @@ public enum ConfigurationOptions {
     SQL_FILES_CHARSET,
 
     /**
-     * The description for {@link #SQL_FILES_CHARSET}.
-     */
-    SQL_FILES_CHARSET_DESCRIPTION,
-
-    /**
      * The default value for {@link #SQL_FILES_CHARSET}.
      */
     SQL_FILES_CHARSET_DEFAULT,
@@ -142,11 +97,6 @@ public enum ConfigurationOptions {
      * The SQL statement separator.
      */
     SQL_STATEMENT_SEPARATOR,
-
-    /**
-     * The description for {@link #SQL_STATEMENT_SEPARATOR}.
-     */
-    SQL_STATEMENT_SEPARATOR_DESCRIPTION,
 
     /**
      * The default value for {@link #SQL_STATEMENT_SEPARATOR}.
@@ -159,11 +109,6 @@ public enum ConfigurationOptions {
     DEFAULT_ROW_CONVERTER,
 
     /**
-     * The description for {@link #DEFAULT_ROW_CONVERTER}.
-     */
-    DEFAULT_ROW_CONVERTER_DESCRIPTION,
-
-    /**
      * The default value for {@link #DEFAULT_ROW_CONVERTER}.
      */
     DEFAULT_ROW_CONVERTER_DEFAULT,
@@ -172,11 +117,6 @@ public enum ConfigurationOptions {
      * The batch method name prefix.
      */
     METHOD_BATCH_PREFIX,
-
-    /**
-     * The description for {@link #METHOD_BATCH_PREFIX}.
-     */
-    METHOD_BATCH_PREFIX_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_BATCH_PREFIX}.
@@ -189,11 +129,6 @@ public enum ConfigurationOptions {
     METHOD_BATCH_SUFFIX,
 
     /**
-     * The description for {@link #METHOD_BATCH_SUFFIX}.
-     */
-    METHOD_BATCH_SUFFIX_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_BATCH_SUFFIX}.
      */
     METHOD_BATCH_SUFFIX_DEFAULT,
@@ -202,11 +137,6 @@ public enum ConfigurationOptions {
      * The stream method name prefix.
      */
     METHOD_STREAM_PREFIX,
-
-    /**
-     * The description for {@link #METHOD_STREAM_PREFIX}.
-     */
-    METHOD_STREAM_PREFIX_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_STREAM_PREFIX}.
@@ -219,11 +149,6 @@ public enum ConfigurationOptions {
     METHOD_STREAM_SUFFIX,
 
     /**
-     * The description for {@link #METHOD_STREAM_SUFFIX}.
-     */
-    METHOD_STREAM_SUFFIX_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_STREAM_SUFFIX}.
      */
     METHOD_STREAM_SUFFIX_DEFAULT,
@@ -232,11 +157,6 @@ public enum ConfigurationOptions {
      * The RxJava method name prefix.
      */
     METHOD_RXJAVA_PREFIX,
-
-    /**
-     * The description for {@link #METHOD_RXJAVA_PREFIX}.
-     */
-    METHOD_RXJAVA_PREFIX_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_RXJAVA_PREFIX}.
@@ -249,11 +169,6 @@ public enum ConfigurationOptions {
     METHOD_RXJAVA_SUFFIX,
 
     /**
-     * The description for {@link #METHOD_RXJAVA_SUFFIX}.
-     */
-    METHOD_RXJAVA_SUFFIX_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_RXJAVA_SUFFIX}.
      */
     METHOD_RXJAVA_SUFFIX_DEFAULT,
@@ -262,11 +177,6 @@ public enum ConfigurationOptions {
      * The method eager name.
      */
     METHOD_EAGER_NAME,
-
-    /**
-     * The description for {@link #METHOD_EAGER_NAME}.
-     */
-    METHOD_EAGER_NAME_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_EAGER_NAME}.
@@ -279,11 +189,6 @@ public enum ConfigurationOptions {
     METHOD_LAZY_NAME,
 
     /**
-     * The description for {@link #METHOD_LAZY_NAME}.
-     */
-    METHOD_LAZY_NAME_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_LAZY_NAME}.
      */
     METHOD_LAZY_NAME_DEFAULT,
@@ -292,11 +197,6 @@ public enum ConfigurationOptions {
      * Generate standard API.
      */
     METHOD_STANDARD_API,
-
-    /**
-     * The description for {@link #METHOD_STANDARD_API}.
-     */
-    METHOD_STANDARD_API_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_STANDARD_API}.
@@ -309,11 +209,6 @@ public enum ConfigurationOptions {
     METHOD_BATCH_API,
 
     /**
-     * The description for {@link #METHOD_BATCH_API}.
-     */
-    METHOD_BATCH_API_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_BATCH_API}.
      */
     METHOD_BATCH_API_DEFAULT,
@@ -322,11 +217,6 @@ public enum ConfigurationOptions {
      * Generate RxJava API.
      */
     METHOD_RXJAVA_API,
-
-    /**
-     * The description for {@link #METHOD_RXJAVA_API}.
-     */
-    METHOD_RXJAVA_API_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_RXJAVA_API}.
@@ -339,11 +229,6 @@ public enum ConfigurationOptions {
     METHOD_STREAM_EAGER_API,
 
     /**
-     * The description for {@link #METHOD_STREAM_EAGER_API}.
-     */
-    METHOD_STREAM_EAGER_API_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_STREAM_EAGER_API}.
      */
     METHOD_STREAM_EAGER_API_DEFAULT,
@@ -352,11 +237,6 @@ public enum ConfigurationOptions {
      * Generate lazy stream API.
      */
     METHOD_STREAM_LAZY_API,
-
-    /**
-     * The description for {@link #METHOD_STREAM_LAZY_API}.
-     */
-    METHOD_STREAM_LAZY_API_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_STREAM_LAZY_API}.
@@ -369,11 +249,6 @@ public enum ConfigurationOptions {
     METHOD_ALLOWED_CALL_PREFIXES,
 
     /**
-     * The description for {@link #METHOD_ALLOWED_CALL_PREFIXES}.
-     */
-    METHOD_ALLOWED_CALL_PREFIXES_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_ALLOWED_CALL_PREFIXES}.
      */
     METHOD_ALLOWED_CALL_PREFIXES_DEFAULT,
@@ -382,11 +257,6 @@ public enum ConfigurationOptions {
      * Allowed read prefixes.
      */
     METHOD_ALLOWED_READ_PREFIXES,
-
-    /**
-     * The description for {@link #METHOD_ALLOWED_READ_PREFIXES}.
-     */
-    METHOD_ALLOWED_READ_PREFIXES_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_ALLOWED_READ_PREFIXES}.
@@ -399,11 +269,6 @@ public enum ConfigurationOptions {
     METHOD_ALLOWED_WRITE_PREFIXES,
 
     /**
-     * The description for {@link #METHOD_ALLOWED_WRITE_PREFIXES}.
-     */
-    METHOD_ALLOWED_WRITE_PREFIXES_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_ALLOWED_WRITE_PREFIXES}.
      */
     METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT,
@@ -412,11 +277,6 @@ public enum ConfigurationOptions {
      * Validate method name prefix usage.
      */
     METHOD_VALIDATE_NAME_PREFIXES,
-
-    /**
-     * The description for {@link #METHOD_VALIDATE_NAME_PREFIXES}.
-     */
-    METHOD_VALIDATE_NAME_PREFIXES_DESCRIPTION,
 
     /**
      * The default value for {@link #METHOD_VALIDATE_NAME_PREFIXES}.
@@ -429,11 +289,6 @@ public enum ConfigurationOptions {
     METHOD_CATCH_AND_RETHROW,
 
     /**
-     * The description for {@link #METHOD_CATCH_AND_RETHROW}.
-     */
-    METHOD_CATCH_AND_RETHROW_DESCRIPTION,
-
-    /**
      * The default value for {@link #METHOD_CATCH_AND_RETHROW}.
      */
     METHOD_CATCH_AND_RETHROW_DEFAULT,
@@ -442,11 +297,6 @@ public enum ConfigurationOptions {
      * The @Generated annotation for classes.
      */
     GENERATED_ANNOTATION_CLASS,
-
-    /**
-     * The description for {@link #GENERATED_ANNOTATION_CLASS}.
-     */
-    GENERATED_ANNOTATION_CLASS_DESCRIPTION,
 
     /**
      * The default value for {@link #GENERATED_ANNOTATION_CLASS}.
@@ -459,11 +309,6 @@ public enum ConfigurationOptions {
     GENERATED_ANNOTATION_FIELD,
 
     /**
-     * The description for {@link #GENERATED_ANNOTATION_FIELD}.
-     */
-    GENERATED_ANNOTATION_FIELD_DESCRIPTION,
-
-    /**
      * The default value for {@link #GENERATED_ANNOTATION_FIELD}.
      */
     GENERATED_ANNOTATION_FIELD_DEFAULT,
@@ -472,11 +317,6 @@ public enum ConfigurationOptions {
      * The @Generated annotation for methods.
      */
     GENERATED_ANNOTATION_METHOD,
-
-    /**
-     * The description for {@link #GENERATED_ANNOTATION_METHOD}.
-     */
-    GENERATED_ANNOTATION_METHOD_DESCRIPTION,
 
     /**
      * The default value for {@link #GENERATED_ANNOTATION_METHOD}.
@@ -489,11 +329,6 @@ public enum ConfigurationOptions {
     GENERATED_ANNOTATION_COMMENT,
 
     /**
-     * The description for {@link #GENERATED_ANNOTATION_COMMENT}.
-     */
-    GENERATED_ANNOTATION_COMMENT_DESCRIPTION,
-
-    /**
      * The default value for {@link #GENERATED_ANNOTATION_COMMENT}.
      */
     GENERATED_ANNOTATION_COMMENT_DEFAULT,
@@ -502,11 +337,6 @@ public enum ConfigurationOptions {
      * Generate interfaces for repositories.
      */
     REPOSITORY_GENERATE_INTERFACE,
-
-    /**
-     * The description for {@link #REPOSITORY_GENERATE_INTERFACE}.
-     */
-    REPOSITORY_GENERATE_INTERFACE_DESCRIPTION,
 
     /**
      * The default value for {@link #REPOSITORY_GENERATE_INTERFACE}.
@@ -519,11 +349,6 @@ public enum ConfigurationOptions {
     DEFAULT_FLOW_STATE_CLASS_NAME,
 
     /**
-     * The description for {@link #DEFAULT_FLOW_STATE_CLASS_NAME}.
-     */
-    DEFAULT_FLOW_STATE_CLASS_NAME_DESCRIPTION,
-
-    /**
      * The default value for {@link #DEFAULT_FLOW_STATE_CLASS_NAME}.
      */
     DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT,
@@ -532,11 +357,6 @@ public enum ConfigurationOptions {
      * Default name of result state class.
      */
     DEFAULT_RESULT_STATE_CLASS_NAME,
-
-    /**
-     * The description for {@link #DEFAULT_RESULT_STATE_CLASS_NAME}.
-     */
-    DEFAULT_RESULT_STATE_CLASS_NAME_DESCRIPTION,
 
     /**
      * The default value for {@link #DEFAULT_RESULT_STATE_CLASS_NAME}.
@@ -549,11 +369,6 @@ public enum ConfigurationOptions {
     DEFAULT_RESULT_ROW_CLASS_NAME,
 
     /**
-     * The description for {@link #DEFAULT_RESULT_ROW_CLASS_NAME}.
-     */
-    DEFAULT_RESULT_ROW_CLASS_NAME_DESCRIPTION,
-
-    /**
      * The default value for {@link #DEFAULT_RESULT_ROW_CLASS_NAME}.
      */
     DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT,
@@ -562,11 +377,6 @@ public enum ConfigurationOptions {
      * The logging API to use.
      */
     LOGGING_API,
-
-    /**
-     * The description for {@link #LOGGING_API}.
-     */
-    LOGGING_API_DESCRIPTION,
 
     /**
      * The default value for {@link #LOGGING_API}.
@@ -579,11 +389,6 @@ public enum ConfigurationOptions {
     LOG_LEVEL,
 
     /**
-     * The description for {@link #LOG_LEVEL}.
-     */
-    LOG_LEVEL_DESCRIPTION,
-
-    /**
      * The default value for {@link #LOG_LEVEL}.
      */
     LOG_LEVEL_DEFAULT,
@@ -592,11 +397,6 @@ public enum ConfigurationOptions {
      * The custom result row converters.
      */
     RESULT_ROW_CONVERTERS,
-
-    /**
-     * The description for {@link #RESULT_ROW_CONVERTERS}.
-     */
-    RESULT_ROW_CONVERTERS_DESCRIPTION,
 
     /**
      * The default value for {@link #RESULT_ROW_CONVERTERS}.

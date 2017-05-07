@@ -2,14 +2,14 @@ package de.xn__ho_hia.yosql.model;
 
 import java.util.stream.Stream;
 
-import de.xn__ho_hia.yosql.model.ConfigurationOptions;
+import de.xn__ho_hia.yosql.model.GenerateOptions;
 import de.xn__ho_hia.yosql.testutils.EnumTCK;
 
-class ConfigurationOptionsTest implements EnumTCK<ConfigurationOptions> {
+class ConfigurationOptionsTest implements EnumTCK<GenerateOptions> {
 
     @Override
-    public Class<ConfigurationOptions> getEnumClass() {
-        return ConfigurationOptions.class;
+    public Class<GenerateOptions> getEnumClass() {
+        return GenerateOptions.class;
     }
 
     @Override

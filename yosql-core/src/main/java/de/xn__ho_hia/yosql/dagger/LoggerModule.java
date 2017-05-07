@@ -10,6 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
+import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.cal10n.LocLogger;
@@ -18,6 +19,7 @@ import org.slf4j.cal10n.LocLoggerFactory;
 import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
+import de.xn__ho_hia.yosql.model.Loggers;
 
 /**
  * Dagger2 module for application internal {@link Logger}s.
@@ -27,38 +29,44 @@ import dagger.Provides;
 public class LoggerModule {
 
     @Provides
-    LocLoggerFactory provideLocLoggerFactory(final IMessageConveyor messages) {
+    @Singleton
+    LocLoggerFactory provideLocLoggerFactory(@Localized final IMessageConveyor messages) {
         return new LocLoggerFactory(messages);
     }
 
     @Writer
     @Provides
-    LocLogger provideWriterLocLogger(final LocLoggerFactory factory) {
-        return factory.getLocLogger("yosql.writer"); //$NON-NLS-1$
+    @Singleton
+    LocLogger provideWriterLocLogger(final LocLoggerFactory factory, @NonLocalized final IMessageConveyor messages) {
+        return factory.getLocLogger(messages.getMessage(Loggers.WRITER));
     }
 
     @Parser
     @Provides
-    LocLogger provideParserLocLogger(final LocLoggerFactory factory) {
-        return factory.getLocLogger("yosql.parser"); //$NON-NLS-1$
+    @Singleton
+    LocLogger provideParserLocLogger(final LocLoggerFactory factory, @NonLocalized final IMessageConveyor messages) {
+        return factory.getLocLogger(messages.getMessage(Loggers.PARSER));
     }
 
     @Generator
     @Provides
-    LocLogger provideGeneratorLocLogger(final LocLoggerFactory factory) {
-        return factory.getLocLogger("yosql.generator"); //$NON-NLS-1$
+    @Singleton
+    LocLogger provideGeneratorLocLogger(final LocLoggerFactory factory, @NonLocalized final IMessageConveyor messages) {
+        return factory.getLocLogger(messages.getMessage(Loggers.GENERATOR));
     }
 
     @Timer
     @Provides
-    LocLogger provideTimerLocLogger(final LocLoggerFactory factory) {
-        return factory.getLocLogger("yosql.timer"); //$NON-NLS-1$
+    @Singleton
+    LocLogger provideTimerLocLogger(final LocLoggerFactory factory, @NonLocalized final IMessageConveyor messages) {
+        return factory.getLocLogger(messages.getMessage(Loggers.TIMER));
     }
 
     @Utilities
     @Provides
-    LocLogger provideUtilitiesLocLogger(final LocLoggerFactory factory) {
-        return factory.getLocLogger("yosql.utilities"); //$NON-NLS-1$
+    @Singleton
+    LocLogger provideUtilitiesLocLogger(final LocLoggerFactory factory, @NonLocalized final IMessageConveyor messages) {
+        return factory.getLocLogger(messages.getMessage(Loggers.UTILITIES));
     }
 
     /**

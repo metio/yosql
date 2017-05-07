@@ -24,9 +24,7 @@ import java.util.stream.Collectors;
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.BuildInfo;
-import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import joptsimple.OptionException;
-import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
@@ -35,18 +33,15 @@ import joptsimple.OptionSpec;
  */
 public class YoSqlCLI {
 
+    private static final Locale           SYSTEM_LOCALE    = Locale.ENGLISH;
+    private static final IMessageConveyor SYSTEM_MESSAGES  = new MessageConveyor(SYSTEM_LOCALE);
+
     private static final PrintStream      ERRORS           = System.err;
     private static final PrintStream      OUT              = System.out;
-    private static final IMessageConveyor MESSAGES         = new MessageConveyor(Locale.ENGLISH);
 
-    /** The name of the help command. */
-    public static final String            HELP_COMMAND     = MESSAGES.getMessage(HELP);
-
-    /** The name of the version command. */
-    public static final String            VERSION_COMMAND  = MESSAGES.getMessage(VERSION);
-
-    /** The name of the generate command. */
-    public static final String            GENERATE_COMMAND = MESSAGES.getMessage(GENERATE);
+    private static final String           HELP_COMMAND     = SYSTEM_MESSAGES.getMessage(HELP);
+    private static final String           VERSION_COMMAND  = SYSTEM_MESSAGES.getMessage(VERSION);
+    private static final String           GENERATE_COMMAND = SYSTEM_MESSAGES.getMessage(GENERATE);
 
     /**
      * @param arguments
@@ -55,46 +50,48 @@ public class YoSqlCLI {
      *             In case anything goes wrong
      */
     public static void main(final String... arguments) throws Exception {
-        final OptionParser generateParser = createParser();
+        final YoSqlCLIComponent cliComponent = setupCLiComponent(arguments);
+
         try {
             if (matchesCommand(HELP_COMMAND, arguments)) {
-                printHelpText(arguments);
+                printHelpText(cliComponent, arguments);
             } else if (matchesCommand(VERSION_COMMAND, arguments)) {
                 printVersionText();
             } else {
                 // when in doubt, generate files
-                generateFiles(generateParser, arguments);
+                cliComponent.yoSql().generateFiles();
             }
             successfulTermination();
         } catch (final OptionException exception) {
-            handleFailedOptions(generateParser, exception.options());
+            handleFailedOptions(cliComponent.generateParser(), exception.options());
         } catch (final Throwable throwable) {
             handleUnknownException(throwable);
         }
         abnormalTermination();
     }
 
+    private static YoSqlCLIComponent setupCLiComponent(final String... arguments) {
+        return DaggerYoSqlCLIComponent.builder()
+                .arguments(arguments)
+                .build();
+    }
+
     private static boolean matchesCommand(final String commandName, final String[] arguments) {
         return arguments != null && arguments.length > 0 && commandName.equalsIgnoreCase(arguments[0]);
     }
 
-    @SuppressWarnings("nls")
-    private static void printHelpText(final String... arguments) {
-        final OptionParser helpParser = createParser();
-        final OptionSpec<String> command = helpParser
-                .accepts("command")
-                .withOptionalArg()
-                .describedAs("The name of the command to show. Possible values are [generate, help, version].")
-                .forHelp();
-        final OptionSet optionSet = helpParser.parse(arguments);
+    private static void printHelpText(final YoSqlCLIComponent yoSqlCli, final String... arguments) {
+        final YoSqlOptionParser helpParser = yoSqlCli.helpParser();
+        final OptionSpec<String> command = yoSqlCli.helpCommandOption();
+        final OptionSet optionSet = helpParser.parser.parse(arguments);
         if (optionSet.has(command)) {
             final String commandName = optionSet.valueOf(command);
             if (HELP_COMMAND.equalsIgnoreCase(commandName)) {
                 showHelpForHelp(helpParser, commandName);
             } else if (VERSION_COMMAND.equalsIgnoreCase(commandName)) {
-                showHelpForVersion();
+                showHelpForVersion(yoSqlCli.versionParser());
             } else if (GENERATE_COMMAND.equalsIgnoreCase(commandName)) {
-                showHelpForGenerate();
+                showHelpForGenerate(yoSqlCli);
             } else {
                 showHelpForUnknownCommand(commandName);
                 abnormalTermination();
@@ -105,51 +102,41 @@ public class YoSqlCLI {
     }
 
     private static void showGeneralHelp() {
-        OUT.println(MESSAGES.getMessage(HELP_REQUIRED));
+        OUT.println(SYSTEM_MESSAGES.getMessage(HELP_REQUIRED));
     }
 
-    private static void showHelpForGenerate() {
-        final OptionParser parser = createParser();
-        final JOptConfigurationModule module = new JOptConfigurationModule(parser);
-        final ExecutionErrors errors = new ExecutionErrors();
-        module.provideExecutionConfiguration(module.providePathValueConverter(errors),
-                module.provideResultRowConverterConverter(), MESSAGES);
-        OUT.println(MESSAGES.getMessage(HELP_FOR_GENERATE));
-        printCommandLineOptions(parser, OUT);
+    private static void showHelpForGenerate(final YoSqlCLIComponent yoSqlCli) {
+        OUT.println(SYSTEM_MESSAGES.getMessage(HELP_FOR_GENERATE));
+        printCommandLineOptions(yoSqlCli.generateParser(), OUT);
     }
 
-    private static void showHelpForVersion() {
-        OUT.println(MESSAGES.getMessage(HELP_FOR_VERSION));
+    private static void showHelpForVersion(final YoSqlOptionParser versionParser) {
+        OUT.println(SYSTEM_MESSAGES.getMessage(HELP_FOR_VERSION));
+        printCommandLineOptions(versionParser, OUT);
     }
 
-    private static void showHelpForUnknownCommand(final String commandName) {
-        ERRORS.println(MESSAGES.getMessage(UNKNOWN_COMMAND, commandName));
-    }
-
-    private static void showHelpForHelp(final OptionParser helpParser, final String commandName) {
-        OUT.println(MESSAGES.getMessage(DETAIL_HELP_REQUIRED, commandName));
+    private static void showHelpForHelp(final YoSqlOptionParser helpParser, final String commandName) {
+        OUT.println(SYSTEM_MESSAGES.getMessage(DETAIL_HELP_REQUIRED, commandName));
         printCommandLineOptions(helpParser, OUT);
     }
 
     private static void printVersionText() {
-        OUT.println(MESSAGES.getMessage(INFORMATION_NEEDED,
+        OUT.println(SYSTEM_MESSAGES.getMessage(INFORMATION_NEEDED,
                 BuildInfo.VERSION, BuildInfo.BUILD, BuildInfo.REVISION, BuildInfo.BUILD_BY, BuildInfo.BUILD_AT));
     }
 
-    private static void generateFiles(final OptionParser parser, final String... arguments) {
-        DaggerYoSqlCLIComponent.builder()
-                .jOptConfigurationModule(new JOptConfigurationModule(parser, arguments))
-                .build()
-                .yosql()
-                .generateFiles();
+    private static void showHelpForUnknownCommand(final String commandName) {
+        ERRORS.println(SYSTEM_MESSAGES.getMessage(UNKNOWN_COMMAND, commandName));
     }
 
-    private static void handleFailedOptions(final OptionParser parser, final Collection<String> failedOptions) {
-        final Map<String, OptionSpec<?>> recognizedOptions = parser.recognizedOptions();
+    private static void handleFailedOptions(
+            final YoSqlOptionParser generateParser,
+            final Collection<String> failedOptions) {
+        final Map<String, OptionSpec<?>> recognizedOptions = generateParser.parser.recognizedOptions();
         final Collection<String> similarOptions = findSimilarOptions(failedOptions, recognizedOptions);
-        ERRORS.println(MESSAGES.getMessage(PROBLEM_DURING_OPTION_PARSING,
+        ERRORS.println(SYSTEM_MESSAGES.getMessage(PROBLEM_DURING_OPTION_PARSING,
                 failedOptions.stream().collect(Collectors.joining(" --")), GENERATE_COMMAND, similarOptions)); //$NON-NLS-1$
-        printCommandLineOptions(parser, ERRORS);
+        printCommandLineOptions(generateParser, ERRORS);
     }
 
     private static Collection<String> findSimilarOptions(
@@ -175,9 +162,9 @@ public class YoSqlCLI {
         return similars;
     }
 
-    private static void printCommandLineOptions(final OptionParser parser, final PrintStream output) {
+    private static void printCommandLineOptions(final YoSqlOptionParser parser, final PrintStream output) {
         try {
-            parser.printHelpOn(output);
+            parser.parser.printHelpOn(output);
         } catch (final IOException exception) {
             handleUnknownException(exception);
         }
@@ -193,16 +180,6 @@ public class YoSqlCLI {
 
     private static void abnormalTermination() {
         System.exit(1);
-    }
-
-    /**
-     * @return A new option parser with default configuration.
-     */
-    public static OptionParser createParser() {
-        final OptionParser parser = new OptionParser();
-        // parser.formatHelpWith(new BuiltinHelpFormatter(120, 5));
-        parser.formatHelpWith(new YoSqlHelpFormatter());
-        return parser;
     }
 
 }

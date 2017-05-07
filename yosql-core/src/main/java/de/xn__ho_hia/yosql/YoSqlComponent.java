@@ -1,7 +1,10 @@
 package de.xn__ho_hia.yosql;
 
+import javax.inject.Singleton;
+
 import dagger.Component;
 import de.xn__ho_hia.yosql.dagger.DefaultConfigurationModule;
+import de.xn__ho_hia.yosql.dagger.DefaultLocaleModule;
 import de.xn__ho_hia.yosql.dagger.ErrorModule;
 import de.xn__ho_hia.yosql.dagger.I18nModule;
 import de.xn__ho_hia.yosql.dagger.LoggerModule;
@@ -14,9 +17,20 @@ import de.xn__ho_hia.yosql.parser.DefaultResolverModule;
 /**
  * Main Dagger2 interface to get a new YoSql instance.
  */
-@Component(modules = { DefaultConfigurationModule.class, DefaultParserModule.class,
-        DefaultResolverModule.class, DefaultUtilitiesModule.class, LoggingModule.class, DaoModule.class,
-        I18nModule.class, ErrorModule.class, YoSqlModule.class, LoggerModule.class })
+@Singleton
+@Component(modules = {
+        DefaultConfigurationModule.class,
+        DefaultLocaleModule.class,
+        DefaultParserModule.class,
+        DefaultResolverModule.class,
+        DefaultUtilitiesModule.class,
+        LoggingModule.class,
+        DaoModule.class,
+        I18nModule.class,
+        ErrorModule.class,
+        LoggerModule.class,
+        YoSqlModule.class,
+})
 public interface YoSqlComponent {
 
     /**

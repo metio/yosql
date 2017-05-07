@@ -57,7 +57,11 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="yosql-example/src/main/java"/>
+	<classpathentry kind="src" path="yosql-example/src/main/java">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="yosql-example/src/main/yosql"/>
 	<classpathentry kind="src" path="bazel-genfiles/yosql-example">
 		<attributes>
@@ -71,6 +75,16 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="bazel-genfiles/yosql-cli">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/generator-api/libgenerator-api_sourcegenfiles">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/utils/libutils_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>

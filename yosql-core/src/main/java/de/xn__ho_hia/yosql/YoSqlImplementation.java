@@ -10,18 +10,21 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import ch.qos.cal10n.IMessageConveyor;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
@@ -31,6 +34,7 @@ import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlFileParsingException;
 import de.xn__ho_hia.yosql.model.SqlStatement;
+import de.xn__ho_hia.yosql.model.Translator;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
 import de.xn__ho_hia.yosql.parser.SqlFileResolver;
 import de.xn__ho_hia.yosql.utils.Timer;
@@ -47,7 +51,7 @@ final class YoSqlImplementation implements YoSql {
     private final ExecutionErrors     errors;
     private final Timer               timer;
     private final TypeWriter          typeWriter;
-    private final IMessageConveyor    messages;
+    private final Translator          messages;
 
     @Inject
     YoSqlImplementation(
@@ -58,7 +62,7 @@ final class YoSqlImplementation implements YoSql {
             final ExecutionErrors errors,
             final Timer timer,
             final TypeWriter typeWriter,
-            final IMessageConveyor messages) {
+            final Translator messages) {
         this.fileResolver = fileResolver;
         this.sqlFileParser = sqlFileParser;
         this.repositoryGenerator = repositoryGenerator;
@@ -80,14 +84,14 @@ final class YoSqlImplementation implements YoSql {
                 .join();
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException(
-                    messages.getMessage(ApplicationEvents.CODE_GENERATION_FAILED)));
+                    messages.nonLocalized(ApplicationEvents.CODE_GENERATION_FAILED)));
         }
     }
 
     private Executor createThreadPool() {
         final ForkJoinWorkerThreadFactory factory = pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
-            worker.setName(messages.getMessage(ApplicationEvents.WORKER_POOL_NAME,
+            worker.setName(messages.nonLocalized(ApplicationEvents.WORKER_POOL_NAME,
                     Integer.valueOf(worker.getPoolIndex())));
             return worker;
         };
@@ -101,12 +105,12 @@ final class YoSqlImplementation implements YoSql {
 
     private List<SqlStatement> parseFiles() {
         List<SqlStatement> statements = Collections.emptyList();
-        statements = timer.timed(messages.getMessage(ApplicationEvents.PARSE_FILES),
+        statements = timer.timed(messages.nonLocalized(ApplicationEvents.PARSE_FILES),
                 () -> fileResolver.resolveFiles()
                         .flatMap(sqlFileParser::parse)
                         .collect(toList()));
         if (errors.hasErrors()) {
-            errors.throwWith(new SqlFileParsingException(messages.getMessage(ApplicationEvents.PARSE_FILES_FAILED)));
+            errors.throwWith(new SqlFileParsingException(messages.nonLocalized(ApplicationEvents.PARSE_FILES_FAILED)));
         }
         return statements;
     }
@@ -117,36 +121,43 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private Stream<PackageTypeSpec> generateRepositories(final List<SqlStatement> statements) {
-        return timer.timed(messages.getMessage(ApplicationEvents.GENERATE_REPOSITORIES), () -> {
-            if (statements != null && !statements.isEmpty()) {
-                return statements.stream()
+        return timer.timed(messages.nonLocalized(ApplicationEvents.GENERATE_REPOSITORIES),
+                createTypeSpecs(statements, stmts -> stmts.stream()
                         .collect(groupingBy(SqlStatement::getRepository))
                         .entrySet()
                         .parallelStream()
-                        .map(repository -> repositoryGenerator.generateRepository(repository.getKey(),
-                                repository.getValue()));
-            }
-            return Stream.empty();
-        });
+                        .map(repository -> repositoryGenerator.generateRepository(
+                                repository.getKey(), repository.getValue()))));
     }
 
     private Stream<PackageTypeSpec> generateUtilities(final List<SqlStatement> statements) {
-        return timer.timed(messages.getMessage(ApplicationEvents.GENERATE_UTILITIES), () -> {
-            if (statements != null && !statements.isEmpty()) {
-                return utilsGenerator.generateUtilities(statements);
-            }
-            return Stream.empty();
-        });
+        return timer.timed(messages.nonLocalized(ApplicationEvents.GENERATE_UTILITIES),
+                createTypeSpecs(statements, utilsGenerator::generateUtilities));
     }
 
-    private void writeIntoFiles(final List<PackageTypeSpec> statements) {
-        timer.timed(messages.getMessage(ApplicationEvents.WRITE_FILES), () -> {
-            if (statements != null && !statements.isEmpty()) {
-                statements.parallelStream()
-                        .filter(Objects::nonNull)
-                        .forEach(typeWriter::writeType);
-            }
-        });
+    private static Supplier<Stream<PackageTypeSpec>> createTypeSpecs(
+            final List<SqlStatement> statements,
+            final Function<List<SqlStatement>, Stream<PackageTypeSpec>> creator) {
+        return () -> listWithEntries(statements)
+                .map(creator)
+                .orElseGet(Stream::empty);
+    }
+
+    private void writeIntoFiles(final List<PackageTypeSpec> typeSpecs) {
+        timer.timed(messages.nonLocalized(ApplicationEvents.WRITE_FILES), writeTypeSpecs(typeSpecs));
+    }
+
+    private Runnable writeTypeSpecs(final List<PackageTypeSpec> typeSpecs) {
+        return () -> listWithEntries(typeSpecs)
+                .map(Collection::parallelStream)
+                .ifPresent(stream -> stream
+                        .filter(Objects::nonNull) // XXX: required?
+                        .forEach(typeWriter::writeType));
+    }
+
+    private static <T> Optional<List<T>> listWithEntries(final List<T> value) {
+        return Optional.ofNullable(value)
+                .filter(list -> !list.isEmpty());
     }
 
 }
