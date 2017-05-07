@@ -95,7 +95,7 @@ public class YoSqlCLI {
             } else if (VERSION_COMMAND.equalsIgnoreCase(commandName)) {
                 showHelpForVersion(yoSqlCli.versionParser());
             } else if (GENERATE_COMMAND.equalsIgnoreCase(commandName)) {
-                showHelpForGenerate(yoSqlCli);
+                showHelpForGenerate(yoSqlCli.generateParser());
             } else {
                 showHelpForUnknownCommand(commandName);
                 abnormalTermination();
@@ -109,9 +109,9 @@ public class YoSqlCLI {
         OUT.println(SYSTEM_MESSAGES.getMessage(HELP_REQUIRED));
     }
 
-    private static void showHelpForGenerate(final YoSqlCLIComponent yoSqlCli) {
+    private static void showHelpForGenerate(final YoSqlOptionParser generateParser) {
         OUT.println(SYSTEM_MESSAGES.getMessage(HELP_FOR_GENERATE));
-        printCommandLineOptions(yoSqlCli.generateParser(), OUT);
+        printCommandLineOptions(generateParser, OUT);
     }
 
     private static void showHelpForVersion(final YoSqlOptionParser versionParser) {
