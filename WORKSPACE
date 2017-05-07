@@ -255,7 +255,14 @@ bind(
     name = "mysql",
     actual = "@mysql_mysql_connector_java//jar",
 )
-
+maven_jar(
+    name = "com_zaxxer_hikaricp",
+    artifact = "com.zaxxer:HikariCP:2.6.1",
+)
+bind(
+    name = "hikaricp",
+    actual = "@com_zaxxer_hikaricp//jar",
+)
 
 maven_jar(
     name = "de_vandermeer_asciitable",

@@ -17,10 +17,7 @@ import com.example.persistence.CompanyRepository;
 import com.example.persistence.PersonRepository;
 import com.example.persistence.SchemaRepository;
 import com.example.persistence.util.ResultRow;
-import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
-
-import org.h2.jdbcx.JdbcDataSource;
-import org.postgresql.ds.PGPoolingDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 import io.reactivex.Flowable;
 
@@ -30,26 +27,23 @@ public class ExampleApp {
     @SuppressWarnings("deprecation")
     public static final void main(final String[] arguments) throws Exception {
         if (match(arguments, "h2")) {
-            final JdbcDataSource dataSource = new JdbcDataSource();
-            dataSource.setURL("jdbc:h2:mem:example;DB_CLOSE_DELAY=-1");
+            final HikariDataSource dataSource = new HikariDataSource();
+            dataSource.setJdbcUrl("jdbc:h2:mem:example;DB_CLOSE_DELAY=-1");
+            dataSource.setUsername("sa");
             runTests(arguments, dataSource);
         } else if (match(arguments, "psql")) {
             // start psql first with 'docker-compose up -d postgres'
-            final PGPoolingDataSource dataSource = new PGPoolingDataSource();
-            dataSource.setDataSourceName("test");
-            dataSource.setServerName("localhost");
-            dataSource.setPortNumber(50000);
-            dataSource.setDatabaseName("example");
-            dataSource.setUser("example");
+            final HikariDataSource dataSource = new HikariDataSource();
+            dataSource.setJdbcUrl("jdbc:mysql://localhost:50000/example");
+            dataSource.setUsername("example");
             dataSource.setPassword("example");
-            dataSource.setMaxConnections(1);
             runTests(arguments, dataSource);
             // stop psql with 'docker-compose stop postgres'
         } else if (match(arguments, "mysql")) {
             // start mysql first with 'docker-compose up -d mysql'
-            final MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
-            dataSource.setURL("jdbc:mysql://localhost:51000/example");
-            dataSource.setUser("example");
+            final HikariDataSource dataSource = new HikariDataSource();
+            dataSource.setJdbcUrl("jdbc:mysql://localhost:51000/example");
+            dataSource.setUsername("example");
             dataSource.setPassword("example");
             runTests(arguments, dataSource);
             // stop mysql with 'docker-compose stop mysql'

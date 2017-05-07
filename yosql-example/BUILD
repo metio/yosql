@@ -44,6 +44,7 @@ java_binary(
     "//external:h2",
     "//external:postgresql",
     "//external:mysql",
+    "//external:hikaricp",
     "//yosql-core",
   ],
 )

@@ -61,6 +61,8 @@ public class YoSqlCLI {
                 printVersionText();
             } else {
                 // when in doubt, generate files
+                final Logger rootLogger = cliComponent.rootLogger();
+                assert rootLogger != null;
                 cliComponent.yoSql().generateFiles();
             }
             successfulTermination();
@@ -73,12 +75,9 @@ public class YoSqlCLI {
     }
 
     private static YoSqlCLIComponent setupCLiComponent(final String... arguments) {
-        final YoSqlCLIComponent component = DaggerYoSqlCLIComponent.builder()
+        return DaggerYoSqlCLIComponent.builder()
                 .arguments(arguments)
                 .build();
-        final Logger rootLogger = component.rootLogger();
-        assert rootLogger != null;
-        return component;
     }
 
     private static boolean matchesCommand(final String commandName, final String[] arguments) {
