@@ -85,7 +85,7 @@ bench-parsing-all: ##@benchmark Run file parsing benchmark against each individu
 	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.parse_file.DefaultSqlFileParserParseAllFileBenchmark
 
 .PHONY: example-h2-all
-example-h2-all: ##@example Run all examples against H2 database
+example-h2-all: ##@example Run all examples against H2 database (works w/o docker)
 	bazel run //yosql-example h2 standard stream rxjava
 
 .PHONY: example-psql-all
