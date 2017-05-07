@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.BuildInfo;
+import de.xn__ho_hia.yosql.YoSql;
 import joptsimple.OptionException;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -52,7 +53,7 @@ public class YoSqlCLI {
      *             In case anything goes wrong
      */
     public static void main(final String... arguments) throws Exception {
-        final YoSqlCLIComponent cliComponent = setupCLiComponent(arguments);
+        final YoSqlCLIComponent cliComponent = buildCLiComponent(arguments);
 
         try {
             if (matchesCommand(HELP_COMMAND, arguments)) {
@@ -61,9 +62,8 @@ public class YoSqlCLI {
                 printVersionText();
             } else {
                 // when in doubt, generate files
-                final Logger rootLogger = cliComponent.rootLogger();
-                assert rootLogger != null;
-                cliComponent.yoSql().generateFiles();
+                assertLoggerIsConfigured(cliComponent.rootLogger());
+                generateCode(cliComponent.yoSql());
             }
             successfulTermination();
         } catch (final OptionException exception) {
@@ -74,7 +74,15 @@ public class YoSqlCLI {
         abnormalTermination();
     }
 
-    private static YoSqlCLIComponent setupCLiComponent(final String... arguments) {
+    private static void generateCode(final YoSql yoSql) {
+        yoSql.generateFiles();
+    }
+
+    private static void assertLoggerIsConfigured(final Logger rootLogger) {
+        assert rootLogger != null;
+    }
+
+    private static YoSqlCLIComponent buildCLiComponent(final String... arguments) {
         return DaggerYoSqlCLIComponent.builder()
                 .arguments(arguments)
                 .build();
