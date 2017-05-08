@@ -28,7 +28,8 @@ class TypicalCodeBlocksTest {
     }
 
     private static String validationFile(final TestInfo testInfo) throws Exception {
-        final String testName = testInfo.getTestClass().map(Class::getSimpleName).orElse("") +
+        final String testName = testInfo.getTestClass().map(Class::getSimpleName)
+                .orElse(TypicalCodeBlocksTest.class.getSimpleName()) +
                 testInfo.getTestMethod().map(Method::getName).map("#"::concat).orElse("") +
                 ".txt";
 
