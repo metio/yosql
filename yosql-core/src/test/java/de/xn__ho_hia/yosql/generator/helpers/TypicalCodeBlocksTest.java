@@ -18,98 +18,56 @@ import de.xn__ho_hia.yosql.testutils.ValidationFileParameterResolver;
 class TypicalCodeBlocksTest {
 
     @Test
-    public void shouldAssignFieldToValueWithSameName(final ValidationFile validationFile)
-            throws Exception {
-        // given
-        final String name = "test";
-
-        // when
-        final CodeBlock codeBlock = TypicalCodeBlocks.setFieldToSelf(name);
-
-        // then
-        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+    public void shouldAssignFieldToValueWithSameName(final ValidationFile validationFile) {
+        validateWithValidationFile(TypicalCodeBlocks.setFieldToSelf("test"), validationFile);
     }
 
     @Test
-    public void shouldGetMetadataFromResultSet(final ValidationFile validationFile)
-            throws Exception {
-        // given
-        // when
-        final CodeBlock codeBlock = TypicalCodeBlocks.getMetaData();
-
-        // then
-        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+    public void shouldGetMetadataFromResultSet(final ValidationFile validationFile) {
+        validateWithValidationFile(TypicalCodeBlocks.getMetaData(), validationFile);
     }
 
     @Test
-    public void shouldGetColumnCountFromMetadata(final ValidationFile validationFile)
-            throws Exception {
-        // given
-        // when
-        final CodeBlock codeBlock = TypicalCodeBlocks.getColumnCount();
-
-        // then
-        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+    public void shouldGetColumnCountFromMetadata(final ValidationFile validationFile) {
+        validateWithValidationFile(TypicalCodeBlocks.getColumnCount(), validationFile);
     }
 
     @Test
-    public void shouldExecuteQuery(final ValidationFile validationFile)
-            throws Exception {
-        // given
-        // when
-        final CodeBlock codeBlock = TypicalCodeBlocks.executeQuery();
-
-        // then
-        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+    public void shouldExecuteQuery(final ValidationFile validationFile) {
+        validateWithValidationFile(TypicalCodeBlocks.executeQuery(), validationFile);
     }
 
     @Test
-    public void shouldExecuteUpdate(final ValidationFile validationFile)
-            throws Exception {
-        // given
-        // when
-        final CodeBlock codeBlock = TypicalCodeBlocks.executeUpdate();
-
-        // then
-        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+    public void shouldExecuteUpdate(final ValidationFile validationFile) {
+        validateWithValidationFile(TypicalCodeBlocks.executeUpdate(), validationFile);
     }
 
     @Test
-    public void shouldPrepareBatch(final ValidationFile validationFile)
-            throws Exception {
-        // given
+    public void shouldPrepareBatch(final ValidationFile validationFile) {
+        validateWithValidationFile(TypicalCodeBlocks.prepareBatch(createConfiguration()), validationFile);
+    }
+
+    @Test
+    public void shouldExecuteBatch(final ValidationFile validationFile) {
+        validateWithValidationFile(TypicalCodeBlocks.executeBatch(), validationFile);
+    }
+
+    @Test
+    public void shouldAddBatch(final ValidationFile validationFile) {
+        validateWithValidationFile(TypicalCodeBlocks.addBatch(), validationFile);
+    }
+
+    private static void validateWithValidationFile(final CodeBlock codeBlock, final ValidationFile validationFile) {
+        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+
+    }
+
+    private static SqlConfiguration createConfiguration() {
         final SqlConfiguration config = new SqlConfiguration();
         final SqlParameter parameter = new SqlParameter();
         parameter.setName("test");
         config.setParameters(Arrays.asList(parameter));
-
-        // when
-        final CodeBlock codeBlock = TypicalCodeBlocks.prepareBatch(config);
-
-        // then
-        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
-    }
-
-    @Test
-    public void shouldExecuteBatch(final ValidationFile validationFile)
-            throws Exception {
-        // given
-        // when
-        final CodeBlock codeBlock = TypicalCodeBlocks.executeBatch();
-
-        // then
-        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
-    }
-
-    @Test
-    public void shouldAddBatch(final ValidationFile validationFile)
-            throws Exception {
-        // given
-        // when
-        final CodeBlock codeBlock = TypicalCodeBlocks.addBatch();
-
-        // then
-        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+        return config;
     }
 
 }
