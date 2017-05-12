@@ -440,9 +440,9 @@ load("@bazel_build_process//java:junit5_test.bzl", "junit5")
 [junit5(
   file = file,
   deps = [
-    ":model",
-    ":generator-helpers",
     "//yosql-testutils",
+    ":generator-helpers",
+    ":model",
   ],
   data = [
     ":validation-files",
