@@ -76,7 +76,7 @@ git_repository(
 
 genrule(
   name = "yosql-example",
-  srcs = ["doesnt_really_matter"],
+  srcs = [":your_sql_files"],
   outs = [
     "com/example/persistence/YourRepository.java",
     "com/example/persistence/AnotherRepository.java",
