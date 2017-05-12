@@ -37,4 +37,15 @@ class TypicalCodeBlocksTest {
         Assertions.assertEquals(validationFile.read(), codeBlock.toString());
     }
 
+    @Test
+    public void shouldGetColumnCountFromMetadata(final ValidationFile validationFile)
+            throws Exception {
+        // given
+        // when
+        final CodeBlock codeBlock = TypicalCodeBlocks.getColumnCount();
+
+        // then
+        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+    }
+
 }

@@ -99,6 +99,7 @@ filegroup(
   srcs = [
     "src/test/resources/TypicalCodeBlocksTest#shouldAssignFieldToValueWithSameName.txt",
     "src/test/resources/TypicalCodeBlocksTest#shouldGetMetadataFromResultSet.txt",
+    "src/test/resources/TypicalCodeBlocksTest#shouldGetColumnCountFromMetadata.txt",
   ],
 )
 
