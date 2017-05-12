@@ -67,20 +67,39 @@ git_repository(
 )
 ----
 
-2) Write .sql files in a directory of your choice (e.g. `/path/to/your/sql/files`)
+
+2) Write .sql files in a directory of your choice (e.g. `src/main/yosql`)
+
+[source]
+----
+project/
+├── pom.xml
+└── src/
+    └── main/
+        └── yosql/
+            └── user/
+                ├── findUser.sql
+                └── addUser.sql
+            └── item/
+                ├── queryAllItems.sql
+                └── createItemTable.sql
+----
 
 3) Declare a `genrule` in one of your BUILD files:
 
 [source]
 ----
+filegroup(
+  name = "your-sql-files",
+  srcs = glob(["src/main/yosql/**/*.sql"]),
+)
 
 genrule(
   name = "yosql-example",
-  srcs = [":your_sql_files"],
+  srcs = [":your-sql-files"],
   outs = [
-    "com/example/persistence/YourRepository.java",
-    "com/example/persistence/AnotherRepository.java",
-    "...",
+    "com/example/persistence/UserRepository.java",
+    "com/example/persistence/ItemRepository.java",
     "com/example/persistence/util/ResultRow.java",
     "com/example/persistence/util/ResultState.java",
     "com/example/persistence/util/FlowState.java",
@@ -88,7 +107,7 @@ genrule(
   ],
   cmd = """
     $(location @yosql//yosql-cli) \
-      --inputBaseDirectory path/to/your/sql/files \
+      --inputBaseDirectory src/main/yosql \
       --outputBaseDirectory $(@D) \
       --logLevel off
   """,
