@@ -9,5 +9,6 @@ java_library(
   visibility = ["//visibility:public"],
   deps = [
     "//external:junit5_jupiter_api",
+    "//yosql-core"
   ],
 )
