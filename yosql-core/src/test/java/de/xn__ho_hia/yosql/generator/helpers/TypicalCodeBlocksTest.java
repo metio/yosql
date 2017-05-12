@@ -1,22 +1,21 @@
 package de.xn__ho_hia.yosql.generator.helpers;
 
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.squareup.javapoet.CodeBlock;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import de.xn__ho_hia.yosql.testutils.ValidationFile;
+import de.xn__ho_hia.yosql.testutils.ValidationFileParameterResolver;
 
 @SuppressWarnings({ "nls", "static-method" })
+@ExtendWith(ValidationFileParameterResolver.class)
 class TypicalCodeBlocksTest {
 
     @Test
-    public void shouldAssignFieldToValueWithSameName(final TestInfo testInfo) throws Exception {
+    public void shouldAssignFieldToValueWithSameName(final ValidationFile validationFile)
+            throws Exception {
         // given
         final String name = "test";
 
@@ -24,25 +23,18 @@ class TypicalCodeBlocksTest {
         final CodeBlock codeBlock = TypicalCodeBlocks.setFieldToSelf(name);
 
         // then
-        Assertions.assertEquals(validationFile(testInfo), codeBlock.toString());
+        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
     }
 
-    private static String validationFile(final TestInfo testInfo) throws Exception {
-        final String testName = testInfo.getTestClass().map(Class::getSimpleName)
-                .orElse(TypicalCodeBlocksTest.class.getSimpleName()) +
-                testInfo.getTestMethod().map(Method::getName).map("#"::concat).orElse("") +
-                ".txt";
+    @Test
+    public void shouldGetMetadataFromResultSet(final ValidationFile validationFile)
+            throws Exception {
+        // given
+        // when
+        final CodeBlock codeBlock = TypicalCodeBlocks.getMetaData();
 
-        final String resourceDir = "src/test/resources/";
-        String path = System.getenv("TEST_SRCDIR");
-        if (path == null) {
-            path = resourceDir;
-        } else {
-            path = Paths.get(path, "/__main__/yosql-core/" + resourceDir).toString();
-        }
-        final Path path2 = Paths.get(path, testName);
-        final byte[] readAllBytes = Files.readAllBytes(path2);
-        return new String(readAllBytes, StandardCharsets.UTF_8);
+        // then
+        Assertions.assertEquals(validationFile.read(), codeBlock.toString());
     }
 
 }

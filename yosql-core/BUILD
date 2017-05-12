@@ -96,7 +96,10 @@ filegroup(
 )
 filegroup(
   name = "validation-files",
-  srcs = ["src/test/resources/TypicalCodeBlocksTest#shouldAssignFieldToValueWithSameName.txt"],
+  srcs = [
+    "src/test/resources/TypicalCodeBlocksTest#shouldAssignFieldToValueWithSameName.txt",
+    "src/test/resources/TypicalCodeBlocksTest#shouldGetMetadataFromResultSet.txt",
+  ],
 )
 
 java_plugin(
