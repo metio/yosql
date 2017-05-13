@@ -6,7 +6,10 @@
  */
 package de.xn__ho_hia.yosql.model;
 
-@SuppressWarnings({ "javadoc", "nls" })
+/**
+ * Represents a single input parameter of a SQL statement.
+ */
+@SuppressWarnings({ "nls" })
 public class SqlParameter {
 
     private String name;
@@ -14,26 +17,47 @@ public class SqlParameter {
     private String converter;
     private int[]  indices;
 
+    /**
+     * @return The name of the parameter.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name
+     *            The name of the parameter.
+     */
     public void setName(final String name) {
         this.name = name;
     }
 
+    /**
+     * @return The fully-qualified type name.
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * @param type
+     *            The fully-qualified type name.
+     */
     public void setType(final String type) {
         this.type = type;
     }
 
+    /**
+     * @return The type fully-qualified name of the converter to use.
+     */
     public String getConverter() {
         return converter;
     }
 
+    /**
+     * @param converter
+     *            The type fully-qualified name of the converter to use.
+     */
     public void setConverter(final String converter) {
         this.converter = converter;
     }
@@ -53,6 +77,9 @@ public class SqlParameter {
         this.indices = indices;
     }
 
+    /**
+     * @return <code>true</code> in case this statement has indices, <code>false</code> otherwise.
+     */
     public boolean hasIndices() {
         return indices != null && indices.length > 0;
     }
