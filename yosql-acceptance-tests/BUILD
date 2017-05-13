@@ -1,6 +1,5 @@
 load("//yosql-acceptance-tests:cucumber.bzl", "cucumber")
 
-cucumber(
-  yep = 1,
-)
-
+[cucumber(
+  yep = index,
+) for index in range(1, 2)]
