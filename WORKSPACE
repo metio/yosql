@@ -172,6 +172,46 @@ bind(
     actual = "@org_testcontainers_postgresql//jar",
 )
 
+maven_jar(
+    name = "info_cukes_cucumber_java8",
+    artifact = "info.cukes:cucumber-java8:1.2.5",
+)
+bind(
+    name = "cucumber8",
+    actual = "@info_cukes_cucumber_java8//jar",
+)
+maven_jar(
+    name = "info_cukes_cucumber_java",
+    artifact = "info.cukes:cucumber-java:1.2.5",
+)
+bind(
+    name = "cucumber",
+    actual = "@info_cukes_cucumber_java//jar",
+)
+maven_jar(
+    name = "info_cukes_cucumber_core",
+    artifact = "info.cukes:cucumber-core:1.2.5",
+)
+bind(
+    name = "cucumber_core",
+    actual = "@info_cukes_cucumber_core//jar",
+)
+maven_jar(
+    name = "info_cukes_gherkin",
+    artifact = "info.cukes:gherkin:2.12.2",
+)
+bind(
+    name = "gherkin",
+    actual = "@info_cukes_gherkin//jar",
+)
+maven_jar(
+    name = "info_cukes_cucumber_jvm_deps",
+    artifact = "info.cukes:cucumber-jvm-deps:1.0.5",
+)
+bind(
+    name = "cucumber-jvm-deps",
+    actual = "@info_cukes_cucumber_jvm_deps//jar",
+)
 
 maven_jar(
     name = "io_reactivex_rxjava2_rxjava2",

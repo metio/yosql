@@ -7,6 +7,8 @@
 	<classpathentry kind="src" path="yosql-cli/src/main/java"/>
 	<classpathentry kind="src" path="yosql-cli/src/main/resources"/>
 	<classpathentry kind="src" path="yosql-cli/src/test/java"/>
+	<classpathentry kind="src" path="yosql-acceptance-tests/src/main/java"/>
+	<classpathentry kind="src" path="yosql-acceptance-tests/src/main/resources"/>
 	<classpathentry kind="src" path="yosql-testutils/src/main/java"/>
 	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/java"/>
 	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/resources"/>
@@ -113,6 +115,8 @@
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_apache_commons_commons_lang3/jar/_ijar/jar/external/org_apache_commons_commons_lang3/jar/commons-lang3-3.5-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/de_vandermeer_ascii_utf_themes/jar/_ijar/jar/external/de_vandermeer_ascii_utf_themes/jar/ascii-utf-themes-0.0.1-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_zaxxer_hikaricp/jar/_ijar/jar/external/com_zaxxer_hikaricp/jar/HikariCP-2.6.1-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/info_cukes_cucumber_java8/jar/_ijar/jar/external/info_cukes_cucumber_java8/jar/cucumber-java8-1.2.5-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/info_cukes_cucumber_java/jar/_ijar/jar/external/info_cukes_cucumber_java/jar/cucumber-java-1.2.5-ijar.jar"/>
 	<classpathentry kind="src" path="bazel-out/ide/generated">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
