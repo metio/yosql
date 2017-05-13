@@ -22,6 +22,11 @@ public enum Loggers {
     PARSER,
 
     /**
+     * Logger for file readers.
+     */
+    READER,
+
+    /**
      * Logger for file generators.
      */
     GENERATOR,

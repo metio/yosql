@@ -48,6 +48,13 @@ public class LoggerModule {
         return factory.getLocLogger(messages.getMessage(Loggers.PARSER));
     }
 
+    @Reader
+    @Provides
+    @Singleton
+    LocLogger provideReaderLocLogger(final LocLoggerFactory factory, @NonLocalized final IMessageConveyor messages) {
+        return factory.getLocLogger(messages.getMessage(Loggers.READER));
+    }
+
     @Generator
     @Provides
     @Singleton
@@ -99,6 +106,17 @@ public class LoggerModule {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ TYPE, PARAMETER, METHOD })
     public static @interface Parser {
+        // marker annotation
+    }
+
+    /**
+     * Marker annotation for loggers intended for file reader.
+     */
+    @Qualifier
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ TYPE, PARAMETER, METHOD })
+    public static @interface Reader {
         // marker annotation
     }
 

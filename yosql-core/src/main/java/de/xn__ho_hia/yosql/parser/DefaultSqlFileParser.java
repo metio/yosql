@@ -61,6 +61,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
             final AtomicInteger counter = new AtomicInteger(1);
             return statementSplitter.splitAsStream(rawText)
                     .parallel()
+                    .filter(text -> text != null && !text.trim().isEmpty())
                     .map(statement -> convert(source, statement, counter.getAndIncrement()))
                     .filter(Objects::nonNull);
         } catch (final Throwable exception) {

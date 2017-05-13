@@ -47,6 +47,16 @@ public enum ApplicationEvents {
     TYPE_GENERATED,
 
     /**
+     * Signals that files are about to be read.
+     */
+    READ_FILES,
+
+    /**
+     * Signals that a file is considered for parsing.
+     */
+    CONSIDER_FILE,
+
+    /**
      * Signals that files are about to be parsed.
      */
     PARSE_FILES,
