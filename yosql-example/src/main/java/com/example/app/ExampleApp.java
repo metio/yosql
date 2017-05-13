@@ -46,7 +46,7 @@ public class ExampleApp {
         } else if (match(arguments, "psql")) {
             // start psql first with 'docker-compose up -d postgres'
             final HikariDataSource dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:50000/example");
+            dataSource.setJdbcUrl("jdbc:postgresql://localhost:50000/example");
             dataSource.setUsername("example");
             dataSource.setPassword("example");
             runTests(arguments, dataSource);
