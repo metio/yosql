@@ -50,6 +50,10 @@ java_binary(
     "//external:skb_interfaces",
     "//external:commons_lang3",
     "//external:st4",
-    "//yosql-core",
+    "//external:reactive_streams",
+    "//external:rxjava2",
+    "//external:slf4j_api",
+    "//external:logback_classic",
+    "//external:logback_core",
   ],
 )
