@@ -44,12 +44,12 @@ final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
         PackageTypeSpec toResultRowConverterClass = null;
         PackageTypeSpec resultRowClass = null;
         for (final SqlStatement statement : allStatements) {
-            if (resultStateClass == null && statement.isReading()) {
+            if (resultStateClass == null) {
                 resultStateClass = resultStateGenerator.generateResultStateClass();
                 logger.debug(ApplicationEvents.TYPE_GENERATED, resultStateClass.getPackageName(),
                         resultStateClass.getType().name);
             }
-            if (flowStateClass == null && statement.shouldGenerateRxJavaAPI()) {
+            if (flowStateClass == null) {
                 flowStateClass = flowStateGenerator.generateFlowStateClass();
                 logger.debug(ApplicationEvents.TYPE_GENERATED, flowStateClass.getPackageName(),
                         flowStateClass.getType().name);
@@ -64,10 +64,7 @@ final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
                 logger.debug(ApplicationEvents.TYPE_GENERATED, resultRowClass.getPackageName(),
                         resultRowClass.getType().name);
             }
-            if (resultStateClass != null
-                    && flowStateClass != null
-                    && toResultRowConverterClass != null
-                    && resultRowClass != null) {
+            if (toResultRowConverterClass != null && resultRowClass != null) {
                 break;
             }
         }
