@@ -68,21 +68,20 @@ git_repository(
 ----
 
 
-2) Write .sql files in a directory of your choice (e.g. `src/main/yosql`)
+2) Write .sql files in a directory of your choice (e.g. `persistence`)
 
 [source]
 ----
 project/
-├── pom.xml
-└── src/
-    └── main/
-        └── yosql/
-            └── user/
-                ├── findUser.sql
-                └── addUser.sql
-            └── item/
-                ├── queryAllItems.sql
-                └── createItemTable.sql
+├── WORKSPACE
+└── persistence/
+    ├── BUILD
+    └── user/
+        ├── findUser.sql
+        └── addUser.sql
+    └── item/
+        ├── queryAllItems.sql
+        └── createItemTable.sql
 ----
 
 3) Declare a `genrule` in one of your BUILD files:
@@ -91,7 +90,7 @@ project/
 ----
 filegroup(
   name = "your-sql-files",
-  srcs = glob(["src/main/yosql/**/*.sql"]),
+  srcs = glob(["persistence/**/*.sql"]),
 )
 
 genrule(
@@ -107,7 +106,7 @@ genrule(
   ],
   cmd = """
     $(location @yosql//yosql-cli) \
-      --inputBaseDirectory src/main/yosql \
+      --inputBaseDirectory persistence \
       --outputBaseDirectory $(@D) \
       --logLevel off
   """,
