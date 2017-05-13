@@ -34,6 +34,9 @@ public final class Yep1Steps implements En {
         });
         When("the (\\w+) read method is called", (final String methodType) -> {
             switch (methodType) {
+                case "stream lazy":
+                    data = repository.readPersonStreamLazy().collect(Collectors.toList());
+                    break;
                 case "stream":
                     data = repository.readPersonStreamEager().collect(Collectors.toList());
                     break;
