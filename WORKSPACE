@@ -137,6 +137,15 @@ bind(
 )
 
 maven_jar(
+    name = "org_junit_vintage_junit5_vintage_engine",
+    artifact = "org.junit.vintage:junit-vintage-engine:4.12.0-M3",
+)
+bind(
+    name = "junit5_vintage_engine",
+    actual = "@org_junit_vintage_junit5_vintage_engine//jar",
+)
+
+maven_jar(
     name = "org_opentest4j_opentest4j",
     artifact = "org.opentest4j:opentest4j:1.0.0-M1",
 )
