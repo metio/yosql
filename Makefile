@@ -56,6 +56,10 @@ build: ##@hacking Build everything
 test: ##@hacking Test everything
 	bazel test ...
 
+.PHONY: clean
+clean: ##@hacking Test everything
+	bazel clean
+
 .PHONY: coverage
 coverage: ##@hacking Run code coverage
 	bazel test ...
