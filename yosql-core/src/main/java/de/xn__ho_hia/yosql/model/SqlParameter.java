@@ -9,11 +9,10 @@ package de.xn__ho_hia.yosql.model;
 /**
  * Represents a single input parameter of a SQL statement.
  */
-@SuppressWarnings({ "nls" })
 public class SqlParameter {
 
     private String name;
-    private String type = "java.lang.Object";
+    private String type = Object.class.getName();
     private String converter;
     private int[]  indices;
 
