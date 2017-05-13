@@ -9,6 +9,7 @@
 	<classpathentry kind="src" path="yosql-cli/src/test/java"/>
 	<classpathentry kind="src" path="yosql-acceptance-tests/src/main/java"/>
 	<classpathentry kind="src" path="yosql-acceptance-tests/src/main/resources"/>
+	<classpathentry kind="src" path="yosql-acceptance-tests/src/main/yosql"/>
 	<classpathentry kind="src" path="yosql-testutils/src/main/java"/>
 	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/java"/>
 	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/resources"/>
@@ -89,6 +90,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="bazel-bin/yosql-micro-benchmarks/_javac/yosql-micro-benchmarks/yosql-micro-benchmarks_sourcegenfiles">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-genfiles/yosql-acceptance-tests">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
