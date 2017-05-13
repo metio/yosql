@@ -6,7 +6,17 @@ Feature: Read data from a database
   Rules:
   - Database connection must be available
 
-  Scenario: Developer use standard read method
-    Given A repository with a standard read method exists
-    When the method is called
+  Scenario: Developer uses standard read method
+    Given A repository exists
+    When the standard read method is called
+    Then data from a database should be returned
+
+  Scenario: Developer uses eager stream read method
+    Given A repository exists
+    When the stream read method is called
+    Then data from a database should be returned
+
+  Scenario: Developer uses RxJava2 read method
+    Given A repository exists
+    When the rxjava read method is called
     Then data from a database should be returned

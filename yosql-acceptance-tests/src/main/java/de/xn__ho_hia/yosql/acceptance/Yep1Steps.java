@@ -1,6 +1,7 @@
 package de.xn__ho_hia.yosql.acceptance;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -26,13 +27,23 @@ public final class Yep1Steps implements En {
      * Creates the steps for YEP-1.
      */
     public Yep1Steps() {
-        Given("A repository with a standard read method exists", () -> {
+        Given("A repository exists", () -> {
             final DataSource dataSource = createDatSource(1);
             repository = new PersonRepository(dataSource);
             initSchema(dataSource);
         });
-        When("the method is called", () -> {
-            data = repository.readPerson();
+        When("the (\\w+) read method is called", (final String methodType) -> {
+            switch (methodType) {
+                case "stream":
+                    data = repository.readPersonStreamEager().collect(Collectors.toList());
+                    break;
+                case "rxjava":
+                    data = repository.readPersonFlow().toList().blockingGet();
+                    break;
+                case "standard":
+                default:
+                    data = repository.readPerson();
+            }
         });
         Then("data from a database should be returned", () -> {
             Assertions.assertFalse(data.isEmpty());
