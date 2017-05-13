@@ -3,12 +3,11 @@ package de.xn__ho_hia.yosql.acceptance;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.sql.DataSource;
-
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.junit.jupiter.api.Assertions;
 
+import cucumber.api.java.After;
 import cucumber.api.java8.En;
 import yosql.yep_1.PersonRepository;
 import yosql.yep_1.SchemaRepository;
@@ -20,6 +19,7 @@ import yosql.yep_1.util.ResultRow;
 @SuppressWarnings("nls")
 public final class Yep1Steps implements En {
 
+    private HikariDataSource dataSource;
     private PersonRepository repository;
     private List<ResultRow>  data;
 
@@ -27,10 +27,10 @@ public final class Yep1Steps implements En {
      * Creates the steps for YEP-1.
      */
     public Yep1Steps() {
-        Given("A repository exists", () -> {
-            final DataSource dataSource = createDatSource(1);
-            repository = new PersonRepository(dataSource);
-            initSchema(dataSource);
+        Given("database has data", () -> {
+            createDatSource(1);
+            createRepository();
+            initSchema();
         });
         When("the (\\w+) read method is called", (final String methodType) -> {
             switch (methodType) {
@@ -48,23 +48,36 @@ public final class Yep1Steps implements En {
                     data = repository.readPerson();
             }
         });
-        Then("data from a database should be returned", () -> {
+        Then("data from the database should be returned", () -> {
             Assertions.assertFalse(data.isEmpty());
         });
     }
 
-    private void initSchema(final DataSource dataSource) {
+    /**
+     * Executes after the entire scenario finishes.
+     */
+    @After
+    public void afterScenario() {
+        dataSource.close();
+    }
+
+    private void createRepository() {
+        repository = new PersonRepository(dataSource);
+    }
+
+    private void initSchema() {
         final SchemaRepository schemaRepository = new SchemaRepository(dataSource);
         schemaRepository.dropTables();
         schemaRepository.createTables();
         repository.writePerson(1, "YEP-1");
     }
 
-    private static final DataSource createDatSource(final int yep) {
-        final HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:h2:mem:YEP-" + yep + ";DB_CLOSE_DELAY=-1");
+    private final void createDatSource(final int yep) {
+        dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:h2:mem:YEP-" + yep);
         dataSource.setUsername("sa");
-        return dataSource;
+        dataSource.setMinimumIdle(1);
+        dataSource.setMaximumPoolSize(1);
     }
 
 }
