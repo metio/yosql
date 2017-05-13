@@ -1,6 +1,6 @@
 def cucumber(yep, size="small", data=[]):
   native.filegroup(
-    name = "yosql-acceptance-tests-yep-1-sql-files",
+    name = "yosql-acceptance-tests-yep-%s-sql-files" % yep,
     srcs = native.glob(["src/main/yosql/YEP-%s/**/*.sql" % yep]),
   )
   native.genrule(
