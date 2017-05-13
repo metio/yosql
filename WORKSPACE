@@ -156,6 +156,24 @@ bind(
 )
 
 maven_jar(
+    name = "org_testcontainers_testcontainers",
+    artifact = "org.testcontainers:testcontainers:1.2.1",
+)
+bind(
+    name = "testcontainers",
+    actual = "@org_testcontainers_testcontainers//jar",
+)
+maven_jar(
+    name = "org_testcontainers_postgresql",
+    artifact = "org.testcontainers:postgresql:1.2.1",
+)
+bind(
+    name = "testcontainers_postgresql",
+    actual = "@org_testcontainers_postgresql//jar",
+)
+
+
+maven_jar(
     name = "io_reactivex_rxjava2_rxjava2",
     artifact = "io.reactivex.rxjava2:rxjava:2.0.6",
 )
