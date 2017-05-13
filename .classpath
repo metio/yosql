@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="yosql-core/src/main/java"/>
-	<classpathentry kind="src" path="yosql-testutils/src/main/java"/>
 	<classpathentry kind="src" path="yosql-core/src/main/resources"/>
 	<classpathentry kind="src" path="yosql-core/src/test/java"/>
+	<classpathentry kind="src" path="yosql-core/src/test/resources"/>
 	<classpathentry kind="src" path="yosql-cli/src/main/java"/>
+	<classpathentry kind="src" path="yosql-cli/src/main/resources"/>
+	<classpathentry kind="src" path="yosql-testutils/src/main/java"/>
 	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/java"/>
 	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/resources"/>
+	<classpathentry kind="src" path="yosql-example/src/main/java">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="yosql-example/src/main/yosql"/>
+	<classpathentry kind="src" path="bazel-genfiles/yosql-cli">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-genfiles/yosql-example">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/generator-api/libgenerator-api_sourcegenfiles">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/utils/libutils_sourcegenfiles">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/model/libmodel_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
@@ -57,39 +85,11 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="yosql-example/src/main/java">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="yosql-example/src/main/yosql"/>
-	<classpathentry kind="src" path="bazel-genfiles/yosql-example">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="yosql-cli/src/main/resources"/>
 	<classpathentry kind="src" path="bazel-bin/yosql-micro-benchmarks/_javac/yosql-micro-benchmarks/yosql-micro-benchmarks_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="bazel-genfiles/yosql-cli">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/generator-api/libgenerator-api_sourcegenfiles">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/utils/libutils_sourcegenfiles">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="yosql-core/src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_squareup_javapoet/jar/_ijar/jar/external/com_squareup_javapoet/jar/javapoet-1.8.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/javax_inject_javax_inject/jar/_ijar/jar/external/javax_inject_javax_inject/jar/javax.inject-1-ijar.jar"/>
