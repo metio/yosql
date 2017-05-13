@@ -1,7 +1,10 @@
 package de.xn__ho_hia.yosql.cli;
 
 import ch.qos.cal10n.BaseName;
+import ch.qos.cal10n.Locale;
+import ch.qos.cal10n.LocaleData;
 
+@LocaleData(@Locale("en"))
 @BaseName("cli-events")
 enum CliEvents {
 

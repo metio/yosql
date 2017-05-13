@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 import de.xn__ho_hia.yosql.testutils.EnumTCK;
 
-class SqlTypeTest implements EnumTCK<SqlType> {
+final class SqlTypeTest implements EnumTCK<SqlType> {
 
     @Override
     public Class<SqlType> getEnumClass() {

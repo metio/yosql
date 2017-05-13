@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="yosql-core/src/test/resources"/>
 	<classpathentry kind="src" path="yosql-cli/src/main/java"/>
 	<classpathentry kind="src" path="yosql-cli/src/main/resources"/>
+	<classpathentry kind="src" path="yosql-cli/src/test/java"/>
 	<classpathentry kind="src" path="yosql-testutils/src/main/java"/>
 	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/java"/>
 	<classpathentry kind="src" path="yosql-micro-benchmarks/src/main/resources"/>

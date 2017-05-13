@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 import de.xn__ho_hia.yosql.testutils.EnumTCK;
 
-class LoggingAPITest implements EnumTCK<LoggingAPI> {
+final class LoggingAPITest implements EnumTCK<LoggingAPI> {
 
     @Override
     public Class<LoggingAPI> getEnumClass() {

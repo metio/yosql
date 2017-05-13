@@ -1,10 +1,13 @@
 package de.xn__ho_hia.yosql.model;
 
 import ch.qos.cal10n.BaseName;
+import ch.qos.cal10n.Locale;
+import ch.qos.cal10n.LocaleData;
 
 /**
  * Enumeration of known loggers.
  */
+@LocaleData(@Locale("en"))
 @BaseName("loggers")
 public enum Loggers {
 

@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 import de.xn__ho_hia.yosql.testutils.EnumTCK;
 
-class GenerateOptionsTest implements EnumTCK<GenerateOptions> {
+final class GenerateOptionsTest implements EnumTCK<GenerateOptions> {
 
     @Override
     public Class<GenerateOptions> getEnumClass() {
