@@ -56,9 +56,8 @@ public final class ValidationFileParameterResolver implements ParameterResolver 
                 final byte[] readAllBytes = Files.readAllBytes(pathToValidationFile);
                 return new String(readAllBytes, charset);
             } catch (final IOException exception) {
-                exception.printStackTrace();
+                throw new RuntimeException(exception);
             }
-            return null;
         }
 
         @SuppressWarnings("nls")
