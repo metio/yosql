@@ -51,15 +51,6 @@ public final class ValidationFileParameterResolver implements ParameterResolver 
             return read(pathToValidationFile, charset);
         }
 
-        private static String read(final Path pathToValidationFile, final Charset charset) {
-            try {
-                final byte[] readAllBytes = Files.readAllBytes(pathToValidationFile);
-                return new String(readAllBytes, charset);
-            } catch (final IOException exception) {
-                throw new RuntimeException(exception);
-            }
-        }
-
         @SuppressWarnings("nls")
         private Path lookupFile() {
             final String resourceDir = "src/test/resources/";
@@ -70,6 +61,15 @@ public final class ValidationFileParameterResolver implements ParameterResolver 
                 path = Paths.get(path, "/__main__/yosql-core/" + resourceDir).toString();
             }
             return Paths.get(path, fileName);
+        }
+
+        private static String read(final Path pathToValidationFile, final Charset charset) {
+            try {
+                final byte[] readAllBytes = Files.readAllBytes(pathToValidationFile);
+                return new String(readAllBytes, charset);
+            } catch (final IOException exception) {
+                throw new RuntimeException(exception);
+            }
         }
 
     }
