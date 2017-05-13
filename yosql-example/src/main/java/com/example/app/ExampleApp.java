@@ -54,7 +54,7 @@ public class ExampleApp {
         } else if (match(arguments, "mysql")) {
             // start mysql first with 'docker-compose up -d mysql'
             final HikariDataSource dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:51000/example");
+            dataSource.setJdbcUrl("jdbc:mysql://localhost:51000/example?useSSL=false");
             dataSource.setUsername("example");
             dataSource.setPassword("example");
             runTests(arguments, dataSource);

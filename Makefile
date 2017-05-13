@@ -90,11 +90,17 @@ example-h2-all: ##@example Run all examples against H2 database (works w/o docke
 
 .PHONY: example-psql-all
 example-psql-all: ##@example Run all examples against Postgres (use docker-compose.yml for env)
-	bazel run //yosql-example psql standard stream rxjava
+	docker-compose --file yosql-example/docker-compose.yml --project-name example_psql up -d postgres
+	sleep 5
+	-bazel run //yosql-example psql standard stream rxjava
+	docker-compose --file yosql-example/docker-compose.yml --project-name example_psql down
 
 .PHONY: example-mysql-all
 example-mysql-all: ##@example Run all examples against MySQL (use docker-compose.yml for env)
+	docker-compose --file yosql-example/docker-compose.yml --project-name example_mysql up -d mysql
+	sleep 10
 	bazel run //yosql-example mysql standard stream rxjava
+	docker-compose --file yosql-example/docker-compose.yml --project-name example_mysql down
 
 .PHONY: sign-waiver
 sign-waiver: ##@contributing Sign the WAIVER
