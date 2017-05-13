@@ -21,11 +21,6 @@ def cucumber(yep, size="small", data=[]):
       "src/main/resources/YEP-%s/YEP-%s.feature" % (yep, yep)
     ],
     runtime_deps = [
-      "//external:junit5_jupiter_engine",
-      "//external:junit5_platform_console",
-      "//external:junit5_platform_commons",
-      "//external:junit5_platform_engine",
-      "//external:junit5_platform_launcher",
       "//external:opentest4j",
       "//external:cucumber",
       "//external:cucumber8",
