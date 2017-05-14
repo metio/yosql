@@ -65,7 +65,7 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
     @TestFactory
     default Stream<DynamicTest> shouldNotCreateEnumForInvalidValue() {
         return invalidValues()
-                .map(value -> dynamicTest(String.format("should create [%s] from [%s]", getEnumClass(), value),
+                .map(value -> dynamicTest(String.format("should not create [%s] from [%s]", getEnumClass(), value),
                         () -> Assertions.assertThrows(IllegalArgumentException.class,
                                 () -> Enum.valueOf(getEnumClass(), value))));
     }
