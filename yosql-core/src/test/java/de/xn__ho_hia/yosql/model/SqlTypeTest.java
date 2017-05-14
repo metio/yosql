@@ -23,4 +23,10 @@ final class SqlTypeTest implements EnumTCK<SqlType> {
         return Stream.of("READING", "WRITING", "CALLING");
     }
 
+    @Override
+    @SuppressWarnings("nls")
+    public Stream<String> invalidValues() {
+        return Stream.of("QUERY", "UPDATE", "CALL");
+    }
+
 }
