@@ -38,6 +38,11 @@ public enum ApplicationEvents {
     APPLICATION_RUNTIME,
 
     /**
+     * Signals that a file is about to be parsed.
+     */
+    FILE_PARSING_STARTING,
+
+    /**
      * Signals that a file was parsed.
      */
     FILE_PARSING_FINISHED,

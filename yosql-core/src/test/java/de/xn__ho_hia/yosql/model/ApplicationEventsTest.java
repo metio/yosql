@@ -19,6 +19,7 @@ final class ApplicationEventsTest implements EnumTCK<ApplicationEvents> {
                 "FILE_WRITE_FAILED",
                 "TASK_RUNTIME",
                 "APPLICATION_RUNTIME",
+                "FILE_PARSING_STARTING",
                 "FILE_PARSING_FINISHED",
                 "FILE_PARSING_FAILED",
                 "TYPE_GENERATED",
