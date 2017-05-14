@@ -20,6 +20,7 @@ import org.junit.jupiter.api.TestFactory;
  * @param <ENUMERATION>
  *            The enumeration type.
  */
+@SuppressWarnings("nls")
 public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
 
     /**
@@ -35,16 +36,14 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
     /**
      * @return Invalid enum values for the given enum class.
      */
-    @SuppressWarnings("nls")
     default Stream<String> invalidValues() {
-        return Stream.of("abc", "123");
+        return Stream.of();
     }
 
     /**
      * @return Tests that verify that enum instances can be created from valid values.
      */
     @TestFactory
-    @SuppressWarnings("nls")
     default Stream<DynamicTest> shouldCreateEnumForValidValue() {
         return validValues()
                 .map(value -> dynamicTest(String.format("should create [%s] from [%s]", getEnumClass(), value),
@@ -52,10 +51,18 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
     }
 
     /**
+     * @return Tests that verify that all enum values are verified.
+     */
+    @TestFactory
+    default Stream<DynamicTest> shouldVerifyAllValues() {
+        return Stream.of(dynamicTest(String.format("should verify all values of [%s]", getEnumClass()),
+                () -> Assertions.assertEquals(validValues().count(), getEnumClass().getEnumConstants().length)));
+    }
+
+    /**
      * @return Tests that verify that no enum instance can be created from invalid values.
      */
     @TestFactory
-    @SuppressWarnings("nls")
     default Stream<DynamicTest> shouldNotCreateEnumForInvalidValue() {
         return invalidValues()
                 .map(value -> dynamicTest(String.format("should create [%s] from [%s]", getEnumClass(), value),
