@@ -144,8 +144,12 @@ public abstract class ExecutionConfiguration {
 
     public abstract List<ResultRowConverter> resultRowConverters();
 
+    public abstract int maxThreads();
+
     @AutoValue.Builder
     public abstract static class Builder {
+
+        public abstract Builder setMaxThreads(int threads);
 
         public abstract Builder setDefaulFlowStateClassName(String value);
 

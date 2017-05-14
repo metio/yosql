@@ -57,6 +57,7 @@ public class BenchmarkConfigurationModule {
                 messages.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
 
         return ExecutionConfiguration.builder()
+                .setMaxThreads(0)
                 .setInputBaseDirectory(inputDirectory)
                 .setOutputBaseDirectory(outputDirectory)
                 .setBasePackageName(basePackageName)

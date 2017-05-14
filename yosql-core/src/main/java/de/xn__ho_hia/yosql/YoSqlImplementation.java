@@ -24,11 +24,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
+import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
@@ -42,16 +41,16 @@ import de.xn__ho_hia.yosql.utils.Timer;
  */
 final class YoSqlImplementation implements YoSql {
 
-    private final SqlFileResolver     fileResolver;
-    private final SqlFileParser       sqlFileParser;
-    private final RepositoryGenerator repositoryGenerator;
-    private final UtilitiesGenerator  utilsGenerator;
-    private final ExecutionErrors     errors;
-    private final Timer               timer;
-    private final TypeWriter          typeWriter;
-    private final Translator          translator;
+    private final SqlFileResolver        fileResolver;
+    private final SqlFileParser          sqlFileParser;
+    private final RepositoryGenerator    repositoryGenerator;
+    private final UtilitiesGenerator     utilsGenerator;
+    private final ExecutionErrors        errors;
+    private final Timer                  timer;
+    private final TypeWriter             typeWriter;
+    private final Translator             translator;
+    private final ExecutionConfiguration configuration;
 
-    @Inject
     YoSqlImplementation(
             final SqlFileResolver fileResolver,
             final SqlFileParser sqlFileParser,
@@ -60,7 +59,8 @@ final class YoSqlImplementation implements YoSql {
             final ExecutionErrors errors,
             final Timer timer,
             final TypeWriter typeWriter,
-            final Translator translator) {
+            final Translator translator,
+            final ExecutionConfiguration configuration) {
         this.fileResolver = fileResolver;
         this.sqlFileParser = sqlFileParser;
         this.repositoryGenerator = repositoryGenerator;
@@ -69,6 +69,7 @@ final class YoSqlImplementation implements YoSql {
         this.timer = timer;
         this.typeWriter = typeWriter;
         this.translator = translator;
+        this.configuration = configuration;
     }
 
     @Override
@@ -91,7 +92,13 @@ final class YoSqlImplementation implements YoSql {
             worker.setName(translator.nonLocalized(WORKER_POOL_NAME, Integer.valueOf(worker.getPoolIndex())));
             return worker;
         };
-        return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
+        return new ForkJoinPool(calculateNumberOfThreadsToUse(), factory, null, false);
+    }
+
+    private int calculateNumberOfThreadsToUse() {
+        final int threads = configuration.maxThreads();
+        final int processors = Runtime.getRuntime().availableProcessors();
+        return threads < 1 ? processors : Math.max(1, Math.min(threads, processors));
     }
 
     private List<SqlStatement> parseFiles() {

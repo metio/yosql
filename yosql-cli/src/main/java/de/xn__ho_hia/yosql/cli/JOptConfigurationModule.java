@@ -84,6 +84,7 @@ public final class JOptConfigurationModule {
             @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingAPI> loggingApi,
             final List<ResultRowConverter> resultConverters) {
         return ExecutionConfiguration.builder()
+                .setMaxThreads(0)
                 .setInputBaseDirectory(options.valueOf(inputBaseDirectory))
                 .setOutputBaseDirectory(options.valueOf(outputBaseDirectory))
                 .setBasePackageName(options.valueOf(basePackageName))

@@ -12,6 +12,7 @@ import de.xn__ho_hia.yosql.dagger.Delegating;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.api.TypeWriter;
 import de.xn__ho_hia.yosql.generator.api.UtilitiesGenerator;
+import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.Translator;
 import de.xn__ho_hia.yosql.parser.SqlFileParser;
@@ -34,9 +35,10 @@ public class YoSqlModule {
             final ExecutionErrors errors,
             final Timer timer,
             final TypeWriter typeWriter,
-            final Translator messages) {
+            final Translator messages,
+            final ExecutionConfiguration configuration) {
         return new YoSqlImplementation(fileResolver, sqlFileParser, repositoryGenerator, utilsGenerator, errors, timer,
-                typeWriter, messages);
+                typeWriter, messages, configuration);
     }
 
 }
