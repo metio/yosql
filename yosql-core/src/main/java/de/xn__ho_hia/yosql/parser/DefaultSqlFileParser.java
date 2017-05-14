@@ -96,7 +96,9 @@ final class DefaultSqlFileParser implements SqlFileParser {
             final Consumer<String> yaml,
             final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
-                .lines().forEach(line -> {
+                .lines()
+                .filter(line -> !line.trim().isEmpty())
+                .forEach(line -> {
                     if (line.startsWith(SQL_COMMENT_PREFIX)) {
                         yaml.accept(line.substring(2));
                         yaml.accept(NEWLINE);
