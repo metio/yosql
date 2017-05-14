@@ -20,9 +20,7 @@ node {
     stage('Install Bazel') {
         sh """
             ${BAZEL_INSTALLER} \
-                --base=${BASE} \
-                --bazelrc=${BASE}/bin/bazel.bazelrc \
-                --bin=${BASE}/binary
+                --prefix=${BASE}
         """
     }
 
