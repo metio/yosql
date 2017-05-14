@@ -66,6 +66,22 @@ public final class ExecutionErrors {
     }
 
     /**
+     * @param message
+     *            The message to include.
+     */
+    public void codeGenerationException(final String message) {
+        throwWith(new CodeGenerationException(message));
+    }
+
+    /**
+     * @param message
+     *            The message to include.
+     */
+    public void sqlFileParsingException(final String message) {
+        throwWith(new SqlFileParsingException(message));
+    }
+
+    /**
      * @param exception
      *            The parent exception to use.
      * @throws T
