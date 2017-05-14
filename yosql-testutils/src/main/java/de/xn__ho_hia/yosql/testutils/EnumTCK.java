@@ -29,12 +29,12 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
     Class<ENUMERATION> getEnumClass();
 
     /**
-     * @return Valid enum values for the given enum class.
+     * @return All valid enum values for the given enum class.
      */
     Stream<String> validValues();
 
     /**
-     * @return Invalid enum values for the given enum class.
+     * @return Any invalid enum values for the given enum class.
      */
     default Stream<String> invalidValues() {
         return Stream.of();
