@@ -18,6 +18,11 @@ import ch.qos.cal10n.LocaleData;
 public enum GenerateOptionDescriptions {
 
     /**
+     * The description for {@link GenerateOptions#MAX_THREADS}.
+     */
+    MAX_THREADS_DESCRIPTION,
+
+    /**
      * The description for {@link GenerateOptions#INPUT_BASE_DIRECTORY}.
      */
     INPUT_BASE_DIRECTORY_DESCRIPTION,

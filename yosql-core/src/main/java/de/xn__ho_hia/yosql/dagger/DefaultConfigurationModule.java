@@ -41,7 +41,7 @@ public final class DefaultConfigurationModule {
                 messages.getMessage(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
 
         return ExecutionConfiguration.builder()
-                .setMaxThreads(0)
+                .setMaxThreads(Integer.parseInt(messages.getMessage(MAX_THREADS_DEFAULT)))
                 .setInputBaseDirectory(Paths.get(messages.getMessage(CURRENT_DIRECTORY)))
                 .setOutputBaseDirectory(Paths.get(messages.getMessage(CURRENT_DIRECTORY)))
                 .setBasePackageName(basePackageName)

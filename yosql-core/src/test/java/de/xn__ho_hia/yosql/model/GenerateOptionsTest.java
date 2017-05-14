@@ -21,6 +21,8 @@ final class GenerateOptionsTest implements EnumTCK<GenerateOptions> {
     @SuppressWarnings("nls")
     public Stream<String> validValues() {
         return Stream.of(
+                "MAX_THREADS",
+                "MAX_THREADS_DEFAULT",
                 "INPUT_BASE_DIRECTORY",
                 "OUTPUT_BASE_DIRECTORY",
                 "CURRENT_DIRECTORY",

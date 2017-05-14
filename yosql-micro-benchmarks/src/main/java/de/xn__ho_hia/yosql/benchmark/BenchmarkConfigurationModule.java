@@ -43,21 +43,21 @@ public class BenchmarkConfigurationModule {
 
     @Provides
     @SuppressWarnings({ "nls" })
-    ExecutionConfiguration provideExecutionConfiguration(final Translator messages) {
-        final String basePackageName = messages.nonLocalized(BASE_PACKAGE_NAME_DEFAULT);
-        final String utilityPackageName = messages.nonLocalized(UTILITY_PACKAGE_NAME_DEFAULT);
-        final String converterPackageName = messages.nonLocalized(CONVERTER_PACKAGE_NAME_DEFAULT);
-        final String defaultRowConverterAlias = messages.nonLocalized(DEFAULT_ROW_CONVERTER_DEFAULT);
-        final String defaultResultRowClassName = messages.nonLocalized(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT);
+    ExecutionConfiguration provideExecutionConfiguration(final Translator translator) {
+        final String basePackageName = translator.nonLocalized(BASE_PACKAGE_NAME_DEFAULT);
+        final String utilityPackageName = translator.nonLocalized(UTILITY_PACKAGE_NAME_DEFAULT);
+        final String converterPackageName = translator.nonLocalized(CONVERTER_PACKAGE_NAME_DEFAULT);
+        final String defaultRowConverterAlias = translator.nonLocalized(DEFAULT_ROW_CONVERTER_DEFAULT);
+        final String defaultResultRowClassName = translator.nonLocalized(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT);
 
         final ResultRowConverter toResultRow = new ResultRowConverter();
         toResultRow.setAlias(defaultRowConverterAlias);
         toResultRow.setResultType(String.join(".", basePackageName, utilityPackageName, defaultResultRowClassName));
         toResultRow.setConverterType(String.join(".", basePackageName, converterPackageName,
-                messages.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
+                translator.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
 
         return ExecutionConfiguration.builder()
-                .setMaxThreads(0)
+                .setMaxThreads(Integer.parseInt(translator.nonLocalized(MAX_THREADS_DEFAULT)))
                 .setInputBaseDirectory(inputDirectory)
                 .setOutputBaseDirectory(outputDirectory)
                 .setBasePackageName(basePackageName)
@@ -66,43 +66,43 @@ public class BenchmarkConfigurationModule {
                 // TODO: offer several ways how SQL statements are embedded in generated repositories?
                 // see https://github.com/sebhoss/yosql/issues/18
                 .setRepositorySqlStatements("inline")
-                .setGenerateStandardApi(Boolean.parseBoolean(messages.nonLocalized(METHOD_STANDARD_API_DEFAULT)))
-                .setGenerateBatchApi(Boolean.parseBoolean(messages.nonLocalized(METHOD_BATCH_API_DEFAULT)))
-                .setGenerateRxJavaApi(Boolean.parseBoolean(messages.nonLocalized(METHOD_RXJAVA_API_DEFAULT)))
-                .setGenerateStreamEagerApi(Boolean.parseBoolean(messages.nonLocalized(METHOD_STREAM_EAGER_API_DEFAULT)))
-                .setGenerateStreamLazyApi(Boolean.parseBoolean(messages.nonLocalized(METHOD_STREAM_LAZY_API_DEFAULT)))
-                .setMethodBatchPrefix(messages.nonLocalized(METHOD_BATCH_PREFIX_DEFAULT))
-                .setMethodBatchSuffix(messages.nonLocalized(METHOD_BATCH_SUFFIX_DEFAULT))
-                .setMethodStreamPrefix(messages.nonLocalized(METHOD_STREAM_PREFIX_DEFAULT))
-                .setMethodStreamSuffix(messages.nonLocalized(METHOD_STREAM_SUFFIX_DEFAULT))
-                .setMethodRxJavaPrefix(messages.nonLocalized(METHOD_RXJAVA_PREFIX_DEFAULT))
-                .setMethodRxJavaSuffix(messages.nonLocalized(METHOD_RXJAVA_SUFFIX_DEFAULT))
-                .setMethodEagerName(messages.nonLocalized(METHOD_EAGER_NAME_DEFAULT))
-                .setMethodLazyName(messages.nonLocalized(METHOD_LAZY_NAME_DEFAULT))
-                .setRepositoryNameSuffix(messages.nonLocalized(REPOSITORY_NAME_SUFFIX_DEFAULT))
-                .setSqlStatementSeparator(messages.nonLocalized(SQL_STATEMENT_SEPARATOR_DEFAULT))
-                .setSqlFilesCharset(messages.nonLocalized(SQL_FILES_CHARSET_DEFAULT))
+                .setGenerateStandardApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_STANDARD_API_DEFAULT)))
+                .setGenerateBatchApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_BATCH_API_DEFAULT)))
+                .setGenerateRxJavaApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_RXJAVA_API_DEFAULT)))
+                .setGenerateStreamEagerApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_STREAM_EAGER_API_DEFAULT)))
+                .setGenerateStreamLazyApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_STREAM_LAZY_API_DEFAULT)))
+                .setMethodBatchPrefix(translator.nonLocalized(METHOD_BATCH_PREFIX_DEFAULT))
+                .setMethodBatchSuffix(translator.nonLocalized(METHOD_BATCH_SUFFIX_DEFAULT))
+                .setMethodStreamPrefix(translator.nonLocalized(METHOD_STREAM_PREFIX_DEFAULT))
+                .setMethodStreamSuffix(translator.nonLocalized(METHOD_STREAM_SUFFIX_DEFAULT))
+                .setMethodRxJavaPrefix(translator.nonLocalized(METHOD_RXJAVA_PREFIX_DEFAULT))
+                .setMethodRxJavaSuffix(translator.nonLocalized(METHOD_RXJAVA_SUFFIX_DEFAULT))
+                .setMethodEagerName(translator.nonLocalized(METHOD_EAGER_NAME_DEFAULT))
+                .setMethodLazyName(translator.nonLocalized(METHOD_LAZY_NAME_DEFAULT))
+                .setRepositoryNameSuffix(translator.nonLocalized(REPOSITORY_NAME_SUFFIX_DEFAULT))
+                .setSqlStatementSeparator(translator.nonLocalized(SQL_STATEMENT_SEPARATOR_DEFAULT))
+                .setSqlFilesCharset(translator.nonLocalized(SQL_FILES_CHARSET_DEFAULT))
                 .setAllowedCallPrefixes(
-                        Arrays.asList(messages.nonLocalized(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT).split(",")))
+                        Arrays.asList(translator.nonLocalized(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT).split(",")))
                 .setAllowedReadPrefixes(
-                        Arrays.asList(messages.nonLocalized(METHOD_ALLOWED_READ_PREFIXES_DEFAULT).split(",")))
+                        Arrays.asList(translator.nonLocalized(METHOD_ALLOWED_READ_PREFIXES_DEFAULT).split(",")))
                 .setAllowedWritePrefixes(
-                        Arrays.asList(messages.nonLocalized(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT).split(",")))
+                        Arrays.asList(translator.nonLocalized(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT).split(",")))
                 .setValidateMethodNamePrefixes(
-                        Boolean.parseBoolean(messages.nonLocalized(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT)))
-                .setMethodCatchAndRethrow(Boolean.parseBoolean(messages.nonLocalized(METHOD_CATCH_AND_RETHROW_DEFAULT)))
+                        Boolean.parseBoolean(translator.nonLocalized(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT)))
+                .setMethodCatchAndRethrow(Boolean.parseBoolean(translator.nonLocalized(METHOD_CATCH_AND_RETHROW_DEFAULT)))
                 .setClassGeneratedAnnotation(
-                        Boolean.parseBoolean(messages.nonLocalized(GENERATED_ANNOTATION_CLASS_DEFAULT)))
+                        Boolean.parseBoolean(translator.nonLocalized(GENERATED_ANNOTATION_CLASS_DEFAULT)))
                 .setFieldGeneratedAnnotation(
-                        Boolean.parseBoolean(messages.nonLocalized(GENERATED_ANNOTATION_FIELD_DEFAULT)))
+                        Boolean.parseBoolean(translator.nonLocalized(GENERATED_ANNOTATION_FIELD_DEFAULT)))
                 .setMethodGeneratedAnnotation(
-                        Boolean.parseBoolean(messages.nonLocalized(GENERATED_ANNOTATION_METHOD_DEFAULT)))
-                .setGeneratedAnnotationComment(messages.nonLocalized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
+                        Boolean.parseBoolean(translator.nonLocalized(GENERATED_ANNOTATION_METHOD_DEFAULT)))
+                .setGeneratedAnnotationComment(translator.nonLocalized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setRepositoryGenerateInterface(
-                        Boolean.parseBoolean(messages.nonLocalized(REPOSITORY_GENERATE_INTERFACE_DEFAULT)))
-                .setLoggingApi(LoggingAPI.valueOf(messages.nonLocalized(LOGGING_API_DEFAULT)))
-                .setDefaulFlowStateClassName(messages.nonLocalized(DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT))
-                .setDefaultResultStateClassName(messages.nonLocalized(DEFAULT_RESULT_STATE_CLASS_NAME_DEFAULT))
+                        Boolean.parseBoolean(translator.nonLocalized(REPOSITORY_GENERATE_INTERFACE_DEFAULT)))
+                .setLoggingApi(LoggingAPI.valueOf(translator.nonLocalized(LOGGING_API_DEFAULT)))
+                .setDefaulFlowStateClassName(translator.nonLocalized(DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT))
+                .setDefaultResultStateClassName(translator.nonLocalized(DEFAULT_RESULT_STATE_CLASS_NAME_DEFAULT))
                 .setDefaultResultRowClassName(defaultResultRowClassName)
                 .setDefaultRowConverter(defaultRowConverterAlias)
                 .setResultRowConverters(Arrays.asList(toResultRow))

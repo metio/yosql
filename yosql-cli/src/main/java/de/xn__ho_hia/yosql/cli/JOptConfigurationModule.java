@@ -45,6 +45,7 @@ public final class JOptConfigurationModule {
     @Provides
     ExecutionConfiguration provideExecutionConfiguration(
             @UsedFor.Command(Commands.GENERATE) final OptionSet options,
+            @UsedFor.GenerateOption(MAX_THREADS) final OptionSpec<Integer> maxThreads,
             @UsedFor.GenerateOption(INPUT_BASE_DIRECTORY) final OptionSpec<Path> inputBaseDirectory,
             @UsedFor.GenerateOption(OUTPUT_BASE_DIRECTORY) final OptionSpec<Path> outputBaseDirectory,
             @UsedFor.GenerateOption(BASE_PACKAGE_NAME) final OptionSpec<String> basePackageName,
@@ -84,7 +85,7 @@ public final class JOptConfigurationModule {
             @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingAPI> loggingApi,
             final List<ResultRowConverter> resultConverters) {
         return ExecutionConfiguration.builder()
-                .setMaxThreads(0)
+                .setMaxThreads(options.valueOf(maxThreads).intValue())
                 .setInputBaseDirectory(options.valueOf(inputBaseDirectory))
                 .setOutputBaseDirectory(options.valueOf(outputBaseDirectory))
                 .setBasePackageName(options.valueOf(basePackageName))

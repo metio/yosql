@@ -55,6 +55,23 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
 
     @Provides
     @Singleton
+    @UsedFor.GenerateOption(MAX_THREADS)
+    OptionSpec<Integer> provideMaxThreadsOption(
+            @UsedFor.Command(GENERATE) final OptionParser parser,
+            final Translator translator) {
+        return integerOption(parser, translator.nonLocalized(MAX_THREADS))
+                .defaultsTo(Integer.valueOf(translator.nonLocalized(MAX_THREADS_DEFAULT)))
+                .describedAs(translator.localized(MAX_THREADS_DESCRIPTION));
+    }
+
+    private ArgumentAcceptingOptionSpec<Integer> integerOption(final OptionParser parser, final String optionName) {
+        return parser.accepts(optionName)
+                .withRequiredArg()
+                .ofType(Integer.class);
+    }
+
+    @Provides
+    @Singleton
     @UsedFor.GenerateOption(INPUT_BASE_DIRECTORY)
     OptionSpec<Path> provideInputOption(
             @UsedFor.Command(GENERATE) final OptionParser parser,
@@ -540,6 +557,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
     YoSqlOptionParser provideYoSqlOptionParser(
             @UsedFor.Command(GENERATE) final OptionParser parser,
             @UsedFor.GenerateOption(LOG_LEVEL) final OptionSpec<String> logLevel,
+            @UsedFor.GenerateOption(MAX_THREADS) final OptionSpec<Integer> maxThreads,
             @UsedFor.GenerateOption(INPUT_BASE_DIRECTORY) final OptionSpec<Path> inputBaseDirectory,
             @UsedFor.GenerateOption(OUTPUT_BASE_DIRECTORY) final OptionSpec<Path> outputBaseDirectory,
             @UsedFor.GenerateOption(BASE_PACKAGE_NAME) final OptionSpec<String> basePackageName,
@@ -579,7 +597,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
             @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingAPI> loggingApi,
             @UsedFor.GenerateOption(RESULT_ROW_CONVERTERS) final OptionSpec<ResultRowConverter> resultRowConverters) {
         return new YoSqlOptionParser(parser, logLevel, inputBaseDirectory, outputBaseDirectory,
-                basePackageName,
+                basePackageName, maxThreads,
                 utilityPackageName, converterPackageName, repositoryNameSuffix, sqlFilesCharset, defaultRowConverter,
                 sqlStatementSeparator, methodBatchPrefix, methodBatchSuffix, methodStreamPrefix, methodStreamSuffix,
                 methodRxJavaPrefix, methodRxJavaSuffix, methodEagerName, methodLazyName, generateStandardApi,

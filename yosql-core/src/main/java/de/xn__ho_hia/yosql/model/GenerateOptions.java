@@ -11,11 +11,21 @@ import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
 
 /**
- * Enumeration of all known configuration options.
+ * Enumeration of all known 'generate' configuration options.
  */
 @LocaleData(@Locale("en"))
 @BaseName("generate-options")
 public enum GenerateOptions {
+
+    /**
+     * The maximum number of threads to use.
+     */
+    MAX_THREADS,
+
+    /**
+     * Default value for {@link #MAX_THREADS}.
+     */
+    MAX_THREADS_DEFAULT,
 
     /**
      * The base input directory.
