@@ -57,8 +57,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
     public Stream<SqlStatement> parse(final Path source) {
         try {
             final Charset charset = Charset.forName(config.sqlFilesCharset());
-            final Path pathToSqlFile = source;
-            final String rawText = new String(Files.readAllBytes(pathToSqlFile), charset);
+            final String rawText = new String(Files.readAllBytes(source), charset);
             final AtomicInteger counter = new AtomicInteger(1);
             return statementSplitter.splitAsStream(rawText)
                     .parallel()
