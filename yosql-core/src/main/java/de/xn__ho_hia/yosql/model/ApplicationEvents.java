@@ -40,12 +40,12 @@ public enum ApplicationEvents {
     /**
      * Signals that a file was parsed.
      */
-    FILE_PARSED_FINISHED,
+    FILE_PARSING_FINISHED,
 
     /**
      * Signals that a file could not be parsed.
      */
-    FILE_PARSED_FAILED,
+    FILE_PARSING_FAILED,
 
     /**
      * Signals that a type was generated.

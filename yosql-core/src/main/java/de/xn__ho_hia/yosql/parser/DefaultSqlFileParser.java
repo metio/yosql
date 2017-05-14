@@ -66,7 +66,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
                     .filter(Objects::nonNull);
         } catch (final Throwable exception) {
             errors.add(exception);
-            logger.debug(ApplicationEvents.FILE_PARSED_FAILED, source);
+            logger.debug(ApplicationEvents.FILE_PARSING_FAILED, source);
             return Stream.empty();
         }
     }
@@ -86,7 +86,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
         final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
-        logger.debug(ApplicationEvents.FILE_PARSED_FINISHED, source, configuration.getName());
+        logger.debug(ApplicationEvents.FILE_PARSING_FINISHED, source, configuration.getName());
         return new SqlStatement(configuration, rawSqlStatement);
     }
 
