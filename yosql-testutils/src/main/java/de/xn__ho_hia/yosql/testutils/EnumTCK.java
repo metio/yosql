@@ -51,15 +51,6 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
     }
 
     /**
-     * @return Tests that verify that all enum values are verified.
-     */
-    @TestFactory
-    default Stream<DynamicTest> shouldVerifyAllValues() {
-        return Stream.of(dynamicTest(String.format("should verify all values of [%s]", getEnumClass()),
-                () -> Assertions.assertEquals(validValues().count(), getEnumClass().getEnumConstants().length)));
-    }
-
-    /**
      * @return Tests that verify that no enum instance can be created from invalid values.
      */
     @TestFactory
@@ -68,6 +59,15 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
                 .map(value -> dynamicTest(String.format("should not create [%s] from [%s]", getEnumClass(), value),
                         () -> Assertions.assertThrows(IllegalArgumentException.class,
                                 () -> Enum.valueOf(getEnumClass(), value))));
+    }
+
+    /**
+     * @return Tests that verify that all enum values are verified.
+     */
+    @TestFactory
+    default Stream<DynamicTest> shouldVerifyAllValues() {
+        return Stream.of(dynamicTest(String.format("should verify all values of [%s]", getEnumClass()),
+                () -> Assertions.assertEquals(validValues().count(), getEnumClass().getEnumConstants().length)));
     }
 
 }
