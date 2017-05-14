@@ -32,7 +32,8 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
  */
 final class DefaultSqlFileParser implements SqlFileParser {
 
-    private static final String           NEWLINE = "\n";   //$NON-NLS-1$
+    private static final String           SQL_COMMENT_PREFIX = "--"; //$NON-NLS-1$
+    private static final String           NEWLINE            = "\n"; //$NON-NLS-1$
 
     private final ExecutionErrors         errors;
     private final SqlConfigurationFactory factory;
@@ -97,7 +98,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
             final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
                 .lines().forEach(line -> {
-                    if (line.startsWith("--")) { //$NON-NLS-1$
+                    if (line.startsWith(SQL_COMMENT_PREFIX)) {
                         yaml.accept(line.substring(2));
                         yaml.accept(NEWLINE);
                     } else {
