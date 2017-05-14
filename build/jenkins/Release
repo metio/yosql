@@ -24,14 +24,14 @@ node {
 
     stage('Build Everything') {
         sh """
-            ${BASE}/binary/bazel \
+            ${BASE}/bin/bazel \
                 --bazelrc=${BASE}/bazel.bazelrc build ...
         """
     }
 
     stage('Test Everything') {
         sh """
-            ${BASE}/binary/bazel \
+            ${BASE}/bin/bazel \
                 --bazelrc=${BASE}/bazel.bazelrc test ...
         """
     }
