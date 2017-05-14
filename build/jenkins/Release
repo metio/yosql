@@ -20,7 +20,7 @@ node {
     stage('Install Bazel') {
         sh "chmod +x ${BAZEL_INSTALLER}"
         sh "mkdir -p ${BASE}/binary"
-        sh "./${BAZEL_INSTALLER} --base="${BASE}" --bazelrc=${BASE}/binary/bazel.bazelrc --bin="${BASE}/binary"
+        sh "./${BAZEL_INSTALLER} --base="${BASE} --bazelrc=${BASE}/binary/bazel.bazelrc --bin="${BASE}/binary"
     }
 
     stage('Build Everything') {
