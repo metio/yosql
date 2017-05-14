@@ -51,7 +51,7 @@ final class YoSqlImplementation implements YoSql {
     private final ExecutionErrors     errors;
     private final Timer               timer;
     private final TypeWriter          typeWriter;
-    private final Translator          messages;
+    private final Translator          translator;
 
     @Inject
     YoSqlImplementation(
@@ -62,7 +62,7 @@ final class YoSqlImplementation implements YoSql {
             final ExecutionErrors errors,
             final Timer timer,
             final TypeWriter typeWriter,
-            final Translator messages) {
+            final Translator translator) {
         this.fileResolver = fileResolver;
         this.sqlFileParser = sqlFileParser;
         this.repositoryGenerator = repositoryGenerator;
@@ -70,7 +70,7 @@ final class YoSqlImplementation implements YoSql {
         this.errors = errors;
         this.timer = timer;
         this.typeWriter = typeWriter;
-        this.messages = messages;
+        this.translator = translator;
     }
 
     @Override
@@ -84,14 +84,14 @@ final class YoSqlImplementation implements YoSql {
                 .join();
         if (errors.hasErrors()) {
             errors.throwWith(new CodeGenerationException(
-                    messages.nonLocalized(ApplicationEvents.CODE_GENERATION_FAILED)));
+                    translator.nonLocalized(ApplicationEvents.CODE_GENERATION_FAILED)));
         }
     }
 
     private Executor createThreadPool() {
         final ForkJoinWorkerThreadFactory factory = pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
-            worker.setName(messages.nonLocalized(ApplicationEvents.WORKER_POOL_NAME,
+            worker.setName(translator.nonLocalized(ApplicationEvents.WORKER_POOL_NAME,
                     Integer.valueOf(worker.getPoolIndex())));
             return worker;
         };
@@ -105,12 +105,12 @@ final class YoSqlImplementation implements YoSql {
 
     private List<SqlStatement> parseFiles() {
         List<SqlStatement> statements = Collections.emptyList();
-        statements = timer.timed(messages.nonLocalized(ApplicationEvents.PARSE_FILES),
+        statements = timer.timed(translator.nonLocalized(ApplicationEvents.PARSE_FILES),
                 () -> fileResolver.resolveFiles()
                         .flatMap(sqlFileParser::parse)
                         .collect(toList()));
         if (errors.hasErrors()) {
-            errors.throwWith(new SqlFileParsingException(messages.nonLocalized(ApplicationEvents.PARSE_FILES_FAILED)));
+            errors.throwWith(new SqlFileParsingException(translator.nonLocalized(ApplicationEvents.PARSE_FILES_FAILED)));
         }
         return statements;
     }
@@ -121,7 +121,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private Stream<PackageTypeSpec> generateRepositories(final List<SqlStatement> statements) {
-        return timer.timed(messages.nonLocalized(ApplicationEvents.GENERATE_REPOSITORIES),
+        return timer.timed(translator.nonLocalized(ApplicationEvents.GENERATE_REPOSITORIES),
                 createTypeSpecs(statements, stmts -> stmts.stream()
                         .collect(groupingBy(SqlStatement::getRepository))
                         .entrySet()
@@ -131,7 +131,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private Stream<PackageTypeSpec> generateUtilities(final List<SqlStatement> statements) {
-        return timer.timed(messages.nonLocalized(ApplicationEvents.GENERATE_UTILITIES),
+        return timer.timed(translator.nonLocalized(ApplicationEvents.GENERATE_UTILITIES),
                 createTypeSpecs(statements, utilsGenerator::generateUtilities));
     }
 
@@ -144,7 +144,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private void writeIntoFiles(final List<PackageTypeSpec> typeSpecs) {
-        timer.timed(messages.nonLocalized(ApplicationEvents.WRITE_FILES), writeTypeSpecs(typeSpecs));
+        timer.timed(translator.nonLocalized(ApplicationEvents.WRITE_FILES), writeTypeSpecs(typeSpecs));
     }
 
     private Runnable writeTypeSpecs(final List<PackageTypeSpec> typeSpecs) {
