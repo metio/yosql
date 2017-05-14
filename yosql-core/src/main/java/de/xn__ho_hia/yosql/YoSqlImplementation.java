@@ -98,11 +98,6 @@ final class YoSqlImplementation implements YoSql {
         return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), factory, null, false);
     }
 
-    private Void handleExceptions(final Throwable throwable) {
-        errors.add(throwable.getCause());
-        return null;
-    }
-
     private List<SqlStatement> parseFiles() {
         List<SqlStatement> statements = Collections.emptyList();
         statements = timer.timed(translator.nonLocalized(ApplicationEvents.PARSE_FILES),
@@ -110,7 +105,8 @@ final class YoSqlImplementation implements YoSql {
                         .flatMap(sqlFileParser::parse)
                         .collect(toList()));
         if (errors.hasErrors()) {
-            errors.throwWith(new SqlFileParsingException(translator.nonLocalized(ApplicationEvents.PARSE_FILES_FAILED)));
+            errors.throwWith(
+                    new SqlFileParsingException(translator.nonLocalized(ApplicationEvents.PARSE_FILES_FAILED)));
         }
         return statements;
     }
@@ -158,6 +154,11 @@ final class YoSqlImplementation implements YoSql {
     private static <T> Optional<List<T>> listWithEntries(final List<T> value) {
         return Optional.ofNullable(value)
                 .filter(list -> !list.isEmpty());
+    }
+
+    private Void handleExceptions(final Throwable throwable) {
+        errors.add(throwable.getCause());
+        return null;
     }
 
 }
