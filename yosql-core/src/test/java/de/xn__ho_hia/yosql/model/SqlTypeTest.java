@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import de.xn__ho_hia.yosql.testutils.EnumTCK;
 
+@SuppressWarnings("nls")
 final class SqlTypeTest implements EnumTCK<SqlType> {
 
     @Override
@@ -18,13 +19,11 @@ final class SqlTypeTest implements EnumTCK<SqlType> {
     }
 
     @Override
-    @SuppressWarnings("nls")
     public Stream<String> validValues() {
         return Stream.of("READING", "WRITING", "CALLING");
     }
 
     @Override
-    @SuppressWarnings("nls")
     public Stream<String> invalidValues() {
         return Stream.of("QUERY", "UPDATE", "CALL");
     }
