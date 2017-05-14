@@ -31,7 +31,9 @@ final class ApplicationEventsTest implements EnumTCK<ApplicationEvents> {
                 "GENERATE_REPOSITORIES",
                 "GENERATE_UTILITIES",
                 "WRITE_FILES",
-                "WORKER_POOL_NAME");
+                "WORKER_POOL_NAME",
+                "FILE_SQL_STATEMENT_PARSED",
+                "FILE_YAML_FRONTMATTER_PARSED");
     }
 
 }

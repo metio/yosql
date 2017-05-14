@@ -43,7 +43,7 @@ final class PathBasedSqlFileResolver implements SqlFileResolver {
     public Stream<Path> resolveFiles() {
         final Path source = configuration.inputBaseDirectory();
         preconditions.assertDirectoryIsReadable(source);
-        logger.debug(ApplicationEvents.READ_FILES, source);
+        logger.trace(ApplicationEvents.READ_FILES, source);
 
         if (!errors.hasErrors()) {
             try {
@@ -51,7 +51,7 @@ final class PathBasedSqlFileResolver implements SqlFileResolver {
                         .parallel()
                         .filter(Files::isRegularFile)
                         .filter(path -> path.toString().endsWith(configuration.sqlFilesSuffix()))
-                        .peek(path -> logger.debug(ApplicationEvents.CONSIDER_FILE, path));
+                        .peek(path -> logger.trace(ApplicationEvents.CONSIDER_FILE, path));
             } catch (final IOException | SecurityException exception) {
                 errors.add(exception);
             }

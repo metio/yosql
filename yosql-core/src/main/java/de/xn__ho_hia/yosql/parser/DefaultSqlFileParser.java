@@ -83,6 +83,8 @@ final class DefaultSqlFileParser implements SqlFileParser {
         logger.trace(ApplicationEvents.FILE_PARSING_STARTING, rawStatement);
         final String rawSqlStatement = sql.toString();
         final String rawYaml = yaml.toString();
+        logger.trace(ApplicationEvents.FILE_SQL_STATEMENT_PARSED, rawSqlStatement);
+        logger.trace(ApplicationEvents.FILE_YAML_FRONTMATTER_PARSED, rawYaml);
 
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
         final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
@@ -97,7 +99,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
             final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
                 .lines()
-                .filter(line -> !line.trim().isEmpty())
+                .filter(line -> !line.trim().isEmpty() && !SQL_COMMENT_PREFIX.equals(line.trim()))
                 .forEach(line -> {
                     if (line.startsWith(SQL_COMMENT_PREFIX)) {
                         yaml.accept(line.substring(2));

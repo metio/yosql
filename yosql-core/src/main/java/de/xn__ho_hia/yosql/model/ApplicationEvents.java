@@ -43,6 +43,16 @@ public enum ApplicationEvents {
     FILE_PARSING_STARTING,
 
     /**
+     * Signals that a SQL statement within a file was parsed.
+     */
+    FILE_SQL_STATEMENT_PARSED,
+
+    /**
+     * Signals that a YAML frontmatter within a file was parsed.
+     */
+    FILE_YAML_FRONTMATTER_PARSED,
+
+    /**
      * Signals that a file was parsed.
      */
     FILE_PARSING_FINISHED,
