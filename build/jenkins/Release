@@ -7,7 +7,7 @@ node {
     def INSTALLER_PLATFORM = "linux-x86_64"
     def URL = "https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-${INSTALLER_PLATFORM}.sh"
     def BAZEL_INSTALLER = "bazel-installer.sh"
-    def BASE = pwd() + "bazel-install"
+    def BASE = pwd() + "/bazel-install"
 
     stage('Checkout') {
         checkout scm
