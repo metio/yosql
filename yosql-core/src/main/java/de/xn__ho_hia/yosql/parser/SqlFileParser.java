@@ -31,11 +31,11 @@ public interface SqlFileParser {
     /**
      * Parses SQL statements from a file.
      *
-     * @param source
-     *            The source file to read.
+     * @param pathToFile
+     *            The file to parse.
      * @return A stream of statements founds inside the source file.
      */
-    Stream<SqlStatement> parse(Path source);
+    Stream<SqlStatement> parse(Path pathToFile);
 
     /**
      * @param sqlStatement

@@ -10,11 +10,12 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 /**
+ * Resolves SQL files possibly from an external source, like the file system.
  */
 public interface SqlFileResolver {
 
     /**
-     * @return A stream of SQL files found in source.
+     * @return A stream of SQL files found in the source of this resolver.
      */
     Stream<Path> resolveFiles();
 
