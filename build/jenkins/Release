@@ -18,10 +18,8 @@ node {
     }
 
     stage('Install Bazel') {
-        sh """
-            ${BAZEL_INSTALLER} \
-                --prefix=${BASE}
-        """
+        sh "chmod +x ${BAZEL_INSTALLER}"
+        sh "./${BAZEL_INSTALLER} --prefix=${BASE}"
     }
 
     stage('Build Everything') {
