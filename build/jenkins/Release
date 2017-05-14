@@ -19,20 +19,20 @@ node {
 
     stage('Install Bazel') {
         sh "chmod +x ${BAZEL_INSTALLER}"
-        sh "./${BAZEL_INSTALLER} --prefix=${BASE}"
+        sh "./${BAZEL_INSTALLER} --prefix=${BASE} --bazelrc=${BASE}/bazel.bazelrc"
     }
 
     stage('Build Everything') {
         sh """
             ${BASE}/binary/bazel \
-                --bazelrc=${BASE}/bin/bazel.bazelrc build ...
+                --bazelrc=${BASE}/bazel.bazelrc build ...
         """
     }
 
     stage('Test Everything') {
         sh """
             ${BASE}/binary/bazel \
-                --bazelrc=${BASE}/bin/bazel.bazelrc test ...
+                --bazelrc=${BASE}/bazel.bazelrc test ...
         """
     }
 
