@@ -12,9 +12,18 @@ import java.util.stream.Stream;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Generates utility classes.
+ */
 public interface UtilitiesGenerator {
 
+    /**
+     * Creates utilities based on a number of {@link SqlStatement}s.
+     *
+     * @param statements
+     *            The statements to use.
+     * @return A stream of utility type specifications and their target package.
+     */
     Stream<PackageTypeSpec> generateUtilities(List<SqlStatement> statements);
 
 }
