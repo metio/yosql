@@ -13,11 +13,27 @@ import com.squareup.javapoet.FieldSpec;
 
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Generates fields and static initializers for those.
+ */
 public interface FieldsGenerator {
 
+    /**
+     * Creates the static initializer block for a class based on a number of {@link SqlStatement}s.
+     *
+     * @param statements
+     *            The statements to use.
+     * @return The static initializer for the given statements.
+     */
     CodeBlock staticInitializer(List<SqlStatement> statements);
 
+    /**
+     * Creates the field specifications for a class based on a number of {@link SqlStatement}s.
+     *
+     * @param statements
+     *            The statements to use.
+     * @return The field specifications.
+     */
     Iterable<FieldSpec> asFields(List<SqlStatement> statements);
 
 }

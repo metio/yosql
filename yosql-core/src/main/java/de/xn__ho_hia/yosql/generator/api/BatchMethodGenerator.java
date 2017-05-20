@@ -23,10 +23,10 @@ public interface BatchMethodGenerator {
      *
      * @param configuration
      *            The configuration to use.
-     * @param sqlStatements
+     * @param vendorStatements
      *            The vendor statements to use.
      * @return The batch method specification.
      */
-    MethodSpec batchWriteMethod(SqlConfiguration configuration, List<SqlStatement> sqlStatements);
+    MethodSpec batchWriteMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
 
 }

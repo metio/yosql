@@ -11,7 +11,9 @@ import java.util.List;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Generates repositories.
+ */
 public interface RepositoryGenerator {
 
     /**
@@ -19,8 +21,9 @@ public interface RepositoryGenerator {
      *
      * @param repositoryName
      *            The fully-qualified name of the repository to generate.
-     * @param sqlStatements
-     *            The SQL statements to be included in the repository.
+     * @param statements
+     *            The statements to include in the repository.
+     * @return The repository type specification and its intended target package.
      */
     PackageTypeSpec generateRepository(String repositoryName, List<SqlStatement> statements);
 

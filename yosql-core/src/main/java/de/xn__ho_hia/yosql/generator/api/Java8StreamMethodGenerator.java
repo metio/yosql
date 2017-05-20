@@ -13,11 +13,31 @@ import com.squareup.javapoet.MethodSpec;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Generates Java 8 {@link java.util.stream.Stream} based methods.
+ */
 public interface Java8StreamMethodGenerator {
 
-    MethodSpec streamEagerMethod(SqlConfiguration configuration, List<SqlStatement> statements);
+    /**
+     * Creates an eager streaming method for reading data out of a database.
+     *
+     * @param configuration
+     *            The configuration to use.
+     * @param vendorStatements
+     *            The vendor statements to use.
+     * @return An eager streaming method.
+     */
+    MethodSpec streamEagerMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
 
-    MethodSpec streamLazyMethod(SqlConfiguration configuration, List<SqlStatement> statements);
+    /**
+     * Creates a lazy streaming method for reading data out of a database.
+     *
+     * @param configuration
+     *            The configuration to use.
+     * @param vendorStatements
+     *            The vendor statements to use.
+     * @return A lazy streaming method.
+     */
+    MethodSpec streamLazyMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
 
 }

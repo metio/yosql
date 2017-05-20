@@ -13,9 +13,20 @@ import com.squareup.javapoet.MethodSpec;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Generates RxJava2 based methods.
+ */
 public interface RxJavaMethodGenerator {
 
-    MethodSpec rxJava2ReadMethod(SqlConfiguration configuration, List<SqlStatement> statements);
+    /**
+     * Creates a RxJava2 based method for reading data out of a database.
+     *
+     * @param configuration
+     *            The configuration to use.
+     * @param vendorStatements
+     *            The vendor statements to use.
+     * @return A RxJava2 based read method.
+     */
+    MethodSpec rxJava2ReadMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
 
 }

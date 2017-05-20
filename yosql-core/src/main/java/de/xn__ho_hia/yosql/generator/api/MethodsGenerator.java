@@ -12,9 +12,18 @@ import com.squareup.javapoet.MethodSpec;
 
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Generates methods for a repository.
+ */
 public interface MethodsGenerator {
 
-    Iterable<MethodSpec> asMethods(List<SqlStatement> sqlStatementsInRepository);
+    /**
+     * Creates all methods of a repository based on a number of {@link SqlStatement}s.
+     *
+     * @param statements
+     *            The statements to use.
+     * @return The method specifications based on the given statements.
+     */
+    Iterable<MethodSpec> asMethods(List<SqlStatement> statements);
 
 }

@@ -13,16 +13,36 @@ import com.squareup.javapoet.MethodSpec;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Generates 'standard' method - implementation decides whatever that means.
+ */
 public interface StandardMethodGenerator {
 
+    /**
+     * @param methodName
+     * @param configuration
+     * @param vendorStatements
+     * @return A method specification for a standard reading method.
+     */
     MethodSpec standardReadMethod(String methodName, SqlConfiguration configuration,
-            List<SqlStatement> statements);
+            List<SqlStatement> vendorStatements);
 
+    /**
+     * @param methodName
+     * @param configuration
+     * @param vendorStatements
+     * @return A method specification for a standard writing method.
+     */
     MethodSpec standardWriteMethod(String methodName, SqlConfiguration configuration,
-            List<SqlStatement> statements);
+            List<SqlStatement> vendorStatements);
 
+    /**
+     * @param methodName
+     * @param configuration
+     * @param vendorStatements
+     * @return A method specification for a standard calling method.
+     */
     MethodSpec standardCallMethod(String methodName, SqlConfiguration configuration,
-            List<SqlStatement> statements);
+            List<SqlStatement> vendorStatements);
 
 }
