@@ -34,17 +34,24 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import de.xn__ho_hia.yosql.dagger.Delegating;
 import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
+import de.xn__ho_hia.yosql.model.ResultRowConverter;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlParameter;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 import io.reactivex.Flowable;
 
 /**
- *
- *
+ * Typical code blocks in the domain of yosql.
  */
 @SuppressWarnings({ "nls", "javadoc" })
 public class TypicalCodeBlocks {
+
+    public static CodeBlock initializeConverter(final ResultRowConverter converter) {
+        final ClassName converterClass = ClassName.bestGuess(converter.getConverterType());
+        return CodeBlock.builder()
+                .addStatement("this.$N = new $T()", converter.getAlias(), converterClass)
+                .build();
+    }
 
     public static CodeBlock setFieldToSelf(final String name) {
         return CodeBlock.builder()

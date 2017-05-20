@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
 import com.squareup.javapoet.MethodSpec;
@@ -32,9 +31,8 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 import de.xn__ho_hia.yosql.model.SqlType;
 
 /**
- * Generic standard implementation of a {@link MethodsGenerator}.
+ * Generic implementation of a {@link MethodsGenerator}. Delegates most of its work to the injected members.
  */
-@SuppressWarnings("nls")
 public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     private final BatchMethodGenerator       batchMethods;
@@ -72,8 +70,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     protected MethodSpec constructor(final List<SqlStatement> sqlStatementsInRepository) {
         final Builder builder = CodeBlock.builder();
         resultConverters(sqlStatementsInRepository).forEach(converter -> {
-            final ClassName converterClass = ClassName.bestGuess(converter.getConverterType());
-            builder.addStatement("this.$N = new $T()", converter.getAlias(), converterClass);
+            builder.add(TypicalCodeBlocks.initializeConverter(converter));
         });
 
         return TypicalMethods.constructor()

@@ -10,6 +10,7 @@ import static de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks.*;
 
 import org.junit.jupiter.api.Test;
 
+import de.xn__ho_hia.yosql.model.ResultRowConverter;
 import de.xn__ho_hia.yosql.testutils.TestSqlConfigurations;
 import de.xn__ho_hia.yosql.testutils.ValidationFile;
 import de.xn__ho_hia.yosql.testutils.ValidationFileTest;
@@ -20,6 +21,14 @@ class TypicalCodeBlocksTest extends ValidationFileTest {
     @Test
     public void shouldAssignFieldToValueWithSameName(final ValidationFile validationFile) {
         validate(setFieldToSelf("test"), validationFile);
+    }
+
+    @Test
+    public void shouldInitializeConverter(final ValidationFile validationFile) {
+        final ResultRowConverter converter = new ResultRowConverter();
+        converter.setAlias("converter");
+        converter.setConverterType("com.example.MyTestConverter");
+        validate(initializeConverter(converter), validationFile);
     }
 
     @Test
