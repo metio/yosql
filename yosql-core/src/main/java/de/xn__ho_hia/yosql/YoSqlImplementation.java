@@ -12,7 +12,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -102,8 +101,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private List<SqlStatement> parseFiles() {
-        List<SqlStatement> statements = Collections.emptyList();
-        statements = timer.timed(translator.nonLocalized(PARSE_FILES),
+        final List<SqlStatement> statements = timer.timed(translator.nonLocalized(PARSE_FILES),
                 () -> fileResolver.resolveFiles()
                         .flatMap(sqlFileParser::parse)
                         .collect(toList()));
