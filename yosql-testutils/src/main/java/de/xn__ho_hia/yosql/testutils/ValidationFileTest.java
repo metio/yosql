@@ -7,6 +7,7 @@
 package de.xn__ho_hia.yosql.testutils;
 
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,12 @@ public class ValidationFileTest {
             final CodeBlock codeBlock,
             final ValidationFile validationFile) {
         Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+    }
+
+    protected static void validate(
+            final FieldSpec fieldSpec,
+            final ValidationFile validationFile) {
+        Assertions.assertEquals(validationFile.read(), fieldSpec.toString());
     }
 
 }
