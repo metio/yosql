@@ -23,7 +23,7 @@ import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 /**
- * Generic standard implementation of a {@link RepositoryGenerator}.
+ * Generic implementation of a {@link RepositoryGenerator}. Delegates most of its work to its injected members.
  */
 public final class GenericRepositoryGenerator implements RepositoryGenerator {
 
