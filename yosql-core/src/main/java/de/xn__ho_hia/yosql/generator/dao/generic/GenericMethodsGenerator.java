@@ -119,7 +119,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
             final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
-        return batchMethods.batchMethod(mergedConfiguration, vendorStatements);
+        return batchMethods.batchWriteMethod(mergedConfiguration, vendorStatements);
     }
 
     @Override

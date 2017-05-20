@@ -36,7 +36,7 @@ final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
     }
 
     @Override
-    public MethodSpec batchMethod(
+    public MethodSpec batchWriteMethod(
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         return TypicalMethods.publicMethod(mergedConfiguration.getBatchName())

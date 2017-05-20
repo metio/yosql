@@ -16,6 +16,6 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 @SuppressWarnings({ "javadoc" })
 public interface BatchMethodGenerator {
 
-    MethodSpec batchMethod(SqlConfiguration configuration, List<SqlStatement> sqlStatements);
+    MethodSpec batchWriteMethod(SqlConfiguration configuration, List<SqlStatement> sqlStatements);
 
 }
