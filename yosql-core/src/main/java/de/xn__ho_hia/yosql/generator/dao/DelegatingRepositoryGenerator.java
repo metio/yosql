@@ -17,7 +17,7 @@ import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 /**
- * Delegates its work to the configured repository generator.
+ * Delegates its work to one of the configured repository generators.
  */
 @Delegating
 final class DelegatingRepositoryGenerator implements RepositoryGenerator {
