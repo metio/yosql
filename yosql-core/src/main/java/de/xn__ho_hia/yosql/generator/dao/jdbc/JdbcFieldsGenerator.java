@@ -23,8 +23,8 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.api.FieldsGenerator;
+import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalParameters;
@@ -122,11 +122,9 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
         final String rawStatement = sqlStatement.getRawStatement();
         final String statement = TypicalParameters.replaceNamedParameters(rawStatement);
-        final String fieldValue = SqlType.CALLING == configuration.getType() ? String.format("{call %s}", statement)
-                : statement;
         return fields.prepareConstant(getClass(), String.class,
                 TypicalFields.constantSqlStatementFieldName(configuration))
-                .initializer("$S", fieldValue)
+                .initializer("$S", statement)
                 .build();
     }
 
