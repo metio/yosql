@@ -294,7 +294,7 @@ The first two statements specify a vendor which means that those queries will on
 
 Take a look in the *yosql-example* module that contains multiple example .sql files and a small application that uses the generated repositories. A complete list of configuration options follows below.
 
-== Configuration Options
+=== Configuration Options
 
 The plugin offers several ways to influence how the generated code looks like. Run `yosql-cli help` to view the help and `yosql-cli help --command generate` to view detailed information of the available configuration options of the `generate` command.
 
