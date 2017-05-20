@@ -428,7 +428,7 @@ public class SqlConfiguration {
                             .ifPresent(otherParam -> {
                                 if (param.getName() == null
                                         || !param.getName().isEmpty()
-                                        || "java.lang.Object".equals(param.getType())) { //$NON-NLS-1$
+                                        || Object.class.getName().equals(param.getType())) {
                                     param.setType(otherParam.getType());
                                 }
                                 if (param.getConverter() == null || !param.getConverter().isEmpty()) {
