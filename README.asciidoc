@@ -296,7 +296,139 @@ Take a look in the *yosql-example* module that contains multiple example .sql fi
 
 === Configuration Options
 
-The plugin offers several ways to influence how the generated code looks like. Run `yosql-cli help` to view the help and `yosql-cli help --command generate` to view detailed information of the available configuration options of the `generate` command.
+The plugin offers several ways to influence how the generated code looks like. Run `yosql-cli help` to view the help and `yosql-cli help --command generate` to view detailed information of the available configuration options of the `generate` command. Its output looks like this:
+
+[source]
+----
+Usage: yosql-cli [generate] [OPTIONS]
+
+Generates Java code based on SQL files. [generate] can be omitted for brevity.
+
+Possible [OPTIONS] are:
+┌──────────────────────────────┬──────────────────────────────────────────────────────────────────────┬───────────────────────┐
+│Name                          │Description                                                           │Defaults               │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--basePackageName             │The base package name for the generated code.                         │com.example.persistence│
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--classGeneratedAnnotation    │Should @Generated annotations be added to generated classes?          │true                   │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--converterPackageName        │The package name suffix for the generated converters.  Nested  package│converter              │
+│                              │names in the form 'my.subpackage.converter' are possible.             │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--defaulFlowStateClassName    │The simple class name of the generated flow  state  class.  Uses  both│FlowState              │
+│                              │'basePackageName' and  'utilityPackageName'  to  construct  the  fully│                       │
+│                              │qualified name. Only generated if 'methodRxJavaApi' is true.          │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--defaultResultRowClassName   │The class name of the result row class.  Uses  both  'basePackageName'│ResultRow              │
+│                              │and 'utilityPackageName' to construct the fully qualified  name.  Only│                       │
+│                              │generated if 'methodStandardApi' is true.                             │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--defaultResultStateClassName │The class name of the result state class. Uses both  'basePackageName'│ResultState            │
+│                              │and 'utilityPackageName' to construct the fully qualified  name.  Only│                       │
+│                              │generated if 'methodStandardApi' is true.                             │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--defaultRowConverter         │The default row converter to use for each  statement  that  returns  a│resultRowConverter     │
+│                              │value and does not specify a converter itself. Can either be the alias│                       │
+│                              │of a converter or the fully qualified name of a converter  taken  from│                       │
+│                              │'resultRowConverters'.                                                │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--fieldGeneratedAnnotation    │Should @Generated annotations be added to generated fields?           │false                  │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--generatedAnnotationComment  │The comment to place inside generated @Generated annotations.         │DO NOT EDIT            │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--inputBaseDirectory          │The input directory for .sql files                                    │.                      │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--locale                      │The locale to use.                                                    │en                     │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--logLevel                    │The logging level to use  while  executing  the  YoSql  CLI.  Possible│INFO                   │
+│                              │values are [ALL, TRACE, DEBUG, INFO, WARN,  ERROR,  OFF].  Upper/lower│                       │
+│                              │case does not matter.                                                 │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--loggingApi                  │The logging API that should be used in the  generated  code.  Possible│JDK                    │
+│                              │values  are  [NONE,  JDK,  LOG4J,  SLF4J]   which   are   defined   in│                       │
+│                              │'de.xn__ho_hia.yosql.model.LoggingAPI'.                               │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--matchCatchAndRethrow        │Whether generated methods should catch SqlExceptions and rethrow  them│true                   │
+│                              │as RuntimeExceptions. If set to false,  this  will  cause  methods  to│                       │
+│                              │declare that they throw a checked exception which in turn  will  force│                       │
+│                              │all its users to handle the exception themselves.                     │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--maxThreads                  │The maximum number of threads to use.                                 │0                      │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodAllowedCallPrefixes   │The allow method name prefixes  for  calling  methods.  Only  used  if│call, execute          │
+│                              │'methodValidateNamePrefixes' is true.                                 │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodAllowedReadPrefixes   │The allow method name prefixes  for  reading  methods.  Only  used  if│select,  read,   query,│
+│                              │'methodValidateNamePrefixes' is true.                                 │find                   │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodAllowedWritePrefixes  │The allow method name prefixes  for  writing  methods.  Only  used  if│update, insert, delete,│
+│                              │'methodValidateNamePrefixes' is true.                                 │create,   write,   add,│
+│                              │                                                                      │remove, merge, drop    │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodBatchApi              │Controls whether  the  generated  repositories  should  contain  batch│true                   │
+│                              │methods for SQL INSERT/UPDATE/DELETE statements.                      │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodBatchPrefix           │The method name prefix to apply to all batch methods.                 │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodBatchSuffix           │The method name suffix to apply to all batch methods.                 │Batch                  │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodEagerName             │The method name suffix to apply to all eager stream methods.          │Eager                  │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodGeneratedAnnotation   │Should @Generated annotations be added to generated methods?          │false                  │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodLazyName              │The method name suffix to apply to all lazy stream methods.           │Lazy                   │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodRxJavaApi             │Controls whether a RxJava 'io.reactivex.Flowable' based method  should│true                   │
+│                              │be generated.                                                         │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodRxJavaPrefix          │The method name prefix to apply to all RxJava methods.                │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodRxJavaSuffix          │The method name suffix to apply to all RxJava methods.                │Flow                   │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodStandardApi           │Controls whether the generated repositories  should  contain  standard│true                   │
+│                              │methods that. Standard methods execute depending on the  type  of  the│                       │
+│                              │query  and  could   either   be   a   single   'executeQuery'   on   a│                       │
+│                              │PreparedStatement in case of SQL SELECT statements or a single call to│                       │
+│                              │'executeUpdate' for SQL UPDATE statements.                            │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodStreamEagerApi        │Controls whether an eager Java8 'java.util.stream.Stream' based method│true                   │
+│                              │should be generated.                                                  │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodStreamLazyApi         │Controls whether a lazy Java8 'java.util.stream.Stream'  based  method│true                   │
+│                              │should be generated.                                                  │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodStreamPrefix          │The method name prefix to apply to all stream methods.                │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodStreamSuffix          │The method name suffix to apply to all stream methods.                │Stream                 │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--methodValidateNamePrefixes  │Controls   whether   method   names   are   validated   according   to│true                   │
+│                              │'methodAllowedCallPrefixes',      'methodAllowedReadPrefixes'      and│                       │
+│                              │'methodAllowedWritePrefixes'.                                         │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--outputBaseDirectory         │The output directory for all generated files                          │.                      │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--repositoryGenerateInterface │Should interfaces be generated for generated repositories?            │true                   │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--repositoryNameSuffix        │The repository name suffix to use for all generated repositories.     │Repository             │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--resultRowConverters         │List of globally  configured  row  converters  for  result  sets.  The│                       │
+│                              │'ToResultRowConverter'   is    always    added    with    the    alias│                       │
+│                              │'resultRowConverter' even when the converter is  not  used  (FIXTHAT).│                       │
+│                              │Configure   new    converters    along    the    following    pattern:│                       │
+│                              │'ALIAS:FQN_OF_CONVERTER:FQN_OF_RESULT[,...]'                          │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--sqlFilesCharset             │The character set to use while reading .sql files.                    │UTF-8                  │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--sqlFilesSuffix              │Only consider files as input that match this file name suffix.        │.sql                   │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--sqlStatementSeparator       │The SQL statement separator to use to  split  multiple  SQL  statement│;                      │
+│                              │inside a single .sql file.                                            │                       │
+├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
+│--utilityPackageName          │The package name suffix for the generated  utilities.  Nested  package│util                   │
+│                              │names in the form 'my.subpackage.util' are possible.                  │                       │
+└──────────────────────────────┴──────────────────────────────────────────────────────────────────────┴───────────────────────┘
+----
+
 
 == Hacking
 
