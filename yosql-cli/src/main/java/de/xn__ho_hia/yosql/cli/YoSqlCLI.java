@@ -157,7 +157,7 @@ public class YoSqlCLI {
         final List<String> similars = new ArrayList<>(failedOptions.size());
         final String[] array = recognizedOptions.keySet().stream()
                 .filter(string -> !string.contains("arguments")) //$NON-NLS-1$
-                .toArray(n -> new String[n]);
+                .toArray(size -> new String[size]);
         if (array.length > 0) {
             Arrays.sort(array);
             for (final String option : failedOptions) {
@@ -165,9 +165,11 @@ public class YoSqlCLI {
                 if (index > 0) {
                     similars.add(array[index - 1]);
                 }
-                similars.add(array[index]);
                 if (index < array.length) {
-                    similars.add(array[index + 1]);
+                    similars.add(array[index]);
+                    if (index + 1 < array.length) {
+                        similars.add(array[index + 1]);
+                    }
                 }
             }
         }
