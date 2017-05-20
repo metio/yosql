@@ -1,5 +1,6 @@
 package de.xn__ho_hia.yosql.generator.helpers;
 
+import static de.xn__ho_hia.yosql.generator.helpers.TypicalParameters.connection;
 import static de.xn__ho_hia.yosql.generator.helpers.TypicalParameters.dataSource;
 
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,11 @@ final class TypicalParametersTest extends ValidationFileTest {
     @Test
     public void shouldSpecifyDataSource(final ValidationFile validationFile) {
         validate(dataSource(), validationFile);
+    }
+
+    @Test
+    public void shouldSpecifyConnection(final ValidationFile validationFile) {
+        validate(connection(), validationFile);
     }
 
 }
