@@ -19,30 +19,27 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 public interface StandardMethodGenerator {
 
     /**
-     * @param methodName
      * @param configuration
      * @param vendorStatements
      * @return A method specification for a standard reading method.
      */
-    MethodSpec standardReadMethod(String methodName, SqlConfiguration configuration,
+    MethodSpec standardReadMethod(SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 
     /**
-     * @param methodName
      * @param configuration
      * @param vendorStatements
      * @return A method specification for a standard writing method.
      */
-    MethodSpec standardWriteMethod(String methodName, SqlConfiguration configuration,
+    MethodSpec standardWriteMethod(SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 
     /**
-     * @param methodName
      * @param configuration
      * @param vendorStatements
      * @return A method specification for a standard calling method.
      */
-    MethodSpec standardCallMethod(String methodName, SqlConfiguration configuration,
+    MethodSpec standardCallMethod(SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 
 }

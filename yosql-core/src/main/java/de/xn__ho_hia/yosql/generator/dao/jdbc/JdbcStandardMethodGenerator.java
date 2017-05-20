@@ -41,12 +41,12 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     @Override
     public MethodSpec standardReadMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
         final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
+        final String methodName = mergedConfiguration.getName();
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
@@ -70,10 +70,10 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     @Override
     public MethodSpec standardWriteMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
-        return TypicalMethods.publicMethod(mergedConfiguration.getName())
+        final String methodName = mergedConfiguration.getName();
+        return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(int.class)
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
@@ -91,11 +91,13 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
     }
 
     @Override
-    public MethodSpec standardCallMethod(final String methodName, final SqlConfiguration mergedConfiguration,
+    public MethodSpec standardCallMethod(
+            final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> statements) {
         final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
         final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
+        final String methodName = mergedConfiguration.getName();
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)

@@ -92,31 +92,27 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     @Override
     protected MethodSpec standardReadMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
-        return standardMethods.standardReadMethod(methodName, mergedConfiguration, vendorStatements);
+        return standardMethods.standardReadMethod(mergedConfiguration, vendorStatements);
     }
 
     @Override
     protected MethodSpec standardWriteMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
-        return standardMethods.standardWriteMethod(methodName, mergedConfiguration, vendorStatements);
+        return standardMethods.standardWriteMethod(mergedConfiguration, vendorStatements);
     }
 
     @Override
     protected MethodSpec standardCallMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
-        return standardMethods.standardCallMethod(methodName, mergedConfiguration, vendorStatements);
+        return standardMethods.standardCallMethod(mergedConfiguration, vendorStatements);
     }
 
     @Override
     protected MethodSpec batchWriteMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         return batchMethods.batchWriteMethod(mergedConfiguration, vendorStatements);
@@ -124,7 +120,6 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     @Override
     protected MethodSpec streamEagerReadMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         return streamMethods.streamEagerMethod(mergedConfiguration, vendorStatements);
@@ -132,7 +127,6 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     @Override
     protected MethodSpec streamLazyReadMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         return streamMethods.streamLazyMethod(mergedConfiguration, vendorStatements);
@@ -140,7 +134,6 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     @Override
     protected MethodSpec rxJavaReadMethod(
-            final String methodName,
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         return rxjavaMethods.rxJava2ReadMethod(mergedConfiguration, vendorStatements);
