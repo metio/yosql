@@ -51,7 +51,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
      * @param rxjavaMethods
      *            The RxJava methods generator to use.
      * @param standardMethods
-     *            The standatd methods generator to use.
+     *            The standard methods generator to use.
      * @param annotations
      *            The annotation generator to use.
      */
