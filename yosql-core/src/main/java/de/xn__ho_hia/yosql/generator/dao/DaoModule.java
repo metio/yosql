@@ -18,7 +18,7 @@ import de.xn__ho_hia.yosql.generator.dao.jdbc.JDBC;
  */
 @Module(includes = DaoJdbcModule.class)
 @SuppressWarnings("static-method")
-public class DaoModule {
+public final class DaoModule {
 
     @Delegating
     @Provides
