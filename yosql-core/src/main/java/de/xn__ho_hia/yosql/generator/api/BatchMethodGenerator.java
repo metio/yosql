@@ -13,9 +13,20 @@ import com.squareup.javapoet.MethodSpec;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Generates batch methods that take in a multitude of inputs and produce multiple outputs.
+ */
 public interface BatchMethodGenerator {
 
+    /**
+     * Generates a batching write method.
+     *
+     * @param configuration
+     *            The configuration to use.
+     * @param sqlStatements
+     *            The vendor statements to use.
+     * @return The batch method specification.
+     */
     MethodSpec batchWriteMethod(SqlConfiguration configuration, List<SqlStatement> sqlStatements);
 
 }
