@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 /**
  * Resolves SQL files possibly from an external source, like the file system.
  */
+@FunctionalInterface
 public interface SqlFileResolver {
 
     /**

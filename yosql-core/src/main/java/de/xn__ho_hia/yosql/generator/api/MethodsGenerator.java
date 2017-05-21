@@ -15,6 +15,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 /**
  * Generates methods for a repository.
  */
+@FunctionalInterface
 public interface MethodsGenerator {
 
     /**

@@ -9,6 +9,7 @@ package de.xn__ho_hia.yosql;
 /**
  * High-level interface of YoSQL.
  */
+@FunctionalInterface
 public interface YoSql {
 
     /**

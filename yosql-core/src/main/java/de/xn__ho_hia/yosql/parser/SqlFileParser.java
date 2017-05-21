@@ -20,6 +20,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 /**
  * Parses SQL statements inside files.
  */
+@FunctionalInterface
 public interface SqlFileParser {
 
     /** The regex to extract parameters out of SQL statements. */

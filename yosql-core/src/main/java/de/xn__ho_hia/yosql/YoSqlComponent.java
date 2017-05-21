@@ -37,6 +37,7 @@ import de.xn__ho_hia.yosql.parser.DefaultResolverModule;
         LoggerModule.class,
         YoSqlModule.class,
 })
+@FunctionalInterface
 public interface YoSqlComponent {
 
     /**
