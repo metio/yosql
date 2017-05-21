@@ -40,11 +40,11 @@ public class TypicalNames {
     public static final String LOGGER                = "LOG";
 
     public static final String getPackageName(final String repositoryName) {
-        return repositoryName.substring(0, repositoryName.lastIndexOf("."));
+        return repositoryName.substring(0, repositoryName.lastIndexOf('.'));
     }
 
     public static final String getClassName(final String repositoryName) {
-        return repositoryName.substring(repositoryName.lastIndexOf(".") + 1,
+        return repositoryName.substring(repositoryName.lastIndexOf('.') + 1,
                 repositoryName.length());
     }
 

@@ -412,7 +412,7 @@ public class SqlConfigurationFactory {
 
     private static String getFileNameWithoutExtension(final Path path) {
         final String fileName = path.getFileName().toString();
-        return fileName.substring(0, fileName.lastIndexOf("."));
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
 }
