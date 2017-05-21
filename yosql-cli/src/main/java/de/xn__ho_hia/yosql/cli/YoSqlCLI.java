@@ -12,16 +12,19 @@ import static de.xn__ho_hia.yosql.cli.Commands.HELP;
 import static de.xn__ho_hia.yosql.cli.Commands.VERSION;
 
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.cal10n.LocLoggerFactory;
 
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
@@ -38,9 +41,8 @@ public class YoSqlCLI {
 
     private static final Locale           SYSTEM_LOCALE    = Locale.ENGLISH;
     private static final IMessageConveyor SYSTEM_MESSAGES  = new MessageConveyor(SYSTEM_LOCALE);
-
-    private static final PrintStream      ERRORS           = System.err;
-    private static final PrintStream      OUT              = System.out;
+    private static final LocLoggerFactory LOGGER_FACTORY   = new LocLoggerFactory(SYSTEM_MESSAGES);
+    private static final LocLogger        LOGGER           = LOGGER_FACTORY.getLocLogger("yosql-cli"); //$NON-NLS-1$
 
     private static final String           HELP_COMMAND     = SYSTEM_MESSAGES.getMessage(HELP);
     private static final String           VERSION_COMMAND  = SYSTEM_MESSAGES.getMessage(VERSION);
@@ -114,31 +116,31 @@ public class YoSqlCLI {
     }
 
     private static void showGeneralHelp() {
-        OUT.println(SYSTEM_MESSAGES.getMessage(HELP_REQUIRED));
+        LOGGER.info(HELP_REQUIRED);
     }
 
     private static void showHelpForGenerate(final YoSqlOptionParser generateParser) {
-        OUT.println(SYSTEM_MESSAGES.getMessage(HELP_FOR_GENERATE));
-        printCommandLineOptions(generateParser, OUT);
+        LOGGER.info(HELP_FOR_GENERATE);
+        printCommandLineOptions(generateParser, LOGGER::info);
     }
 
     private static void showHelpForVersion(final YoSqlOptionParser versionParser) {
-        OUT.println(SYSTEM_MESSAGES.getMessage(HELP_FOR_VERSION));
-        printCommandLineOptions(versionParser, OUT);
+        LOGGER.info(HELP_FOR_VERSION);
+        printCommandLineOptions(versionParser, LOGGER::info);
     }
 
     private static void showHelpForHelp(final YoSqlOptionParser helpParser, final String commandName) {
-        OUT.println(SYSTEM_MESSAGES.getMessage(DETAIL_HELP_REQUIRED, commandName));
-        printCommandLineOptions(helpParser, OUT);
+        LOGGER.info(DETAIL_HELP_REQUIRED, commandName);
+        printCommandLineOptions(helpParser, LOGGER::info);
     }
 
     private static void printVersionText() {
-        OUT.println(SYSTEM_MESSAGES.getMessage(INFORMATION_NEEDED,
-                BuildInfo.VERSION, BuildInfo.BUILD, BuildInfo.REVISION, BuildInfo.BUILD_BY, BuildInfo.BUILD_AT));
+        LOGGER.info(INFORMATION_NEEDED,
+                BuildInfo.VERSION, BuildInfo.BUILD, BuildInfo.REVISION, BuildInfo.BUILD_BY, BuildInfo.BUILD_AT);
     }
 
     private static void showHelpForUnknownCommand(final String commandName) {
-        ERRORS.println(SYSTEM_MESSAGES.getMessage(UNKNOWN_COMMAND, commandName));
+        LOGGER.error(UNKNOWN_COMMAND, commandName);
     }
 
     private static void handleFailedOptions(
@@ -146,9 +148,9 @@ public class YoSqlCLI {
             final Collection<String> failedOptions) {
         final Map<String, OptionSpec<?>> recognizedOptions = generateParser.parser.recognizedOptions();
         final Collection<String> similarOptions = findSimilarOptions(failedOptions, recognizedOptions);
-        ERRORS.println(SYSTEM_MESSAGES.getMessage(PROBLEM_DURING_OPTION_PARSING,
-                failedOptions.stream().collect(Collectors.joining(" --")), GENERATE_COMMAND, similarOptions)); //$NON-NLS-1$
-        printCommandLineOptions(generateParser, ERRORS);
+        LOGGER.error(PROBLEM_DURING_OPTION_PARSING,
+                failedOptions.stream().collect(Collectors.joining(" --")), GENERATE_COMMAND, similarOptions); //$NON-NLS-1$
+        printCommandLineOptions(generateParser, LOGGER::error);
     }
 
     private static Collection<String> findSimilarOptions(
@@ -182,16 +184,18 @@ public class YoSqlCLI {
         }
     }
 
-    private static void printCommandLineOptions(final YoSqlOptionParser parser, final PrintStream output) {
+    private static void printCommandLineOptions(final YoSqlOptionParser parser, final Consumer<String> output) {
         try {
-            parser.parser.printHelpOn(output);
+            final StringWriter writer = new StringWriter();
+            parser.parser.printHelpOn(writer);
+            output.accept(writer.toString());
         } catch (final IOException exception) {
             handleUnknownException(exception);
         }
     }
 
     private static void handleUnknownException(final Throwable throwable) {
-        throwable.printStackTrace(ERRORS);
+        LOGGER.error("Encountered unknown exception: %s", throwable); //$NON-NLS-1$
     }
 
     private static void successfulTermination() {

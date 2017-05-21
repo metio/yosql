@@ -51,7 +51,7 @@ class YoSqlHelpFormatter implements HelpFormatter {
         }
         at.addRule();
 
-        return at.render() + "\n";
+        return "\n" + at.render() + "\n";
     }
 
 }

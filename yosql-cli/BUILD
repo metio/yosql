@@ -42,6 +42,7 @@ java_binary(
     "//external:skb_interfaces",
     "//external:commons_lang3",
     "//external:st4",
+    "//external:slf4j_ext",
     "//yosql-core",
   ],
   resources = [
