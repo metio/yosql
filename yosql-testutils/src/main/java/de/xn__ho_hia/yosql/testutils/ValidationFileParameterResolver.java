@@ -74,7 +74,7 @@ public final class ValidationFileParameterResolver implements ParameterResolver 
                 final byte[] readAllBytes = Files.readAllBytes(pathToValidationFile);
                 return new String(readAllBytes, charset);
             } catch (final IOException exception) {
-                throw new RuntimeException(exception);
+                throw new IllegalArgumentException(exception);
             }
         }
 
