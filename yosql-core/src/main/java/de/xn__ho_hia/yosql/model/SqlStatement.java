@@ -6,6 +6,7 @@
  */
 package de.xn__ho_hia.yosql.model;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
@@ -20,8 +21,10 @@ public class SqlStatement {
 
     private final SqlConfiguration configuration;
     private final String           rawStatement;
+    private final Path             source;
 
-    public SqlStatement(final SqlConfiguration configuration, final String rawStatement) {
+    public SqlStatement(final Path source, final SqlConfiguration configuration, final String rawStatement) {
+        this.source = source;
         this.configuration = configuration;
         this.rawStatement = rawStatement;
     }
@@ -88,6 +91,10 @@ public class SqlStatement {
         return configuration.isMethodBatchApi()
                 && configuration.hasParameters()
                 && isWriting();
+    }
+
+    public Path getSourcePath() {
+        return source;
     }
 
 }

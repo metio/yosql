@@ -8,6 +8,8 @@ package de.xn__ho_hia.yosql.generator.dao.generic;
 
 import java.util.List;
 
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.CodeBlock.Builder;
 import com.squareup.javapoet.TypeSpec;
 
 import org.slf4j.cal10n.LocLogger;
@@ -60,6 +62,7 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
         final String className = TypicalNames.getClassName(repositoryName);
         final String packageName = TypicalNames.getPackageName(repositoryName);
         final TypeSpec repository = TypicalTypes.publicClass(className)
+                .addJavadoc(javadoc(sqlStatements))
                 .addFields(fields.asFields(sqlStatements))
                 .addMethods(methods.asMethods(sqlStatements))
                 .addAnnotations(annotations.generatedClass(GenericRepositoryGenerator.class))
@@ -67,6 +70,19 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, packageName, repository.name);
         return new PackageTypeSpec(repository, packageName);
+    }
+
+    @SuppressWarnings("nls")
+    private static CodeBlock javadoc(final List<SqlStatement> statements) {
+        final Builder builder = CodeBlock.builder()
+                .add("Generated based on the following files:\n")
+                .add("<ul>\n");
+        statements.stream()
+                .map(SqlStatement::getSourcePath)
+                .distinct()
+                .forEach(path -> builder.add("<li>$S</li>\n", path));
+        builder.add("</ul>\n");
+        return builder.build();
     }
 
 }

@@ -90,7 +90,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
         final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
         logger.debug(ApplicationEvents.FILE_PARSING_FINISHED, source, configuration.getName());
-        return new SqlStatement(configuration, rawSqlStatement);
+        return new SqlStatement(source, configuration, rawSqlStatement);
     }
 
     private static void splitUpYamlAndSql(

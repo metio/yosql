@@ -86,7 +86,7 @@ final class AlternativeSqlFileParser implements SqlFileParser {
             errors.add(exception);
         }
 
-        return new SqlStatement(configuration, rawSqlStatement);
+        return new SqlStatement(source, configuration, rawSqlStatement);
     }
 
     private static void splitUpYamlAndSql(final String rawStatement, final Consumer<String> yaml,
