@@ -8,19 +8,65 @@ package de.xn__ho_hia.yosql.generator.helpers;
 
 import javax.lang.model.element.Modifier;
 
-@SuppressWarnings({ "javadoc" })
+/**
+ * Typical type/field/method/parameter modifiers.
+ */
 public class TypicalModifiers {
 
-    public static final Modifier[] OPEN_CLASS         = new Modifier[] { Modifier.PUBLIC };
-    public static final Modifier[] PUBLIC_CLASS       = new Modifier[] { Modifier.PUBLIC, Modifier.FINAL };
-    public static final Modifier[] PUBLIC_METHOD      = new Modifier[] { Modifier.PUBLIC, Modifier.FINAL };
-    public static final Modifier[] PUBLIC_CONSTRUCTOR = new Modifier[] { Modifier.PUBLIC };
-    public static final Modifier[] PRIVATE_METHOD     = new Modifier[] { Modifier.PRIVATE, Modifier.FINAL };
-    public static final Modifier[] PRIVATE_FIELD      = new Modifier[] { Modifier.PRIVATE, Modifier.FINAL };
-    public static final Modifier[] PROTECTED_FIELD    = new Modifier[] { Modifier.PROTECTED, Modifier.FINAL };
-    public static final Modifier[] PUBLIC_FIELD       = new Modifier[] { Modifier.PUBLIC };
-    public static final Modifier[] CONSTANT_FIELD     = new Modifier[] { Modifier.PRIVATE, Modifier.STATIC,
-            Modifier.FINAL };
-    public static final Modifier[] PARAMETER          = new Modifier[] { Modifier.FINAL };
+    /**
+     * @return The typical modifiers of an open class.
+     */
+    public static final Modifier[] openClass() {
+        return new Modifier[] { Modifier.PUBLIC };
+    }
+
+    /**
+     * @return The typical modifiers of a public class.
+     */
+    public static final Modifier[] publicClass() {
+        return new Modifier[] { Modifier.PUBLIC, Modifier.FINAL };
+    }
+
+    /**
+     * @return The typical modifiers of a public method.
+     */
+    public static final Modifier[] publicMethod() {
+        return new Modifier[] { Modifier.PUBLIC, Modifier.FINAL };
+    }
+
+    /**
+     * @return The typical modifiers of a public constructor.
+     */
+    public static final Modifier[] publicConstructor() {
+        return new Modifier[] { Modifier.PUBLIC };
+    }
+
+    /**
+     * @return The typical modifiers of a private field.
+     */
+    public static final Modifier[] privateField() {
+        return new Modifier[] { Modifier.PRIVATE, Modifier.FINAL };
+    }
+
+    /**
+     * @return The typical modifiers of a protected field.
+     */
+    public static final Modifier[] protectedField() {
+        return new Modifier[] { Modifier.PROTECTED, Modifier.FINAL };
+    }
+
+    /**
+     * @return The typical modifiers of a constant field.
+     */
+    public static final Modifier[] constantField() {
+        return new Modifier[] { Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL };
+    }
+
+    /**
+     * @return The typical modifiers of a parameter.
+     */
+    public static final Modifier[] parmeter() {
+        return new Modifier[] { Modifier.FINAL };
+    }
 
 }

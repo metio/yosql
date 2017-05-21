@@ -72,7 +72,7 @@ public final class TypicalParameters {
     }
 
     public static ParameterSpec parameter(final TypeName type, final String name) {
-        return ParameterSpec.builder(type, name, TypicalModifiers.PARAMETER).build();
+        return ParameterSpec.builder(type, name, TypicalModifiers.parmeter()).build();
     }
 
     public static ParameterSpec ofSqlParameter(final SqlParameter parameter) {

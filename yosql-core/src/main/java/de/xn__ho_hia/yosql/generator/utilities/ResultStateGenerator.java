@@ -62,19 +62,19 @@ final class ResultStateGenerator {
 
     private static FieldSpec resultSetField() {
         return FieldSpec.builder(ResultSet.class, TypicalNames.RESULT_SET)
-                .addModifiers(TypicalModifiers.PROTECTED_FIELD)
+                .addModifiers(TypicalModifiers.protectedField())
                 .build();
     }
 
     private static FieldSpec metaDataField() {
         return FieldSpec.builder(ResultSetMetaData.class, TypicalNames.META_DATA)
-                .addModifiers(TypicalModifiers.PROTECTED_FIELD)
+                .addModifiers(TypicalModifiers.protectedField())
                 .build();
     }
 
     private static FieldSpec columnCountField() {
         return FieldSpec.builder(int.class, TypicalNames.COLUMN_COUNT)
-                .addModifiers(TypicalModifiers.PROTECTED_FIELD)
+                .addModifiers(TypicalModifiers.protectedField())
                 .build();
     }
 

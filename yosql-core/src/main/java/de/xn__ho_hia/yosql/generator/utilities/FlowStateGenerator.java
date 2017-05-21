@@ -62,13 +62,13 @@ final class FlowStateGenerator {
 
     private static FieldSpec connectionField() {
         return FieldSpec.builder(Connection.class, TypicalNames.CONNECTION)
-                .addModifiers(TypicalModifiers.PRIVATE_FIELD)
+                .addModifiers(TypicalModifiers.privateField())
                 .build();
     }
 
     private static FieldSpec preparedStatementField() {
         return FieldSpec.builder(PreparedStatement.class, TypicalNames.STATEMENT)
-                .addModifiers(TypicalModifiers.PRIVATE_FIELD)
+                .addModifiers(TypicalModifiers.privateField())
                 .build();
     }
 

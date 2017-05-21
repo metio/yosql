@@ -16,7 +16,7 @@ class TypicalModifiersTest {
 
     @Test
     public void shouldPreparePublicMethod() {
-        Assertions.assertArrayEquals(new Modifier[] { Modifier.PUBLIC }, TypicalModifiers.OPEN_CLASS);
+        Assertions.assertArrayEquals(new Modifier[] { Modifier.PUBLIC }, TypicalModifiers.openClass());
     }
 
 }

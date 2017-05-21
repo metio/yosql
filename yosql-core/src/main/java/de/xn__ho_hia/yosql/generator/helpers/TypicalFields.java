@@ -22,7 +22,7 @@ public class TypicalFields {
 
     public static final FieldSpec privateField(final TypeName type, final String name) {
         return FieldSpec.builder(type, name)
-                .addModifiers(TypicalModifiers.PRIVATE_FIELD)
+                .addModifiers(TypicalModifiers.privateField())
                 .build();
     }
 
@@ -61,7 +61,7 @@ public class TypicalFields {
 
     public Builder prepareField(final Class<?> generatorClass, final TypeName type, final String name) {
         return builder(generatorClass, type, name)
-                .addModifiers(TypicalModifiers.PRIVATE_FIELD);
+                .addModifiers(TypicalModifiers.privateField());
     }
 
     public Builder prepareConstant(final Class<?> generatorClass, final Type type, final String name) {
@@ -70,7 +70,7 @@ public class TypicalFields {
 
     public Builder prepareConstant(final Class<?> generatorClass, final TypeName type, final String name) {
         return builder(generatorClass, type, name)
-                .addModifiers(TypicalModifiers.CONSTANT_FIELD);
+                .addModifiers(TypicalModifiers.constantField());
     }
 
     private Builder builder(final Class<?> generatorClass, final TypeName type, final String name) {

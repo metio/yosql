@@ -22,7 +22,7 @@ public class TypicalMethods {
      */
     public static MethodSpec.Builder publicMethod(final String name) {
         return MethodSpec.methodBuilder(name)
-                .addModifiers(TypicalModifiers.PUBLIC_METHOD);
+                .addModifiers(TypicalModifiers.publicMethod());
     }
 
     /**
@@ -41,7 +41,7 @@ public class TypicalMethods {
      */
     public static MethodSpec.Builder constructor() {
         return MethodSpec.constructorBuilder()
-                .addModifiers(TypicalModifiers.PUBLIC_CONSTRUCTOR);
+                .addModifiers(TypicalModifiers.publicConstructor());
     }
 
 }

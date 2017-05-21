@@ -74,23 +74,23 @@ public class TypicalTypes {
     // TODO: remove?
     public static final TypeSpec.Builder publicClass(final String name) {
         return TypeSpec.classBuilder(name)
-                .addModifiers(TypicalModifiers.PUBLIC_CLASS);
+                .addModifiers(TypicalModifiers.publicClass());
     }
 
     public static final TypeSpec.Builder publicClass(final ClassName name) {
         return TypeSpec.classBuilder(name)
-                .addModifiers(TypicalModifiers.PUBLIC_CLASS);
+                .addModifiers(TypicalModifiers.publicClass());
     }
 
     // TODO remove?
     public static final TypeSpec.Builder openClass(final String name) {
         return TypeSpec.classBuilder(name)
-                .addModifiers(TypicalModifiers.OPEN_CLASS);
+                .addModifiers(TypicalModifiers.openClass());
     }
 
     public static final TypeSpec.Builder openClass(final ClassName name) {
         return TypeSpec.classBuilder(name)
-                .addModifiers(TypicalModifiers.OPEN_CLASS);
+                .addModifiers(TypicalModifiers.openClass());
     }
 
 }
