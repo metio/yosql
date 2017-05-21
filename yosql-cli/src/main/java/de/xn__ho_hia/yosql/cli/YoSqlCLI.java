@@ -13,12 +13,12 @@ import static de.xn__ho_hia.yosql.cli.Commands.VERSION;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -154,26 +154,27 @@ public class YoSqlCLI {
     private static Collection<String> findSimilarOptions(
             final Collection<String> failedOptions,
             final Map<String, OptionSpec<?>> recognizedOptions) {
-        final List<String> similars = new ArrayList<>(failedOptions.size());
-        final String[] array = recognizedOptions.keySet().stream()
+        final Set<String> similars = new TreeSet<>();
+        final String[] availableOptions = recognizedOptions.keySet().stream()
                 .filter(string -> !string.contains("arguments")) //$NON-NLS-1$
                 .toArray(size -> new String[size]);
-        if (array.length > 0) {
-            Arrays.sort(array);
-            for (final String option : failedOptions) {
-                final int index = Math.abs(Arrays.binarySearch(array, option)) - 1;
-                if (index > 0) {
-                    similars.add(array[index - 1]);
-                }
-                if (index < array.length) {
-                    similars.add(array[index]);
-                    if (index + 1 < array.length) {
-                        similars.add(array[index + 1]);
-                    }
-                }
-            }
+        if (availableOptions.length > 0) {
+            Arrays.sort(availableOptions);
+            findNearestMatch(failedOptions, similars, availableOptions);
         }
         return similars;
+    }
+
+    private static void findNearestMatch(
+            final Collection<String> failedOptions,
+            final Set<String> similars,
+            final String[] availableOptions) {
+        for (final String option : failedOptions) {
+            final int index = Math.abs(Arrays.binarySearch(availableOptions, option)) - 1;
+            similars.add(availableOptions[Math.max(index - 1, 0)]);
+            similars.add(availableOptions[Math.max(Math.min(index, availableOptions.length - 1), 0)]);
+            similars.add(availableOptions[Math.min(index + 1, availableOptions.length - 1)]);
+        }
     }
 
     private static void printCommandLineOptions(final YoSqlOptionParser parser, final PrintStream output) {
