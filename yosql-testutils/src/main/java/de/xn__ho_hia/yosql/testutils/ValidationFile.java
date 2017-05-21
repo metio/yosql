@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
  * A validation file is used by test to compare complex {@link String strings} against the expected content of the
  * validation file.
  */
+@FunctionalInterface
 public interface ValidationFile {
 
     /**
