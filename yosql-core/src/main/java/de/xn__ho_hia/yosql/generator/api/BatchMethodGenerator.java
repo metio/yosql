@@ -16,6 +16,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 /**
  * Generates batch methods that take in a multitude of inputs and produce multiple outputs.
  */
+@FunctionalInterface
 public interface BatchMethodGenerator {
 
     /**

@@ -14,6 +14,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 /**
  * Generates repositories.
  */
+@FunctionalInterface
 public interface RepositoryGenerator {
 
     /**

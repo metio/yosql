@@ -15,6 +15,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 /**
  * Generates utility classes.
  */
+@FunctionalInterface
 public interface UtilitiesGenerator {
 
     /**

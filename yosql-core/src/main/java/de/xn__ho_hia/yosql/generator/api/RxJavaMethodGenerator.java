@@ -16,6 +16,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 /**
  * Generates RxJava2 based methods.
  */
+@FunctionalInterface
 public interface RxJavaMethodGenerator {
 
     /**
