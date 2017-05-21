@@ -238,8 +238,7 @@ public class SqlConfigurationFactory {
         final String dottedRepositoryName = rawRepositoryName.replace("/", ".");
         final String upperCaseName = upperCaseFirstLetterInLastSegment(dottedRepositoryName);
         final String actualRepository = repositoryInBasePackage(upperCaseName);
-        final String fullRepositoryName = repositoryWithNameSuffix(actualRepository);
-        return fullRepositoryName;
+        return repositoryWithNameSuffix(actualRepository);
     }
 
     private static String upperCaseFirstLetterInLastSegment(final String name) {
