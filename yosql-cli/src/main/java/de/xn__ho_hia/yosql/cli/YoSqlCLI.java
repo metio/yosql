@@ -159,7 +159,6 @@ public class YoSqlCLI {
                 .filter(string -> !string.contains("arguments")) //$NON-NLS-1$
                 .toArray(size -> new String[size]);
         if (availableOptions.length > 0) {
-            Arrays.sort(availableOptions);
             findNearestMatch(failedOptions, similars, availableOptions);
         }
         return similars;
@@ -169,6 +168,7 @@ public class YoSqlCLI {
             final Collection<String> failedOptions,
             final Set<String> similars,
             final String[] availableOptions) {
+        Arrays.sort(availableOptions);
         for (final String option : failedOptions) {
             final int index = Math.abs(Arrays.binarySearch(availableOptions, option)) - 1;
             similars.add(availableOptions[Math.max(index - 1, 0)]);
