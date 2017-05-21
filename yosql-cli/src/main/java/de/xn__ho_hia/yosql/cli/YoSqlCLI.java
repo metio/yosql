@@ -70,7 +70,7 @@ public class YoSqlCLI {
             successfulTermination();
         } catch (final OptionException exception) {
             handleFailedOptions(cliComponent.generateParser(), exception.options());
-        } catch (final Throwable throwable) {
+        } catch (final Exception throwable) {
             handleUnknownException(throwable);
         }
         abnormalTermination();
@@ -194,8 +194,8 @@ public class YoSqlCLI {
         }
     }
 
-    private static void handleUnknownException(final Throwable throwable) {
-        LOGGER.error("Encountered unknown exception: %s", throwable); //$NON-NLS-1$
+    private static void handleUnknownException(final Exception exception) {
+        LOGGER.error("Encountered unknown exception: %s", exception); //$NON-NLS-1$
     }
 
     private static void successfulTermination() {
