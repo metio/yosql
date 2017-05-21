@@ -43,7 +43,7 @@ public class ParserPreconditions {
      */
     @SuppressWarnings("nls")
     public void assertDirectoryIsWriteable(final Path directory) {
-        if (!Files.exists(directory)) {
+        if (!directory.toFile().exists()) {
             try {
                 if (Files.createDirectories(directory) != null) {
                     errors.illegalState("Could not create [%s]. Check the permissions.", directory);
@@ -52,7 +52,7 @@ public class ParserPreconditions {
                 errors.illegalState("Failure during directory creation: %s", cause.getMessage());
             }
         }
-        if (!Files.isDirectory(directory)) {
+        if (!directory.toFile().isDirectory()) {
             errors.illegalState("[%s] is not a directory.", directory);
         }
         if (!Files.isWritable(directory)) {
@@ -73,10 +73,10 @@ public class ParserPreconditions {
      */
     @SuppressWarnings("nls")
     public void assertDirectoryIsReadable(final Path directory) {
-        if (!Files.exists(directory)) {
+        if (!directory.toFile().exists()) {
             errors.illegalState("[%s] does not exist.", directory);
         }
-        if (!Files.isDirectory(directory)) {
+        if (!directory.toFile().isDirectory()) {
             errors.illegalState("[%s] is not a directory.", directory);
         }
         if (!Files.isReadable(directory)) {
