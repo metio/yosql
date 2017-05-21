@@ -69,9 +69,8 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     @Override
     protected MethodSpec constructor(final List<SqlStatement> sqlStatementsInRepository) {
         final Builder builder = CodeBlock.builder();
-        resultConverters(sqlStatementsInRepository).forEach(converter -> {
-            builder.add(TypicalCodeBlocks.initializeConverter(converter));
-        });
+        resultConverters(sqlStatementsInRepository)
+                .forEach(converter -> builder.add(TypicalCodeBlocks.initializeConverter(converter)));
 
         return TypicalMethods.constructor()
                 .addAnnotations(annotations.generatedMethod(getClass()))
