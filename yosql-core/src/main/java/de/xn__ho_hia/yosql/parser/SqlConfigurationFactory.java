@@ -244,9 +244,9 @@ public class SqlConfigurationFactory {
 
     private static String upperCaseFirstLetterInLastSegment(final String name) {
         if (name.contains(".")) {
-            return name.substring(0, name.lastIndexOf(".") + 1)
-                    + name.substring(name.lastIndexOf(".") + 1, name.lastIndexOf(".") + 2).toUpperCase()
-                    + name.substring(name.lastIndexOf(".") + 2);
+            return name.substring(0, name.lastIndexOf('.') + 1)
+                    + name.substring(name.lastIndexOf('.') + 1, name.lastIndexOf('.') + 2).toUpperCase()
+                    + name.substring(name.lastIndexOf('.') + 2);
         }
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
