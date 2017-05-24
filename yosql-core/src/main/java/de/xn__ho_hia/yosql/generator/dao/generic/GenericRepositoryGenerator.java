@@ -80,7 +80,7 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
         statements.stream()
                 .map(SqlStatement::getSourcePath)
                 .distinct()
-                .forEach(path -> builder.add("<li>$S</li>\n", path));
+                .forEach(path -> builder.add("<li>$L</li>\n", path));
         builder.add("</ul>\n");
         return builder.build();
     }
