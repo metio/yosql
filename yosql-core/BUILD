@@ -63,6 +63,10 @@ filegroup(
   srcs = glob(["src/main/java/**/generator/logging/jdk/*.java"]),
 )
 filegroup(
+  name = "generator-logging-shared-raw-sources",
+  srcs = glob(["src/main/java/**/generator/logging/shared/*.java"]),
+)
+filegroup(
   name = "generator-logging-log4j-raw-sources",
   srcs = glob(["src/main/java/**/generator/logging/log4j/*.java"]),
 )
@@ -260,6 +264,16 @@ java_library(
   ],
 )
 java_library(
+  name = "generator-logging-shared",
+  srcs = [
+    ":generator-logging-shared-raw-sources",
+  ],
+  deps = [
+    ":generator-api",
+    ":generator-helpers",
+  ],
+)
+java_library(
   name = "generator-logging-jdk",
   srcs = [
     ":generator-logging-jdk-raw-sources",
@@ -267,6 +281,7 @@ java_library(
   deps = [
     ":generator-api",
     ":generator-helpers",
+    ":generator-logging-shared",
   ],
 )
 java_library(
@@ -279,6 +294,7 @@ java_library(
     "//external:log4j_core",
     ":generator-api",
     ":generator-helpers",
+    ":generator-logging-shared",
   ],
   exports = [
     "//external:log4j_api",
@@ -305,6 +321,7 @@ java_library(
     "//external:logback_core",
     ":generator-api",
     ":generator-helpers",
+    ":generator-logging-shared",
   ],
   exports = [
     "//external:slf4j_api",
@@ -321,6 +338,7 @@ java_library(
     ":dagger",
     ":generator-api",
     ":generator-helpers",
+    ":generator-logging-shared",
     ":generator-logging-jdk",
     ":generator-logging-log4j",
     ":generator-logging-noop",
