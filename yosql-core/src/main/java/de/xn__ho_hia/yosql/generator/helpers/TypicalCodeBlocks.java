@@ -80,6 +80,13 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
+    public static CodeBlock executeQueryInTry() {
+        return CodeBlock.builder()
+                .add("final $T $N = $N.executeQuery()", ResultSet.class, TypicalNames.RESULT_SET,
+                        TypicalNames.STATEMENT)
+                .build();
+    }
+
     public static CodeBlock executeUpdate() {
         return CodeBlock.builder()
                 .addStatement("return $N.executeUpdate()", TypicalNames.STATEMENT)
@@ -115,6 +122,13 @@ public class TypicalCodeBlocks {
                 .build();
     }
 
+    public static CodeBlock getConnectionInTry() {
+        return CodeBlock.builder()
+                .add("final $T $N = $N.getConnection()", Connection.class, TypicalNames.CONNECTION,
+                        TypicalNames.DATA_SOURCE)
+                .build();
+    }
+
     public static CodeBlock prepareStatement(final SqlConfiguration configuration) {
         return CodeBlock.builder()
                 .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
@@ -126,6 +140,13 @@ public class TypicalCodeBlocks {
     public static CodeBlock prepareStatement() {
         return CodeBlock.builder()
                 .addStatement("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
+                        TypicalNames.STATEMENT, TypicalNames.CONNECTION, TypicalNames.QUERY)
+                .build();
+    }
+
+    public static CodeBlock prepareStatementInTry() {
+        return CodeBlock.builder()
+                .add("final $T $N = $N.prepareStatement($N)", PreparedStatement.class,
                         TypicalNames.STATEMENT, TypicalNames.CONNECTION, TypicalNames.QUERY)
                 .build();
     }
@@ -152,19 +173,19 @@ public class TypicalCodeBlocks {
 
     public static CodeBlock tryExecute() {
         return CodeBlock.builder()
-                .beginControlFlow("try ($L)", TypicalCodeBlocks.executeQuery())
+                .beginControlFlow("try ($L)", TypicalCodeBlocks.executeQueryInTry())
                 .build();
     }
 
     public static CodeBlock tryConnect() {
         return CodeBlock.builder()
-                .beginControlFlow("try ($L)", TypicalCodeBlocks.getConnection())
+                .beginControlFlow("try ($L)", TypicalCodeBlocks.getConnectionInTry())
                 .build();
     }
 
     public static CodeBlock tryPrepareStatement() {
         return CodeBlock.builder()
-                .beginControlFlow("try ($L)", TypicalCodeBlocks.prepareStatement())
+                .beginControlFlow("try ($L)", TypicalCodeBlocks.prepareStatementInTry())
                 .build();
     }
 
