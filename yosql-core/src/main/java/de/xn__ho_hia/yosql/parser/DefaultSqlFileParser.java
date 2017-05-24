@@ -81,10 +81,10 @@ final class DefaultSqlFileParser implements SqlFileParser {
         splitUpYamlAndSql(rawStatement, yaml::append, sql::append);
 
         logger.trace(ApplicationEvents.FILE_PARSING_STARTING, rawStatement);
-        final String rawSqlStatement = sql.toString();
         final String rawYaml = yaml.toString();
-        logger.trace(ApplicationEvents.FILE_SQL_STATEMENT_PARSED, rawSqlStatement);
+        final String rawSqlStatement = sql.toString();
         logger.trace(ApplicationEvents.FILE_YAML_FRONTMATTER_PARSED, rawYaml);
+        logger.trace(ApplicationEvents.FILE_SQL_STATEMENT_PARSED, rawSqlStatement);
 
         final Map<String, List<Integer>> parameterIndices = extractParameterIndices(rawSqlStatement);
         final SqlConfiguration configuration = factory.createStatementConfiguration(source, rawYaml,
