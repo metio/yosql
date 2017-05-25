@@ -34,7 +34,9 @@ public class SqlConfigurationFactory {
     private final ExecutionConfiguration config;
 
     @Inject
-    public SqlConfigurationFactory(final ExecutionErrors errors, final ExecutionConfiguration config) {
+    public SqlConfigurationFactory(
+            final ExecutionErrors errors,
+            final ExecutionConfiguration config) {
         this.errors = errors;
         this.config = config;
     }
