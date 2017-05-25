@@ -54,6 +54,7 @@ final class PathBasedSqlFileResolver implements SqlFileResolver {
                         .filter(path -> path.toString().endsWith(configuration.sqlFilesSuffix()))
                         .peek(path -> logger.trace(ApplicationEvents.CONSIDER_FILE, path));
             } catch (final IOException | SecurityException exception) {
+                logger.error(ApplicationEvents.READ_FILES_FAILED, exception.getLocalizedMessage());
                 errors.add(exception);
             }
         }

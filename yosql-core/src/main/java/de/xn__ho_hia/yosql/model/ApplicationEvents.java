@@ -73,6 +73,11 @@ public enum ApplicationEvents {
     READ_FILES,
 
     /**
+     * Signals that reading files somehow failed.
+     */
+    READ_FILES_FAILED,
+
+    /**
      * Signals that a file is considered for parsing.
      */
     CONSIDER_FILE,
