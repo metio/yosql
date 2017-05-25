@@ -24,7 +24,7 @@ import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 /**
  * Writes a single {@link TypeSpec type} into a directory.
  */
-public class TypeWriter {
+public final class TypeWriter {
 
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration config;
@@ -49,6 +49,9 @@ public class TypeWriter {
     }
 
     /**
+     * Writes the given type specification into the {@link ExecutionConfiguration#outputBaseDirectory() configured
+     * output directory}.
+     *
      * @param typeSpec
      *            The type specification to write.
      */
@@ -61,7 +64,7 @@ public class TypeWriter {
             logger.debug(ApplicationEvents.FILE_WRITE_FINISHED,
                     config.outputBaseDirectory(),
                     typeSpec.getPackageName().replace(".", "/"),
-                    typeSpec.getType().name + ".java");
+                    typeSpec.getType().name);
         } catch (final IOException exception) {
             errors.add(exception);
             logger.error(ApplicationEvents.FILE_WRITE_FAILED,
