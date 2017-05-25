@@ -14,32 +14,53 @@ import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 /**
- * Generates 'standard' method - implementation decides whatever that means.
+ * Generates 'standard' methods - implementation decides whatever that means.
  */
 public interface StandardMethodGenerator {
 
     /**
+     * Generates code the execute a "standard" read against the database using the most common way the configured API
+     * executes reads. The <code>javax.sql</code> package for example calls
+     * {@link java.sql.PreparedStatement#executeQuery()}.
+     *
      * @param configuration
+     *            The configuration for the generated method.
      * @param vendorStatements
+     *            The vendor statements for the generated method.
      * @return A method specification for a standard reading method.
      */
-    MethodSpec standardReadMethod(SqlConfiguration configuration,
+    MethodSpec standardReadMethod(
+            SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 
     /**
+     * Generates code the execute a "standard" write against the database using the most common way the configured API
+     * executes writes. The <code>javax.sql</code> package for example calls
+     * {@link java.sql.PreparedStatement#executeUpdate()}.
+     *
      * @param configuration
+     *            The configuration for the generated method.
      * @param vendorStatements
+     *            The vendor statements for the generated method.
      * @return A method specification for a standard writing method.
      */
-    MethodSpec standardWriteMethod(SqlConfiguration configuration,
+    MethodSpec standardWriteMethod(
+            SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 
     /**
+     * Generates code the execute a "standard" call against the database using the most common way the configured API
+     * executes calls database functions. The <code>javax.sql</code> package for example calls
+     * {@link java.sql.CallableStatement#executeQuery()}.
+     *
      * @param configuration
+     *            The configuration for the generated method.
      * @param vendorStatements
+     *            The vendor statements for the generated method.
      * @return A method specification for a standard calling method.
      */
-    MethodSpec standardCallMethod(SqlConfiguration configuration,
+    MethodSpec standardCallMethod(
+            SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 
 }
