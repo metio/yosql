@@ -26,13 +26,24 @@ import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlParameter;
 import de.xn__ho_hia.yosql.model.SqlType;
 
-@SuppressWarnings({ "nls", "javadoc" })
+/**
+ * Factory for new {@link SqlConfiguration}s.
+ */
+@SuppressWarnings("nls")
 public final class SqlConfigurationFactory {
 
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration config;
     private final LocLogger              logger;
 
+    /**
+     * @param errors
+     *            The error collector to use.
+     * @param config
+     *            The execution config to use.
+     * @param logger
+     *            The logger to use.
+     */
     public SqlConfigurationFactory(
             final ExecutionErrors errors,
             final ExecutionConfiguration config,
@@ -42,6 +53,17 @@ public final class SqlConfigurationFactory {
         this.logger = logger;
     }
 
+    /**
+     * @param source
+     *            The source file of the statement.
+     * @param yaml
+     *            The YAML front matter of the statement.
+     * @param parameterIndices
+     *            The parameter indices (if any) of the statement.
+     * @param statementInFile
+     *            The counter for statements with the same name in the same source file.
+     * @return The resulting configuration.
+     */
     public SqlConfiguration createStatementConfiguration(
             final Path source,
             final String yaml,
