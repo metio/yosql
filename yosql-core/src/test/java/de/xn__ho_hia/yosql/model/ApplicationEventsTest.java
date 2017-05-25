@@ -24,6 +24,7 @@ final class ApplicationEventsTest implements EnumTCK<ApplicationEvents> {
                 "FILE_PARSING_FAILED",
                 "TYPE_GENERATED",
                 "READ_FILES",
+                "READ_FILES_FAILED",
                 "CONSIDER_FILE",
                 "ENCOUNTER_FILE",
                 "PARSE_FILES",
