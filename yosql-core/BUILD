@@ -35,6 +35,10 @@ filegroup(
   srcs = ["src/main/resources/generate-option-descriptions_en.properties"],
 )
 filegroup(
+  name = "parser-preconditions",
+  srcs = ["src/main/resources/parser-preconditions_en.properties"],
+)
+filegroup(
   name = "utils-raw-sources",
   srcs = glob(["src/main/java/**/yosql/utils/*.java"]),
 )
@@ -117,6 +121,7 @@ java_library(
   ],
   resources = [
     ":application-events",
+    ":parser-preconditions",
     ":loggers",
     ":help-options",
     ":help-option-descriptions",

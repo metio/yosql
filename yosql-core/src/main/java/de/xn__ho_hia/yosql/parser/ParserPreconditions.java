@@ -12,22 +12,32 @@ import java.nio.file.Path;
 
 import javax.inject.Inject;
 
+import ch.qos.cal10n.BaseName;
+import ch.qos.cal10n.Locale;
+import ch.qos.cal10n.LocaleData;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
+import de.xn__ho_hia.yosql.model.Translator;
 
 /**
- * Preconditios that have to be matched for SQL parsing to work.
+ * Preconditions that have to be matched for SQL parsing to work.
  */
-public class ParserPreconditions {
+public final class ParserPreconditions {
 
     private final ExecutionErrors errors;
+    private final Translator      translator;
 
     /**
      * @param errors
      *            The error collector to use.
+     * @param translator
+     *            The translator to use.
      */
     @Inject
-    public ParserPreconditions(final ExecutionErrors errors) {
+    public ParserPreconditions(
+            final ExecutionErrors errors,
+            final Translator translator) {
         this.errors = errors;
+        this.translator = translator;
     }
 
     /**
@@ -41,22 +51,21 @@ public class ParserPreconditions {
      * @param directory
      *            The directory to check
      */
-    @SuppressWarnings("nls")
     public void assertDirectoryIsWriteable(final Path directory) {
         if (!directory.toFile().exists()) {
             try {
                 if (Files.createDirectories(directory) != null) {
-                    errors.illegalState("Could not create [%s]. Check the permissions.", directory);
+                    errors.illegalState(translator.nonLocalized(I18N.CANNOT_CREATE_DIRECTORY, directory));
                 }
             } catch (final IOException cause) {
-                errors.illegalState("Failure during directory creation: %s", cause.getMessage());
+                errors.illegalState(translator.nonLocalized(I18N.DIRECTORY_CREATION_FAILED, directory));
             }
         }
         if (!directory.toFile().isDirectory()) {
-            errors.illegalState("[%s] is not a directory.", directory);
+            errors.illegalState(translator.nonLocalized(I18N.NOT_A_DIRECTORY, directory));
         }
         if (!Files.isWritable(directory)) {
-            errors.illegalState("Don't have permission to write to [%s].", directory);
+            errors.illegalState(translator.nonLocalized(I18N.NO_WRITE_PERMISSION, directory));
         }
     }
 
@@ -71,17 +80,24 @@ public class ParserPreconditions {
      * @param directory
      *            The directory to check
      */
-    @SuppressWarnings("nls")
     public void assertDirectoryIsReadable(final Path directory) {
         if (!directory.toFile().exists()) {
-            errors.illegalState("[%s] does not exist.", directory);
+            errors.illegalState(translator.nonLocalized(I18N.NOT_EXISTS, directory));
         }
         if (!directory.toFile().isDirectory()) {
-            errors.illegalState("[%s] is not a directory.", directory);
+            errors.illegalState(translator.nonLocalized(I18N.NOT_A_DIRECTORY, directory));
         }
         if (!Files.isReadable(directory)) {
-            errors.illegalState("[%s] no permission to read.", directory);
+            errors.illegalState(translator.nonLocalized(I18N.NO_READ_PERMISSION, directory));
         }
+    }
+
+    @LocaleData(@Locale("en"))
+    @BaseName("parser-preconditions")
+    static enum I18N {
+
+        NO_READ_PERMISSION, NO_WRITE_PERMISSION, NOT_A_DIRECTORY, NOT_EXISTS, DIRECTORY_CREATION_FAILED, CANNOT_CREATE_DIRECTORY;
+
     }
 
 }
