@@ -265,6 +265,7 @@ java_library(
     ":generator-logging-jdk-raw-sources",
   ],
   deps = [
+    ":dagger",
     ":generator-api",
     ":generator-helpers",
   ],
@@ -277,6 +278,7 @@ java_library(
   deps = [
     "//external:log4j_api",
     "//external:log4j_core",
+    ":dagger",
     ":generator-api",
     ":generator-helpers",
   ],
@@ -292,6 +294,7 @@ java_library(
   ],
   deps = [
     ":generator-api",
+    ":dagger",
   ],
 )
 java_library(
@@ -303,6 +306,7 @@ java_library(
     "//external:slf4j_api",
     "//external:logback_classic",
     "//external:logback_core",
+    ":dagger",
     ":generator-api",
     ":generator-helpers",
   ],
@@ -321,6 +325,12 @@ java_library(
     ":dagger",
     ":generator-api",
     ":generator-helpers",
+    ":generator-logging-jdk",
+    ":generator-logging-log4j",
+    ":generator-logging-noop",
+    ":generator-logging-slf4j",
+  ],
+  exports = [
     ":generator-logging-jdk",
     ":generator-logging-log4j",
     ":generator-logging-noop",

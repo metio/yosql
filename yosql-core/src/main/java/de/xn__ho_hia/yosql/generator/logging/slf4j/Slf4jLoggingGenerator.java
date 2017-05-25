@@ -8,8 +8,6 @@ package de.xn__ho_hia.yosql.generator.logging.slf4j;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
@@ -21,14 +19,12 @@ import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 
-@Slf4j
-@SuppressWarnings({ "nls", "javadoc" })
-public final class Slf4jLoggingGenerator implements LoggingGenerator {
+@SuppressWarnings("nls")
+final class Slf4jLoggingGenerator implements LoggingGenerator {
 
     private final TypicalFields fields;
 
-    @Inject
-    public Slf4jLoggingGenerator(final TypicalFields fields) {
+    Slf4jLoggingGenerator(final TypicalFields fields) {
         this.fields = fields;
     }
 

@@ -17,8 +17,7 @@ import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 /**
  * No-op logging generator. Use when no logging statements should be generated.
  */
-@NoOp
-public final class NoOpLoggingGenerator implements LoggingGenerator {
+final class NoOpLoggingGenerator implements LoggingGenerator {
 
     @Override
     public Optional<FieldSpec> logger(final TypeName repoClass) {

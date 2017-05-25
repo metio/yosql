@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
-
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
@@ -20,14 +18,12 @@ import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 
-@JDK
-@SuppressWarnings({ "nls", "javadoc" })
-public final class JdkLoggingGenerator implements LoggingGenerator {
+@SuppressWarnings("nls")
+final class JdkLoggingGenerator implements LoggingGenerator {
 
     private final TypicalFields fields;
 
-    @Inject
-    public JdkLoggingGenerator(final TypicalFields fields) {
+    JdkLoggingGenerator(final TypicalFields fields) {
         this.fields = fields;
     }
 
