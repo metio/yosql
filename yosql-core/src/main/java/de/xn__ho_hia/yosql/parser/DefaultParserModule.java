@@ -30,4 +30,12 @@ public final class DefaultParserModule {
         return new DefaultSqlFileParser(errors, config, factory, logger);
     }
 
+    @Provides
+    SqlConfigurationFactory provideSqlConfigurationFactory(
+            final ExecutionErrors errors,
+            final ExecutionConfiguration config,
+            final @Parser LocLogger logger) {
+        return new SqlConfigurationFactory(errors, config, logger);
+    }
+
 }

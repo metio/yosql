@@ -16,8 +16,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
+import org.slf4j.cal10n.LocLogger;
 import org.yaml.snakeyaml.Yaml;
 
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
@@ -27,18 +26,20 @@ import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlParameter;
 import de.xn__ho_hia.yosql.model.SqlType;
 
-@SuppressWarnings({ "javadoc", "nls" })
-public class SqlConfigurationFactory {
+@SuppressWarnings({ "nls", "javadoc" })
+public final class SqlConfigurationFactory {
 
     private final ExecutionErrors        errors;
     private final ExecutionConfiguration config;
+    private final LocLogger              logger;
 
-    @Inject
     public SqlConfigurationFactory(
             final ExecutionErrors errors,
-            final ExecutionConfiguration config) {
+            final ExecutionConfiguration config,
+            final LocLogger logger) {
         this.errors = errors;
         this.config = config;
+        this.logger = logger;
     }
 
     public SqlConfiguration createStatementConfiguration(
@@ -398,7 +399,7 @@ public class SqlConfigurationFactory {
                 .map(param -> String.format("[%s] declares unknown parameter [%s]",
                         source, param.getName()))
                 .peek(msg -> errors.add(new IllegalArgumentException(msg)))
-                // .peek(msg -> pluginConfig.getLogger().error(msg))
+                .peek(logger::error)
                 .collect(Collectors.toList());
         return parameterErrors == null || parameterErrors.isEmpty();
     }

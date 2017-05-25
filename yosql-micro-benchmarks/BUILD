@@ -25,6 +25,7 @@ java_binary(
   deps = [
     "//external:commons_math3",
     "//external:jopt_simple",
+    "//external:slf4j_ext",
     "//yosql-core",
     "//yosql-core:dagger2",
     ":jmh",

@@ -6,8 +6,11 @@
  */
 package de.xn__ho_hia.yosql.benchmark.parse_file;
 
+import org.slf4j.cal10n.LocLogger;
+
 import dagger.Module;
 import dagger.Provides;
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Parser;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.parser.SqlConfigurationFactory;
@@ -26,6 +29,14 @@ final class AlternativeParserModule {
             final ExecutionConfiguration config,
             final SqlConfigurationFactory factory) {
         return new AlternativeSqlFileParser(errors, config, factory);
+    }
+
+    @Provides
+    SqlConfigurationFactory provideSqlConfigurationFactory(
+            final ExecutionErrors errors,
+            final ExecutionConfiguration config,
+            final @Parser LocLogger logger) {
+        return new SqlConfigurationFactory(errors, config, logger);
     }
 
 }
