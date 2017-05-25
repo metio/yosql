@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 
-import javax.inject.Inject;
-
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -30,14 +28,12 @@ import de.xn__ho_hia.yosql.model.ResultRowConverter;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@JDBC
 @SuppressWarnings("nls")
 final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator {
 
     private final TypicalCodeBlocks   codeBlocks;
     private final AnnotationGenerator annotations;
 
-    @Inject
     JdbcJava8StreamMethodGenerator(
             final TypicalCodeBlocks codeBlocks,
             final AnnotationGenerator annotations) {

@@ -44,7 +44,7 @@ import io.reactivex.Flowable;
  * Typical code blocks in the domain of yosql.
  */
 @SuppressWarnings({ "nls", "javadoc" })
-public class TypicalCodeBlocks {
+public final class TypicalCodeBlocks {
 
     public static CodeBlock initializeConverter(final ResultRowConverter converter) {
         final ClassName converterClass = ClassName.bestGuess(converter.getConverterType());

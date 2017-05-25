@@ -37,10 +37,10 @@ public class DaoJdbcModule {
     @JDBC
     @Provides
     RepositoryGenerator provideRepositoryGenerator(
-            final AnnotationGenerator annotations,
             final @JDBC FieldsGenerator fields,
             final @JDBC MethodsGenerator methods,
-            final @Generator LocLogger logger) {
+            final @Generator LocLogger logger,
+            final AnnotationGenerator annotations) {
         return new GenericRepositoryGenerator(annotations, fields, methods, logger);
     }
 
@@ -58,8 +58,8 @@ public class DaoJdbcModule {
     @JDBC
     @Provides
     FieldsGenerator provideFieldsGenerator(
-            final TypicalFields fields,
-            final @Delegating LoggingGenerator logging) {
+            final @Delegating LoggingGenerator logging,
+            final TypicalFields fields) {
         return new JdbcFieldsGenerator(fields, logging);
     }
 

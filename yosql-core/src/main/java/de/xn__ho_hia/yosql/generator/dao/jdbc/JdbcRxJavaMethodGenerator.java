@@ -9,8 +9,6 @@ package de.xn__ho_hia.yosql.generator.dao.jdbc;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.inject.Inject;
-
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -31,7 +29,6 @@ import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 import io.reactivex.Emitter;
 
-@JDBC
 @SuppressWarnings("nls")
 final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
 
@@ -39,7 +36,6 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     private final TypicalCodeBlocks      codeBlocks;
     private final AnnotationGenerator    annotations;
 
-    @Inject
     JdbcRxJavaMethodGenerator(
             final ExecutionConfiguration configuration,
             final TypicalCodeBlocks codeBlocks,

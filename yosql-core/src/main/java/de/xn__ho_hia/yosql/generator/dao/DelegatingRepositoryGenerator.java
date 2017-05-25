@@ -8,24 +8,17 @@ package de.xn__ho_hia.yosql.generator.dao;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
-import de.xn__ho_hia.yosql.dagger.Delegating;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
 import de.xn__ho_hia.yosql.generator.dao.jdbc.JDBC;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-/**
- * Delegates its work to one of the configured repository generators.
- */
-@Delegating
 final class DelegatingRepositoryGenerator implements RepositoryGenerator {
 
     private final RepositoryGenerator jdbcRepositoryGenerator;
 
-    @Inject
-    DelegatingRepositoryGenerator(final @JDBC RepositoryGenerator jdbcRepositoryGenerator) {
+    DelegatingRepositoryGenerator(
+            final @JDBC RepositoryGenerator jdbcRepositoryGenerator) {
         this.jdbcRepositoryGenerator = jdbcRepositoryGenerator;
     }
 

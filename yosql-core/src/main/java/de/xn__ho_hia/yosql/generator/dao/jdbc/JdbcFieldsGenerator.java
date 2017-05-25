@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import com.squareup.javapoet.ClassName;
@@ -35,14 +34,12 @@ import de.xn__ho_hia.yosql.model.SqlParameter;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 import de.xn__ho_hia.yosql.model.SqlType;
 
-@JDBC
 @SuppressWarnings("nls")
 final class JdbcFieldsGenerator implements FieldsGenerator {
 
     private final TypicalFields    fields;
     private final LoggingGenerator logging;
 
-    @Inject
     JdbcFieldsGenerator(
             final TypicalFields fields,
             final LoggingGenerator logging) {

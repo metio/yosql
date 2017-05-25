@@ -11,7 +11,7 @@ import com.squareup.javapoet.MethodSpec;
 /**
  * Creates typical methods found in the domain of yosql.
  */
-public class TypicalMethods {
+public final class TypicalMethods {
 
     /**
      * Prepares a new public method.

@@ -7,7 +7,7 @@
 package de.xn__ho_hia.yosql.generator.helpers;
 
 @SuppressWarnings({ "nls", "javadoc" })
-public class TypicalNames {
+public final class TypicalNames {
 
     public static final String DATA_SOURCE           = "dataSource";
     public static final String CONNECTION            = "connection";
@@ -39,11 +39,11 @@ public class TypicalNames {
     public static final String COLUMN_LABEL          = "columnLabel";
     public static final String LOGGER                = "LOG";
 
-    public static final String getPackageName(final String repositoryName) {
+    public static String getPackageName(final String repositoryName) {
         return repositoryName.substring(0, repositoryName.lastIndexOf('.'));
     }
 
-    public static final String getClassName(final String repositoryName) {
+    public static String getClassName(final String repositoryName) {
         return repositoryName.substring(repositoryName.lastIndexOf('.') + 1,
                 repositoryName.length());
     }

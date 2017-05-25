@@ -8,8 +8,6 @@ package de.xn__ho_hia.yosql.generator.dao.jdbc;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -25,13 +23,11 @@ import de.xn__ho_hia.yosql.model.ResultRowConverter;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@JDBC
 final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     private final TypicalCodeBlocks   codeBlocks;
     private final AnnotationGenerator annotations;
 
-    @Inject
     JdbcStandardMethodGenerator(
             final TypicalCodeBlocks codeBlocks,
             final AnnotationGenerator annotations) {
@@ -47,6 +43,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final String methodName = mergedConfiguration.getName();
+        // TODO: add javadocs to generated method
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
@@ -73,6 +70,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         final String methodName = mergedConfiguration.getName();
+        // TODO: add javadocs to generated method
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(int.class)
@@ -98,6 +96,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final String methodName = mergedConfiguration.getName();
+        // TODO: add javadocs to generated method
         return TypicalMethods.publicMethod(methodName)
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)

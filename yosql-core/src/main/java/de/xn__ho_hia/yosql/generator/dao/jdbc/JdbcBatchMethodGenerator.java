@@ -8,8 +8,6 @@ package de.xn__ho_hia.yosql.generator.dao.jdbc;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import com.squareup.javapoet.MethodSpec;
 
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
@@ -21,13 +19,11 @@ import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
-@JDBC
 final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
 
     private final TypicalCodeBlocks   codeBlocks;
     private final AnnotationGenerator annotations;
 
-    @Inject
     JdbcBatchMethodGenerator(
             final TypicalCodeBlocks codeBlocks,
             final AnnotationGenerator annotations) {

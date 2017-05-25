@@ -83,15 +83,15 @@ public final class TypicalParameters {
         return parameter(ArrayTypeName.of(TypeGuesser.guessTypeName(parameter.getType())), parameter.getName());
     }
 
-    public static final String replaceNamedParameters(final String rawSqlStatement) {
+    public static String replaceNamedParameters(final String rawSqlStatement) {
         return rawSqlStatement.replaceAll(SqlFileParser.PARAMETER_PATTERN.pattern(), "?");
     }
 
-    public static final Iterable<ParameterSpec> asParameterSpecs(final List<SqlParameter> parameters) {
+    public static Iterable<ParameterSpec> asParameterSpecs(final List<SqlParameter> parameters) {
         return asParameterSpecs(parameters, TypicalParameters::ofSqlParameter);
     }
 
-    public static final Iterable<ParameterSpec> asBatchParameterSpecs(final List<SqlParameter> parameters) {
+    public static Iterable<ParameterSpec> asBatchParameterSpecs(final List<SqlParameter> parameters) {
         return asParameterSpecs(parameters, TypicalParameters::batchOfSqlParameter);
     }
 

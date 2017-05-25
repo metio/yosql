@@ -18,28 +18,28 @@ import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.model.SqlConfiguration;
 
 @SuppressWarnings({ "nls", "javadoc" })
-public class TypicalFields {
+public final class TypicalFields {
 
-    public static final FieldSpec privateField(final TypeName type, final String name) {
+    public static FieldSpec privateField(final TypeName type, final String name) {
         return FieldSpec.builder(type, name)
                 .addModifiers(TypicalModifiers.privateField())
                 .build();
     }
 
-    public static final String constantSqlStatementFieldName(final SqlConfiguration configuration) {
+    public static String constantSqlStatementFieldName(final SqlConfiguration configuration) {
         return configuration.getName().replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase() + getVendor(configuration);
     }
 
-    public static final String constantRawSqlStatementFieldName(final SqlConfiguration configuration) {
+    public static String constantRawSqlStatementFieldName(final SqlConfiguration configuration) {
         return constantSqlStatementFieldName(configuration) + "_RAW" + getVendor(configuration);
     }
 
-    public static final String constantSqlStatementParameterIndexFieldName(
+    public static String constantSqlStatementParameterIndexFieldName(
             final SqlConfiguration configuration) {
         return constantSqlStatementFieldName(configuration) + "_PARAMETER_INDEX";
     }
 
-    private static final String getVendor(final SqlConfiguration configuration) {
+    private static String getVendor(final SqlConfiguration configuration) {
         return configuration.getVendor() == null ? "" : "_" + configuration.getVendor().replace(" ", "_").toUpperCase();
     }
 
@@ -50,11 +50,11 @@ public class TypicalFields {
         this.annotations = annotations;
     }
 
-    public final FieldSpec field(final Class<?> generatorClass, final Type type, final String name) {
+    public FieldSpec field(final Class<?> generatorClass, final Type type, final String name) {
         return field(generatorClass, TypeName.get(type), name);
     }
 
-    public final FieldSpec field(final Class<?> generatorClass, final TypeName type, final String name) {
+    public FieldSpec field(final Class<?> generatorClass, final TypeName type, final String name) {
         return prepareField(generatorClass, type, name)
                 .build();
     }

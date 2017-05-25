@@ -14,7 +14,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 
 @SuppressWarnings({ "nls", "javadoc" })
-public class TypicalTypes {
+public final class TypicalTypes {
 
     public static final ClassName OBJECT                          = ClassName.get("java.lang", "Object");
     public static final ClassName STRING                          = ClassName.get("java.lang", "String");
@@ -59,36 +59,36 @@ public class TypicalTypes {
     public static final TypeName  FLOWABLE_OF_MAPS                = ParameterizedTypeName.get(FLOWABLE,
             TypicalTypes.MAP_OF_STRING_AND_OBJECTS);
 
-    public static final ParameterizedTypeName listOf(final TypeName type) {
+    public static ParameterizedTypeName listOf(final TypeName type) {
         return ParameterizedTypeName.get(LIST, type);
     }
 
-    public static final ParameterizedTypeName streamOf(final TypeName type) {
+    public static ParameterizedTypeName streamOf(final TypeName type) {
         return ParameterizedTypeName.get(STREAM, type);
     }
 
-    public static final ParameterizedTypeName consumerOf(final TypeName type) {
+    public static ParameterizedTypeName consumerOf(final TypeName type) {
         return ParameterizedTypeName.get(CONSUMER, WildcardTypeName.supertypeOf(type));
     }
 
     // TODO: remove?
-    public static final TypeSpec.Builder publicClass(final String name) {
+    public static TypeSpec.Builder publicClass(final String name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.publicClass());
     }
 
-    public static final TypeSpec.Builder publicClass(final ClassName name) {
+    public static TypeSpec.Builder publicClass(final ClassName name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.publicClass());
     }
 
     // TODO remove?
-    public static final TypeSpec.Builder openClass(final String name) {
+    public static TypeSpec.Builder openClass(final String name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.openClass());
     }
 
-    public static final TypeSpec.Builder openClass(final ClassName name) {
+    public static TypeSpec.Builder openClass(final ClassName name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.openClass());
     }

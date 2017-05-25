@@ -23,8 +23,8 @@ public final class DaoModule {
     @Delegating
     @Provides
     RepositoryGenerator provideRepositoryGenerator(
-            final @JDBC RepositoryGenerator repositoryGenerator) {
-        return new DelegatingRepositoryGenerator(repositoryGenerator);
+            final @JDBC RepositoryGenerator jdbcRepositoryGenerator) {
+        return new DelegatingRepositoryGenerator(jdbcRepositoryGenerator);
     }
 
 }

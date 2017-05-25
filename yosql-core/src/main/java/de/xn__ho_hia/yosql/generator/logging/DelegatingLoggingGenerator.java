@@ -15,9 +15,6 @@ import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 
-/**
- * Delegates its work to the configured logging generator.
- */
 final class DelegatingLoggingGenerator implements LoggingGenerator {
 
     private final ExecutionConfiguration config;
