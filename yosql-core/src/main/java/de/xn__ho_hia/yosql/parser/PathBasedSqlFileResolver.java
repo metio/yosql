@@ -49,6 +49,7 @@ final class PathBasedSqlFileResolver implements SqlFileResolver {
             try {
                 return Files.walk(source, FileVisitOption.FOLLOW_LINKS)
                         .parallel()
+                        .peek(path -> logger.trace(ApplicationEvents.ENCOUNTER_FILE, path))
                         .filter(Files::isRegularFile)
                         .filter(path -> path.toString().endsWith(configuration.sqlFilesSuffix()))
                         .peek(path -> logger.trace(ApplicationEvents.CONSIDER_FILE, path));
