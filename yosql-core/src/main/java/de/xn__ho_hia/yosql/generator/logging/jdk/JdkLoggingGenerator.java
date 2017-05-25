@@ -16,13 +16,13 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 
+import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
-import de.xn__ho_hia.yosql.generator.logging.shared.AbstractLoggingGenerator;
 
 @JDK
 @SuppressWarnings({ "nls", "javadoc" })
-public final class JdkLoggingGenerator extends AbstractLoggingGenerator {
+public final class JdkLoggingGenerator implements LoggingGenerator {
 
     private final TypicalFields fields;
 
@@ -39,9 +39,50 @@ public final class JdkLoggingGenerator extends AbstractLoggingGenerator {
     }
 
     @Override
-    public CodeBlock entering(final String repository, final String method) {
+    public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.entering($S, $S)", TypicalNames.LOGGER, repository, method)
+                .addStatement("$N.finer(() -> String.format($S, $S))", TypicalNames.LOGGER, "Picked query [%s]",
+                        fieldName)
+                .build();
+    }
+
+    @Override
+    public CodeBlock indexPicked(final String fieldName) {
+        return CodeBlock.builder()
+                .addStatement("$N.finer(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                        "Picked index [%s]", fieldName)
+                .build();
+    }
+
+    @Override
+    public CodeBlock vendorQueryPicked(final String fieldName) {
+        return CodeBlock.builder()
+                .addStatement("$N.finer(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                        "Picked query [%s]", fieldName)
+                .build();
+    }
+
+    @Override
+    public CodeBlock vendorIndexPicked(final String fieldName) {
+        return CodeBlock.builder()
+                .addStatement("$N.finer(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                        "Picked index [%s]", fieldName)
+                .build();
+    }
+
+    @Override
+    public CodeBlock vendorDetected() {
+        return CodeBlock.builder()
+                .addStatement("$N.fine(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                        "Detected database vendor [%s]", TypicalNames.DATABASE_PRODUCT_NAME)
+                .build();
+    }
+
+    @Override
+    public CodeBlock executingQuery() {
+        return CodeBlock.builder()
+                .addStatement("$N.fine(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                        "Executing query [%s]", TypicalNames.EXECUTED_QUERY)
                 .build();
     }
 
@@ -51,18 +92,15 @@ public final class JdkLoggingGenerator extends AbstractLoggingGenerator {
     }
 
     @Override
-    protected String info() {
-        return "fine";
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
-    protected String debug() {
-        return "finer";
-    }
-
-    @Override
-    protected String canLog() {
-        return "isLoggable";
+    public CodeBlock entering(final String repository, final String method) {
+        return CodeBlock.builder()
+                .addStatement("$N.entering($S, $S)", TypicalNames.LOGGER, repository, method)
+                .build();
     }
 
 }

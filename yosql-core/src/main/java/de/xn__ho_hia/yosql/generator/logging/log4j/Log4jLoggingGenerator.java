@@ -18,13 +18,13 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.xn__ho_hia.yosql.generator.api.LoggingGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
-import de.xn__ho_hia.yosql.generator.logging.shared.AbstractLoggingGenerator;
 
 @Log4j
 @SuppressWarnings({ "nls", "javadoc" })
-public final class Log4jLoggingGenerator extends AbstractLoggingGenerator {
+public final class Log4jLoggingGenerator implements LoggingGenerator {
 
     private final TypicalFields fields;
 
@@ -41,8 +41,61 @@ public final class Log4jLoggingGenerator extends AbstractLoggingGenerator {
     }
 
     @Override
+    public CodeBlock queryPicked(final String fieldName) {
+        return CodeBlock.builder()
+                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER, "Picked query [%s]",
+                        fieldName)
+                .build();
+    }
+
+    @Override
+    public CodeBlock indexPicked(final String fieldName) {
+        return CodeBlock.builder()
+                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                        "Picked index [%s]", fieldName)
+                .build();
+    }
+
+    @Override
+    public CodeBlock vendorQueryPicked(final String fieldName) {
+        return CodeBlock.builder()
+                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                        "Picked query [%s]", fieldName)
+                .build();
+    }
+
+    @Override
+    public CodeBlock vendorIndexPicked(final String fieldName) {
+        return CodeBlock.builder()
+                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                        "Picked index [%s]", fieldName)
+                .build();
+    }
+
+    @Override
+    public CodeBlock vendorDetected() {
+        return CodeBlock.builder()
+                .addStatement("$N.info(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                        "Detected database vendor [%s]", TypicalNames.DATABASE_PRODUCT_NAME)
+                .build();
+    }
+
+    @Override
+    public CodeBlock executingQuery() {
+        return CodeBlock.builder()
+                .addStatement("$N.info(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
+                        "Executing query [%s]", TypicalNames.EXECUTED_QUERY)
+                .build();
+    }
+
+    @Override
     public CodeBlock shouldLog() {
         return CodeBlock.builder().add("$N.isEnabled($T.INFO)", TypicalNames.LOGGER, Level.class).build();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
