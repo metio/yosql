@@ -12,7 +12,7 @@ filegroup(
 )
 
 genrule(
-  name = "gen_my_binary_version",
+  name = "build_info",
   outs = ["de/xn__ho_hia/yosql/BuildInfo.java"],
   cmd = """
     cat > $@ <<EOF
@@ -32,7 +32,7 @@ java_binary(
   main_class = "de.xn__ho_hia.yosql.cli.YoSqlCLI",
   srcs = [
     ":yosql-cli-raw-sources",
-    ":de/xn__ho_hia/yosql/BuildInfo.java",
+    ":build_info",
   ],
   visibility = ["//visibility:public"],
   deps = [
