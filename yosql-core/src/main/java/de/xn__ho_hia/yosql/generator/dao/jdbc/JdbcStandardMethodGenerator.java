@@ -6,6 +6,8 @@
  */
 package de.xn__ho_hia.yosql.generator.dao.jdbc;
 
+import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.javadoc;
+
 import java.util.List;
 
 import com.squareup.javapoet.MethodSpec;
@@ -43,8 +45,8 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final String methodName = mergedConfiguration.getName();
-        // TODO: add javadocs to generated method
         return TypicalMethods.publicMethod(methodName)
+                .addJavadoc(javadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
                 .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))
@@ -70,8 +72,8 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         final String methodName = mergedConfiguration.getName();
-        // TODO: add javadocs to generated method
         return TypicalMethods.publicMethod(methodName)
+                .addJavadoc(javadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(int.class)
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
@@ -91,20 +93,20 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
     @Override
     public MethodSpec standardCallMethod(
             final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> statements) {
+            final List<SqlStatement> vendorStatements) {
         final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
         final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final String methodName = mergedConfiguration.getName();
-        // TODO: add javadocs to generated method
         return TypicalMethods.publicMethod(methodName)
+                .addJavadoc(javadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
                 .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
                 .addCode(codeBlocks.entering(mergedConfiguration.getRepository(), methodName))
                 .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(statements))
+                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
                 .addCode(TypicalCodeBlocks.tryPrepareCallable())
                 .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
                 .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
