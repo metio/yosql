@@ -39,11 +39,6 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/model/libmodel_sourcegenfiles">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/dagger/libdagger_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
@@ -84,17 +79,22 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="bazel-bin/yosql-cli/_javac/yosql-cli/yosql-cli_sourcegenfiles">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="bazel-bin/yosql-micro-benchmarks/_javac/yosql-micro-benchmarks/yosql-micro-benchmarks_sourcegenfiles">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="bazel-genfiles/yosql-acceptance-tests">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-bin/yosql-cli/src/main/java/de/xn__ho_hia/yosql/cli/dagger/_javac/yosql-cli-dagger/libyosql-cli-dagger_sourcegenfiles">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-bin/yosql-core/_javac/model/libmodel-class_sourcegenfiles">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="bazel-bin/yosql-micro-benchmarks/_javac/yosql-micro-benchmarks/yosql-micro-benchmarks-class_sourcegenfiles">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>

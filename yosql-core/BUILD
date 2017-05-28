@@ -119,6 +119,11 @@ java_library(
   srcs = [
     ":model-raw-sources",
   ],
+  visibility = [
+    "//yosql-cli:__subpackages__",
+    "//yosql-micro-benchmarks:__subpackages__",
+    "//yosql-testutils:__subpackages__",
+  ],
   resources = [
     ":application-events",
     ":parser-preconditions",
@@ -152,6 +157,10 @@ java_library(
   srcs = [
     ":utils-raw-sources",
   ],
+  visibility = [
+    "//yosql-micro-benchmarks:__subpackages__",
+    "//yosql-cli:__subpackages__",
+  ],
   deps = [
     "@javax_inject_javax_inject//jar",
     "@org_slf4j_slf4j_api//jar",
@@ -168,12 +177,17 @@ java_library(
   srcs = [
     ":parser-raw-sources",
   ],
+  visibility = [
+    "//yosql-micro-benchmarks:__subpackages__",
+    "//yosql-cli:__subpackages__",
+  ],
   deps = [
     "@org_yaml_snakeyaml//jar",
     "@org_slf4j_slf4j_api//jar",
     "@org_slf4j_slf4j_ext//jar",
     "@ch_qos_logback_logback_classic//jar",
     "@ch_qos_logback_logback_core//jar",
+    "@javax_inject_javax_inject//jar",
     ":model",
     ":dagger",
     ":dagger2",
@@ -185,11 +199,14 @@ java_library(
   srcs = [
     ":generator-api-raw-sources",
   ],
+  visibility = ["//yosql-micro-benchmarks:__subpackages__"],
   deps = [
     "@org_slf4j_slf4j_api//jar",
     "@org_slf4j_slf4j_ext//jar",
     "@ch_qos_logback_logback_classic//jar",
     "@ch_qos_logback_logback_core//jar",
+    "@com_squareup_javapoet//jar",
+    "@javax_inject_javax_inject//jar",
     ":model",
     ":dagger",
   ],
@@ -202,6 +219,8 @@ java_library(
   deps = [
     "@org_slf4j_slf4j_api//jar",
     "@org_slf4j_slf4j_ext//jar",
+    "@com_squareup_javapoet//jar",
+    ":model",
     ":generator-api",
     ":generator-helpers",
     ":dagger",
@@ -213,8 +232,13 @@ java_library(
     ":generator-dao-jdbc-raw-sources",
   ],
   deps = [
+    "@javax_inject_javax_inject//jar",
+    "@com_squareup_javapoet//jar",
+    "@de_xn__ho_hia_javapoet_javapoet_type_guesser//jar",
+    "@io_reactivex_rxjava2_rxjava2//jar",
     "@org_slf4j_slf4j_ext//jar",
     ":dagger",
+    ":model",
     ":generator-api",
     ":generator-dao-generic",
     ":generator-helpers",
@@ -225,10 +249,16 @@ java_library(
   srcs = [
     ":generator-dao-raw-sources",
   ],
+  visibility = [
+    "//yosql-micro-benchmarks:__subpackages__",
+    "//yosql-cli:__subpackages__",
+  ],
   deps = [
+    "@javax_inject_javax_inject//jar",
     "@org_slf4j_slf4j_api//jar",
     "@ch_qos_logback_logback_classic//jar",
     "@ch_qos_logback_logback_core//jar",
+    ":model",
     ":dagger",
     ":generator-api",
     ":generator-helpers",
@@ -242,8 +272,11 @@ java_library(
     ":generator-helpers-raw-sources",
   ],
   deps = [
+    "@javax_inject_javax_inject//jar",
     "@de_xn__ho_hia_javapoet_javapoet_type_guesser//jar",
+    "@com_squareup_javapoet//jar",
     "@io_reactivex_rxjava2_rxjava2//jar",
+    ":model",
     ":parser",
     ":dagger",
     ":generator-api",
@@ -255,8 +288,11 @@ java_library(
     ":generator-logging-jdk-raw-sources",
   ],
   deps = [
+    "@javax_inject_javax_inject//jar",
+    "@com_squareup_javapoet//jar",
     ":generator-api",
     ":generator-helpers",
+    ":dagger",
   ],
 )
 java_library(
@@ -265,10 +301,13 @@ java_library(
     ":generator-logging-log4j-raw-sources",
   ],
   deps = [
+    "@javax_inject_javax_inject//jar",
+    "@com_squareup_javapoet//jar",
     "@org_apache_logging_log4j_log4j_api//jar",
     "@org_apache_logging_log4j_log4j_core//jar",
     ":generator-api",
     ":generator-helpers",
+    ":dagger",
   ],
 )
 java_library(
@@ -277,7 +316,10 @@ java_library(
     ":generator-logging-noop-raw-sources",
   ],
   deps = [
+    "@javax_inject_javax_inject//jar",
+    "@com_squareup_javapoet//jar",
     ":generator-api",
+    ":dagger",
   ],
 )
 java_library(
@@ -287,10 +329,13 @@ java_library(
   ],
   deps = [
     "@org_slf4j_slf4j_api//jar",
+    "@javax_inject_javax_inject//jar",
+    "@com_squareup_javapoet//jar",
     "@ch_qos_logback_logback_classic//jar",
     "@ch_qos_logback_logback_core//jar",
     ":generator-api",
     ":generator-helpers",
+    ":dagger",
   ],
 )
 java_library(
@@ -298,7 +343,13 @@ java_library(
   srcs = [
     ":generator-logging-raw-sources",
   ],
+  visibility = [
+    "//yosql-micro-benchmarks:__subpackages__",
+    "//yosql-cli:__subpackages__",
+  ],
   deps = [
+    "@com_squareup_javapoet//jar",
+    ":model",
     ":dagger",
     ":generator-api",
     ":generator-helpers",
@@ -314,14 +365,21 @@ java_library(
   srcs = [
     ":generator-utils-raw-sources",
   ],
+  visibility = [
+    "//yosql-micro-benchmarks:__subpackages__",
+    "//yosql-cli:__subpackages__",
+  ],
   deps = [
+    "@javax_inject_javax_inject//jar",
+    "@com_squareup_javapoet//jar",
     "@org_slf4j_slf4j_api//jar",
     "@org_slf4j_slf4j_ext//jar",
     "@ch_qos_logback_logback_classic//jar",
     "@ch_qos_logback_logback_core//jar",
-    ":dagger",
+    ":model",
     ":generator-api",
     ":generator-helpers",
+    ":dagger",
   ],
 )
 
@@ -331,6 +389,7 @@ java_library(
     ":main-raw-sources",
   ],
   deps = [
+    "@javax_inject_javax_inject//jar",
     ":model",
     ":utils",
     ":parser",
@@ -373,12 +432,17 @@ java_library(
   srcs = [
     ":dagger-raw-sources",
   ],
+  visibility = [
+    "//yosql-cli:__subpackages__",
+    "//yosql-micro-benchmarks:__subpackages__",
+  ],
   deps = [
     "@javax_inject_javax_inject//jar",
     "@com_google_dagger_dagger//jar",
     "@com_google_dagger_dagger_compiler//jar",
     "@org_slf4j_slf4j_api//jar",
     "@org_slf4j_slf4j_ext//jar",
+    "@ch_qos_cal10n_cal10n_api//jar",
     ":dagger2",
     ":model",
   ],
@@ -408,6 +472,7 @@ load("@bazel_build_process//java:junit5_test.bzl", "junit5")
 [junit5(
   file = file,
   deps = [
+    "@com_squareup_javapoet//jar",
     "//yosql-testutils",
     ":model",
     ":generator-helpers",

@@ -28,6 +28,7 @@ import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.BuildInfo;
 import de.xn__ho_hia.yosql.YoSql;
+import de.xn__ho_hia.yosql.cli.dagger.DaggerYoSqlCLIComponent;
 import de.xn__ho_hia.yosql.cli.dagger.YoSqlCLIComponent;
 import de.xn__ho_hia.yosql.cli.parser.YoSqlOptionParser;
 import de.xn__ho_hia.yosql.model.Loggers;

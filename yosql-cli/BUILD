@@ -18,6 +18,7 @@ java_binary(
   name = "yosql-cli",
   main_class = "de.xn__ho_hia.yosql.cli.YoSqlCLI",
   srcs = [
+    "src/main/java/de/xn__ho_hia/yosql/cli/YoSqlCLI.java",
     ":build_info",
   ],
   visibility = ["//visibility:public"],
@@ -28,11 +29,18 @@ java_binary(
     "@de_vandermeer_skb_interfaces//jar",
     "@org_apache_commons_commons_lang3//jar",
     "@org_antlr_st4//jar",
+    "@org_slf4j_slf4j_api//jar",
     "@org_slf4j_slf4j_ext//jar",
+    "@ch_qos_cal10n_cal10n_api//jar",
+      "@org_reactivestreams_reactive_streams//jar",
     "//yosql-core",
+    "//yosql-core:model",
+    "//yosql-cli/src/main/java/de/xn__ho_hia/yosql/cli/i18n:yosql-cli-i18n",
+    "//yosql-cli/src/main/java/de/xn__ho_hia/yosql/cli/dagger:yosql-cli-dagger",
+    "//yosql-cli/src/main/java/de/xn__ho_hia/yosql/cli/parser:yosql-cli-parser",
   ],
   resources = [
-    ":cli-events",
-    ":commands",
+    "//yosql-cli/src/main/resources:cli-events",
+    "//yosql-cli/src/main/resources:commands",
   ],
 )

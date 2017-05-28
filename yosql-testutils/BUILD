@@ -10,6 +10,9 @@ java_library(
   deps = [
     "@org_junit_platform_junit5_platform_commons//jar",
     "@org_junit_jupiter_junit5_jupiter_api//jar",
-    "//yosql-core"
+    "@ch_qos_cal10n_cal10n_api//jar",
+    "@org_slf4j_slf4j_api//jar",
+    "@com_squareup_javapoet//jar",
+    "//yosql-core:model"
   ],
 )
