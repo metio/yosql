@@ -26,7 +26,7 @@ abstract class AbstractFullLifecycleBenchmark extends AbstractBenchmark {
      */
     @Benchmark
     public final void benchmarkGenerateFiles() throws Exception {
-        yosql.generateFiles();
+        yosql.generateCode();
     }
 
 }

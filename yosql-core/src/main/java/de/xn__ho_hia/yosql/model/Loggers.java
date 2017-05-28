@@ -45,6 +45,10 @@ public enum Loggers {
     /**
      * Logger for utilities.
      */
-    UTILITIES;
+    UTILITIES,
 
+    /**
+     * Logger for CLIs.
+     */
+    CLI,
 }

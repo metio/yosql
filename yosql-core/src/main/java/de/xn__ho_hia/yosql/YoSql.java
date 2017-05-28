@@ -15,6 +15,6 @@ public interface YoSql {
     /**
      * Generates .java files based on the configured .sql files.
      */
-    void generateFiles();
+    void generateCode();
 
 }

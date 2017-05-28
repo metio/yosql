@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.dagger;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -14,6 +14,7 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
+import de.xn__ho_hia.yosql.cli.i18n.Commands;
 import de.xn__ho_hia.yosql.model.GenerateOptions;
 import de.xn__ho_hia.yosql.model.HelpOptions;
 import de.xn__ho_hia.yosql.model.VersionOptions;

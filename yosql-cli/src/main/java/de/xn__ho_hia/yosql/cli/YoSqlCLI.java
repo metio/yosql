@@ -6,17 +6,15 @@
  */
 package de.xn__ho_hia.yosql.cli;
 
-import static de.xn__ho_hia.yosql.cli.CliEvents.*;
-import static de.xn__ho_hia.yosql.cli.Commands.GENERATE;
-import static de.xn__ho_hia.yosql.cli.Commands.HELP;
-import static de.xn__ho_hia.yosql.cli.Commands.VERSION;
+import static de.xn__ho_hia.yosql.cli.i18n.CliEvents.*;
+import static de.xn__ho_hia.yosql.cli.i18n.Commands.GENERATE;
+import static de.xn__ho_hia.yosql.cli.i18n.Commands.HELP;
+import static de.xn__ho_hia.yosql.cli.i18n.Commands.VERSION;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
@@ -30,6 +28,9 @@ import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.BuildInfo;
 import de.xn__ho_hia.yosql.YoSql;
+import de.xn__ho_hia.yosql.cli.dagger.YoSqlCLIComponent;
+import de.xn__ho_hia.yosql.cli.parser.YoSqlOptionParser;
+import de.xn__ho_hia.yosql.model.Loggers;
 import joptsimple.OptionException;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -42,7 +43,8 @@ public class YoSqlCLI {
     private static final Locale           SYSTEM_LOCALE    = Locale.ENGLISH;
     private static final IMessageConveyor SYSTEM_MESSAGES  = new MessageConveyor(SYSTEM_LOCALE);
     private static final LocLoggerFactory LOGGER_FACTORY   = new LocLoggerFactory(SYSTEM_MESSAGES);
-    private static final LocLogger        LOGGER           = LOGGER_FACTORY.getLocLogger("yosql-cli"); //$NON-NLS-1$
+    private static final LocLogger        LOGGER           = LOGGER_FACTORY
+            .getLocLogger(SYSTEM_MESSAGES.getMessage(Loggers.CLI));
 
     private static final String           HELP_COMMAND     = SYSTEM_MESSAGES.getMessage(HELP);
     private static final String           VERSION_COMMAND  = SYSTEM_MESSAGES.getMessage(VERSION);
@@ -63,13 +65,13 @@ public class YoSqlCLI {
             } else if (matchesCommand(VERSION_COMMAND, arguments)) {
                 printVersionText();
             } else {
-                // when in doubt, generate files
+                // when in doubt, generate code
                 assertLoggerIsConfigured(cliComponent.rootLogger());
                 generateCode(cliComponent.yoSql());
             }
             successfulTermination();
         } catch (final OptionException exception) {
-            handleFailedOptions(cliComponent.generateParser(), exception.options());
+            handleUnknownGenerateOptions(cliComponent.generateParser(), exception.options());
         } catch (final Exception throwable) {
             handleUnknownException(throwable);
         }
@@ -77,7 +79,7 @@ public class YoSqlCLI {
     }
 
     private static void generateCode(final YoSql yoSql) {
-        yoSql.generateFiles();
+        yoSql.generateCode();
     }
 
     private static void assertLoggerIsConfigured(final Logger rootLogger) {
@@ -97,7 +99,7 @@ public class YoSqlCLI {
     private static void printHelpText(final YoSqlCLIComponent yoSqlCli, final String... arguments) {
         final YoSqlOptionParser helpParser = yoSqlCli.helpParser();
         final OptionSpec<String> command = yoSqlCli.helpCommandOption();
-        final OptionSet optionSet = helpParser.parser.parse(arguments);
+        final OptionSet optionSet = helpParser.parse(arguments);
         if (optionSet.has(command)) {
             final String commandName = optionSet.valueOf(command);
             if (HELP_COMMAND.equalsIgnoreCase(commandName)) {
@@ -143,59 +145,66 @@ public class YoSqlCLI {
         LOGGER.error(UNKNOWN_COMMAND, commandName);
     }
 
-    private static void handleFailedOptions(
+    private static void handleUnknownGenerateOptions(
             final YoSqlOptionParser generateParser,
             final Collection<String> failedOptions) {
-        final Map<String, OptionSpec<?>> recognizedOptions = generateParser.parser.recognizedOptions();
-        final Collection<String> similarOptions = findSimilarOptions(failedOptions, recognizedOptions);
-        LOGGER.error(PROBLEM_DURING_OPTION_PARSING,
-                failedOptions.stream().collect(Collectors.joining(" --")), GENERATE_COMMAND, similarOptions); //$NON-NLS-1$
+        final String[] recognizedOptions = generateParser.recognizedOptions();
+        if (recognizedOptions.length > 0) {
+            final Collection<String> similarOptions = findSimilarOptions(failedOptions, recognizedOptions);
+            logProblematicGenerateOptions(failedOptions, similarOptions);
+        }
         printCommandLineOptions(generateParser, LOGGER::error);
+    }
+
+    private static void logProblematicGenerateOptions(
+            final Collection<String> failedOptions,
+            final Collection<String> similarOptions) {
+        LOGGER.error(PROBLEM_DURING_OPTION_PARSING,
+                formatOptions(failedOptions), GENERATE_COMMAND, similarOptions);
+    }
+
+    private static String formatOptions(final Collection<String> failedOptions) {
+        return failedOptions.stream().collect(Collectors.joining(" --")); //$NON-NLS-1$
     }
 
     private static Collection<String> findSimilarOptions(
             final Collection<String> failedOptions,
-            final Map<String, OptionSpec<?>> recognizedOptions) {
+            final String[] recognizedOptions) {
         final Set<String> similars = new TreeSet<>();
-        final String[] availableOptions = recognizedOptions.keySet().stream()
-                .filter(string -> !string.contains("arguments")) //$NON-NLS-1$
-                .sorted()
-                .toArray(size -> new String[size]);
-        if (availableOptions.length > 0) {
-            findNearestMatch(failedOptions, similars, availableOptions);
+        if (recognizedOptions.length > 0) {
+            similars.addAll(findNearestMatch(failedOptions, recognizedOptions));
         }
         return similars;
     }
 
-    private static void findNearestMatch(
+    private static Set<String> findNearestMatch(
             final Collection<String> failedOptions,
-            final Set<String> similars,
-            final String[] availableOptions) {
+            final String[] recognizedOptions) {
+        final Set<String> nearestMatch = new TreeSet<>();
         for (final String option : failedOptions) {
-            final int index = Math.abs(Arrays.binarySearch(availableOptions, option)) - 1;
-            if (index == availableOptions.length) {
-                similars.add(availableOptions[Math.max(index - 2, 0)]);
+            final int index = Math.abs(Arrays.binarySearch(recognizedOptions, option)) - 1;
+            if (index == recognizedOptions.length) {
+                nearestMatch.add(recognizedOptions[Math.max(index - 2, 0)]);
             }
-            similars.add(availableOptions[Math.max(index - 1, 0)]);
-            similars.add(availableOptions[Math.max(Math.min(index, availableOptions.length - 1), 0)]);
+            nearestMatch.add(recognizedOptions[Math.max(index - 1, 0)]);
+            nearestMatch.add(recognizedOptions[Math.max(Math.min(index, recognizedOptions.length - 1), 0)]);
             if (index == 0) {
-                similars.add(availableOptions[Math.min(index + 1, availableOptions.length - 1)]);
+                nearestMatch.add(recognizedOptions[Math.min(index + 1, recognizedOptions.length - 1)]);
             }
         }
+        return nearestMatch;
     }
 
     private static void printCommandLineOptions(final YoSqlOptionParser parser, final Consumer<String> output) {
         try {
-            final StringWriter writer = new StringWriter();
-            parser.parser.printHelpOn(writer);
-            output.accept(writer.toString());
+            output.accept(parser.printHelp());
         } catch (final IOException exception) {
             handleUnknownException(exception);
         }
     }
 
     private static void handleUnknownException(final Exception exception) {
-        LOGGER.error("Encountered unknown exception: %s", exception); //$NON-NLS-1$
+        LOGGER.error(UNKNOWN_EXCEPTION, exception);
     }
 
     private static void successfulTermination() {

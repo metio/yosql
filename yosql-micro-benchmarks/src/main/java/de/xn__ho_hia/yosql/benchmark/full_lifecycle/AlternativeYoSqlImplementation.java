@@ -56,7 +56,7 @@ final class AlternativeYoSqlImplementation implements YoSql {
 
     @Override
     @SuppressWarnings("nls")
-    public void generateFiles() {
+    public void generateCode() {
         try {
             final Executor executor = Executors.newWorkStealingPool();
             supplyAsync(() -> parseFiles(), executor)

@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.dagger;
 
 import static de.xn__ho_hia.yosql.model.GeneralOptions.LOCALE;
 
@@ -18,6 +18,8 @@ import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import dagger.Module;
 import dagger.Provides;
+import de.xn__ho_hia.yosql.cli.i18n.Commands;
+import de.xn__ho_hia.yosql.cli.parser.LocaleValueConverter;
 import de.xn__ho_hia.yosql.dagger.Localized;
 import de.xn__ho_hia.yosql.dagger.NonLocalized;
 import de.xn__ho_hia.yosql.model.GeneralOptionDescriptions;

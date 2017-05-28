@@ -4,28 +4,32 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.i18n;
 
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
 
+/**
+ * Enumeration of all known commands.
+ */
 @LocaleData(@Locale("en"))
-@BaseName("cli-events")
-enum CliEvents {
+@BaseName("commands")
+public enum Commands {
 
-    PROBLEM_DURING_OPTION_PARSING,
+    /**
+     * The help command.
+     */
+    HELP,
 
-    HELP_REQUIRED,
+    /**
+     * The version command.
+     */
+    VERSION,
 
-    DETAIL_HELP_REQUIRED,
-
-    UNKNOWN_COMMAND,
-
-    HELP_FOR_VERSION,
-
-    HELP_FOR_GENERATE,
-
-    INFORMATION_NEEDED;
+    /**
+     * The generate command.
+     */
+    GENERATE,
 
 }

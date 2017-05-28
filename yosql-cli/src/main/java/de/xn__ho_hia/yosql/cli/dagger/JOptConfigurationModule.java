@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.dagger;
 
 import static de.xn__ho_hia.yosql.model.GenerateOptions.*;
 
@@ -14,6 +14,9 @@ import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
+import de.xn__ho_hia.yosql.cli.i18n.Commands;
+import de.xn__ho_hia.yosql.cli.parser.PathValueConverter;
+import de.xn__ho_hia.yosql.cli.parser.ResultRowConverterValueConverter;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 import de.xn__ho_hia.yosql.model.LoggingAPI;

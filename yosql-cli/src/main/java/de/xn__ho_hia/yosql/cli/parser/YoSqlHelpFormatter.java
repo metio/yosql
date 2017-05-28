@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.parser;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,7 +20,10 @@ import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import joptsimple.HelpFormatter;
 import joptsimple.OptionDescriptor;
 
-class YoSqlHelpFormatter implements HelpFormatter {
+/**
+ * Customized help formatter that uses an {@link AsciiTable} to render its output.
+ */
+public final class YoSqlHelpFormatter implements HelpFormatter {
 
     private static final Set<String> IGNORED_OPTIONS = Stream
             .of("[arguments]") //$NON-NLS-1$

@@ -72,7 +72,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     @Override
-    public void generateFiles() {
+    public void generateCode() {
         final Executor pool = createThreadPool();
         supplyAsync(this::parseFiles, pool)
                 .thenApplyAsync(this::generateCode, pool)

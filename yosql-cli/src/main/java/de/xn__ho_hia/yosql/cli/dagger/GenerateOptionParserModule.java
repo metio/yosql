@@ -4,9 +4,9 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.dagger;
 
-import static de.xn__ho_hia.yosql.cli.Commands.GENERATE;
+import static de.xn__ho_hia.yosql.cli.i18n.Commands.GENERATE;
 import static de.xn__ho_hia.yosql.model.GenerateOptionDescriptions.*;
 import static de.xn__ho_hia.yosql.model.GenerateOptions.*;
 
@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import dagger.Module;
 import dagger.Provides;
+import de.xn__ho_hia.yosql.cli.i18n.Commands;
+import de.xn__ho_hia.yosql.cli.parser.YoSqlOptionParser;
 import de.xn__ho_hia.yosql.model.LoggingAPI;
 import de.xn__ho_hia.yosql.model.ResultRowConverter;
 import de.xn__ho_hia.yosql.model.Translator;
@@ -537,7 +539,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
     OptionSet provideGenerateOptionSet(
             @UsedFor.Command(GENERATE) final YoSqlOptionParser parser,
             @UsedFor.CLI final String[] arguments) {
-        return parser.parser.parse(arguments);
+        return parser.parse(arguments);
     }
 
     @Provides

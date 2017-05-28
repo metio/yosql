@@ -4,12 +4,14 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.dagger;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import de.xn__ho_hia.yosql.cli.i18n.Commands;
+import de.xn__ho_hia.yosql.cli.parser.YoSqlOptionParser;
 import de.xn__ho_hia.yosql.model.HelpOptionDescriptions;
 import de.xn__ho_hia.yosql.model.HelpOptions;
 import de.xn__ho_hia.yosql.model.Translator;

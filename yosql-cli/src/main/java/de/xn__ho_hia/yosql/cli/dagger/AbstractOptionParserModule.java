@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.dagger;
 
 import static de.xn__ho_hia.yosql.model.GenerateOptions.LOG_LEVEL;
 import static de.xn__ho_hia.yosql.model.GenerateOptions.LOG_LEVEL_DEFAULT;

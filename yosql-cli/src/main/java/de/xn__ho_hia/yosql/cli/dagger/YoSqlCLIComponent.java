@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.dagger;
 
 import javax.inject.Singleton;
 
@@ -14,6 +14,8 @@ import dagger.BindsInstance;
 import dagger.Component;
 import de.xn__ho_hia.yosql.YoSql;
 import de.xn__ho_hia.yosql.YoSqlModule;
+import de.xn__ho_hia.yosql.cli.i18n.Commands;
+import de.xn__ho_hia.yosql.cli.parser.YoSqlOptionParser;
 import de.xn__ho_hia.yosql.dagger.ErrorModule;
 import de.xn__ho_hia.yosql.dagger.I18nModule;
 import de.xn__ho_hia.yosql.dagger.LoggerModule;

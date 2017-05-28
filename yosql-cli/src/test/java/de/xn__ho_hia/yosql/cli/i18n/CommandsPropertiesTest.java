@@ -4,15 +4,16 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.i18n;
 
+import de.xn__ho_hia.yosql.cli.i18n.Commands;
 import de.xn__ho_hia.yosql.testutils.PropertiesTCK;
 
-final class CliEventsPropertiesTest extends PropertiesTCK<CliEvents> {
+final class CommandsPropertiesTest extends PropertiesTCK<Commands> {
 
     @Override
-    protected Class<CliEvents> getEnumClass() {
-        return CliEvents.class;
+    protected Class<Commands> getEnumClass() {
+        return Commands.class;
     }
 
 }

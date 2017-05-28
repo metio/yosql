@@ -4,21 +4,16 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package de.xn__ho_hia.yosql.cli;
+package de.xn__ho_hia.yosql.cli.i18n;
 
-import joptsimple.OptionParser;
-import joptsimple.OptionSpec;
+import de.xn__ho_hia.yosql.cli.i18n.CliEvents;
+import de.xn__ho_hia.yosql.testutils.PropertiesTCK;
 
-class YoSqlOptionParser {
+final class CliEventsPropertiesTest extends PropertiesTCK<CliEvents> {
 
-    final OptionParser    parser;
-    final OptionSpec<?>[] options;
-
-    public YoSqlOptionParser(
-            final OptionParser parser,
-            final OptionSpec<?>... options) {
-        this.parser = parser;
-        this.options = options;
+    @Override
+    protected Class<CliEvents> getEnumClass() {
+        return CliEvents.class;
     }
 
 }
