@@ -143,13 +143,6 @@ java_library(
     "@ch_qos_cal10n_cal10n_api//jar",
     ":auto",
   ],
-  exports = [
-    "//external:javax_annotation",
-    "//external:javax_inject",
-    "//external:javapoet",
-    "//external:dagger",
-    "//external:cal10n",
-  ],
 )
 
 java_library(
@@ -182,12 +175,13 @@ java_library(
     "//yosql-cli:__subpackages__",
   ],
   deps = [
+    "@javax_inject_javax_inject//jar",
     "@org_yaml_snakeyaml//jar",
     "@org_slf4j_slf4j_api//jar",
     "@org_slf4j_slf4j_ext//jar",
+    "@ch_qos_cal10n_cal10n_api//jar",
     "@ch_qos_logback_logback_classic//jar",
     "@ch_qos_logback_logback_core//jar",
-    "@javax_inject_javax_inject//jar",
     ":model",
     ":dagger",
     ":dagger2",

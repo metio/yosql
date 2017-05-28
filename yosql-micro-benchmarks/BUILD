@@ -27,6 +27,7 @@ java_binary(
     "@org_apache_commons_commons_math3//jar",
     "@net_sf_jopt_simple//jar",
     "@org_slf4j_slf4j_api//jar",
+    "@org_slf4j_slf4j_ext//jar",
     "@ch_qos_logback_logback_classic//jar",
     "//yosql-core",
     "//yosql-core:model",
