@@ -8,6 +8,7 @@ load("@bazel_tools//tools/build_defs/repo:maven_rules.bzl", "maven_jar")
 load("@bazel_build_process//dependencies:sebhoss.bzl", "sebhoss_dependencies")
 load("@bazel_build_process//dependencies:square.bzl", "square_dependencies")
 load("@bazel_build_process//dependencies:logging.bzl", "logging_dependencies")
+load("@bazel_build_process//dependencies:testing.bzl", "junit_dependencies")
 
 maven_server(
     name = "default",
@@ -17,6 +18,7 @@ maven_server(
 sebhoss_dependencies()
 square_dependencies()
 logging_dependencies()
+junit_dependencies()
 
 maven_jar(
     name = "javax_inject_javax_inject",
@@ -41,56 +43,6 @@ maven_jar(
 maven_jar(
     name = "org_yaml_snakeyaml",
     artifact = "org.yaml:snakeyaml:1.17",
-)
-
-maven_jar(
-    name = "junit_junit",
-    artifact = "junit:junit:4.12",
-)
-
-maven_jar(
-    name = "org_junit_platform_junit5_platform_console",
-    artifact = "org.junit.platform:junit-platform-console:1.0.0-M3",
-)
-
-maven_jar(
-    name = "org_junit_platform_junit5_platform_commons",
-    artifact = "org.junit.platform:junit-platform-commons:1.0.0-M3",
-)
-
-maven_jar(
-    name = "org_junit_platform_junit5_platform_engine",
-    artifact = "org.junit.platform:junit-platform-engine:1.0.0-M3",
-)
-
-maven_jar(
-    name = "org_junit_platform_junit5_platform_launcher",
-    artifact = "org.junit.platform:junit-platform-launcher:1.0.0-M3",
-)
-
-maven_jar(
-    name = "org_junit_platform_junit5_platform_runner",
-    artifact = "org.junit.platform:junit-platform-runner:1.0.0-M3",
-)
-
-maven_jar(
-    name = "org_junit_jupiter_junit5_jupiter_api",
-    artifact = "org.junit.jupiter:junit-jupiter-api:5.0.0-M3",
-)
-
-maven_jar(
-    name = "org_junit_jupiter_junit5_jupiter_engine",
-    artifact = "org.junit.jupiter:junit-jupiter-engine:5.0.0-M3",
-)
-
-maven_jar(
-    name = "org_junit_vintage_junit5_vintage_engine",
-    artifact = "org.junit.vintage:junit-vintage-engine:4.12.0-M3",
-)
-
-maven_jar(
-    name = "org_opentest4j_opentest4j",
-    artifact = "org.opentest4j:opentest4j:1.0.0-M1",
 )
 
 maven_jar(
