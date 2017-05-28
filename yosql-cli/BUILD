@@ -1,16 +1,3 @@
-filegroup(
-  name = "yosql-cli-raw-sources",
-  srcs = glob(["src/main/java/**/*.java"]),
-)
-filegroup(
-  name = "cli-events",
-  srcs = ["src/main/resources/cli-events_en.properties"],
-)
-filegroup(
-  name = "commands",
-  srcs = ["src/main/resources/commands_en.properties"],
-)
-
 genrule(
   name = "build_info",
   outs = ["de/xn__ho_hia/yosql/BuildInfo.java"],
@@ -31,18 +18,17 @@ java_binary(
   name = "yosql-cli",
   main_class = "de.xn__ho_hia.yosql.cli.YoSqlCLI",
   srcs = [
-    ":yosql-cli-raw-sources",
     ":build_info",
   ],
   visibility = ["//visibility:public"],
   deps = [
-    "//external:jopt_simple",
-    "//external:asciitable",
-    "//external:ascii_utf_themes",
-    "//external:skb_interfaces",
-    "//external:commons_lang3",
-    "//external:st4",
-    "//external:slf4j_ext",
+    "@net_sf_jopt_simple//jar",
+    "@de_vandermeer_asciitable//jar",
+    "@de_vandermeer_ascii_utf_themes//jar",
+    "@de_vandermeer_skb_interfaces//jar",
+    "@org_apache_commons_commons_lang3//jar",
+    "@org_antlr_st4//jar",
+    "@org_slf4j_slf4j_ext//jar",
     "//yosql-core",
   ],
   resources = [

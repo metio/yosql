@@ -2,8 +2,8 @@ java_plugin(
   name = "jmh_generator_annprocess_plugin",
   processor_class = "org.openjdk.jmh.generators.BenchmarkProcessor",
   deps = [
-    "//external:jmh_generator_annprocess",
-    "//external:jmh_core",
+    "@org_openjdk_jmh_jmh_generator_annprocess//jar",
+    "@org_openjdk_jmh_jmh_core//jar",
   ],
 )
 
@@ -11,8 +11,8 @@ java_library(
   name = "jmh",
   exported_plugins = [":jmh_generator_annprocess_plugin"],
   exports = [
-    "//external:jmh_generator_annprocess",
-    "//external:jmh_core",
+    "@org_openjdk_jmh_jmh_generator_annprocess//jar",
+    "@org_openjdk_jmh_jmh_core//jar",
   ],
 )
 
@@ -23,9 +23,8 @@ java_binary(
   resources = glob(["src/main/resources/**/*.sql"]),
   visibility = ["//visibility:public"],
   deps = [
-    "//external:commons_math3",
-    "//external:jopt_simple",
-    "//external:slf4j_ext",
+    "@org_apache_commons_commons_math3//jar",
+    "@net_sf_jopt_simple//jar",
     "//yosql-core",
     "//yosql-core:dagger2",
     ":jmh",

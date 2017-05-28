@@ -106,12 +106,12 @@ filegroup(
 java_plugin(
     name = "auto_plugin",
     processor_class = "com.google.auto.value.processor.AutoValueProcessor",
-    deps = ["//external:auto_value"],
+    deps = ["@com_google_auto_value_auto_value//jar"],
 )
 java_library(
     name = "auto",
     exported_plugins = [":auto_plugin"],
-    exports = ["//external:auto_value"],
+    exports = ["@com_google_auto_value_auto_value//jar"],
 )
 
 java_library(
@@ -131,11 +131,11 @@ java_library(
     ":generate-option-descriptions",
   ],
   deps = [
-    "//external:javax_annotation",
-    "//external:javax_inject",
-    "//external:javapoet",
-    "//external:dagger",
-    "//external:cal10n",
+    "@javax_annotation_javax_annotation_api//jar",
+    "@javax_inject_javax_inject//jar",
+    "@com_squareup_javapoet//jar",
+    "@com_google_dagger_dagger//jar",
+    "@ch_qos_cal10n_cal10n_api//jar",
     ":auto",
   ],
   exports = [
@@ -153,11 +153,11 @@ java_library(
     ":utils-raw-sources",
   ],
   deps = [
-    "//external:javax_inject",
-    "//external:slf4j_api",
-    "//external:slf4j_ext",
-    "//external:logback_classic",
-    "//external:logback_core",
+    "@javax_inject_javax_inject//jar",
+    "@org_slf4j_slf4j_api//jar",
+    "@org_slf4j_slf4j_ext//jar",
+    "@ch_qos_logback_logback_classic//jar",
+    "@ch_qos_logback_logback_core//jar",
     ":model",
     ":dagger",
   ],
@@ -169,17 +169,14 @@ java_library(
     ":parser-raw-sources",
   ],
   deps = [
-    "//external:snakeyaml",
-    "//external:slf4j_api",
-    "//external:slf4j_ext",
-    "//external:logback_classic",
-    "//external:logback_core",
+    "@org_yaml_snakeyaml//jar",
+    "@org_slf4j_slf4j_api//jar",
+    "@org_slf4j_slf4j_ext//jar",
+    "@ch_qos_logback_logback_classic//jar",
+    "@ch_qos_logback_logback_core//jar",
     ":model",
     ":dagger",
     ":dagger2",
-  ],
-  exports = [
-    "//external:snakeyaml",
   ],
 )
 
@@ -189,15 +186,12 @@ java_library(
     ":generator-api-raw-sources",
   ],
   deps = [
-    "//external:slf4j_api",
-    "//external:slf4j_ext",
-    "//external:logback_classic",
-    "//external:logback_core",
+    "@org_slf4j_slf4j_api//jar",
+    "@org_slf4j_slf4j_ext//jar",
+    "@ch_qos_logback_logback_classic//jar",
+    "@ch_qos_logback_logback_core//jar",
     ":model",
     ":dagger",
-  ],
-  exports = [
-    ":model",
   ],
 )
 java_library(
@@ -206,10 +200,10 @@ java_library(
     ":generator-dao-generic-raw-sources",
   ],
   deps = [
+    "@org_slf4j_slf4j_api//jar",
+    "@org_slf4j_slf4j_ext//jar",
     ":generator-api",
     ":generator-helpers",
-    "//external:slf4j_api",
-    "//external:slf4j_ext",
     ":dagger",
   ],
 )
@@ -219,7 +213,7 @@ java_library(
     ":generator-dao-jdbc-raw-sources",
   ],
   deps = [
-    "//external:slf4j_ext",
+    "@org_slf4j_slf4j_ext//jar",
     ":dagger",
     ":generator-api",
     ":generator-dao-generic",
@@ -232,16 +226,12 @@ java_library(
     ":generator-dao-raw-sources",
   ],
   deps = [
-    "//external:slf4j_api",
-    "//external:logback_classic",
-    "//external:logback_core",
+    "@org_slf4j_slf4j_api//jar",
+    "@ch_qos_logback_logback_classic//jar",
+    "@ch_qos_logback_logback_core//jar",
     ":dagger",
     ":generator-api",
     ":generator-helpers",
-    ":generator-dao-generic",
-    ":generator-dao-jdbc",
-  ],
-  exports = [
     ":generator-dao-generic",
     ":generator-dao-jdbc",
   ],
@@ -252,16 +242,11 @@ java_library(
     ":generator-helpers-raw-sources",
   ],
   deps = [
-    "//external:javapoet_type_guesser",
-    "//external:rxjava2",
+    "@de_xn__ho_hia_javapoet_javapoet_type_guesser//jar",
+    "@io_reactivex_rxjava2_rxjava2//jar",
     ":parser",
     ":dagger",
     ":generator-api",
-  ],
-  exports = [
-    "//external:javapoet_type_guesser",
-    "//external:reactive_streams",
-    "//external:rxjava2",
   ],
 )
 java_library(
@@ -270,7 +255,6 @@ java_library(
     ":generator-logging-jdk-raw-sources",
   ],
   deps = [
-    ":dagger",
     ":generator-api",
     ":generator-helpers",
   ],
@@ -281,15 +265,10 @@ java_library(
     ":generator-logging-log4j-raw-sources",
   ],
   deps = [
-    "//external:log4j_api",
-    "//external:log4j_core",
-    ":dagger",
+    "@org_apache_logging_log4j_log4j_api//jar",
+    "@org_apache_logging_log4j_log4j_core//jar",
     ":generator-api",
     ":generator-helpers",
-  ],
-  exports = [
-    "//external:log4j_api",
-    "//external:log4j_core",
   ],
 )
 java_library(
@@ -299,7 +278,6 @@ java_library(
   ],
   deps = [
     ":generator-api",
-    ":dagger",
   ],
 )
 java_library(
@@ -308,17 +286,11 @@ java_library(
     ":generator-logging-slf4j-raw-sources",
   ],
   deps = [
-    "//external:slf4j_api",
-    "//external:logback_classic",
-    "//external:logback_core",
-    ":dagger",
+    "@org_slf4j_slf4j_api//jar",
+    "@ch_qos_logback_logback_classic//jar",
+    "@ch_qos_logback_logback_core//jar",
     ":generator-api",
     ":generator-helpers",
-  ],
-  exports = [
-    "//external:slf4j_api",
-    "//external:logback_classic",
-    "//external:logback_core",
   ],
 )
 java_library(
@@ -335,12 +307,6 @@ java_library(
     ":generator-logging-noop",
     ":generator-logging-slf4j",
   ],
-  exports = [
-    ":generator-logging-jdk",
-    ":generator-logging-log4j",
-    ":generator-logging-noop",
-    ":generator-logging-slf4j",
-  ],
 )
 
 java_library(
@@ -349,10 +315,10 @@ java_library(
     ":generator-utils-raw-sources",
   ],
   deps = [
-    "//external:slf4j_api",
-    "//external:slf4j_ext",
-    "//external:logback_classic",
-    "//external:logback_core",
+    "@org_slf4j_slf4j_api//jar",
+    "@org_slf4j_slf4j_ext//jar",
+    "@ch_qos_logback_logback_classic//jar",
+    "@ch_qos_logback_logback_core//jar",
     ":dagger",
     ":generator-api",
     ":generator-helpers",
@@ -375,17 +341,6 @@ java_library(
     ":generator-dao",
     ":generator-utils",
   ],
-  exports = [
-    ":model",
-    ":utils",
-    ":parser",
-    ":dagger",
-    ":generator-api",
-    ":generator-helpers",
-    ":generator-logging",
-    ":generator-dao",
-    ":generator-utils",
-  ],
 )
 
 java_plugin(
@@ -393,9 +348,9 @@ java_plugin(
   generates_api = True,
   processor_class = "dagger.internal.codegen.ComponentProcessor",
   deps = [
-    "//external:javax_inject",
-    "//external:dagger",
-    "//external:dagger-compiler",
+    "@javax_inject_javax_inject//jar",
+    "@com_google_dagger_dagger//jar",
+    "@com_google_dagger_dagger_compiler//jar",
     "@dagger_producers//jar",
     "@dagger_javapoet//jar",
     "@google_java_format//jar",
@@ -409,7 +364,7 @@ java_library(
   visibility = ["//visibility:public"],
   exported_plugins = [":dagger_plugin"],
   exports = [
-    "//external:dagger"
+    "@com_google_dagger_dagger//jar"
   ],
 )
 
@@ -419,11 +374,11 @@ java_library(
     ":dagger-raw-sources",
   ],
   deps = [
-    "//external:javax_inject",
-    "//external:dagger",
-    "//external:dagger-compiler",
-    "//external:slf4j_api",
-    "//external:slf4j_ext",
+    "@javax_inject_javax_inject//jar",
+    "@com_google_dagger_dagger//jar",
+    "@com_google_dagger_dagger_compiler//jar",
+    "@org_slf4j_slf4j_api//jar",
+    "@org_slf4j_slf4j_ext//jar",
     ":dagger2",
     ":model",
   ],
@@ -437,8 +392,6 @@ java_library(
   visibility = ["//visibility:public"],
   exports = [
     ":main",
-    "//external:slf4j_api",
-    "//external:logback_classic",
   ],
 )
 

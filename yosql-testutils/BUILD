@@ -8,8 +8,8 @@ java_library(
   srcs = [":testutils-raw-sources"],
   visibility = ["//visibility:public"],
   deps = [
-    "//external:junit5_platform_commons",
-    "//external:junit5_jupiter_api",
+    "@org_junit_platform_junit5_platform_commons//jar",
+    "@org_junit_jupiter_junit5_jupiter_api//jar",
     "//yosql-core"
   ],
 )
