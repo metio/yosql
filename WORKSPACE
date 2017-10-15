@@ -10,16 +10,16 @@ load("@bazel_build_process//dependencies:logging.bzl", "logging_dependencies")
 load("@bazel_build_process//dependencies:junit.bzl", "junit_dependencies")
 load("@bazel_build_process//dependencies:yaml.bzl", "snakeyaml_dependencies")
 
+maven_server(
+  name = "metio",
+  url = "https://repository.metio.wtf/repository/maven-public/",
+)
+
 javapoet_type_guesser()
 javapoet_dependencies()
 logging_dependencies()
 junit_dependencies()
 snakeyaml_dependencies()
-
-maven_server(
-  name = "metio",
-  url = "https://repository.metio.wtf/repository/maven-public/",
-)
 
 maven_jar(
     name = "javax_inject_javax_inject",
