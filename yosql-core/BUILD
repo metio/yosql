@@ -176,7 +176,7 @@ java_library(
   ],
   deps = [
     "@javax_inject_javax_inject//jar",
-    "@org_yaml_snakeyaml//jar",
+    "@snakeyaml//jar",
     "@slf4j_api//jar",
     "@slf4j_ext//jar",
     "@ch_qos_cal10n_cal10n_api//jar",

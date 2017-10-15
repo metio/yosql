@@ -1,23 +1,25 @@
-local_repository(
+git_repository(
     name = "bazel_build_process",
-    path = "/home/sebhoss/git/bazel-build-process",
+    remote = "https://github.com/sebhoss/bazel-build-process.git",
+    tag = "0.0.3",
 )
 
-load("@bazel_tools//tools/build_defs/repo:maven_rules.bzl", "maven_jar")
-load("@bazel_build_process//dependencies:sebhoss.bzl", "sebhoss_dependencies")
+load("@bazel_build_process//dependencies:sebhoss.bzl", "javapoet_type_guesser")
 load("@bazel_build_process//dependencies:square.bzl", "square_dependencies")
 load("@bazel_build_process//dependencies:logging.bzl", "logging_dependencies")
 load("@bazel_build_process//dependencies:junit.bzl", "junit_dependencies")
+load("@bazel_build_process//dependencies:yaml.bzl", "snakeyaml_dependencies")
 
-maven_server(
-    name = "default",
-    url = "https://repository.metio.wtf/repository/maven-public/",
-)
-
-sebhoss_dependencies()
+javapoet_type_guesser()
 square_dependencies()
 logging_dependencies()
 junit_dependencies()
+snakeyaml_dependencies()
+
+maven_server(
+  name = "metio",
+  url = "https://repository.metio.wtf/repository/maven-public/",
+)
 
 maven_jar(
     name = "javax_inject_javax_inject",
@@ -37,11 +39,6 @@ maven_jar(
 maven_jar(
     name = "com_google_auto_value_auto_value",
     artifact = "com.google.auto.value:auto-value:1.2",
-)
-
-maven_jar(
-    name = "org_yaml_snakeyaml",
-    artifact = "org.yaml:snakeyaml:1.17",
 )
 
 maven_jar(
