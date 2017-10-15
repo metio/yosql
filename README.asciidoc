@@ -348,7 +348,7 @@ Possible [OPTIONS] are:
 │                              │values  are  [NONE,  JDK,  LOG4J,  SLF4J]   which   are   defined   in│                       │
 │                              │'de.xn__ho_hia.yosql.model.LoggingAPI'.                               │                       │
 ├──────────────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────────────┤
-│--matchCatchAndRethrow        │Whether generated methods should catch SqlExceptions and rethrow  them│true                   │
+│--methodCatchAndRethrow       │Whether generated methods should catch SqlExceptions and rethrow  them│true                   │
 │                              │as RuntimeExceptions. If set to false,  this  will  cause  methods  to│                       │
 │                              │declare that they throw a checked exception which in turn  will  force│                       │
 │                              │all its users to handle the exception themselves.                     │                       │
