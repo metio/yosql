@@ -13,6 +13,7 @@ java_library(
     "@ch_qos_cal10n_cal10n_api//jar",
     "@slf4j_api//jar",
     "@javapoet//jar",
+    "@apiguardian_api//jar",
     "//yosql-core:model"
   ],
 )

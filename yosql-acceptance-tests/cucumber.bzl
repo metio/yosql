@@ -50,6 +50,7 @@ def cucumber(yep, size="small", data=[]):
       "@slf4j_api//jar",
       "@logback_classic//jar",
       "@logback_core//jar",
+      "@apiguardian_api//jar",
     ],
     data = [
       "src/main/resources/YEP-%s/YEP-%s.feature" % (yep, yep)
