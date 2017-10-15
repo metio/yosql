@@ -5,13 +5,13 @@ git_repository(
 )
 
 load("@bazel_build_process//dependencies:sebhoss.bzl", "javapoet_type_guesser")
-load("@bazel_build_process//dependencies:square.bzl", "square_dependencies")
+load("@bazel_build_process//dependencies:square.bzl", "javapoet_dependencies")
 load("@bazel_build_process//dependencies:logging.bzl", "logging_dependencies")
 load("@bazel_build_process//dependencies:junit.bzl", "junit_dependencies")
 load("@bazel_build_process//dependencies:yaml.bzl", "snakeyaml_dependencies")
 
 javapoet_type_guesser()
-square_dependencies()
+javapoet_dependencies()
 logging_dependencies()
 junit_dependencies()
 snakeyaml_dependencies()
