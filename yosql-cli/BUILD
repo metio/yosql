@@ -101,7 +101,7 @@ java_binary(
     "@slf4j_api//jar",
     "@slf4j_ext//jar",
     "@ch_qos_cal10n_cal10n_api//jar",
-      "@org_reactivestreams_reactive_streams//jar",
+    "@org_reactivestreams_reactive_streams//jar",
     "//yosql-core",
     "//yosql-core:model",
     ":yosql-cli-i18n",
