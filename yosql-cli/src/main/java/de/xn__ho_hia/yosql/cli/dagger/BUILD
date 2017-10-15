@@ -10,9 +10,9 @@ java_library(
   deps = [
     "@javax_inject_javax_inject//jar",
     "@net_sf_jopt_simple//jar",
-    "@org_slf4j_slf4j_api//jar",
+    "@slf4j_api//jar",
     "@ch_qos_cal10n_cal10n_api//jar",
-    "@ch_qos_logback_logback_classic//jar",
+    "@logback_classic//jar",
     "//yosql-core",
     "//yosql-core:model",
     "//yosql-core:parser",

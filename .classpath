@@ -120,18 +120,18 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/com_squareup_javapoet/jar/_ijar/jar/external/com_squareup_javapoet/jar/javapoet-1.8.0-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/javapoet/jar/_ijar/jar/external/javapoet/jar/javapoet-1.9.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/javax_inject_javax_inject/jar/_ijar/jar/external/javax_inject_javax_inject/jar/javax.inject-1-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_yaml_snakeyaml/jar/_ijar/jar/external/org_yaml_snakeyaml/jar/snakeyaml-1.17-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/de_xn__ho_hia_javapoet_javapoet_type_guesser/jar/_ijar/jar/external/de_xn__ho_hia_javapoet_javapoet_type_guesser/jar/javapoet-type-guesser-2017.03.19-185842-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/javapoet_type_guesser/jar/_ijar/jar/external/javapoet_type_guesser/jar/javapoet-type-guesser-2017.03.19-185842-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/io_reactivex_rxjava2_rxjava2/jar/_ijar/jar/external/io_reactivex_rxjava2_rxjava2/jar/rxjava-2.0.6-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/org_junit_jupiter_junit5_jupiter_api/jar/_ijar/jar/external/org_junit_jupiter_junit5_jupiter_api/jar/junit-jupiter-api-5.0.0-M3-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/org_apache_logging_log4j_log4j_api/jar/_ijar/jar/external/org_apache_logging_log4j_log4j_api/jar/log4j-api-2.8-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/org_apache_logging_log4j_log4j_core/jar/_ijar/jar/external/org_apache_logging_log4j_log4j_core/jar/log4j-core-2.8-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/org_slf4j_slf4j_api/jar/_ijar/jar/external/org_slf4j_slf4j_api/jar/slf4j-api-1.7.21-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/junit_jupiter_api/jar/_ijar/jar/external/junit_jupiter_api/jar/junit-jupiter-api-5.0.1-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/log4j_api/jar/_ijar/jar/external/log4j_api/jar/log4j-api-2.8-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/log4j_core/jar/_ijar/jar/external/log4j_core/jar/log4j-core-2.8-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/slf4j_api/jar/_ijar/jar/external/slf4j_api/jar/slf4j-api-1.7.21-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_google_auto_value_auto_value/jar/_ijar/jar/external/com_google_auto_value_auto_value/jar/auto-value-1.2-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_openjdk_jmh_jmh_core/jar/_ijar/jar/external/org_openjdk_jmh_jmh_core/jar/jmh-core-1.18-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/org_slf4j_slf4j_ext/jar/_ijar/jar/external/org_slf4j_slf4j_ext/jar/slf4j-ext-1.7.21-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/slf4j_ext/jar/_ijar/jar/external/slf4j_ext/jar/slf4j-ext-1.7.21-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_h2database_h2/jar/_ijar/jar/external/com_h2database_h2/jar/h2-1.4.194-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/org_postgresql_postgresql/jar/_ijar/jar/external/org_postgresql_postgresql/jar/postgresql-42.0.0-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/mysql_mysql_connector_java/jar/_ijar/jar/external/mysql_mysql_connector_java/jar/mysql-connector-java-6.0.6-ijar.jar"/>
@@ -153,7 +153,7 @@
 	<classpathentry kind="lib" path="bazel-genfiles/external/net_sf_jopt_simple/jar/_ijar/jar/external/net_sf_jopt_simple/jar/jopt-simple-4.6-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/ch_qos_cal10n_cal10n_api/jar/_ijar/jar/external/ch_qos_cal10n_cal10n_api/jar/cal10n-api-0.8.1-ijar.jar"/>
 	<classpathentry kind="lib" path="bazel-genfiles/external/com_google_dagger_dagger/jar/_ijar/jar/external/com_google_dagger_dagger/jar/dagger-2.10-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/ch_qos_logback_logback_classic/jar/_ijar/jar/external/ch_qos_logback_logback_classic/jar/logback-classic-1.2.2-ijar.jar"/>
-	<classpathentry kind="lib" path="bazel-genfiles/external/ch_qos_logback_logback_core/jar/_ijar/jar/external/ch_qos_logback_logback_core/jar/logback-core-1.2.2-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/logback_classic/jar/_ijar/jar/external/logback_classic/jar/logback-classic-1.2.2-ijar.jar"/>
+	<classpathentry kind="lib" path="bazel-genfiles/external/logback_core/jar/_ijar/jar/external/logback_core/jar/logback-core-1.2.2-ijar.jar"/>
 	<classpathentry kind="output" path="bazel-out/ide/classes"/>
 </classpath>

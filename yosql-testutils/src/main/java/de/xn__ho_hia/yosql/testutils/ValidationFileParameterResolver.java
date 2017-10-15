@@ -26,7 +26,7 @@ public final class ValidationFileParameterResolver implements ParameterResolver 
 
     @Override
     @SuppressWarnings("nls")
-    public Object resolve(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
+    public Object resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
         final Optional<Class<?>> testClass = extensionContext.getTestClass();
         final Optional<Method> testMethod = extensionContext.getTestMethod();
         if (testClass.isPresent() && testMethod.isPresent()) {
@@ -37,7 +37,7 @@ public final class ValidationFileParameterResolver implements ParameterResolver 
     }
 
     @Override
-    public boolean supports(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
+    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
         final Parameter parameter = parameterContext.getParameter();
         final Class<?> type = parameter.getType();
         return ValidationFile.class.isAssignableFrom(type);

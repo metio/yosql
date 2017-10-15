@@ -1,13 +1,13 @@
 local_repository(
     name = "bazel_build_process",
-    path = "/home/sebhoss/git/sebhoss/bazel-build-process",
+    path = "/home/sebhoss/git/bazel-build-process",
 )
 
 load("@bazel_tools//tools/build_defs/repo:maven_rules.bzl", "maven_jar")
 load("@bazel_build_process//dependencies:sebhoss.bzl", "sebhoss_dependencies")
 load("@bazel_build_process//dependencies:square.bzl", "square_dependencies")
 load("@bazel_build_process//dependencies:logging.bzl", "logging_dependencies")
-load("@bazel_build_process//dependencies:testing.bzl", "junit_dependencies")
+load("@bazel_build_process//dependencies:junit.bzl", "junit_dependencies")
 
 maven_server(
     name = "default",

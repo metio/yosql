@@ -52,8 +52,8 @@ java_binary(
     "@org_antlr_st4//jar",
     "@org_reactivestreams_reactive_streams//jar",
     "@io_reactivex_rxjava2_rxjava2//jar",
-    "@org_slf4j_slf4j_api//jar",
-    "@ch_qos_logback_logback_classic//jar",
-    "@ch_qos_logback_logback_core//jar",
+    "@slf4j_api//jar",
+    "@logback_classic//jar",
+    "@logback_core//jar",
   ],
 )
