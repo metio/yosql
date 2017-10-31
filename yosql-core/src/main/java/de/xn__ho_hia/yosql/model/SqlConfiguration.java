@@ -42,6 +42,7 @@ public class SqlConfiguration {
     private boolean            methodCatchAndRethrow;
     private boolean            methodCatchAndRethrowOverwritten;
     private String             vendor;
+    private ReturningMode      returningMode;
 
     public String getFlowableName() {
         return join(methodRxJavaPrefix, name, methodRxJavaSuffix);
@@ -379,6 +380,14 @@ public class SqlConfiguration {
      */
     public void setVendor(final String vendor) {
         this.vendor = vendor;
+    }
+
+    public ReturningMode getReturningMode() {
+        return returningMode;
+    }
+
+    public void setReturningMode(final ReturningMode returningMode) {
+        this.returningMode = returningMode;
     }
 
     public static SqlConfiguration merge(final List<SqlStatement> statements) {
