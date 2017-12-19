@@ -65,6 +65,9 @@ public abstract class ExecutionConfiguration {
 
     public abstract String repositorySqlStatements();
 
+    /**
+     * @return The base directory for SQL file parsing.
+     */
     public abstract Path inputBaseDirectory();
 
     public abstract Path outputBaseDirectory();

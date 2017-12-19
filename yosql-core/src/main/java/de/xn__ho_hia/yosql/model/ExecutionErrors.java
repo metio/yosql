@@ -14,7 +14,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Captures execution errors/throwables/exceptions.
+ * Captures execution errors/throwables/exceptions. Allows to print all exceptions after execution is finished instead
+ * of failing as soon as the first exception is encountered.
  */
 public final class ExecutionErrors {
 
