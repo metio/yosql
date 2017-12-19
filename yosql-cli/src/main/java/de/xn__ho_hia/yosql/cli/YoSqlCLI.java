@@ -138,7 +138,7 @@ public class YoSqlCLI {
     }
 
     private static void printVersionText() {
-        LOGGER.info(INFORMATION_NEEDED,
+        LOGGER.info(VERSION_INFORMATION_REQUESTED,
                 BuildInfo.VERSION, BuildInfo.BUILD, BuildInfo.REVISION, BuildInfo.BUILD_BY, BuildInfo.BUILD_AT);
     }
 
