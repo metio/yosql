@@ -86,14 +86,12 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private Executor createThreadPool() {
-        // TODO: extract to its own class
+        // TODO: use 'ThreadPoolFactory' instead
         final ForkJoinWorkerThreadFactory factory = pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
             worker.setName(translator.nonLocalized(WORKER_POOL_NAME, Integer.valueOf(worker.getPoolIndex())));
             return worker;
         };
-        // TODO: supply UncaughtExceptionHandler
-        // TODO: try to set asyncMode to 'true'
         return new ForkJoinPool(calculateNumberOfThreadsToUse(), factory, null, false);
     }
 
