@@ -56,6 +56,18 @@ public final class ExecutionErrors {
     }
 
     /**
+     * @param cause
+     *            The root cause of the illegal state.
+     * @param message
+     *            The message to include.
+     * @param arguments
+     *            The arguments to apply to the message.
+     */
+    public void illegalState(final Exception cause, final String message, final Object... arguments) {
+        errors.add(new IllegalStateException(String.format(message, arguments), cause));
+    }
+
+    /**
      * @param message
      *            The message to include.
      * @param arguments
