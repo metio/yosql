@@ -29,9 +29,9 @@ public class PathValueConverter implements ValueConverter<Path> {
     }
 
     @Override
-    public Path convert(final String arg0) {
+    public Path convert(final String input) {
         try {
-            return Paths.get(arg0);
+            return Paths.get(input);
         } catch (final InvalidPathException exception) {
             errors.add(exception);
             return null;
