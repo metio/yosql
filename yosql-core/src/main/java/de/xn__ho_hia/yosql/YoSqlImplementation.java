@@ -38,10 +38,12 @@ import de.xn__ho_hia.yosql.utils.Timer;
 /**
  * Default implementation of YoSql.
  */
+// TODO: rename to AsyncYoSql?
 final class YoSqlImplementation implements YoSql {
 
     private final SqlFileResolver        fileResolver;
     private final SqlFileParser          sqlFileParser;
+    // TODO: add interface combining RepositoryGenerator + UtilitiesGenerator?
     private final RepositoryGenerator    repositoryGenerator;
     private final UtilitiesGenerator     utilsGenerator;
     private final ExecutionErrors        errors;
