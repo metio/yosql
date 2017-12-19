@@ -30,7 +30,7 @@ public final class Yep2Steps implements En {
      */
     public Yep2Steps() {
         Given("database has schema", () -> {
-            createDatSource(2);
+            createDataSource(2);
             createRepository();
             initSchema();
         });
@@ -67,7 +67,7 @@ public final class Yep2Steps implements En {
         schemaRepository.createTables();
     }
 
-    private final void createDatSource(final int yep) {
+    private final void createDataSource(final int yep) {
         dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:h2:mem:YEP-" + yep);
         dataSource.setUsername("sa");
