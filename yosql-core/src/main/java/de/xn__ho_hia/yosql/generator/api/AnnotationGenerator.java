@@ -52,6 +52,7 @@ public class AnnotationGenerator {
     }
 
     private AnnotationSpec generated(final Class<?> generatorClass) {
+        // TODO: use Java9 replacement of 'Generated'
         return AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", generatorClass.getName())
                 .addMember("date", "$S", ZonedDateTime.now().toString())
