@@ -147,6 +147,9 @@ public abstract class ExecutionConfiguration {
 
     public abstract List<ResultRowConverter> resultRowConverters();
 
+    /**
+     * @return The maximum number of threads to use while working.
+     */
     public abstract int maxThreads();
 
     @AutoValue.Builder
