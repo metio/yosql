@@ -74,6 +74,7 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
 
     @SuppressWarnings("nls")
     private static CodeBlock javadoc(final List<SqlStatement> statements) {
+        // TODO: move to TypicalJavadoc
         final Builder builder = CodeBlock.builder()
                 .add("Generated based on the following files:\n")
                 .add("<ul>\n");
