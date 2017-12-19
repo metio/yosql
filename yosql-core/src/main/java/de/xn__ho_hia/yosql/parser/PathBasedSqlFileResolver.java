@@ -43,8 +43,8 @@ final class PathBasedSqlFileResolver implements SqlFileResolver {
     @Override
     public Stream<Path> resolveFiles() {
         final Path source = configuration.inputBaseDirectory();
-        preconditions.assertDirectoryIsReadable(source);
         logger.trace(ApplicationEvents.READ_FILES, source);
+        preconditions.assertDirectoryIsReadable(source);
 
         if (!errors.hasErrors()) {
             try {
