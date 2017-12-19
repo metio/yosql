@@ -58,7 +58,7 @@ public final class ParserPreconditions {
                     errors.illegalState(translator.nonLocalized(I18N.CANNOT_CREATE_DIRECTORY, directory));
                 }
             } catch (final IOException cause) {
-                errors.illegalState(translator.nonLocalized(I18N.DIRECTORY_CREATION_FAILED, directory));
+                errors.illegalState(cause, translator.nonLocalized(I18N.DIRECTORY_CREATION_FAILED, directory));
             }
         }
         if (!directory.toFile().isDirectory()) {
