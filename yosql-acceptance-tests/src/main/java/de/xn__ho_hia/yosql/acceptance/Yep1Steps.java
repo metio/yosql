@@ -34,7 +34,7 @@ public final class Yep1Steps implements En {
      */
     public Yep1Steps() {
         Given("database has data", () -> {
-            createDatSource(1);
+            createDataSource(1);
             createRepository();
             initSchema();
         });
@@ -78,7 +78,7 @@ public final class Yep1Steps implements En {
         repository.writePerson(1, "YEP-1");
     }
 
-    private final void createDatSource(final int yep) {
+    private final void createDataSource(final int yep) {
         dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:h2:mem:YEP-" + yep);
         dataSource.setUsername("sa");
