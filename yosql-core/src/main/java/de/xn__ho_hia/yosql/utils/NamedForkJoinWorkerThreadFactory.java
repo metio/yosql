@@ -12,10 +12,11 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 import java.util.concurrent.ForkJoinWorkerThread;
 
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.Translator;
 
 /**
- * Names new threads according to a predefined pattern.
+ * Names new threads according to a {@link ApplicationEvents#WORKER_POOL_NAME predefined pattern}.
  */
 final class NamedForkJoinWorkerThreadFactory implements ForkJoinWorkerThreadFactory {
 
