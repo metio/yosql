@@ -45,7 +45,7 @@ public final class TypicalJavadoc {
             }
             builder.add("\n<pre>\n$L</pre>", statement.getRawStatement());
         }
-        builder.add("\n<p>Generated based on the following files:</p>\n")
+        builder.add("\n<p>Generated based on the following file(s):</p>\n")
                 .add("<ul>\n");
         statements.stream()
                 .map(SqlStatement::getSourcePath)
