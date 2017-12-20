@@ -49,6 +49,7 @@ final class ResultStateGenerator {
                 .addAnnotations(annotations.generatedClass(ResultStateGenerator.class))
                 .build();
         final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
+        // TODO: add logger w/ event 'ApplicationEvents.TYPE_GENERATED'
         return new PackageTypeSpec(type, packageName);
     }
 
