@@ -33,8 +33,6 @@ public final class ThreadPoolFactory {
      * @return The newly created thread pool.
      */
     public Executor createThreadPool() {
-        // TODO: supply UncaughtExceptionHandler
-        // TODO: try to set asyncMode to 'true'
         return new ForkJoinPool(calculateNumberOfThreadsToUse(), threadFactory, null, false);
     }
 
