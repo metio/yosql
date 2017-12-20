@@ -16,6 +16,7 @@ import de.xn__ho_hia.yosql.model.SqlStatement;
 /**
  * Typical Javadocs comments in the domain of yosql.
  */
+@SuppressWarnings("nls")
 public final class TypicalJavadoc {
 
     private TypicalJavadoc() {
@@ -29,8 +30,7 @@ public final class TypicalJavadoc {
      *            The vendor statements of the method.
      * @return The javadoc for a single method based on the given statements.
      */
-    @SuppressWarnings("nls")
-    public static CodeBlock javadoc(final List<SqlStatement> statements) {
+    public static CodeBlock methodJavadoc(final List<SqlStatement> statements) {
         final Builder builder = CodeBlock.builder();
         if (statements.size() > 1) {
             builder.add("<p>Executes one of the following statements:</p>");
@@ -48,6 +48,25 @@ public final class TypicalJavadoc {
             builder.add("\n<pre>\n$L</pre>", statement.getRawStatement());
         }
         builder.add("\n<p>Generated based on the following file(s):</p>\n")
+                .add("<ul>\n");
+        statements.stream()
+                .map(SqlStatement::getSourcePath)
+                .distinct()
+                .forEach(path -> builder.add("<li>$L</li>\n", path));
+        builder.add("</ul>\n");
+        return builder.build();
+    }
+
+    /**
+     * Creates the typical javadoc documentation for generated repositories.
+     *
+     * @param statements
+     *            The vendor statements of the repository.
+     * @return The class javadoc for a repository.
+     */
+    public static CodeBlock repositoryJavadoc(final List<SqlStatement> statements) {
+        final Builder builder = CodeBlock.builder()
+                .add("Generated based on the following files:\n")
                 .add("<ul>\n");
         statements.stream()
                 .map(SqlStatement::getSourcePath)
