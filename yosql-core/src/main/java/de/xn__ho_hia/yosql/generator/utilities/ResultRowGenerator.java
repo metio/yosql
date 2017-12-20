@@ -38,6 +38,7 @@ final class ResultRowGenerator {
     }
 
     public PackageTypeSpec generateResultRowClass() {
+        // TODO: replace w/ 'configuration.getResultRowClass().getPackageName()'
         final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
         final TypeSpec type = TypicalTypes.publicClass(configuration.getResultRowClass())
                 .addField(row())
