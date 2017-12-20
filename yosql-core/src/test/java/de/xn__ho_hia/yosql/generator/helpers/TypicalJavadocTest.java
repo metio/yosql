@@ -23,23 +23,49 @@ class TypicalJavadocTest extends ValidationFileTest {
     @Test
     @SuppressWarnings("static-method")
     public void shouldGenerateJavaDocForRepositories(final ValidationFile validationFile) {
-        validate(TypicalJavadoc.repositoryJavadoc(createTestSqlStatements()), validationFile);
+        validate(TypicalJavadoc.repositoryJavadoc(createTestSqlStatement()), validationFile);
+    }
+
+    @Test
+    @SuppressWarnings("static-method")
+    public void shouldGenerateJavaDocForRepositoriesWithMultipleStatements(final ValidationFile validationFile) {
+        validate(TypicalJavadoc.repositoryJavadoc(createTestSqlStatements(3)), validationFile);
     }
 
     @Test
     @SuppressWarnings("static-method")
     public void shouldGenerateJavaDocForMethods(final ValidationFile validationFile) {
-        validate(TypicalJavadoc.methodJavadoc(createTestSqlStatements()), validationFile);
+        validate(TypicalJavadoc.methodJavadoc(createTestSqlStatement()), validationFile);
+    }
+
+    @Test
+    @SuppressWarnings("static-method")
+    public void shouldGenerateJavaDocForMethodsWithMultipleStatements(final ValidationFile validationFile) {
+        validate(TypicalJavadoc.methodJavadoc(createTestSqlStatements(3)), validationFile);
     }
 
     @SuppressWarnings("nls")
-    private static List<SqlStatement> createTestSqlStatements() {
+    private static List<SqlStatement> createTestSqlStatement() {
         final List<SqlStatement> statements = new ArrayList<>();
         final Path path = Paths.get("test/path/file.sql");
         final SqlConfiguration config = new SqlConfiguration();
         final String raw = "select x from t";
         final SqlStatement statement = new SqlStatement(path, config, raw);
         statements.add(statement);
+        return statements;
+    }
+
+    @SuppressWarnings("nls")
+    private static List<SqlStatement> createTestSqlStatements(final int numberOfStatements) {
+        final List<SqlStatement> statements = new ArrayList<>();
+        for (int index = 0; index < numberOfStatements; index++) {
+            final Path path = Paths.get("test/path/file" + index + ".sql");
+            final SqlConfiguration config = new SqlConfiguration();
+            config.setVendor("vendor" + index);
+            final String raw = "select x from t" + index;
+            final SqlStatement statement = new SqlStatement(path, config, raw);
+            statements.add(statement);
+        }
         return statements;
     }
 
