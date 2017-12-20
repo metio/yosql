@@ -23,6 +23,8 @@ public final class TypicalJavadoc {
     }
 
     /**
+     * Creates the typical javadoc documentation for generated methods.
+     *
      * @param statements
      *            The vendor statements of the method.
      * @return The javadoc for a single method based on the given statements.
