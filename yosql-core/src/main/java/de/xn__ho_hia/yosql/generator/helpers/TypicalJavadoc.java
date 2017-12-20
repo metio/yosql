@@ -66,7 +66,7 @@ public final class TypicalJavadoc {
      */
     public static CodeBlock repositoryJavadoc(final List<SqlStatement> statements) {
         final Builder builder = CodeBlock.builder()
-                .add("Generated based on the following files:\n")
+                .add("Generated based on the following file(s):\n")
                 .add("<ul>\n");
         statements.stream()
                 .map(SqlStatement::getSourcePath)

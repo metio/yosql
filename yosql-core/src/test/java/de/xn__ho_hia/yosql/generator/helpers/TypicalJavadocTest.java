@@ -26,6 +26,12 @@ class TypicalJavadocTest extends ValidationFileTest {
         validate(TypicalJavadoc.repositoryJavadoc(createTestSqlStatements()), validationFile);
     }
 
+    @Test
+    @SuppressWarnings("static-method")
+    public void shouldGenerateJavaDocForMethods(final ValidationFile validationFile) {
+        validate(TypicalJavadoc.methodJavadoc(createTestSqlStatements()), validationFile);
+    }
+
     @SuppressWarnings("nls")
     private static List<SqlStatement> createTestSqlStatements() {
         final List<SqlStatement> statements = new ArrayList<>();
