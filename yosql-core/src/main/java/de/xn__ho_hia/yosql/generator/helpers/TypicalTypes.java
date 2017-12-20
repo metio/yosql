@@ -82,12 +82,6 @@ public final class TypicalTypes {
                 .addModifiers(TypicalModifiers.publicClass());
     }
 
-    // TODO remove?
-    public static TypeSpec.Builder openClass(final String name) {
-        return TypeSpec.classBuilder(name)
-                .addModifiers(TypicalModifiers.openClass());
-    }
-
     public static TypeSpec.Builder openClass(final ClassName name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(TypicalModifiers.openClass());
