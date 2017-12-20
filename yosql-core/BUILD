@@ -475,3 +475,17 @@ load("@bazel_build_process//java:junit5_test.bzl", "junit5")
     ":validation-files",
   ],
 ) for file in glob(["src/test/java/**/generator/helpers/*Test.java"])]
+
+[junit5(
+  file = file,
+  deps = [
+    "@javapoet//jar",
+    "//yosql-testutils",
+    ":model",
+    ":generator-api",
+    ":generator-utils",
+  ],
+  data = [
+    ":validation-files",
+  ],
+) for file in glob(["src/test/java/**/generator/utilities/*Test.java"])]
