@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -43,15 +44,14 @@ final class ResultStateGenerator {
     }
 
     public PackageTypeSpec generateResultStateClass() {
-        final TypeSpec type = TypicalTypes.openClass(configuration.getResultStateClass())
+        final ClassName resultStateClass = configuration.getResultStateClass();
+        final TypeSpec type = TypicalTypes.openClass(resultStateClass)
                 .addFields(fields())
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(ResultStateGenerator.class))
                 .build();
-        // TODO: replace w/ 'configuration.getResultStateClass().getPackageName()'
-        final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
         // TODO: add logger w/ event 'ApplicationEvents.TYPE_GENERATED'
-        return new PackageTypeSpec(type, packageName);
+        return new PackageTypeSpec(type, resultStateClass.packageName());
     }
 
     private static Iterable<FieldSpec> fields() {
