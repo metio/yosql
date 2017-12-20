@@ -50,6 +50,7 @@ final class FlowStateGenerator {
                 .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
                 .build();
         // TODO: add logger w/ event 'ApplicationEvents.TYPE_GENERATED'
+        // TODO: replace w/ 'configuration.getFlowStateClass().getPackageName()'
         return new PackageTypeSpec(type,
                 String.join(".", configuration.basePackageName(), configuration.utilityPackageName()));
     }
