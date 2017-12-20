@@ -46,6 +46,7 @@ final class ResultRowGenerator {
                 .addMethod(toStringMethod())
                 .addAnnotations(annotations.generatedClass(ResultRowGenerator.class))
                 .build();
+        // TODO: add logger w/ event 'ApplicationEvents.TYPE_GENERATED'
         return new PackageTypeSpec(type, packageName);
     }
 
