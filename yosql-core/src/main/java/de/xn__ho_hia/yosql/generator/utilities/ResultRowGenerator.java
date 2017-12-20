@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -38,9 +39,8 @@ final class ResultRowGenerator {
     }
 
     public PackageTypeSpec generateResultRowClass() {
-        // TODO: replace w/ 'configuration.getResultRowClass().getPackageName()'
-        final String packageName = configuration.basePackageName() + "." + configuration.utilityPackageName();
-        final TypeSpec type = TypicalTypes.publicClass(configuration.getResultRowClass())
+        final ClassName resultRowClass = configuration.getResultRowClass();
+        final TypeSpec type = TypicalTypes.publicClass(resultRowClass)
                 .addField(row())
                 .addMethod(constructor())
                 .addMethod(setColumnValue())
@@ -48,7 +48,7 @@ final class ResultRowGenerator {
                 .addAnnotations(annotations.generatedClass(ResultRowGenerator.class))
                 .build();
         // TODO: add logger w/ event 'ApplicationEvents.TYPE_GENERATED'
-        return new PackageTypeSpec(type, packageName);
+        return new PackageTypeSpec(type, resultRowClass.packageName());
     }
 
     private static FieldSpec row() {
