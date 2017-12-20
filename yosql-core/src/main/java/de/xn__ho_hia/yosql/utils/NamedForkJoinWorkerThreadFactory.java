@@ -20,16 +20,19 @@ import de.xn__ho_hia.yosql.model.Translator;
  */
 final class NamedForkJoinWorkerThreadFactory implements ForkJoinWorkerThreadFactory {
 
-    private final Translator translator;
+    private final Translator                  translator;
+    private final ForkJoinWorkerThreadFactory threadFactory;
 
-    NamedForkJoinWorkerThreadFactory(final Translator translator) {
+    NamedForkJoinWorkerThreadFactory(
+            final Translator translator,
+            final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory) {
         this.translator = translator;
+        this.threadFactory = threadFactory;
     }
 
     @Override
     public ForkJoinWorkerThread newThread(final ForkJoinPool pool) {
-        // TODO: use/inject something different than 'defaultForkJoinWorkerThreadFactory'
-        final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+        final ForkJoinWorkerThread worker = threadFactory.newThread(pool);
         worker.setName(translator.nonLocalized(WORKER_POOL_NAME, Integer.valueOf(worker.getPoolIndex())));
         return worker;
     }
