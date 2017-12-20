@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
@@ -38,12 +39,15 @@ final class ToResultRowConverterGenerator {
     }
 
     public PackageTypeSpec generateToResultRowConverterClass() {
-        final String packageName = configuration.basePackageName() + "." + configuration.converterPackageName();
-        final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
+        final ClassName className = ClassName.get(
+                configuration.basePackageName() + "." + configuration.converterPackageName(),
+                TO_RESULT_ROW_CONVERTER_CLASS_NAME);
+        final TypeSpec type = TypicalTypes.publicClass(className)
                 .addMethod(asUserType())
                 .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
                 .build();
-        return new PackageTypeSpec(type, packageName);
+        // TODO: add logger w/ event 'ApplicationEvents.TYPE_GENERATED'
+        return new PackageTypeSpec(type, className.packageName());
     }
 
     private MethodSpec asUserType() {
