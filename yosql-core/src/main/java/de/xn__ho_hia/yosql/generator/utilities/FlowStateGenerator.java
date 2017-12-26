@@ -19,6 +19,9 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
+import org.slf4j.cal10n.LocLogger;
+
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Utilities;
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalMethods;
@@ -26,6 +29,7 @@ import de.xn__ho_hia.yosql.generator.helpers.TypicalModifiers;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalParameters;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 
@@ -34,13 +38,16 @@ final class FlowStateGenerator {
 
     private final AnnotationGenerator    annotations;
     private final ExecutionConfiguration configuration;
+    private final LocLogger              logger;
 
     @Inject
     FlowStateGenerator(
             final AnnotationGenerator annotations,
-            final ExecutionConfiguration configuration) {
+            final ExecutionConfiguration configuration,
+            final @Utilities LocLogger logger) {
         this.annotations = annotations;
         this.configuration = configuration;
+        this.logger = logger;
     }
 
     public PackageTypeSpec generateFlowStateClass() {
@@ -51,7 +58,8 @@ final class FlowStateGenerator {
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
                 .build();
-        // TODO: add logger w/ event 'ApplicationEvents.TYPE_GENERATED'
+        logger.debug(ApplicationEvents.TYPE_GENERATED, flowStateClass.packageName(),
+                flowStateClass.simpleName());
         return new PackageTypeSpec(type, flowStateClass.packageName());
     }
 

@@ -15,12 +15,16 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
+import org.slf4j.cal10n.LocLogger;
+
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Utilities;
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalFields;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalMethods;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalParameters;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 
@@ -29,13 +33,16 @@ final class ResultRowGenerator {
 
     private final AnnotationGenerator    annotations;
     private final ExecutionConfiguration configuration;
+    private final LocLogger              logger;
 
     @Inject
     ResultRowGenerator(
             final AnnotationGenerator annotations,
-            final ExecutionConfiguration configuration) {
+            final ExecutionConfiguration configuration,
+            final @Utilities LocLogger logger) {
         this.annotations = annotations;
         this.configuration = configuration;
+        this.logger = logger;
     }
 
     public PackageTypeSpec generateResultRowClass() {
@@ -47,7 +54,8 @@ final class ResultRowGenerator {
                 .addMethod(toStringMethod())
                 .addAnnotations(annotations.generatedClass(ResultRowGenerator.class))
                 .build();
-        // TODO: add logger w/ event 'ApplicationEvents.TYPE_GENERATED'
+        logger.debug(ApplicationEvents.TYPE_GENERATED, resultRowClass.packageName(),
+                resultRowClass.simpleName());
         return new PackageTypeSpec(type, resultRowClass.packageName());
     }
 

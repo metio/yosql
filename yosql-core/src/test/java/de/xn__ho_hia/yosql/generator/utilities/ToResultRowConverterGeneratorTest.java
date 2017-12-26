@@ -6,9 +6,14 @@
  */
 package de.xn__ho_hia.yosql.generator.utilities;
 
+import java.util.Locale;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.cal10n.LocLoggerFactory;
 
+import ch.qos.cal10n.MessageConveyor;
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
@@ -22,7 +27,9 @@ class ToResultRowConverterGeneratorTest {
         // given
         final ExecutionConfiguration config = TestExecutionConfigurations.testExecutionConfiguration();
         final AnnotationGenerator annotations = new AnnotationGenerator(config);
-        final ToResultRowConverterGenerator generator = new ToResultRowConverterGenerator(annotations, config);
+        final LocLogger logger = new LocLoggerFactory(new MessageConveyor(Locale.ENGLISH))
+                .getLocLogger(ToResultRowConverterGeneratorTest.class);
+        final ToResultRowConverterGenerator generator = new ToResultRowConverterGenerator(annotations, config, logger);
 
         // when
         final PackageTypeSpec typeSpec = generator.generateToResultRowConverterClass();
