@@ -7,10 +7,14 @@
 package de.xn__ho_hia.yosql.generator.helpers;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.CodeBlock.Builder;
 
+import de.xn__ho_hia.javapoet.TypeGuesser;
+import de.xn__ho_hia.yosql.model.ResultRowConverter;
+import de.xn__ho_hia.yosql.model.SqlConfiguration;
 import de.xn__ho_hia.yosql.model.SqlStatement;
 
 /**
@@ -54,6 +58,19 @@ public final class TypicalJavadoc {
                 .distinct()
                 .forEach(path -> builder.add("<li>$L</li>\n", path));
         builder.add("</ul>\n");
+        statements.stream()
+                .map(SqlStatement::getConfiguration)
+                .map(SqlConfiguration::getResultRowConverter)
+                .filter(Objects::nonNull)
+                .map(ResultRowConverter::getResultType)
+                .filter(Objects::nonNull)
+                .filter(type -> !type.startsWith("java"))
+                .map(type -> type.substring(0, type.contains("<") ? type.indexOf("<") : type.length()))
+                .distinct()
+                .map(TypeGuesser::guessTypeName)
+                .filter(type -> !type.isPrimitive())
+                .filter(type -> !type.isBoxedPrimitive())
+                .forEach(type -> builder.add("\n@see $S", type));
         return builder.build();
     }
 
