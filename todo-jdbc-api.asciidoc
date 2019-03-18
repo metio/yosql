@@ -1,0 +1,6 @@
+- DDL statements
+- DML statements with update counts
+- SELECT statements with results (although I'm a bit unclear about how to receive results, thus looking forward to examples)
+- Batch statements with sets of update counts
+- Simple stored procedures with IN/OUT parameters
+- Statement batches and procedure calls with unknown update count / result set / exception streams (mostly for MySQL and SQL Server)
