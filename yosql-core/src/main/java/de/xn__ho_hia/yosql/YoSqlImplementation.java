@@ -38,10 +38,12 @@ import de.xn__ho_hia.yosql.utils.Timer;
 /**
  * Default implementation of YoSql.
  */
+// TODO: rename to AsyncYoSql?
 final class YoSqlImplementation implements YoSql {
 
     private final SqlFileResolver        fileResolver;
     private final SqlFileParser          sqlFileParser;
+    // TODO: add interface combining RepositoryGenerator + UtilitiesGenerator?
     private final RepositoryGenerator    repositoryGenerator;
     private final UtilitiesGenerator     utilsGenerator;
     private final ExecutionErrors        errors;
@@ -86,6 +88,7 @@ final class YoSqlImplementation implements YoSql {
     }
 
     private Executor createThreadPool() {
+        // TODO: use 'ThreadPoolFactory' instead
         final ForkJoinWorkerThreadFactory factory = pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
             worker.setName(translator.nonLocalized(WORKER_POOL_NAME, Integer.valueOf(worker.getPoolIndex())));

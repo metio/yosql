@@ -16,13 +16,13 @@ import joptsimple.ValueConverter;
 public class LocaleValueConverter implements ValueConverter<Locale> {
 
     @Override
-    public Locale convert(final String arg0) {
-        return Locale.forLanguageTag(arg0);
+    public Locale convert(final String input) {
+        return Locale.forLanguageTag(input);
     }
 
     @Override
     public String valuePattern() {
-        return "/path/to/your/files"; //$NON-NLS-1$
+        return "en"; //$NON-NLS-1$
     }
 
     @Override

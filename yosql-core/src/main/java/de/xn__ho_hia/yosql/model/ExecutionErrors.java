@@ -14,7 +14,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Captures execution errors/throwables/exceptions.
+ * Captures execution errors/throwables/exceptions. Allows to print all exceptions after execution is finished instead
+ * of failing as soon as the first exception is encountered.
  */
 public final class ExecutionErrors {
 
@@ -48,11 +49,19 @@ public final class ExecutionErrors {
     /**
      * @param message
      *            The message to include.
-     * @param arguments
-     *            The arguments to apply to the message.
      */
-    public void illegalState(final String message, final Object... arguments) {
-        errors.add(new IllegalStateException(String.format(message, arguments)));
+    public void illegalState(final String message) {
+        errors.add(new IllegalStateException(message));
+    }
+
+    /**
+     * @param cause
+     *            The root cause of the illegal state.
+     * @param message
+     *            The message to include.
+     */
+    public void illegalState(final Exception cause, final String message) {
+        errors.add(new IllegalStateException(message, cause));
     }
 
     /**

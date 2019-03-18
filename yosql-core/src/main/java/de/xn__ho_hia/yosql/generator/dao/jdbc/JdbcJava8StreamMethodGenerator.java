@@ -6,7 +6,7 @@
  */
 package de.xn__ho_hia.yosql.generator.dao.jdbc;
 
-import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.javadoc;
+import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.methodJavadoc;
 
 import java.util.List;
 import java.util.Spliterator;
@@ -52,7 +52,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
         return TypicalMethods.publicMethod(configuration.getStreamEagerName())
-                .addJavadoc(javadoc(vendorStatements))
+                .addJavadoc(methodJavadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
                 .addParameters(TypicalParameters.asParameterSpecs(configuration.getParameters()))
@@ -82,7 +82,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
         final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
         return TypicalMethods.publicMethod(mergedConfiguration.getStreamLazyName())
-                .addJavadoc(javadoc(vendorStatements))
+                .addJavadoc(methodJavadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
                 .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))

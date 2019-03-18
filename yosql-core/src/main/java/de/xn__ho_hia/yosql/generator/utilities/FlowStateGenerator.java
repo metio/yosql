@@ -14,10 +14,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
+import org.slf4j.cal10n.LocLogger;
+
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Utilities;
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalCodeBlocks;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalMethods;
@@ -25,6 +29,7 @@ import de.xn__ho_hia.yosql.generator.helpers.TypicalModifiers;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalParameters;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 
@@ -33,24 +38,29 @@ final class FlowStateGenerator {
 
     private final AnnotationGenerator    annotations;
     private final ExecutionConfiguration configuration;
+    private final LocLogger              logger;
 
     @Inject
     FlowStateGenerator(
             final AnnotationGenerator annotations,
-            final ExecutionConfiguration configuration) {
+            final ExecutionConfiguration configuration,
+            final @Utilities LocLogger logger) {
         this.annotations = annotations;
         this.configuration = configuration;
+        this.logger = logger;
     }
 
     public PackageTypeSpec generateFlowStateClass() {
-        final TypeSpec type = TypicalTypes.publicClass(configuration.getFlowStateClass())
+        final ClassName flowStateClass = configuration.getFlowStateClass();
+        final TypeSpec type = TypicalTypes.publicClass(flowStateClass)
                 .superclass(configuration.getResultStateClass())
                 .addFields(fields())
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
                 .build();
-        return new PackageTypeSpec(type,
-                String.join(".", configuration.basePackageName(), configuration.utilityPackageName()));
+        logger.debug(ApplicationEvents.TYPE_GENERATED, flowStateClass.packageName(),
+                flowStateClass.simpleName());
+        return new PackageTypeSpec(type, flowStateClass.packageName());
     }
 
     private static Iterable<FieldSpec> fields() {

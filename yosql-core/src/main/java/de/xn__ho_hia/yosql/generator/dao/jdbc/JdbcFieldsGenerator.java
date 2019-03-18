@@ -109,6 +109,7 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
 
     private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
+        // TODO: add javadocs similar to methods
         return fields.prepareConstant(getClass(), String.class,
                 TypicalFields.constantRawSqlStatementFieldName(configuration))
                 .initializer("$S", sqlStatement.getRawStatement())
@@ -119,6 +120,7 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
         final SqlConfiguration configuration = sqlStatement.getConfiguration();
         final String rawStatement = sqlStatement.getRawStatement();
         final String statement = TypicalParameters.replaceNamedParameters(rawStatement);
+        // TODO: add javadocs similar to methods
         return fields.prepareConstant(getClass(), String.class,
                 TypicalFields.constantSqlStatementFieldName(configuration))
                 .initializer("$S", statement)

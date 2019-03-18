@@ -184,6 +184,7 @@ public final class SqlConfigurationFactory {
                     }
                     break;
                 default:
+                    // TODO: I18N
                     errors.illegalArgument("[%s] has unsupported type [%s]",
                             source, configuration.getType());
                     break;
@@ -192,6 +193,7 @@ public final class SqlConfigurationFactory {
     }
 
     private void invalidPrefix(final Path source, final SqlType sqlType, final String name) {
+        // TODO: I18N
         errors.illegalArgument("[%s] has invalid %s prefix in its name [%s]", source, sqlType, name);
     }
 

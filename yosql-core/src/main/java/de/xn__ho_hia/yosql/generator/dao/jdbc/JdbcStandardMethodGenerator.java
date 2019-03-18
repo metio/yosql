@@ -6,7 +6,7 @@
  */
 package de.xn__ho_hia.yosql.generator.dao.jdbc;
 
-import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.javadoc;
+import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.methodJavadoc;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final String methodName = mergedConfiguration.getName();
         return TypicalMethods.publicMethod(methodName)
-                .addJavadoc(javadoc(vendorStatements))
+                .addJavadoc(methodJavadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
                 .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))
@@ -73,7 +73,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
             final List<SqlStatement> vendorStatements) {
         final String methodName = mergedConfiguration.getName();
         return TypicalMethods.publicMethod(methodName)
-                .addJavadoc(javadoc(vendorStatements))
+                .addJavadoc(methodJavadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(int.class)
                 .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
@@ -99,7 +99,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
         final String methodName = mergedConfiguration.getName();
         return TypicalMethods.publicMethod(methodName)
-                .addJavadoc(javadoc(vendorStatements))
+                .addJavadoc(methodJavadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
                 .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))

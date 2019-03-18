@@ -1,0 +1,7 @@
+<p>Executes the following statement:</p>
+<pre>
+select x from t</pre>
+<p>Generated based on the following file(s):</p>
+<ul>
+<li>test/path/file.sql</li>
+</ul>

@@ -6,7 +6,7 @@
  */
 package de.xn__ho_hia.yosql.generator.dao.jdbc;
 
-import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.javadoc;
+import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.methodJavadoc;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -60,7 +60,7 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         final TypeSpec disposer = createFlowDisposer();
 
         return TypicalMethods.publicMethod(mergedConfiguration.getFlowableName())
-                .addJavadoc(javadoc(vendorStatements))
+                .addJavadoc(methodJavadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(flowReturn)
                 .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))

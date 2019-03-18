@@ -6,7 +6,7 @@
  */
 package de.xn__ho_hia.yosql.generator.dao.jdbc;
 
-import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.javadoc;
+import static de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc.methodJavadoc;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> vendorStatements) {
         return TypicalMethods.publicMethod(mergedConfiguration.getBatchName())
-                .addJavadoc(javadoc(vendorStatements))
+                .addJavadoc(methodJavadoc(vendorStatements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(TypicalParameters.asBatchParameterSpecs(mergedConfiguration.getParameters()))

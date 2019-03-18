@@ -10,14 +10,19 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
+import org.slf4j.cal10n.LocLogger;
+
+import de.xn__ho_hia.yosql.dagger.LoggerModule.Utilities;
 import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalMethods;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalParameters;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
+import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
 
@@ -28,22 +33,29 @@ final class ToResultRowConverterGenerator {
 
     private final AnnotationGenerator    annotations;
     private final ExecutionConfiguration configuration;
+    private final LocLogger              logger;
 
     @Inject
     ToResultRowConverterGenerator(
             final AnnotationGenerator annotations,
-            final ExecutionConfiguration configuration) {
+            final ExecutionConfiguration configuration,
+            final @Utilities LocLogger logger) {
         this.annotations = annotations;
         this.configuration = configuration;
+        this.logger = logger;
     }
 
     public PackageTypeSpec generateToResultRowConverterClass() {
-        final String packageName = configuration.basePackageName() + "." + configuration.converterPackageName();
-        final TypeSpec type = TypicalTypes.publicClass(TO_RESULT_ROW_CONVERTER_CLASS_NAME)
+        final ClassName resultRowConverterClass = ClassName.get(
+                configuration.basePackageName() + "." + configuration.converterPackageName(),
+                TO_RESULT_ROW_CONVERTER_CLASS_NAME);
+        final TypeSpec type = TypicalTypes.publicClass(resultRowConverterClass)
                 .addMethod(asUserType())
                 .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
                 .build();
-        return new PackageTypeSpec(type, packageName);
+        logger.debug(ApplicationEvents.TYPE_GENERATED, resultRowConverterClass.packageName(),
+                resultRowConverterClass.simpleName());
+        return new PackageTypeSpec(type, resultRowConverterClass.packageName());
     }
 
     private MethodSpec asUserType() {

@@ -8,8 +8,7 @@ package de.xn__ho_hia.yosql.generator.dao.generic;
 
 import java.util.List;
 
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.CodeBlock.Builder;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 
 import org.slf4j.cal10n.LocLogger;
@@ -18,7 +17,7 @@ import de.xn__ho_hia.yosql.generator.api.AnnotationGenerator;
 import de.xn__ho_hia.yosql.generator.api.FieldsGenerator;
 import de.xn__ho_hia.yosql.generator.api.MethodsGenerator;
 import de.xn__ho_hia.yosql.generator.api.RepositoryGenerator;
-import de.xn__ho_hia.yosql.generator.helpers.TypicalNames;
+import de.xn__ho_hia.yosql.generator.helpers.TypicalJavadoc;
 import de.xn__ho_hia.yosql.generator.helpers.TypicalTypes;
 import de.xn__ho_hia.yosql.model.ApplicationEvents;
 import de.xn__ho_hia.yosql.model.PackageTypeSpec;
@@ -59,30 +58,16 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
     public PackageTypeSpec generateRepository(
             final String repositoryName,
             final List<SqlStatement> sqlStatements) {
-        final String className = TypicalNames.getClassName(repositoryName);
-        final String packageName = TypicalNames.getPackageName(repositoryName);
+        final ClassName className = ClassName.bestGuess(repositoryName);
         final TypeSpec repository = TypicalTypes.publicClass(className)
-                .addJavadoc(javadoc(sqlStatements))
+                .addJavadoc(TypicalJavadoc.repositoryJavadoc(sqlStatements))
                 .addFields(fields.asFields(sqlStatements))
                 .addMethods(methods.asMethods(sqlStatements))
                 .addAnnotations(annotations.generatedClass(GenericRepositoryGenerator.class))
                 .addStaticBlock(fields.staticInitializer(sqlStatements))
                 .build();
-        logger.debug(ApplicationEvents.TYPE_GENERATED, packageName, repository.name);
-        return new PackageTypeSpec(repository, packageName);
-    }
-
-    @SuppressWarnings("nls")
-    private static CodeBlock javadoc(final List<SqlStatement> statements) {
-        final Builder builder = CodeBlock.builder()
-                .add("Generated based on the following files:\n")
-                .add("<ul>\n");
-        statements.stream()
-                .map(SqlStatement::getSourcePath)
-                .distinct()
-                .forEach(path -> builder.add("<li>$L</li>\n", path));
-        builder.add("</ul>\n");
-        return builder.build();
+        logger.debug(ApplicationEvents.TYPE_GENERATED, className.packageName(), className.simpleName());
+        return new PackageTypeSpec(repository, className.packageName());
     }
 
 }

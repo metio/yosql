@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Generated;
+import javax.annotation.processing.Generated;
 import javax.inject.Inject;
 
 import com.squareup.javapoet.AnnotationSpec;
@@ -52,6 +52,7 @@ public class AnnotationGenerator {
     }
 
     private AnnotationSpec generated(final Class<?> generatorClass) {
+        // TODO: use Java9 replacement of 'Generated' -> 'javax.annotation.processing.Generated'
         return AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", generatorClass.getName())
                 .addMember("date", "$S", ZonedDateTime.now().toString())

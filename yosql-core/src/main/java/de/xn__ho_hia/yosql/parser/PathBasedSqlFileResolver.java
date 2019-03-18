@@ -19,7 +19,8 @@ import de.xn__ho_hia.yosql.model.ExecutionConfiguration;
 import de.xn__ho_hia.yosql.model.ExecutionErrors;
 
 /**
- * A SQL file resolver that starts at the given source, walks into every subdirectory and returns all .sql files.
+ * A SQL file resolver that starts at {@link ExecutionConfiguration#inputBaseDirectory() the given source}, walks into
+ * every subdirectory and returns all .sql files.
  */
 final class PathBasedSqlFileResolver implements SqlFileResolver {
 
@@ -42,8 +43,8 @@ final class PathBasedSqlFileResolver implements SqlFileResolver {
     @Override
     public Stream<Path> resolveFiles() {
         final Path source = configuration.inputBaseDirectory();
-        preconditions.assertDirectoryIsReadable(source);
         logger.trace(ApplicationEvents.READ_FILES, source);
+        preconditions.assertDirectoryIsReadable(source);
 
         if (!errors.hasErrors()) {
             try {
@@ -54,6 +55,7 @@ final class PathBasedSqlFileResolver implements SqlFileResolver {
                         .filter(path -> path.toString().endsWith(configuration.sqlFilesSuffix()))
                         .peek(path -> logger.trace(ApplicationEvents.CONSIDER_FILE, path));
             } catch (final IOException | SecurityException exception) {
+                // TODO: use 'errors.illegalState' or similar
                 logger.error(ApplicationEvents.READ_FILES_FAILED, exception.getLocalizedMessage());
                 errors.add(exception);
             }
