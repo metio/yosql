@@ -28,16 +28,16 @@ RESET  := $(shell tput -Txterm sgr0)
 # INTERNAL FUNCTIONS #
 ######################
 HELP_FUN = \
-    %help; \
-    while(<>) { push @{$$help{$$2 // 'targets'}}, [$$1, $$3] if /^([a-zA-Z0-9\-]+)\s*:.*\#\#(?:@([a-zA-Z\-]+))?\s(.*)$$/ }; \
-    print "usage: make [target]\n\n"; \
-    for (sort keys %help) { \
-    print "${WHITE}$$_:${RESET}\n"; \
-    for (@{$$help{$$_}}) { \
-    $$sep = " " x (32 - length $$_->[0]); \
-    print "  ${YELLOW}$$_->[0]${RESET}$$sep${GREEN}$$_->[1]${RESET}\n"; \
-    }; \
-    print "\n"; }
+	%help; \
+	while(<>) { push @{$$help{$$2 // 'targets'}}, [$$1, $$3] if /^([a-zA-Z0-9\-]+)\s*:.*\#\#(?:@([a-zA-Z\-]+))?\s(.*)$$/ }; \
+	print "usage: make [target]\n\n"; \
+	for (sort keys %help) { \
+	print "${WHITE}$$_:${RESET}\n"; \
+	for (@{$$help{$$_}}) { \
+	$$sep = " " x (32 - length $$_->[0]); \
+	print "  ${YELLOW}$$_->[0]${RESET}$$sep${GREEN}$$_->[1]${RESET}\n"; \
+	}; \
+	print "\n"; }
 
 ###############
 # GOALS/RULES #
@@ -52,6 +52,10 @@ help: ##@other Show this help
 build: ##@hacking Build everything
 	bazel build ...
 
+.PHONY: watch
+watch: ##@hacking Watch for changes and build everything
+	ag -l | entr bazel build ...
+
 .PHONY: test
 test: ##@hacking Test everything
 	bazel test ...
@@ -63,6 +67,10 @@ clean: ##@hacking Test everything
 .PHONY: coverage
 coverage: ##@hacking Run code coverage
 	bazel test ...
+
+.PHONY: loc
+loc: ##@hacking Count lines of count
+	tokei .
 
 .PHONY: bench-lc-small-sample
 bench-lc-small-sample: ##@benchmark Run full codegen lifecycle against small sample (runtime is ~5min)

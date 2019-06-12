@@ -3,3 +3,7 @@ target/
 .ansible-git-*
 /bazel-*
 /bin/
+.ijwb/
+user.bazelrc
+/yosql-site/public
+.idea/workspace.xml

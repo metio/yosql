@@ -1,0 +1,10 @@
+---
+title: "Communication"
+date: 2019-06-16T18:25:31+02:00
+draft: true
+---
+
+- Google Groups: https://groups.google.com/forum/#!forum/metio
+- Chat on IRC: http://webchat.freenode.net/?channels=metio.wtf
+- Ask on Stackoverflow: https://stackoverflow.com/questions/tagged/yosql
+- Deep dive on Taiga: https://tree.taiga.io/project/sebhoss-yosql/

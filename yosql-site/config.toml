@@ -1,0 +1,4 @@
+baseURL = "https://yosql.metio.wtf/"
+languageCode = "en-us"
+title = "YoSQL - use more SQL!"
+theme = "yosql"
