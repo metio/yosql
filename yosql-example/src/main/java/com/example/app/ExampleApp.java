@@ -30,14 +30,12 @@ import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 
-@SuppressWarnings({ "javadoc", "nls" })
 public class ExampleApp {
 
     private static final PrintStream   OUT     = System.out;
     private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
-    @SuppressWarnings("deprecation")
-    public static final void main(final String[] arguments) throws Exception {
+    public static void main(final String[] arguments) throws Exception {
         if (match(arguments, "h2")) {
             final HikariDataSource dataSource = new HikariDataSource();
             dataSource.setJdbcUrl("jdbc:h2:mem:example;DB_CLOSE_DELAY=-1");

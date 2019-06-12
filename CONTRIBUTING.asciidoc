@@ -96,7 +96,7 @@ $ git branch --merged master | grep -v "\* master"
 
 * After that the following reference to the issue is expected:
 
-`Task-Url: https://github.com/sebhoss/generic-types/issues/issue/ISSUE_NUMBER`
+`Task-Url: https://github.com/metio.wtf/yosql/issues/issue/ISSUE_NUMBER`
 
 * Finally, the signed-off line is expected to look like this:
 
