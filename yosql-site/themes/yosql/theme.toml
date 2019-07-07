@@ -1,0 +1,6 @@
+name = "yosql"
+license = "CC0"
+licenselink = "https://github.com/metio.wtf/yosql/blob/master/LICENSE"
+description = "Theme used by the YoSQL project"
+homepage = "http://github.com/metio.wtf/yosql"
+min_version = "0.24.1"

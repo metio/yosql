@@ -1,0 +1,41 @@
+---
+title: "Maven"
+date: 2019-06-16T18:23:40+02:00
+draft: true
+---
+
+1) Add the plugin to your *pom.xml*:
+
+[source, xml]
+----
+  <build>
+    <plugins>
+      ...
+      <plugin>
+        <groupId>com.github.sebhoss.yosql</groupId>
+        <artifactId>yosql-maven-plugin</artifactId>
+        <version>0.0.1</version>
+      </plugin>
+      ...
+    </plugins>
+  </build>
+----
+
+2) Add .sql files in *src/main/yosql* and write SQL statements into them.
+
+[source]
+----
+project/
+├── pom.xml
+└── src/
+    └── main/
+        └── yosql/
+            └── user/
+                ├── findUser.sql
+                └── addUser.sql
+            └── item/
+                ├── queryAllItems.sql
+                └── createItemTable.sql
+----
+
+3) Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.

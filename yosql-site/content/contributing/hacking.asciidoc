@@ -1,0 +1,33 @@
+= Hacking
+
+The `Makefile` in the root of this project defines common task for maintainers:
+
+[source]
+----
+usage: make [target]
+
+benchmark:
+  bench-lc-small-sample           Run full codegen lifecycle against small sample (runtime is ~5min)
+  bench-lc-medium-sample          Run full codegen lifecycle against medium sample (runtime is ~15min)
+  bench-lc-big-sample             Run full codegen lifecycle against big sample (runtime is ~30min)
+  bench-lc-large-sample           Run full codegen lifecycle against large sample (runtime is ~1h)
+  bench-parsing-each              Run file parsing benchmark against each individual .sql file (runtime is ~30min)
+  bench-parsing-all               Run file parsing benchmark against each individual .sql file (runtime is ~5min)
+
+contributing:
+  sign-waiver                     Sign the WAIVER
+
+example:
+  example-h2-all                  Run all examples against H2 database (works w/o docker)
+  example-psql-all                Run all examples against Postgres (use docker-compose.yml for env)
+  example-mysql-all               Run all examples against MySQL (use docker-compose.yml for env)
+
+hacking:
+  build                           Build everything
+  test                            Test everything
+  clean                           Test everything
+  coverage                        Run code coverage
+
+other:
+  help                            Show this help
+----

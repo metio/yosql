@@ -1,0 +1,19 @@
+let
+  _nixpkgs = import <nixpkgs> { };
+in
+
+{ nixpkgs ? (import _nixpkgs.fetchFromGitHub { owner = "NixOS"; repo = "nixpkgs"; rev = "master"; sha256 =
+"0dd06ec6e70454a7397e66b490cc557a3ea5b157"; })
+}:
+
+let
+  pkgs = if nixpkgs == null then _nixpkgs else nixpkgs;
+in
+  pkgs.stdenv.mkDerivation {
+    name = "yosql-1.0.0";
+    src = ./.;
+    buildInputs = [ pkgs.openjdk ];
+    installPhase= ''
+      bazel build //...
+    '';
+  }
