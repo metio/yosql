@@ -1,5 +1,4 @@
 = YoSQL
-:github-org: metio.wtf
 :project-name: yosql
 
 image:https://img.shields.io/badge/license-cc%20zero-000000.svg?style=flat-square["CC Zero", link="http://creativecommons.org/publicdomain/zero/1.0/"]
@@ -27,8 +26,8 @@ with this software. If not, see http://creativecommons.org/publicdomain/zero/1.0
 
 == Mirrors
 
+* https://gitlab.com/metio.wtf/yosql/yosql
 * https://github.com/sebhoss/yosql
 * https://bitbucket.org/sebhoss/yosql
-* https://gitlab.com/sebastian.hoss/yosql
 * https://v2.pikacode.com/sebhoss/yosql
 * http://repo.or.cz/yosql.git
