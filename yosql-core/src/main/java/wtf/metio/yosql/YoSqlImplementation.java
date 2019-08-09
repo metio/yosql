@@ -32,7 +32,10 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Default implementation of YoSql.
+ * Default implementation of YoSql. Its responsible for the high-level orchestration
+ * of a single code generation run (which can be called multiple times if desired).
+ * Delegates most of the actual work to various interfaces whose implementation must
+ * be injected at runtime.
  */
 final class YoSqlImplementation implements YoSql {
 
