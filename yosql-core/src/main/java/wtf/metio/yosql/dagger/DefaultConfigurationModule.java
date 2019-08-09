@@ -19,7 +19,7 @@ import java.util.Arrays;
 import static wtf.metio.yosql.model.GenerateOptions.*;
 
 /**
- * Provides the default configuration.
+ * Provides the default execution configuration.
  */
 @Module
 public final class DefaultConfigurationModule {

@@ -14,7 +14,7 @@ import wtf.metio.yosql.generator.dao.jdbc.DaoJdbcModule;
 import wtf.metio.yosql.generator.dao.jdbc.JDBC;
 
 /**
- * Dagger2 module for the DAO API.
+ * Dagger module for the DAO API.
  */
 @Module(includes = DaoJdbcModule.class)
 public final class DaoModule {

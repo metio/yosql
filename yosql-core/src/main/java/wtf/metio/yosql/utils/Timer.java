@@ -38,6 +38,8 @@ public final class Timer {
     }
 
     /**
+     * Measures the execution time of a single runnable task.
+     *
      * @param taskName
      *            The name of the task to run.
      * @param task
@@ -55,6 +57,8 @@ public final class Timer {
     }
 
     /**
+     * Measures the execution time of a single supplier.
+     *
      * @param taskName
      *            The name of the task to run.
      * @param supplier
@@ -85,7 +89,7 @@ public final class Timer {
             }
             logger.info(ApplicationEvents.APPLICATION_RUNTIME, Long.valueOf(totalRuntime));
         }
-      timings.clear();
+        timings.clear();
     }
 
 }

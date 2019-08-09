@@ -17,7 +17,8 @@ import wtf.metio.yosql.parser.DefaultResolverModule;
 import javax.inject.Singleton;
 
 /**
- * Main Dagger2 interface to get a new YoSql instance.
+ * Dagger interface to get a new YoSql instance based on the default configuration and
+ * built-in default implementations of the various YoSql interfaces.
  */
 @Singleton
 @Component(modules = {
@@ -37,7 +38,7 @@ import javax.inject.Singleton;
 public interface YoSqlComponent {
 
     /**
-     * @return The YoSql instance contained in this graph.
+     * @return The YoSql instance configured by the list of modules specified in the <code>@Component</code> class annotation.
      */
     YoSql yosql();
 

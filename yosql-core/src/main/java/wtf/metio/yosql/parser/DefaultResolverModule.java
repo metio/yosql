@@ -14,7 +14,7 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.model.annotations.Reader;
 
 /**
- * Provides the default parser.
+ * Provides the default file resolver.
  */
 @Module
 public final class DefaultResolverModule {
