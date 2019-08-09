@@ -40,7 +40,8 @@ import javax.inject.Singleton;
 public interface YoSqlComponent {
 
     /**
-     * @return The YoSql instance configured by the list of modules specified in the <code>@Component</code> class annotation.
+     * @return The YoSql instance configured by the list of modules specified in the
+     *         @Component class annotation.
      */
     YoSql yosql();
 
