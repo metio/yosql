@@ -29,6 +29,7 @@ java_library(
     name = "module",
     srcs = ["JdkLoggingModule.java"],
     visibility = [
+        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/logging:__pkg__",
     ],

@@ -46,6 +46,7 @@ java_library(
     name = "module",
     srcs = ["DaoJdbcModule.java"],
     visibility = [
+        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/dao:__pkg__",
     ],
