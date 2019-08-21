@@ -39,6 +39,7 @@ java_library(
     name = "typical_fields",
     srcs = ["TypicalFields.java"],
     visibility = [
+        "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__pkg__",
         "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/dao:__subpackages__",
@@ -104,6 +105,7 @@ java_library(
     name = "typical_code_blocks",
     srcs = ["TypicalCodeBlocks.java"],
     visibility = [
+        "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__pkg__",
         "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/dao:__subpackages__",
@@ -131,6 +133,7 @@ java_library(
     name = "module",
     srcs = ["HelperModule.java"],
     visibility = [
+        "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__pkg__",
         "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
     ],

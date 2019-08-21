@@ -37,6 +37,7 @@ java_library(
         "TypeWriter.java",
     ],
     visibility = [
+        "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
         "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
     ],
@@ -60,6 +61,7 @@ java_library(
         "AnnotationGenerator.java",
     ],
     visibility = [
+        "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
         "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator:__subpackages__",
