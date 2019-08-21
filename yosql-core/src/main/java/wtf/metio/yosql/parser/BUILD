@@ -1,7 +1,17 @@
+# This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+# directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+# including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+# in the LICENSE file.
+
 java_library(
     name = "preconditions",
     srcs = [
         "ParserPreconditions.java",
+    ],
+    visibility = [
+        "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
+        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
+        "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
     ],
     deps = [
         "//yosql-core/src/main/java/wtf/metio/yosql/model:errors",
@@ -18,6 +28,7 @@ java_library(
     ],
     visibility = [
         "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
+        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator:__subpackages__",
@@ -35,6 +46,7 @@ java_library(
     ],
     visibility = [
         "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
+        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-maven-plugin/src/main/java/wtf/metio/yosql/parser:__pkg__",
     ],
@@ -67,6 +79,8 @@ java_library(
     ],
     visibility = [
         "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
+        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
+        "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/dagger:__pkg__",
     ],
     deps = [

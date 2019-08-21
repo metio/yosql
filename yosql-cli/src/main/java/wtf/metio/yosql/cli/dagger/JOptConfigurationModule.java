@@ -27,7 +27,7 @@ import joptsimple.OptionSpec;
 import joptsimple.ValueConverter;
 
 /**
- * Provides the default configuration.
+ * Provides the runtime execution configuration using JOpt options.
  */
 @Module
 public final class JOptConfigurationModule {
@@ -132,7 +132,7 @@ public final class JOptConfigurationModule {
 
     @Provides
     List<ResultRowConverter> provideResultConverters(
-            final Translator messages,
+            final Translator translator,
             @UsedFor.Command(Commands.GENERATE) final OptionSet options,
             @UsedFor.GenerateOption(BASE_PACKAGE_NAME) final OptionSpec<String> basePackageName,
             @UsedFor.GenerateOption(UTILITY_PACKAGE_NAME) final OptionSpec<String> utilityPackageName,
@@ -148,7 +148,7 @@ public final class JOptConfigurationModule {
                         options.valueOf(defaultResultRowClassName)));
         toResultRow.setConverterType(
                 String.join(DOT, options.valueOf(basePackageName), options.valueOf(converterPackageName),
-                        messages.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
+                        translator.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
         resultConverters.add(toResultRow);
         resultConverters.addAll(options.valuesOf(resultRowConverters));
         return resultConverters;

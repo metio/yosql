@@ -9,6 +9,7 @@ package wtf.metio.yosql;
 import dagger.Component;
 import wtf.metio.yosql.dagger.*;
 import wtf.metio.yosql.generator.dao.DaoModule;
+import wtf.metio.yosql.generator.helpers.HelperModule;
 import wtf.metio.yosql.generator.logging.LoggingModule;
 import wtf.metio.yosql.generator.utilities.DefaultUtilitiesModule;
 import wtf.metio.yosql.parser.DefaultParserModule;
@@ -17,7 +18,8 @@ import wtf.metio.yosql.parser.DefaultResolverModule;
 import javax.inject.Singleton;
 
 /**
- * Main Dagger2 interface to get a new YoSql instance.
+ * Dagger interface to get a new YoSql instance based on the default configuration and
+ * built-in default implementations of the various YoSql interfaces.
  */
 @Singleton
 @Component(modules = {
@@ -26,6 +28,7 @@ import javax.inject.Singleton;
         DefaultParserModule.class,
         DefaultResolverModule.class,
         DefaultUtilitiesModule.class,
+        HelperModule.class,
         LoggingModule.class,
         DaoModule.class,
         I18nModule.class,
@@ -37,7 +40,7 @@ import javax.inject.Singleton;
 public interface YoSqlComponent {
 
     /**
-     * @return The YoSql instance contained in this graph.
+     * @return The YoSql instance configured by the list of modules specified in the <code>@Component</code> class annotation.
      */
     YoSql yosql();
 

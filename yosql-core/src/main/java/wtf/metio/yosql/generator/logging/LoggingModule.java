@@ -21,7 +21,7 @@ import wtf.metio.yosql.generator.logging.slf4j.Slf4j;
 import wtf.metio.yosql.generator.logging.slf4j.Slf4jLoggingModule;
 
 /**
- * Dagger2 module for the logging API.
+ * Dagger module for the logging API.
  */
 @Module(includes = {
         JdkLoggingModule.class,

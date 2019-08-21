@@ -9,7 +9,7 @@ package wtf.metio.yosql.generator.api;
 import com.squareup.javapoet.AnnotationSpec;
 import wtf.metio.yosql.model.ExecutionConfiguration;
 
-import javax.annotation.Generated;
+import javax.annotation.processing.Generated;
 import javax.inject.Inject;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -50,7 +50,6 @@ public class AnnotationGenerator {
     }
 
     private AnnotationSpec generated(final Class<?> generatorClass) {
-        // TODO: use Java9 replacement of 'Generated' -> 'javax.annotation.processing.Generated'
         return AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", generatorClass.getName())
                 .addMember("date", "$S", ZonedDateTime.now().toString())

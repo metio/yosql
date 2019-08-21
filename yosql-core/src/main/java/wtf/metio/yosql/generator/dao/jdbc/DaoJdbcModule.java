@@ -19,7 +19,7 @@ import wtf.metio.yosql.generator.helpers.TypicalCodeBlocks;
 import wtf.metio.yosql.generator.helpers.TypicalFields;
 
 /**
- * Dagger2 module for the JDBC based DAO implementation.
+ * Dagger module for the JDBC based DAO implementation.
  */
 @Module
 public class DaoJdbcModule {

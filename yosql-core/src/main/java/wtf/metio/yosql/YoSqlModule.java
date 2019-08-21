@@ -6,8 +6,8 @@
  */
 package wtf.metio.yosql;
 
-import dagger.Provides;
 import dagger.Module;
+import dagger.Provides;
 import wtf.metio.yosql.dagger.Delegating;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
 import wtf.metio.yosql.generator.api.TypeWriter;
@@ -20,7 +20,11 @@ import wtf.metio.yosql.parser.SqlFileResolver;
 import wtf.metio.yosql.utils.Timer;
 
 /**
- * Dagger2 module for YoSql.
+ * Dagger module for YoSql. Uses the default YoSql implemetation together with all
+ * required dependencies in an enclosing dagger component configuration. This module
+ * can be re-used for custom configurations, as long as the custom configuration
+ * contains an available candiate for every injection point of the
+ * {@link #provideYoSql(SqlFileResolver, SqlFileParser, RepositoryGenerator, UtilitiesGenerator, ExecutionErrors, Timer, TypeWriter, Translator, ExecutionConfiguration) provideYoSql(...)} method specified below.
  */
 @Module
 public class YoSqlModule {
@@ -37,15 +41,15 @@ public class YoSqlModule {
             final Translator messages,
             final ExecutionConfiguration configuration) {
         return new YoSqlImplementation(
-            fileResolver,
-            sqlFileParser,
-            repositoryGenerator,
-            utilsGenerator,
-            errors,
-            timer,
-            typeWriter,
-            messages,
-            configuration);
+                fileResolver,
+                sqlFileParser,
+                repositoryGenerator,
+                utilsGenerator,
+                errors,
+                timer,
+                typeWriter,
+                messages,
+                configuration);
     }
 
 }

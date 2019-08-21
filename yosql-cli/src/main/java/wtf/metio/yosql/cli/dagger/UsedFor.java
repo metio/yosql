@@ -19,6 +19,9 @@ import wtf.metio.yosql.model.GenerateOptions;
 import wtf.metio.yosql.model.HelpOptions;
 import wtf.metio.yosql.model.VersionOptions;
 
+/**
+ * Marker interface used for dagger dependency injection.
+ */
 @interface UsedFor {
 
     @Qualifier

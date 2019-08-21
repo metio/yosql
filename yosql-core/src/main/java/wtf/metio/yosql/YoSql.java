@@ -7,13 +7,14 @@
 package wtf.metio.yosql;
 
 /**
- * High-level interface of YoSQL.
+ * High-level interface of YoSQL. All configuration options must be passed into the actual implementation
+ * or otherwise obtained before generating code.
  */
 @FunctionalInterface
 public interface YoSql {
 
     /**
-     * Generates .java files based on the configured .sql files.
+     * Generates .java files based on the configured .sql files and generator options.
      */
     void generateCode();
 
