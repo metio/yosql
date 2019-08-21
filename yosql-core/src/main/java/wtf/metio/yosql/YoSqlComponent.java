@@ -9,6 +9,7 @@ package wtf.metio.yosql;
 import dagger.Component;
 import wtf.metio.yosql.dagger.*;
 import wtf.metio.yosql.generator.dao.DaoModule;
+import wtf.metio.yosql.generator.helpers.HelperModule;
 import wtf.metio.yosql.generator.logging.LoggingModule;
 import wtf.metio.yosql.generator.utilities.DefaultUtilitiesModule;
 import wtf.metio.yosql.parser.DefaultParserModule;
@@ -27,6 +28,7 @@ import javax.inject.Singleton;
         DefaultParserModule.class,
         DefaultResolverModule.class,
         DefaultUtilitiesModule.class,
+        HelperModule.class,
         LoggingModule.class,
         DaoModule.class,
         I18nModule.class,

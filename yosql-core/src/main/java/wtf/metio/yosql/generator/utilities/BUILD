@@ -12,6 +12,7 @@ java_library(
         "ToResultRowConverterGenerator.java",
     ],
     visibility = [
+        "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-maven-plugin/src/main/java/wtf/metio/yosql:__subpackages__",
     ],
     deps = [

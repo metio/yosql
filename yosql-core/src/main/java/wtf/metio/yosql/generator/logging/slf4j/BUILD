@@ -30,6 +30,7 @@ java_library(
     name = "module",
     srcs = ["Slf4jLoggingModule.java"],
     visibility = [
+        "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/logging:__pkg__",
     ],
     deps = [
