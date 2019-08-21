@@ -8,6 +8,9 @@ java_library(
     srcs = [
         "ParserPreconditions.java",
     ],
+    visibility = [
+        "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
+    ],
     deps = [
         "//yosql-core/src/main/java/wtf/metio/yosql/model:errors",
         "//yosql-core/src/main/java/wtf/metio/yosql/model:i18n",
@@ -72,6 +75,7 @@ java_library(
     ],
     visibility = [
         "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
+        "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/dagger:__pkg__",
     ],
     deps = [

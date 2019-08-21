@@ -11,7 +11,7 @@ import dagger.Module;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 
 /**
- * Dagger2 module for no-op logging generators.
+ * Dagger module for no-op logging generators.
  */
 @Module
 public class NoOpLoggingModule {

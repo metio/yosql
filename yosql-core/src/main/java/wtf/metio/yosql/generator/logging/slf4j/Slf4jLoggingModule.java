@@ -12,7 +12,7 @@ import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.helpers.TypicalFields;
 
 /**
- * Dagger2 module for slf4j based logging generators.
+ * Dagger module for slf4j based logging generators.
  */
 @Module
 public class Slf4jLoggingModule {

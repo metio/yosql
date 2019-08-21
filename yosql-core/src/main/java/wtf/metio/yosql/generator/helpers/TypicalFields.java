@@ -12,7 +12,6 @@ import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.model.SqlConfiguration;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 
-import javax.inject.Inject;
 import java.lang.reflect.Type;
 
 public final class TypicalFields {
@@ -42,7 +41,6 @@ public final class TypicalFields {
 
     private final AnnotationGenerator annotations;
 
-    @Inject
     public TypicalFields(final AnnotationGenerator annotations) {
         this.annotations = annotations;
     }

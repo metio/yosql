@@ -12,12 +12,10 @@ import com.squareup.javapoet.CodeBlock.Builder;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.dagger.Delegating;
-import wtf.metio.yosql.model.*;
 import io.reactivex.Flowable;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
+import wtf.metio.yosql.model.*;
 
-import javax.inject.Inject;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
@@ -340,10 +338,9 @@ public final class TypicalCodeBlocks {
     private final ExecutionConfiguration configuration;
     private final LoggingGenerator logging;
 
-    @Inject
     public TypicalCodeBlocks(
             final ExecutionConfiguration pluginConfig,
-            final @Delegating LoggingGenerator logging) {
+            final LoggingGenerator logging) {
         configuration = pluginConfig;
         this.logging = logging;
     }

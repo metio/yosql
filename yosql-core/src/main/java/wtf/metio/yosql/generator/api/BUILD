@@ -58,6 +58,7 @@ java_library(
         "AnnotationGenerator.java",
     ],
     visibility = [
+        "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator:__subpackages__",
     ],
     deps = [

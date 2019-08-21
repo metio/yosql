@@ -27,6 +27,7 @@ java_library(
     name = "module",
     srcs = ["NoOpLoggingModule.java"],
     visibility = [
+        "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/logging:__pkg__",
     ],
     deps = [
