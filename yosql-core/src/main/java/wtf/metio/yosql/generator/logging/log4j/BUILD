@@ -30,6 +30,7 @@ java_library(
     name = "module",
     srcs = ["Log4jLoggingModule.java"],
     visibility = [
+        "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
         "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/logging:__pkg__",
