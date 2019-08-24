@@ -1,0 +1,19 @@
+language: java
+jdk:
+  - openjdk11
+
+before_install:
+  - mkdir -pv $HOME/tools/bazelisk/
+  - wget https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 -O $HOME/tools/bazelisk/bazelisk-1.0
+  - chmod +x $HOME/tools/bazelisk/bazelisk-1.0
+  - ln -s $HOME/tools/bazelisk/bazelisk-1.0 $HOME/bin/bazelisk
+install:
+  - bazelisk fetch ...
+script:
+  - bazelisk build ...
+  - bazelisk test ...
+
+cache:
+  directories:
+    - $HOME/tools/
+    - $HOME/.cache/bazel/
