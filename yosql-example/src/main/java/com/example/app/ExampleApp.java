@@ -81,8 +81,7 @@ public class ExampleApp {
     }
 
     private static boolean match(final String[] arguments, final String... values) {
-        return Arrays.stream(arguments).anyMatch(argument -> Arrays.stream(values)
-                .anyMatch(argument::equals));
+        return Arrays.stream(arguments).anyMatch(argument -> Arrays.asList(values).contains(argument));
     }
 
     private static void initializeDatabase(
@@ -203,11 +202,11 @@ public class ExampleApp {
         at.addRow("Id", "Name", "Time (ms)");
         at.addRule();
         final Duration queryAllCompaniesStreamEager = timeLazyStream("queryAllCompaniesStreamEager",
-                () -> companyRepository.queryAllCompaniesStreamEager());
+                companyRepository::queryAllCompaniesStreamEager);
         at.addRow(COUNTER.incrementAndGet(), "queryAllCompaniesStreamEager", queryAllCompaniesStreamEager.toMillis());
         at.addRule();
         final Duration queryAllCompaniesStreamLazy = timeLazyStream("queryAllCompaniesStreamLazy",
-                () -> companyRepository.queryAllCompaniesStreamLazy());
+                companyRepository::queryAllCompaniesStreamLazy);
         at.addRow(COUNTER.incrementAndGet(), "queryAllCompaniesStreamLazy", queryAllCompaniesStreamLazy.toMillis());
         at.addRule();
         final Duration findCompaniesStreamLazy = timeLazyStream("findCompaniesStreamLazy",
@@ -237,7 +236,7 @@ public class ExampleApp {
         at.addRow("Id", "Name", "Time (ms)");
         at.addRule();
         final Duration queryAllCompaniesFlow = timeLazy("queryAllCompaniesFlow",
-                () -> companyRepository.queryAllCompaniesFlow());
+                companyRepository::queryAllCompaniesFlow);
         at.addRow(COUNTER.incrementAndGet(), "queryAllCompaniesFlow", queryAllCompaniesFlow.toMillis());
         at.addRule();
         final Duration findCompaniesFlow = timeLazy("findCompaniesFlow",
