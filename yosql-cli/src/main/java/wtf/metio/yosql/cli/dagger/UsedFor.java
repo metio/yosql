@@ -15,9 +15,9 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 import wtf.metio.yosql.cli.i18n.Commands;
-import wtf.metio.yosql.model.GenerateOptions;
-import wtf.metio.yosql.model.HelpOptions;
-import wtf.metio.yosql.model.VersionOptions;
+import wtf.metio.yosql.model.options.GenerateOptions;
+import wtf.metio.yosql.model.options.HelpOptions;
+import wtf.metio.yosql.model.options.VersionOptions;
 
 /**
  * Marker interface used for dagger dependency injection.

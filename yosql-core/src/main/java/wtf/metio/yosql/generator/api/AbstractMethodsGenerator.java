@@ -7,13 +7,13 @@
 package wtf.metio.yosql.generator.api;
 
 import com.squareup.javapoet.MethodSpec;
-import wtf.metio.yosql.model.SqlConfiguration;
-import wtf.metio.yosql.model.SqlStatement;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static wtf.metio.yosql.model.SqlConfiguration.merge;
+import static wtf.metio.yosql.model.sql.SqlConfiguration.merge;
 
 /**
  * Abstract implementation of a {@link MethodsGenerator}.
@@ -21,45 +21,45 @@ import static wtf.metio.yosql.model.SqlConfiguration.merge;
 public abstract class AbstractMethodsGenerator implements MethodsGenerator {
 
     @Override
-    public final Iterable<MethodSpec> asMethods(final List<SqlStatement> sqlStatementsInRepository) {
-        final List<MethodSpec> methods = new ArrayList<>(sqlStatementsInRepository.size());
+    public final Iterable<MethodSpec> asMethods(final List<SqlStatement> statements) {
+        final var methods = new ArrayList<MethodSpec>(statements.size());
 
-        methods.add(constructor(sqlStatementsInRepository));
-        sqlStatementsInRepository.stream()
+        methods.add(constructor(statements));
+        statements.stream()
                 .filter(SqlStatement::shouldGenerateStandardReadAPI)
                 .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(standardReadMethod(merge(statements), statements)));
-        sqlStatementsInRepository.stream()
+                .forEach((methodName, statementsInRepository) -> methods
+                        .add(standardReadMethod(merge(statementsInRepository), statementsInRepository)));
+        statements.stream()
                 .filter(SqlStatement::shouldGenerateStandardWriteAPI)
                 .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(standardWriteMethod(merge(statements), statements)));
-        sqlStatementsInRepository.stream()
+                .forEach((methodName, statementsInRepository) -> methods
+                        .add(standardWriteMethod(merge(statementsInRepository), statementsInRepository)));
+        statements.stream()
                 .filter(SqlStatement::shouldGenerateStandardCallAPI)
                 .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(standardCallMethod(merge(statements), statements)));
-        sqlStatementsInRepository.stream()
+                .forEach((methodName, statementsInRepository) -> methods
+                        .add(standardCallMethod(merge(statementsInRepository), statementsInRepository)));
+        statements.stream()
                 .filter(SqlStatement::shouldGenerateBatchAPI)
                 .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(batchWriteMethod(merge(statements), statements)));
-        sqlStatementsInRepository.stream()
+                .forEach((methodName, statementsInRepository) -> methods
+                        .add(batchWriteMethod(merge(statementsInRepository), statementsInRepository)));
+        statements.stream()
                 .filter(SqlStatement::shouldGenerateStreamEagerAPI)
                 .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(streamEagerReadMethod(merge(statements), statements)));
-        sqlStatementsInRepository.stream()
+                .forEach((methodName, statementsInRepository) -> methods
+                        .add(streamEagerReadMethod(merge(statementsInRepository), statementsInRepository)));
+        statements.stream()
                 .filter(SqlStatement::shouldGenerateStreamLazyAPI)
                 .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(streamLazyReadMethod(merge(statements), statements)));
-        sqlStatementsInRepository.stream()
+                .forEach((methodName, statementsInRepository) -> methods
+                        .add(streamLazyReadMethod(merge(statementsInRepository), statementsInRepository)));
+        statements.stream()
                 .filter(SqlStatement::shouldGenerateRxJavaAPI)
                 .collect(SqlStatement.groupByName())
-                .forEach((methodName, statements) -> methods
-                        .add(rxJavaReadMethod(merge(statements), statements)));
+                .forEach((methodName, statementsInRepository) -> methods
+                        .add(rxJavaReadMethod(merge(statementsInRepository), statementsInRepository)));
 
         return methods;
     }
@@ -67,31 +67,31 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
     protected abstract MethodSpec constructor(List<SqlStatement> sqlStatementsInRepository);
 
     protected abstract MethodSpec standardReadMethod(
-            SqlConfiguration mergedConfiguration,
-            List<SqlStatement> vendorStatements);
+            SqlConfiguration configuration,
+            List<SqlStatement> statements);
 
     protected abstract MethodSpec standardWriteMethod(
-            SqlConfiguration sqlConfiguration,
-            List<SqlStatement> vendorStatements);
+            SqlConfiguration configuration,
+            List<SqlStatement> statements);
 
     protected abstract MethodSpec standardCallMethod(
-            SqlConfiguration sqlConfiguration,
-            List<SqlStatement> vendorStatements);
+            SqlConfiguration configuration,
+            List<SqlStatement> statements);
 
     protected abstract MethodSpec batchWriteMethod(
-            SqlConfiguration sqlConfiguration,
-            List<SqlStatement> vendorStatements);
+            SqlConfiguration configuration,
+            List<SqlStatement> statements);
 
     protected abstract MethodSpec streamEagerReadMethod(
-            SqlConfiguration sqlConfiguration,
-            List<SqlStatement> vendorStatements);
+            SqlConfiguration configuration,
+            List<SqlStatement> statements);
 
     protected abstract MethodSpec streamLazyReadMethod(
-            SqlConfiguration sqlConfiguration,
-            List<SqlStatement> vendorStatements);
+            SqlConfiguration configuration,
+            List<SqlStatement> statements);
 
     protected abstract MethodSpec rxJavaReadMethod(
-            SqlConfiguration sqlConfiguration,
-            List<SqlStatement> vendorStatements);
+            SqlConfiguration configuration,
+            List<SqlStatement> statements);
 
 }

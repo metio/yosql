@@ -6,8 +6,10 @@
  */
 package wtf.metio.yosql.dagger;
 
-import dagger.Provides;
 import dagger.Module;
+import dagger.Provides;
+import wtf.metio.yosql.model.annotations.Localized;
+import wtf.metio.yosql.model.annotations.NonLocalized;
 
 import javax.inject.Singleton;
 import java.util.Locale;

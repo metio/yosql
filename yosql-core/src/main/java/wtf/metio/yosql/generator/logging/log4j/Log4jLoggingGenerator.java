@@ -13,22 +13,24 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.helpers.TypicalFields;
-import wtf.metio.yosql.generator.helpers.TypicalNames;
+import wtf.metio.yosql.generator.blocks.api.Fields;
+import wtf.metio.yosql.generator.blocks.api.Names;
 
 import java.util.Optional;
 
 final class Log4jLoggingGenerator implements LoggingGenerator {
 
-    private final TypicalFields fields;
+    private final Names names;
+    private final Fields fields;
 
-    Log4jLoggingGenerator(final TypicalFields fields) {
+    Log4jLoggingGenerator(final Names names, final Fields fields) {
+        this.names = names;
         this.fields = fields;
     }
 
     @Override
     public Optional<FieldSpec> logger(final TypeName repoClass) {
-        return Optional.of(fields.prepareConstant(getClass(), Logger.class, TypicalNames.LOGGER)
+        return Optional.of(fields.prepareConstant(getClass(), Logger.class, names.logger())
                 .initializer("$T.getLogger($T.class)", LogManager.class, repoClass)
                 .build());
     }
@@ -36,7 +38,7 @@ final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER, "Picked query [%s]",
+                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(), "Picked query [%s]",
                         fieldName)
                 .build();
     }
@@ -44,7 +46,7 @@ final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock indexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(),
                         "Picked index [%s]", fieldName)
                 .build();
     }
@@ -52,7 +54,7 @@ final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorQueryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(),
                         "Picked query [%s]", fieldName)
                 .build();
     }
@@ -60,7 +62,7 @@ final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorIndexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", TypicalNames.LOGGER,
+                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(),
                         "Picked index [%s]", fieldName)
                 .build();
     }
@@ -68,22 +70,22 @@ final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorDetected() {
         return CodeBlock.builder()
-                .addStatement("$N.info(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
-                        "Detected database vendor [%s]", TypicalNames.DATABASE_PRODUCT_NAME)
+                .addStatement("$N.info(() -> $T.format($S, $N))", names.logger(), String.class,
+                        "Detected database vendor [%s]", names.databaseProductName())
                 .build();
     }
 
     @Override
     public CodeBlock executingQuery() {
         return CodeBlock.builder()
-                .addStatement("$N.info(() -> $T.format($S, $N))", TypicalNames.LOGGER, String.class,
-                        "Executing query [%s]", TypicalNames.EXECUTED_QUERY)
+                .addStatement("$N.info(() -> $T.format($S, $N))", names.logger(), String.class,
+                        "Executing query [%s]", names.executedQuery())
                 .build();
     }
 
     @Override
     public CodeBlock shouldLog() {
-        return CodeBlock.builder().add("$N.isEnabled($T.INFO)", TypicalNames.LOGGER, Level.class).build();
+        return CodeBlock.builder().add("$N.isEnabled($T.INFO)", names.logger(), Level.class).build();
     }
 
     @Override
@@ -94,7 +96,7 @@ final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock entering(final String repository, final String method) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> $T.format($S, $S, $S))", TypicalNames.LOGGER, String.class,
+                .addStatement("$N.debug(() -> $T.format($S, $S, $S))", names.logger(), String.class,
                         "Entering [%s#%s]", repository, method)
                 .build();
     }

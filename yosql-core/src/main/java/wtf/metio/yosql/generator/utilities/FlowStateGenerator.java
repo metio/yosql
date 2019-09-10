@@ -6,101 +6,116 @@
  */
 package wtf.metio.yosql.generator.utilities;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-import wtf.metio.yosql.model.annotations.Utilities;
-import wtf.metio.yosql.model.ApplicationEvents;
-import wtf.metio.yosql.model.ExecutionConfiguration;
-import wtf.metio.yosql.model.PackageTypeSpec;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.helpers.*;
+import wtf.metio.yosql.generator.blocks.api.Classes;
+import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
+import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.internal.ApplicationEvents;
+import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.annotations.Utilities;
 
 import javax.inject.Inject;
+import javax.lang.model.element.Modifier;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public final class FlowStateGenerator {
 
+    private final LocLogger logger;
+    private final RuntimeConfiguration runtime;
+    private final GenericBlocks blocks;
     private final AnnotationGenerator annotations;
-    private final ExecutionConfiguration configuration;
-    private final LocLogger              logger;
+    private final Classes classes;
+    private final Methods methods;
+    private final JdbcParameters jdbcParameters;
 
     @Inject
     FlowStateGenerator(
+            final @Utilities LocLogger logger,
+            final RuntimeConfiguration runtime,
+            final GenericBlocks blocks,
             final AnnotationGenerator annotations,
-            final ExecutionConfiguration configuration,
-            final @Utilities LocLogger logger) {
-        this.annotations = annotations;
-        this.configuration = configuration;
+            final Classes classes,
+            final Methods methods,
+            final JdbcParameters jdbcParameters) {
         this.logger = logger;
+        this.runtime = runtime;
+        this.blocks = blocks;
+        this.annotations = annotations;
+        this.classes = classes;
+        this.methods = methods;
+        this.jdbcParameters = jdbcParameters;
     }
 
-    public PackageTypeSpec generateFlowStateClass() {
-        final ClassName flowStateClass = configuration.getFlowStateClass();
-        final TypeSpec type = TypicalTypes.publicClass(flowStateClass)
-                .superclass(configuration.getResultStateClass())
+    PackageTypeSpec generateFlowStateClass() {
+        final var flowStateClass = runtime.rxJava().flowStateClass();
+        final var type = classes.publicClass(flowStateClass)
+                .superclass(runtime.rxJava().flowStateClass())
                 .addFields(fields())
                 .addMethods(methods())
-                .addAnnotations(annotations.generatedClass(FlowStateGenerator.class))
+                .addAnnotations(annotations.generatedClass())
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, flowStateClass.packageName(),
                 flowStateClass.simpleName());
         return new PackageTypeSpec(type, flowStateClass.packageName());
     }
 
-    private static Iterable<FieldSpec> fields() {
-        final List<FieldSpec> fields = new ArrayList<>();
+    private Iterable<FieldSpec> fields() {
+        final var fields = new ArrayList<FieldSpec>();
         fields.add(connectionField());
         fields.add(preparedStatementField());
         return fields;
     }
 
-    private static FieldSpec connectionField() {
-        return FieldSpec.builder(Connection.class, TypicalNames.CONNECTION)
-                .addModifiers(TypicalModifiers.privateField())
+    private FieldSpec connectionField() {
+        return FieldSpec.builder(Connection.class, runtime.jdbcNames().connection())
+                .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
     }
 
-    private static FieldSpec preparedStatementField() {
-        return FieldSpec.builder(PreparedStatement.class, TypicalNames.STATEMENT)
-                .addModifiers(TypicalModifiers.privateField())
+    private FieldSpec preparedStatementField() {
+        return FieldSpec.builder(PreparedStatement.class, runtime.jdbcNames().statement())
+                .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
     }
 
-    private static Iterable<MethodSpec> methods() {
-        final List<MethodSpec> fields = new ArrayList<>();
+    private Iterable<MethodSpec> methods() {
+        final var fields = new ArrayList<MethodSpec>();
         fields.add(constructor());
         fields.add(close());
         return fields;
     }
 
-    private static MethodSpec constructor() {
-        return TypicalMethods.constructor()
-                .addParameter(TypicalParameters.connection())
-                .addParameter(TypicalParameters.preparedStatement())
-                .addParameter(TypicalParameters.resultSet())
-                .addParameter(TypicalParameters.metaData())
-                .addParameter(TypicalParameters.columnCount())
-                .addStatement("super($N, $N, $N)", TypicalNames.RESULT_SET, TypicalNames.META_DATA,
-                        TypicalNames.COLUMN_COUNT)
-                .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.CONNECTION))
-                .addCode(TypicalCodeBlocks.setFieldToSelf(TypicalNames.STATEMENT))
+    private MethodSpec constructor() {
+        return methods.constructor()
+                .addParameter(jdbcParameters.connection())
+                .addParameter(jdbcParameters.preparedStatement())
+                .addParameter(jdbcParameters.resultSet())
+                .addParameter(jdbcParameters.metaData())
+                .addParameter(jdbcParameters.columnCount())
+                .addStatement("super($N, $N, $N)",
+                        runtime.jdbcNames().resultSet(),
+                        runtime.jdbcNames().metaData(),
+                        runtime.jdbcNames().columnCount())
+                .addCode(blocks.setFieldToSelf(runtime.jdbcNames().connection()))
+                .addCode(blocks.setFieldToSelf(runtime.jdbcNames().statement()))
                 .build();
     }
 
-    private static MethodSpec close() {
-        return TypicalMethods.publicMethod("close")
+    private MethodSpec close() {
+        return methods.publicMethod("close")
                 .returns(void.class)
                 .addException(SQLException.class)
-                .addStatement("$N.close()", TypicalNames.RESULT_SET)
-                .addStatement("$N.close()", TypicalNames.STATEMENT)
-                .addStatement("$N.close()", TypicalNames.CONNECTION)
+                .addStatement("$N.close()", runtime.jdbcNames().resultSet())
+                .addStatement("$N.close()", runtime.jdbcNames().statement())
+                .addStatement("$N.close()", runtime.jdbcNames().connection())
                 .build();
     }
 

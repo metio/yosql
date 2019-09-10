@@ -14,14 +14,12 @@ import wtf.metio.yosql.YoSqlModule;
 import wtf.metio.yosql.benchmark.BenchmarkConfigurationModule;
 import wtf.metio.yosql.dagger.DefaultLocaleModule;
 import wtf.metio.yosql.dagger.ErrorModule;
-import wtf.metio.yosql.dagger.I18nModule;
+import wtf.metio.yosql.i18n.I18nModule;
 import wtf.metio.yosql.dagger.LoggerModule;
 import wtf.metio.yosql.generator.dao.DaoModule;
-import wtf.metio.yosql.generator.helpers.HelperModule;
 import wtf.metio.yosql.generator.logging.LoggingModule;
 import wtf.metio.yosql.generator.utilities.DefaultUtilitiesModule;
-import wtf.metio.yosql.parser.DefaultResolverModule;
-import wtf.metio.yosql.parser.SqlFileParser;
+import wtf.metio.yosql.files.SqlFileParser;
 
 /**
  * Dagger module that uses an alternative parser.
@@ -30,10 +28,7 @@ import wtf.metio.yosql.parser.SqlFileParser;
 @Component(modules = {
         DefaultLocaleModule.class,
         BenchmarkConfigurationModule.class,
-        AlternativeParserModule.class,
-        DefaultResolverModule.class,
         DefaultUtilitiesModule.class,
-        HelperModule.class,
         LoggingModule.class,
         I18nModule.class,
         ErrorModule.class,

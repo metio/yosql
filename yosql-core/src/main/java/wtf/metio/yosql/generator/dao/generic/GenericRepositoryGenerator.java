@@ -7,17 +7,16 @@
 package wtf.metio.yosql.generator.dao.generic;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeSpec;
-import wtf.metio.yosql.model.ApplicationEvents;
-import wtf.metio.yosql.model.PackageTypeSpec;
-import wtf.metio.yosql.model.SqlStatement;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.FieldsGenerator;
 import wtf.metio.yosql.generator.api.MethodsGenerator;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
-import wtf.metio.yosql.generator.helpers.TypicalJavadoc;
-import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.generator.blocks.api.Classes;
+import wtf.metio.yosql.generator.blocks.api.Javadoc;
+import wtf.metio.yosql.model.internal.ApplicationEvents;
+import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
 
@@ -26,42 +25,46 @@ import java.util.List;
  */
 public final class GenericRepositoryGenerator implements RepositoryGenerator {
 
+    private final LocLogger logger;
     private final AnnotationGenerator annotations;
     private final FieldsGenerator fields;
     private final MethodsGenerator methods;
-    private final LocLogger           logger;
+    private final Javadoc javadoc;
+    private final Classes classes;
 
     /**
-     * @param annotations
-     *            The annotation generator to use.
-     * @param fields
-     *            The fields generator to use.
-     * @param methods
-     *            The methods generator to use.
-     * @param logger
-     *            The logger to use.
+     * @param logger      The logger to use.
+     * @param annotations The annotation generator to use.
+     * @param classes     The classes builder to use.
+     * @param javadoc     The javadoc generator to use.
+     * @param fields      The fields generator to use.
+     * @param methods     The methods generator to use.
      */
     public GenericRepositoryGenerator(
+            final LocLogger logger,
             final AnnotationGenerator annotations,
+            final Classes classes,
+            final Javadoc javadoc,
             final FieldsGenerator fields,
-            final MethodsGenerator methods,
-            final LocLogger logger) {
+            final MethodsGenerator methods) {
         this.annotations = annotations;
         this.methods = methods;
         this.fields = fields;
+        this.javadoc = javadoc;
         this.logger = logger;
+        this.classes = classes;
     }
 
     @Override
     public PackageTypeSpec generateRepository(
             final String repositoryName,
             final List<SqlStatement> sqlStatements) {
-        final ClassName className = ClassName.bestGuess(repositoryName);
-        final TypeSpec repository = TypicalTypes.publicClass(className)
-                .addJavadoc(TypicalJavadoc.repositoryJavadoc(sqlStatements))
+        final var className = ClassName.bestGuess(repositoryName);
+        final var repository = classes.publicClass(className)
+                .addJavadoc(javadoc.repositoryJavadoc(sqlStatements))
                 .addFields(fields.asFields(sqlStatements))
                 .addMethods(methods.asMethods(sqlStatements))
-                .addAnnotations(annotations.generatedClass(GenericRepositoryGenerator.class))
+                .addAnnotations(annotations.generatedClass())
                 .addStaticBlock(fields.staticInitializer(sqlStatements))
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, className.packageName(), className.simpleName());

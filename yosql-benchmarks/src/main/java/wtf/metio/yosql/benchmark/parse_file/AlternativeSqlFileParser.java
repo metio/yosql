@@ -6,6 +6,14 @@
  */
 package wtf.metio.yosql.benchmark.parse_file;
 
+import wtf.metio.yosql.files.SqlConfigurationFactory;
+import wtf.metio.yosql.files.SqlFileParser;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.errors.ExecutionErrors;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlStatement;
+
+import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
@@ -18,43 +26,33 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
-import wtf.metio.yosql.model.ExecutionConfiguration;
-import wtf.metio.yosql.model.ExecutionErrors;
-import wtf.metio.yosql.model.SqlConfiguration;
-import wtf.metio.yosql.model.SqlStatement;
-import wtf.metio.yosql.parser.SqlConfigurationFactory;
-import wtf.metio.yosql.parser.SqlFileParser;
-
 /**
  * Alternative implementation for the SqlFileParser. Used for benchmarking.
  */
 final class AlternativeSqlFileParser implements SqlFileParser {
 
-    private static final String           NEWLINE = "\n"; //$NON-NLS-1$
+    private static final String NEWLINE = "\n"; //$NON-NLS-1$
 
-    private final ExecutionErrors         errors;
+    private final ExecutionErrors errors;
     private final SqlConfigurationFactory factory;
-    private final ExecutionConfiguration  config;
+    private final RuntimeConfiguration runtime;
 
     @Inject
     AlternativeSqlFileParser(
             final ExecutionErrors errors,
-            final ExecutionConfiguration config,
-            final SqlConfigurationFactory factory) {
+            final SqlConfigurationFactory factory,
+            final RuntimeConfiguration runtime) {
         this.errors = errors;
-        this.config = config;
+        this.runtime = runtime;
         this.factory = factory;
     }
 
     @Override
     public Stream<SqlStatement> parse(final Path source) {
         try {
-            final Charset charset = Charset.forName(config.sqlFilesCharset());
-            final Path pathToSqlFile = source;
-            final String rawText = new String(Files.readAllBytes(pathToSqlFile), charset);
-            final String[] rawStatements = rawText.split(config.sqlStatementSeparator());
+            final Charset charset = Charset.forName(runtime.files().sqlFilesCharset());
+            final String rawText = Files.readString(source, charset);
+            final String[] rawStatements = rawText.split(runtime.files().sqlStatementSeparator());
             final AtomicInteger counter = new AtomicInteger(0);
             return Arrays.stream(rawStatements)
                     // .parallel() // CHANGED FROM ORIGINAL
@@ -90,17 +88,17 @@ final class AlternativeSqlFileParser implements SqlFileParser {
     }
 
     private static void splitUpYamlAndSql(final String rawStatement, final Consumer<String> yaml,
-            final Consumer<String> sql) {
+                                          final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
                 .lines().forEach(line -> {
-                    if (line.startsWith("--")) { //$NON-NLS-1$
-                        yaml.accept(line.substring(2));
-                        yaml.accept(NEWLINE);
-                    } else {
-                        sql.accept(line);
-                        sql.accept(NEWLINE);
-                    }
-                });
+            if (line.startsWith("--")) { //$NON-NLS-1$
+                yaml.accept(line.substring(2));
+                yaml.accept(NEWLINE);
+            } else {
+                sql.accept(line);
+                sql.accept(NEWLINE);
+            }
+        });
     }
 
 }

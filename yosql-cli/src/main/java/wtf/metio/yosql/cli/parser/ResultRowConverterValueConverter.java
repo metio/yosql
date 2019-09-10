@@ -6,7 +6,7 @@
  */
 package wtf.metio.yosql.cli.parser;
 
-import wtf.metio.yosql.model.ResultRowConverter;
+import wtf.metio.yosql.model.sql.ResultRowConverter;
 import joptsimple.ValueConverter;
 
 /**

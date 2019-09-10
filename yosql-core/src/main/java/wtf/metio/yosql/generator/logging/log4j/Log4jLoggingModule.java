@@ -6,10 +6,11 @@
  */
 package wtf.metio.yosql.generator.logging.log4j;
 
-import dagger.Provides;
 import dagger.Module;
+import dagger.Provides;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.helpers.TypicalFields;
+import wtf.metio.yosql.generator.blocks.api.Fields;
+import wtf.metio.yosql.generator.blocks.api.Names;
 
 /**
  * Dagger module for log4j based logging generators.
@@ -19,8 +20,10 @@ public class Log4jLoggingModule {
 
     @Log4j
     @Provides
-    LoggingGenerator provideLog4jLoggingGenerator(final TypicalFields fields) {
-        return new Log4jLoggingGenerator(fields);
+    LoggingGenerator provideLog4jLoggingGenerator(
+            final Names names,
+            final Fields fields) {
+        return new Log4jLoggingGenerator(names, fields);
     }
 
 }

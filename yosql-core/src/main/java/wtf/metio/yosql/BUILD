@@ -17,25 +17,6 @@ java_library(
 )
 
 java_library(
-    name = "implementation",
-    srcs = ["YoSqlImplementation.java"],
-    deps = [
-        ":yosql",
-        "//yosql-core/src/main/java/wtf/metio/yosql/generator/api:generators",
-        "//yosql-core/src/main/java/wtf/metio/yosql/generator/api:writer",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:config",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:errors",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:events",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:execution",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:generator",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:i18n",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser:io",
-        "//yosql-core/src/main/java/wtf/metio/yosql/utils:timer",
-    ],
-)
-
-java_library(
     name = "module",
     srcs = ["YoSqlModule.java"],
     visibility = [
@@ -47,6 +28,8 @@ java_library(
         ":yosql",
         "//third_party/dagger",
         "//yosql-core/src/main/java/wtf/metio/yosql/dagger:annotations",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:io",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:parser",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/api:generators",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/api:writer",
         "//yosql-core/src/main/java/wtf/metio/yosql/model:config",
@@ -55,9 +38,7 @@ java_library(
         "//yosql-core/src/main/java/wtf/metio/yosql/model:execution",
         "//yosql-core/src/main/java/wtf/metio/yosql/model:generator",
         "//yosql-core/src/main/java/wtf/metio/yosql/model:i18n",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser:io",
-        "//yosql-core/src/main/java/wtf/metio/yosql/utils:timer",
+        "//yosql-core/src/main/java/wtf/metio/yosql/orchestration:timer",
         "@maven//:javax_inject_javax_inject",
     ],
 )
@@ -74,6 +55,12 @@ java_library(
         "//yosql-core/src/main/java/wtf/metio/yosql/dagger:error_module",
         "//yosql-core/src/main/java/wtf/metio/yosql/dagger:i18n_module",
         "//yosql-core/src/main/java/wtf/metio/yosql/dagger:logger_module",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:default_parser_module",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:default_resolver_module",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:factory",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:io",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:parser",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:preconditions",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/api:annotation_generator",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/api:generators",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator/api:writer",
@@ -92,13 +79,7 @@ java_library(
         "//yosql-core/src/main/java/wtf/metio/yosql/model:errors",
         "//yosql-core/src/main/java/wtf/metio/yosql/model:execution",
         "//yosql-core/src/main/java/wtf/metio/yosql/model:i18n",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser:default_parser_module",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser:default_resolver_module",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser:factory",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser:io",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser:preconditions",
-        "//yosql-core/src/main/java/wtf/metio/yosql/utils:timer",
+        "//yosql-core/src/main/java/wtf/metio/yosql/orchestration:timer",
         "@maven//:ch_qos_cal10n_cal10n_api",
         "@maven//:javax_inject_javax_inject",
         "@maven//:org_slf4j_slf4j_api",

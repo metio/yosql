@@ -7,7 +7,7 @@
 package wtf.metio.yosql.generator.api;
 
 import com.squareup.javapoet.MethodSpec;
-import wtf.metio.yosql.model.SqlStatement;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
 

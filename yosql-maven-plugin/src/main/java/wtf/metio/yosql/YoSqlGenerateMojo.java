@@ -27,10 +27,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import wtf.metio.yosql.generator.utilities.ToResultRowConverterGenerator;
-import wtf.metio.yosql.model.ExecutionConfiguration;
-import wtf.metio.yosql.model.ExecutionErrors;
-import wtf.metio.yosql.model.ParameterConverter;
-import wtf.metio.yosql.model.ResultRowConverter;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.errors.ExecutionErrors;
+import wtf.metio.yosql.model.sql.ParameterConverter;
+import wtf.metio.yosql.model.sql.ResultRowConverter;
 
 /**
  * The *generate* goal generates Java code based on SQL files.
@@ -69,14 +69,14 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private String                         basePackageName;
 
     /**
-     * Controls whether the SQL statements should be inlined in the generated repositories or loaded at runtime
+     * Controls whether the SQL statements should be inlined in the generated repositories or loaded at options
      * (default: <strong>inline</strong>). Other possible value is <strong>load</strong>.
      */
     @Parameter(required = true, defaultValue = "inline")
     private String                         repositorySqlStatements;
 
     /**
-     * Controls whether the generated repositories should contain <em>standard</em> methods that. Standard methods
+     * Controls whether the generated repositories should contain <em>generic</em> methods that. Standard methods
      * execute depending on the type of the query and could either be a single 'executeQuery' on a PreparedStatement in
      * case of SQL SELECT statements or a single call to 'executeUpdate' for SQL UPDATE statements. (default:
      * <strong>true</strong>).
@@ -317,21 +317,21 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     public void execute() {
         final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
         final ExecutionErrors errors = new ExecutionErrors();
-        final ExecutionConfiguration configuration = createConfiguration(messages, errors);
+        final RuntimeConfiguration configuration = createConfiguration(messages, errors);
         final YoSql yoSql = createYoSql(configuration, errors);
 
         yoSql.generateCode();
     }
 
-    private YoSql createYoSql(final ExecutionConfiguration configuration, final ExecutionErrors errors) {
+    private YoSql createYoSql(final RuntimeConfiguration configuration, final ExecutionErrors errors) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    private ExecutionConfiguration createConfiguration(final IMessageConveyor messages, final ExecutionErrors errors) {
+    private RuntimeConfiguration createConfiguration(final IMessageConveyor messages, final ExecutionErrors errors) {
         final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1, java.length()));
 
-        final ExecutionConfiguration.Builder builder = ExecutionConfiguration.builder()
+        final RuntimeConfiguration.Builder builder = RuntimeConfiguration.builder()
                 .setOutputBaseDirectory(outputBaseDirectory.toPath())
                 .setBasePackageName(basePackageName)
                 .setUtilityPackageName(utilityPackageName)

@@ -6,17 +6,21 @@
  */
 package wtf.metio.yosql.generator.dao.jdbc;
 
-import dagger.Provides;
 import dagger.Module;
-import wtf.metio.yosql.dagger.Delegating;
-import wtf.metio.yosql.model.annotations.Generator;
-import wtf.metio.yosql.model.ExecutionConfiguration;
+import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.*;
+import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.dao.generic.GenericMethodsGenerator;
 import wtf.metio.yosql.generator.dao.generic.GenericRepositoryGenerator;
-import wtf.metio.yosql.generator.helpers.TypicalCodeBlocks;
-import wtf.metio.yosql.generator.helpers.TypicalFields;
+import wtf.metio.yosql.model.annotations.Delegating;
+import wtf.metio.yosql.model.annotations.Generator;
+import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
 /**
  * Dagger module for the JDBC based DAO implementation.
@@ -27,11 +31,13 @@ public class DaoJdbcModule {
     @JDBC
     @Provides
     RepositoryGenerator provideRepositoryGenerator(
-            final @JDBC FieldsGenerator fields,
-            final @JDBC MethodsGenerator methods,
             final @Generator LocLogger logger,
-            final AnnotationGenerator annotations) {
-        return new GenericRepositoryGenerator(annotations, fields, methods, logger);
+            final AnnotationGenerator annotations,
+            final Classes classes,
+            final Javadoc javadoc,
+            final @JDBC FieldsGenerator fields,
+            final @JDBC MethodsGenerator methods) {
+        return new GenericRepositoryGenerator(logger, annotations, classes, javadoc, fields, methods);
     }
 
     @JDBC
@@ -41,49 +47,127 @@ public class DaoJdbcModule {
             final @JDBC Java8StreamMethodGenerator streamMethods,
             final @JDBC RxJavaMethodGenerator rxjavaMethods,
             final @JDBC StandardMethodGenerator standardMethods,
-            final AnnotationGenerator annotations) {
-        return new GenericMethodsGenerator(batchMethods, streamMethods, rxjavaMethods, standardMethods, annotations);
+            final GenericBlocks blocks,
+            final AnnotationGenerator annotations,
+            final Methods methods,
+            final JdbcNamesConfiguration jdbcNames,
+            final JdbcParameters jdbcParameters) {
+        return new GenericMethodsGenerator(
+                batchMethods,
+                streamMethods,
+                rxjavaMethods,
+                standardMethods,
+                blocks,
+                annotations,
+                methods,
+                jdbcNames,
+                jdbcParameters);
     }
 
     @JDBC
     @Provides
     FieldsGenerator provideFieldsGenerator(
-            final @Delegating LoggingGenerator logging,
-            final TypicalFields fields) {
-        return new JdbcFieldsGenerator(fields, logging);
+            final Fields fields,
+            @Delegating final LoggingGenerator logging,
+            final JdbcFields jdbcFields,
+            final JdbcNamesConfiguration jdbcNames) {
+        return new JdbcFieldsGenerator(fields, logging, jdbcFields, jdbcNames);
     }
 
     @JDBC
     @Provides
     BatchMethodGenerator provideBatchMethodGenerator(
-            final TypicalCodeBlocks codeBlocks,
-            final AnnotationGenerator annotations) {
-        return new JdbcBatchMethodGenerator(codeBlocks, annotations);
+            final ControlFlows controlFlow,
+            final AnnotationGenerator annotations,
+            final Javadoc javadoc,
+            final Methods methods,
+            final Parameters parameters,
+            final LoggingGenerator logging,
+            final JdbcBlocks jdbc,
+            final JdbcTransformer transformer) {
+        return new JdbcBatchMethodGenerator(
+                controlFlow,
+                annotations,
+                javadoc,
+                methods,
+                parameters,
+                logging,
+                jdbc,
+                transformer);
     }
 
     @JDBC
     @Provides
     Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
-            final TypicalCodeBlocks codeBlocks,
-            final AnnotationGenerator annotations) {
-        return new JdbcJava8StreamMethodGenerator(codeBlocks, annotations);
+            final GenericBlocks blocks,
+            final ControlFlows controlFlow,
+            final Names names,
+            final Javadoc javadoc,
+            final AnnotationGenerator annotations,
+            final Methods methods,
+            final Parameters parameters,
+            final LoggingGenerator logging,
+            final JdbcBlocks jdbcBlocks,
+            final JdbcTransformer jdbcTransformer,
+            final JdbcNamesConfiguration jdbcNames) {
+        return new JdbcJava8StreamMethodGenerator(
+                blocks,
+                controlFlow,
+                names,
+                javadoc,
+                annotations,
+                methods,
+                parameters,
+                logging,
+                jdbcBlocks,
+                jdbcTransformer,
+                jdbcNames);
     }
 
     @JDBC
     @Provides
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
-            final ExecutionConfiguration configuration,
-            final TypicalCodeBlocks codeBlocks,
-            final AnnotationGenerator annotations) {
-        return new JdbcRxJavaMethodGenerator(configuration, codeBlocks, annotations);
+            final RuntimeConfiguration configuration,
+            final ControlFlows controlFlows,
+            final Names names,
+            final AnnotationGenerator annotations,
+            final Javadoc javadoc,
+            final Methods methods,
+            final Parameters parameters,
+            final LoggingGenerator logging,
+            final JdbcBlocks jdbcBlocks) {
+        return new JdbcRxJavaMethodGenerator(
+                configuration,
+                controlFlows,
+                names,
+                annotations,
+                javadoc,
+                methods,
+                parameters,
+                logging,
+                jdbcBlocks);
     }
 
     @JDBC
     @Provides
     StandardMethodGenerator provideStandardMethodGenerator(
-            final TypicalCodeBlocks codeBlocks,
-            final AnnotationGenerator annotations) {
-        return new JdbcStandardMethodGenerator(codeBlocks, annotations);
+            final ControlFlows controlFlows,
+            final AnnotationGenerator annotations,
+            final Methods methods,
+            final Javadoc javadoc,
+            final Parameters parameters,
+            final LoggingGenerator logging,
+            final JdbcBlocks jdbc,
+            final JdbcTransformer jdbcTransformer) {
+        return new JdbcStandardMethodGenerator(
+                controlFlows,
+                annotations,
+                methods,
+                javadoc,
+                parameters,
+                logging,
+                jdbc,
+                jdbcTransformer);
     }
 
 }

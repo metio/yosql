@@ -6,18 +6,18 @@
  */
 package wtf.metio.yosql.cli.dagger;
 
-import static wtf.metio.yosql.model.GenerateOptions.LOG_LEVEL;
-import static wtf.metio.yosql.model.GenerateOptions.LOG_LEVEL_DEFAULT;
-import static wtf.metio.yosql.model.GeneralOptionDescriptions.LOCALE_DESCRIPTION;
-import static wtf.metio.yosql.model.GeneralOptions.LOCALE;
-import static wtf.metio.yosql.model.GenerateOptionDescriptions.LOG_LEVEL_DESCRIPTION;
-
-import java.util.Locale;
-
-import wtf.metio.yosql.model.Translator;
 import joptsimple.HelpFormatter;
 import joptsimple.OptionParser;
 import joptsimple.OptionSpec;
+import wtf.metio.yosql.i18n.Translator;
+
+import java.util.Locale;
+
+import static wtf.metio.yosql.model.descriptions.GeneralOptionDescriptions.LOCALE_DESCRIPTION;
+import static wtf.metio.yosql.model.descriptions.GenerateOptionDescriptions.LOG_LEVEL_DESCRIPTION;
+import static wtf.metio.yosql.model.options.GeneralOptions.LOCALE;
+import static wtf.metio.yosql.model.options.GenerateOptions.LOG_LEVEL;
+import static wtf.metio.yosql.model.options.GenerateOptions.LOG_LEVEL_DEFAULT;
 
 abstract class AbstractOptionParserModule {
 

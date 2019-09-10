@@ -6,9 +6,11 @@
  */
 package wtf.metio.yosql.dagger;
 
-import dagger.Provides;
 import dagger.Module;
-import wtf.metio.yosql.model.ExecutionErrors;
+import dagger.Provides;
+import wtf.metio.yosql.model.errors.ExecutionErrors;
+
+import javax.inject.Singleton;
 
 /**
  * Dagger module for everything related to errors.
@@ -17,6 +19,7 @@ import wtf.metio.yosql.model.ExecutionErrors;
 public class ErrorModule {
 
     @Provides
+    @Singleton
     ExecutionErrors provideExecutionErrors() {
         return new ExecutionErrors();
     }

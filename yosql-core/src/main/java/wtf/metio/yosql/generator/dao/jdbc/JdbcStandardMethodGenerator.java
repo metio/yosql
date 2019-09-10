@@ -7,115 +7,132 @@
 package wtf.metio.yosql.generator.dao.jdbc;
 
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.model.ResultRowConverter;
-import wtf.metio.yosql.model.SqlConfiguration;
-import wtf.metio.yosql.model.SqlStatement;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
+import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.api.StandardMethodGenerator;
-import wtf.metio.yosql.generator.helpers.TypicalCodeBlocks;
-import wtf.metio.yosql.generator.helpers.TypicalMethods;
-import wtf.metio.yosql.generator.helpers.TypicalParameters;
+import wtf.metio.yosql.generator.blocks.api.ControlFlows;
+import wtf.metio.yosql.generator.blocks.api.Javadoc;
+import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
 
-import static wtf.metio.yosql.generator.helpers.TypicalJavadoc.methodJavadoc;
-
 final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
 
-    private final TypicalCodeBlocks codeBlocks;
+    private final ControlFlows controlFlows;
     private final AnnotationGenerator annotations;
+    private final Methods methods;
+    private final Javadoc javadoc;
+    private final Parameters parameters;
+    private final LoggingGenerator logging;
+    private final JdbcBlocks jdbc;
+    private final JdbcTransformer jdbcTransformer;
 
     JdbcStandardMethodGenerator(
-            final TypicalCodeBlocks codeBlocks,
-            final AnnotationGenerator annotations) {
-        this.codeBlocks = codeBlocks;
+            final ControlFlows controlFlows,
+            final AnnotationGenerator annotations,
+            final Methods methods,
+            final Javadoc javadoc,
+            final Parameters parameters,
+            final LoggingGenerator logging,
+            final JdbcBlocks jdbc,
+            final JdbcTransformer jdbcTransformer) {
         this.annotations = annotations;
+        this.logging = logging;
+        this.javadoc = javadoc;
+        this.jdbc = jdbc;
+        this.jdbcTransformer = jdbcTransformer;
+        this.controlFlows = controlFlows;
+        this.methods = methods;
+        this.parameters = parameters;
     }
 
     @Override
     public MethodSpec standardReadMethod(
-            final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> vendorStatements) {
-        final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
-        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
-        final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
-        final String methodName = mergedConfiguration.getName();
-        return TypicalMethods.publicMethod(methodName)
-                .addJavadoc(methodJavadoc(vendorStatements))
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements) {
+        final var converter = configuration.getResultRowConverter();
+        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var listOfResults = TypicalTypes.listOf(resultType);
+        final var methodName = configuration.getName();
+        return methods.publicMethod(methodName)
+                .addJavadoc(javadoc.methodJavadoc(statements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
-                .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))
-                .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
-                .addCode(codeBlocks.entering(mergedConfiguration.getRepository(), methodName))
-                .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
-                .addCode(TypicalCodeBlocks.tryPrepareStatement())
-                .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
-                .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
-                .addCode(TypicalCodeBlocks.tryExecute())
-                .addCode(TypicalCodeBlocks.getMetaData())
-                .addCode(TypicalCodeBlocks.getColumnCount())
-                .addCode(codeBlocks.newResultState())
-                .addCode(TypicalCodeBlocks.returnAsList(listOfResults, converter.getAlias()))
-                .addCode(TypicalCodeBlocks.endTryBlock(3))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))
+                .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
+                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addCode(logging.entering(configuration.getRepository(), methodName))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.createStatement())
+                .addCode(jdbc.setParameters(configuration))
+                .addCode(jdbc.logExecutedQuery(configuration))
+                .addCode(jdbc.executeStatement())
+                .addCode(jdbc.readMetaData())
+                .addCode(jdbc.reactColumnCount())
+                .addCode(jdbc.createResultState())
+                .addCode(jdbc.returnAsList(listOfResults, converter.getAlias()))
+                .addCode(controlFlows.endTryBlock(3))
+                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
     }
 
     @Override
     public MethodSpec standardWriteMethod(
-            final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> vendorStatements) {
-        final String methodName = mergedConfiguration.getName();
-        return TypicalMethods.publicMethod(methodName)
-                .addJavadoc(methodJavadoc(vendorStatements))
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements) {
+        final var methodName = configuration.getName();
+        return methods.publicMethod(methodName)
+                .addJavadoc(javadoc.methodJavadoc(statements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(int.class)
-                .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
-                .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))
-                .addCode(codeBlocks.entering(mergedConfiguration.getRepository(), methodName))
-                .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
-                .addCode(TypicalCodeBlocks.tryPrepareStatement())
-                .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
-                .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
-                .addCode(TypicalCodeBlocks.executeUpdate())
-                .addCode(TypicalCodeBlocks.endTryBlock(2))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))
+                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
+                .addCode(logging.entering(configuration.getRepository(), methodName))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.createStatement())
+                .addCode(jdbc.setParameters(configuration))
+                .addCode(jdbc.logExecutedQuery(configuration))
+                .addCode(jdbc.executeUpdate())
+                .addCode(controlFlows.endTryBlock(2))
+                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
     }
 
     @Override
     public MethodSpec standardCallMethod(
-            final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> vendorStatements) {
-        final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
-        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
-        final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
-        final String methodName = mergedConfiguration.getName();
-        return TypicalMethods.publicMethod(methodName)
-                .addJavadoc(methodJavadoc(vendorStatements))
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements) {
+        final var converter = configuration.getResultRowConverter();
+        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var listOfResults = TypicalTypes.listOf(resultType);
+        final var methodName = configuration.getName();
+        return methods.publicMethod(methodName)
+                .addJavadoc(javadoc.methodJavadoc(statements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(listOfResults)
-                .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))
-                .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
-                .addCode(codeBlocks.entering(mergedConfiguration.getRepository(), methodName))
-                .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
-                .addCode(TypicalCodeBlocks.tryPrepareCallable())
-                .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
-                .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
-                .addCode(TypicalCodeBlocks.tryExecute())
-                .addCode(TypicalCodeBlocks.getMetaData())
-                .addCode(TypicalCodeBlocks.getColumnCount())
-                .addCode(codeBlocks.newResultState())
-                .addCode(TypicalCodeBlocks.returnAsList(listOfResults, converter.getAlias()))
-                .addCode(TypicalCodeBlocks.endTryBlock(3))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))
+                .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
+                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addCode(logging.entering(configuration.getRepository(), methodName))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.tryPrepareCallable())
+                .addCode(jdbc.setParameters(configuration))
+                .addCode(jdbc.logExecutedQuery(configuration))
+                .addCode(jdbc.executeStatement())
+                .addCode(jdbc.readMetaData())
+                .addCode(jdbc.reactColumnCount())
+                .addCode(jdbc.createResultState())
+                .addCode(jdbc.returnAsList(listOfResults, converter.getAlias()))
+                .addCode(controlFlows.endTryBlock(3))
+                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
     }
 

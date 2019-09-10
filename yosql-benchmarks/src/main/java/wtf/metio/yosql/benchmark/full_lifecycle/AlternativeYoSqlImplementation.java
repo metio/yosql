@@ -19,12 +19,12 @@ import javax.inject.Inject;
 import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
 import wtf.metio.yosql.generator.api.UtilitiesGenerator;
-import wtf.metio.yosql.model.CodeGenerationException;
-import wtf.metio.yosql.model.ExecutionErrors;
-import wtf.metio.yosql.model.SqlStatement;
-import wtf.metio.yosql.parser.SqlFileParser;
-import wtf.metio.yosql.parser.SqlFileResolver;
-import wtf.metio.yosql.utils.Timer;
+import wtf.metio.yosql.model.exceptions.CodeGenerationException;
+import wtf.metio.yosql.model.errors.ExecutionErrors;
+import wtf.metio.yosql.model.sql.SqlStatement;
+import wtf.metio.yosql.files.SqlFileParser;
+import wtf.metio.yosql.files.SqlFileResolver;
+import wtf.metio.yosql.orchestration.DefaultTimer;
 
 /**
  * Alternative implementation of {@link YoSql} used for benchmarking.
@@ -36,7 +36,7 @@ final class AlternativeYoSqlImplementation implements YoSql {
     private final RepositoryGenerator repositoryGenerator;
     private final UtilitiesGenerator  utilsGenerator;
     private final ExecutionErrors     errors;
-    private final Timer               timer;
+    private final DefaultTimer timer;
 
     @Inject
     AlternativeYoSqlImplementation(
@@ -45,7 +45,7 @@ final class AlternativeYoSqlImplementation implements YoSql {
             final RepositoryGenerator repositoryGenerator,
             final UtilitiesGenerator utilsGenerator,
             final ExecutionErrors errors,
-            final Timer timer) {
+            final DefaultTimer timer) {
         this.fileResolver = fileResolver;
         this.sqlFileParser = sqlFileParser;
         this.repositoryGenerator = repositoryGenerator;

@@ -6,116 +6,147 @@
  */
 package wtf.metio.yosql.generator.dao.jdbc;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.model.ResultRowConverter;
-import wtf.metio.yosql.model.SqlConfiguration;
-import wtf.metio.yosql.model.SqlStatement;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.Java8StreamMethodGenerator;
-import wtf.metio.yosql.generator.helpers.*;
+import wtf.metio.yosql.generator.api.LoggingGenerator;
+import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
+import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.model.sql.ResultRowConverter;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlStatement;
+import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 
-import static wtf.metio.yosql.generator.helpers.TypicalJavadoc.methodJavadoc;
-
 final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator {
 
-    private final TypicalCodeBlocks codeBlocks;
+    private final GenericBlocks blocks;
+    private final ControlFlows controlFlow;
+    private final Names names;
+    private final Javadoc javadoc;
     private final AnnotationGenerator annotations;
+    private final Methods methods;
+    private final Parameters parameters;
+    private final LoggingGenerator logging;
+    private final JdbcBlocks jdbcBlocks;
+    private final JdbcTransformer jdbcTransformer;
+    private final JdbcNamesConfiguration jdbcNames;
 
     JdbcJava8StreamMethodGenerator(
-            final TypicalCodeBlocks codeBlocks,
-            final AnnotationGenerator annotations) {
-        this.codeBlocks = codeBlocks;
+            final GenericBlocks blocks,
+            final ControlFlows controlFlow,
+            final Names names,
+            final Javadoc javadoc,
+            final AnnotationGenerator annotations,
+            final Methods methods,
+            final Parameters parameters,
+            final LoggingGenerator logging,
+            final JdbcBlocks jdbcBlocks,
+            final JdbcTransformer jdbcTransformer,
+            final JdbcNamesConfiguration jdbcNames) {
+        this.names = names;
         this.annotations = annotations;
+        this.logging = logging;
+        this.javadoc = javadoc;
+        this.blocks = blocks;
+        this.jdbcBlocks = jdbcBlocks;
+        this.jdbcTransformer = jdbcTransformer;
+        this.controlFlow = controlFlow;
+        this.methods = methods;
+        this.parameters = parameters;
+        this.jdbcNames = jdbcNames;
     }
 
     @Override
     public MethodSpec streamEagerMethod(
             final SqlConfiguration configuration,
-            final List<SqlStatement> vendorStatements) {
-        final ResultRowConverter converter = configuration.getResultRowConverter();
-        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
-        final ParameterizedTypeName listOfResults = TypicalTypes.listOf(resultType);
-        final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
-        return TypicalMethods.publicMethod(configuration.getStreamEagerName())
-                .addJavadoc(methodJavadoc(vendorStatements))
+            final List<SqlStatement> statements) {
+        final var converter = configuration.getResultRowConverter();
+        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var listOfResults = TypicalTypes.listOf(resultType);
+        final var streamOfResults = TypicalTypes.streamOf(resultType);
+        return methods.publicMethod(configuration.getStreamEagerName())
+                .addJavadoc(javadoc.methodJavadoc(statements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
-                .addParameters(TypicalParameters.asParameterSpecs(configuration.getParameters()))
-                .addExceptions(TypicalCodeBlocks.sqlException(configuration))
-                .addCode(codeBlocks.entering(configuration.getRepository(),
-                        configuration.getStreamEagerName()))
-                .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
-                .addCode(TypicalCodeBlocks.tryPrepareStatement())
-                .addCode(TypicalCodeBlocks.setParameters(configuration))
-                .addCode(codeBlocks.logExecutedQuery(configuration))
-                .addCode(TypicalCodeBlocks.tryExecute())
-                .addCode(TypicalCodeBlocks.getMetaData())
-                .addCode(TypicalCodeBlocks.getColumnCount())
-                .addCode(codeBlocks.newResultState())
-                .addCode(TypicalCodeBlocks.returnAsStream(listOfResults, converter.getAlias()))
-                .addCode(TypicalCodeBlocks.endTryBlock(3))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
+                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addCode(logging.entering(configuration.getRepository(), configuration.getStreamEagerName()))
+                .addCode(jdbcBlocks.openConnection())
+                .addCode(jdbcBlocks.pickVendorQuery(statements))
+                .addCode(jdbcBlocks.createStatement())
+                .addCode(jdbcBlocks.setParameters(configuration))
+                .addCode(jdbcBlocks.logExecutedQuery(configuration))
+                .addCode(jdbcBlocks.executeStatement())
+                .addCode(jdbcBlocks.readMetaData())
+                .addCode(jdbcBlocks.reactColumnCount())
+                .addCode(jdbcBlocks.createResultState())
+                .addCode(jdbcBlocks.returnAsStream(listOfResults, converter.getAlias()))
+                .addCode(controlFlow.endTryBlock(3))
+                .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();
     }
 
     @Override
     public MethodSpec streamLazyMethod(
-            final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> vendorStatements) {
-        final ResultRowConverter converter = mergedConfiguration.getResultRowConverter();
-        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
-        final ParameterizedTypeName streamOfResults = TypicalTypes.streamOf(resultType);
-        return TypicalMethods.publicMethod(mergedConfiguration.getStreamLazyName())
-                .addJavadoc(methodJavadoc(vendorStatements))
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements) {
+        final var converter = configuration.getResultRowConverter();
+        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var streamOfResults = TypicalTypes.streamOf(resultType);
+        return methods.publicMethod(configuration.getStreamLazyName())
+                .addJavadoc(javadoc.methodJavadoc(statements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(streamOfResults)
-                .addParameters(TypicalParameters.asParameterSpecs(mergedConfiguration.getParameters()))
-                .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
-                .addCode(codeBlocks.entering(mergedConfiguration.getRepository(),
-                        mergedConfiguration.getStreamLazyName()))
-                .addCode(TypicalCodeBlocks.maybeTry(mergedConfiguration))
-                .addCode(TypicalCodeBlocks.getConnection())
-                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
-                .addCode(TypicalCodeBlocks.prepareStatement())
-                .addCode(TypicalCodeBlocks.setParameters(mergedConfiguration))
-                .addCode(codeBlocks.logExecutedQuery(mergedConfiguration))
-                .addCode(TypicalCodeBlocks.executeQuery())
-                .addCode(TypicalCodeBlocks.getMetaData())
-                .addCode(TypicalCodeBlocks.getColumnCount())
-                .addCode(codeBlocks.newResultState())
-                .addCode(TypicalCodeBlocks.streamStatefull(lazyStreamSpliterator(converter), lazyStreamCloser()))
-                .addCode(TypicalCodeBlocks.endMaybeTry(mergedConfiguration))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))
+                .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
+                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addCode(logging.entering(configuration.getRepository(), configuration.getStreamLazyName()))
+                .addCode(controlFlow.maybeTry(configuration))
+                .addCode(jdbcBlocks.connectionVariable())
+                .addCode(jdbcBlocks.pickVendorQuery(statements))
+                .addCode(jdbcBlocks.statementVariable())
+                .addCode(jdbcBlocks.setParameters(configuration))
+                .addCode(jdbcBlocks.logExecutedQuery(configuration))
+                .addCode(jdbcBlocks.resultSetVariable())
+                .addCode(jdbcBlocks.readMetaData())
+                .addCode(jdbcBlocks.reactColumnCount())
+                .addCode(jdbcBlocks.createResultState())
+                .addCode(jdbcBlocks.streamStateful(lazyStreamSpliterator(converter), lazyStreamCloser()))
+                .addCode(controlFlow.endMaybeTry(configuration))
+                .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();
     }
 
     private TypeSpec lazyStreamSpliterator(final ResultRowConverter converter) {
-        final ClassName spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
-        final TypeName resultType = TypeGuesser.guessTypeName(converter.getResultType());
-        final ParameterizedTypeName superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
-        final ParameterizedTypeName consumerType = TypicalTypes.consumerOf(resultType);
+        final var spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
+        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
+        final var consumerType = TypicalTypes.consumerOf(resultType);
         return TypeSpec
                 .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
                 .addSuperinterface(superinterface)
-                .addMethod(TypicalMethods.implementation("tryAdvance")
+                .addMethod(methods.implementation("tryAdvance")
                         .addAnnotations(annotations.generatedMethod(getClass()))
-                        .addParameter(TypicalParameters.parameter(consumerType, TypicalNames.ACTION))
+                        .addParameter(parameters.parameter(consumerType, names.action()))
                         .returns(boolean.class)
-                        .addCode(TypicalCodeBlocks.startTryBlock())
-                        .addCode(TypicalCodeBlocks.ifHasNext())
-                        .addStatement("$N.accept($N.asUserType($N))", TypicalNames.ACTION, converter.getAlias(),
-                                TypicalNames.STATE)
-                        .addCode(TypicalCodeBlocks.returnTrue())
-                        .addCode(TypicalCodeBlocks.endIf())
-                        .addCode(TypicalCodeBlocks.returnFalse())
-                        .addCode(TypicalCodeBlocks.endTryBlock())
-                        .addCode(TypicalCodeBlocks.catchAndRethrow())
+                        .addCode(controlFlow.startTryBlock())
+                        .addCode(controlFlow.ifHasNext())
+                        .addStatement("$N.accept($N.asUserType($N))", names.action(), converter.getAlias(),
+                                names.state())
+                        .addCode(blocks.returnTrue())
+                        .addCode(controlFlow.endIf())
+                        .addCode(blocks.returnFalse())
+                        .addCode(controlFlow.endTryBlock())
+                        .addCode(controlFlow.catchAndRethrow())
                         .build())
                 .build();
     }
@@ -123,15 +154,15 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
     private TypeSpec lazyStreamCloser() {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(Runnable.class)
-                .addMethod(TypicalMethods.implementation("run")
+                .addMethod(methods.implementation("run")
                         .addAnnotations(annotations.generatedMethod(getClass()))
                         .returns(void.class)
-                        .addCode(TypicalCodeBlocks.startTryBlock())
-                        .addCode(TypicalCodeBlocks.closeResultSet())
-                        .addCode(TypicalCodeBlocks.closePrepareStatement())
-                        .addCode(TypicalCodeBlocks.closeConnection())
-                        .addCode(TypicalCodeBlocks.endTryBlock())
-                        .addCode(TypicalCodeBlocks.catchAndRethrow())
+                        .addCode(controlFlow.startTryBlock())
+                        .addCode(jdbcBlocks.closeResultSet())
+                        .addCode(jdbcBlocks.closePrepareStatement())
+                        .addCode(jdbcBlocks.closeConnection())
+                        .addCode(controlFlow.endTryBlock())
+                        .addCode(controlFlow.catchAndRethrow())
                         .build())
                 .build();
     }

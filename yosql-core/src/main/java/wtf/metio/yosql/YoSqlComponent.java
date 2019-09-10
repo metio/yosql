@@ -7,13 +7,11 @@
 package wtf.metio.yosql;
 
 import dagger.Component;
-import wtf.metio.yosql.dagger.*;
-import wtf.metio.yosql.generator.dao.DaoModule;
-import wtf.metio.yosql.generator.helpers.HelperModule;
-import wtf.metio.yosql.generator.logging.LoggingModule;
-import wtf.metio.yosql.generator.utilities.DefaultUtilitiesModule;
-import wtf.metio.yosql.parser.DefaultParserModule;
-import wtf.metio.yosql.parser.DefaultResolverModule;
+import wtf.metio.yosql.dagger.DaggerModule;
+import wtf.metio.yosql.files.FilesModule;
+import wtf.metio.yosql.generator.CodeGeneratorModule;
+import wtf.metio.yosql.i18n.I18nModule;
+import wtf.metio.yosql.orchestration.OrchestrationModule;
 
 import javax.inject.Singleton;
 
@@ -23,17 +21,11 @@ import javax.inject.Singleton;
  */
 @Singleton
 @Component(modules = {
-        DefaultConfigurationModule.class,
-        DefaultLocaleModule.class,
-        DefaultParserModule.class,
-        DefaultResolverModule.class,
-        DefaultUtilitiesModule.class,
-        HelperModule.class,
-        LoggingModule.class,
-        DaoModule.class,
         I18nModule.class,
-        ErrorModule.class,
-        LoggerModule.class,
+        DaggerModule.class,
+        OrchestrationModule.class,
+        FilesModule.class,
+        CodeGeneratorModule.class,
         YoSqlModule.class,
 })
 @FunctionalInterface
@@ -41,7 +33,7 @@ public interface YoSqlComponent {
 
     /**
      * @return The YoSql instance configured by the list of modules specified in the
-     *         @Component class annotation.
+     * <code>@Component</code> class annotation.
      */
     YoSql yosql();
 
