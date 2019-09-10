@@ -7,13 +7,13 @@
 package wtf.metio.yosql.dagger;
 
 import ch.qos.cal10n.IMessageConveyor;
-import dagger.Provides;
 import dagger.Module;
-import wtf.metio.yosql.model.Loggers;
+import dagger.Provides;
 import org.slf4j.Logger;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.model.annotations.*;
+import wtf.metio.yosql.model.internal.Loggers;
 
 import javax.inject.Singleton;
 

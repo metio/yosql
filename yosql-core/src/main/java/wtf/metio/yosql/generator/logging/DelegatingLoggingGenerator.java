@@ -9,35 +9,34 @@ package wtf.metio.yosql.generator.logging;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
-import wtf.metio.yosql.model.ExecutionConfiguration;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
 import java.util.Optional;
 
 final class DelegatingLoggingGenerator implements LoggingGenerator {
 
-    private final ExecutionConfiguration config;
+    private final RuntimeConfiguration runtime;
     private final LoggingGenerator jdkLoggingGenerator;
     private final LoggingGenerator log4jLoggingGenerator;
     private final LoggingGenerator noOpLoggingGenerator;
     private final LoggingGenerator slf4jLoggingGenerator;
 
     DelegatingLoggingGenerator(
-            final ExecutionConfiguration config,
+            final RuntimeConfiguration runtime,
             final LoggingGenerator jdkLoggingGenerator,
             final LoggingGenerator log4jLoggingGenerator,
             final LoggingGenerator noOpLoggingGenerator,
             final LoggingGenerator slf4jLoggingGenerator) {
-        this.config = config;
+        this.runtime = runtime;
         this.jdkLoggingGenerator = jdkLoggingGenerator;
         this.log4jLoggingGenerator = log4jLoggingGenerator;
         this.noOpLoggingGenerator = noOpLoggingGenerator;
         this.slf4jLoggingGenerator = slf4jLoggingGenerator;
-
     }
 
     private LoggingGenerator log() {
-        switch (config.loggingApi()) {
+        switch (runtime.logging().api()) {
             case JDK:
                 return jdkLoggingGenerator;
             case LOG4J:

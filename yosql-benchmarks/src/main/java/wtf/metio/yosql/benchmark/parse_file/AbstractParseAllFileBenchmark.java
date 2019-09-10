@@ -12,7 +12,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import wtf.metio.yosql.benchmark.AbstractForAllUseCasesBenchmark;
-import wtf.metio.yosql.parser.SqlFileParser;
+import wtf.metio.yosql.files.SqlFileParser;
 
 /**
  * Abstract benchmark for file parsing running against each .sql file individually.

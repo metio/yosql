@@ -65,11 +65,11 @@ public class ExampleApp {
         final CompanyRepository companyRepository = new CompanyRepository(dataSource);
         final PersonRepository personRepository = new PersonRepository(dataSource);
 
-        if (match(arguments, "standard", "stream", "rxjava")) {
+        if (match(arguments, "generic", "stream", "rxjava")) {
             initializeDatabase(schemaRepository, companyRepository, personRepository);
         }
 
-        if (match(arguments, "standard")) {
+        if (match(arguments, "generic")) {
             standardTests(companyRepository, personRepository);
         }
         if (match(arguments, "stream")) {

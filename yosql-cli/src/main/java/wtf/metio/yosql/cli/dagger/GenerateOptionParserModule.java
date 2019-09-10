@@ -6,32 +6,25 @@
  */
 package wtf.metio.yosql.cli.dagger;
 
-import static wtf.metio.yosql.cli.i18n.Commands.GENERATE;
-import static wtf.metio.yosql.model.GenerateOptionDescriptions.*;
-import static wtf.metio.yosql.model.GenerateOptions.*;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.Level;
 import dagger.Module;
 import dagger.Provides;
+import joptsimple.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wtf.metio.yosql.cli.i18n.Commands;
 import wtf.metio.yosql.cli.parser.YoSqlOptionParser;
-import wtf.metio.yosql.model.LoggingAPI;
-import wtf.metio.yosql.model.ResultRowConverter;
-import wtf.metio.yosql.model.Translator;
-import joptsimple.ArgumentAcceptingOptionSpec;
-import joptsimple.HelpFormatter;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import joptsimple.OptionSpec;
-import joptsimple.ValueConverter;
+import wtf.metio.yosql.i18n.Translator;
+import wtf.metio.yosql.model.options.LoggingApiOptions;
+import wtf.metio.yosql.model.sql.ResultRowConverter;
+
+import javax.inject.Singleton;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static wtf.metio.yosql.cli.i18n.Commands.GENERATE;
+import static wtf.metio.yosql.model.descriptions.GenerateOptionDescriptions.*;
+import static wtf.metio.yosql.model.options.GenerateOptions.*;
 
 @Module
 class GenerateOptionParserModule extends AbstractOptionParserModule {
@@ -275,7 +268,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(METHOD_STANDARD_API),
                 translator.nonLocalized(METHOD_STANDARD_API_DEFAULT))
-                        .describedAs(translator.localized(METHOD_STANDARD_API_DESCRIPTION));
+                .describedAs(translator.localized(METHOD_STANDARD_API_DESCRIPTION));
     }
 
     @Provides
@@ -287,7 +280,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(METHOD_BATCH_API),
                 translator.nonLocalized(METHOD_BATCH_API_DEFAULT))
-                        .describedAs(translator.localized(METHOD_BATCH_API_DESCRIPTION));
+                .describedAs(translator.localized(METHOD_BATCH_API_DESCRIPTION));
     }
 
     @Provides
@@ -299,7 +292,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(METHOD_RXJAVA_API),
                 translator.nonLocalized(METHOD_RXJAVA_API_DEFAULT))
-                        .describedAs(translator.localized(METHOD_RXJAVA_API_DESCRIPTION));
+                .describedAs(translator.localized(METHOD_RXJAVA_API_DESCRIPTION));
     }
 
     @Provides
@@ -311,7 +304,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(METHOD_STREAM_EAGER_API),
                 translator.nonLocalized(METHOD_STREAM_EAGER_API_DEFAULT))
-                        .describedAs(translator.localized(METHOD_STREAM_EAGER_API_DESCRIPTION));
+                .describedAs(translator.localized(METHOD_STREAM_EAGER_API_DESCRIPTION));
     }
 
     @Provides
@@ -323,7 +316,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(METHOD_STREAM_LAZY_API),
                 translator.nonLocalized(METHOD_STREAM_LAZY_API_DEFAULT))
-                        .describedAs(translator.localized(METHOD_STREAM_LAZY_API_DESCRIPTION));
+                .describedAs(translator.localized(METHOD_STREAM_LAZY_API_DESCRIPTION));
     }
 
     @Provides
@@ -371,7 +364,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(METHOD_VALIDATE_NAME_PREFIXES),
                 translator.nonLocalized(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT))
-                        .describedAs(translator.localized(METHOD_VALIDATE_NAME_PREFIXES_DESCRIPTION));
+                .describedAs(translator.localized(METHOD_VALIDATE_NAME_PREFIXES_DESCRIPTION));
     }
 
     @Provides
@@ -383,7 +376,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(METHOD_CATCH_AND_RETHROW),
                 translator.nonLocalized(METHOD_CATCH_AND_RETHROW_DEFAULT))
-                        .describedAs(translator.localized(METHOD_CATCH_AND_RETHROW_DESCRIPTION));
+                .describedAs(translator.localized(METHOD_CATCH_AND_RETHROW_DESCRIPTION));
     }
 
     @Provides
@@ -395,7 +388,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(GENERATED_ANNOTATION_CLASS),
                 translator.nonLocalized(GENERATED_ANNOTATION_CLASS_DEFAULT))
-                        .describedAs(translator.localized(GENERATED_ANNOTATION_CLASS_DESCRIPTION));
+                .describedAs(translator.localized(GENERATED_ANNOTATION_CLASS_DESCRIPTION));
     }
 
     @Provides
@@ -407,7 +400,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(GENERATED_ANNOTATION_FIELD),
                 translator.nonLocalized(GENERATED_ANNOTATION_FIELD_DEFAULT))
-                        .describedAs(translator.localized(GENERATED_ANNOTATION_FIELD_DESCRIPTION));
+                .describedAs(translator.localized(GENERATED_ANNOTATION_FIELD_DESCRIPTION));
     }
 
     @Provides
@@ -419,7 +412,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(GENERATED_ANNOTATION_METHOD),
                 translator.nonLocalized(GENERATED_ANNOTATION_METHOD_DEFAULT))
-                        .describedAs(translator.localized(GENERATED_ANNOTATION_METHOD_DESCRIPTION));
+                .describedAs(translator.localized(GENERATED_ANNOTATION_METHOD_DESCRIPTION));
     }
 
     @Provides
@@ -431,7 +424,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
         return booleanOption(parser,
                 translator.nonLocalized(REPOSITORY_GENERATE_INTERFACE),
                 translator.nonLocalized(REPOSITORY_GENERATE_INTERFACE_DEFAULT))
-                        .describedAs(translator.localized(REPOSITORY_GENERATE_INTERFACE_DESCRIPTION));
+                .describedAs(translator.localized(REPOSITORY_GENERATE_INTERFACE_DESCRIPTION));
     }
 
     @Provides
@@ -492,13 +485,13 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
     @Provides
     @Singleton
     @UsedFor.GenerateOption(LOGGING_API)
-    OptionSpec<LoggingAPI> loggingApi(
+    OptionSpec<LoggingApiOptions> loggingApi(
             @UsedFor.Command(GENERATE) final OptionParser parser,
             final Translator translator) {
         return parser.accepts(translator.nonLocalized(LOGGING_API))
                 .withRequiredArg()
-                .ofType(LoggingAPI.class)
-                .defaultsTo(LoggingAPI.valueOf(translator.nonLocalized(LOGGING_API_DEFAULT)))
+                .ofType(LoggingApiOptions.class)
+                .defaultsTo(LoggingApiOptions.valueOf(translator.nonLocalized(LOGGING_API_DEFAULT)))
                 .describedAs(translator.localized(LOGGING_API_DESCRIPTION));
     }
 
@@ -595,7 +588,7 @@ class GenerateOptionParserModule extends AbstractOptionParserModule {
             @UsedFor.GenerateOption(DEFAULT_RESULT_STATE_CLASS_NAME) final OptionSpec<String> defaultResultStateClassName,
             @UsedFor.GenerateOption(DEFAULT_RESULT_ROW_CLASS_NAME) final OptionSpec<String> defaultResultRowClassName,
             @UsedFor.GenerateOption(SQL_FILES_SUFFIX) final OptionSpec<String> sqlFilesSuffix,
-            @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingAPI> loggingApi,
+            @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingApiOptions> loggingApi,
             @UsedFor.GenerateOption(RESULT_ROW_CONVERTERS) final OptionSpec<ResultRowConverter> resultRowConverters) {
         return new YoSqlOptionParser(parser, logLevel, inputBaseDirectory, outputBaseDirectory,
                 basePackageName, maxThreads,

@@ -6,10 +6,10 @@
  */
 package wtf.metio.yosql.generator.dao;
 
-import wtf.metio.yosql.model.PackageTypeSpec;
-import wtf.metio.yosql.model.SqlStatement;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
 import wtf.metio.yosql.generator.dao.jdbc.JDBC;
+import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
 
@@ -24,8 +24,7 @@ final class DelegatingRepositoryGenerator implements RepositoryGenerator {
 
     @Override
     public PackageTypeSpec generateRepository(final String repositoryName, final List<SqlStatement> statements) {
-        final PackageTypeSpec repository = jdbcRepositoryGenerator.generateRepository(repositoryName, statements);
-        return repository;
+        return jdbcRepositoryGenerator.generateRepository(repositoryName, statements);
     }
 
 }

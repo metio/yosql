@@ -6,15 +6,15 @@
  */
 package wtf.metio.yosql.benchmark.parse_file;
 
-import org.slf4j.cal10n.LocLogger;
-
 import dagger.Module;
 import dagger.Provides;
+import org.slf4j.cal10n.LocLogger;
+import wtf.metio.yosql.files.DefaultSqlConfigurationFactory;
+import wtf.metio.yosql.files.SqlConfigurationFactory;
+import wtf.metio.yosql.files.SqlFileParser;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.annotations.Parser;
-import wtf.metio.yosql.model.ExecutionConfiguration;
-import wtf.metio.yosql.model.ExecutionErrors;
-import wtf.metio.yosql.parser.SqlConfigurationFactory;
-import wtf.metio.yosql.parser.SqlFileParser;
 
 /**
  * Provides the alternative parser.
@@ -25,17 +25,17 @@ final class AlternativeParserModule {
     @Provides
     SqlFileParser provideSqlFilePaser(
             final ExecutionErrors errors,
-            final ExecutionConfiguration config,
+            final RuntimeConfiguration runtime,
             final SqlConfigurationFactory factory) {
-        return new AlternativeSqlFileParser(errors, config, factory);
+        return new AlternativeSqlFileParser(errors, factory, runtime);
     }
 
     @Provides
     SqlConfigurationFactory provideSqlConfigurationFactory(
-            final ExecutionErrors errors,
-            final ExecutionConfiguration config,
-            final @Parser LocLogger logger) {
-        return new SqlConfigurationFactory(errors, config, logger);
+            @Parser final LocLogger logger,
+            final RuntimeConfiguration runtime,
+            final ExecutionErrors errors) {
+        return new DefaultSqlConfigurationFactory(logger, runtime, errors);
     }
 
 }

@@ -7,50 +7,70 @@
 package wtf.metio.yosql.generator.dao.jdbc;
 
 import com.squareup.javapoet.MethodSpec;
-import wtf.metio.yosql.model.SqlConfiguration;
-import wtf.metio.yosql.model.SqlStatement;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.BatchMethodGenerator;
-import wtf.metio.yosql.generator.helpers.TypicalCodeBlocks;
-import wtf.metio.yosql.generator.helpers.TypicalMethods;
-import wtf.metio.yosql.generator.helpers.TypicalParameters;
+import wtf.metio.yosql.generator.api.LoggingGenerator;
+import wtf.metio.yosql.generator.blocks.api.Javadoc;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
+import wtf.metio.yosql.generator.blocks.api.ControlFlows;
+import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.api.Parameters;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
 
-import static wtf.metio.yosql.generator.helpers.TypicalJavadoc.methodJavadoc;
-
 final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
 
-    private final TypicalCodeBlocks codeBlocks;
+    private final ControlFlows controlFlow;
     private final AnnotationGenerator annotations;
+    private final Javadoc javadoc;
+    private final Methods methods;
+    private final Parameters parameters;
+    private final LoggingGenerator logging;
+    private final JdbcBlocks jdbc;
+    private final JdbcTransformer transformer;
 
     JdbcBatchMethodGenerator(
-            final TypicalCodeBlocks codeBlocks,
-            final AnnotationGenerator annotations) {
-        this.codeBlocks = codeBlocks;
+            final ControlFlows controlFlow,
+            final AnnotationGenerator annotations,
+            final Javadoc javadoc,
+            final Methods methods,
+            final Parameters parameters,
+            final LoggingGenerator logging,
+            final JdbcBlocks jdbc,
+            final JdbcTransformer transformer) {
         this.annotations = annotations;
+        this.logging = logging;
+        this.javadoc = javadoc;
+        this.jdbc = jdbc;
+        this.transformer = transformer;
+        this.controlFlow = controlFlow;
+        this.methods = methods;
+        this.parameters = parameters;
     }
 
     @Override
     public MethodSpec batchWriteMethod(
-            final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> vendorStatements) {
-        return TypicalMethods.publicMethod(mergedConfiguration.getBatchName())
-                .addJavadoc(methodJavadoc(vendorStatements))
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements) {
+        return methods.publicMethod(configuration.getBatchName())
+                .addJavadoc(javadoc.methodJavadoc(statements))
                 .addAnnotations(annotations.generatedMethod(getClass()))
                 .returns(TypicalTypes.ARRAY_OF_INTS)
-                .addParameters(TypicalParameters.asBatchParameterSpecs(mergedConfiguration.getParameters()))
-                .addExceptions(TypicalCodeBlocks.sqlException(mergedConfiguration))
-                .addCode(codeBlocks.entering(mergedConfiguration.getRepository(), mergedConfiguration.getBatchName()))
-                .addCode(TypicalCodeBlocks.tryConnect())
-                .addCode(codeBlocks.pickVendorQuery(vendorStatements))
-                .addCode(TypicalCodeBlocks.tryPrepareStatement())
-                .addCode(TypicalCodeBlocks.prepareBatch(mergedConfiguration))
-                .addCode(codeBlocks.logExecutedBatchQuery(mergedConfiguration))
-                .addCode(TypicalCodeBlocks.executeBatch())
-                .addCode(TypicalCodeBlocks.endTryBlock(2))
-                .addCode(TypicalCodeBlocks.maybeCatchAndRethrow(mergedConfiguration))
+                .addParameters(parameters.asBatchParameterSpecs(configuration.getParameters()))
+                .addExceptions(transformer.sqlException(configuration))
+                .addCode(logging.entering(configuration.getRepository(), configuration.getBatchName()))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.createStatement())
+                .addCode(jdbc.prepareBatch(configuration))
+                .addCode(jdbc.logExecutedBatchQuery(configuration))
+                .addCode(jdbc.executeBatch())
+                .addCode(controlFlow.endTryBlock(2))
+                .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();
     }
 

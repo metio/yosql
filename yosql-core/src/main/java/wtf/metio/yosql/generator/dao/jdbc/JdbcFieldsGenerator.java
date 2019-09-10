@@ -10,13 +10,14 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.model.*;
 import wtf.metio.yosql.generator.api.FieldsGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.helpers.TypicalFields;
-import wtf.metio.yosql.generator.helpers.TypicalNames;
-import wtf.metio.yosql.generator.helpers.TypicalParameters;
+import wtf.metio.yosql.generator.blocks.api.Fields;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
+import wtf.metio.yosql.files.SqlFileParser;
+import wtf.metio.yosql.model.sql.*;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -26,19 +27,25 @@ import java.util.stream.Stream;
 
 final class JdbcFieldsGenerator implements FieldsGenerator {
 
-    private final TypicalFields fields;
+    private final Fields fields;
     private final LoggingGenerator logging;
+    private final JdbcFields jdbcFields;
+    private final JdbcNamesConfiguration jdbcNames;
 
     JdbcFieldsGenerator(
-            final TypicalFields fields,
-            final LoggingGenerator logging) {
+            final Fields fields,
+            final LoggingGenerator logging,
+            final JdbcFields jdbcFields,
+            final JdbcNamesConfiguration jdbcNames) {
         this.fields = fields;
         this.logging = logging;
+        this.jdbcFields = jdbcFields;
+        this.jdbcNames = jdbcNames;
     }
 
     @Override
     public CodeBlock staticInitializer(final List<SqlStatement> statements) {
-        final CodeBlock.Builder builder = CodeBlock.builder();
+        final var builder = CodeBlock.builder();
         statements.stream()
                 .map(SqlStatement::getConfiguration)
                 .filter(SqlConfiguration::hasParameters)
@@ -50,10 +57,12 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
         return builder.build();
     }
 
-    private static void addIndexArray(final CodeBlock.Builder builder, final SqlParameter parameter,
+    private void addIndexArray(
+            final CodeBlock.Builder builder,
+            final SqlParameter parameter,
             final SqlConfiguration config) {
         builder.addStatement("$N.put($S, $L)",
-                TypicalFields.constantSqlStatementParameterIndexFieldName(config),
+                jdbcFields.constantSqlStatementParameterIndexFieldName(config),
                 parameter.getName(),
                 indexArray(parameter));
     }
@@ -66,17 +75,17 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
     }
 
     @Override
-    public Iterable<FieldSpec> asFields(final List<SqlStatement> statementsInRepository) {
-        final List<FieldSpec> repositoryFields = new ArrayList<>(statementsInRepository.size() * 2 + 2);
+    public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
+        final var repositoryFields = new ArrayList<FieldSpec>(statements.size() * 2 + 2);
 
         repositoryFields.add(asDataSourceField());
-        if (logging.isEnabled() && !statementsInRepository.isEmpty()) {
+        if (logging.isEnabled() && !statements.isEmpty()) {
             // doesn't matter which statement we pick since they all end up in
             // the same repository anyway
-            final SqlStatement firstStatement = statementsInRepository.get(0);
+            final SqlStatement firstStatement = statements.get(0);
             loggerField(firstStatement).ifPresent(repositoryFields::add);
         }
-        for (final SqlStatement statement : statementsInRepository) {
+        for (final SqlStatement statement : statements) {
             if (logging.isEnabled()) {
                 repositoryFields.add(asConstantRawSqlField(statement));
             }
@@ -85,7 +94,7 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
                 repositoryFields.add(asConstantSqlParameterIndexField(statement));
             }
         }
-        resultConverters(statementsInRepository)
+        resultConverters(statements)
                 .map(this::asConverterField)
                 .forEach(repositoryFields::add);
 
@@ -97,35 +106,39 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
     }
 
     private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
-        final SqlConfiguration configuration = sqlStatement.getConfiguration();
+        final var configuration = sqlStatement.getConfiguration();
         // TODO: add javadocs similar to methods
         return fields.prepareConstant(getClass(), String.class,
-                TypicalFields.constantRawSqlStatementFieldName(configuration))
+                jdbcFields.constantRawSqlStatementFieldName(configuration))
                 .initializer("$S", sqlStatement.getRawStatement())
                 .build();
     }
 
     private FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {
-        final SqlConfiguration configuration = sqlStatement.getConfiguration();
-        final String rawStatement = sqlStatement.getRawStatement();
-        final String statement = TypicalParameters.replaceNamedParameters(rawStatement);
+        final var configuration = sqlStatement.getConfiguration();
+        final var rawStatement = sqlStatement.getRawStatement();
+        final var statement = replaceNamedParameters(rawStatement);
         // TODO: add javadocs similar to methods
         return fields.prepareConstant(getClass(), String.class,
-                TypicalFields.constantSqlStatementFieldName(configuration))
+                jdbcFields.constantSqlStatementFieldName(configuration))
                 .initializer("$S", statement)
                 .build();
     }
 
+    private static String replaceNamedParameters(final String rawSqlStatement) {
+        return rawSqlStatement.replaceAll(SqlFileParser.PARAMETER_PATTERN.pattern(), "?");
+    }
+
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
-        final SqlConfiguration configuration = sqlStatement.getConfiguration();
+        final var configuration = sqlStatement.getConfiguration();
         return fields.prepareConstant(getClass(), TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
-                TypicalFields.constantSqlStatementParameterIndexFieldName(configuration))
+                jdbcFields.constantSqlStatementParameterIndexFieldName(configuration))
                 .initializer("new $T<>($L)", HashMap.class, sqlStatement.getConfiguration().getParameters().size())
                 .build();
     }
 
     private FieldSpec asDataSourceField() {
-        return fields.field(getClass(), DataSource.class, TypicalNames.DATA_SOURCE);
+        return fields.field(getClass(), DataSource.class, jdbcNames.dataSource());
     }
 
     private FieldSpec asConverterField(final ResultRowConverter converter) {
@@ -135,8 +148,8 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
                 converter.getAlias());
     }
 
-    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> sqlStatements) {
-        return sqlStatements.stream()
+    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {
+        return statements.stream()
                 .map(SqlStatement::getConfiguration)
                 .filter(config -> SqlType.READING == config.getType() || SqlType.CALLING == config.getType())
                 .map(SqlConfiguration::getResultRowConverter)

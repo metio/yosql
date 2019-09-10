@@ -6,28 +6,24 @@
  */
 package wtf.metio.yosql.cli.dagger;
 
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-
 import dagger.BindsInstance;
 import dagger.Component;
+import joptsimple.OptionSpec;
+import org.slf4j.Logger;
 import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.YoSqlModule;
 import wtf.metio.yosql.cli.i18n.Commands;
 import wtf.metio.yosql.cli.parser.YoSqlOptionParser;
 import wtf.metio.yosql.dagger.ErrorModule;
-import wtf.metio.yosql.dagger.I18nModule;
+import wtf.metio.yosql.i18n.I18nModule;
 import wtf.metio.yosql.dagger.LoggerModule;
 import wtf.metio.yosql.generator.dao.DaoModule;
-import wtf.metio.yosql.generator.helpers.HelperModule;
 import wtf.metio.yosql.generator.logging.LoggingModule;
 import wtf.metio.yosql.generator.utilities.DefaultUtilitiesModule;
-import wtf.metio.yosql.model.HelpOptions;
-import wtf.metio.yosql.model.Translator;
-import wtf.metio.yosql.parser.DefaultParserModule;
-import wtf.metio.yosql.parser.DefaultResolverModule;
-import joptsimple.OptionSpec;
+import wtf.metio.yosql.i18n.Translator;
+import wtf.metio.yosql.model.options.HelpOptions;
+
+import javax.inject.Singleton;
 
 /**
  * Dagger component for the yosql-cli.
@@ -36,10 +32,7 @@ import joptsimple.OptionSpec;
 @Component(modules = {
         JOptConfigurationModule.class,
         JOptLocaleModule.class,
-        DefaultParserModule.class,
-        DefaultResolverModule.class,
         DefaultUtilitiesModule.class,
-        HelperModule.class,
         LoggingModule.class,
         I18nModule.class,
         OptionParserModule.class,

@@ -7,18 +7,18 @@
 package wtf.metio.yosql.generator.api;
 
 import com.squareup.javapoet.MethodSpec;
-import wtf.metio.yosql.model.SqlConfiguration;
-import wtf.metio.yosql.model.SqlStatement;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
 
 /**
- * Generates 'standard' methods - implementation decides whatever that means.
+ * Generates 'generic' methods - implementation decides whatever that means.
  */
 public interface StandardMethodGenerator {
 
     /**
-     * Generates code the execute a "standard" read against the database using the most common way the configured API
+     * Generates code the execute a "generic" read against the database using the most common way the configured API
      * executes reads. The <code>javax.sql</code> package for example calls
      * {@link java.sql.PreparedStatement#executeQuery()}.
      *
@@ -26,14 +26,14 @@ public interface StandardMethodGenerator {
      *            The configuration for the generated method.
      * @param vendorStatements
      *            The vendor statements for the generated method.
-     * @return A method specification for a standard reading method.
+     * @return A method specification for a generic reading method.
      */
     MethodSpec standardReadMethod(
         SqlConfiguration configuration,
         List<SqlStatement> vendorStatements);
 
     /**
-     * Generates code the execute a "standard" write against the database using the most common way the configured API
+     * Generates code the execute a "generic" write against the database using the most common way the configured API
      * executes writes. The <code>javax.sql</code> package for example calls
      * {@link java.sql.PreparedStatement#executeUpdate()}.
      *
@@ -41,14 +41,14 @@ public interface StandardMethodGenerator {
      *            The configuration for the generated method.
      * @param vendorStatements
      *            The vendor statements for the generated method.
-     * @return A method specification for a standard writing method.
+     * @return A method specification for a generic writing method.
      */
     MethodSpec standardWriteMethod(
         SqlConfiguration configuration,
         List<SqlStatement> vendorStatements);
 
     /**
-     * Generates code the execute a "standard" call against the database using the most common way the configured API
+     * Generates code the execute a "generic" call against the database using the most common way the configured API
      * executes calls database functions. The <code>javax.sql</code> package for example calls
      * {@link java.sql.CallableStatement#executeQuery()}.
      *
@@ -56,7 +56,7 @@ public interface StandardMethodGenerator {
      *            The configuration for the generated method.
      * @param vendorStatements
      *            The vendor statements for the generated method.
-     * @return A method specification for a standard calling method.
+     * @return A method specification for a generic calling method.
      */
     MethodSpec standardCallMethod(
         SqlConfiguration configuration,

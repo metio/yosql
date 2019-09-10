@@ -6,28 +6,28 @@
  */
 package wtf.metio.yosql.cli.dagger;
 
-import static wtf.metio.yosql.model.GenerateOptions.*;
+import dagger.Module;
+import dagger.Provides;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
+import joptsimple.ValueConverter;
+import wtf.metio.yosql.cli.i18n.Commands;
+import wtf.metio.yosql.cli.parser.PathValueConverter;
+import wtf.metio.yosql.cli.parser.ResultRowConverterValueConverter;
+import wtf.metio.yosql.i18n.Translator;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.errors.ExecutionErrors;
+import wtf.metio.yosql.model.options.LoggingApiOptions;
+import wtf.metio.yosql.model.sql.ResultRowConverter;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import wtf.metio.yosql.cli.i18n.Commands;
-import wtf.metio.yosql.cli.parser.PathValueConverter;
-import wtf.metio.yosql.cli.parser.ResultRowConverterValueConverter;
-import wtf.metio.yosql.model.ExecutionConfiguration;
-import wtf.metio.yosql.model.ExecutionErrors;
-import wtf.metio.yosql.model.LoggingAPI;
-import wtf.metio.yosql.model.ResultRowConverter;
-import wtf.metio.yosql.model.Translator;
-import joptsimple.OptionSet;
-import joptsimple.OptionSpec;
-import joptsimple.ValueConverter;
+import static wtf.metio.yosql.model.options.GenerateOptions.*;
 
 /**
- * Provides the runtime execution configuration using JOpt options.
+ * Provides the options execution configuration using JOpt options.
  */
 @Module
 public final class JOptConfigurationModule {
@@ -45,7 +45,7 @@ public final class JOptConfigurationModule {
     }
 
     @Provides
-    ExecutionConfiguration provideExecutionConfiguration(
+    RuntimeConfiguration provideExecutionConfiguration(
             @UsedFor.Command(Commands.GENERATE) final OptionSet options,
             @UsedFor.GenerateOption(MAX_THREADS) final OptionSpec<Integer> maxThreads,
             @UsedFor.GenerateOption(INPUT_BASE_DIRECTORY) final OptionSpec<Path> inputBaseDirectory,
@@ -84,9 +84,9 @@ public final class JOptConfigurationModule {
             @UsedFor.GenerateOption(DEFAULT_RESULT_STATE_CLASS_NAME) final OptionSpec<String> defaultResultStateClassName,
             @UsedFor.GenerateOption(DEFAULT_RESULT_ROW_CLASS_NAME) final OptionSpec<String> defaultResultRowClassName,
             @UsedFor.GenerateOption(SQL_FILES_SUFFIX) final OptionSpec<String> sqlFilesSuffix,
-            @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingAPI> loggingApi,
+            @UsedFor.GenerateOption(LOGGING_API) final OptionSpec<LoggingApiOptions> loggingApi,
             final List<ResultRowConverter> resultConverters) {
-        return ExecutionConfiguration.builder()
+        return RuntimeConfiguration.builder()
                 .setMaxThreads(options.valueOf(maxThreads).intValue())
                 .setInputBaseDirectory(options.valueOf(inputBaseDirectory))
                 .setOutputBaseDirectory(options.valueOf(outputBaseDirectory))

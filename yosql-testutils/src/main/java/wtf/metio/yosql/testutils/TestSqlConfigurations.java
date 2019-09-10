@@ -8,8 +8,8 @@ package wtf.metio.yosql.testutils;
 
 import java.util.Arrays;
 
-import wtf.metio.yosql.model.SqlConfiguration;
-import wtf.metio.yosql.model.SqlParameter;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlParameter;
 
 /**
  * Test mother for {@link SqlConfiguration}s.

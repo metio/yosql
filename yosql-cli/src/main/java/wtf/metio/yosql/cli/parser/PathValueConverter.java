@@ -10,7 +10,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import wtf.metio.yosql.model.ExecutionErrors;
+import wtf.metio.yosql.model.errors.ExecutionErrors;
 import joptsimple.ValueConverter;
 
 /**

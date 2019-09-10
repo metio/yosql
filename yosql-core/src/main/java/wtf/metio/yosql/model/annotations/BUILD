@@ -16,9 +16,39 @@ java_library(
     visibility = [
         "//yosql-benchmarks/src/main/java/wtf/metio/yosql/benchmark:__subpackages__",
         "//yosql-core/src/main/java/wtf/metio/yosql/dagger:__pkg__",
+        "//yosql-core/src/main/java/wtf/metio/yosql/files:__pkg__",
         "//yosql-core/src/main/java/wtf/metio/yosql/generator:__subpackages__",
-        "//yosql-core/src/main/java/wtf/metio/yosql/parser:__pkg__",
-        "//yosql-core/src/main/java/wtf/metio/yosql/utils:__pkg__",
+        "//yosql-core/src/main/java/wtf/metio/yosql/orchestration:__pkg__",
+    ],
+    deps = [
+        "@maven//:javax_inject_javax_inject",
+    ],
+)
+
+java_library(
+    name = "delegating",
+    srcs = [
+        "Delegating.java",
+    ],
+    deps = [
+        "@maven//:javax_inject_javax_inject",
+    ],
+)
+
+java_library(
+    name = "localized",
+    srcs = [
+        "Localized.java",
+    ],
+    deps = [
+        "@maven//:javax_inject_javax_inject",
+    ],
+)
+
+java_library(
+    name = "nonLocalized",
+    srcs = [
+        "NonLocalized.java",
     ],
     deps = [
         "@maven//:javax_inject_javax_inject",

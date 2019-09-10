@@ -8,46 +8,58 @@ package wtf.metio.yosql.generator.utilities;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-import wtf.metio.yosql.model.annotations.Utilities;
-import wtf.metio.yosql.model.ApplicationEvents;
-import wtf.metio.yosql.model.ExecutionConfiguration;
-import wtf.metio.yosql.model.PackageTypeSpec;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.helpers.TypicalMethods;
-import wtf.metio.yosql.generator.helpers.TypicalNames;
-import wtf.metio.yosql.generator.helpers.TypicalParameters;
-import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.generator.blocks.api.Classes;
+import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.api.Names;
+import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.model.annotations.Utilities;
+import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.internal.ApplicationEvents;
+import wtf.metio.yosql.model.sql.PackageTypeSpec;
 
 import javax.inject.Inject;
 import java.sql.SQLException;
 
 public final class ToResultRowConverterGenerator {
 
-    public static final String                  TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
+    public static final String TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
 
+    private final LocLogger logger;
+    private final RuntimeConfiguration runtime;
+    private final Names names;
     private final AnnotationGenerator annotations;
-    private final ExecutionConfiguration configuration;
-    private final LocLogger              logger;
+    private final Classes classes;
+    private final Methods methods;
+    private final Parameters parameters;
 
     @Inject
     ToResultRowConverterGenerator(
+            final @Utilities LocLogger logger,
+            final RuntimeConfiguration runtime,
+            final Names names,
             final AnnotationGenerator annotations,
-            final ExecutionConfiguration configuration,
-            final @Utilities LocLogger logger) {
-        this.annotations = annotations;
-        this.configuration = configuration;
+            final Classes classes,
+            final Methods methods,
+            final Parameters parameters) {
         this.logger = logger;
+        this.runtime = runtime;
+        this.names = names;
+        this.annotations = annotations;
+        this.classes = classes;
+        this.methods = methods;
+        this.parameters = parameters;
     }
 
     public PackageTypeSpec generateToResultRowConverterClass() {
-        final ClassName resultRowConverterClass = ClassName.get(
-                configuration.basePackageName() + "." + configuration.converterPackageName(),
+        final var resultRowConverterClass = ClassName.get(
+                runtime.names().basePackageName() + "." + runtime.names().converterPackageName(),
                 TO_RESULT_ROW_CONVERTER_CLASS_NAME);
-        final TypeSpec type = TypicalTypes.publicClass(resultRowConverterClass)
+        final var type = classes.publicClass(resultRowConverterClass)
                 .addMethod(asUserType())
-                .addAnnotations(annotations.generatedClass(ToResultRowConverterGenerator.class))
+                .addAnnotations(annotations.generatedClass())
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, resultRowConverterClass.packageName(),
                 resultRowConverterClass.simpleName());
@@ -55,19 +67,27 @@ public final class ToResultRowConverterGenerator {
     }
 
     private MethodSpec asUserType() {
-        return TypicalMethods.publicMethod("asUserType")
-                .addParameters(TypicalParameters.resultState(configuration.getResultStateClass()))
+        return methods.publicMethod("asUserType")
+                .addParameters(parameters.resultState(runtime.getResultStateClass()))
                 .addException(SQLException.class)
-                .returns(configuration.getResultRowClass())
-                .addStatement("final $T $N = new $T($N.getColumnCount())", configuration.getResultRowClass(),
-                        TypicalNames.ROW, configuration.getResultRowClass(), TypicalNames.RESULT)
+                .returns(runtime.getResultRowClass())
+                .addStatement("final $T $N = new $T($N.getColumnCount())", runtime.getResultRowClass(),
+                        runtime.jdbcNames().row(),
+                        runtime.getResultRowClass(),
+                        names.result())
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
-                        TypicalNames.INDEX, TypicalNames.INDEX, TypicalNames.RESULT, TypicalNames.INDEX)
+                        runtime.jdbcNames().index(),
+                        runtime.jdbcNames().index(),
+                        names.result(),
+                        runtime.jdbcNames().index())
                 .addStatement("$N.setColumnValue($N.getColumnName($N), $N.getResultSet().getObject($N))",
-                        TypicalNames.ROW, TypicalNames.RESULT, TypicalNames.INDEX, TypicalNames.RESULT,
-                        TypicalNames.INDEX)
+                        runtime.jdbcNames().row(),
+                        names.result(),
+                        runtime.jdbcNames().index(),
+                        names.result(),
+                        runtime.jdbcNames().index())
                 .endControlFlow()
-                .addStatement("return $N", TypicalNames.ROW)
+                .addStatement("return $N", runtime.jdbcNames().row())
                 .build();
     }
 

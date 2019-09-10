@@ -29,7 +29,7 @@ import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.cli.dagger.DaggerYoSqlCLIComponent;
 import wtf.metio.yosql.cli.dagger.YoSqlCLIComponent;
 import wtf.metio.yosql.cli.parser.YoSqlOptionParser;
-import wtf.metio.yosql.model.Loggers;
+import wtf.metio.yosql.model.internal.Loggers;
 import joptsimple.OptionException;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;

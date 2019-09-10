@@ -6,18 +6,18 @@
  */
 package wtf.metio.yosql.cli.dagger;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
-import wtf.metio.yosql.cli.i18n.Commands;
-import wtf.metio.yosql.cli.parser.YoSqlOptionParser;
-import wtf.metio.yosql.model.HelpOptionDescriptions;
-import wtf.metio.yosql.model.HelpOptions;
-import wtf.metio.yosql.model.Translator;
 import joptsimple.HelpFormatter;
 import joptsimple.OptionParser;
 import joptsimple.OptionSpec;
+import wtf.metio.yosql.cli.i18n.Commands;
+import wtf.metio.yosql.cli.parser.YoSqlOptionParser;
+import wtf.metio.yosql.model.descriptions.HelpOptionDescriptions;
+import wtf.metio.yosql.i18n.Translator;
+import wtf.metio.yosql.model.options.HelpOptions;
+
+import javax.inject.Singleton;
 
 @Module
 class HelpOptionParserModule extends AbstractOptionParserModule {

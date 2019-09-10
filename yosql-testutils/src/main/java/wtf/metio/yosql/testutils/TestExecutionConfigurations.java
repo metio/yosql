@@ -6,15 +6,15 @@
  */
 package wtf.metio.yosql.testutils;
 
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.options.LoggingApiOptions;
+import wtf.metio.yosql.model.sql.ResultRowConverter;
+
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import wtf.metio.yosql.model.ExecutionConfiguration;
-import wtf.metio.yosql.model.LoggingAPI;
-import wtf.metio.yosql.model.ResultRowConverter;
-
 /**
- * Test mother for {@link ExecutionConfiguration}s.
+ * Test mother for {@link RuntimeConfiguration}s.
  */
 public final class TestExecutionConfigurations {
 
@@ -25,12 +25,12 @@ public final class TestExecutionConfigurations {
     /**
      * @return Default test configuration.
      */
-    public static ExecutionConfiguration testExecutionConfiguration() {
+    public static RuntimeConfiguration testExecutionConfiguration() {
         final ResultRowConverter converter = new ResultRowConverter();
         converter.setAlias("defaultRowConverter");
         converter.setConverterType("com.example.test.converter.ToResultRowConverter");
         converter.setResultType("ResultState");
-        return ExecutionConfiguration.builder()
+        return RuntimeConfiguration.builder()
                 .setAllowedCallPrefixes(Arrays.asList("call"))
                 .setAllowedReadPrefixes(Arrays.asList("read"))
                 .setAllowedWritePrefixes(Arrays.asList("write"))
@@ -63,7 +63,7 @@ public final class TestExecutionConfigurations {
                 .setMethodStreamSuffix("")
                 .setValidateMethodNamePrefixes(true)
                 .setRepositoryGenerateInterface(false)
-                .setLoggingApi(LoggingAPI.JDK)
+                .setLoggingApi(LoggingApiOptions.JDK)
                 .setResultRowConverters(Arrays.asList(converter))
                 .setRepositoryNameSuffix("Repository")
                 .setSqlStatementSeparator(";")
@@ -73,4 +73,5 @@ public final class TestExecutionConfigurations {
                 .setMaxThreads(5)
                 .build();
     }
+
 }

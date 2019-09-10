@@ -8,48 +8,25 @@ package wtf.metio.yosql;
 
 import dagger.Module;
 import dagger.Provides;
-import wtf.metio.yosql.dagger.Delegating;
-import wtf.metio.yosql.generator.api.RepositoryGenerator;
-import wtf.metio.yosql.generator.api.TypeWriter;
-import wtf.metio.yosql.generator.api.UtilitiesGenerator;
-import wtf.metio.yosql.model.ExecutionConfiguration;
-import wtf.metio.yosql.model.ExecutionErrors;
-import wtf.metio.yosql.model.Translator;
-import wtf.metio.yosql.parser.SqlFileParser;
-import wtf.metio.yosql.parser.SqlFileResolver;
-import wtf.metio.yosql.utils.Timer;
+import wtf.metio.yosql.files.FileParser;
+import wtf.metio.yosql.generator.api.CodeGenerator;
+import wtf.metio.yosql.orchestration.Orchestrator;
+
+import javax.inject.Singleton;
 
 /**
- * Dagger module for YoSql. Uses the default YoSql implemetation together with all
- * required dependencies in an enclosing dagger component configuration. This module
- * can be re-used for custom configurations, as long as the custom configuration
- * contains an available candiate for every injection point of the
- * {@link #provideYoSql(SqlFileResolver, SqlFileParser, RepositoryGenerator, UtilitiesGenerator, ExecutionErrors, Timer, TypeWriter, Translator, ExecutionConfiguration) provideYoSql(...)} method specified below.
+ * Dagger module for YoSql itself.
  */
 @Module
 public class YoSqlModule {
 
     @Provides
+    @Singleton
     YoSql provideYoSql(
-            final SqlFileResolver fileResolver,
-            final SqlFileParser sqlFileParser,
-            final @Delegating RepositoryGenerator repositoryGenerator,
-            final UtilitiesGenerator utilsGenerator,
-            final ExecutionErrors errors,
-            final Timer timer,
-            final TypeWriter typeWriter,
-            final Translator messages,
-            final ExecutionConfiguration configuration) {
-        return new YoSqlImplementation(
-                fileResolver,
-                sqlFileParser,
-                repositoryGenerator,
-                utilsGenerator,
-                errors,
-                timer,
-                typeWriter,
-                messages,
-                configuration);
+            final Orchestrator orchestrator,
+            final FileParser files,
+            final CodeGenerator codeGenerator) {
+        return new OrchestratedYoSql(orchestrator, files, codeGenerator);
     }
 
 }

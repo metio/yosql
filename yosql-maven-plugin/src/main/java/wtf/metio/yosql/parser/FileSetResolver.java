@@ -16,9 +16,10 @@ import javax.inject.Inject;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.shared.utils.io.FileUtils;
 
-import wtf.metio.yosql.model.ExecutionErrors;
+import wtf.metio.yosql.files.SqlFileResolver;
+import wtf.metio.yosql.model.errors.ExecutionErrors;
 
-public class FileSetResolver implements SqlFileResolver  {
+public class FileSetResolver implements SqlFileResolver {
 
     private final ExecutionErrors pluginErrors;
     private final FileSet         fileSet;
