@@ -7,4 +7,4 @@ draft: true
 - Google Groups: https://groups.google.com/forum/#!forum/metio
 - Chat on IRC: http://webchat.freenode.net/?channels=metio.wtf
 - Ask on Stackoverflow: https://stackoverflow.com/questions/tagged/yosql
-- Deep dive on Taiga: https://tree.taiga.io/project/sebhoss-yosql/
+- Roadmap/planning on Taiga: https://tree.taiga.io/project/sebhoss-yosql/
