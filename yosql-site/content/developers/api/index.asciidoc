@@ -1,0 +1,74 @@
+YoSQL supports the following APIs to interact with a database:
+
+
+.APIs
+|===
+|Name |Read |Write |Call |Batch Write |RxJava |Stream Eager |Stream Lazy
+
+|link:jdbc.asciiidoc[JDBC]
+|✔
+|✔
+|✔
+|✔
+|✔
+|✔
+|✔
+
+|link:spring-jdbc.asciiidoc[spring-jdbc]
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+
+|link:jooq.asciiidoc[jOOQ]
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+
+|link:jpa.asciiidoc[JPA]
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+
+|link:vertx.asciiidoc[Vert.x]
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+
+|link:r2dbc.asciiidoc[R2DBC]
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+|✘
+|===
+
+- https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/data-access.html
+- https://www.jooq.org/
+- https://github.com/eclipse-vertx/vertx-sql-client
+- https://r2dbc.io/
+- TODO: https://spring.io/projects/spring-data-jdbc
+- TODO: https://spring.io/projects/spring-data-r2dbc
+- TODO: https://spring.io/projects/spring-data-jpa
+- TODO: https://mybatis.org/mybatis-3/
+- TODO: https://ebean.io/
+- TODO: http://jdbi.org/
+- TODO: https://github.com/speedment/speedment
+- TODO: https://www.sql2o.org/

@@ -4,38 +4,107 @@ date: 2019-06-16T18:23:40+02:00
 draft: true
 ---
 
+== Getting Started
+
 1) Add the plugin to your *pom.xml*:
 
 [source, xml]
 ----
-  <build>
+<build>
     <plugins>
-      ...
-      <plugin>
-        <groupId>com.github.sebhoss.yosql</groupId>
-        <artifactId>yosql-maven-plugin</artifactId>
-        <version>0.0.1</version>
-      </plugin>
-      ...
+        ...
+        <plugin>
+            <groupId>wtf.metio.yosql</groupId>
+            <artifactId>yosql-maven-plugin</artifactId>
+        </plugin>
+        ...
     </plugins>
-  </build>
+</build>
 ----
 
 2) Add .sql files in *src/main/yosql* and write SQL statements into them.
 
-[source]
+[source, shell]
 ----
-project/
+<project_root>/
 ├── pom.xml
 └── src/
     └── main/
         └── yosql/
-            └── user/
-                ├── findUser.sql
-                └── addUser.sql
-            └── item/
-                ├── queryAllItems.sql
-                └── createItemTable.sql
+            └── domainObject/
+                ├── yourQuery.sql
+                └── changeYourData.sql
+            └── aggregateRoot/
+                ├── anotherQuery.sql
+                └── addData.sql
 ----
 
 3) Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
+
+== Configuration
+
+You can configure how YoSQL operates and how the generated code like by using the default Maven configuration mechanism (TODO: add link). Take a look at the link:../configuration/index.asciidoc[available configuration options] in order to see what can be configured.
+
+[source, xml]
+----
+<build>
+    <plugins>
+        ...
+        <plugin>
+            <groupId>wtf.metio.yosql</groupId>
+            <artifactId>yosql-maven-plugin</artifactId>
+            <configuration>
+                <basePackageName>your.domain.persistence</basePackageName>
+            </configuration>
+        </plugin>
+        ...
+    </plugins>
+</build>
+----
+
+=== Multiple Configurations
+
+In some cases it might be preferable to generate some repositories (TODO: link to glossary) with a specific set of configuration options while using another set for other repositories. There are several ways how this can be accomplished:
+
+1. Place SQL files in different Maven modules.
+2. Use a single module with multiple `execution` configurations.
+3. Override configuration for individual SQL statements.
+
+==== Multiple `execution`s
+
+Make sure that multiple executions do not make use of the same .sql files. Otherwise the executions will overwrite the generated code of each other. The last execution will win. Share configuration across all executions by using a single top level `configuration` block.
+
+[source, xml]
+----
+<build>
+    <plugins>
+        ...
+        <plugin>
+            <groupId>wtf.metio.yosql</groupId>
+            <artifactId>yosql-maven-plugin</artifactId>
+            <configuration>
+                <basePackageName>your.domain.persistence</basePackageName>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>config-a</id>
+                    <configuration>
+                        <input>src/main/database/reactive</input>
+                        <rxJava>true</rxJava>
+                    </configuration>
+                </execution>
+            </executions>
+            <executions>
+                <execution>
+                    <id>config-b</id>
+                    <configuration>
+                        <input>src/main/database/synchronous</input>
+                        <java>15</java>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        ...
+    </plugins>
+</build>
+----

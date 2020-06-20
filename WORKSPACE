@@ -5,9 +5,9 @@
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-RULES_JVM_EXTERNAL_TAG = "2.3"
+RULES_JVM_EXTERNAL_TAG = "3.1"
 
-RULES_JVM_EXTERNAL_SHA = "375b1592e3f4e0a46e6236e19fc30c8020c438803d4d49b13b40aaacd2703c30"
+RULES_JVM_EXTERNAL_SHA = "e246373de2353f3d34d35814947aa8b7d0dd1a58c2f7a6c41cfeaff3007c2d14"
 
 http_archive(
     name = "rules_jvm_external",
@@ -26,22 +26,22 @@ maven_install(
 
         # i18n
         "ch.qos.cal10n:cal10n-api:0.8.1",
-        "org.slf4j:slf4j-ext:1.7.26",
+        "org.slf4j:slf4j-ext:1.7.30",
 
         # logging
-        "org.slf4j:slf4j-api:1.7.26",
-        "org.apache.logging.log4j:log4j-api:2.11.2",
+        "org.slf4j:slf4j-api:1.7.30",
+        "org.apache.logging.log4j:log4j-api:2.13.0",
         "ch.qos.logback:logback-classic:1.2.3",
         "ch.qos.logback:logback-core:1.2.3",
 
         # auto-value
-        "org.inferred:freebuilder:2.4.1",
-        "com.google.auto.value:auto-value:1.6.5",
-        "com.google.auto.value:auto-value-annotations:1.6.5",
+        "org.inferred:freebuilder:2.5.0",
+        "com.google.auto.value:auto-value:1.7",
+        "com.google.auto.value:auto-value-annotations:1.7",
 
         # reactive
-        "io.reactivex.rxjava2:rxjava:2.2.9",
-        "org.reactivestreams:reactive-streams:1.0.2",
+        "io.reactivex.rxjava2:rxjava:2.2.17",
+        "org.reactivestreams:reactive-streams:1.0.3",
 
         # testing
         "org.testcontainers:testcontainers:1.11.3",
@@ -56,17 +56,17 @@ maven_install(
         "de.vandermeer:ascii-utf-themes:0.0.1",
 
         # benchmarks
-        "org.openjdk.jmh:jmh-core:1.21",
-        "org.openjdk.jmh:jmh-generator-annprocess:1.21",
+        "org.openjdk.jmh:jmh-core:1.23",
+        "org.openjdk.jmh:jmh-generator-annprocess:1.23",
         "org.apache.commons:commons-math3:3.6.1",
 
         # dagger
-        "com.google.dagger:dagger:2.23.1",
-        "com.google.dagger:dagger-compiler:2.23.1",
-        "com.google.dagger:dagger-producers:2.23.1",
+        "com.google.dagger:dagger:2.26",
+        "com.google.dagger:dagger-compiler:2.26",
+        "com.google.dagger:dagger-producers:2.26",
 
         # javapoet
-        "com.squareup:javapoet:1.11.1",
+        "com.squareup:javapoet:1.12.1",
         "de.xn--ho-hia.javapoet:javapoet-type-guesser:2017.03.19-185842",
 
         # maven
@@ -82,7 +82,7 @@ maven_install(
         "com.zaxxer:HikariCP:3.3.1",
 
         # yaml
-        "org.yaml:snakeyaml:1.24",
+        "org.yaml:snakeyaml:1.25",
 
         # misc
         "com.google.googlejavaformat:google-java-format:1.7",

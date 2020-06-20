@@ -23,7 +23,7 @@ SELECT  *
 FROM    users
 ----
 
-YoSQL fill use the name of the file (`getAllUsers`) as the generated method name and the name of the enclosing folder
+YoSQL will use the name of the file (`getAllUsers`) as the generated method name and the name of the enclosing folder
 as the prefix for the generated repository. The final result is a new Java class called `UserRepository` which has a
 method called `getAllUsers`.
 
