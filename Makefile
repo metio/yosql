@@ -1,7 +1,3 @@
-# http://www.gnu.org/software/make/manual/make.html
-# https://www.gnu.org/prep/standards/html_node/Makefile-Basics.html#Makefile-Basics
-# http://clarkgrubb.com/makefile-style-guide
-
 ############
 # PROLOGUE #
 ############
@@ -50,71 +46,28 @@ help: ##@other Show this help
 
 .PHONY: build
 build: ##@hacking Build everything
-	bazel build ...
+	mvn verify
 
 .PHONY: watch
 watch: ##@hacking Watch for changes and build everything
-	ag -l | entr bazel build ...
+	ag -l | entr mvn verify
 
 .PHONY: test
 test: ##@hacking Test everything
-	bazel test ...
+	mvn verify
 
 .PHONY: clean
 clean: ##@hacking Test everything
-	bazel clean
+	mvn clean
 
 .PHONY: coverage
 coverage: ##@hacking Run code coverage
-	bazel test ...
+	mvn test
 
 .PHONY: loc
 loc: ##@hacking Count lines of count
 	tokei .
 
-.PHONY: bench-lc-small-sample
-bench-lc-small-sample: ##@benchmark Run full codegen lifecycle against small sample (runtime is ~5min)
-	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithSmallSampleBenchmark
-
-.PHONY: bench-lc-medium-sample
-bench-lc-medium-sample: ##@benchmark Run full codegen lifecycle against medium sample (runtime is ~15min)
-	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithMediumSampleBenchmark
-
-.PHONY: bench-lc-big-sample
-bench-lc-big-sample: ##@benchmark Run full codegen lifecycle against big sample (runtime is ~30min)
-	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithBigSampleBenchmark
-
-.PHONY: bench-lc-large-sample
-bench-lc-large-sample: ##@benchmark Run full codegen lifecycle against large sample (runtime is ~1h)
-	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.full_lifecycle.YoSqlWithBigSampleBenchmark
-
-.PHONY: bench-parsing-each
-bench-parsing-each: ##@benchmark Run file parsing benchmark against each individual .sql file (runtime is ~30min)
-	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.parse_file.DefaultSqlFileParserParseEachFileBenchmark
-
-.PHONY: bench-parsing-all
-bench-parsing-all: ##@benchmark Run file parsing benchmark against each individual .sql file (runtime is ~5min)
-	bazel run //yosql-micro-benchmarks -- de.xn__ho_hia.yosql.benchmark.parse_file.DefaultSqlFileParserParseAllFileBenchmark
-
-.PHONY: example-h2-all
-example-h2-all: ##@example Run all examples against H2 database (works w/o docker)
-	bazel run //yosql-example h2 standard stream rxjava
-
-.PHONY: example-psql-all
-example-psql-all: ##@example Run all examples against Postgres (use docker-compose.yml for env)
-	docker-compose --file yosql-example/docker-compose.yml --project-name example_psql up -d postgres
-	sleep 5
-	-bazel run //yosql-example psql standard stream rxjava
-	docker-compose --file yosql-example/docker-compose.yml --project-name example_psql down
-
-.PHONY: example-mysql-all
-example-mysql-all: ##@example Run all examples against MySQL (use docker-compose.yml for env)
-	docker-compose --file yosql-example/docker-compose.yml --project-name example_mysql up -d mysql
-	sleep 10
-	bazel run //yosql-example mysql standard stream rxjava
-	docker-compose --file yosql-example/docker-compose.yml --project-name example_mysql down
-
 .PHONY: sign-waiver
 sign-waiver: ##@contributing Sign the WAIVER
-	gpg2 --no-version --armor --sign AUTHORS/WAIVER
-	mv AUTHORS/WAIVER.asc AUTHORS/WAIVER-signed-by-$(USERNAME)-$(CURRENT_DATE).asc
+	echo 'use minisign'
