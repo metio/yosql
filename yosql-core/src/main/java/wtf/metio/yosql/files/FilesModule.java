@@ -3,6 +3,7 @@ package wtf.metio.yosql.files;
 import dagger.Module;
 import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
+import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.annotations.Parser;
 import wtf.metio.yosql.model.annotations.Reader;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
@@ -42,6 +43,13 @@ public class FilesModule {
             final SqlFileResolver fileResolver,
             final SqlFileParser fileParser) {
         return new DefaultFileParser(fileResolver, fileParser);
+    }
+
+    @Provides
+    ParserPreconditions provideParserPreconditions(
+            final ExecutionErrors errors,
+            final Translator translator) {
+        return new DefaultParserPreconditions(errors, translator);
     }
 
 }
