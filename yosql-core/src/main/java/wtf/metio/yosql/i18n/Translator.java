@@ -14,28 +14,7 @@ public interface Translator {
      * @param key The key to use.
      * @return The resulting localized message.
      */
-    @Deprecated
-    String localized(GenerateOptionDescriptions key);
-
-    /**
-     * @param key The key to use.
-     * @return The resulting localized message.
-     */
-    @Deprecated
-    String localized(HelpOptionDescriptions key);
-
-    /**
-     * @param key The key to use.
-     * @return The resulting localized message.
-     */
-    @Deprecated
-    String localized(GeneralOptionDescriptions key);
-
-    /**
-     * @param key The key to use.
-     * @return The resulting localized message.
-     */
-    <E extends Enum<E>> String localizedMessage(E key);
+    <E extends Enum<E>> String localized(E key);
 
     /**
      * @param key       The key to use.

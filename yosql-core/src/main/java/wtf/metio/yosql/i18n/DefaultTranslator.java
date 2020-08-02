@@ -7,10 +7,6 @@
 package wtf.metio.yosql.i18n;
 
 import ch.qos.cal10n.IMessageConveyor;
-import wtf.metio.yosql.model.descriptions.GeneralOptionDescriptions;
-import wtf.metio.yosql.model.descriptions.GenerateOptionDescriptions;
-import wtf.metio.yosql.model.descriptions.HelpOptionDescriptions;
-import wtf.metio.yosql.model.options.JdbcNamesOptions;
 
 final class DefaultTranslator implements Translator {
 
@@ -25,22 +21,7 @@ final class DefaultTranslator implements Translator {
     }
 
     @Override
-    public String localized(final GenerateOptionDescriptions key) {
-        return localizedMessage(key);
-    }
-
-    @Override
-    public String localized(final HelpOptionDescriptions key) {
-        return localizedMessage(key);
-    }
-
-    @Override
-    public String localized(final GeneralOptionDescriptions key) {
-        return localizedMessage(key);
-    }
-
-    @Override
-    public <E extends Enum<E>> String localizedMessage(final E key) {
+    public <E extends Enum<E>> String localized(final E key) {
         return localizedMessages.getMessage(key);
     }
 
