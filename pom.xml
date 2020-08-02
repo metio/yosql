@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+  ~ directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+  ~ in the LICENSE file.
+  -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ordering follows https://maven.apache.org/developers/conventions/code.html#POM_Code_Convention -->
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                 PARENT                                  -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Inheritance -->
+    <parent>
+        <groupId>wtf.metio.maven.parents</groupId>
+        <artifactId>maven-parents-java-prototype</artifactId>
+        <version>2020.7.17-11732</version>
+    </parent>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               COORDINATES                               -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Maven_Coordinates -->
+    <groupId>wtf.metio.yosql</groupId>
+    <artifactId>yosql</artifactId>
+    <version>0.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               INFORMATIONS                              -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#More_Project_Information -->
+    <name>YoSQL</name>
+    <description>YoSQL: write more SQL</description>
+    <url>https://yosql.projects.metio.wtf/</url>
+    <inceptionYear>2017</inceptionYear>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                    SCM                                  -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#SCM -->
+    <scm>
+        <connection>scm:git:git@github.com:metio/yosql.git</connection>
+        <developerConnection>scm:git:git@github.com:metio/yosql.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/metio/yosql</url>
+    </scm>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                             ISSUE MANAGEMENT                            -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Issue_Management -->
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/metio/yosql/issues</url>
+    </issueManagement>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                PROPERTIES                               -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Properties -->
+    <properties>
+        <version.jdk>14</version.jdk>
+        <version.checksum-m-p>1.8</version.checksum-m-p>
+        <project.build.outputTimestamp>2017</project.build.outputTimestamp>
+    </properties>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                  MODULES                                -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Aggregation -->
+    <modules>
+        <module>yosql-core</module>
+        <module>yosql-cli</module>
+        <module>yosql-maven-plugin</module>
+        <module>yosql-gradle-plugin</module>
+        <module>yosql-testutils</module>
+        <module>yosql-yeps</module>
+        <module>yosql-example</module>
+        <module>yosql-benchmarks</module>
+    </modules>
+
+</project>
