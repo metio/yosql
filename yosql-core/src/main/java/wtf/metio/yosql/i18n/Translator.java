@@ -35,7 +35,7 @@ public interface Translator {
      * @param key The key to use.
      * @return The resulting localized message.
      */
-    <E extends Enum<E>> String localized(E key);
+    <E extends Enum<E>> String localizedMessage(E key);
 
     /**
      * @param key       The key to use.

@@ -26,21 +26,21 @@ final class DefaultTranslator implements Translator {
 
     @Override
     public String localized(final GenerateOptionDescriptions key) {
-        return localized(key);
+        return localizedMessage(key);
     }
 
     @Override
     public String localized(final HelpOptionDescriptions key) {
-        return localized(key);
+        return localizedMessage(key);
     }
 
     @Override
     public String localized(final GeneralOptionDescriptions key) {
-        return localized(key);
+        return localizedMessage(key);
     }
 
     @Override
-    public <E extends Enum<E>> String localized(final E key) {
+    public <E extends Enum<E>> String localizedMessage(final E key) {
         return localizedMessages.getMessage(key);
     }
 
