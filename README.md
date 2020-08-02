@@ -1,6 +1,6 @@
 # YoSQL
 
-Take a look at the link:https://yosql.metio.wtf/[project website] to read the documentation. The *yosql-example*
+Take a look at the [project website](https://yosql.projects.metio.wtf/) to read the documentation. The *yosql-example*
 folder contains an example application that uses all available features of YoSQL.
 
 ## Alternatives
