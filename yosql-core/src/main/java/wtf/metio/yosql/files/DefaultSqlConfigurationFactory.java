@@ -375,6 +375,10 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private boolean isDefaultConverter(final ResultRowConverter converter) {
+        //getDefaultRowConverter()
+        //        .filter(def -> def.getAlias().equals(converter.getAlias())
+        //                  || def.getConverterType().equals(converter.getConverterType()))
+        //        .isPresent();
         return config.defaultRowConverter().equals(converter.getAlias())
                 || config.defaultRowConverter().equals(converter.getConverterType());
     }
