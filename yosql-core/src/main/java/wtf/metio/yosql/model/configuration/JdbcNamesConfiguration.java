@@ -38,6 +38,28 @@ public abstract class JdbcNamesConfiguration {
 
         public abstract Builder setDataSource(String dataSource);
 
+        public abstract Builder setConnection(String connection);
+
+        public abstract Builder setColumnCount(String connection);
+
+        public abstract Builder setColumnLabel(String connection);
+
+        public abstract Builder setStatement(String connection);
+
+        public abstract Builder setMetaData(String connection);
+
+        public abstract Builder setResultSet(String connection);
+
+        public abstract Builder setBatch(String connection);
+
+        public abstract Builder setList(String connection);
+
+        public abstract Builder setJdbcIndex(String connection);
+
+        public abstract Builder setIndex(String connection);
+
+        public abstract Builder setRow(String connection);
+
         public abstract JdbcNamesConfiguration build();
 
     }

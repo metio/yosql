@@ -8,7 +8,7 @@ import ch.qos.cal10n.LocaleData;
  * Enumeration of JDBC names.
  */
 @LocaleData(@Locale("en"))
-@BaseName("general-options")
+@BaseName("jdbc-names-options")
 public enum JdbcNamesOptions {
 
     DATA_SOURCE,
