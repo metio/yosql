@@ -9,6 +9,8 @@ public interface Translator {
      * @param key The key to use.
      * @return The resulting localized message.
      */
+    // TODO: remove?
+    @Deprecated
     <E extends Enum<E>> String localized(E key);
 
     /**
@@ -16,6 +18,7 @@ public interface Translator {
      * @param arguments The arguments to apply.
      * @return The resulting system message.
      */
+    // TODO: rename to localized?
     <E extends Enum<E>> String nonLocalized(E key, Object... arguments);
 
 }

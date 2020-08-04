@@ -1,4 +1,4 @@
-package wtf.metio.yosql.generator.code;
+package wtf.metio.yosql.generator;
 
 import wtf.metio.yosql.generator.api.CodeGenerator;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;

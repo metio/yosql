@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.model.annotations.Delegating;
 import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
 import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
@@ -70,7 +71,7 @@ public class JdbcBlocksModule {
             final Variables variables,
             final JdbcFields jdbcFields,
             final JdbcMethods jdbcMethods,
-            final LoggingGenerator logging) {
+            @Delegating final LoggingGenerator logging) {
         return new DefaultJdbcBlocks(
                 configuration,
                 blocks,
