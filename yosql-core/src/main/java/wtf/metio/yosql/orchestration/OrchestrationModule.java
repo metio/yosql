@@ -3,8 +3,9 @@ package wtf.metio.yosql.orchestration;
 import dagger.Module;
 import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
-import wtf.metio.yosql.model.annotations.Writer;
 import wtf.metio.yosql.i18n.Translator;
+import wtf.metio.yosql.model.annotations.Delegating;
+import wtf.metio.yosql.model.annotations.Writer;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 
@@ -48,6 +49,13 @@ public class OrchestrationModule {
 
     @Provides
     @Singleton
+    ForkJoinPool.ForkJoinWorkerThreadFactory provideNativeForkJoinWorkerThreadFactory() {
+        return ForkJoinPool.defaultForkJoinWorkerThreadFactory;
+    }
+
+    @Provides
+    @Singleton
+    @Delegating
     ForkJoinPool.ForkJoinWorkerThreadFactory provideForkJoinWorkerThreadFactory(
             final Translator translator,
             final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory) {
@@ -57,7 +65,7 @@ public class OrchestrationModule {
     @Provides
     @Singleton
     ThreadPoolFactory provideThreadPoolFactory(
-            final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory,
+            @Delegating final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory,
             final RuntimeConfiguration runtime) {
         return new ThreadPoolFactory(threadFactory, runtime.resources());
     }
