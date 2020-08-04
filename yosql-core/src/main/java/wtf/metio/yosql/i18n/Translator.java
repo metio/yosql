@@ -1,10 +1,5 @@
 package wtf.metio.yosql.i18n;
 
-import wtf.metio.yosql.model.descriptions.GeneralOptionDescriptions;
-import wtf.metio.yosql.model.descriptions.GenerateOptionDescriptions;
-import wtf.metio.yosql.model.descriptions.HelpOptionDescriptions;
-import wtf.metio.yosql.model.options.JdbcNamesOptions;
-
 /**
  * Translates the descriptions of several options.
  */
