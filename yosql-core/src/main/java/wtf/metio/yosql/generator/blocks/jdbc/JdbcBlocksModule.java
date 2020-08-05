@@ -13,47 +13,47 @@ import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 public class JdbcBlocksModule {
 
     @Provides
-    JdbcTransformer jdbcTransformer() {
+    JdbcTransformer provideJdbcTransformer() {
         return new DefaultJdbcTransformer();
     }
 
     @Provides
-    JdbcFields jdbcFields(final JdbcFieldsConfiguration options) {
+    JdbcFields provideJdbcFields(final JdbcFieldsConfiguration options) {
         return new DefaultJdbcFields(options);
     }
 
     @Provides
-    JdbcParameters jdbcParameters(final Parameters parameters, final JdbcNamesConfiguration names) {
+    JdbcParameters provideJdbcParameters(final Parameters parameters, final JdbcNamesConfiguration names) {
         return new DefaultJdbcParameters(parameters, names);
     }
 
     @Provides
-    JdbcMethods.JdbcDataSourceMethods dataSource(final JdbcNamesConfiguration names) {
+    JdbcMethods.JdbcDataSourceMethods provideDataSource(final JdbcNamesConfiguration names) {
         return new DefaultJdbcDataSourceMethods(names);
     }
 
     @Provides
-    JdbcMethods.JdbcConnectionMethods connection(final Names names, final JdbcNamesConfiguration jdbcNames) {
+    JdbcMethods.JdbcConnectionMethods provideConnection(final Names names, final JdbcNamesConfiguration jdbcNames) {
         return new DefaultJdbcConnectionMethods(names, jdbcNames);
     }
 
     @Provides
-    JdbcMethods.JdbcResultSetMethods resultSet(final JdbcNamesConfiguration names) {
+    JdbcMethods.JdbcResultSetMethods provideResultSet(final JdbcNamesConfiguration names) {
         return new DefaultJdbcResultSetMethods(names);
     }
 
     @Provides
-    JdbcMethods.JdbcMetaDataMethods metaData(final JdbcNamesConfiguration names) {
+    JdbcMethods.JdbcMetaDataMethods provideMetaData(final JdbcNamesConfiguration names) {
         return new DefaultJdbcMetaDataMethods(names);
     }
 
     @Provides
-    JdbcMethods.JdbcStatementMethods statement(final JdbcNamesConfiguration names) {
+    JdbcMethods.JdbcStatementMethods provideStatement(final JdbcNamesConfiguration names) {
         return new DefaultJdbcStatementMethods(names);
     }
 
     @Provides
-    JdbcMethods jdbcMethods(
+    JdbcMethods provideJdbcMethods(
             final JdbcMethods.JdbcDataSourceMethods dataSource,
             final JdbcMethods.JdbcConnectionMethods connection,
             final JdbcMethods.JdbcResultSetMethods resultSet,
@@ -63,7 +63,12 @@ public class JdbcBlocksModule {
     }
 
     @Provides
-    JdbcBlocks jdbcBlocks(
+    JdbcNames provideJdbcNames() {
+        return new DefaultJdbcNames();
+    }
+
+    @Provides
+    JdbcBlocks provideJdbcBlocks(
             final RuntimeConfiguration configuration,
             final GenericBlocks blocks,
             final ControlFlows controlFlows,

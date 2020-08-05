@@ -16,7 +16,6 @@ import wtf.metio.yosql.model.sql.SqlParameter;
 import wtf.metio.yosql.model.sql.SqlType;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -250,6 +249,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private String calculateRepositoryNameFromParentFolder(final Path source) {
         final Path relativePathToSqlFile = runtime.files().inputBaseDirectory().relativize(source);
+        // TODO: I18N
         logger.debug("input path: " + runtime.files().inputBaseDirectory());
         logger.debug("source path: " + source);
         logger.debug("relative path: " + relativePathToSqlFile);
@@ -287,8 +287,10 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 : runtime.names().basePackageName() + "." + repository;
     }
 
-    private void parameters(final Path source, final Map<String, List<Integer>> parameterIndices,
-                            final SqlConfiguration configuration) {
+    private void parameters(
+            final Path source,
+            final Map<String, List<Integer>> parameterIndices,
+            final SqlConfiguration configuration) {
         if (parametersAreValid(source, parameterIndices, configuration)) {
             for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
                 final String parameterName = entry.getKey();
@@ -361,7 +363,9 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 ResultRowConverter::getResultType);
     }
 
-    private static boolean aliasMatches(final ResultRowConverter resultConverter, final ResultRowConverter converter) {
+    private static boolean aliasMatches(
+            final ResultRowConverter resultConverter,
+            final ResultRowConverter converter) {
         return converter.getAlias().equals(resultConverter.getAlias());
     }
 
@@ -379,24 +383,28 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         //        .filter(def -> def.getAlias().equals(converter.getAlias())
         //                  || def.getConverterType().equals(converter.getConverterType()))
         //        .isPresent();
-        return config.defaultRowConverter().equals(converter.getAlias())
-                || config.defaultRowConverter().equals(converter.getConverterType());
+//        return config.defaultRowConverter().equals(converter.getAlias())
+//                || config.defaultRowConverter().equals(converter.getConverterType());
+        return true;
     }
 
     private Optional<ResultRowConverter> getRowConverter(final Predicate<ResultRowConverter> predicate) {
-        return Optional.ofNullable(config.resultRowConverters()).stream()
-                .flatMap(Collection::stream)
-                .filter(predicate)
-                .findFirst();
+//        return Optional.ofNullable(config.resultRowConverters()).stream()
+//                .flatMap(Collection::stream)
+//                .filter(predicate)
+//                .findFirst();
+        return Optional.empty();
     }
 
     private String getConverterFieldOrEmptyString(
             final Predicate<ResultRowConverter> predicate,
             final Function<ResultRowConverter, String> mapper) {
-        return config.resultRowConverters().stream()
-                .filter(predicate)
-                .map(mapper)
-                .findFirst().orElse("");
+//        return config.resultRowConverters().stream()
+//                .filter(predicate)
+//                .map(mapper)
+//                .findFirst()
+//                .orElse("");
+        return "";
     }
 
     private static boolean nullOrEmpty(final String object) {
@@ -404,16 +412,16 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private static boolean startsWith(final String fileName, final List<String> prefixes) {
-        return prefixes != null && prefixes.stream()
-                .anyMatch(fileName::startsWith);
+        return prefixes != null && prefixes.stream().anyMatch(fileName::startsWith);
     }
 
     private boolean parametersAreValid(
             final Path source,
             final Map<String, List<Integer>> parameterIndices,
             final SqlConfiguration configuration) {
-        final List<String> parameterErrors = configuration.getParameters().stream()
+        final var parameterErrors = configuration.getParameters().stream()
                 .filter(param -> !parameterIndices.containsKey(param.getName()))
+                // TODO: I18N
                 .map(param -> String.format("[%s] declares unknown parameter [%s]",
                         source, param.getName()))
                 .peek(msg -> errors.add(new IllegalArgumentException(msg)))
@@ -423,8 +431,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private static SqlConfiguration loadConfig(final Yaml yamlParser, final String yaml) {
-        SqlConfiguration configuration = yamlParser.loadAs(yaml,
-                SqlConfiguration.class);
+        var configuration = yamlParser.loadAs(yaml, SqlConfiguration.class);
         if (configuration == null) {
             configuration = new SqlConfiguration();
         }
@@ -432,7 +439,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private static String getFileNameWithoutExtension(final Path path) {
-        final String fileName = path.getFileName().toString();
+        final var fileName = path.getFileName().toString();
         return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 

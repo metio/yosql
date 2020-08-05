@@ -108,7 +108,7 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
     private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
         final var configuration = sqlStatement.getConfiguration();
         // TODO: add javadocs similar to methods
-        return fields.prepareConstant(getClass(), String.class,
+        return fields.prepareConstant(String.class,
                 jdbcFields.constantRawSqlStatementFieldName(configuration))
                 .initializer("$S", sqlStatement.getRawStatement())
                 .build();
@@ -119,7 +119,7 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
         final var rawStatement = sqlStatement.getRawStatement();
         final var statement = replaceNamedParameters(rawStatement);
         // TODO: add javadocs similar to methods
-        return fields.prepareConstant(getClass(), String.class,
+        return fields.prepareConstant(String.class,
                 jdbcFields.constantSqlStatementFieldName(configuration))
                 .initializer("$S", statement)
                 .build();
@@ -131,19 +131,18 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
 
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
         final var configuration = sqlStatement.getConfiguration();
-        return fields.prepareConstant(getClass(), TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
+        return fields.prepareConstant(TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
                 jdbcFields.constantSqlStatementParameterIndexFieldName(configuration))
                 .initializer("new $T<>($L)", HashMap.class, sqlStatement.getConfiguration().getParameters().size())
                 .build();
     }
 
     private FieldSpec asDataSourceField() {
-        return fields.field(getClass(), DataSource.class, jdbcNames.dataSource());
+        return fields.field(DataSource.class, jdbcNames.dataSource());
     }
 
     private FieldSpec asConverterField(final ResultRowConverter converter) {
         return fields.field(
-                getClass(),
                 TypeGuesser.guessTypeName(converter.getConverterType()),
                 converter.getAlias());
     }

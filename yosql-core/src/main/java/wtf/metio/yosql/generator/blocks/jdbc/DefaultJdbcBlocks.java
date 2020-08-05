@@ -336,9 +336,9 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock createResultState() {
-        return variables.variable(names.state(), runtime.getResultStateClass(),
+        return variables.variable(names.state(), runtime.result().resultStateClass(),
                 code("new $T($N, $N, $N)",
-                        runtime.getResultStateClass(),
+                        runtime.result().resultStateClass(),
                         runtime.jdbcNames().resultSet(),
                         runtime.jdbcNames().metaData(),
                         runtime.jdbcNames().columnCount()));
@@ -347,7 +347,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
     @Override
     public CodeBlock returnNewFlowState() {
         return CodeBlock.builder()
-                .addStatement("return new $T($N, $N, $N, $N, $N)", runtime.getFlowStateClass(),
+                .addStatement("return new $T($N, $N, $N, $N, $N)", runtime.rxJava().flowStateClass(),
                         runtime.jdbcNames().connection(),
                         runtime.jdbcNames().statement(),
                         runtime.jdbcNames().resultSet(),

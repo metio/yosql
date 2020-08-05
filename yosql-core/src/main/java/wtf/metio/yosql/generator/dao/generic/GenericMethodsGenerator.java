@@ -76,7 +76,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
                 .forEach(converter -> builder.add(blocks.initializeConverter(converter)));
 
         return methods.constructor()
-                .addAnnotations(annotations.generatedMethod(getClass()))
+                .addAnnotations(annotations.generatedMethod())
                 .addParameter(jdbcParameters.dataSource())
                 .addCode(blocks.setFieldToSelf(jdbcNames.dataSource()))
                 .addCode(builder.build())

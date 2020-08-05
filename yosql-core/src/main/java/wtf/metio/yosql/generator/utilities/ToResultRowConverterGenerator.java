@@ -68,12 +68,12 @@ public final class ToResultRowConverterGenerator {
 
     private MethodSpec asUserType() {
         return methods.publicMethod("asUserType")
-                .addParameters(parameters.resultState(runtime.getResultStateClass()))
+                .addParameters(parameters.resultState(runtime.result().resultStateClass()))
                 .addException(SQLException.class)
-                .returns(runtime.getResultRowClass())
-                .addStatement("final $T $N = new $T($N.getColumnCount())", runtime.getResultRowClass(),
+                .returns(runtime.result().resultRowClass())
+                .addStatement("final $T $N = new $T($N.getColumnCount())", runtime.result().resultRowClass(),
                         runtime.jdbcNames().row(),
-                        runtime.getResultRowClass(),
+                        runtime.result().resultRowClass(),
                         names.result())
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
                         runtime.jdbcNames().index(),

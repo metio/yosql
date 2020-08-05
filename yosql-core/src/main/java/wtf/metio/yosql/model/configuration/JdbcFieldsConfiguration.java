@@ -6,7 +6,7 @@ import com.google.auto.value.AutoValue;
 public abstract class JdbcFieldsConfiguration {
 
     public static Builder builder() {
-        return new AutoValue_JdbcFieldsOptions.Builder();
+        return new AutoValue_JdbcFieldsConfiguration.Builder();
     }
 
     public abstract String rawSuffix();

@@ -6,7 +6,7 @@ import com.google.auto.value.AutoValue;
 public abstract class JdbcNamesConfiguration {
 
     public static Builder builder() {
-        return new AutoValue_JdbcNameOptions.Builder();
+        return new AutoValue_JdbcNamesConfiguration.Builder();
     }
 
     public abstract String dataSource();

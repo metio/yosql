@@ -63,7 +63,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final var methodName = configuration.getName();
         return methods.publicMethod(methodName)
                 .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod(getClass()))
+                .addAnnotations(annotations.generatedMethod())
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
@@ -90,7 +90,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final var methodName = configuration.getName();
         return methods.publicMethod(methodName)
                 .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod(getClass()))
+                .addAnnotations(annotations.generatedMethod())
                 .returns(int.class)
                 .addExceptions(jdbcTransformer.sqlException(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
@@ -116,7 +116,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final var methodName = configuration.getName();
         return methods.publicMethod(methodName)
                 .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod(getClass()))
+                .addAnnotations(annotations.generatedMethod())
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))

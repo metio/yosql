@@ -30,7 +30,7 @@ final class Log4jLoggingGenerator implements LoggingGenerator {
 
     @Override
     public Optional<FieldSpec> logger(final TypeName repoClass) {
-        return Optional.of(fields.prepareConstant(getClass(), Logger.class, names.logger())
+        return Optional.of(fields.prepareConstant(Logger.class, names.logger())
                 .initializer("$T.getLogger($T.class)", LogManager.class, repoClass)
                 .build());
     }

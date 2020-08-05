@@ -13,6 +13,7 @@ import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.blocks.api.Classes;
 import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
 import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
@@ -36,6 +37,7 @@ public final class ResultStateGenerator {
     private final Classes classes;
     private final Methods methods;
     private final JdbcParameters jdbcParameters;
+    private final JdbcNames jdbcNames;
 
     @Inject
     ResultStateGenerator(
@@ -45,7 +47,8 @@ public final class ResultStateGenerator {
             final GenericBlocks blocks,
             final Classes classes,
             final Methods methods,
-            final JdbcParameters jdbcParameters) {
+            final JdbcParameters jdbcParameters,
+            final JdbcNames jdbcNames) {
         this.annotations = annotations;
         this.runtime = runtime;
         this.logger = logger;
@@ -53,10 +56,11 @@ public final class ResultStateGenerator {
         this.classes = classes;
         this.methods = methods;
         this.jdbcParameters = jdbcParameters;
+        this.jdbcNames = jdbcNames;
     }
 
     PackageTypeSpec generateResultStateClass() {
-        final var resultStateClass = runtime.getResultStateClass();
+        final var resultStateClass = runtime.result().resultStateClass();
         final var type = classes.openClass(resultStateClass)
                 .addFields(fields())
                 .addMethods(methods())

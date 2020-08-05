@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class VariableConfiguration {
 
     public static Builder builder() {
-        return new AutoValue_VariableOptions.Builder();
+        return new AutoValue_VariableConfiguration.Builder();
     }
 
     public abstract VariableTypeOptions variableType();
