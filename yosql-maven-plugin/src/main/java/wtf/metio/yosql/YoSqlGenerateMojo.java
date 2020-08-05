@@ -6,31 +6,28 @@
  */
 package wtf.metio.yosql;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Stream;
-
-import javax.annotation.processing.Generated;
-
+import ch.qos.cal10n.IMessageConveyor;
+import ch.qos.cal10n.MessageConveyor;
 import com.squareup.javapoet.ClassName;
-
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-
-import ch.qos.cal10n.IMessageConveyor;
-import ch.qos.cal10n.MessageConveyor;
 import wtf.metio.yosql.generator.utilities.ToResultRowConverterGenerator;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.sql.ParameterConverter;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
+
+import javax.annotation.processing.Generated;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Stream;
 
 /**
  * The *generate* goal generates Java code based on SQL files.
@@ -42,38 +39,38 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * The SQL files to load (.sql)
      */
     @Parameter
-    private FileSet                        sqlFiles;
+    private FileSet sqlFiles;
 
     /**
      * The output directory for the generated classes
      */
     @Parameter(required = true, defaultValue = "${project.build.directory}/generated-sources/yosql")
-    private File                           outputBaseDirectory;
+    private File outputBaseDirectory;
 
     /**
      * The package name for utility classes (default: <strong>util</strong>).
      */
     @Parameter(required = true, defaultValue = "util")
-    private String                         utilityPackageName;
+    private String utilityPackageName;
 
     /**
      * The package name for utility classes (default: <strong>converter</strong>).
      */
     @Parameter(required = true, defaultValue = "converter")
-    private String                         converterPackageName;
+    private String converterPackageName;
 
     /**
      * The base package name for all generated classes (default: <strong>com.example.persistence</strong>).
      */
     @Parameter(required = true, defaultValue = "com.example.persistence")
-    private String                         basePackageName;
+    private String basePackageName;
 
     /**
      * Controls whether the SQL statements should be inlined in the generated repositories or loaded at options
      * (default: <strong>inline</strong>). Other possible value is <strong>load</strong>.
      */
     @Parameter(required = true, defaultValue = "inline")
-    private String                         repositorySqlStatements;
+    private String repositorySqlStatements;
 
     /**
      * Controls whether the generated repositories should contain <em>generic</em> methods that. Standard methods
@@ -82,40 +79,40 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                        methodStandardApi;
+    private boolean methodStandardApi;
 
     /**
      * Controls whether the generated repositories should contain batch methods for SQL INSERT/UPDATE/DELETE statements.
      * (default: <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                        methodBatchApi;
+    private boolean methodBatchApi;
 
     /**
      * The method name prefix to apply to all batch methods (default: <strong>""</strong>).
      */
     @Parameter
-    private String                         methodBatchPrefix;
+    private String methodBatchPrefix;
 
     /**
      * The method name suffix to apply to all batch methods (default: <strong>"Batch"</strong>).
      */
     @Parameter(required = true, defaultValue = "Batch")
-    private String                         methodBatchSuffix;
+    private String methodBatchSuffix;
 
     /**
      * Controls whether an eager {@link Stream} based method should be generated (default: <strong>true</strong>). If
      * the target Java version is set to anything below 1.8, defaults to <strong>false</strong>
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                        methodStreamEagerApi;
+    private boolean methodStreamEagerApi;
 
     /**
      * Controls whether a lazy {@link Stream} based method should be generated (default: <strong>true</strong>). If the
      * target Java version is set to anything below 1.8, defaults to <strong>false</strong>
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                        methodStreamLazyApi;
+    private boolean methodStreamLazyApi;
 
     /**
      * Controls whether a RxJava {@link io.reactivex.Flowable} based method should be generated (default:
@@ -123,144 +120,144 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * to <strong>true</strong>.
      */
     @Parameter
-    private Boolean                        methodRxJavaApi;
+    private Boolean methodRxJavaApi;
 
     /**
      * The method name prefix to apply to all stream methods (default: <strong>""</strong>).
      */
     @Parameter
-    private String                         methodStreamPrefix;
+    private String methodStreamPrefix;
 
     /**
      * The method name suffix to apply to all stream methods (default: <strong>Stream</strong>).
      */
     @Parameter(required = true, defaultValue = "Stream")
-    private String                         methodStreamSuffix;
+    private String methodStreamSuffix;
 
     /**
      * The method name prefix to apply to all RxJava methods (default: <strong>""</strong>).
      */
     @Parameter
-    private String                         methodRxJavaPrefix;
+    private String methodRxJavaPrefix;
 
     /**
      * The method name suffix to apply to all RxJava methods (default: <strong>Flow</strong>).
      */
     @Parameter(required = true, defaultValue = "Flow")
-    private String                         methodRxJavaSuffix;
+    private String methodRxJavaSuffix;
 
     /**
      * The method name extra to apply to all lazy stream methods (default: <strong>Lazy</strong>).
      */
     @Parameter(required = true, defaultValue = "Lazy")
-    private String                         methodLazyName;
+    private String methodLazyName;
 
     /**
      * The method name extra to apply to all eager stream methods (default: <strong>Eager</strong>).
      */
     @Parameter(required = true, defaultValue = "Eager")
-    private String                         methodEagerName;
+    private String methodEagerName;
 
     /**
      * The repository name suffix to use for all generated repositories (default: <strong>Repository</strong>).
      */
     @Parameter(required = true, defaultValue = "Repository")
-    private String                         repositoryNameSuffix;
+    private String repositoryNameSuffix;
 
     /**
      * Controls whether an interface should be generated for each generated repository. (default:
      * <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                        repositoryGenerateInterface;
+    private boolean repositoryGenerateInterface;
 
     /**
      * The allow method name prefixes for writing methods (default: <strong>"update, insert, delete, create, write, add,
      * remove, merge,drop"</strong>).
      */
     @Parameter(required = true, defaultValue = "update,insert,delete,create,write,add,remove,merge,drop")
-    private String                         methodAllowedWritePrefixes;
+    private String methodAllowedWritePrefixes;
 
     /**
      * The allow method name prefixes for writing methods (default: <strong>"select,read,query,find"</strong>).
      */
     @Parameter(required = true, defaultValue = "select,read,query,find")
-    private String                         methodAllowedReadPrefixes;
+    private String methodAllowedReadPrefixes;
 
     /**
      * The allow method name prefixes for writing methods (default: <strong>"select,read,query,find"</strong>).
      */
     @Parameter(required = true, defaultValue = "call,execute")
-    private String                         methodAllowedCallPrefixes;
+    private String methodAllowedCallPrefixes;
 
     /**
      * Controls whether method names are validated according to <strong>methodAllowedReadPrefixes</strong> and
      * <strong>methodAllowedWritePrefixes</strong> (default: <strong>true</strong>).
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                        methodValidateNamePrefixes;
+    private boolean methodValidateNamePrefixes;
 
     /**
      * The groupId to match for automatic RxJava detection (default: <strong>"io.reactivex.rxjava2"</strong>).
      */
     @Parameter(required = true, defaultValue = "io.reactivex.rxjava2")
-    private String                         rxJavaGroupId;
+    private String rxJavaGroupId;
 
     /**
      * The artifactId to match for automatic RxJava detection (default: <strong>"rxjava"</strong>).
      */
     @Parameter(required = true, defaultValue = "rxjava")
-    private String                         rxJavaArtifactId;
+    private String rxJavaArtifactId;
 
     /**
      * The groupId to match for automatic Log4j detection (default: <strong>"org.apache.logging.log4j"</strong>).
      */
     @Parameter(required = true, defaultValue = "org.apache.logging.log4j")
-    private String                         log4jGroupId;
+    private String log4jGroupId;
 
     /**
      * The artifactId to match for automatic Log4j detection (default: <strong>"log4j-api"</strong>).
      */
     @Parameter(required = true, defaultValue = "log4j-api")
-    private String                         log4jArtifactId;
+    private String log4jArtifactId;
 
     /**
      * The groupId to match for automatic SLF4j detection (default: <strong>"org.slf4j"</strong>).
      */
     @Parameter(required = true, defaultValue = "org.slf4j")
-    private String                         slf4jGroupId;
+    private String slf4jGroupId;
 
     /**
      * The artifactId to match for automatic SLF4j detection (default: <strong>"slf4j-api"</strong>).
      */
     @Parameter(required = true, defaultValue = "slf4j-api")
-    private String                         slf4jArtifactId;
+    private String slf4jArtifactId;
 
     /**
      * The separator to split SQL statements inside a single .sql file (default: <strong>";"</strong>).
      */
     @Parameter(required = true, defaultValue = ";")
-    private String                         sqlStatementSeparator;
+    private String sqlStatementSeparator;
 
     /**
      * The charset to use while reading .sql files (default: <strong>UTF-8</strong>).
      */
     @Parameter(required = true, defaultValue = "UTF-8")
-    private String                         sqlFilesCharset;
+    private String sqlFilesCharset;
 
     /**
      * The target Java source version (default: <strong>1.8</strong>). A value lower than 1.8 disables the generation of
      * the 'java.util.Stream' based API.
      */
     @Parameter(required = true, defaultValue = "1.8")
-    private String                         java;
+    private String java;
 
     /**
      * The logging API to use (default: <strong>auto</strong> which picks the logging API based on the projects
      * dependencies). Possible other values are "jdk", "log4j", "slf4j" and "none".
      */
     @Parameter(required = true, defaultValue = "auto")
-    private String                         loggingApi;
+    private String loggingApi;
 
     /**
      * Whether generated methods should catch SqlExceptions and rethrow them as RuntimeExceptions (default:
@@ -268,7 +265,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * checked exception which in turn will force all its users to handle the exception.
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                        methodCatchAndRethrow;
+    private boolean methodCatchAndRethrow;
 
     /**
      * Optional list of converters that are applied to input parameters.
@@ -287,49 +284,49 @@ public class YoSqlGenerateMojo extends AbstractMojo {
      * the alias or fully-qualified name of a converter. Default 'resultRow'.
      */
     @Parameter(required = true, defaultValue = ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)
-    private String                         defaultRowConverter;
+    private String defaultRowConverter;
 
     /**
      * Controls whether {@link Generated} annotations should be added to the generated repositories.
      */
     @Parameter(required = true, defaultValue = "true")
-    private boolean                        classGeneratedAnnotation;
+    private boolean classGeneratedAnnotation;
 
     /**
      * Controls whether {@link Generated} annotations should be added to the generated fields.
      */
     @Parameter(required = true, defaultValue = "false")
-    private boolean                        fieldGeneratedAnnotation;
+    private boolean fieldGeneratedAnnotation;
 
     /**
      * Controls whether {@link Generated} annotations should be added to the generated methods.
      */
     @Parameter(required = true, defaultValue = "false")
-    private boolean                        methodGeneratedAnnotation;
+    private boolean methodGeneratedAnnotation;
 
     /**
      * Sets the comment used for {@link Generated} annotations.
      */
     @Parameter(required = true, defaultValue = "DO NOT EDIT")
-    private String                         generatedAnnotationComment;
+    private String generatedAnnotationComment;
 
     @Override
     public void execute() {
-        final IMessageConveyor messages = new MessageConveyor(Locale.ENGLISH);
-        final ExecutionErrors errors = new ExecutionErrors();
-        final RuntimeConfiguration configuration = createConfiguration(messages, errors);
-        final YoSql yoSql = createYoSql(configuration, errors);
+        final var messages = new MessageConveyor(Locale.ENGLISH);
+        final var errors = new ExecutionErrors();
+        final var configuration = createConfiguration(messages, errors);
+        final var yoSql = createYoSql(configuration, errors);
 
         yoSql.generateCode();
     }
 
     private YoSql createYoSql(final RuntimeConfiguration configuration, final ExecutionErrors errors) {
-        // TODO Auto-generated method stub
-        return null;
+        return DaggerYoSqlComponent.builder().build().yosql();
     }
 
     private RuntimeConfiguration createConfiguration(final IMessageConveyor messages, final ExecutionErrors errors) {
-        final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1, java.length()));
+        // TODO: find first dot or take as-is
+        final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1));
 
         final RuntimeConfiguration.Builder builder = RuntimeConfiguration.builder()
                 .setOutputBaseDirectory(outputBaseDirectory.toPath())

@@ -32,7 +32,7 @@ public class YoSqlCLI {
      * @param arguments The CLI arguments.
      */
     public static void main(final String... arguments) {
-        final var yosql = buildYoSQL(arguments);
+        final var yosql = createYoSql(arguments);
 
         try {
             yosql.generateCode();
@@ -43,7 +43,7 @@ public class YoSqlCLI {
         System.exit(1);
     }
 
-    private static YoSql buildYoSQL(final String... arguments) {
+    private static YoSql createYoSql(final String... arguments) {
         return DaggerYoSqlComponent.builder().build().yosql();
     }
 

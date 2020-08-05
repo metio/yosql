@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import org.apache.maven.model.FileSet;
-import org.apache.maven.shared.utils.io.FileUtils;
 
+import org.codehaus.plexus.util.FileUtils;
 import wtf.metio.yosql.files.SqlFileResolver;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 
