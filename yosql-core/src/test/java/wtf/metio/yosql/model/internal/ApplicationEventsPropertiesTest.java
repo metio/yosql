@@ -4,15 +4,15 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.model;
+package wtf.metio.yosql.model.internal;
 
 import wtf.metio.yosql.testutils.PropertiesTCK;
 
-final class LoggersPropertiesTest extends PropertiesTCK<Loggers> {
+final class ApplicationEventsPropertiesTest extends PropertiesTCK<ApplicationEvents> {
 
     @Override
-    public Class<Loggers> getEnumClass() {
-        return Loggers.class;
+    public Class<ApplicationEvents> getEnumClass() {
+        return ApplicationEvents.class;
     }
 
 }

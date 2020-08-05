@@ -4,15 +4,15 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.model;
+package wtf.metio.yosql.model.options;
 
 import wtf.metio.yosql.testutils.PropertiesTCK;
 
-final class HelpOptionDescriptionsPropertiesTest extends PropertiesTCK<HelpOptionDescriptions> {
+final class GenerateOptionsPropertiesTest extends PropertiesTCK<GenerateOptions> {
 
     @Override
-    public Class<HelpOptionDescriptions> getEnumClass() {
-        return HelpOptionDescriptions.class;
+    public Class<GenerateOptions> getEnumClass() {
+        return GenerateOptions.class;
     }
 
 }

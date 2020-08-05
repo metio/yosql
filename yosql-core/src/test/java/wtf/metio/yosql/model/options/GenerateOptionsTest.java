@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.model;
+package wtf.metio.yosql.model.options;
 
 import java.util.stream.Stream;
 

@@ -1,5 +1,6 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+// TODO: remove? JdbcNamesConfiguration exists as well
 public interface JdbcNames {
 
     String dataSource();

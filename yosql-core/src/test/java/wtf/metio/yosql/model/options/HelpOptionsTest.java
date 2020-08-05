@@ -1,4 +1,4 @@
-package wtf.metio.yosql.model;
+package wtf.metio.yosql.model.options;
 
 import java.util.stream.Stream;
 

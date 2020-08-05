@@ -4,11 +4,11 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.model;
-
-import java.util.stream.Stream;
+package wtf.metio.yosql.model.sql;
 
 import wtf.metio.yosql.testutils.EnumTCK;
+
+import java.util.stream.Stream;
 
 final class SqlTypeTest implements EnumTCK<SqlType> {
 

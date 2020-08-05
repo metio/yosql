@@ -4,22 +4,15 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.model;
+package wtf.metio.yosql.model.options;
 
-import java.util.stream.Stream;
+import wtf.metio.yosql.testutils.PropertiesTCK;
 
-import wtf.metio.yosql.testutils.EnumTCK;
-
-final class LoggingAPITest implements EnumTCK<LoggingAPI> {
+final class HelpOptionsPropertiesTest extends PropertiesTCK<HelpOptions> {
 
     @Override
-    public Class<LoggingAPI> getEnumClass() {
-        return LoggingAPI.class;
-    }
-
-    @Override
-    public Stream<String> validValues() {
-        return Stream.of("NONE", "JDK", "LOG4J", "SLF4J");
+    public Class<HelpOptions> getEnumClass() {
+        return HelpOptions.class;
     }
 
 }
