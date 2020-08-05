@@ -27,8 +27,8 @@ import java.util.stream.Stream;
  */
 final class DefaultSqlFileParser implements SqlFileParser {
 
-    private static final String SQL_COMMENT_PREFIX = "--"; //$NON-NLS-1$
-    private static final String NEWLINE = "\n"; //$NON-NLS-1$
+    private static final String SQL_COMMENT_PREFIX = "--";
+    private static final String NEWLINE = "\n";
 
     private final Pattern statementSplitter;
     private final LocLogger logger;

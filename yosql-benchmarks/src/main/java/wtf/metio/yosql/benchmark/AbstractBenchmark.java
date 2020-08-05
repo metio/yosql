@@ -34,9 +34,9 @@ import ch.qos.logback.classic.Logger;
 @State(Scope.Benchmark)
 public abstract class AbstractBenchmark {
 
-    private static final String         BENCHMARK_ROOT_DIRECTORY = "yosql-benchmark"; //$NON-NLS-1$
-    private static final String         INPUT_DIRECTORY          = "sql-files";       //$NON-NLS-1$
-    private static final String         OUTPUT_DIRECTORY         = "output";          //$NON-NLS-1$
+    private static final String         BENCHMARK_ROOT_DIRECTORY = "yosql-benchmark";
+    private static final String         INPUT_DIRECTORY          = "sql-files";
+    private static final String         OUTPUT_DIRECTORY         = "output";
 
     protected static final List<String> SUPPORTED_USE_CASES      = Arrays.asList(
             "callFunction.sql",
@@ -105,7 +105,7 @@ public abstract class AbstractBenchmark {
     }
 
     protected final static String repositoryName(final int index) {
-        return "repository" + index; //$NON-NLS-1$
+        return "repository" + index;
     }
 
 }

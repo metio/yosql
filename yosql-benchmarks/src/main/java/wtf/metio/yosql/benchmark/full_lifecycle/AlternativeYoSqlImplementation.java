@@ -71,7 +71,7 @@ final class AlternativeYoSqlImplementation implements YoSql {
     }
 
     private List<SqlStatement> parseFiles() {
-        return timer.timed("parse files", //$NON-NLS-1$
+        return timer.timed("parse files",
                 () -> fileResolver.resolveFiles()
                         // .parallel()
                         .flatMap(sqlFileParser::parse)
@@ -79,7 +79,7 @@ final class AlternativeYoSqlImplementation implements YoSql {
     }
 
     private List<SqlStatement> generateRepositories(final List<SqlStatement> statements) {
-        timer.timed("generate repositories", () -> statements.stream() //$NON-NLS-1$
+        timer.timed("generate repositories", () -> statements.stream()
                 .collect(groupingBy(SqlStatement::getRepository))
                 .entrySet()
                 .parallelStream()
@@ -89,7 +89,7 @@ final class AlternativeYoSqlImplementation implements YoSql {
     }
 
     private void generateUtilities(final List<SqlStatement> statements) {
-        timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(statements)); //$NON-NLS-1$
+        timer.timed("generate utilities", () -> utilsGenerator.generateUtilities(statements));
     }
 
 }

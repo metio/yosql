@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public interface SqlFileParser {
 
     /** The regex to extract parameters out of SQL statements. */
-    String  PARAMETER_REGEX   = "(?<!')(:[\\w]*)(?!')";          //$NON-NLS-1$
+    String  PARAMETER_REGEX   = "(?<!')(:[\\w]*)(?!')";
 
     /** The pattern to extract parameters out of SQL statements */
     Pattern PARAMETER_PATTERN = Pattern.compile(PARAMETER_REGEX);

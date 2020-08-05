@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  */
 final class AlternativeSqlFileParser implements SqlFileParser {
 
-    private static final String NEWLINE = "\n"; //$NON-NLS-1$
+    private static final String NEWLINE = "\n";
 
     private final ExecutionErrors errors;
     private final SqlConfigurationFactory factory;
@@ -91,7 +91,7 @@ final class AlternativeSqlFileParser implements SqlFileParser {
                                           final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
                 .lines().forEach(line -> {
-            if (line.startsWith("--")) { //$NON-NLS-1$
+            if (line.startsWith("--")) {
                 yaml.accept(line.substring(2));
                 yaml.accept(NEWLINE);
             } else {

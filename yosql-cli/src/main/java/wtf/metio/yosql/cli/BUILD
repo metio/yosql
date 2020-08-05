@@ -24,31 +24,3 @@ java_library(
     name = "build",
     srcs = [":build_info"],
 )
-
-java_binary(
-    name = "yosql-cli",
-    srcs = ["YoSqlCLI.java"],
-    main_class = "wtf.metio.yosql.cli.YoSqlCLI",
-    resources = [
-        "//yosql-cli/src/main/resources:localizations",
-        "//yosql-core/src/main/resources:localizations",
-    ],
-    visibility = [
-        "//yosql-example:__pkg__",
-    ],
-    deps = [
-        ":build",
-        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/dagger:cli_component",
-        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/i18n",
-        "//yosql-cli/src/main/java/wtf/metio/yosql/cli/parser",
-        "//yosql-core/src/main/java/wtf/metio/yosql",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:descriptions",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:i18n",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:internal",
-        "//yosql-core/src/main/java/wtf/metio/yosql/model:options",
-        "@maven//:ch_qos_cal10n_cal10n_api",
-        "@maven//:net_sf_jopt_simple_jopt_simple",
-        "@maven//:org_slf4j_slf4j_api",
-        "@maven//:org_slf4j_slf4j_ext",
-    ],
-)
