@@ -104,8 +104,8 @@ public final class FlowStateGenerator {
                         runtime.jdbcNames().resultSet(),
                         runtime.jdbcNames().metaData(),
                         runtime.jdbcNames().columnCount())
-                .addCode(blocks.setFieldToSelf(runtime.jdbcNames().connection()))
-                .addCode(blocks.setFieldToSelf(runtime.jdbcNames().statement()))
+                .addCode(blocks.initializeFieldToSelf(runtime.jdbcNames().connection()))
+                .addCode(blocks.initializeFieldToSelf(runtime.jdbcNames().statement()))
                 .build();
     }
 

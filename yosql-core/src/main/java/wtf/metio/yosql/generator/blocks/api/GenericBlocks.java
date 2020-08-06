@@ -11,7 +11,7 @@ public interface GenericBlocks {
 
     CodeBlock close(String resource);
 
-    CodeBlock setFieldToSelf(String fieldName);
+    CodeBlock initializeFieldToSelf(String fieldName);
 
     CodeBlock returnValue(CodeBlock value);
 

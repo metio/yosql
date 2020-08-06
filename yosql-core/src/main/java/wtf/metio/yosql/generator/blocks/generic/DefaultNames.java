@@ -4,6 +4,8 @@ import wtf.metio.yosql.generator.blocks.api.Names;
 
 final class DefaultNames implements Names {
 
+    // TODO: read from configuration
+
     @Override
     public String logger() {
         return "LOG";

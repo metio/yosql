@@ -1,6 +1,0 @@
-for (int batch = 0; batch < test.length; batch++) {
-  for (final int jdbcIndex : index.get("test")) {
-    statement.setObject(jdbcIndex, test[batch]);
-  }
-  statement.addBatch();
-}

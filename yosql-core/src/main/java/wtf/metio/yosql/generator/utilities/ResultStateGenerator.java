@@ -108,9 +108,9 @@ public final class ResultStateGenerator {
                 .addParameter(jdbcParameters.resultSet())
                 .addParameter(jdbcParameters.metaData())
                 .addParameter(jdbcParameters.columnCount())
-                .addCode(blocks.setFieldToSelf(jdbcNames.resultSet()))
-                .addCode(blocks.setFieldToSelf(jdbcNames.metaData()))
-                .addCode(blocks.setFieldToSelf(jdbcNames.columnCount()))
+                .addCode(blocks.initializeFieldToSelf(jdbcNames.resultSet()))
+                .addCode(blocks.initializeFieldToSelf(jdbcNames.metaData()))
+                .addCode(blocks.initializeFieldToSelf(jdbcNames.columnCount()))
                 .build();
     }
 

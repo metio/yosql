@@ -4,8 +4,12 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.yosql.generator.blocks.api.Variables;
 import wtf.metio.yosql.model.configuration.VariableConfiguration;
+import wtf.metio.yosql.model.options.VariableTypeOptions;
 
+import javax.lang.model.element.Modifier;
 import java.util.StringJoiner;
+
+import static java.util.stream.Collectors.joining;
 
 final class DefaultVariables implements Variables {
 
@@ -19,9 +23,16 @@ final class DefaultVariables implements Variables {
     public CodeBlock variable(final String name, final Class<?> variableClass) {
         final var modifiers = options.modifiers();
         if (modifiers.isEmpty()) {
-            return CodeBlock.builder().add("$T $N", name, variableClass).build();
+            if (VariableTypeOptions.VAR.equals(options.variableType())) {
+                return CodeBlock.builder().add("var $N", name).build();
+            }
+            return CodeBlock.builder().add("$T $N", variableClass, name).build();
         }
-        return CodeBlock.builder().add("$N $T $N", modifiers, name, variableClass).build();
+        final var modifier = modifiers.stream().map(Modifier::toString).collect(joining(" "));
+        if (VariableTypeOptions.VAR.equals(options.variableType())) {
+            return CodeBlock.builder().add("$N var $N", modifier, name).build();
+        }
+        return CodeBlock.builder().add("$N $T $N", modifier, variableClass, name).build();
     }
 
     @Override
@@ -33,7 +44,7 @@ final class DefaultVariables implements Variables {
     public CodeBlock variable(final String name, final Class<?> variableClass, final CodeBlock initializer) {
         return variable(name, variableClass.toString(), initializer);
     }
-    
+
     private CodeBlock variable(final String name, final String variableClass, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");

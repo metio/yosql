@@ -18,21 +18,21 @@ final class DefaultGenericBlocks implements GenericBlocks {
     }
 
     @Override
+    public CodeBlock returnValue(final CodeBlock value) {
+        return CodeBlock.builder()
+                .addStatement("return $L", value)
+                .build();
+    }
+
+    @Override
     public CodeBlock close(final String resource) {
         return CodeBlock.builder().addStatement("$N.close()", resource).build();
     }
 
     @Override
-    public CodeBlock setFieldToSelf(final String fieldName) {
+    public CodeBlock initializeFieldToSelf(final String fieldName) {
         return CodeBlock.builder()
                 .addStatement("this.$N = $N", fieldName, fieldName)
-                .build();
-    }
-
-    @Override
-    public CodeBlock returnValue(final CodeBlock value) {
-        return CodeBlock.builder()
-                .addStatement("return $L", value)
                 .build();
     }
 

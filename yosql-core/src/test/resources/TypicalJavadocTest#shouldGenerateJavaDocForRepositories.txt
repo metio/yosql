@@ -1,4 +1,0 @@
-Generated based on the following file(s):
-<ul>
-<li>test/path/file.sql</li>
-</ul>
