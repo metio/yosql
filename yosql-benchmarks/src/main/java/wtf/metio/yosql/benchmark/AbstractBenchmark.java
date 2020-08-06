@@ -6,11 +6,15 @@
  */
 package wtf.metio.yosql.benchmark;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,26 +23,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-
 /**
  * Encapsulates common benchmark functionality.
  */
 @State(Scope.Benchmark)
 public abstract class AbstractBenchmark {
 
-    private static final String         BENCHMARK_ROOT_DIRECTORY = "yosql-benchmark";
-    private static final String         INPUT_DIRECTORY          = "sql-files";
-    private static final String         OUTPUT_DIRECTORY         = "output";
+    private static final String BENCHMARK_ROOT_DIRECTORY = "yosql-benchmark";
+    private static final String INPUT_DIRECTORY = "sql-files";
+    private static final String OUTPUT_DIRECTORY = "output";
 
-    protected static final List<String> SUPPORTED_USE_CASES      = Arrays.asList(
+    protected static final List<String> SUPPORTED_USE_CASES = Arrays.asList(
             "callFunction.sql",
             "callFunctionMultiple.sql",
             "insertData.sql",
@@ -48,13 +43,12 @@ public abstract class AbstractBenchmark {
             "updateData.sql",
             "updateDataMultiple.sql");
 
-    private Path                        tempDirectory;
-    protected Path                      inputDirectory;
-    protected Path                      outputDirectory;
+    private Path tempDirectory;
+    protected Path inputDirectory;
+    protected Path outputDirectory;
 
     /**
-     * @throws IOException
-     *             In case anything goes wrong while creating a temporary directory.
+     * @throws IOException In case anything goes wrong while creating a temporary directory.
      */
     @Setup
     public void setup() throws IOException {
@@ -69,15 +63,12 @@ public abstract class AbstractBenchmark {
     }
 
     /**
-     * @throws IOException
-     *             In case anything goes wrong while cleaning up the temporary directory.
+     * @throws IOException In case anything goes wrong while cleaning up the temporary directory.
      */
     @TearDown
     public void tearDown() throws IOException {
         try (Stream<Path> files = Files.walk(tempDirectory)) {
-            files
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+            files.map(Path::toFile).forEach(File::delete);
         }
     }
 
@@ -93,7 +84,7 @@ public abstract class AbstractBenchmark {
                 new InputStreamReader(updateData, StandardCharsets.UTF_8))) {
             final String insertDataRaw = insertDataReader.lines().collect(Collectors.joining("\n"));
             final Path insertDataSqlFile = tempDirectory.resolve(fileName);
-            Files.write(insertDataSqlFile, insertDataRaw.getBytes(StandardCharsets.UTF_8));
+            Files.writeString(insertDataSqlFile, insertDataRaw);
             for (int index = 1; index <= numberOfRepositories; index++) {
                 final Path repositoryDirectory = inputDirectory.resolve(repositoryName(index));
                 Files.createDirectories(repositoryDirectory);
@@ -104,7 +95,7 @@ public abstract class AbstractBenchmark {
         }
     }
 
-    protected final static String repositoryName(final int index) {
+    protected static String repositoryName(final int index) {
         return "repository" + index;
     }
 

@@ -54,24 +54,6 @@ public class BenchmarkConfigurationModule {
                 translator.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
 
         return RuntimeConfiguration.builder()
-                .setRepositoryNameSuffix(translator.nonLocalized(REPOSITORY_NAME_SUFFIX_DEFAULT))
-                .setAllowedCallPrefixes(
-                        Arrays.asList(translator.nonLocalized(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT).split(",")))
-                .setAllowedReadPrefixes(
-                        Arrays.asList(translator.nonLocalized(METHOD_ALLOWED_READ_PREFIXES_DEFAULT).split(",")))
-                .setAllowedWritePrefixes(
-                        Arrays.asList(translator.nonLocalized(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT).split(",")))
-                .setValidateMethodNamePrefixes(
-                        Boolean.parseBoolean(translator.nonLocalized(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT)))
-                .setMethodCatchAndRethrow(Boolean.parseBoolean(translator.nonLocalized(METHOD_CATCH_AND_RETHROW_DEFAULT)))
-                .setRepositoryGenerateInterface(
-                        Boolean.parseBoolean(translator.nonLocalized(REPOSITORY_GENERATE_INTERFACE_DEFAULT)))
-                .setLoggingApi(LoggingApiOptions.valueOf(translator.nonLocalized(LOGGING_API_DEFAULT)))
-                .setDefaulFlowStateClassName(translator.nonLocalized(DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT))
-                .setDefaultResultStateClassName(translator.nonLocalized(DEFAULT_RESULT_STATE_CLASS_NAME_DEFAULT))
-                .setDefaultResultRowClassName(defaultResultRowClassName)
-                .setDefaultRowConverter(defaultRowConverterAlias)
-                .setResultRowConverters(Arrays.asList(toResultRow))
                 .build();
     }
 

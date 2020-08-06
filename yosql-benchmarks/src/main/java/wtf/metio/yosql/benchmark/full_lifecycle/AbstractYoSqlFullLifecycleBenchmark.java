@@ -7,8 +7,6 @@
 package wtf.metio.yosql.benchmark.full_lifecycle;
 
 import org.openjdk.jmh.annotations.Setup;
-
-import wtf.metio.yosql.benchmark.BenchmarkConfigurationModule;
 import wtf.metio.yosql.benchmark.DaggerYoSqlBenchmarkComponent;
 
 abstract class AbstractYoSqlFullLifecycleBenchmark extends AbstractFullLifecycleBenchmark {
@@ -16,7 +14,6 @@ abstract class AbstractYoSqlFullLifecycleBenchmark extends AbstractFullLifecycle
     @Setup
     public final void setUpYoSql() {
         yosql = DaggerYoSqlBenchmarkComponent.builder()
-                .benchmarkConfigurationModule(new BenchmarkConfigurationModule(inputDirectory, outputDirectory))
                 .build()
                 .yosql();
     }

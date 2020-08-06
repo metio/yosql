@@ -6,33 +6,27 @@
  */
 package wtf.metio.yosql.benchmark;
 
-import javax.inject.Singleton;
-
 import dagger.Component;
 import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.YoSqlModule;
-import wtf.metio.yosql.dagger.DefaultLocaleModule;
-import wtf.metio.yosql.dagger.ErrorModule;
+import wtf.metio.yosql.dagger.DaggerModule;
+import wtf.metio.yosql.files.FilesModule;
+import wtf.metio.yosql.generator.CodeGeneratorModule;
 import wtf.metio.yosql.i18n.I18nModule;
-import wtf.metio.yosql.dagger.LoggerModule;
-import wtf.metio.yosql.generator.dao.DaoModule;
-import wtf.metio.yosql.generator.logging.LoggingModule;
-import wtf.metio.yosql.generator.utilities.DefaultUtilitiesModule;
-import wtf.metio.yosql.files.SqlFileParser;
+import wtf.metio.yosql.orchestration.OrchestrationModule;
+
+import javax.inject.Singleton;
 
 /**
  * Dagger module for running micro-benchmarks.
  */
 @Singleton
 @Component(modules = {
-        BenchmarkConfigurationModule.class,
-        DefaultLocaleModule.class,
-        DefaultUtilitiesModule.class,
-        LoggingModule.class,
         I18nModule.class,
-        ErrorModule.class,
-        LoggerModule.class,
-        DaoModule.class,
+        DaggerModule.class,
+        OrchestrationModule.class,
+        FilesModule.class,
+        CodeGeneratorModule.class,
         YoSqlModule.class,
 })
 public interface YoSqlBenchmarkComponent {
@@ -41,10 +35,5 @@ public interface YoSqlBenchmarkComponent {
      * @return The yosql instance contained in this graph.
      */
     YoSql yosql();
-
-    /**
-     * @return The .sql file parser contained in this graph.
-     */
-    SqlFileParser sqlFileParser();
 
 }
