@@ -16,12 +16,16 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.generator.utilities.ToResultRowConverterGenerator;
-import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.configuration.*;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
+import wtf.metio.yosql.model.options.LoggingApiOptions;
+import wtf.metio.yosql.model.options.StatementInRepositoryOptions;
+import wtf.metio.yosql.model.options.VariableTypeOptions;
 import wtf.metio.yosql.model.sql.ParameterConverter;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 
 import javax.annotation.processing.Generated;
+import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -312,9 +316,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     @Override
     public void execute() {
-        final var messages = new MessageConveyor(Locale.ENGLISH);
         final var errors = new ExecutionErrors();
-        final var configuration = createConfiguration(messages, errors);
+        final var configuration = createConfiguration(errors);
         final var yoSql = createYoSql(configuration, errors);
 
         yoSql.generateCode();
@@ -324,60 +327,135 @@ public class YoSqlGenerateMojo extends AbstractMojo {
         return DaggerYoSqlComponent.builder().build().yosql();
     }
 
-    private RuntimeConfiguration createConfiguration(final IMessageConveyor messages, final ExecutionErrors errors) {
+    private RuntimeConfiguration createConfiguration(final ExecutionErrors errors) {
+        final var messages = new MessageConveyor(Locale.ENGLISH);
         // TODO: find first dot or take as-is
         final int parsedJavaVersion = Integer.parseInt(java.substring(java.length() - 1));
 
-        final RuntimeConfiguration.Builder builder = RuntimeConfiguration.builder()
+        final var files = FileConfiguration.builder()
                 .setOutputBaseDirectory(outputBaseDirectory.toPath())
-                .setBasePackageName(basePackageName)
-                .setUtilityPackageName(utilityPackageName)
-                .setConverterPackageName(converterPackageName)
-                .setSqlStatementSeparator(sqlStatementSeparator)
+                .setInputBaseDirectory(outputBaseDirectory.toPath()) // TODO: configure w/ Maven
                 .setSqlFilesCharset(sqlFilesCharset)
-                .setRepositoryNameSuffix(repositoryNameSuffix)
-                .setRepositoryGenerateInterface(repositoryGenerateInterface)
-                .setRepositorySqlStatements(repositorySqlStatements)
-                .setClassGeneratedAnnotation(classGeneratedAnnotation)
-                .setFieldGeneratedAnnotation(fieldGeneratedAnnotation)
-                .setMethodGeneratedAnnotation(methodGeneratedAnnotation)
-                .setGeneratedAnnotationComment(generatedAnnotationComment)
+                .setSqlStatementSeparator(sqlStatementSeparator)
+                .setSqlFilesSuffix(".sql") // TODO: configure w/ Maven
+                .build();
+        final var annotations = AnnotationConfiguration.builder()
+                .setClassComment(generatedAnnotationComment) // TODO: split input field
+                .setFieldComment(generatedAnnotationComment) // TODO: split input field
+                .setMethodComment(generatedAnnotationComment) // TODO: split input field
+                .build();
+        final var java = JavaConfiguration.builder()
+                .setTargetVersion(parsedJavaVersion)
+                .setUseVar(true) // TODO: configure w/ Maven
+                .setUseRecords(true) // TODO: configure w/ Maven
+                .build();
+        final var logging = LoggingConfiguration.builder()
+                .setApi(determineLoggingApi())
+                .build();
+        final var methods = MethodConfiguration.builder()
+                .setGenerateBatchApi(methodBatchApi)
+                .setGenerateStandardApi(methodStandardApi)
+                .setGenerateStreamEagerApi(parsedJavaVersion > 7 && methodStreamEagerApi)
+                .setGenerateStreamLazyApi(parsedJavaVersion > 7 && methodStreamLazyApi)
+                .setGenerateRxJavaApi(true) // TODO: configure w/ Maven
                 .setMethodBatchPrefix(methodBatchPrefix)
                 .setMethodBatchSuffix(methodBatchSuffix)
-                .setMethodRxJavaPrefix(methodRxJavaPrefix)
-                .setMethodRxJavaSuffix(methodRxJavaSuffix)
                 .setMethodStreamPrefix(methodStreamPrefix)
                 .setMethodStreamSuffix(methodStreamSuffix)
+                .setMethodRxJavaPrefix(methodRxJavaPrefix)
+                .setMethodRxJavaSuffix(methodRxJavaSuffix)
                 .setMethodEagerName(methodEagerName)
                 .setMethodLazyName(methodLazyName)
                 .setMethodCatchAndRethrow(methodCatchAndRethrow)
-                .setGenerateStandardApi(methodStandardApi)
-                .setGenerateBatchApi(methodBatchApi)
-                .setGenerateStreamEagerApi(parsedJavaVersion > 7 ? methodStreamEagerApi : false)
-                .setGenerateStreamLazyApi(parsedJavaVersion > 7 ? methodStreamLazyApi : false)
-                .setAllowedReadPrefixes(Arrays.asList("select", "read"))
-                .setAllowedWritePrefixes(Arrays.asList("insert", "update", "write"))
-                .setAllowedCallPrefixes(Arrays.asList("call", "execute"))
+                .setAllowedReadPrefixes(List.of("select", "read")) // TODO: configure w/ Maven
+                .setAllowedWritePrefixes(List.of("insert", "update", "write")) // TODO: configure w/ Maven
+                .setAllowedCallPrefixes(List.of("call", "execute")) // TODO: configure w/ Maven
                 .setValidateMethodNamePrefixes(methodValidateNamePrefixes)
-                .setDefaultRowConverter(defaultRowConverter);
+                .build();
+        final var repositories = RepositoryConfiguration.builder()
+                .setRepositoryGenerateInterface(repositoryGenerateInterface)
+                .setRepositoryNameSuffix(repositoryNameSuffix)
+                .build();
+        final var resources = ResourceConfiguration.builder()
+                .setMaxThreads(1) // TODO: configure w/ Maven
+                .build();
+        final var variables = VariableConfiguration.builder()
+                .setModifiers(List.of(Modifier.FINAL)) // TODO: configure w/ Maven
+                .setVariableType(VariableTypeOptions.TYPE) // TODO: configure w/ Maven
+                .build();
+        final var statements = StatementConfiguration.builder()
+                .setEmbed(StatementInRepositoryOptions.INLINE_CONCAT) // TODO: configure w/ Maven
+                .build();
+        final var names = NameConfiguration.builder()
+                .setBasePackageName(basePackageName)
+                .setUtilityPackageName(utilityPackageName)
+                .setConverterPackageName(converterPackageName)
+                .build();
+        final var utilPackage = basePackageName + "." + utilityPackageName;
+        final var result = ResultConfiguration.builder()
+                .setResultRowClass(ClassName.get(utilPackage, "resultRow")) // TODO: configure w/ Maven
+                .setResultStateClass(ClassName.get(utilPackage, "resultState")) // TODO: configure w/ Maven
+                .build();
+        final var jdbcNames = JdbcNamesConfiguration.builder()
+                .setBatch("batch") // TODO: configure w/ Maven
+                .setColumnCount("columnCount") // TODO: configure w/ Maven
+                .setColumnLabel("columnLabel") // TODO: configure w/ Maven
+                .setConnection("connection") // TODO: configure w/ Maven
+                .setDataSource("dataSource") // TODO: configure w/ Maven
+                .setIndex("index") // TODO: configure w/ Maven
+                .setJdbcIndex("jdbcIndex") // TODO: configure w/ Maven
+                .setList("list") // TODO: configure w/ Maven
+                .setMetaData("metaData") // TODO: configure w/ Maven
+                .setResultSet("resultSet") // TODO: configure w/ Maven
+                .setRow("row") // TODO: configure w/ Maven
+                .setStatement("statement") // TODO: configure w/ Maven
+                .build();
+        final var rxJava = RxJavaConfiguration.builder()
+                .setFlowStateClass(ClassName.get(utilPackage, "flowState")) // TODO: configure w/ Maven
+                .build();
 
-        final String utilPackage = basePackageName + "" + utilityPackageName;
-        builder.setFlowStateClass(ClassName.get(utilPackage, "flowState"));
-        builder.setResultStateClass(ClassName.get(utilPackage, "resultState"));
-        builder.setResultRowClass(ClassName.get(utilPackage, "resultRow"));
+//        final RuntimeConfiguration.Builder builder = RuntimeConfiguration.builder()
+//                .setClassGeneratedAnnotation(classGeneratedAnnotation)
+//                .setFieldGeneratedAnnotation(fieldGeneratedAnnotation)
+//                .setMethodGeneratedAnnotation(methodGeneratedAnnotation)
+//                .setGeneratedAnnotationComment(generatedAnnotationComment)
+//                .setDefaultRowConverter(defaultRowConverter);
+//
+//        final ResultRowConverter toResultRow = new ResultRowConverter();
+//        toResultRow.setAlias("resultRow");
+//        toResultRow.setResultType(utilPackage + "resultRow");
+//        toResultRow.setConverterType(
+//                basePackageName
+//                        + ""
+//                        + converterPackageName
+//                        + "ToResultRowConverter");
+//        resultRowConverters.add(toResultRow);
+//        builder.setResultRowConverters(resultRowConverters);
 
-        final ResultRowConverter toResultRow = new ResultRowConverter();
-        toResultRow.setAlias("resultRow");
-        toResultRow.setResultType(utilPackage + "resultRow");
-        toResultRow.setConverterType(
-                basePackageName
-                        + ""
-                        + converterPackageName
-                        + "ToResultRowConverter");
-        resultRowConverters.add(toResultRow);
-        builder.setResultRowConverters(resultRowConverters);
+        return RuntimeConfiguration.builder()
+                .setFiles(files)
+                .setAnnotations(annotations)
+                .setJava(java)
+                .setLogging(logging)
+                .setMethods(methods)
+                .setRepositories(repositories)
+                .setResources(resources)
+                .setVariables(variables)
+                .setStatements(statements)
+                .setNames(names)
+                .setResult(result)
+                .setJdbcNames(jdbcNames)
+                .setRxJava(rxJava)
+                .build();
+    }
 
-        return builder.build();
+    private LoggingApiOptions determineLoggingApi() {
+        return switch (loggingApi) {
+            case "auto", "slf4j" -> LoggingApiOptions.SLF4J;
+            case "log4j" -> LoggingApiOptions.LOG4J;
+            case "jdk" -> LoggingApiOptions.JDK;
+            default -> null;
+        };
     }
 
     private boolean isRxJava2(final Dependency dependency) {

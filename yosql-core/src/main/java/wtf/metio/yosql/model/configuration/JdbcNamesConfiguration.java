@@ -40,25 +40,25 @@ public abstract class JdbcNamesConfiguration {
 
         public abstract Builder setConnection(String connection);
 
-        public abstract Builder setColumnCount(String connection);
+        public abstract Builder setColumnCount(String columnCount);
 
-        public abstract Builder setColumnLabel(String connection);
+        public abstract Builder setColumnLabel(String columnLabel);
 
-        public abstract Builder setStatement(String connection);
+        public abstract Builder setStatement(String statement);
 
-        public abstract Builder setMetaData(String connection);
+        public abstract Builder setMetaData(String metaData);
 
-        public abstract Builder setResultSet(String connection);
+        public abstract Builder setResultSet(String resultSet);
 
-        public abstract Builder setBatch(String connection);
+        public abstract Builder setBatch(String batch);
 
-        public abstract Builder setList(String connection);
+        public abstract Builder setList(String list);
 
-        public abstract Builder setJdbcIndex(String connection);
+        public abstract Builder setJdbcIndex(String jdbcIndex);
 
-        public abstract Builder setIndex(String connection);
+        public abstract Builder setIndex(String index);
 
-        public abstract Builder setRow(String connection);
+        public abstract Builder setRow(String row);
 
         public abstract JdbcNamesConfiguration build();
 

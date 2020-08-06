@@ -13,13 +13,16 @@ public abstract class VariableConfiguration {
         return new AutoValue_VariableConfiguration.Builder();
     }
 
+    // TODO: align with JavaConfiguration#useVar
     public abstract VariableTypeOptions variableType();
+
     public abstract List<Modifier> modifiers();
 
     @AutoValue.Builder
     public abstract static class Builder {
 
         public abstract Builder setVariableType(VariableTypeOptions variableType);
+
         public abstract Builder setModifiers(List<Modifier> modifiers);
 
         public abstract VariableConfiguration build();

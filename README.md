@@ -8,6 +8,7 @@ folder contains an example application that uses all available features of YoSQL
 - https://github.com/krisajenkins/yesql
 - https://www.hugsql.org/
 - https://github.com/OpenGamma/ElSql
+- https://sqlc.dev/ (Go)
 
 ## License
 

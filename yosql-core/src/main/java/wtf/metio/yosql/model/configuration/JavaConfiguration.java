@@ -13,12 +13,16 @@ public abstract class JavaConfiguration {
 
     public abstract boolean useVar();
 
+    public abstract boolean useRecords();
+
     @AutoValue.Builder
     public abstract static class Builder {
 
         public abstract Builder setTargetVersion(int targetVersion);
 
         public abstract Builder setUseVar(boolean useVar);
+
+        public abstract Builder setUseRecords(boolean useVar);
 
         public abstract JavaConfiguration build();
 

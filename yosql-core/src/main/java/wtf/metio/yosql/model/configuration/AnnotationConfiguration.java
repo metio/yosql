@@ -22,7 +22,6 @@ public abstract class AnnotationConfiguration {
     public abstract String classComment();
     public abstract String fieldComment();
     public abstract String methodComment();
-
     public abstract String generatorName();
 
     @AutoValue.Builder
