@@ -11,7 +11,8 @@ Feature: Read data from a database
   returned by the database.
 
   Background:
-    Given database has data
+    Given database has schema
+    And database has data
 
   Scenario: Developer uses standard read method
     When the standard read method is called

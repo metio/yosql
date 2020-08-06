@@ -79,7 +79,6 @@
         <module>yosql-cli</module>
         <module>yosql-maven-plugin</module>
         <module>yosql-gradle-plugin</module>
-        <module>yosql-testutils</module>
         <module>yosql-yeps</module>
         <module>yosql-example</module>
         <module>yosql-benchmarks</module>

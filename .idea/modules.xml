@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/yosql-example/yosql-example.iml" filepath="$PROJECT_DIR$/yosql-example/yosql-example.iml" />
       <module fileurl="file://$PROJECT_DIR$/yosql-gradle-plugin/yosql-gradle-plugin.iml" filepath="$PROJECT_DIR$/yosql-gradle-plugin/yosql-gradle-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/yosql-maven-plugin/yosql-maven-plugin.iml" filepath="$PROJECT_DIR$/yosql-maven-plugin/yosql-maven-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/yosql-testutils/yosql-testutils.iml" filepath="$PROJECT_DIR$/yosql-testutils/yosql-testutils.iml" />
       <module fileurl="file://$PROJECT_DIR$/yosql-yeps/yosql-yeps.iml" filepath="$PROJECT_DIR$/yosql-yeps/yosql-yeps.iml" />
     </modules>
   </component>

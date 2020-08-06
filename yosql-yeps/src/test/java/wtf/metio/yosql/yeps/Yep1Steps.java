@@ -6,38 +6,29 @@
  */
 package wtf.metio.yosql.yeps;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Assertions;
-
 import wtf.metio.yosql.utils.AbstractDatabaseSteps;
-import yosql.yep_1.PersonRepository;
-import yosql.yep_1.util.ResultRow;
-
-import javax.sql.DataSource;
 
 /**
  * Defines steps for YEP-1.
  */
 public final class Yep1Steps extends AbstractDatabaseSteps {
 
-    private PersonRepository repository;
-    private List<ResultRow>  data;
+//    private PersonRepository repository;
+//    private List<ResultRow> data;
 
     /**
      * Creates the steps for YEP-1.
      */
     public Yep1Steps() {
-      super(1);
+        super(1);
         Given("database has data", () -> {
-          repository = new PersonRepository(dataSource);
+            // repository = new PersonRepository(dataSource);
         });
         When("the standard read method is called", () -> {
-          data = repository.readPerson();
+            // data = repository.readPerson();
         });
         Then("data should be returned from the database", () -> {
-            Assertions.assertFalse(data.isEmpty());
+            // Assertions.assertFalse(data.isEmpty());
         });
     }
 
