@@ -6,9 +6,9 @@
  */
 package wtf.metio.yosql.model.options;
 
-import java.util.stream.Stream;
-
 import wtf.metio.yosql.testutils.EnumTCK;
+
+import java.util.stream.Stream;
 
 final class GenerateOptionsTest implements EnumTCK<GenerateOptions> {
 

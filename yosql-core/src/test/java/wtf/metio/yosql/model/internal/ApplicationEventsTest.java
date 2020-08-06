@@ -1,8 +1,8 @@
 package wtf.metio.yosql.model.internal;
 
-import java.util.stream.Stream;
-
 import wtf.metio.yosql.testutils.EnumTCK;
+
+import java.util.stream.Stream;
 
 final class ApplicationEventsTest implements EnumTCK<ApplicationEvents> {
 

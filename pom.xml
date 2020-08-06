@@ -75,6 +75,7 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
+        <module>yosql-testutils</module>
         <module>yosql-core</module>
         <module>yosql-cli</module>
         <module>yosql-maven-plugin</module>

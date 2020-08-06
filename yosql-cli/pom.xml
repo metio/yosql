@@ -41,6 +41,11 @@
     <dependencies>
         <dependency>
             <groupId>wtf.metio.yosql</groupId>
+            <artifactId>yosql-testutils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql</groupId>
             <artifactId>yosql-core</artifactId>
             <version>${project.version}</version>
         </dependency>

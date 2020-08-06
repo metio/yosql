@@ -1,9 +1,8 @@
 package wtf.metio.yosql.model.descriptions;
 
-import java.util.stream.Stream;
-
-import wtf.metio.yosql.model.descriptions.HelpOptionDescriptions;
 import wtf.metio.yosql.testutils.EnumTCK;
+
+import java.util.stream.Stream;
 
 final class HelpOptionDescriptionsTest implements EnumTCK<HelpOptionDescriptions> {
 

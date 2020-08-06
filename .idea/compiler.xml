@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="yosql-example" />
         <module name="yosql-maven-plugin" />
+        <module name="yosql-testutils" />
         <module name="yosql-yeps" />
         <module name="yosql-benchmarks" />
         <module name="yosql-cli" />
