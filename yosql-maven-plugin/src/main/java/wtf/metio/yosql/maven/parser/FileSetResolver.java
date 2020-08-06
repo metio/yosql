@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.parser;
+package wtf.metio.yosql.maven.parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,12 +21,12 @@ import wtf.metio.yosql.model.errors.ExecutionErrors;
 
 public class FileSetResolver implements SqlFileResolver {
 
-    private final ExecutionErrors pluginErrors;
+    private final ExecutionErrors errors;
     private final FileSet         fileSet;
 
     @Inject
-    public FileSetResolver(final ExecutionErrors pluginErrors, final FileSet fileSet) {
-        this.pluginErrors = pluginErrors;
+    public FileSetResolver(final ExecutionErrors errors, final FileSet fileSet) {
+        this.errors = errors;
         this.fileSet = fileSet;
     }
 
@@ -40,7 +40,7 @@ public class FileSetResolver implements SqlFileResolver {
                     .stream()
                     .map(File::toPath);
         } catch (final IOException exception) {
-            pluginErrors.add(exception);
+            errors.add(exception);
             return Stream.of();
         }
     }

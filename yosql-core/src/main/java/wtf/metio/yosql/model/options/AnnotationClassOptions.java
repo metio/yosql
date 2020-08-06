@@ -5,7 +5,7 @@ import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
 
 /**
- * Enumeration of all known options for the annotation class itself.
+ * Enumeration of all known options for the "@Generated" annotation class itself.
  */
 @LocaleData(@Locale("en"))
 @BaseName("annotation-class-options")

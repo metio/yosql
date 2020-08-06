@@ -13,7 +13,7 @@ public enum StatementInRepositoryOptions {
     /**
      * SQL statements are copied into repositories using text blocks.
      *
-     * @since Java 13
+     * @since Java 15
      */
     INLINE_TEXT_BLOCK,
 
