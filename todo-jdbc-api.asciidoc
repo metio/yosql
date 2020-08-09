@@ -5,7 +5,7 @@
 - Simple stored procedures with IN/OUT parameters
 - Statement batches and procedure calls with unknown update count / result set / exception streams (mostly for MySQL and SQL Server)
 - javax.sql.Connection as first parameter for more fine-grained transaction management
-- "inline" SQL statements, "textblock" for java 13/14, "external" for loading from .sql files
+- "inline" SQL statements, "textblock" for java 15, "external" for loading from .sql files
 - multi-select statements: Repositories prepare a statement, GlobalRepository (or similar) executes all statements together using a single connection
 - rename all config options according to new naming scheme (and define new naming scheme)
 - date in @Generated annotations should be optional for reproducible builds
