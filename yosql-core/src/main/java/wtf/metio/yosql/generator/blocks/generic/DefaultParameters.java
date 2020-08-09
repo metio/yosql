@@ -64,6 +64,7 @@ final class DefaultParameters implements Parameters {
 
     @Override
     public Iterable<ParameterSpec> resultState(final TypeName type) {
+        // TODO: rename/remove method?
         return Collections.singletonList(parameter(type, names.result()));
     }
 
