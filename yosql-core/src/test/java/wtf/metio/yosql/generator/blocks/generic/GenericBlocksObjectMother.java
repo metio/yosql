@@ -4,9 +4,11 @@ import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
 import wtf.metio.yosql.generator.blocks.api.Names;
 import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.api.Variables;
 
 import static wtf.metio.yosql.i18n.I18nObjectMother.testTranslator;
 import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.annotationConfig;
+import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.variableConfiguration;
 import static wtf.metio.yosql.model.options.AnnotationClassOptions.PROCESSING_API;
 
 public final class GenericBlocksObjectMother {
@@ -21,6 +23,10 @@ public final class GenericBlocksObjectMother {
 
     public static Parameters parameters() {
         return new DefaultParameters(names());
+    }
+
+    public static Variables variables() {
+        return new DefaultVariables(variableConfiguration());
     }
 
     public static AnnotationGenerator annotationGenerator() {

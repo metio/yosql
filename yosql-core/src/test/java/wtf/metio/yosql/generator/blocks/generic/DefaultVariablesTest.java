@@ -2,13 +2,11 @@ package wtf.metio.yosql.generator.blocks.generic;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.model.configuration.VariableConfiguration;
-import wtf.metio.yosql.model.options.VariableTypeOptions;
 import wtf.metio.yosql.testutils.ValidationFile;
 import wtf.metio.yosql.testutils.ValidationFileTest;
 
-import javax.lang.model.element.Modifier;
-import java.util.List;
+import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.variableConfiguration;
+import static wtf.metio.yosql.model.options.VariableTypeOptions.VAR;
 
 @DisplayName("DefaultVariables")
 class DefaultVariablesTest extends ValidationFileTest {
@@ -17,10 +15,7 @@ class DefaultVariablesTest extends ValidationFileTest {
     @DisplayName("creates variables")
     void shouldCreateVariable(final ValidationFile validationFile) {
         // given
-        final var config = VariableConfiguration.builder()
-                .setModifiers(List.of(Modifier.FINAL))
-                .setVariableType(VariableTypeOptions.TYPE)
-                .build();
+        final var config = variableConfiguration();
         final var variables = new DefaultVariables(config);
 
         // when
@@ -34,10 +29,7 @@ class DefaultVariablesTest extends ValidationFileTest {
     @DisplayName("creates variables with the 'var' keyword")
     void shouldCreateVariableWithVarKeyword(final ValidationFile validationFile) {
         // given
-        final var config = VariableConfiguration.builder()
-                .setModifiers(List.of())
-                .setVariableType(VariableTypeOptions.VAR)
-                .build();
+        final var config = variableConfiguration(VAR);
         final var variables = new DefaultVariables(config);
 
         // when
