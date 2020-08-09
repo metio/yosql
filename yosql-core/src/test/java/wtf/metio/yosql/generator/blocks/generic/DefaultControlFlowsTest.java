@@ -1,5 +1,6 @@
 package wtf.metio.yosql.generator.blocks.generic;
 
+import com.squareup.javapoet.CodeBlock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,15 @@ class DefaultControlFlowsTest extends ValidationFileTest {
     @DisplayName("try with resource")
     void shouldTryResource(final ValidationFile validationFile) {
         validate(generator.tryWithResource(CodeBlocks.code("resource")), validationFile);
+    }
+
+    @Test
+    @DisplayName("end try block")
+    void shouldEndTry(final ValidationFile validationFile) {
+        validate(CodeBlock.builder()
+                .add(generator.tryWithResource(CodeBlocks.code("resource")))
+                .add(generator.endTryBlock())
+                .build(), validationFile);
     }
 
     @Test

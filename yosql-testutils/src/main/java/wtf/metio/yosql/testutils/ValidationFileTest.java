@@ -6,11 +6,8 @@
  */
 package wtf.metio.yosql.testutils;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.*;
 import com.squareup.javapoet.MethodSpec.Builder;
-import com.squareup.javapoet.ParameterSpec;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +22,12 @@ public class ValidationFileTest {
             final CodeBlock codeBlock,
             final ValidationFile validationFile) {
         Assertions.assertEquals(validationFile.read(), codeBlock.toString());
+    }
+
+    protected static void validate(
+            final TypeSpec typeSpec,
+            final ValidationFile validationFile) {
+        Assertions.assertEquals(validationFile.read(), typeSpec.toString());
     }
 
     protected static void validate(
