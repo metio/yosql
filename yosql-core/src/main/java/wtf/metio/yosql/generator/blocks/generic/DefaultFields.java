@@ -27,8 +27,8 @@ final class DefaultFields implements Fields {
     }
 
     private FieldSpec.Builder prepareField(final TypeName type, final String name) {
-        return builder(type, name)
-                .addModifiers(Modifier.PRIVATE, Modifier.FINAL);
+        // TODO: configure modifiers?
+        return builder(type, name).addModifiers(Modifier.PRIVATE, Modifier.FINAL);
     }
 
     @Override
@@ -38,13 +38,14 @@ final class DefaultFields implements Fields {
 
     @Override
     public FieldSpec.Builder prepareConstant(final TypeName type, final String name) {
-        return builder(type, name)
-                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL);
+        // TODO: configure modifiers?
+        return builder(type, name).addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL);
     }
 
     @Override
+    // TODO: do we need "field" & "privateField"?
     public FieldSpec privateField(final TypeName type, final String name) {
-        return FieldSpec.builder(type, name)
+        return builder(type, name)
                 .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
     }
