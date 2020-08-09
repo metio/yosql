@@ -6,6 +6,7 @@
  */
 package wtf.metio.yosql.testutils;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec.Builder;
@@ -42,6 +43,22 @@ public class ValidationFileTest {
             final ParameterSpec parameter,
             final ValidationFile validationFile) {
         Assertions.assertEquals(validationFile.read(), parameter.toString());
+    }
+
+    protected static void validate(
+            final AnnotationSpec annotation,
+            final ValidationFile validationFile) {
+        Assertions.assertEquals(validationFile.read(), annotation.toString());
+    }
+
+    protected static void validate(
+            final Iterable<AnnotationSpec> annotations,
+            final ValidationFile validationFile) {
+        int counter = 0;
+        for (final var annotation : annotations) {
+            Assertions.assertEquals(validationFile.read(counter), annotation.toString());
+            counter++;
+        }
     }
 
 }

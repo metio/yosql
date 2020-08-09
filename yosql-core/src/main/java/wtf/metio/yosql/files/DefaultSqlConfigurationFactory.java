@@ -248,15 +248,15 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private String calculateRepositoryNameFromParentFolder(final Path source) {
-        final Path relativePathToSqlFile = runtime.files().inputBaseDirectory().relativize(source);
+        final var relativePathToSqlFile = runtime.files().inputBaseDirectory().relativize(source);
         // TODO: I18N
         logger.debug("input path: " + runtime.files().inputBaseDirectory());
         logger.debug("source path: " + source);
         logger.debug("relative path: " + relativePathToSqlFile);
-        final String rawRepositoryName = relativePathToSqlFile.getParent().toString();
-        final String dottedRepositoryName = rawRepositoryName.replace("/", ".");
-        final String upperCaseName = upperCaseFirstLetterInLastSegment(dottedRepositoryName);
-        final String actualRepository = repositoryInBasePackage(upperCaseName);
+        final var rawRepositoryName = relativePathToSqlFile.getParent().toString();
+        final var dottedRepositoryName = rawRepositoryName.replace("/", ".");
+        final var upperCaseName = upperCaseFirstLetterInLastSegment(dottedRepositoryName);
+        final var actualRepository = repositoryInBasePackage(upperCaseName);
         return repositoryWithNameSuffix(actualRepository);
     }
 
@@ -270,8 +270,8 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private String calculateRepositoryNameFromUserInput(final SqlConfiguration configuration) {
-        final String userGivenRepository = configuration.getRepository();
-        final String actualRepository = repositoryInBasePackage(userGivenRepository);
+        final var userGivenRepository = configuration.getRepository();
+        final var actualRepository = repositoryInBasePackage(userGivenRepository);
         return repositoryWithNameSuffix(actualRepository);
     }
 
@@ -292,10 +292,10 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final Map<String, List<Integer>> parameterIndices,
             final SqlConfiguration configuration) {
         if (parametersAreValid(source, parameterIndices, configuration)) {
-            for (final Entry<String, List<Integer>> entry : parameterIndices.entrySet()) {
-                final String parameterName = entry.getKey();
+            for (final var entry : parameterIndices.entrySet()) {
+                final var parameterName = entry.getKey();
                 if (isMissingParameter(configuration, parameterName)) {
-                    final SqlParameter sqlParameter = new SqlParameter();
+                    final var sqlParameter = new SqlParameter();
                     sqlParameter.setName(parameterName);
                     configuration.getParameters().add(sqlParameter);
                 }

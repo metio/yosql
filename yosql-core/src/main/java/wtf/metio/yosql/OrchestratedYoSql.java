@@ -11,29 +11,28 @@ import wtf.metio.yosql.generator.api.CodeGenerator;
 import wtf.metio.yosql.orchestration.Orchestrator;
 
 /**
- * Default implementation of YoSql. Its responsible for the high-level orchestration
- * of a single code generation run (which can be called multiple times if desired).
- * Delegates most of the actual work to various interfaces whose implementation must
- * be injected at options.
+ * Default implementation of YoSQL. Its responsible for the high-level orchestration of a single code generation run
+ * (which can be called multiple times if desired). Delegates most of the actual work to various interfaces whose
+ * implementation must be provided at runtime.
  */
 final class OrchestratedYoSql implements YoSql {
 
     private final Orchestrator orchestrator;
-    private final FileParser files;
+    private final FileParser fileParser;
     private final CodeGenerator codeGenerator;
 
     OrchestratedYoSql(
             final Orchestrator orchestrator,
-            final FileParser files,
+            final FileParser fileParser,
             final CodeGenerator codeGenerator) {
         this.orchestrator = orchestrator;
-        this.files = files;
+        this.fileParser = fileParser;
         this.codeGenerator = codeGenerator;
     }
 
     @Override
     public void generateCode() {
-        orchestrator.execute(files::parseFiles, codeGenerator::generateCode);
+        orchestrator.execute(fileParser::parseFiles, codeGenerator::generateCode);
     }
 
 }

@@ -49,8 +49,7 @@ public interface SqlFileParser {
         int counter = 1;
         while (matcher.find()) {
             final String parameterName = matcher.group().substring(1);
-            indices.computeIfAbsent(parameterName, string -> new ArrayList<>(3))
-                    .add(Integer.valueOf(counter++));
+            indices.computeIfAbsent(parameterName, string -> new ArrayList<>(3)).add(counter++);
         }
         return indices;
     }

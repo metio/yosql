@@ -43,13 +43,14 @@ public final class DefaultConfigurationModule {
     AnnotationConfiguration provideAnnotationConfiguration(final Translator translator) {
         return AnnotationConfiguration.builder()
                 .setGeneratorName("YoSQL") // TODO: externalize
-                .setClassAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.DEFAULT)))
+                // TODO: pick correct annotation API based on Java version or config prop
+                .setClassAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.ANNOTATION_API)))
                 .setClassComment(translator.nonLocalized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setClassMembers(AnnotationMemberOptions.ALL)
-                .setFieldAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.DEFAULT)))
+                .setFieldAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.ANNOTATION_API)))
                 .setFieldComment(translator.nonLocalized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setFieldMembers(AnnotationMemberOptions.ALL)
-                .setMethodAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.DEFAULT)))
+                .setMethodAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.ANNOTATION_API)))
                 .setMethodComment(translator.nonLocalized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setMethodMembers(AnnotationMemberOptions.ALL)
                 .build();

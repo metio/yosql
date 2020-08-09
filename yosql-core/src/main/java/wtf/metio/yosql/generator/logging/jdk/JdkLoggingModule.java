@@ -16,7 +16,7 @@ import wtf.metio.yosql.generator.blocks.api.Names;
  * Dagger module for java.util.logging based logging generators.
  */
 @Module
-public class JdkLoggingModule {
+public final class JdkLoggingModule {
 
     @JDK
     @Provides

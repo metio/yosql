@@ -15,7 +15,7 @@ import wtf.metio.yosql.orchestration.Orchestrator;
 import javax.inject.Singleton;
 
 /**
- * Dagger module for YoSql itself.
+ * Dagger module for YoSQL itself.
  */
 @Module
 public class YoSqlModule {

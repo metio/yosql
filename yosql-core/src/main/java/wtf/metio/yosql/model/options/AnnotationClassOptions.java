@@ -11,13 +11,19 @@ import ch.qos.cal10n.LocaleData;
 @BaseName("annotation-class-options")
 public enum AnnotationClassOptions {
 
+    /**
+     * Option that disables adding a new annotation
+     */
     NONE,
 
+    /**
+     * Uses the "javax.annotation.Generated" annotation
+     */
     ANNOTATION_API,
 
-    PROCESSING_API,
-
-    // TODO: move to i18n class?
-    DEFAULT,
+    /**
+     * Uses the "javax.annotation.Generated" annotation
+     */
+    PROCESSING_API;
 
 }

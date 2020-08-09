@@ -26,6 +26,8 @@ final class DefaultSqlFileResolver implements SqlFileResolver {
 
     private final LocLogger logger;
     private final ParserPreconditions preconditions;
+    // TODO: inject inputBaseDirectory instead
+    //       allows to use this class w/o RuntimeConfiguration
     private final RuntimeConfiguration configuration;
     private final ExecutionErrors errors;
 

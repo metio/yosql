@@ -9,6 +9,7 @@ package wtf.metio.yosql.orchestration;
 import wtf.metio.yosql.model.configuration.ResourceConfiguration;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
 /**
@@ -37,8 +38,8 @@ public final class ThreadPoolFactory {
     }
 
     private int calculateNumberOfThreadsToUse() {
-        final int threads = configuration.maxThreads();
-        final int processors = Runtime.getRuntime().availableProcessors();
+        final var threads = configuration.maxThreads();
+        final var processors = Runtime.getRuntime().availableProcessors();
         return threads < 1 ? processors : Math.max(1, Math.min(threads, processors));
     }
 

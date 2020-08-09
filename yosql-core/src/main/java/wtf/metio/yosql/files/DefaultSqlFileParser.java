@@ -13,6 +13,7 @@ import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -23,7 +24,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * Default .sql file parser.
+ * Default SQL file parser.
  */
 final class DefaultSqlFileParser implements SqlFileParser {
 
@@ -58,7 +59,8 @@ final class DefaultSqlFileParser implements SqlFileParser {
                     .parallel()
                     .filter(text -> text != null && !text.trim().isEmpty())
                     .map(statement -> convert(source, statement, counter.getAndIncrement()));
-        } catch (final Throwable exception) {
+        } catch (final IOException exception) {
+            // ToDO: use some factory method of 'errors'
             errors.add(exception);
             logger.debug(ApplicationEvents.FILE_PARSING_FAILED, source);
             return Stream.empty();

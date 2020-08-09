@@ -27,9 +27,9 @@ final class DefaultTimer implements Timer {
     @Override
     public void timed(final String taskName, final Runnable task) {
         if (logger.isInfoEnabled()) {
-            final Instant preRun = Instant.now();
+            final var preRun = Instant.now();
             task.run();
-            final Instant postRun = Instant.now();
+            final var postRun = Instant.now();
             timings.put(taskName, Duration.between(preRun, postRun));
         } else {
             task.run();

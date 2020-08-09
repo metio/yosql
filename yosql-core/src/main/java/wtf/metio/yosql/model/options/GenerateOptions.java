@@ -403,7 +403,7 @@ public enum GenerateOptions {
     LOGGING_API_DEFAULT,
 
     /**
-     * The logging level for the YoSql CLI.
+     * The logging level for the YoSQL CLI.
      */
     LOG_LEVEL,
 

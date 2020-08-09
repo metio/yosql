@@ -9,6 +9,9 @@ import wtf.metio.yosql.model.annotations.Reader;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 
+/**
+ * Dagger module that provides all necessary classes to parse files.
+ */
 @Module
 public class FilesModule {
 
