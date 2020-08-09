@@ -3,8 +3,6 @@ package wtf.metio.yosql.generator.blocks.jdbc;
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
-import static wtf.metio.yosql.generator.blocks.jdbc.JdbcMethodNames.*;
-
 final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatementMethods {
 
     private final JdbcNamesConfiguration jdbcNames;
@@ -16,28 +14,28 @@ final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatementMeth
     @Override
     public CodeBlock executeQuery() {
         return CodeBlock.builder()
-                .add("$N.$N()", jdbcNames.statement(), EXECUTE_QUERY)
+                .add("$N.executeQuery()", jdbcNames.statement())
                 .build();
     }
 
     @Override
     public CodeBlock executeUpdate() {
         return CodeBlock.builder()
-                .add("$N.$N()", jdbcNames.statement(), EXECUTE_UPDATE)
+                .add("$N.executeUpdate()", jdbcNames.statement())
                 .build();
     }
 
     @Override
     public CodeBlock executeBatch() {
         return CodeBlock.builder()
-                .add("$N.$N()", jdbcNames.statement(), EXECUTE_BATCH)
+                .add("$N.executeBatch()", jdbcNames.statement())
                 .build();
     }
 
     @Override
     public CodeBlock addBatch() {
         return CodeBlock.builder()
-                .add("$N.$N()", jdbcNames.statement(), ADD_BATCH)
+                .add("$N.addBatch()", jdbcNames.statement())
                 .build();
     }
 

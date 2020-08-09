@@ -23,7 +23,9 @@ public class JdbcBlocksModule {
     }
 
     @Provides
-    JdbcParameters provideJdbcParameters(final Parameters parameters, final JdbcNamesConfiguration names) {
+    JdbcParameters provideJdbcParameters(
+            final Parameters parameters,
+            final JdbcNamesConfiguration names) {
         return new DefaultJdbcParameters(parameters, names);
     }
 
@@ -33,7 +35,9 @@ public class JdbcBlocksModule {
     }
 
     @Provides
-    JdbcMethods.JdbcConnectionMethods provideConnection(final Names names, final JdbcNamesConfiguration jdbcNames) {
+    JdbcMethods.JdbcConnectionMethods provideConnection(
+            final Names names,
+            final JdbcNamesConfiguration jdbcNames) {
         return new DefaultJdbcConnectionMethods(names, jdbcNames);
     }
 
