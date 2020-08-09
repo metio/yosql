@@ -29,4 +29,22 @@ class DefaultGenericBlocksTest extends ValidationFileTest {
         validate(blocks.returnFalse(), validationFile);
     }
 
+    @Test
+    @DisplayName("initialize fields")
+    void shouldInitializeField(final ValidationFile validationFile) {
+        validate(blocks.initializeFieldToSelf("name"), validationFile);
+    }
+
+    @Test
+    @DisplayName("close resources")
+    void shouldCloseResource(final ValidationFile validationFile) {
+        validate(blocks.close("resource"), validationFile);
+    }
+
+    @Test
+    @DisplayName("returns value")
+    void shouldReturnValue(final ValidationFile validationFile) {
+        validate(blocks.returnValue(CodeBlocks.code("value")), validationFile);
+    }
+
 }
