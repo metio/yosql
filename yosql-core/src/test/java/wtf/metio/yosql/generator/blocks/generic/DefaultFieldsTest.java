@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.testutils.ValidationFile;
 import wtf.metio.yosql.testutils.ValidationFileTest;
 
+import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.annotationGenerator;
+
 @DisplayName("DefaultFields")
 class DefaultFieldsTest extends ValidationFileTest {
 
@@ -13,7 +15,7 @@ class DefaultFieldsTest extends ValidationFileTest {
     @DisplayName("creates fields")
     void shouldCreateField(final ValidationFile validationField) {
         // given
-        final var fields = new DefaultFields(GenericBlocksObjectMother.annotationGenerator());
+        final var fields = new DefaultFields(annotationGenerator());
 
         // when
         final var field = fields.field(String.class, "test");
@@ -26,7 +28,7 @@ class DefaultFieldsTest extends ValidationFileTest {
     @DisplayName("creates fields for TypeNames")
     void shouldCreateFieldWithTypeName(final ValidationFile validationField) {
         // given
-        final var fields = new DefaultFields(GenericBlocksObjectMother.annotationGenerator());
+        final var fields = new DefaultFields(annotationGenerator());
 
         // when
         final var field = fields.field(TypeName.BOOLEAN, "test");

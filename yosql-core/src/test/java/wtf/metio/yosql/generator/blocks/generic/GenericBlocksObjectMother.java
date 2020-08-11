@@ -1,10 +1,7 @@
 package wtf.metio.yosql.generator.blocks.generic;
 
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
-import wtf.metio.yosql.generator.blocks.api.Names;
-import wtf.metio.yosql.generator.blocks.api.Parameters;
-import wtf.metio.yosql.generator.blocks.api.Variables;
+import wtf.metio.yosql.generator.blocks.api.*;
 
 import static wtf.metio.yosql.i18n.I18nObjectMother.testTranslator;
 import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.annotationConfig;
@@ -19,6 +16,10 @@ public final class GenericBlocksObjectMother {
 
     public static Names names() {
         return new DefaultNames();
+    }
+
+    public static Fields fields() {
+        return new DefaultFields(annotationGenerator());
     }
 
     public static Parameters parameters() {

@@ -1,0 +1,5 @@
+@javax.annotation.processing.Generated(
+    value = "test",
+    comments = "field"
+)
+private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(boolean.class.getName());
