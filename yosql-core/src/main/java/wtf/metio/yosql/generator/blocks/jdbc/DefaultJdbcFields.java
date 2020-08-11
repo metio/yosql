@@ -24,7 +24,7 @@ final class DefaultJdbcFields implements JdbcFields {
 
     @Override
     public String constantRawSqlStatementFieldName(final SqlConfiguration configuration) {
-        return constantSqlStatementFieldName(configuration) + options.rawSuffix() + getVendor(configuration);
+        return constantSqlStatementFieldName(configuration) + options.rawSuffix();
     }
 
     @Override

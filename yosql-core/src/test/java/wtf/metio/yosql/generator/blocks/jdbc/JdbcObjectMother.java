@@ -1,10 +1,18 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
 import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.names;
 
 public final class JdbcObjectMother {
+    
+    public static JdbcFieldsConfiguration jdbcFieldsConfiguration() {
+        return JdbcFieldsConfiguration.builder()
+                .setIndexSuffix("_INDEX")
+                .setRawSuffix("_RAW")
+                .build();
+    }
 
     public static JdbcNamesConfiguration jdbcNamesConfiguration() {
         return JdbcNamesConfiguration.builder()
