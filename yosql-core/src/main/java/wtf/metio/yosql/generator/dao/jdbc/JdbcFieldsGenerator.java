@@ -49,11 +49,9 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
         statements.stream()
                 .map(SqlStatement::getConfiguration)
                 .filter(SqlConfiguration::hasParameters)
-                .forEach(config -> {
-                    config.getParameters().stream()
-                            .filter(SqlParameter::hasIndices)
-                            .forEach(parameter -> addIndexArray(builder, parameter, config));
-                });
+                .forEach(config -> config.getParameters().stream()
+                        .filter(SqlParameter::hasIndices)
+                        .forEach(parameter -> addIndexArray(builder, parameter, config)));
         return builder.build();
     }
 
