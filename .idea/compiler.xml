@@ -17,15 +17,15 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="yosql" target="14" />
-      <module name="yosql-benchmarks" target="14" />
-      <module name="yosql-cli" target="14" />
-      <module name="yosql-core" target="14" />
-      <module name="yosql-example" target="14" />
-      <module name="yosql-gradle-plugin" target="14" />
-      <module name="yosql-maven-plugin" target="14" />
-      <module name="yosql-testutils" target="14" />
-      <module name="yosql-yeps" target="14" />
+      <module name="yosql" target="15" />
+      <module name="yosql-benchmarks" target="15" />
+      <module name="yosql-cli" target="15" />
+      <module name="yosql-core" target="15" />
+      <module name="yosql-example" target="15" />
+      <module name="yosql-gradle-plugin" target="15" />
+      <module name="yosql-maven-plugin" target="15" />
+      <module name="yosql-testutils" target="15" />
+      <module name="yosql-yeps" target="15" />
     </bytecodeTargetLevel>
   </component>
 </project>
