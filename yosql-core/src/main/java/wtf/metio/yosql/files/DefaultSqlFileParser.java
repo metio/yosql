@@ -18,6 +18,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -57,7 +58,8 @@ final class DefaultSqlFileParser implements SqlFileParser {
             final var counter = new AtomicInteger(1);
             return statementSplitter.splitAsStream(rawText)
                     .parallel()
-                    .filter(text -> text != null && !text.trim().isEmpty())
+                    .filter(Objects::nonNull)
+                    .filter(text -> !text.strip().isEmpty())
                     .map(statement -> convert(source, statement, counter.getAndIncrement()));
         } catch (final IOException exception) {
             // ToDO: use some factory method of 'errors'
@@ -76,15 +78,18 @@ final class DefaultSqlFileParser implements SqlFileParser {
 
         splitUpYamlAndSql(rawStatement, yaml::append, sql::append);
 
+        // TODO: rename to STATEMENT_PARSING_STARTING
         logger.trace(ApplicationEvents.FILE_PARSING_STARTING, rawStatement);
         final String rawYaml = yaml.toString();
         final String rawSqlStatement = sql.toString();
+        // TODO: rename to STATEMENT_XYZ
         logger.trace(ApplicationEvents.FILE_YAML_FRONTMATTER_PARSED, rawYaml);
         logger.trace(ApplicationEvents.FILE_SQL_STATEMENT_PARSED, rawSqlStatement);
 
         final var parameterIndices = extractParameterIndices(rawSqlStatement);
         final var configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
+        // TODO: rename to STATEMENT_PARSING_FINISHED
         logger.debug(ApplicationEvents.FILE_PARSING_FINISHED, source, configuration.getName());
         return new SqlStatement(source, configuration, rawSqlStatement);
     }
@@ -95,7 +100,8 @@ final class DefaultSqlFileParser implements SqlFileParser {
             final Consumer<String> sql) {
         new BufferedReader(new StringReader(rawStatement))
                 .lines()
-                .filter(line -> !line.trim().isEmpty() && !SQL_COMMENT_PREFIX.equals(line.trim()))
+                .filter(line -> !line.strip().isEmpty())
+                .filter(line -> !SQL_COMMENT_PREFIX.equals(line.strip()))
                 .forEach(line -> {
                     if (line.startsWith(SQL_COMMENT_PREFIX)) {
                         yaml.accept(line.substring(2));
