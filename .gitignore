@@ -2,4 +2,4 @@ target/
 *.iml
 .ansible-git-*
 /bin/
-/yosql-site/public
+/docs/public

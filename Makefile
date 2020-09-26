@@ -56,18 +56,6 @@ watch: ##@hacking Watch for changes and build everything
 test: ##@hacking Test everything
 	mvn verify
 
-.PHONY: clean
-clean: ##@hacking Test everything
-	mvn clean
-
-.PHONY: coverage
-coverage: ##@hacking Run code coverage
-	mvn test
-
-.PHONY: loc
-loc: ##@hacking Count lines of count
-	tokei .
-
 .PHONY: sign-waiver
 sign-waiver: ##@contributing Sign the WAIVER
 	echo 'use minisign'

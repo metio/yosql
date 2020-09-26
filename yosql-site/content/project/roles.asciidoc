@@ -1,9 +1,0 @@
----
-title: "Roles"
-date: 2019-09-277T18:25:31+02:00
-draft: true
----
-
-- developers: people who are using yosql
-- integrators: people who integrate yosql-core (and more)
-- contributors: people who manage yosql itself
