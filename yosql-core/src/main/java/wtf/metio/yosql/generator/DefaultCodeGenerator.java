@@ -29,7 +29,7 @@ final class DefaultCodeGenerator implements CodeGenerator {
         return Stream.concat(generateRepositories(statements), generateUtilities(statements));
     }
 
-    private Stream<PackageTypeSpec> generateRepositories(List<SqlStatement> statements) {
+    private Stream<PackageTypeSpec> generateRepositories(final List<SqlStatement> statements) {
         return statements.parallelStream()
                 .collect(groupingBy(SqlStatement::getRepository))
                 .entrySet()
@@ -38,7 +38,7 @@ final class DefaultCodeGenerator implements CodeGenerator {
                         repository.getKey(), repository.getValue()));
     }
 
-    private Stream<PackageTypeSpec> generateUtilities(List<SqlStatement> statements) {
+    private Stream<PackageTypeSpec> generateUtilities(final List<SqlStatement> statements) {
         return utilitiesGenerator.generateUtilities(statements);
     }
 }
