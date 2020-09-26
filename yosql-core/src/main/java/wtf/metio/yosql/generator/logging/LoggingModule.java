@@ -29,7 +29,7 @@ import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
         NoOpLoggingModule.class,
         Slf4jLoggingModule.class,
 })
-public class LoggingModule {
+public final class LoggingModule {
 
     @Delegating
     @Provides
