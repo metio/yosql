@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/yosql.iml" filepath="$PROJECT_DIR$/.idea/yosql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yosql.iml" filepath="$PROJECT_DIR$/yosql.iml" />
       <module fileurl="file://$PROJECT_DIR$/yosql-benchmarks/yosql-benchmarks.iml" filepath="$PROJECT_DIR$/yosql-benchmarks/yosql-benchmarks.iml" />
       <module fileurl="file://$PROJECT_DIR$/yosql-cli/yosql-cli.iml" filepath="$PROJECT_DIR$/yosql-cli/yosql-cli.iml" />
       <module fileurl="file://$PROJECT_DIR$/yosql-core/yosql-core.iml" filepath="$PROJECT_DIR$/yosql-core/yosql-core.iml" />
