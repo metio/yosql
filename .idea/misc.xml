@@ -9,6 +9,12 @@
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/yosql-ant-task/pom.xml" />
+        <option value="$PROJECT_DIR$/yosql-sbt-plugin/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_15" default="false" project-jdk-name="openjdk-15" project-jdk-type="JavaSDK" />
 </project>
