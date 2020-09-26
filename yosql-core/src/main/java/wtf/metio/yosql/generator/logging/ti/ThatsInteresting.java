@@ -25,4 +25,11 @@ public @interface ThatsInteresting {
 
     // marker annotation
 
+    /*
+        Create logger interface, one method for each generated query method
+        inject instance of logger using constructor
+        call logger for each method
+        maybe multiple methods per query method in order to log certain things?
+     */
+
 }
