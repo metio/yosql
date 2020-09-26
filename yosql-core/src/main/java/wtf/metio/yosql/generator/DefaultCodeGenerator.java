@@ -26,7 +26,7 @@ final class DefaultCodeGenerator implements CodeGenerator {
 
     @Override
     public Stream<PackageTypeSpec> generateCode(final List<SqlStatement> statements) {
-        return Stream.concat(generateRepositories(statements), generateUtilities(statements));
+        return Stream.concat(generateRepositories(statements), utilitiesGenerator.generateUtilities(statements));
     }
 
     private Stream<PackageTypeSpec> generateRepositories(final List<SqlStatement> statements) {
@@ -38,7 +38,4 @@ final class DefaultCodeGenerator implements CodeGenerator {
                         repository.getKey(), repository.getValue()));
     }
 
-    private Stream<PackageTypeSpec> generateUtilities(final List<SqlStatement> statements) {
-        return utilitiesGenerator.generateUtilities(statements);
-    }
 }
