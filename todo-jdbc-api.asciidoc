@@ -9,3 +9,4 @@
 - multi-select statements: Repositories prepare a statement, GlobalRepository (or similar) executes all statements together using a single connection
 - rename all config options according to new naming scheme (and define new naming scheme)
 - date in @Generated annotations should be optional for reproducible builds
+- GraalVM support
