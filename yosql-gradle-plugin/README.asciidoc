@@ -1,3 +1,0 @@
-= yosql-gradle-plugin
-
-Integrates yosql with gradle.
