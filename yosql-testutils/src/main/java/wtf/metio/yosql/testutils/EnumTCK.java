@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
@@ -43,9 +44,10 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
      * @return Tests that verify that enum instances can be created from valid values.
      */
     @TestFactory
+    @DisplayName("create enum for valid value")
     default Stream<DynamicTest> shouldCreateEnumForValidValue() {
         return validValues()
-                .map(value -> dynamicTest(String.format("should create [%s] from [%s]", getEnumClass(), value),
+                .map(value -> dynamicTest(String.format("should create [%s] from [%s]", getEnumClass().getSimpleName(), value),
                         () -> Assertions.assertNotNull(Enum.valueOf(getEnumClass(), value))));
     }
 
@@ -53,9 +55,10 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
      * @return Tests that verify that no enum instance can be created from invalid values.
      */
     @TestFactory
+    @DisplayName("reject invalid values")
     default Stream<DynamicTest> shouldNotCreateEnumForInvalidValue() {
         return invalidValues()
-                .map(value -> dynamicTest(String.format("should not create [%s] from [%s]", getEnumClass(), value),
+                .map(value -> dynamicTest(String.format("should not create [%s] from [%s]", getEnumClass().getSimpleName(), value),
                         () -> Assertions.assertThrows(IllegalArgumentException.class,
                                 () -> Enum.valueOf(getEnumClass(), value))));
     }
@@ -64,8 +67,9 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
      * @return Tests that verify that all enum values are verified.
      */
     @TestFactory
+    @DisplayName("all enum values are checked")
     default Stream<DynamicTest> shouldVerifyAllValues() {
-        return Stream.of(dynamicTest(String.format("should verify all values of [%s]", getEnumClass()),
+        return Stream.of(dynamicTest(String.format("should verify all values of [%s]", getEnumClass().getSimpleName()),
                 () -> Assertions.assertEquals(validValues().count(), getEnumClass().getEnumConstants().length)));
     }
 
