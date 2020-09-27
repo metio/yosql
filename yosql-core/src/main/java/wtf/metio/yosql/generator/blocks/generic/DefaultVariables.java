@@ -2,6 +2,7 @@ package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.generator.blocks.api.Variables;
 import wtf.metio.yosql.model.configuration.VariableConfiguration;
 import wtf.metio.yosql.model.options.VariableTypeOptions;
@@ -36,16 +37,12 @@ final class DefaultVariables implements Variables {
     }
 
     @Override
-    public CodeBlock variable(final String name, final ClassName variableClass, CodeBlock initializer) {
-        return variable(name, variableClass.toString(), initializer);
+    public CodeBlock variable(final String name, final Class<?> variableClass, final CodeBlock initializer) {
+        return variable(name, TypeName.get(variableClass), initializer);
     }
 
     @Override
-    public CodeBlock variable(final String name, final Class<?> variableClass, final CodeBlock initializer) {
-        return variable(name, variableClass.toString(), initializer);
-    }
-
-    private CodeBlock variable(final String name, final String variableClass, final CodeBlock initializer) {
+    public CodeBlock variable(final String name, final TypeName variableClass, CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
         switch (options.variableType()) {
