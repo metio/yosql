@@ -12,9 +12,6 @@ jobs:
       - id: checkout
         name: Clone Git Repository
         uses: actions/checkout@v2
-      - id: graal
-        name: GraalVM Setup
-        uses: rinx/setup-graalvm-ce@v0.0.4
       - id: java
         name: Setup Java
         uses: actions/setup-java@v1
