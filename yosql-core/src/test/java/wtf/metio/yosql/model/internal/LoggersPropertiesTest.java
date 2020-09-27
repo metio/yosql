@@ -6,9 +6,11 @@
  */
 package wtf.metio.yosql.model.internal;
 
+import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.testutils.PropertiesTCK;
 
-final class LoggersPropertiesTest extends PropertiesTCK<Loggers> {
+@DisplayName("Loggers")
+final class LoggersPropertiesTest implements PropertiesTCK<Loggers> {
 
     @Override
     public Class<Loggers> getEnumClass() {

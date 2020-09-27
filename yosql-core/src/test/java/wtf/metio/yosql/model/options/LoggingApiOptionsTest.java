@@ -6,10 +6,12 @@
  */
 package wtf.metio.yosql.model.options;
 
+import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.testutils.EnumTCK;
 
 import java.util.stream.Stream;
 
+@DisplayName("LoggingApiOptions")
 final class LoggingApiOptionsTest implements EnumTCK<LoggingApiOptions> {
 
     @Override

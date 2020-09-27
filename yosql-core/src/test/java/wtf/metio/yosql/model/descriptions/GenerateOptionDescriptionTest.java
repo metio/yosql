@@ -4,15 +4,17 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.model.options;
+package wtf.metio.yosql.model.descriptions;
 
+import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.testutils.PropertiesTCK;
 
-final class GeneralOptionsPropertiesTest extends PropertiesTCK<GeneralOptions> {
+@DisplayName("GenerateOptionDescriptions")
+final class GenerateOptionDescriptionTest implements PropertiesTCK<GenerateOptionDescriptions> {
 
     @Override
-    public Class<GeneralOptions> getEnumClass() {
-        return GeneralOptions.class;
+    public Class<GenerateOptionDescriptions> getEnumClass() {
+        return GenerateOptionDescriptions.class;
     }
 
 }

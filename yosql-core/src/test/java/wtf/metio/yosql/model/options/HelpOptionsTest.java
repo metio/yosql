@@ -1,10 +1,13 @@
 package wtf.metio.yosql.model.options;
 
+import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.testutils.EnumTCK;
+import wtf.metio.yosql.testutils.PropertiesTCK;
 
 import java.util.stream.Stream;
 
-final class HelpOptionsTest implements EnumTCK<HelpOptions> {
+@DisplayName("HelpOptions")
+final class HelpOptionsTest implements EnumTCK<HelpOptions>, PropertiesTCK<HelpOptions> {
 
     @Override
     public Class<HelpOptions> getEnumClass() {

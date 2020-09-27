@@ -6,11 +6,14 @@
  */
 package wtf.metio.yosql.model.options;
 
+import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.testutils.EnumTCK;
+import wtf.metio.yosql.testutils.PropertiesTCK;
 
 import java.util.stream.Stream;
 
-final class GenerateOptionsTest implements EnumTCK<GenerateOptions> {
+@DisplayName("GenerateOptions")
+final class GenerateOptionsTest implements EnumTCK<GenerateOptions>, PropertiesTCK<GenerateOptions> {
 
     @Override
     public Class<GenerateOptions> getEnumClass() {

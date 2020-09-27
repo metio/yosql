@@ -9,6 +9,7 @@ package wtf.metio.yosql.testutils;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +24,18 @@ import ch.qos.cal10n.verifier.MessageKeyVerifier;
  * @param <ENUMERATION>
  *            The type of the enumeration to test.
  */
-public abstract class PropertiesTCK<ENUMERATION extends Enum<ENUMERATION>> {
+public interface PropertiesTCK<ENUMERATION extends Enum<ENUMERATION>> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesTCK.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(PropertiesTCK.class);
 
     /**
      * @return The class of the enum to test.
      */
-    protected abstract Class<ENUMERATION> getEnumClass();
+    Class<ENUMERATION> getEnumClass();
 
     @Test
-    void shouldDeclareAllPropertiesInAllSupportedLocales() {
+    @DisplayName("all properties exist in all locales")
+    default void shouldDeclareAllPropertiesInAllSupportedLocales() {
         final IMessageKeyVerifier mkv = new MessageKeyVerifier(getEnumClass());
         final List<Cal10nError> errorList = mkv.verifyAllLocales();
         for (final Cal10nError error : errorList) {

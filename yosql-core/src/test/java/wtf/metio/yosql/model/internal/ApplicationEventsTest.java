@@ -1,10 +1,13 @@
 package wtf.metio.yosql.model.internal;
 
+import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.testutils.EnumTCK;
+import wtf.metio.yosql.testutils.PropertiesTCK;
 
 import java.util.stream.Stream;
 
-final class ApplicationEventsTest implements EnumTCK<ApplicationEvents> {
+@DisplayName("ApplicationEvents")
+final class ApplicationEventsTest implements EnumTCK<ApplicationEvents>, PropertiesTCK<ApplicationEvents> {
 
     @Override
     public Class<ApplicationEvents> getEnumClass() {
