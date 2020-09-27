@@ -4,62 +4,62 @@ final class DefaultJdbcNames implements JdbcNames {
 
     @Override
     public String dataSource() {
-        return null;
+        return "dataSource";
     }
 
     @Override
     public String connection() {
-        return null;
+        return "connection";
     }
 
     @Override
     public String statement() {
-        return null;
+        return "statement";
     }
 
     @Override
     public String metaData() {
-        return null;
+        return "metaData";
     }
 
     @Override
     public String resultSet() {
-        return null;
+        return "resultSet";
     }
 
     @Override
     public String columnCount() {
-        return null;
+        return "columnCount";
     }
 
     @Override
     public String columnLabel() {
-        return null;
+        return "columnLabel";
     }
 
     @Override
     public String batch() {
-        return null;
+        return "batch";
     }
 
     @Override
     public String list() {
-        return null;
+        return "list";
     }
 
     @Override
     public String jdbcIndex() {
-        return null;
+        return "jdbcIndex";
     }
 
     @Override
     public String index() {
-        return null;
+        return "index";
     }
 
     @Override
     public String row() {
-        return null;
+        return "row";
     }
 
 }
