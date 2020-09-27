@@ -33,10 +33,7 @@ public final class ModelConfigurationObjectMother {
     }
 
     public static VariableConfiguration variableConfiguration() {
-        return VariableConfiguration.builder()
-                .setModifiers(List.of(Modifier.FINAL))
-                .setVariableType(VariableTypeOptions.TYPE)
-                .build();
+        return variableConfiguration(VariableTypeOptions.TYPE);
     }
 
     public static VariableConfiguration variableConfiguration(final VariableTypeOptions options) {
