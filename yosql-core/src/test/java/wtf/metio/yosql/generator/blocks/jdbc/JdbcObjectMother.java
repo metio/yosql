@@ -50,6 +50,23 @@ public final class JdbcObjectMother {
     public static JdbcMethods.JdbcStatementMethods jdbcStatementMethods() {
         return new DefaultJdbcStatementMethods(jdbcNamesConfiguration());
     }
+    
+    public static JdbcFields jdbcFields() {
+        return new DefaultJdbcFields(jdbcFieldsConfiguration());
+    }
+    
+    public static JdbcMethods jdbcMethods() {
+        return new DefaultJdbcMethods(
+                jdbcDataSourceMethods(),
+                jdbcConnectionMethods(),
+                jdbcResultSetMethods(),
+                jdbcMetaDataMethods(),
+                jdbcStatementMethods());
+    }
+    
+    public static JdbcNames jdbcNames() {
+        return new DefaultJdbcNames();
+    }
 
     private JdbcObjectMother() {
         // factory class

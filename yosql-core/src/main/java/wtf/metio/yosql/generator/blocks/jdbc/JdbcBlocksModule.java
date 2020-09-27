@@ -78,6 +78,7 @@ public class JdbcBlocksModule {
             final ControlFlows controlFlows,
             final Names names,
             final Variables variables,
+            final JdbcNames jdbcNames,
             final JdbcFields jdbcFields,
             final JdbcMethods jdbcMethods,
             @Delegating final LoggingGenerator logging) {
@@ -87,6 +88,7 @@ public class JdbcBlocksModule {
                 controlFlows,
                 names,
                 variables,
+                jdbcNames,
                 jdbcFields,
                 jdbcMethods,
                 logging);

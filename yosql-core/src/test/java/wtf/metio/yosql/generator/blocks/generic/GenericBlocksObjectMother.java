@@ -33,6 +33,10 @@ public final class GenericBlocksObjectMother {
     public static AnnotationGenerator annotationGenerator() {
         return new DefaultAnnotationGenerator(annotationConfig(PROCESSING_API), testTranslator());
     }
+    
+    public static ControlFlows controlFlows() {
+        return new DefaultControlFlows(variables(), names());
+    }
 
     private GenericBlocksObjectMother() {
         // factory class

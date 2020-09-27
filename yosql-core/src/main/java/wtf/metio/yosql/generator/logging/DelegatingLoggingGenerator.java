@@ -16,19 +16,19 @@ import java.util.Optional;
 
 final class DelegatingLoggingGenerator implements LoggingGenerator {
 
-    private final RuntimeConfiguration runtime;
+    private final RuntimeConfiguration runtimeConfiguration;
     private final LoggingGenerator jdkLoggingGenerator;
     private final LoggingGenerator log4jLoggingGenerator;
     private final LoggingGenerator noOpLoggingGenerator;
     private final LoggingGenerator slf4jLoggingGenerator;
 
     DelegatingLoggingGenerator(
-            final RuntimeConfiguration runtime,
+            final RuntimeConfiguration runtimeConfiguration,
             final LoggingGenerator jdkLoggingGenerator,
             final LoggingGenerator log4jLoggingGenerator,
             final LoggingGenerator noOpLoggingGenerator,
             final LoggingGenerator slf4jLoggingGenerator) {
-        this.runtime = runtime;
+        this.runtimeConfiguration = runtimeConfiguration;
         this.jdkLoggingGenerator = jdkLoggingGenerator;
         this.log4jLoggingGenerator = log4jLoggingGenerator;
         this.noOpLoggingGenerator = noOpLoggingGenerator;
@@ -36,7 +36,7 @@ final class DelegatingLoggingGenerator implements LoggingGenerator {
     }
 
     private LoggingGenerator log() {
-        return switch (runtime.logging().api()) {
+        return switch (runtimeConfiguration.logging().api()) {
             case JDK -> jdkLoggingGenerator;
             case LOG4J -> log4jLoggingGenerator;
             case SLF4J -> slf4jLoggingGenerator;
