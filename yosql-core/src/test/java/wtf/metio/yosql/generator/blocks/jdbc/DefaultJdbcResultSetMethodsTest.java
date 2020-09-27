@@ -1,17 +1,16 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNamesConfiguration;
 
 @DisplayName("DefaultJdbcResultSetMethods")
-class DefaultJdbcResultSetMethodsTest extends ValidationFileTest {
+class DefaultJdbcResultSetMethodsTest {
 
     @Test
-    void getMetaData(final ValidationFile validationFile) {
+    void getMetaData() {
         // given
         final var generator = new DefaultJdbcResultSetMethods(jdbcNamesConfiguration());
 
@@ -19,7 +18,8 @@ class DefaultJdbcResultSetMethodsTest extends ValidationFileTest {
         final var metaData = generator.getMetaData();
 
         // then
-        validate(metaData, validationFile);
+        Assertions.assertEquals("""
+                resultSet.getMetaData()""", metaData.toString());
     }
 
 }

@@ -1,14 +1,13 @@
 package wtf.metio.yosql.generator.blocks.generic;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 @DisplayName("DefaultGenericBlocks")
-class DefaultGenericBlocksTest extends ValidationFileTest {
+class DefaultGenericBlocksTest {
 
     private GenericBlocks blocks;
 
@@ -19,32 +18,42 @@ class DefaultGenericBlocksTest extends ValidationFileTest {
 
     @Test
     @DisplayName("returns true")
-    void shouldReturnTrue(final ValidationFile validationFile) {
-        validate(blocks.returnTrue(), validationFile);
+    void shouldReturnTrue() {
+        Assertions.assertEquals("""
+                return true;
+                """, blocks.returnTrue().toString());
     }
 
     @Test
     @DisplayName("returns false")
-    void shouldReturnFalse(final ValidationFile validationFile) {
-        validate(blocks.returnFalse(), validationFile);
+    void shouldReturnFalse() {
+        Assertions.assertEquals("""
+                return false;
+                """, blocks.returnFalse().toString());
     }
 
     @Test
     @DisplayName("initialize fields")
-    void shouldInitializeField(final ValidationFile validationFile) {
-        validate(blocks.initializeFieldToSelf("name"), validationFile);
+    void shouldInitializeField() {
+        Assertions.assertEquals("""
+                this.name = name;
+                """, blocks.initializeFieldToSelf("name").toString());
     }
 
     @Test
     @DisplayName("close resources")
-    void shouldCloseResource(final ValidationFile validationFile) {
-        validate(blocks.close("resource"), validationFile);
+    void shouldCloseResource() {
+        Assertions.assertEquals("""
+                resource.close();
+                """, blocks.close("resource").toString());
     }
 
     @Test
     @DisplayName("returns value")
-    void shouldReturnValue(final ValidationFile validationFile) {
-        validate(blocks.returnValue(CodeBlocks.code("value")), validationFile);
+    void shouldReturnValue() {
+        Assertions.assertEquals("""
+                return value;
+                """, blocks.returnValue(CodeBlocks.code("value")).toString());
     }
 
 }

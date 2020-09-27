@@ -1,5 +1,0 @@
-@javax.annotation.processing.Generated(
-    value = "test",
-    comments = "field"
-)
-private final boolean test;

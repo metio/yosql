@@ -1,17 +1,15 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcFieldsConfiguration;
 
 @DisplayName("DefaultJdbcFields")
-class DefaultJdbcFieldsTest extends ValidationFileTest {
+class DefaultJdbcFieldsTest {
 
     private DefaultJdbcFields generator;
 
@@ -21,7 +19,7 @@ class DefaultJdbcFieldsTest extends ValidationFileTest {
     }
 
     @Test
-    void constantSqlStatementFieldName(final ValidationFile validationFile) {
+    void constantSqlStatementFieldName() {
         // given
         final var config = new SqlConfiguration();
         config.setName("test");
@@ -30,11 +28,12 @@ class DefaultJdbcFieldsTest extends ValidationFileTest {
         final var constant = generator.constantSqlStatementFieldName(config);
 
         // then
-        assertEquals(validationFile.read(), constant);
+        Assertions.assertEquals("""
+                TEST""", constant);
     }
 
     @Test
-    void constantSqlStatementFieldNameWithVendor(final ValidationFile validationFile) {
+    void constantSqlStatementFieldNameWithVendor() {
         // given
         final var config = new SqlConfiguration();
         config.setName("test");
@@ -44,11 +43,12 @@ class DefaultJdbcFieldsTest extends ValidationFileTest {
         final var constant = generator.constantSqlStatementFieldName(config);
 
         // then
-        assertEquals(validationFile.read(), constant);
+        Assertions.assertEquals("""
+                TEST_MYDB""", constant);
     }
 
     @Test
-    void constantRawSqlStatementFieldName(final ValidationFile validationFile) {
+    void constantRawSqlStatementFieldName() {
         // given
         final var config = new SqlConfiguration();
         config.setName("test");
@@ -57,11 +57,12 @@ class DefaultJdbcFieldsTest extends ValidationFileTest {
         final var constant = generator.constantRawSqlStatementFieldName(config);
 
         // then
-        assertEquals(validationFile.read(), constant);
+        Assertions.assertEquals("""
+                TEST_RAW""", constant);
     }
 
     @Test
-    void constantRawSqlStatementFieldNameWithVendor(final ValidationFile validationFile) {
+    void constantRawSqlStatementFieldNameWithVendor() {
         // given
         final var config = new SqlConfiguration();
         config.setName("test");
@@ -71,11 +72,12 @@ class DefaultJdbcFieldsTest extends ValidationFileTest {
         final var constant = generator.constantRawSqlStatementFieldName(config);
 
         // then
-        assertEquals(validationFile.read(), constant);
+        Assertions.assertEquals("""
+                TEST_DELPHI_DB_RAW""", constant);
     }
 
     @Test
-    void constantSqlStatementParameterIndexFieldName(final ValidationFile validationFile) {
+    void constantSqlStatementParameterIndexFieldName() {
         // given
         final var config = new SqlConfiguration();
         config.setName("test");
@@ -84,11 +86,12 @@ class DefaultJdbcFieldsTest extends ValidationFileTest {
         final var constant = generator.constantSqlStatementParameterIndexFieldName(config);
 
         // then
-        assertEquals(validationFile.read(), constant);
+        Assertions.assertEquals("""
+                TEST_INDEX""", constant);
     }
 
     @Test
-    void constantSqlStatementParameterIndexFieldNameWithVendor(final ValidationFile validationFile) {
+    void constantSqlStatementParameterIndexFieldNameWithVendor() {
         // given
         final var config = new SqlConfiguration();
         config.setName("testQueryStatement");
@@ -98,7 +101,8 @@ class DefaultJdbcFieldsTest extends ValidationFileTest {
         final var constant = generator.constantSqlStatementParameterIndexFieldName(config);
 
         // then
-        assertEquals(validationFile.read(), constant);
+        Assertions.assertEquals("""
+                TEST_QUERY_STATEMENT_PREGRESQL_INDEX""", constant);
     }
 
 }

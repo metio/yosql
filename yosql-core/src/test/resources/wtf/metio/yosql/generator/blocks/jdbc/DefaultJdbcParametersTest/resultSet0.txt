@@ -1,1 +1,0 @@
-final java.sql.ResultSet resultSet

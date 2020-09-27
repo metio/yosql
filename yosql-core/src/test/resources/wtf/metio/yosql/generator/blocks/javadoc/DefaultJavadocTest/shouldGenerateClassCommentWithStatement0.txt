@@ -1,4 +1,0 @@
-Generated based on the following file(s):
-<ul>
-<li>test</li>
-</ul>

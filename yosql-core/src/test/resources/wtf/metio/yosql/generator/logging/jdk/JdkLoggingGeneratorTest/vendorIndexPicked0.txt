@@ -1,1 +1,0 @@
-LOG.finer(() -> String.format("Picked index [%s]", "test"));

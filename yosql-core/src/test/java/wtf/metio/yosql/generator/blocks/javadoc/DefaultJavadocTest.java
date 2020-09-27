@@ -1,19 +1,18 @@
 package wtf.metio.yosql.generator.blocks.javadoc;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 import java.nio.file.Paths;
 import java.util.List;
 
 @DisplayName("DefaultJavadoc")
-class DefaultJavadocTest extends ValidationFileTest {
-    
+class DefaultJavadocTest {
+
     private DefaultJavadoc generator;
 
     @BeforeEach
@@ -23,19 +22,28 @@ class DefaultJavadocTest extends ValidationFileTest {
 
     @Test
     @DisplayName("generate class comment")
-    void shouldGenerateClassComment(final ValidationFile validationFile) {
-        validate(generator.repositoryJavadoc(List.of()), validationFile);
+    void shouldGenerateClassComment() {
+        Assertions.assertEquals("""
+                Generated based on the following file(s):
+                <ul>
+                </ul>
+                """, generator.repositoryJavadoc(List.of()).toString());
     }
 
     @Test
     @DisplayName("generate method comment")
-    void shouldGenerateMethodComment(final ValidationFile validationFile) {
-        validate(generator.methodJavadoc(List.of()), validationFile);
+    void shouldGenerateMethodComment() {
+        Assertions.assertEquals("""
+                <p>Executes the following statement:</p>
+                <p>Generated based on the following file(s):</p>
+                <ul>
+                </ul>
+                """, generator.methodJavadoc(List.of()).toString());
     }
 
     @Test
     @DisplayName("generate class comment with statements")
-    void shouldGenerateClassCommentWithStatement(final ValidationFile validationFile) {
+    void shouldGenerateClassCommentWithStatement() {
         // given
         final List<SqlStatement> statements = List.of(
                 new SqlStatement(Paths.get("test"), new SqlConfiguration(), "SELECT 1"));
@@ -44,12 +52,17 @@ class DefaultJavadocTest extends ValidationFileTest {
         final var comment = generator.repositoryJavadoc(statements);
 
         // then
-        validate(comment, validationFile);
+        Assertions.assertEquals("""
+                Generated based on the following file(s):
+                <ul>
+                <li>test</li>
+                </ul>
+                """, comment.toString());
     }
 
     @Test
     @DisplayName("generate method comment with statements")
-    void shouldGenerateMethodCommentWithStatement(final ValidationFile validationFile) {
+    void shouldGenerateMethodCommentWithStatement() {
         // given
         final List<SqlStatement> statements = List.of(
                 new SqlStatement(Paths.get("test"), new SqlConfiguration(), "SELECT 1"));
@@ -58,7 +71,12 @@ class DefaultJavadocTest extends ValidationFileTest {
         final var comment = generator.repositoryJavadoc(statements);
 
         // then
-        validate(comment, validationFile);
+        Assertions.assertEquals("""
+                Generated based on the following file(s):
+                <ul>
+                <li>test</li>
+                </ul>
+                """, comment.toString());
     }
 
 }

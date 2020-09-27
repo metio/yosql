@@ -1,17 +1,16 @@
 package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.CodeBlock;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.names;
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.variables;
 
 @DisplayName("DefaultControlFlows")
-class DefaultControlFlowsTest extends ValidationFileTest {
+class DefaultControlFlowsTest {
 
     private DefaultControlFlows generator;
 
@@ -22,23 +21,30 @@ class DefaultControlFlowsTest extends ValidationFileTest {
 
     @Test
     @DisplayName("try with resource")
-    void shouldTryResource(final ValidationFile validationFile) {
-        validate(generator.tryWithResource(CodeBlocks.code("resource")), validationFile);
+    void shouldTryResource() {
+        Assertions.assertEquals("""
+                try (resource) {
+                """, generator.tryWithResource(CodeBlocks.code("resource")).toString());
     }
 
     @Test
     @DisplayName("end try block")
-    void shouldEndTry(final ValidationFile validationFile) {
-        validate(CodeBlock.builder()
+    void shouldEndTry() {
+        Assertions.assertEquals("""
+                try (resource) {
+                }
+                """, CodeBlock.builder()
                 .add(generator.tryWithResource(CodeBlocks.code("resource")))
                 .add(generator.endTryBlock())
-                .build(), validationFile);
+                .build().toString());
     }
 
     @Test
     @DisplayName("if has next")
-    void shouldProceedForNext(final ValidationFile validationFile) {
-        validate(generator.ifHasNext(), validationFile);
+    void shouldProceedForNext() {
+        Assertions.assertEquals("""
+                if (state.next()) {
+                """, generator.ifHasNext().toString());
     }
 
 }

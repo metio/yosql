@@ -1,16 +1,15 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.parameters;
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNamesConfiguration;
 
 @DisplayName("DefaultJdbcParameters")
-class DefaultJdbcParametersTest extends ValidationFileTest {
+class DefaultJdbcParametersTest {
 
     private DefaultJdbcParameters generator;
 
@@ -20,43 +19,51 @@ class DefaultJdbcParametersTest extends ValidationFileTest {
     }
 
     @Test
-    void dataSource(final ValidationFile validationFile) {
-        validate(generator.dataSource(), validationFile);
+    void dataSource() {
+        Assertions.assertEquals("""
+                final javax.sql.DataSource dataSource""", generator.dataSource().toString());
     }
 
     @Test
-    void connection(final ValidationFile validationFile) {
-        validate(generator.connection(), validationFile);
+    void connection() {
+        Assertions.assertEquals("""
+                final java.sql.Connection connection""", generator.connection().toString());
     }
 
     @Test
-    void preparedStatement(final ValidationFile validationFile) {
-        validate(generator.preparedStatement(), validationFile);
+    void preparedStatement() {
+        Assertions.assertEquals("""
+                final java.sql.PreparedStatement statement""", generator.preparedStatement().toString());
     }
 
     @Test
-    void resultSet(final ValidationFile validationFile) {
-        validate(generator.resultSet(), validationFile);
+    void resultSet() {
+        Assertions.assertEquals("""
+                final java.sql.ResultSet resultSet""", generator.resultSet().toString());
     }
 
     @Test
-    void metaData(final ValidationFile validationFile) {
-        validate(generator.metaData(), validationFile);
+    void metaData() {
+        Assertions.assertEquals("""
+                final java.sql.ResultSetMetaData metaData""", generator.metaData().toString());
     }
 
     @Test
-    void columnCount(final ValidationFile validationFile) {
-        validate(generator.columnCount(), validationFile);
+    void columnCount() {
+        Assertions.assertEquals("""
+                final int columnCount""", generator.columnCount().toString());
     }
 
     @Test
-    void index(final ValidationFile validationFile) {
-        validate(generator.index(), validationFile);
+    void index() {
+        Assertions.assertEquals("""
+                final int index""", generator.index().toString());
     }
 
     @Test
-    void columnLabel(final ValidationFile validationFile) {
-        validate(generator.columnLabel(), validationFile);
+    void columnLabel() {
+        Assertions.assertEquals("""
+                final java.lang.String columnLabel""", generator.columnLabel().toString());
     }
 
 }

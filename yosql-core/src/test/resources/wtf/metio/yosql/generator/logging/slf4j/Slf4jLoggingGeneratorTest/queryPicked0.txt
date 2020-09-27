@@ -1,1 +1,0 @@
-LOG.debug(String.format("Picked query [%s]", "test"));

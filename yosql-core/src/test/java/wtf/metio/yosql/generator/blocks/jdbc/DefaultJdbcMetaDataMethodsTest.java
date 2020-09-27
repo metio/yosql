@@ -1,17 +1,16 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNamesConfiguration;
 
 @DisplayName("DefaultJdbcMetaDataMethods")
-class DefaultJdbcMetaDataMethodsTest extends ValidationFileTest {
+class DefaultJdbcMetaDataMethodsTest {
 
     @Test
-    void getColumnCount(final ValidationFile validationFile) {
+    void getColumnCount() {
         // given
         final var generator = new DefaultJdbcMetaDataMethods(jdbcNamesConfiguration());
 
@@ -19,7 +18,8 @@ class DefaultJdbcMetaDataMethodsTest extends ValidationFileTest {
         final var columnCount = generator.getColumnCount();
 
         // then
-        validate(columnCount, validationFile);
+        Assertions.assertEquals("""
+                metaData.getColumnCount()""", columnCount.toString());
     }
 
 }

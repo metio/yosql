@@ -1,1 +1,0 @@
-LOG.isLoggable(java.util.logging.Level.FINE)

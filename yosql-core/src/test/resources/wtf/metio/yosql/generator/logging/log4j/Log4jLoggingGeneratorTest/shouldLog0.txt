@@ -1,1 +1,0 @@
-LOG.isEnabled(org.apache.logging.log4j.Level.INFO)

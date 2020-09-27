@@ -1,15 +1,14 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNamesConfiguration;
 
 @DisplayName("DefaultJdbcStatementMethods")
-class DefaultJdbcStatementMethodsTest extends ValidationFileTest {
+class DefaultJdbcStatementMethodsTest {
 
     private DefaultJdbcStatementMethods generator;
 
@@ -19,23 +18,27 @@ class DefaultJdbcStatementMethodsTest extends ValidationFileTest {
     }
 
     @Test
-    void executeQuery(final ValidationFile validationFile) {
-        validate(generator.executeQuery(), validationFile);
+    void executeQuery() {
+        Assertions.assertEquals("""
+                statement.executeQuery()""", generator.executeQuery().toString());
     }
 
     @Test
-    void addBatch(final ValidationFile validationFile) {
-        validate(generator.addBatch(), validationFile);
+    void addBatch() {
+        Assertions.assertEquals("""
+                statement.addBatch()""", generator.addBatch().toString());
     }
 
     @Test
-    void executeBatch(final ValidationFile validationFile) {
-        validate(generator.executeBatch(), validationFile);
+    void executeBatch() {
+        Assertions.assertEquals("""
+                statement.executeBatch()""", generator.executeBatch().toString());
     }
 
     @Test
-    void executeUpdate(final ValidationFile validationFile) {
-        validate(generator.executeUpdate(), validationFile);
+    void executeUpdate() {
+        Assertions.assertEquals("""
+                statement.executeUpdate()""", generator.executeUpdate().toString());
     }
 
 }

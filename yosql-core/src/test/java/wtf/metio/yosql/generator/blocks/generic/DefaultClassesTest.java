@@ -1,15 +1,14 @@
 package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.ClassName;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 @DisplayName("DefaultClasses")
-class DefaultClassesTest extends ValidationFileTest {
-    
+class DefaultClassesTest {
+
     private DefaultClasses generator;
 
     @BeforeEach
@@ -19,14 +18,20 @@ class DefaultClassesTest extends ValidationFileTest {
 
     @Test
     @DisplayName("generates open classes")
-    void shouldGenerateOpenClass(final ValidationFile validationFile) {
-        validate(generator.openClass(ClassName.bestGuess("TestClass")).build(), validationFile);
+    void shouldGenerateOpenClass() {
+        Assertions.assertEquals("""
+                public class TestClass {
+                }
+                """, generator.openClass(ClassName.bestGuess("TestClass")).build().toString());
     }
 
     @Test
     @DisplayName("generates public classes")
-    void shouldGeneratePublicClass(final ValidationFile validationFile) {
-        validate(generator.publicClass(ClassName.bestGuess("TestClass")).build(), validationFile);
+    void shouldGeneratePublicClass() {
+        Assertions.assertEquals("""
+                public final class TestClass {
+                }
+                """, generator.publicClass(ClassName.bestGuess("TestClass")).build().toString());
     }
 
 }

@@ -1,1 +1,0 @@
-LOG.info(java.lang.String.format("Detected database vendor [%s]", databaseProductName));

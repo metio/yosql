@@ -1,17 +1,16 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNamesConfiguration;
 
 @DisplayName("DefaultJdbcDataSourceMethods")
-class DefaultJdbcDataSourceMethodsTest extends ValidationFileTest {
+class DefaultJdbcDataSourceMethodsTest {
 
     @Test
-    void getConnection(final ValidationFile validationFile) {
+    void getConnection() {
         // given
         final var generator = new DefaultJdbcDataSourceMethods(jdbcNamesConfiguration());
 
@@ -19,7 +18,8 @@ class DefaultJdbcDataSourceMethodsTest extends ValidationFileTest {
         final var connection = generator.getConnection();
 
         // then
-        validate(connection, validationFile);
+        Assertions.assertEquals("""
+                dataSource.getConnection()""", connection.toString());
     }
 
 }

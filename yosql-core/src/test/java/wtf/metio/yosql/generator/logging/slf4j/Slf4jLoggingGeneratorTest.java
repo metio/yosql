@@ -5,14 +5,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testutils.ValidationFile;
-import wtf.metio.yosql.testutils.ValidationFileTest;
 
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.fields;
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.names;
 
 @DisplayName("Slf4jLoggingGenerator")
-class Slf4jLoggingGeneratorTest extends ValidationFileTest {
+class Slf4jLoggingGeneratorTest {
 
     private Slf4jLoggingGenerator generator;
 
@@ -22,45 +20,64 @@ class Slf4jLoggingGeneratorTest extends ValidationFileTest {
     }
 
     @Test
-    void logger(final ValidationFile validationFile) {
+    void logger() {
         final var logger = generator.logger(TypeName.BOOLEAN);
         Assertions.assertTrue(logger.isPresent());
-        validate(logger.get(), validationFile);
+        Assertions.assertEquals("""
+                @javax.annotation.processing.Generated(
+                    value = "test",
+                    comments = "field"
+                )
+                private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(boolean.class);
+                """, logger.get().toString());
     }
 
     @Test
-    void queryPicked(final ValidationFile validationFile) {
-        validate(generator.queryPicked("test"), validationFile);
+    void queryPicked() {
+        Assertions.assertEquals("""
+                LOG.debug(String.format("Picked query [%s]", "test"));
+                """, generator.queryPicked("test").toString());
     }
 
     @Test
-    void indexPicked(final ValidationFile validationFile) {
-        validate(generator.indexPicked("test"), validationFile);
+    void indexPicked() {
+        Assertions.assertEquals("""
+                LOG.debug(String.format("Picked index [%s]", "test"));
+                """, generator.indexPicked("test").toString());
     }
 
     @Test
-    void vendorQueryPicked(final ValidationFile validationFile) {
-        validate(generator.vendorQueryPicked("test"), validationFile);
+    void vendorQueryPicked() {
+        Assertions.assertEquals("""
+                LOG.debug(String.format("Picked query [%s]", "test"));
+                """, generator.vendorQueryPicked("test").toString());
     }
 
     @Test
-    void vendorIndexPicked(final ValidationFile validationFile) {
-        validate(generator.vendorIndexPicked("test"), validationFile);
+    void vendorIndexPicked() {
+        Assertions.assertEquals("""
+                LOG.debug(String.format("Picked index [%s]", "test"));
+                """, generator.vendorIndexPicked("test").toString());
     }
 
     @Test
-    void vendorDetected(final ValidationFile validationFile) {
-        validate(generator.vendorDetected(), validationFile);
+    void vendorDetected() {
+        Assertions.assertEquals("""
+                LOG.info(java.lang.String.format("Detected database vendor [%s]", databaseProductName));
+                """, generator.vendorDetected().toString());
     }
 
     @Test
-    void executingQuery(final ValidationFile validationFile) {
-        validate(generator.executingQuery(), validationFile);
+    void executingQuery() {
+        Assertions.assertEquals("""
+                LOG.info(java.lang.String.format("Executing query [%s]", executedQuery));
+                """, generator.executingQuery().toString());
     }
 
     @Test
-    void shouldLog(final ValidationFile validationFile) {
-        validate(generator.shouldLog(), validationFile);
+    void shouldLog() {
+        Assertions.assertEquals("""
+                LOG.isInfoEnabled()""", generator.shouldLog().toString());
     }
 
     @Test
@@ -69,8 +86,10 @@ class Slf4jLoggingGeneratorTest extends ValidationFileTest {
     }
 
     @Test
-    void entering(final ValidationFile validationFile) {
-        validate(generator.entering("repo", "method"), validationFile);
+    void entering() {
+        Assertions.assertEquals("""
+                LOG.debug(java.lang.String.format("Entering [%s#%s]", "repo", "method"));
+                """, generator.entering("repo", "method").toString());
     }
 
 }
