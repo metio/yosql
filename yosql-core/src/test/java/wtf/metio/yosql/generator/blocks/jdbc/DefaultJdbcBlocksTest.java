@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlParameter;
 
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.*;
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.*;
@@ -139,6 +141,21 @@ class DefaultJdbcBlocksTest {
         Assertions.assertEquals("""
                 try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                 """, generator.createStatement().toString());
+    }
+
+    @Test
+    void prepareBatch() {
+        final var config = new SqlConfiguration();
+        final var parameter = new SqlParameter();
+        parameter.setName("test");
+        config.getParameters().add(parameter);
+        Assertions.assertEquals("""
+                for (int batch = 0; batch < test.length; batch++) {
+                  for (final int jdbcIndex : index.get("test")) {
+                    statement.setObject(jdbcIndex, test[batch]);
+                  }
+                  statement.addBatch()}
+                """, generator.prepareBatch(config).toString());
     }
 
 }
