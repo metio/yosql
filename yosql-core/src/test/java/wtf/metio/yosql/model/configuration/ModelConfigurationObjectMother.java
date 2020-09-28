@@ -12,7 +12,7 @@ import static wtf.metio.yosql.model.options.AnnotationMemberOptions.WITHOUT_DATE
 public final class ModelConfigurationObjectMother {
 
     public static AnnotationConfiguration annotationConfig() {
-        return annotationConfig(AnnotationClassOptions.PROCESSING_API, WITHOUT_DATE);
+        return annotationConfig(AnnotationClassOptions.PROCESSING_API);
     }
 
     public static AnnotationConfiguration annotationConfig(final AnnotationClassOptions classOptions) {

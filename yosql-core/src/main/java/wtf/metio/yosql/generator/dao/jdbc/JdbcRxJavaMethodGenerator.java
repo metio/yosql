@@ -22,7 +22,6 @@ import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -104,7 +103,7 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                         .addCode(jdbcBlocks.logExecutedQuery(sqlConfiguration))
                         .addCode(jdbcBlocks.resultSetVariable())
                         .addCode(jdbcBlocks.readMetaData())
-                        .addCode(jdbcBlocks.reactColumnCount())
+                        .addCode(jdbcBlocks.readColumnCount())
                         .addCode(jdbcBlocks.returnNewFlowState())
                         .build())
                 .build();

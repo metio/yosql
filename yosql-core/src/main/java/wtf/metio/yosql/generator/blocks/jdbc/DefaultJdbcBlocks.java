@@ -84,7 +84,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock reactColumnCount() {
+    public CodeBlock readColumnCount() {
         return variables.variable(jdbcNames.columnCount(), int.class,
                 jdbcMethods.metaData().getColumnCount());
     }

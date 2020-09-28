@@ -20,7 +20,7 @@ public interface JdbcBlocks {
 
     CodeBlock readMetaData();
 
-    CodeBlock reactColumnCount();
+    CodeBlock readColumnCount();
 
     CodeBlock resultSetVariable();
 
