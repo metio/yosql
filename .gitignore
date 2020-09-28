@@ -3,3 +3,4 @@ target/
 .ansible-git-*
 /bin/
 /docs/public
+.idea/
