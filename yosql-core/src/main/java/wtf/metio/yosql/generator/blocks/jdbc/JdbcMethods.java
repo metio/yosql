@@ -9,31 +9,72 @@ package wtf.metio.yosql.generator.blocks.jdbc;
 
 import com.squareup.javapoet.CodeBlock;
 
+/**
+ * Entry point for methods of the JDBC API. Nested interfaces are used to distinguish the source of the methods.
+ */
 public interface JdbcMethods {
 
     JdbcDataSourceMethods dataSource();
+
     JdbcConnectionMethods connection();
+
     JdbcResultSetMethods resultSet();
+
     JdbcMetaDataMethods metaData();
+
     JdbcStatementMethods statement();
 
+    /**
+     * Methods that are exposed by a JDBC DataSource object.
+     *
+     * @see javax.sql.DataSource
+     */
     interface JdbcDataSourceMethods {
         CodeBlock getConnection();
     }
+
+    /**
+     * Methods that are exposed by a JDBC Connection object.
+     *
+     * @see java.sql.Connection
+     */
     interface JdbcConnectionMethods {
         CodeBlock prepareStatement();
+
         CodeBlock prepareCallable();
     }
+
+    /**
+     * Methods that are exposed by a JDBC ResultSet object.
+     *
+     * @see java.sql.ResultSet
+     */
     interface JdbcResultSetMethods {
         CodeBlock getMetaData();
     }
+
+    /**
+     * Methods that are exposed by a JDBC ResultSetMetaData object.
+     *
+     * @see java.sql.ResultSetMetaData
+     */
     interface JdbcMetaDataMethods {
         CodeBlock getColumnCount();
     }
+
+    /**
+     * Methods that are exposed by a JDBC Statement object.
+     *
+     * @see java.sql.Statement
+     * @see java.sql.PreparedStatement
+     */
     interface JdbcStatementMethods {
         CodeBlock executeQuery();
+
         CodeBlock executeUpdate();
+
         CodeBlock executeBatch();
+
         CodeBlock addBatch();
     }
 
