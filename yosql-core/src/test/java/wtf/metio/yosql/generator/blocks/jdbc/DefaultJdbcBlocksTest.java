@@ -12,6 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlParameter;
+import wtf.metio.yosql.model.sql.SqlStatement;
+
+import java.nio.file.Paths;
+import java.util.List;
 
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.*;
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.*;
@@ -156,6 +160,23 @@ class DefaultJdbcBlocksTest {
                   }
                   statement.addBatch()}
                 """, generator.prepareBatch(config).toString());
+    }
+
+    @Test
+    void pickVendorQuery() {
+        final var config = new SqlConfiguration();
+        config.setName("queryTest");
+        final var parameter = new SqlParameter();
+        parameter.setName("test");
+        config.getParameters().add(parameter);
+        final var statements = List.of(new SqlStatement(Paths.get("."), config, "SELECT raw"));
+        Assertions.assertEquals("""
+                final java.lang.String query = QUERY_TEST;
+                LOG.finer(() -> String.format("Picked query [%s]", "QUERY_TEST"));
+                final java.lang.String rawQuery = QUERY_TEST_RAW;
+                final java.util.Map<java.lang.String, int[]> index = QUERY_TEST_INDEX;
+                LOG.finer(() -> String.format("Picked index [%s]", "QUERY_TEST_INDEX"));
+                """, generator.pickVendorQuery(statements).toString());
     }
 
 }

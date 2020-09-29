@@ -13,12 +13,13 @@ import static wtf.metio.yosql.generator.logging.jdk.JdkLoggingObjectMother.jdkLo
 import static wtf.metio.yosql.generator.logging.log4j.Log4jLoggingObjectMother.log4jLoggingGenerator;
 import static wtf.metio.yosql.generator.logging.noop.NoOpLoggingObjectMother.noOpLoggingGenerator;
 import static wtf.metio.yosql.generator.logging.slf4j.Slf4jLoggingObjectMother.slf4jLoggingGenerator;
+import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.runtimeConfiguration;
 
 public final class LoggingObjectMother {
 
     public static LoggingGenerator loggingGenerator() {
         return new DelegatingLoggingGenerator(
-                null,
+                runtimeConfiguration(),
                 jdkLoggingGenerator(),
                 log4jLoggingGenerator(),
                 noOpLoggingGenerator(),
