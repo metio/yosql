@@ -22,9 +22,9 @@ import java.sql.ResultSetMetaData;
 final class DefaultJdbcParameters implements JdbcParameters {
 
     private final Parameters parameters;
-    private final JdbcNamesConfiguration names;
+    private final JdbcNames names;
 
-    DefaultJdbcParameters(final Parameters parameters, final JdbcNamesConfiguration names) {
+    DefaultJdbcParameters(final Parameters parameters, final JdbcNames names) {
         this.parameters = parameters;
         this.names = names;
     }

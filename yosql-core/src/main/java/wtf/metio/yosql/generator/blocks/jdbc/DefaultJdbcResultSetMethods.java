@@ -12,9 +12,9 @@ import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 final class DefaultJdbcResultSetMethods implements JdbcMethods.JdbcResultSetMethods {
 
-    private final JdbcNamesConfiguration jdbcNames;
+    private final JdbcNames jdbcNames;
 
-    DefaultJdbcResultSetMethods(final JdbcNamesConfiguration jdbcNames) {
+    DefaultJdbcResultSetMethods(final JdbcNames jdbcNames) {
         this.jdbcNames = jdbcNames;
     }
 

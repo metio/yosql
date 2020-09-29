@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNamesConfiguration;
+import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNames;
 
 @DisplayName("DefaultJdbcResultSetMethods")
 class DefaultJdbcResultSetMethodsTest {
@@ -19,7 +19,7 @@ class DefaultJdbcResultSetMethodsTest {
     @Test
     void getMetaData() {
         // given
-        final var generator = new DefaultJdbcResultSetMethods(jdbcNamesConfiguration());
+        final var generator = new DefaultJdbcResultSetMethods(jdbcNames());
 
         // when
         final var metaData = generator.getMetaData();

@@ -6,7 +6,9 @@
  */
 package wtf.metio.yosql.generator.blocks.jdbc;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
@@ -61,12 +63,15 @@ public interface JdbcBlocks {
     CodeBlock.Builder prepareReturnList(TypeName listOfResults, String converterAlias);
 
     CodeBlock returnAsList(TypeName listOfResults, String converterAlias);
+
     CodeBlock returnAsStream(TypeName listOfResults, String converterAlias);
 
     CodeBlock streamStateful(TypeSpec spliterator, TypeSpec closer);
 
     CodeBlock createResultState();
+
     CodeBlock returnNewFlowState();
+
     CodeBlock newFlowable(TypeSpec initialState, TypeSpec generator, TypeSpec disposer);
 
     CodeBlock parameterAssignment(
@@ -75,6 +80,7 @@ public interface JdbcBlocks {
             Function<String, Object[]> parameterSetter);
 
     CodeBlock setParameters(final SqlConfiguration configuration);
+
     CodeBlock setBatchParameters(final SqlConfiguration configuration);
 
 }

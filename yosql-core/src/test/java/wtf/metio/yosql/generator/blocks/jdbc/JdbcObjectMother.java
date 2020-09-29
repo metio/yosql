@@ -13,7 +13,7 @@ import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.names;
 
 public final class JdbcObjectMother {
-    
+
     public static JdbcFieldsConfiguration jdbcFieldsConfiguration() {
         return JdbcFieldsConfiguration.builder()
                 .setIndexSuffix("_INDEX")
@@ -39,29 +39,29 @@ public final class JdbcObjectMother {
     }
 
     public static JdbcMethods.JdbcConnectionMethods jdbcConnectionMethods() {
-        return new DefaultJdbcConnectionMethods(names(), jdbcNamesConfiguration());
+        return new DefaultJdbcConnectionMethods(names(), jdbcNames());
     }
-    
+
     public static JdbcMethods.JdbcDataSourceMethods jdbcDataSourceMethods() {
-        return new DefaultJdbcDataSourceMethods(jdbcNamesConfiguration());
+        return new DefaultJdbcDataSourceMethods(jdbcNames());
     }
 
     public static JdbcMethods.JdbcResultSetMethods jdbcResultSetMethods() {
-        return new DefaultJdbcResultSetMethods(jdbcNamesConfiguration());
+        return new DefaultJdbcResultSetMethods(jdbcNames());
     }
 
     public static JdbcMethods.JdbcMetaDataMethods jdbcMetaDataMethods() {
-        return new DefaultJdbcMetaDataMethods(jdbcNamesConfiguration());
+        return new DefaultJdbcMetaDataMethods(jdbcNames());
     }
-    
+
     public static JdbcMethods.JdbcStatementMethods jdbcStatementMethods() {
-        return new DefaultJdbcStatementMethods(jdbcNamesConfiguration());
+        return new DefaultJdbcStatementMethods(jdbcNames());
     }
-    
+
     public static JdbcFields jdbcFields() {
         return new DefaultJdbcFields(jdbcFieldsConfiguration());
     }
-    
+
     public static JdbcMethods jdbcMethods() {
         return new DefaultJdbcMethods(
                 jdbcDataSourceMethods(),
@@ -70,7 +70,7 @@ public final class JdbcObjectMother {
                 jdbcMetaDataMethods(),
                 jdbcStatementMethods());
     }
-    
+
     public static JdbcNames jdbcNames() {
         return new DefaultJdbcNames();
     }

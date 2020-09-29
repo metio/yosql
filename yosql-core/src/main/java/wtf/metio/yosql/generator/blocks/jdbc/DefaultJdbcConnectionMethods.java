@@ -14,9 +14,9 @@ import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 final class DefaultJdbcConnectionMethods implements JdbcMethods.JdbcConnectionMethods {
 
     private final Names names;
-    private final JdbcNamesConfiguration jdbcNames;
+    private final JdbcNames jdbcNames;
 
-    DefaultJdbcConnectionMethods(final Names names, final JdbcNamesConfiguration jdbcNames) {
+    DefaultJdbcConnectionMethods(final Names names, final JdbcNames jdbcNames) {
         this.names = names;
         this.jdbcNames = jdbcNames;
     }

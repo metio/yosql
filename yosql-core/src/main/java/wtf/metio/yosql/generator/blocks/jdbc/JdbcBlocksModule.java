@@ -32,34 +32,34 @@ public class JdbcBlocksModule {
     @Provides
     JdbcParameters provideJdbcParameters(
             final Parameters parameters,
-            final JdbcNamesConfiguration names) {
+            final JdbcNames names) {
         return new DefaultJdbcParameters(parameters, names);
     }
 
     @Provides
-    JdbcMethods.JdbcDataSourceMethods provideDataSource(final JdbcNamesConfiguration names) {
+    JdbcMethods.JdbcDataSourceMethods provideDataSource(final JdbcNames names) {
         return new DefaultJdbcDataSourceMethods(names);
     }
 
     @Provides
     JdbcMethods.JdbcConnectionMethods provideConnection(
             final Names names,
-            final JdbcNamesConfiguration jdbcNames) {
+            final JdbcNames jdbcNames) {
         return new DefaultJdbcConnectionMethods(names, jdbcNames);
     }
 
     @Provides
-    JdbcMethods.JdbcResultSetMethods provideResultSet(final JdbcNamesConfiguration names) {
+    JdbcMethods.JdbcResultSetMethods provideResultSet(final JdbcNames names) {
         return new DefaultJdbcResultSetMethods(names);
     }
 
     @Provides
-    JdbcMethods.JdbcMetaDataMethods provideMetaData(final JdbcNamesConfiguration names) {
+    JdbcMethods.JdbcMetaDataMethods provideMetaData(final JdbcNames names) {
         return new DefaultJdbcMetaDataMethods(names);
     }
 
     @Provides
-    JdbcMethods.JdbcStatementMethods provideStatement(final JdbcNamesConfiguration names) {
+    JdbcMethods.JdbcStatementMethods provideStatement(final JdbcNames names) {
         return new DefaultJdbcStatementMethods(names);
     }
 

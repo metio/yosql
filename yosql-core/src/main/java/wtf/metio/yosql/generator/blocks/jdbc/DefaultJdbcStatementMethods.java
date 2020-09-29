@@ -8,13 +8,12 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
 import com.squareup.javapoet.CodeBlock;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatementMethods {
 
-    private final JdbcNamesConfiguration jdbcNames;
+    private final JdbcNames jdbcNames;
 
-    DefaultJdbcStatementMethods(final JdbcNamesConfiguration jdbcNames) {
+    DefaultJdbcStatementMethods(final JdbcNames jdbcNames) {
         this.jdbcNames = jdbcNames;
     }
 

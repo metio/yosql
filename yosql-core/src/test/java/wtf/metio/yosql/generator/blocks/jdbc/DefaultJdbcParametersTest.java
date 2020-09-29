@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.parameters;
-import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNamesConfiguration;
+import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNames;
 
 @DisplayName("DefaultJdbcParameters")
 class DefaultJdbcParametersTest {
@@ -22,7 +22,7 @@ class DefaultJdbcParametersTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcParameters(parameters(), jdbcNamesConfiguration());
+        generator = new DefaultJdbcParameters(parameters(), jdbcNames());
     }
 
     @Test
