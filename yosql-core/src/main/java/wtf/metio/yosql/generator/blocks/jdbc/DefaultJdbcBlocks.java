@@ -306,6 +306,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
+    // TODO: mark as private
     public CodeBlock.Builder prepareReturnList(final TypeName listOfResults, final String converterAlias) {
         return CodeBlock.builder()
                 .addStatement("final $T $N = new $T<>()",
