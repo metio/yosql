@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 /**
  * Generic implementation of a {@link MethodsGenerator}. Delegates most of its work to the injected members.
  */
+// TODO: rename to DelegatingMethodsGenerator?
 public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     private final BatchMethodGenerator batchMethods;

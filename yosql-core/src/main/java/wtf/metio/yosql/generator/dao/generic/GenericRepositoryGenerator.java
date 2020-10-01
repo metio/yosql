@@ -23,6 +23,7 @@ import java.util.List;
 /**
  * Generic implementation of a {@link RepositoryGenerator}. Delegates most of its work to its injected members.
  */
+// TODO: rename to DelegatingRepositoryGenerator?
 public final class GenericRepositoryGenerator implements RepositoryGenerator {
 
     private final LocLogger logger;

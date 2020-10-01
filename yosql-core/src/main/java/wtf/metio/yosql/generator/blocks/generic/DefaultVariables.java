@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.generator.blocks.generic;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.generator.blocks.api.Variables;
@@ -49,6 +48,7 @@ final class DefaultVariables implements Variables {
     }
 
     @Override
+    // TODO: call variableStatement?
     public CodeBlock variable(final String name, final TypeName variableClass, CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
