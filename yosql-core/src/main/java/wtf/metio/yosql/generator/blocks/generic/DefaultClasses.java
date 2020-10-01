@@ -17,13 +17,11 @@ final class DefaultClasses implements Classes {
 
     @Override
     public TypeSpec.Builder publicClass(final ClassName name) {
-        // TODO: configure modifiers?
         return TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC, Modifier.FINAL);
     }
 
     @Override
     public TypeSpec.Builder openClass(final ClassName name) {
-        // TODO: configure modifiers?
         return TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC);
     }
 

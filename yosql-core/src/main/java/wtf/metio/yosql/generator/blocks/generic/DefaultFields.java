@@ -34,7 +34,6 @@ final class DefaultFields implements Fields {
     }
 
     private FieldSpec.Builder prepareField(final TypeName type, final String name) {
-        // TODO: configure modifiers?
         return builder(type, name).addModifiers(Modifier.PRIVATE, Modifier.FINAL);
     }
 
@@ -45,16 +44,7 @@ final class DefaultFields implements Fields {
 
     @Override
     public FieldSpec.Builder prepareConstant(final TypeName type, final String name) {
-        // TODO: configure modifiers?
         return builder(type, name).addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL);
-    }
-
-    @Override
-    // TODO: do we need "field" & "privateField"?
-    public FieldSpec privateField(final TypeName type, final String name) {
-        return builder(type, name)
-                .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-                .build();
     }
 
     private FieldSpec.Builder builder(final TypeName type, final String name) {

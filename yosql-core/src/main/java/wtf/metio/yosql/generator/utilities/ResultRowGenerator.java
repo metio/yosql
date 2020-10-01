@@ -70,7 +70,7 @@ public final class ResultRowGenerator {
     }
 
     private FieldSpec row() {
-        return fields.privateField(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, runtime.jdbcNames().row());
+        return fields.field(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, runtime.jdbcNames().row());
     }
 
     private MethodSpec constructor() {
