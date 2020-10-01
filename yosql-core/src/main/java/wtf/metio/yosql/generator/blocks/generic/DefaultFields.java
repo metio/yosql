@@ -30,11 +30,7 @@ final class DefaultFields implements Fields {
 
     @Override
     public FieldSpec field(final TypeName type, final String name) {
-        return prepareField(type, name).build();
-    }
-
-    private FieldSpec.Builder prepareField(final TypeName type, final String name) {
-        return builder(type, name).addModifiers(Modifier.PRIVATE, Modifier.FINAL);
+        return builder(type, name).addModifiers(Modifier.PRIVATE, Modifier.FINAL).build();
     }
 
     @Override
