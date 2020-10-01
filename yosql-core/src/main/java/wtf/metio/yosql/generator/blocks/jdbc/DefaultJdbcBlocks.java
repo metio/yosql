@@ -379,6 +379,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
+    // TODO: mark private?
     public CodeBlock parameterAssignment(
             final SqlConfiguration config,
             final String codeStatement,
@@ -387,7 +388,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
         final var parameters = config.getParameters();
 
         if (parameters != null && !parameters.isEmpty()) {
-            for (final SqlParameter parameter : config.getParameters()) {
+            for (final var parameter : config.getParameters()) {
                 builder.beginControlFlow("for (final int $N : $N.get($S))",
                         jdbcNames.jdbcIndex(),
                         jdbcNames.index(), parameter.getName())
