@@ -20,7 +20,7 @@ public class Variables {
 
     VariableConfiguration asConfiguration() {
         return VariableConfiguration.builder()
-                .setModifiers(List.of(Modifier.FINAL)) // TODO: configure w/ Maven
+                .addModifiers(Modifier.FINAL) // TODO: configure w/ Maven
                 .setVariableType(VariableTypeOptions.TYPE) // TODO: configure w/ Maven
                 .build();
     }

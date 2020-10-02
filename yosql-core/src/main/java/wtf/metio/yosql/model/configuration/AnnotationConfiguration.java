@@ -7,49 +7,38 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 import wtf.metio.yosql.model.options.AnnotationClassOptions;
 import wtf.metio.yosql.model.options.AnnotationMemberOptions;
 
-@AutoValue
-public abstract class AnnotationConfiguration {
+@Value.Immutable
+public interface AnnotationConfiguration {
 
-    public static AnnotationConfiguration.Builder builder() {
-        return new AutoValue_AnnotationConfiguration.Builder();
+    static Builder builder() {
+        return new Builder();
     }
 
-    public abstract AnnotationClassOptions classAnnotation();
-    public abstract AnnotationClassOptions fieldAnnotation();
-    public abstract AnnotationClassOptions methodAnnotation();
+    AnnotationClassOptions classAnnotation();
 
-    public abstract AnnotationMemberOptions classMembers();
-    public abstract AnnotationMemberOptions fieldMembers();
-    public abstract AnnotationMemberOptions methodMembers();
+    AnnotationClassOptions fieldAnnotation();
 
-    public abstract String classComment();
-    public abstract String fieldComment();
-    public abstract String methodComment();
-    public abstract String generatorName();
+    AnnotationClassOptions methodAnnotation();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
+    AnnotationMemberOptions classMembers();
 
-        public abstract Builder setClassAnnotation(AnnotationClassOptions classAnnotation);
-        public abstract Builder setFieldAnnotation(AnnotationClassOptions fieldAnnotation);
-        public abstract Builder setMethodAnnotation(AnnotationClassOptions methodAnnotation);
+    AnnotationMemberOptions fieldMembers();
 
-        public abstract Builder setClassMembers(AnnotationMemberOptions classMembers);
-        public abstract Builder setFieldMembers(AnnotationMemberOptions fieldMembers);
-        public abstract Builder setMethodMembers(AnnotationMemberOptions methodMembers);
+    AnnotationMemberOptions methodMembers();
 
-        public abstract Builder setClassComment(String classComment);
-        public abstract Builder setFieldComment(String fieldComment);
-        public abstract Builder setMethodComment(String methodComment);
+    String classComment();
 
-        public abstract Builder setGeneratorName(String generatorName);
+    String fieldComment();
 
-        public abstract AnnotationConfiguration build();
+    String methodComment();
 
+    String generatorName();
+
+    class Builder extends ImmutableAnnotationConfiguration.Builder {
     }
 
 }

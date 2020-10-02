@@ -7,26 +7,19 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 import wtf.metio.yosql.model.options.StatementInRepositoryOptions;
 
-@AutoValue
-public abstract class StatementConfiguration {
+@Value.Immutable
+public interface StatementConfiguration {
 
-    public static Builder builder() {
-        return new AutoValue_StatementConfiguration.Builder();
+    static StatementConfiguration.Builder builder() {
+        return new StatementConfiguration.Builder();
     }
 
-    // TODO: move to RepositoryConfig?
-    public abstract StatementInRepositoryOptions embed();
+    StatementInRepositoryOptions embed();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setEmbed(StatementInRepositoryOptions targetVersion);
-
-        public abstract StatementConfiguration build();
-
+    class Builder extends ImmutableStatementConfiguration.Builder {
     }
 
 }

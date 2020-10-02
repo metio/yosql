@@ -7,29 +7,21 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
 import com.squareup.javapoet.ClassName;
+import org.immutables.value.Value;
 
-@AutoValue
-public abstract class ResultConfiguration {
+@Value.Immutable
+public interface ResultConfiguration {
 
-    public static Builder builder() {
-        return new AutoValue_ResultConfiguration.Builder();
+    static ResultConfiguration.Builder builder() {
+        return new ResultConfiguration.Builder();
     }
 
-    public abstract ClassName resultStateClass();
+    ClassName resultStateClass();
 
-    public abstract ClassName resultRowClass();
+    ClassName resultRowClass();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setResultStateClass(ClassName resultStateClass);
-
-        public abstract Builder setResultRowClass(ClassName resultRowClass);
-
-        public abstract ResultConfiguration build();
-
+    class Builder extends ImmutableResultConfiguration.Builder {
     }
 
 }

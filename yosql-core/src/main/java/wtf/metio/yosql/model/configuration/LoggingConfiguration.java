@@ -7,32 +7,30 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 import wtf.metio.yosql.model.options.LoggingApiOptions;
 
-@AutoValue
-public abstract class LoggingConfiguration {
+@Value.Immutable
+public interface LoggingConfiguration {
 
-    public static Builder builder() {
-        return new AutoValue_LoggingConfiguration.Builder();
+    static LoggingConfiguration.Builder builder() {
+        return new LoggingConfiguration.Builder();
     }
 
     /**
      * @return Whether log statements should be generated
      */
-    public final boolean shouldLog() {
+    default boolean shouldLog() {
         return LoggingApiOptions.NONE != api();
     }
 
-    public abstract LoggingApiOptions api();
+    /**
+     * @return The logging API to use.
+     * @see LoggingApiOptions
+     */
+    LoggingApiOptions api();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setApi(LoggingApiOptions api);
-
-        public abstract LoggingConfiguration build();
-
+    class Builder extends ImmutableLoggingConfiguration.Builder {
     }
 
 }

@@ -7,32 +7,22 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 
-import java.nio.file.Path;
+@Value.Immutable
+public interface NameConfiguration {
 
-@AutoValue
-public abstract class NameConfiguration {
-
-    public static Builder builder() {
-        return new AutoValue_NameConfiguration.Builder();
+    static NameConfiguration.Builder builder() {
+        return new NameConfiguration.Builder();
     }
 
-    public abstract String utilityPackageName();
+    String utilityPackageName();
 
-    public abstract String converterPackageName();
+    String converterPackageName();
 
-    public abstract String basePackageName();
+    String basePackageName();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setUtilityPackageName(String utilityPackageName);
-        public abstract Builder setConverterPackageName(String converterPackageName);
-        public abstract Builder setBasePackageName(String basePackageName);
-
-        public abstract NameConfiguration build();
-
+    class Builder extends ImmutableNameConfiguration.Builder {
     }
 
 }

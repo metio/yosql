@@ -154,9 +154,9 @@ public class Methods {
                 .setMethodEagerName(methodEagerName)
                 .setMethodLazyName(methodLazyName)
                 .setMethodCatchAndRethrow(methodCatchAndRethrow)
-                .setAllowedReadPrefixes(List.of("select", "read")) // TODO: configure w/ Maven
-                .setAllowedWritePrefixes(List.of("insert", "update", "write")) // TODO: configure w/ Maven
-                .setAllowedCallPrefixes(List.of("call", "execute")) // TODO: configure w/ Maven
+                .addAllowedReadPrefixes("select", "read") // TODO: configure w/ Maven
+                .addAllowedWritePrefixes("insert", "update", "write") // TODO: configure w/ Maven
+                .addAllowedCallPrefixes("call", "execute") // TODO: configure w/ Maven
                 .setValidateMethodNamePrefixes(methodValidateNamePrefixes)
                 .build();
     }
