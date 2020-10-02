@@ -36,7 +36,7 @@ public interface FileConfiguration {
     /**
      * @return The charset to use while reading SQL files, e.g. "UTF-8".
      */
-    String sqlFilesCharset();
+    String sqlFilesCharset(); // TODO: replace with type safe value Charset
 
     /**
      * @return The file suffix to use while searching for SQL files, e.g. ".sql".

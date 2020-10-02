@@ -28,23 +28,23 @@ final class DefaultSqlFileResolver implements SqlFileResolver {
     private final ParserPreconditions preconditions;
     // TODO: inject inputBaseDirectory instead
     //       allows to use this class w/o RuntimeConfiguration
-    private final RuntimeConfiguration configuration;
+    private final RuntimeConfiguration runtimeConfiguration; // TODO: replace with FileConfiguration
     private final ExecutionErrors errors;
 
     DefaultSqlFileResolver(
             final LocLogger logger,
             final ParserPreconditions preconditions,
-            final RuntimeConfiguration configuration,
+            final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
         this.logger = logger;
         this.preconditions = preconditions;
-        this.configuration = configuration;
+        this.runtimeConfiguration = runtimeConfiguration;
         this.errors = errors;
     }
 
     @Override
     public Stream<Path> resolveFiles() {
-        final var source = configuration.files().inputBaseDirectory();
+        final var source = runtimeConfiguration.files().inputBaseDirectory();
         logger.trace(ApplicationEvents.READ_FILES, source);
         preconditions.assertDirectoryIsReadable(source);
 
@@ -54,7 +54,7 @@ final class DefaultSqlFileResolver implements SqlFileResolver {
                         .parallel()
                         .peek(path -> logger.trace(ApplicationEvents.ENCOUNTER_FILE, path))
                         .filter(Files::isRegularFile)
-                        .filter(path -> path.toString().endsWith(configuration.files().sqlFilesSuffix()))
+                        .filter(path -> path.toString().endsWith(runtimeConfiguration.files().sqlFilesSuffix()))
                         .peek(path -> logger.trace(ApplicationEvents.CONSIDER_FILE, path));
             } catch (final IOException | SecurityException exception) {
                 // TODO: use 'errors.illegalState' or similar

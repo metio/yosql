@@ -8,8 +8,8 @@ package wtf.metio.yosql.files;
 
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
-import wtf.metio.yosql.model.internal.ApplicationEvents;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
+import wtf.metio.yosql.model.internal.ApplicationEvents;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.io.BufferedReader;
@@ -35,31 +35,31 @@ final class DefaultSqlFileParser implements SqlFileParser {
     private final Pattern statementSplitter;
     private final LocLogger logger;
     private final SqlConfigurationFactory factory;
-    private final RuntimeConfiguration runtime;
+    private final RuntimeConfiguration runtimeConfiguration; // TODO: replace with FileConfiguration
     private final ExecutionErrors errors;
 
     DefaultSqlFileParser(
             final LocLogger logger,
             final SqlConfigurationFactory factory,
-            final RuntimeConfiguration runtime,
+            final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
-        statementSplitter = Pattern.compile(runtime.files().sqlStatementSeparator());
+        statementSplitter = Pattern.compile(runtimeConfiguration.files().sqlStatementSeparator());
         this.logger = logger;
         this.factory = factory;
-        this.runtime = runtime;
+        this.runtimeConfiguration = runtimeConfiguration;
         this.errors = errors;
     }
 
     @Override
     public Stream<SqlStatement> parse(final Path source) {
         try {
-            final var charset = Charset.forName(runtime.files().sqlFilesCharset());
+            final var charset = Charset.forName(runtimeConfiguration.files().sqlFilesCharset());
             final var rawText = Files.readString(source, charset);
             final var counter = new AtomicInteger(1);
             return statementSplitter.splitAsStream(rawText)
                     .parallel()
                     .filter(Objects::nonNull)
-                    .filter(text -> !text.strip().isEmpty())
+                    .filter(text -> !text.strip().isEmpty()) // TODO: map first and then filter?
                     .map(statement -> convert(source, statement, counter.getAndIncrement()));
         } catch (final IOException exception) {
             // ToDO: use some factory method of 'errors'

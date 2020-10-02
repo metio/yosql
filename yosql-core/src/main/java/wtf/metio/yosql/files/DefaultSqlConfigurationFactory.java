@@ -18,7 +18,6 @@ import wtf.metio.yosql.model.sql.SqlType;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -27,19 +26,19 @@ import java.util.stream.Collectors;
 public final class DefaultSqlConfigurationFactory implements SqlConfigurationFactory {
 
     private final LocLogger logger;
-    private final RuntimeConfiguration runtime;
+    private final RuntimeConfiguration runtimeConfiguration;
     private final ExecutionErrors errors;
 
     /**
-     * @param logger  The logger to use.
-     * @param runtime The runtime config to use.
-     * @param errors  The error collector to use.
+     * @param logger               The logger to use.
+     * @param runtimeConfiguration The runtime config to use.
+     * @param errors               The error collector to use.
      */
     public DefaultSqlConfigurationFactory(
             final LocLogger logger,
-            final RuntimeConfiguration runtime,
+            final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
-        this.runtime = runtime;
+        this.runtimeConfiguration = runtimeConfiguration;
         this.errors = errors;
         this.logger = logger;
     }
@@ -95,79 +94,79 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private void batchNamePrefix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodBatchPrefix())) {
-            configuration.setMethodBatchPrefix(runtime.methods().methodBatchPrefix());
+            configuration.setMethodBatchPrefix(runtimeConfiguration.methods().methodBatchPrefix());
         }
     }
 
     private void batchNameSuffix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodBatchSuffix())) {
-            configuration.setMethodBatchSuffix(runtime.methods().methodBatchSuffix());
+            configuration.setMethodBatchSuffix(runtimeConfiguration.methods().methodBatchSuffix());
         }
     }
 
     private void streamNamePrefix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodStreamPrefix())) {
-            configuration.setMethodStreamPrefix(runtime.methods().methodStreamPrefix());
+            configuration.setMethodStreamPrefix(runtimeConfiguration.methods().methodStreamPrefix());
         }
     }
 
     private void streamNameSuffix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodStreamSuffix())) {
-            configuration.setMethodStreamSuffix(runtime.methods().methodStreamSuffix());
+            configuration.setMethodStreamSuffix(runtimeConfiguration.methods().methodStreamSuffix());
         }
     }
 
     private void rxJavaNamePrefix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodReactivePrefix())) {
-            configuration.setMethodReactivePrefix(runtime.methods().methodRxJavaPrefix());
+            configuration.setMethodReactivePrefix(runtimeConfiguration.methods().methodRxJavaPrefix());
         }
     }
 
     private void rxJavaNameSuffix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodReactiveSuffix())) {
-            configuration.setMethodReactiveSuffix(runtime.methods().methodRxJavaSuffix());
+            configuration.setMethodReactiveSuffix(runtimeConfiguration.methods().methodRxJavaSuffix());
         }
     }
 
     private void lazyName(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodLazyName())) {
-            configuration.setMethodLazyName(runtime.methods().methodLazyName());
+            configuration.setMethodLazyName(runtimeConfiguration.methods().methodLazyName());
         }
     }
 
     private void eagerName(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.getMethodEagerName())) {
-            configuration.setMethodEagerName(runtime.methods().methodEagerName());
+            configuration.setMethodEagerName(runtimeConfiguration.methods().methodEagerName());
         }
     }
 
     private void type(final SqlConfiguration configuration) {
         if (configuration.getType() == null) {
-            if (startsWith(configuration.getName(), runtime.methods().allowedWritePrefixes())) {
+            if (startsWith(configuration.getName(), runtimeConfiguration.methods().allowedWritePrefixes())) {
                 configuration.setType(SqlType.WRITING);
-            } else if (startsWith(configuration.getName(), runtime.methods().allowedReadPrefixes())) {
+            } else if (startsWith(configuration.getName(), runtimeConfiguration.methods().allowedReadPrefixes())) {
                 configuration.setType(SqlType.READING);
-            } else if (startsWith(configuration.getName(), runtime.methods().allowedCallPrefixes())) {
+            } else if (startsWith(configuration.getName(), runtimeConfiguration.methods().allowedCallPrefixes())) {
                 configuration.setType(SqlType.CALLING);
             }
         }
     }
 
     private void validateNames(final Path source, final SqlConfiguration configuration) {
-        if (runtime.methods().validateMethodNamePrefixes()) {
+        if (runtimeConfiguration.methods().validateMethodNamePrefixes()) {
             switch (configuration.getType()) {
                 case READING:
-                    if (!startsWith(configuration.getName(), runtime.methods().allowedReadPrefixes())) {
+                    if (!startsWith(configuration.getName(), runtimeConfiguration.methods().allowedReadPrefixes())) {
                         invalidPrefix(source, SqlType.READING, configuration.getName());
                     }
                     break;
                 case WRITING:
-                    if (!startsWith(configuration.getName(), runtime.methods().allowedWritePrefixes())) {
+                    if (!startsWith(configuration.getName(), runtimeConfiguration.methods().allowedWritePrefixes())) {
                         invalidPrefix(source, SqlType.WRITING, configuration.getName());
                     }
                     break;
                 case CALLING:
-                    if (!startsWith(configuration.getName(), runtime.methods().allowedCallPrefixes())) {
+                    if (!startsWith(configuration.getName(), runtimeConfiguration.methods().allowedCallPrefixes())) {
                         invalidPrefix(source, SqlType.CALLING, configuration.getName());
                     }
                     break;
@@ -187,7 +186,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private void standard(final SqlConfiguration configuration) {
         if (configuration.shouldUsePluginStandardConfig()) {
-            configuration.setMethodStandardApi(runtime.methods().generateStandardApi());
+            configuration.setMethodStandardApi(runtimeConfiguration.methods().generateStandardApi());
         }
     }
 
@@ -196,7 +195,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             if (SqlType.READING == configuration.getType()) {
                 configuration.setMethodBatchApi(false);
             } else {
-                configuration.setMethodBatchApi(runtime.methods().generateBatchApi());
+                configuration.setMethodBatchApi(runtimeConfiguration.methods().generateBatchApi());
             }
         }
     }
@@ -206,7 +205,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             if (SqlType.WRITING == configuration.getType()) {
                 configuration.setMethodStreamEagerApi(false);
             } else {
-                configuration.setMethodStreamEagerApi(runtime.methods().generateStreamEagerApi());
+                configuration.setMethodStreamEagerApi(runtimeConfiguration.methods().generateStreamEagerApi());
             }
         }
     }
@@ -216,7 +215,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             if (SqlType.WRITING == configuration.getType()) {
                 configuration.setMethodStreamLazyApi(false);
             } else {
-                configuration.setMethodStreamLazyApi(runtime.methods().generateStreamLazyApi());
+                configuration.setMethodStreamLazyApi(runtimeConfiguration.methods().generateStreamLazyApi());
             }
         }
     }
@@ -226,14 +225,14 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             if (SqlType.WRITING == configuration.getType()) {
                 configuration.setMethodRxJavaApi(false);
             } else {
-                configuration.setMethodRxJavaApi(runtime.methods().generateRxJavaApi());
+                configuration.setMethodRxJavaApi(runtimeConfiguration.methods().generateRxJavaApi());
             }
         }
     }
 
     private void catchAndRethrow(final SqlConfiguration configuration) {
         if (configuration.shouldUsePluginCatchAndRethrowConfig()) {
-            configuration.setMethodCatchAndRethrow(runtime.methods().methodCatchAndRethrow());
+            configuration.setMethodCatchAndRethrow(runtimeConfiguration.methods().methodCatchAndRethrow());
         }
     }
 
@@ -248,9 +247,9 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private String calculateRepositoryNameFromParentFolder(final Path source) {
-        final var relativePathToSqlFile = runtime.files().inputBaseDirectory().relativize(source);
+        final var relativePathToSqlFile = runtimeConfiguration.files().inputBaseDirectory().relativize(source);
         // TODO: I18N
-        logger.debug("input path: " + runtime.files().inputBaseDirectory());
+        logger.debug("input path: " + runtimeConfiguration.files().inputBaseDirectory());
         logger.debug("source path: " + source);
         logger.debug("relative path: " + relativePathToSqlFile);
         final var rawRepositoryName = relativePathToSqlFile.getParent().toString();
@@ -276,15 +275,15 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private String repositoryWithNameSuffix(final String repository) {
-        return repository.endsWith(runtime.repositories().repositoryNameSuffix())
+        return repository.endsWith(runtimeConfiguration.repositories().repositoryNameSuffix())
                 ? repository
-                : repository + runtime.repositories().repositoryNameSuffix();
+                : repository + runtimeConfiguration.repositories().repositoryNameSuffix();
     }
 
     private String repositoryInBasePackage(final String repository) {
-        return repository.startsWith(runtime.names().basePackageName())
+        return repository.startsWith(runtimeConfiguration.names().basePackageName())
                 ? repository
-                : runtime.names().basePackageName() + "." + repository;
+                : runtimeConfiguration.names().basePackageName() + "." + repository;
     }
 
     private void parameters(

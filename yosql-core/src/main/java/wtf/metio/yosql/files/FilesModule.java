@@ -25,27 +25,27 @@ public class FilesModule {
     @Provides
     SqlConfigurationFactory provideSqlConfigurationFactory(
             @Parser final LocLogger logger,
-            final RuntimeConfiguration config,
+            final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
-        return new DefaultSqlConfigurationFactory(logger, config, errors);
+        return new DefaultSqlConfigurationFactory(logger, runtimeConfiguration, errors);
     }
 
     @Provides
     SqlFileResolver provideSqlFileResolver(
             @Reader final LocLogger logger,
             final ParserPreconditions preconditions,
-            final RuntimeConfiguration configuration,
+            final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
-        return new DefaultSqlFileResolver(logger, preconditions, configuration, errors);
+        return new DefaultSqlFileResolver(logger, preconditions, runtimeConfiguration, errors);
     }
 
     @Provides
     SqlFileParser provideSqlFileParser(
             @Parser final LocLogger logger,
             final SqlConfigurationFactory factory,
-            final RuntimeConfiguration config,
+            final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
-        return new DefaultSqlFileParser(logger, factory, config, errors);
+        return new DefaultSqlFileParser(logger, factory, runtimeConfiguration, errors);
     }
 
     @Provides

@@ -7,8 +7,8 @@
 package wtf.metio.yosql.files;
 
 import wtf.metio.yosql.i18n.Translator;
-import wtf.metio.yosql.model.errors.FileErrors;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
+import wtf.metio.yosql.model.errors.FileErrors;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,7 +28,7 @@ final class DefaultParserPreconditions implements ParserPreconditions {
 
     @Override
     public void assertDirectoryIsWriteable(final Path directory) {
-        if (!directory.toFile().exists()) {
+        if (Files.notExists(directory)) {
             try {
                 if (Files.createDirectories(directory) != null) {
                     errors.illegalState(translator.nonLocalized(FileErrors.CANNOT_CREATE_DIRECTORY, directory));
@@ -37,7 +37,7 @@ final class DefaultParserPreconditions implements ParserPreconditions {
                 errors.illegalState(cause, translator.nonLocalized(FileErrors.DIRECTORY_CREATION_FAILED, directory));
             }
         }
-        if (!directory.toFile().isDirectory()) {
+        if (!Files.isDirectory(directory)) {
             errors.illegalState(translator.nonLocalized(FileErrors.NOT_A_DIRECTORY, directory));
         }
         if (!Files.isWritable(directory)) {
@@ -47,10 +47,10 @@ final class DefaultParserPreconditions implements ParserPreconditions {
 
     @Override
     public void assertDirectoryIsReadable(final Path directory) {
-        if (!directory.toFile().exists()) {
+        if (Files.notExists(directory)) {
             errors.illegalState(translator.nonLocalized(FileErrors.NOT_EXISTS, directory));
         }
-        if (!directory.toFile().isDirectory()) {
+        if (!Files.isDirectory(directory)) {
             errors.illegalState(translator.nonLocalized(FileErrors.NOT_A_DIRECTORY, directory));
         }
         if (!Files.isReadable(directory)) {
