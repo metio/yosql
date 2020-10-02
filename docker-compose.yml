@@ -32,6 +32,7 @@ services:
       - "53000:1521"
   dev:
     image: maven:3.6.3-openjdk-15
+    command: /bin/bash
     depends_on:
       - postgres
       - mysql
