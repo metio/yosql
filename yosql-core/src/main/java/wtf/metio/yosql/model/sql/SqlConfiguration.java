@@ -13,6 +13,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.util.function.Predicate.not;
+
 // TODO: use AutoValue
 public class SqlConfiguration {
 
@@ -64,8 +66,8 @@ public class SqlConfiguration {
         final AtomicInteger hits = new AtomicInteger(0);
         return Arrays.stream(strings)
                 .filter(Objects::nonNull)
-                .map(String::trim)
-                .filter(string -> !string.isEmpty())
+                .map(String::strip)
+                .filter(not(String::isBlank))
                 .map(string -> hits.getAndIncrement() == 0
                         ? string
                         : string.substring(0, 1).toUpperCase() + string.substring(1))
