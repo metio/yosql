@@ -10,11 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.testutils.PropertiesTCK;
 
 @DisplayName("GenerateOptionDescriptions")
-final class GenerateOptionDescriptionTest implements PropertiesTCK<GenerateOptionDescriptions> {
+final class GenerateOptionDescriptionTest implements PropertiesTCK<GenerateOptionsDescriptions> {
 
     @Override
-    public Class<GenerateOptionDescriptions> getEnumClass() {
-        return GenerateOptionDescriptions.class;
+    public Class<GenerateOptionsDescriptions> getEnumClass() {
+        return GenerateOptionsDescriptions.class;
     }
 
 }

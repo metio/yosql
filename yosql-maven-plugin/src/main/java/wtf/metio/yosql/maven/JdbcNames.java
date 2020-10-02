@@ -14,6 +14,7 @@ import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
  */
 public class JdbcNames {
 
+    // TODO: change this!
     JdbcNamesConfiguration asConfiguration() {
         return JdbcNamesConfiguration.builder()
                 .setBatch("batch") // TODO: configure w/ Maven

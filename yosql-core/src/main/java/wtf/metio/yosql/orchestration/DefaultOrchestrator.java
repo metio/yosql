@@ -53,14 +53,14 @@ final class DefaultOrchestrator implements Orchestrator {
                 .exceptionally(this::handleExceptions)
                 .join();
         if (errors.hasErrors()) {
-            errors.codeGenerationException(translator.nonLocalized(CODE_GENERATION_FAILED));
+            errors.codeGenerationException(translator.localized(CODE_GENERATION_FAILED));
         }
     }
 
     private List<SqlStatement> parseFiles(final Supplier<List<SqlStatement>> parser) {
-        final var statements = timer.timed(translator.nonLocalized(PARSE_FILES), parser);
+        final var statements = timer.timed(translator.localized(PARSE_FILES), parser);
         if (errors.hasErrors()) {
-            errors.sqlFileParsingException(translator.nonLocalized(PARSE_FILES_FAILED));
+            errors.sqlFileParsingException(translator.localized(PARSE_FILES_FAILED));
         }
         return statements;
     }
@@ -68,11 +68,11 @@ final class DefaultOrchestrator implements Orchestrator {
     private Stream<PackageTypeSpec> timeCodeGeneration(
             final Function<List<SqlStatement>, Stream<PackageTypeSpec>> generateCode,
             final List<SqlStatement> statements) {
-        return timer.timed(translator.nonLocalized(GENERATE_REPOSITORIES), () -> generateCode.apply(statements));
+        return timer.timed(translator.localized(GENERATE_REPOSITORIES), () -> generateCode.apply(statements));
     }
 
     private void writeIntoFiles(final Stream<PackageTypeSpec> typeSpecs) {
-        timer.timed(translator.nonLocalized(WRITE_FILES), writeTypeSpecs(typeSpecs));
+        timer.timed(translator.localized(WRITE_FILES), writeTypeSpecs(typeSpecs));
     }
 
     private Runnable writeTypeSpecs(final Stream<PackageTypeSpec> typeSpecs) {

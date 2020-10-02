@@ -14,7 +14,7 @@ import ch.qos.cal10n.LocaleData;
  * Enumeration of known loggers.
  */
 @LocaleData(@Locale("en"))
-@BaseName("loggers")
+@BaseName("internal.loggers")
 public enum Loggers {
 
     /**

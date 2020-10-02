@@ -10,23 +10,14 @@ import ch.qos.cal10n.IMessageConveyor;
 
 final class DefaultTranslator implements Translator {
 
-    private final IMessageConveyor localizedMessages;
     private final IMessageConveyor nonLocalizedMessages;
 
-    DefaultTranslator(
-            final IMessageConveyor localizedMessages,
-            final IMessageConveyor nonLocalizedMessages) {
-        this.localizedMessages = localizedMessages;
+    DefaultTranslator(final IMessageConveyor nonLocalizedMessages) {
         this.nonLocalizedMessages = nonLocalizedMessages;
     }
 
     @Override
-    public <E extends Enum<E>> String localized(final E key) {
-        return localizedMessages.getMessage(key);
-    }
-
-    @Override
-    public <E extends Enum<E>> String nonLocalized(final E key, final Object... arguments) {
+    public <E extends Enum<E>> String localized(final E key, final Object... arguments) {
         return nonLocalizedMessages.getMessage(key, arguments);
     }
 

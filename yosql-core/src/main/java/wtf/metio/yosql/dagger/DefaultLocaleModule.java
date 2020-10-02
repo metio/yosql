@@ -8,8 +8,6 @@ package wtf.metio.yosql.dagger;
 
 import dagger.Module;
 import dagger.Provides;
-import wtf.metio.yosql.model.annotations.Localized;
-import wtf.metio.yosql.model.annotations.NonLocalized;
 
 import javax.inject.Singleton;
 import java.util.Locale;
@@ -18,16 +16,9 @@ import java.util.Locale;
  * Default configuration for {@link Locale}s.
  */
 @Module
-public class DefaultLocaleModule {
+// TODO: move to OrchestrationModule
+public final class DefaultLocaleModule {
 
-    @Localized
-    @Provides
-    @Singleton
-    Locale provideUserLocale() {
-        return Locale.ENGLISH;
-    }
-
-    @NonLocalized
     @Provides
     @Singleton
     Locale provideSystemLocale() {

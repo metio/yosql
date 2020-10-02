@@ -15,9 +15,31 @@ import ch.qos.cal10n.LocaleData;
  * Enumeration of JDBC names.
  */
 @LocaleData(@Locale("en"))
-@BaseName("jdbc-names-options")
+@BaseName("options.jdbc-names")
 public enum JdbcNamesOptions {
 
     DATA_SOURCE,
+
+    CONNECTION,
+
+    COLUMN_COUNT,
+
+    COLUMN_LABEL,
+
+    STATEMENT,
+
+    META_DATA,
+
+    RESULT_SET,
+
+    BATCH,
+
+    LIST,
+
+    JDBC_INDEX,
+
+    INDEX,
+
+    ROW;
 
 }

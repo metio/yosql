@@ -14,7 +14,7 @@ import ch.qos.cal10n.LocaleData;
  * Enumeration of all known 'generate' configuration options.
  */
 @LocaleData(@Locale("en"))
-@BaseName("generate-options")
+@BaseName("options.generate")
 public enum GenerateOptions {
 
     /**

@@ -10,7 +10,7 @@ package wtf.metio.yosql.i18n;
 import ch.qos.cal10n.MessageConveyor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.model.descriptions.GeneralOptionDescriptions;
+import wtf.metio.yosql.model.descriptions.GeneralOptionsDescriptions;
 
 import java.util.Locale;
 
@@ -27,7 +27,7 @@ class DefaultTranslatorTest {
         final var translator = new DefaultTranslator(messages, messages);
 
         // when
-        final var text = translator.localized(GeneralOptionDescriptions.LOCALE_DESCRIPTION);
+        final var text = translator.localized(GeneralOptionsDescriptions.LOCALE_DESCRIPTION);
 
         // then
         assertEquals("The locale to use.", text);

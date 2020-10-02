@@ -13,17 +13,17 @@ import wtf.metio.yosql.testutils.PropertiesTCK;
 
 import java.util.stream.Stream;
 
-@DisplayName("GeneralOptionDescriptions")
-final class GeneralOptionDescriptionsTest implements EnumTCK<GeneralOptionDescriptions>, PropertiesTCK<GeneralOptionDescriptions> {
+@DisplayName("HelpOptionDescriptions")
+final class HelpOptionsDescriptionsTest implements EnumTCK<HelpOptionsDescriptions>, PropertiesTCK<HelpOptionsDescriptions> {
 
     @Override
-    public Class<GeneralOptionDescriptions> getEnumClass() {
-        return GeneralOptionDescriptions.class;
+    public Class<HelpOptionsDescriptions> getEnumClass() {
+        return HelpOptionsDescriptions.class;
     }
 
     @Override
     public Stream<String> validValues() {
-        return Stream.of("LOCALE_DESCRIPTION");
+        return Stream.of("COMMAND_DESCRIPTION");
     }
 
 }

@@ -16,15 +16,16 @@ import wtf.metio.yosql.model.options.*;
 import javax.inject.Singleton;
 import javax.lang.model.element.Modifier;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 
+import static java.lang.Boolean.parseBoolean;
 import static wtf.metio.yosql.model.options.GenerateOptions.*;
 
 /**
  * Provides the default execution configuration.
  */
 @Module
+// TODO: move to model package
+// TODO: rename to ModelModule
 public final class DefaultConfigurationModule {
 
     private static final int SUPPORTS_VAR_KEYWORD = 11;
@@ -34,7 +35,7 @@ public final class DefaultConfigurationModule {
     @Singleton
     JavaConfiguration provideJavaConfiguration(final Translator translator) {
         return JavaConfiguration.builder()
-                .setTargetVersion(Integer.parseInt(translator.nonLocalized(JAVA_DEFAULT)))
+                .setTargetVersion(Integer.parseInt(translator.localized(JAVA_DEFAULT)))
                 .build();
     }
 
@@ -44,14 +45,14 @@ public final class DefaultConfigurationModule {
         return AnnotationConfiguration.builder()
                 .setGeneratorName("YoSQL") // TODO: externalize
                 // TODO: pick correct annotation API based on Java version or config prop
-                .setClassAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.ANNOTATION_API)))
-                .setClassComment(translator.nonLocalized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
+                .setClassAnnotation(AnnotationClassOptions.valueOf(translator.localized(AnnotationClassOptions.ANNOTATION_API)))
+                .setClassComment(translator.localized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setClassMembers(AnnotationMemberOptions.ALL)
-                .setFieldAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.ANNOTATION_API)))
-                .setFieldComment(translator.nonLocalized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
+                .setFieldAnnotation(AnnotationClassOptions.valueOf(translator.localized(AnnotationClassOptions.ANNOTATION_API)))
+                .setFieldComment(translator.localized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setFieldMembers(AnnotationMemberOptions.ALL)
-                .setMethodAnnotation(AnnotationClassOptions.valueOf(translator.nonLocalized(AnnotationClassOptions.ANNOTATION_API)))
-                .setMethodComment(translator.nonLocalized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
+                .setMethodAnnotation(AnnotationClassOptions.valueOf(translator.localized(AnnotationClassOptions.ANNOTATION_API)))
+                .setMethodComment(translator.localized(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setMethodMembers(AnnotationMemberOptions.ALL)
                 .build();
     }
@@ -72,7 +73,7 @@ public final class DefaultConfigurationModule {
     @Singleton
     JdbcNamesConfiguration provideJdbcNamesConfiguration(final Translator translator) {
         return JdbcNamesConfiguration.builder()
-                .setDataSource(translator.nonLocalized(JdbcNamesOptions.DATA_SOURCE))
+                .setDataSource(translator.localized(JdbcNamesOptions.DATA_SOURCE))
                 .build();
     }
 
@@ -87,9 +88,12 @@ public final class DefaultConfigurationModule {
 
     @Provides
     @Singleton
-    StatementConfiguration provideStatementConfiguration() {
+    StatementConfiguration provideStatementConfiguration(final JavaConfiguration javaConfiguration) {
+        final var embed = javaConfiguration.targetVersion() >= SUPPORTS_VAR_KEYWORD
+                ? StatementInRepositoryOptions.INLINE_TEXT_BLOCK
+                : StatementInRepositoryOptions.INLINE_CONCAT;
         return StatementConfiguration.builder()
-                .setEmbed(StatementInRepositoryOptions.INLINE_CONCAT)
+                .setEmbed(embed)
                 .build();
     }
 
@@ -97,11 +101,11 @@ public final class DefaultConfigurationModule {
     @Singleton
     FileConfiguration providePathConfiguration(final Translator translator) {
         return FileConfiguration.builder()
-                .setInputBaseDirectory(Paths.get(translator.nonLocalized(CURRENT_DIRECTORY)))
-                .setOutputBaseDirectory(Paths.get(translator.nonLocalized(CURRENT_DIRECTORY)))
-                .setSqlStatementSeparator(translator.nonLocalized(SQL_STATEMENT_SEPARATOR_DEFAULT))
-                .setSqlFilesSuffix(translator.nonLocalized(SQL_FILES_SUFFIX_DEFAULT))
-                .setSqlFilesCharset(translator.nonLocalized(SQL_FILES_CHARSET_DEFAULT))
+                .setInputBaseDirectory(Paths.get(translator.localized(CURRENT_DIRECTORY)))
+                .setOutputBaseDirectory(Paths.get(translator.localized(CURRENT_DIRECTORY)))
+                .setSqlStatementSeparator(translator.localized(SQL_STATEMENT_SEPARATOR_DEFAULT))
+                .setSqlFilesSuffix(translator.localized(SQL_FILES_SUFFIX_DEFAULT))
+                .setSqlFilesCharset(translator.localized(SQL_FILES_CHARSET_DEFAULT))
                 .build();
     }
 
@@ -109,9 +113,9 @@ public final class DefaultConfigurationModule {
     @Singleton
     NameConfiguration provideNameConfiguration(final Translator translator) {
         return NameConfiguration.builder()
-                .setBasePackageName(translator.nonLocalized(BASE_PACKAGE_NAME_DEFAULT))
-                .setUtilityPackageName(translator.nonLocalized(UTILITY_PACKAGE_NAME_DEFAULT))
-                .setConverterPackageName(translator.nonLocalized(CONVERTER_PACKAGE_NAME_DEFAULT))
+                .setBasePackageName(translator.localized(BASE_PACKAGE_NAME_DEFAULT))
+                .setUtilityPackageName(translator.localized(UTILITY_PACKAGE_NAME_DEFAULT))
+                .setConverterPackageName(translator.localized(CONVERTER_PACKAGE_NAME_DEFAULT))
                 .build();
     }
 
@@ -119,28 +123,26 @@ public final class DefaultConfigurationModule {
     @Singleton
     MethodConfiguration provideMethodConfiguration(final Translator translator) {
         return MethodConfiguration.builder()
-                .setValidateMethodNamePrefixes(Boolean.parseBoolean(
-                        translator.nonLocalized(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT)))
-                .setMethodCatchAndRethrow(Boolean.parseBoolean(
-                        translator.nonLocalized(METHOD_CATCH_AND_RETHROW_DEFAULT)))
-                .setGenerateStandardApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_STANDARD_API_DEFAULT)))
-                .setGenerateBatchApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_BATCH_API_DEFAULT)))
-                .setGenerateRxJavaApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_RXJAVA_API_DEFAULT)))
-                .setGenerateStreamEagerApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_STREAM_EAGER_API_DEFAULT)))
-                .setGenerateStreamLazyApi(Boolean.parseBoolean(translator.nonLocalized(METHOD_STREAM_LAZY_API_DEFAULT)))
-                .setMethodBatchPrefix(translator.nonLocalized(METHOD_BATCH_PREFIX_DEFAULT))
-                .setMethodBatchSuffix(translator.nonLocalized(METHOD_BATCH_SUFFIX_DEFAULT))
-                .setMethodStreamPrefix(translator.nonLocalized(METHOD_STREAM_PREFIX_DEFAULT))
-                .setMethodStreamSuffix(translator.nonLocalized(METHOD_STREAM_SUFFIX_DEFAULT))
-                .setMethodRxJavaPrefix(translator.nonLocalized(METHOD_RXJAVA_PREFIX_DEFAULT))
-                .setMethodRxJavaSuffix(translator.nonLocalized(METHOD_RXJAVA_SUFFIX_DEFAULT))
-                .setMethodEagerName(translator.nonLocalized(METHOD_EAGER_NAME_DEFAULT))
-                .setMethodLazyName(translator.nonLocalized(METHOD_LAZY_NAME_DEFAULT))
-                .addAllowedCallPrefixes(translator.nonLocalized(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT)
+                .setValidateMethodNamePrefixes(parseBoolean(translator.localized(METHOD_VALIDATE_NAME_PREFIXES_DEFAULT)))
+                .setMethodCatchAndRethrow(parseBoolean(translator.localized(METHOD_CATCH_AND_RETHROW_DEFAULT)))
+                .setGenerateStandardApi(parseBoolean(translator.localized(METHOD_STANDARD_API_DEFAULT)))
+                .setGenerateBatchApi(parseBoolean(translator.localized(METHOD_BATCH_API_DEFAULT)))
+                .setGenerateRxJavaApi(parseBoolean(translator.localized(METHOD_RXJAVA_API_DEFAULT)))
+                .setGenerateStreamEagerApi(parseBoolean(translator.localized(METHOD_STREAM_EAGER_API_DEFAULT)))
+                .setGenerateStreamLazyApi(parseBoolean(translator.localized(METHOD_STREAM_LAZY_API_DEFAULT)))
+                .setMethodBatchPrefix(translator.localized(METHOD_BATCH_PREFIX_DEFAULT))
+                .setMethodBatchSuffix(translator.localized(METHOD_BATCH_SUFFIX_DEFAULT))
+                .setMethodStreamPrefix(translator.localized(METHOD_STREAM_PREFIX_DEFAULT))
+                .setMethodStreamSuffix(translator.localized(METHOD_STREAM_SUFFIX_DEFAULT))
+                .setMethodRxJavaPrefix(translator.localized(METHOD_RXJAVA_PREFIX_DEFAULT))
+                .setMethodRxJavaSuffix(translator.localized(METHOD_RXJAVA_SUFFIX_DEFAULT))
+                .setMethodEagerName(translator.localized(METHOD_EAGER_NAME_DEFAULT))
+                .setMethodLazyName(translator.localized(METHOD_LAZY_NAME_DEFAULT))
+                .addAllowedCallPrefixes(translator.localized(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT)
                         .split(SPLIT_LIST_ENTRIES_REGEX))
-                .addAllowedReadPrefixes(translator.nonLocalized(METHOD_ALLOWED_READ_PREFIXES_DEFAULT)
+                .addAllowedReadPrefixes(translator.localized(METHOD_ALLOWED_READ_PREFIXES_DEFAULT)
                         .split(SPLIT_LIST_ENTRIES_REGEX))
-                .addAllowedWritePrefixes(translator.nonLocalized(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT)
+                .addAllowedWritePrefixes(translator.localized(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT)
                         .split(SPLIT_LIST_ENTRIES_REGEX))
                 .build();
     }
@@ -149,7 +151,7 @@ public final class DefaultConfigurationModule {
     @Singleton
     ResourceConfiguration provideResourceConfiguration(final Translator translator) {
         return ResourceConfiguration.builder()
-                .setMaxThreads(Integer.parseInt(translator.nonLocalized(MAX_THREADS_DEFAULT)))
+                .setMaxThreads(Integer.parseInt(translator.localized(MAX_THREADS_DEFAULT)))
                 .build();
     }
 
@@ -157,9 +159,9 @@ public final class DefaultConfigurationModule {
     @Singleton
     RepositoryConfiguration provideRepositoryConfiguration(final Translator translator) {
         return RepositoryConfiguration.builder()
-                .setRepositoryNameSuffix(translator.nonLocalized(REPOSITORY_NAME_SUFFIX_DEFAULT))
-                .setRepositoryGenerateInterface(Boolean.parseBoolean(
-                        translator.nonLocalized(REPOSITORY_GENERATE_INTERFACE_DEFAULT)))
+                .setRepositoryNameSuffix(translator.localized(REPOSITORY_NAME_SUFFIX_DEFAULT))
+                .setRepositoryGenerateInterface(parseBoolean(
+                        translator.localized(REPOSITORY_GENERATE_INTERFACE_DEFAULT)))
                 .build();
     }
 
@@ -167,7 +169,7 @@ public final class DefaultConfigurationModule {
     @Singleton
     LoggingConfiguration provideLoggingConfiguration(final Translator translator) {
         return LoggingConfiguration.builder()
-                .setApi(LoggingApiOptions.valueOf(translator.nonLocalized(LOGGING_API_DEFAULT)))
+                .setApi(LoggingApiOptions.valueOf(translator.localized(LOGGING_API_DEFAULT)))
                 .build();
     }
 
@@ -181,7 +183,7 @@ public final class DefaultConfigurationModule {
                         names.basePackageName()
                                 + "."
                                 + names.utilityPackageName(),
-                        translator.nonLocalized(DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT)))
+                        translator.localized(DEFAULT_FLOW_STATE_CLASS_NAME_DEFAULT)))
                 .build();
     }
 
@@ -195,12 +197,12 @@ public final class DefaultConfigurationModule {
                         names.basePackageName()
                                 + "."
                                 + names.utilityPackageName(),
-                        translator.nonLocalized(DEFAULT_RESULT_STATE_CLASS_NAME_DEFAULT)))
+                        translator.localized(DEFAULT_RESULT_STATE_CLASS_NAME_DEFAULT)))
                 .setResultRowClass(ClassName.get(
                         names.basePackageName()
                                 + "."
                                 + names.utilityPackageName(),
-                        translator.nonLocalized(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT)))
+                        translator.localized(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT)))
                 .build();
     }
 

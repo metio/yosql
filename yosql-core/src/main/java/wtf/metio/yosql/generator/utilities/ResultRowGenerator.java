@@ -21,10 +21,11 @@ import wtf.metio.yosql.model.sql.PackageTypeSpec;
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
 
+// TODO: move to jdbc package
 public final class ResultRowGenerator {
 
     private final LocLogger logger;
-    private final RuntimeConfiguration runtime;
+    private final RuntimeConfiguration runtimeConfiguration;
     private final Names names;
     private final AnnotationGenerator annotations;
     private final Classes classes;
@@ -36,7 +37,7 @@ public final class ResultRowGenerator {
     @Inject
     ResultRowGenerator(
             final @Utilities LocLogger logger,
-            final RuntimeConfiguration runtime,
+            final RuntimeConfiguration runtimeConfiguration,
             final Names names,
             final AnnotationGenerator annotations,
             final Classes classes,
@@ -46,7 +47,7 @@ public final class ResultRowGenerator {
             final JdbcParameters jdbcParameters) {
         this.names = names;
         this.annotations = annotations;
-        this.runtime = runtime;
+        this.runtimeConfiguration = runtimeConfiguration;
         this.logger = logger;
         this.classes = classes;
         this.fields = fields;
@@ -56,7 +57,7 @@ public final class ResultRowGenerator {
     }
 
     PackageTypeSpec generateResultRowClass() {
-        final var resultRowClass = runtime.result().resultRowClass();
+        final var resultRowClass = runtimeConfiguration.result().resultRowClass();
         final var type = classes.publicClass(resultRowClass)
                 .addField(row())
                 .addMethod(constructor())
@@ -70,16 +71,16 @@ public final class ResultRowGenerator {
     }
 
     private FieldSpec row() {
-        return fields.field(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, runtime.jdbcNames().row());
+        return fields.field(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, runtimeConfiguration.jdbcNames().row());
     }
 
     private MethodSpec constructor() {
         return methods.constructor()
                 .addParameter(jdbcParameters.columnCount())
                 .addStatement("$N = new $T<>($N)",
-                        runtime.jdbcNames().row(),
+                        runtimeConfiguration.jdbcNames().row(),
                         LinkedHashMap.class,
-                        runtime.jdbcNames().columnCount())
+                        runtimeConfiguration.jdbcNames().columnCount())
                 .build();
     }
 
@@ -89,7 +90,7 @@ public final class ResultRowGenerator {
                 .addParameter(parameters.parameter(Object.class, names.value()))
                 .returns(void.class)
                 .addStatement("$N.put($N, $N)",
-                        runtime.jdbcNames().row(),
+                        runtimeConfiguration.jdbcNames().row(),
                         names.name(),
                         names.value())
                 .build();
@@ -98,7 +99,7 @@ public final class ResultRowGenerator {
     private MethodSpec toStringMethod() {
         return methods.implementation("toString")
                 .returns(String.class)
-                .addStatement("return $N.toString()", runtime.jdbcNames().row())
+                .addStatement("return $N.toString()", runtimeConfiguration.jdbcNames().row())
                 .build();
     }
 

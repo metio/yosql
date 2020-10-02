@@ -8,18 +8,28 @@
 package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.MethodSpec;
+import wtf.metio.yosql.generator.api.AnnotationGenerator;
+import wtf.metio.yosql.generator.blocks.api.Javadoc;
 import wtf.metio.yosql.generator.blocks.api.Methods;
 
-public class DefaultMethods implements Methods {
+final class DefaultMethods implements Methods {
+
+    private final AnnotationGenerator annotations;
+    private final Javadoc javadoc;
+
+    DefaultMethods(final AnnotationGenerator annotations, final Javadoc javadoc) {
+        this.annotations = annotations;
+        this.javadoc = javadoc;
+    }
 
     @Override
-    public MethodSpec.Builder publicMethod(String name) {
+    public MethodSpec.Builder publicMethod(final String name) {
         // TODO: implement
         return null;
     }
 
     @Override
-    public MethodSpec.Builder implementation(String name) {
+    public MethodSpec.Builder implementation(final String name) {
         // TODO: implement
         return null;
     }

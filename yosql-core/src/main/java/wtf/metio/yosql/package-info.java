@@ -4,19 +4,5 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.dagger;
 
-import dagger.Module;
-
-@Module(includes = {
-        DefaultConfigurationModule.class,
-        DefaultLocaleModule.class,
-        ErrorModule.class,
-        LoggerModule.class,
-})
-// TODO: remove after moving other modules to OrchestrationModule
-public class DaggerModule {
-
-    // module aggregate
-
-}
+package wtf.metio.yosql;

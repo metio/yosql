@@ -12,7 +12,7 @@ import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
 
 @LocaleData(@Locale("en"))
-@BaseName("file-errors")
+@BaseName("internal.file-errors")
 public enum FileErrors {
 
     NO_READ_PERMISSION,

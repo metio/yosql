@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 final class DefaultFields implements Fields {
 
     private final AnnotationGenerator annotations;
+    // TODO: inject Javadoc?
 
     DefaultFields(final AnnotationGenerator annotations) {
         this.annotations = annotations;

@@ -33,7 +33,7 @@ final class NamedForkJoinWorkerThreadFactory implements ForkJoinWorkerThreadFact
     @Override
     public ForkJoinWorkerThread newThread(final ForkJoinPool pool) {
         final var worker = threadFactory.newThread(pool);
-        worker.setName(translator.nonLocalized(WORKER_POOL_NAME, worker.getPoolIndex()));
+        worker.setName(translator.localized(WORKER_POOL_NAME, worker.getPoolIndex()));
         return worker;
     }
 

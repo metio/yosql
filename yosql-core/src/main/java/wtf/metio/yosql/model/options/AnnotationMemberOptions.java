@@ -9,16 +9,34 @@ package wtf.metio.yosql.model.options;
 
 public enum AnnotationMemberOptions {
 
+    /**
+     * Use all available annotation members.
+     */
     ALL,
 
+    /**
+     * Use no annotation members.
+     */
     NONE,
 
+    /**
+     * Only use the "value" annotation member.
+     */
     VALUE,
 
+    /**
+     * Only use the "date" annotation member.
+     */
     DATE,
 
+    /**
+     * Only use the "comment" annotation member.
+     */
     COMMENT,
 
+    /**
+     * Use all annotation members except "date".
+     */
     WITHOUT_DATE,
 
 }

@@ -12,11 +12,11 @@ import ch.qos.cal10n.LocaleData;
 import wtf.metio.yosql.model.options.GenerateOptions;
 
 /**
- * Enumeration of all known generate command configuration option descriptions.
+ * Enumeration of all known descriptions for generate options.
  */
 @LocaleData(@Locale("en"))
-@BaseName("generate-option-descriptions")
-public enum GenerateOptionDescriptions {
+@BaseName("descriptions.generate-options")
+public enum GenerateOptionsDescriptions {
 
     /**
      * The description for {@link GenerateOptions#MAX_THREADS}.

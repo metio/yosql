@@ -15,6 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * Default implementation of a {@link Timer}.
+ */
 final class DefaultTimer implements Timer {
 
     private final Map<String, Duration> timings = new LinkedHashMap<>();
@@ -51,11 +54,11 @@ final class DefaultTimer implements Timer {
     @Override
     public void printTimings() {
         if (logger.isInfoEnabled()) {
-            long totalRuntime = 0;
+            Duration totalRuntime = Duration.ofMillis(0);
             for (final var entry : timings.entrySet()) {
-                final var runtimeInMilliseconds = entry.getValue().toMillis();
+                final var runtimeInMilliseconds = entry.getValue();
                 logger.info(ApplicationEvents.TASK_RUNTIME, entry.getKey(), runtimeInMilliseconds);
-                totalRuntime += runtimeInMilliseconds;
+                totalRuntime = totalRuntime.plus(runtimeInMilliseconds);
             }
             logger.info(ApplicationEvents.APPLICATION_RUNTIME, totalRuntime);
         }

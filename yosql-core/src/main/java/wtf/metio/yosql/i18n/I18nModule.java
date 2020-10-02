@@ -10,8 +10,6 @@ import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
 import dagger.Module;
 import dagger.Provides;
-import wtf.metio.yosql.model.annotations.Localized;
-import wtf.metio.yosql.model.annotations.NonLocalized;
 
 import javax.inject.Singleton;
 import java.util.Locale;
@@ -20,28 +18,20 @@ import java.util.Locale;
  * I18N module
  */
 @Module
+// TODO: move to orchestration module
 public class I18nModule {
 
     @Provides
     @Singleton
-    Translator provideTranslator(
-            @Localized final IMessageConveyor userMessages,
-            @NonLocalized final IMessageConveyor systemMessages) {
-        return new DefaultTranslator(userMessages, systemMessages);
+    // TODO: remove Translator interface & replace with IMessageConveyor
+    Translator provideTranslator(final IMessageConveyor systemMessages) {
+        return new DefaultTranslator(systemMessages);
     }
 
-    @NonLocalized
     @Provides
     @Singleton
-    IMessageConveyor provideNonLocalizedIMessageConveyor(@NonLocalized final Locale systemLocale) {
+    IMessageConveyor provideIMessageConveyor(final Locale systemLocale) {
         return new MessageConveyor(systemLocale);
-    }
-
-    @Localized
-    @Provides
-    @Singleton
-    IMessageConveyor provideLocalizedIMessageConveyor(@Localized final Locale userLocale) {
-        return new MessageConveyor(userLocale);
     }
 
 }

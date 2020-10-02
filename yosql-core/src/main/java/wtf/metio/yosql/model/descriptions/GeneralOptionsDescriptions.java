@@ -9,18 +9,18 @@ package wtf.metio.yosql.model.descriptions;
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import wtf.metio.yosql.model.options.HelpOptions;
+import wtf.metio.yosql.model.options.GeneralOptions;
 
 /**
- * Enumeration of known help option descriptions.
+ * Enumeration of known descriptions for general options.
  */
 @LocaleData(@Locale("en"))
-@BaseName("help-option-descriptions")
-public enum HelpOptionDescriptions {
+@BaseName("descriptions.general-options")
+public enum GeneralOptionsDescriptions {
 
     /**
-     * Description for {@link HelpOptions#COMMAND}.
+     * Description for {@link GeneralOptions#LOCALE}.
      */
-    COMMAND_DESCRIPTION,
+    LOCALE_DESCRIPTION,
 
 }

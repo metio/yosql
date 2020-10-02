@@ -46,8 +46,8 @@ public class GenericBlocksModule {
     }
 
     @Provides
-    Methods methods() {
-        return new DefaultMethods();
+    Methods methods(final AnnotationGenerator annotations, final Javadoc javadoc) {
+        return new DefaultMethods(annotations, javadoc);
     }
 
     @Provides

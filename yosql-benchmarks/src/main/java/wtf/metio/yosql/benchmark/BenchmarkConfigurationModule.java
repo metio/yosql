@@ -10,12 +10,10 @@ import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
-import wtf.metio.yosql.model.options.LoggingApiOptions;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 
 import java.io.PrintStream;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import static wtf.metio.yosql.model.options.GenerateOptions.*;
 
@@ -41,17 +39,17 @@ public class BenchmarkConfigurationModule {
 
     @Provides
     RuntimeConfiguration provideExecutionConfiguration(final Translator translator) {
-        final String basePackageName = translator.nonLocalized(BASE_PACKAGE_NAME_DEFAULT);
-        final String utilityPackageName = translator.nonLocalized(UTILITY_PACKAGE_NAME_DEFAULT);
-        final String converterPackageName = translator.nonLocalized(CONVERTER_PACKAGE_NAME_DEFAULT);
-        final String defaultRowConverterAlias = translator.nonLocalized(DEFAULT_ROW_CONVERTER_DEFAULT);
-        final String defaultResultRowClassName = translator.nonLocalized(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT);
+        final String basePackageName = translator.localized(BASE_PACKAGE_NAME_DEFAULT);
+        final String utilityPackageName = translator.localized(UTILITY_PACKAGE_NAME_DEFAULT);
+        final String converterPackageName = translator.localized(CONVERTER_PACKAGE_NAME_DEFAULT);
+        final String defaultRowConverterAlias = translator.localized(DEFAULT_ROW_CONVERTER_DEFAULT);
+        final String defaultResultRowClassName = translator.localized(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT);
 
         final ResultRowConverter toResultRow = new ResultRowConverter();
         toResultRow.setAlias(defaultRowConverterAlias);
         toResultRow.setResultType(String.join(".", basePackageName, utilityPackageName, defaultResultRowClassName));
         toResultRow.setConverterType(String.join(".", basePackageName, converterPackageName,
-                translator.nonLocalized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
+                translator.localized(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
 
         return RuntimeConfiguration.builder()
                 .build();
