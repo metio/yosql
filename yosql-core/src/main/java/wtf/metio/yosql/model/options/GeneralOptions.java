@@ -14,7 +14,7 @@ import ch.qos.cal10n.LocaleData;
  * Enumeration of general options.
  */
 @LocaleData(@Locale("en"))
-@BaseName("general-options")
+@BaseName("options.general")
 public enum GeneralOptions {
 
     /**

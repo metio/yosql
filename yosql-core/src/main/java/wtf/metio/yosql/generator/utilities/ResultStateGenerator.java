@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: mark package private
 public final class ResultStateGenerator {
 
     private final LocLogger logger;

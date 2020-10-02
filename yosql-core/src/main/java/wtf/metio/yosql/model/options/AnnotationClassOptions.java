@@ -15,7 +15,7 @@ import ch.qos.cal10n.LocaleData;
  * Enumeration of all known options for the "@Generated" annotation class itself.
  */
 @LocaleData(@Locale("en"))
-@BaseName("annotation-class-options")
+@BaseName("options.annotation-class")
 public enum AnnotationClassOptions {
 
     /**

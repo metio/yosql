@@ -16,10 +16,11 @@ import javax.inject.Singleton;
  * Dagger module for everything related to errors.
  */
 @Module
-public class ErrorModule {
+public final class ErrorModule {
 
     @Provides
     @Singleton
+    // TODO: move to OrchestrationModule
     ExecutionErrors provideExecutionErrors() {
         return new ExecutionErrors();
     }

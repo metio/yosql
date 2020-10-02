@@ -14,7 +14,7 @@ import ch.qos.cal10n.LocaleData;
  * Enumeration of known application events.
  */
 @LocaleData(@Locale("en"))
-@BaseName("application-events")
+@BaseName("internal.application-events")
 public enum ApplicationEvents {
 
     /**

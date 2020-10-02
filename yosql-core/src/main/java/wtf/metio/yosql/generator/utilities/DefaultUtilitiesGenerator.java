@@ -6,19 +6,19 @@
  */
 package wtf.metio.yosql.generator.utilities;
 
+import wtf.metio.yosql.generator.api.UtilitiesGenerator;
 import wtf.metio.yosql.model.sql.PackageTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
-import wtf.metio.yosql.generator.api.UtilitiesGenerator;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
 
-    private final FlowStateGenerator            flowStateGenerator;
-    private final ResultStateGenerator          resultStateGenerator;
+    private final FlowStateGenerator flowStateGenerator;
+    private final ResultStateGenerator resultStateGenerator;
     private final ToResultRowConverterGenerator toResultRowConverterGenerator;
-    private final ResultRowGenerator            resultRowGenerator;
+    private final ResultRowGenerator resultRowGenerator;
 
     DefaultUtilitiesGenerator(
             final FlowStateGenerator flowStateGenerator,
@@ -46,7 +46,7 @@ final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
                 flowStateClass = flowStateGenerator.generateFlowStateClass();
             }
             if (statement.getConfiguration().getResultRowConverter().getConverterType()
-                                .endsWith(ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)) {
+                    .endsWith(ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)) {
                 toResultRowConverterClass = toResultRowConverterGenerator.generateToResultRowConverterClass();
                 resultRowClass = resultRowGenerator.generateResultRowClass();
             }

@@ -11,10 +11,10 @@ import dagger.Module;
 import wtf.metio.yosql.generator.api.UtilitiesGenerator;
 
 /**
- * Dagger module for the default utilities generators.
+ * Dagger module for the utilities generators.
  */
 @Module
-public final class DefaultUtilitiesModule {
+public final class UtilitiesModule {
 
     @Provides
     UtilitiesGenerator provideUtilitiesGenerator(

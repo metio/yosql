@@ -14,7 +14,7 @@ import ch.qos.cal10n.LocaleData;
  * Enumeration of known help options.
  */
 @LocaleData(@Locale("en"))
-@BaseName("help-options")
+@BaseName("options.help")
 public enum HelpOptions {
 
     /**

@@ -9,12 +9,12 @@ package wtf.metio.yosql.orchestration;
 import wtf.metio.yosql.model.configuration.ResourceConfiguration;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
 /**
  * Creates thread pools which are used during parsing/generating/writing.
  */
+// TODO: mark package private
 public final class ThreadPoolFactory {
 
     private final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory;

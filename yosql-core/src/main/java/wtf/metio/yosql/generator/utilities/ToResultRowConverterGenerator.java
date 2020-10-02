@@ -23,6 +23,7 @@ import wtf.metio.yosql.model.sql.PackageTypeSpec;
 import javax.inject.Inject;
 import java.sql.SQLException;
 
+// TODO: mark package private
 public final class ToResultRowConverterGenerator {
 
     public static final String TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";

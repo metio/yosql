@@ -15,14 +15,14 @@ import wtf.metio.yosql.generator.api.UtilitiesGenerator;
 import wtf.metio.yosql.generator.blocks.BlocksModule;
 import wtf.metio.yosql.generator.dao.DaoModule;
 import wtf.metio.yosql.generator.logging.LoggingModule;
-import wtf.metio.yosql.generator.utilities.DefaultUtilitiesModule;
+import wtf.metio.yosql.generator.utilities.UtilitiesModule;
 import wtf.metio.yosql.model.annotations.Delegating;
 
 import javax.inject.Singleton;
 
 @Module(includes = {
         DaoModule.class,
-        DefaultUtilitiesModule.class,
+        UtilitiesModule.class,
         BlocksModule.class,
         LoggingModule.class
 })

@@ -41,62 +41,52 @@ public final class ExecutionErrors {
     /**
      * Adds another {@link Throwable} to the list.
      *
-     * @param throwable
-     *            The {@link Throwable} to add.
+     * @param throwable The {@link Throwable} to add.
      */
     public void add(final Throwable throwable) {
         errors.add(requireNonNull(throwable));
     }
 
     /**
-     * @param message
-     *            The message to include.
+     * @param message The message to include.
      */
     public void illegalState(final String message) {
         errors.add(new IllegalStateException(message));
     }
 
     /**
-     * @param cause
-     *            The root cause of the illegal state.
-     * @param message
-     *            The message to include.
+     * @param cause   The root cause of the illegal state.
+     * @param message The message to include.
      */
     public void illegalState(final Exception cause, final String message) {
         errors.add(new IllegalStateException(message, cause));
     }
 
     /**
-     * @param message
-     *            The message to include.
-     * @param arguments
-     *            The arguments to apply to the message.
+     * @param message   The message to include.
+     * @param arguments The arguments to apply to the message.
      */
     public void illegalArgument(final String message, final Object... arguments) {
         errors.add(new IllegalArgumentException(String.format(message, arguments)));
     }
 
     /**
-     * @param message
-     *            The message to include.
+     * @param message The message to include.
      */
     public void codeGenerationException(final String message) {
         throwWith(new CodeGenerationException(message));
     }
 
     /**
-     * @param message
-     *            The message to include.
+     * @param message The message to include.
      */
     public void sqlFileParsingException(final String message) {
         throwWith(new SqlFileParsingException(message));
     }
 
     /**
-     * @param exception
-     *            The parent exception to use.
-     * @throws T
-     *             The given exception enriched with all captured suppressed exceptions so far.
+     * @param exception The parent exception to use.
+     * @throws T The given exception enriched with all captured suppressed exceptions so far.
      */
     public <T extends Exception> void throwWith(final T exception) throws T {
         errors.forEach(exception::addSuppressed);
