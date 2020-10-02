@@ -50,7 +50,7 @@ public final class ModelConfigurationObjectMother {
 
     public static VariableConfiguration variableConfiguration(final VariableTypeOptions options) {
         return VariableConfiguration.builder()
-                .setModifiers(List.of(Modifier.FINAL))
+                .addModifiers(Modifier.FINAL)
                 .setVariableType(options)
                 .build();
     }
@@ -81,9 +81,9 @@ public final class ModelConfigurationObjectMother {
     
     public static MethodConfiguration methodConfiguration() {
         return MethodConfiguration.builder()
-                .setAllowedCallPrefixes(List.of("call"))
-                .setAllowedReadPrefixes(List.of("read"))
-                .setAllowedWritePrefixes(List.of("write"))
+                .addAllowedCallPrefixes("call")
+                .addAllowedReadPrefixes("read")
+                .addAllowedWritePrefixes("write")
                 .setGenerateBatchApi(true)
                 .setGenerateStandardApi(true)
                 .setGenerateRxJavaApi(true)

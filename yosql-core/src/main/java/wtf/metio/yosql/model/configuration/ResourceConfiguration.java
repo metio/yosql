@@ -7,27 +7,21 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 
-@AutoValue
-public abstract class ResourceConfiguration {
+@Value.Immutable
+public interface ResourceConfiguration {
 
-    public static ResourceConfiguration.Builder builder() {
-        return new AutoValue_ResourceConfiguration.Builder();
+    static ResourceConfiguration.Builder builder() {
+        return new ResourceConfiguration.Builder();
     }
 
     /**
      * @return The maximum number of threads to use while working.
      */
-    public abstract int maxThreads();
+    int maxThreads();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setMaxThreads(int maxThreads);
-
-        public abstract ResourceConfiguration build();
-
+    class Builder extends ImmutableResourceConfiguration.Builder {
     }
 
 }

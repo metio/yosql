@@ -7,32 +7,22 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 
-@AutoValue
-public abstract class JavaConfiguration {
+@Value.Immutable
+public interface JavaConfiguration {
 
-    public static JavaConfiguration.Builder builder() {
-        return new AutoValue_JavaConfiguration.Builder();
+    static JavaConfiguration.Builder builder() {
+        return new JavaConfiguration.Builder();
     }
 
-    public abstract int targetVersion();
+    int targetVersion();
 
-    public abstract boolean useVar();
+    boolean useVar();
 
-    public abstract boolean useRecords();
+    boolean useRecords();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setTargetVersion(int targetVersion);
-
-        public abstract Builder setUseVar(boolean useVar);
-
-        public abstract Builder setUseRecords(boolean useVar);
-
-        public abstract JavaConfiguration build();
-
+    class Builder extends ImmutableJavaConfiguration.Builder {
     }
 
 }

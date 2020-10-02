@@ -7,33 +7,25 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 import wtf.metio.yosql.model.options.VariableTypeOptions;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
 
-@AutoValue
-public abstract class VariableConfiguration {
+@Value.Immutable
+public interface VariableConfiguration {
 
-    public static Builder builder() {
-        return new AutoValue_VariableConfiguration.Builder();
+    static VariableConfiguration.Builder builder() {
+        return new VariableConfiguration.Builder();
     }
 
     // TODO: align with JavaConfiguration#useVar
-    public abstract VariableTypeOptions variableType();
+    VariableTypeOptions variableType();
 
-    public abstract List<Modifier> modifiers();
+    List<Modifier> modifiers();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setVariableType(VariableTypeOptions variableType);
-
-        public abstract Builder setModifiers(List<Modifier> modifiers);
-
-        public abstract VariableConfiguration build();
-
+    class Builder extends ImmutableVariableConfiguration.Builder {
     }
 
 }

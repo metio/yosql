@@ -7,26 +7,20 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 
-@AutoValue
-public abstract class JdbcFieldsConfiguration {
+@Value.Immutable
+public interface JdbcFieldsConfiguration {
 
-    public static Builder builder() {
-        return new AutoValue_JdbcFieldsConfiguration.Builder();
+    static JdbcFieldsConfiguration.Builder builder() {
+        return new JdbcFieldsConfiguration.Builder();
     }
 
-    public abstract String rawSuffix();
-    public abstract String indexSuffix();
+    String rawSuffix();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
+    String indexSuffix();
 
-        public abstract Builder setRawSuffix(String value);
-        public abstract Builder setIndexSuffix(String value);
-
-        public abstract JdbcFieldsConfiguration build();
-
+    class Builder extends ImmutableJdbcFieldsConfiguration.Builder {
     }
 
 }

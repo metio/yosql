@@ -7,72 +7,42 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 
-@AutoValue
-public abstract class RuntimeConfiguration {
+@Value.Immutable
+public interface RuntimeConfiguration {
 
-    public static Builder builder() {
-        return new AutoValue_RuntimeConfiguration.Builder();
+    static RuntimeConfiguration.Builder builder() {
+        return new RuntimeConfiguration.Builder();
     }
 
-    public abstract FileConfiguration files();
+    FileConfiguration files();
 
-    public abstract JavaConfiguration java();
+    JavaConfiguration java();
 
-    public abstract LoggingConfiguration logging();
+    LoggingConfiguration logging();
 
-    public abstract MethodConfiguration methods();
+    MethodConfiguration methods();
 
-    public abstract NameConfiguration names();
+    NameConfiguration names();
 
-    public abstract ResourceConfiguration resources();
+    ResourceConfiguration resources();
 
-    public abstract RepositoryConfiguration repositories();
+    RepositoryConfiguration repositories();
 
-    public abstract StatementConfiguration statements();
+    StatementConfiguration statements();
 
-    public abstract VariableConfiguration variables();
+    VariableConfiguration variables();
 
-    public abstract JdbcNamesConfiguration jdbcNames();
+    JdbcNamesConfiguration jdbcNames();
 
-    public abstract RxJavaConfiguration rxJava();
+    RxJavaConfiguration rxJava();
 
-    public abstract ResultConfiguration result();
+    ResultConfiguration result();
 
-    public abstract AnnotationConfiguration annotations();
+    AnnotationConfiguration annotations();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setFiles(FileConfiguration files);
-
-        public abstract Builder setJava(JavaConfiguration java);
-
-        public abstract Builder setLogging(LoggingConfiguration logging);
-
-        public abstract Builder setMethods(MethodConfiguration methods);
-
-        public abstract Builder setNames(NameConfiguration names);
-
-        public abstract Builder setResources(ResourceConfiguration resources);
-
-        public abstract Builder setRepositories(RepositoryConfiguration repository);
-
-        public abstract Builder setStatements(StatementConfiguration statements);
-
-        public abstract Builder setVariables(VariableConfiguration variables);
-
-        public abstract Builder setJdbcNames(JdbcNamesConfiguration jdbcNames);
-
-        public abstract Builder setRxJava(RxJavaConfiguration rxJava);
-
-        public abstract Builder setResult(ResultConfiguration result);
-
-        public abstract Builder setAnnotations(AnnotationConfiguration annotations);
-
-        public abstract RuntimeConfiguration build();
-
+    class Builder extends ImmutableRuntimeConfiguration.Builder {
     }
 
 }

@@ -7,4 +7,13 @@
 /**
  * The model used during code generation.
  */
+@Value.Style(
+        get = {"is*", "get*"},
+        init = "set*",
+        strictBuilder = true,
+        visibility = Value.Style.ImplementationVisibility.PACKAGE,
+        overshadowImplementation = true
+)
 package wtf.metio.yosql.model;
+
+import org.immutables.value.Value;

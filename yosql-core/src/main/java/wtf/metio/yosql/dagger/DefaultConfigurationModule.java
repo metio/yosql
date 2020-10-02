@@ -63,7 +63,7 @@ public final class DefaultConfigurationModule {
                 ? VariableTypeOptions.VAR
                 : VariableTypeOptions.TYPE;
         return VariableConfiguration.builder()
-                .setModifiers(List.of(Modifier.FINAL)) // TODO: externalize
+                .addModifiers(Modifier.FINAL)
                 .setVariableType(variableType)
                 .build();
     }
@@ -136,12 +136,12 @@ public final class DefaultConfigurationModule {
                 .setMethodRxJavaSuffix(translator.nonLocalized(METHOD_RXJAVA_SUFFIX_DEFAULT))
                 .setMethodEagerName(translator.nonLocalized(METHOD_EAGER_NAME_DEFAULT))
                 .setMethodLazyName(translator.nonLocalized(METHOD_LAZY_NAME_DEFAULT))
-                .setAllowedCallPrefixes(Arrays.asList(
-                        translator.nonLocalized(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT).split(SPLIT_LIST_ENTRIES_REGEX)))
-                .setAllowedReadPrefixes(Arrays.asList(
-                        translator.nonLocalized(METHOD_ALLOWED_READ_PREFIXES_DEFAULT).split(SPLIT_LIST_ENTRIES_REGEX)))
-                .setAllowedWritePrefixes(Arrays.asList(
-                        translator.nonLocalized(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT).split(SPLIT_LIST_ENTRIES_REGEX)))
+                .addAllowedCallPrefixes(translator.nonLocalized(METHOD_ALLOWED_CALL_PREFIXES_DEFAULT)
+                        .split(SPLIT_LIST_ENTRIES_REGEX))
+                .addAllowedReadPrefixes(translator.nonLocalized(METHOD_ALLOWED_READ_PREFIXES_DEFAULT)
+                        .split(SPLIT_LIST_ENTRIES_REGEX))
+                .addAllowedWritePrefixes(translator.nonLocalized(METHOD_ALLOWED_WRITE_PREFIXES_DEFAULT)
+                        .split(SPLIT_LIST_ENTRIES_REGEX))
                 .build();
     }
 

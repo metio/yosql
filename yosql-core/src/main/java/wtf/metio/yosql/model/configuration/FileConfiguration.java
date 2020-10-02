@@ -7,48 +7,43 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 
 import java.nio.file.Path;
 
-@AutoValue
-public abstract class FileConfiguration {
+@Value.Immutable
+public interface FileConfiguration {
 
-    public static Builder builder() {
-        return new AutoValue_FileConfiguration.Builder();
+    static FileConfiguration.Builder builder() {
+        return new FileConfiguration.Builder();
     }
 
     /**
      * @return The base directory for SQL file parsing.
      */
-    public abstract Path inputBaseDirectory();
+    Path inputBaseDirectory();
 
     /**
      * @return The base directory for writing .java files.
      */
-    public abstract Path outputBaseDirectory();
+    Path outputBaseDirectory();
 
-    public abstract String sqlStatementSeparator();
+    /**
+     * @return The SQL statement separator to use, e.g. ";".
+     */
+    String sqlStatementSeparator();
 
-    public abstract String sqlFilesCharset();
+    /**
+     * @return The charset to use while reading SQL files, e.g. "UTF-8".
+     */
+    String sqlFilesCharset();
 
-    public abstract String sqlFilesSuffix();
+    /**
+     * @return The file suffix to use while searching for SQL files, e.g. ".sql".
+     */
+    String sqlFilesSuffix();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setInputBaseDirectory(Path inputBaseDirectory);
-
-        public abstract Builder setOutputBaseDirectory(Path outputBaseDirectory);
-
-        public abstract Builder setSqlStatementSeparator(String value);
-
-        public abstract Builder setSqlFilesCharset(String value);
-
-        public abstract Builder setSqlFilesSuffix(String value);
-
-        public abstract FileConfiguration build();
-
+    class Builder extends ImmutableFileConfiguration.Builder {
     }
 
 }

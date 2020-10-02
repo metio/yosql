@@ -7,28 +7,20 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
+import org.immutables.value.Value;
 
-@AutoValue
-public abstract class RepositoryConfiguration {
+@Value.Immutable
+public interface RepositoryConfiguration {
 
-    public static Builder builder() {
-        return new AutoValue_RepositoryConfiguration.Builder();
+    static RepositoryConfiguration.Builder builder() {
+        return new RepositoryConfiguration.Builder();
     }
 
-    public abstract String repositoryNameSuffix();
+    String repositoryNameSuffix();
 
-    public abstract boolean repositoryGenerateInterface();
+    boolean repositoryGenerateInterface();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setRepositoryNameSuffix(String repositoryNameSuffix);
-
-        public abstract Builder setRepositoryGenerateInterface(boolean repositoryGenerateInterface);
-
-        public abstract RepositoryConfiguration build();
-
+    class Builder extends ImmutableRepositoryConfiguration.Builder {
     }
 
 }

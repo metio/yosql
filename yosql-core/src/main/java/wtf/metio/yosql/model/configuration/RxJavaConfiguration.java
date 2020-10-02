@@ -7,28 +7,19 @@
 
 package wtf.metio.yosql.model.configuration;
 
-import com.google.auto.value.AutoValue;
 import com.squareup.javapoet.ClassName;
+import org.immutables.value.Value;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
+@Value.Immutable
+public interface RxJavaConfiguration {
 
-@AutoValue
-public abstract class RxJavaConfiguration {
-
-    public static Builder builder() {
-        return new AutoValue_RxJavaConfiguration.Builder();
+    static RxJavaConfiguration.Builder builder() {
+        return new RxJavaConfiguration.Builder();
     }
 
-    public abstract ClassName flowStateClass();
+    ClassName flowStateClass();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder setFlowStateClass(ClassName value);
-
-        public abstract RxJavaConfiguration build();
-
+    class Builder extends ImmutableRxJavaConfiguration.Builder {
     }
 
 }
