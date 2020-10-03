@@ -19,7 +19,6 @@ import wtf.metio.yosql.generator.blocks.api.Variables;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
-import wtf.metio.yosql.model.sql.SqlParameter;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.sql.*;
@@ -158,7 +157,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
                 code("int $N = 0; $N < $N.length; $N++",
                         jdbcNames.batch(),
                         jdbcNames.batch(),
-                        config.getParameters().get(0).getName(),
+                        config.getParameters().get(0).name(),
                         jdbcNames.batch()),
                 jdbcMethods.statement().addBatch()
         );
@@ -167,7 +166,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
                 .beginControlFlow("for (int $N = 0; $N < $N.length; $N++)",
                         jdbcNames.batch(),
                         jdbcNames.batch(),
-                        config.getParameters().get(0).getName(),
+                        config.getParameters().get(0).name(),
                         jdbcNames.batch())
                 .add(setBatchParameters(config))
                 .add(jdbcMethods.statement().addBatch())
@@ -261,15 +260,15 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
             builder.add("final $T $N = $N", String.class, names.executedQuery(), names.rawQuery());
             sqlConfiguration.getParameters()
                     .forEach(parameter -> {
-                        if (TypeGuesser.guessTypeName(parameter.getType()).isPrimitive()) {
+                        if (TypeGuesser.guessTypeName(parameter.type()).isPrimitive()) {
                             builder
-                                    .add("\n$>.replace($S, $T.valueOf($N))$<", ":" + parameter.getName(),
-                                            String.class, parameter.getName());
+                                    .add("\n$>.replace($S, $T.valueOf($N))$<", ":" + parameter.name(),
+                                            String.class, parameter.name());
                         } else {
                             builder
                                     .add("\n$>.replace($S, $N == null ? $S : $N.toString())$<",
-                                            ":" + parameter.getName(), parameter.getName(), "null",
-                                            parameter.getName());
+                                            ":" + parameter.name(), parameter.name(), "null",
+                                            parameter.name());
                         }
                     });
             builder.add(";\n");
@@ -287,15 +286,15 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
             builder.add("final $T $N = $N", String.class, names.executedQuery(), names.rawQuery());
             sqlConfiguration.getParameters()
                     .forEach(parameter -> {
-                        if (TypeGuesser.guessTypeName(parameter.getType()).isPrimitive()) {
+                        if (TypeGuesser.guessTypeName(parameter.type()).isPrimitive()) {
                             builder
-                                    .add("\n$>.replace($S, $T.toString($N))$<", ":" + parameter.getName(),
-                                            Arrays.class, parameter.getName());
+                                    .add("\n$>.replace($S, $T.toString($N))$<", ":" + parameter.name(),
+                                            Arrays.class, parameter.name());
                         } else {
                             builder
                                     .add("\n$>.replace($S, $N == null ? $S : $T.toString($N))$<",
-                                            ":" + parameter.getName(), parameter.getName(), "null",
-                                            Arrays.class, parameter.getName());
+                                            ":" + parameter.name(), parameter.name(), "null",
+                                            Arrays.class, parameter.name());
                         }
                     });
             builder.add(";\n");
@@ -391,9 +390,9 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
             for (final var parameter : config.getParameters()) {
                 builder.beginControlFlow("for (final int $N : $N.get($S))",
                         jdbcNames.jdbcIndex(),
-                        jdbcNames.index(), parameter.getName())
+                        jdbcNames.index(), parameter.name())
                         .add(CodeBlock.builder().addStatement(codeStatement,
-                                parameterSetter.apply(parameter.getName())).build())
+                                parameterSetter.apply(parameter.name())).build())
                         .endControlFlow();
             }
         }

@@ -47,7 +47,7 @@ final class DefaultParameters implements Parameters {
     }
 
     private ParameterSpec ofSqlParameter(final SqlParameter parameter) {
-        return parameter(TypeGuesser.guessTypeName(parameter.getType()), parameter.getName());
+        return parameter(TypeGuesser.guessTypeName(parameter.type()), parameter.name());
     }
 
     @Override
@@ -56,7 +56,7 @@ final class DefaultParameters implements Parameters {
     }
 
     public ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
-        return parameter(ArrayTypeName.of(TypeGuesser.guessTypeName(parameter.getType())), parameter.getName());
+        return parameter(ArrayTypeName.of(TypeGuesser.guessTypeName(parameter.type())), parameter.name());
     }
 
     private static Iterable<ParameterSpec> asParameterSpecs(

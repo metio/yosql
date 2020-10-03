@@ -294,25 +294,36 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             for (final var entry : parameterIndices.entrySet()) {
                 final var parameterName = entry.getKey();
                 if (isMissingParameter(configuration, parameterName)) {
-                    final var sqlParameter = new SqlParameter();
-                    sqlParameter.setName(parameterName);
+                    final var sqlParameter = SqlParameter.builder()
+                            .setName(parameterName)
+                            .setIndices(asIntArray(entry.getValue()))
+                            .setType(Object.class.getName())
+                            .setConverter("TODO") // TODO: set converter name
+                            .build();
                     configuration.getParameters().add(sqlParameter);
                 }
-                updateIndices(configuration.getParameters(), entry.getValue(), parameterName);
+                final var currentParameters = configuration.getParameters();
+                configuration.setParameters(updateIndices(currentParameters, entry.getValue(), parameterName));
             }
         }
     }
 
-    private static void updateIndices(
+    private static List<SqlParameter> updateIndices(
             final List<SqlParameter> parameters,
             final List<Integer> indices,
             final String parameterName) {
-        parameters.stream()
+        return parameters.stream()
                 .filter(nameMatches(parameterName))
-                .forEach(parameter -> parameter.setIndices(asArray(indices)));
+                .map(parameter -> SqlParameter.builder()
+                        .setName(parameterName)
+                        .setIndices(asIntArray(indices))
+                        .setType(parameter.type())
+                        .setConverter(parameter.converter())
+                        .build())
+                .collect(Collectors.toList());
     }
 
-    private static int[] asArray(final List<Integer> numbers) {
+    private static int[] asIntArray(final List<Integer> numbers) {
         return numbers.stream()
                 .mapToInt(Integer::intValue)
                 .toArray();
@@ -323,7 +334,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private static Predicate<? super SqlParameter> nameMatches(final String parameterName) {
-        return parameter -> parameterName.equals(parameter.getName());
+        return parameter -> parameterName.equals(parameter.name());
     }
 
     private void resultConverter(final SqlConfiguration configuration) {
@@ -419,11 +430,10 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final Map<String, List<Integer>> parameterIndices,
             final SqlConfiguration configuration) {
         final var parameterErrors = configuration.getParameters().stream()
-                .filter(param -> !parameterIndices.containsKey(param.getName()))
+                .filter(param -> !parameterIndices.containsKey(param.name()))
                 // TODO: I18N
-                .map(param -> String.format("[%s] declares unknown parameter [%s]",
-                        source, param.getName()))
-                .peek(msg -> errors.add(new IllegalArgumentException(msg)))
+                .map(param -> String.format("[%s] declares unknown parameter [%s]", source, param.name()))
+                .peek(errors::illegalArgument)
                 .peek(logger::error)
                 .collect(Collectors.toList());
         return parameterErrors.isEmpty();

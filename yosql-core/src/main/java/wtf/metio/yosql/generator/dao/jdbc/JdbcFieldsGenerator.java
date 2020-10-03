@@ -65,12 +65,12 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
             final SqlConfiguration config) {
         builder.addStatement("$N.put($S, $L)",
                 jdbcFields.constantSqlStatementParameterIndexFieldName(config),
-                parameter.getName(),
+                parameter.name(),
                 indexArray(parameter));
     }
 
     private static String indexArray(final SqlParameter param) {
-        return IntStream.of(param.getIndices())
+        return IntStream.of(param.indices())
                 .boxed()
                 .map(Object::toString)
                 .collect(Collectors.joining(", ", "new int[] { ", " }"));

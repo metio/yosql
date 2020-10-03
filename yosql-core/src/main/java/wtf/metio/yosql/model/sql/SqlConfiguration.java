@@ -400,8 +400,7 @@ public class SqlConfiguration {
         methodRxJavaApi = methodRxJavaApi || other.methodRxJavaApi;
         generateRxJavaApiOverwritten = generateRxJavaApiOverwritten || other.generateRxJavaApiOverwritten;
         methodStreamEagerApi = methodStreamEagerApi || other.methodStreamEagerApi;
-        generateStreamEagerApiOverwritten = generateStreamEagerApiOverwritten
-                || other.generateStreamEagerApiOverwritten;
+        generateStreamEagerApiOverwritten = generateStreamEagerApiOverwritten || other.generateStreamEagerApiOverwritten;
         methodStreamLazyApi = methodStreamLazyApi || other.methodStreamLazyApi;
         generateStreamLazyApiOverwritten = generateStreamLazyApiOverwritten || other.generateStreamLazyApiOverwritten;
         methodBatchPrefix = methodBatchPrefix != null ? methodBatchPrefix : other.methodBatchPrefix;
@@ -418,24 +417,21 @@ public class SqlConfiguration {
     }
 
     private List<SqlParameter> mergeParameters(final List<SqlParameter> otherParameters) {
-        final List<SqlParameter> params = parameters != null && !parameters.isEmpty() ? parameters : otherParameters;
-        params.stream()
-                .forEach(param -> {
-                    otherParameters.stream()
-                            .filter(op -> param.getName().equals(op.getName()))
-                            .findFirst()
-                            .ifPresent(otherParam -> {
-                                if (param.getName() == null
-                                        || !param.getName().isEmpty()
-                                        || Object.class.getName().equals(param.getType())) {
-                                    param.setType(otherParam.getType());
-                                }
-                                if (param.getConverter() == null || !param.getConverter().isEmpty()) {
-                                    param.setConverter(otherParam.getConverter());
-                                }
-                            });
-                });
-        return params;
+        if (parameters == null || parameters.isEmpty()) {
+            return otherParameters;
+        }
+        return parameters.stream()
+                .map(param -> otherParameters.stream()
+                        .filter(op -> param.name().equals(op.name()))
+                        .findFirst()
+                        .map(other -> SqlParameter.builder()
+                                .setName(param.name())
+                                .setType(Object.class.getName().equals(param.type()) ? other.type() : param.type())
+                                .setConverter((param.converter() == null || param.converter().isBlank()) ? other.converter() : param.converter())
+                                .setIndices(param.indices() == null ? other.indices() : param.indices())
+                                .build())
+                        .orElse(param))
+                .collect(Collectors.toList());
     }
 
 }

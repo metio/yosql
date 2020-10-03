@@ -6,78 +6,46 @@
  */
 package wtf.metio.yosql.model.sql;
 
+import org.immutables.value.Value;
+
 /**
  * Represents a single input parameter of a SQL statement.
  */
-// TODO: use AutoValue
-public final class SqlParameter {
+@Value.Immutable
+public interface SqlParameter {
 
-    private String name;
-    private String type = Object.class.getName();
-    private String converter;
-    private int[] indices;
+    static Builder builder() {
+        return new Builder();
+    }
 
     /**
      * @return The name of the parameter.
      */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name The name of the parameter.
-     */
-    public void setName(final String name) {
-        this.name = name;
-    }
+    String name();
 
     /**
      * @return The fully-qualified type name.
      */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * @param type The fully-qualified type name.
-     */
-    public void setType(final String type) {
-        this.type = type;
-    }
+    String type();
 
     /**
      * @return The type fully-qualified name of the converter to use.
      */
-    public String getConverter() {
-        return converter;
-    }
+    String converter();
 
     /**
-     * @param converter The type fully-qualified name of the converter to use.
+     * @return The indices in the SQL statement that match this parameter.
      */
-    public void setConverter(final String converter) {
-        this.converter = converter;
-    }
-
-    /**
-     * @return the indices
-     */
-    public int[] getIndices() {
-        return indices;
-    }
-
-    /**
-     * @param indices the indices to set
-     */
-    public void setIndices(final int[] indices) {
-        this.indices = indices;
-    }
-
+    int[] indices();
+    
     /**
      * @return <code>true</code> in case this statement has indices, <code>false</code> otherwise.
      */
-    public boolean hasIndices() {
-        return indices != null && indices.length > 0;
+    default boolean hasIndices() {
+        return indices() != null && indices().length > 0;
+    }
+
+    class Builder extends ImmutableSqlParameter.Builder {
     }
 
 }
