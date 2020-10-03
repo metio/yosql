@@ -139,8 +139,8 @@ public final class ModelConfigurationModule {
 
     @Provides
     @Singleton
-    NameConfiguration provideNameConfiguration(final Translator translator) {
-        return NameConfiguration.builder()
+    PackagesConfiguration providePackagesConfiguration(final Translator translator) {
+        return PackagesConfiguration.builder()
                 .setBasePackageName(translator.get(BASE_PACKAGE_NAME_DEFAULT))
                 .setUtilityPackageName(translator.get(UTILITY_PACKAGE_NAME_DEFAULT))
                 .setConverterPackageName(translator.get(CONVERTER_PACKAGE_NAME_DEFAULT))
@@ -204,7 +204,7 @@ public final class ModelConfigurationModule {
     @Singleton
     RxJavaConfiguration provideRxJavaConfiguration(
             final Translator translator,
-            final NameConfiguration names) {
+            final PackagesConfiguration names) {
         return RxJavaConfiguration.builder()
                 .setFlowStateClass(ClassName.get(
                         names.basePackageName()
@@ -218,7 +218,7 @@ public final class ModelConfigurationModule {
     @Singleton
     ResultConfiguration provideResultConfiguration(
             final Translator translator,
-            final NameConfiguration names) {
+            final PackagesConfiguration names) {
         return ResultConfiguration.builder()
                 .setResultStateClass(ClassName.get(
                         names.basePackageName()
@@ -240,7 +240,7 @@ public final class ModelConfigurationModule {
             final JavaConfiguration java,
             final AnnotationConfiguration annotations,
             final MethodConfiguration methods,
-            final NameConfiguration names,
+            final PackagesConfiguration names,
             final ResourceConfiguration resources,
             final RepositoryConfiguration repositories,
             final StatementConfiguration statements,

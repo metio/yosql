@@ -10,10 +10,10 @@ package wtf.metio.yosql.model.configuration;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface NameConfiguration {
+public interface PackagesConfiguration {
 
-    static NameConfiguration.Builder builder() {
-        return new NameConfiguration.Builder();
+    static PackagesConfiguration.Builder builder() {
+        return new PackagesConfiguration.Builder();
     }
 
     String utilityPackageName();
@@ -22,7 +22,7 @@ public interface NameConfiguration {
 
     String basePackageName();
 
-    class Builder extends ImmutableNameConfiguration.Builder {
+    class Builder extends ImmutablePackagesConfiguration.Builder {
     }
 
 }

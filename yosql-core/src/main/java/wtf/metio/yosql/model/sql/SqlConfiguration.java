@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import static java.util.function.Predicate.not;
 
-// TODO: use AutoValue
+// TODO: use Immutables
 public class SqlConfiguration {
 
     private String name;
@@ -379,8 +379,7 @@ public class SqlConfiguration {
         this.returningMode = returningMode;
     }
 
-    // TODO: rename to 'fromStatements' or similar
-    public static SqlConfiguration merge(final List<SqlStatement> statements) {
+    public static SqlConfiguration fromStatements(final List<SqlStatement> statements) {
         final SqlConfiguration configuration = new SqlConfiguration();
         statements.forEach(configuration::merge);
         return configuration;

@@ -304,9 +304,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
         return builder.build();
     }
 
-    @Override
-    // TODO: mark as private
-    public CodeBlock.Builder prepareReturnList(final TypeName listOfResults, final String converterAlias) {
+    private CodeBlock.Builder prepareReturnList(final TypeName listOfResults, final String converterAlias) {
         return CodeBlock.builder()
                 .addStatement("final $T $N = new $T<>()",
                         listOfResults,
@@ -377,9 +375,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
                 .build();
     }
 
-    @Override
-    // TODO: mark private?
-    public CodeBlock parameterAssignment(
+    private CodeBlock parameterAssignment(
             final SqlConfiguration config,
             final String codeStatement,
             final Function<String, Object[]> parameterSetter) {

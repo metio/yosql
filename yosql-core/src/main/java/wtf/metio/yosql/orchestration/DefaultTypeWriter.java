@@ -41,7 +41,6 @@ final class DefaultTypeWriter implements TypeWriter {
                     typeSpec.getPackageName().replace(".", "/"),
                     typeSpec.getType().name);
         } catch (final IOException exception) {
-            // TODO: use some factory of 'errors'
             errors.add(exception);
             logger.error(ApplicationEvents.FILE_WRITE_FAILED,
                     typeSpec.getPackageName(),

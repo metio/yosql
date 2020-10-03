@@ -60,8 +60,6 @@ public interface JdbcBlocks {
 
     CodeBlock logExecutedBatchQuery(SqlConfiguration sqlConfiguration);
 
-    CodeBlock.Builder prepareReturnList(TypeName listOfResults, String converterAlias);
-
     CodeBlock returnAsList(TypeName listOfResults, String converterAlias);
 
     CodeBlock returnAsStream(TypeName listOfResults, String converterAlias);
@@ -73,11 +71,6 @@ public interface JdbcBlocks {
     CodeBlock returnNewFlowState();
 
     CodeBlock newFlowable(TypeSpec initialState, TypeSpec generator, TypeSpec disposer);
-
-    CodeBlock parameterAssignment(
-            SqlConfiguration configuration,
-            String codeStatement,
-            Function<String, Object[]> parameterSetter);
 
     CodeBlock setParameters(final SqlConfiguration configuration);
 

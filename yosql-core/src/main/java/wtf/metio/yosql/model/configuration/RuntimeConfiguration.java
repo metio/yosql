@@ -24,7 +24,7 @@ public interface RuntimeConfiguration {
 
     MethodConfiguration methods();
 
-    NameConfiguration names();
+    PackagesConfiguration names();
 
     ResourceConfiguration resources();
 

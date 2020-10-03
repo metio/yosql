@@ -8,7 +8,7 @@
 package wtf.metio.yosql.maven;
 
 import org.apache.maven.plugins.annotations.Parameter;
-import wtf.metio.yosql.model.configuration.NameConfiguration;
+import wtf.metio.yosql.model.configuration.PackagesConfiguration;
 
 /**
  * Configures general names used during code generation.
@@ -33,8 +33,8 @@ public class Names {
     @Parameter(required = true, defaultValue = "converter")
     private String converterPackageName;
 
-    NameConfiguration asConfiguration() {
-        return NameConfiguration.builder()
+    PackagesConfiguration asConfiguration() {
+        return PackagesConfiguration.builder()
                 .setBasePackageName(basePackageName)
                 .setUtilityPackageName(utilityPackageName)
                 .setConverterPackageName(converterPackageName)

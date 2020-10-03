@@ -14,8 +14,7 @@ import java.util.concurrent.ForkJoinPool;
 /**
  * Creates thread pools which are used during parsing/generating/writing.
  */
-// TODO: mark package private
-public final class ThreadPoolFactory {
+final class ThreadPoolFactory {
 
     private final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory;
     private final ResourceConfiguration configuration;

@@ -13,7 +13,6 @@ import wtf.metio.yosql.model.options.*;
 import javax.lang.model.element.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static wtf.metio.yosql.model.options.AnnotationMemberOptions.WITHOUT_DATE;
 
@@ -108,8 +107,8 @@ public final class ModelConfigurationObjectMother {
                 .build();
     }
     
-    public static NameConfiguration nameConfiguration() {
-        return NameConfiguration.builder()
+    public static PackagesConfiguration nameConfiguration() {
+        return PackagesConfiguration.builder()
                 .setBasePackageName("com.example")
                 .setConverterPackageName("converter")
                 .setUtilityPackageName("utilities")

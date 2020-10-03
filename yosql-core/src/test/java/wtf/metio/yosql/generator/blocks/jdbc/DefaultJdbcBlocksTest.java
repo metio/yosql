@@ -196,16 +196,6 @@ class DefaultJdbcBlocksTest {
     }
 
     @Test
-    void prepareReturnList() {
-        Assertions.assertEquals("""
-                final java.lang.Object list = new java.util.ArrayList<>();
-                while (state.next()) {
-                  list.add(converter.asUserType(state));
-                }
-                """, generator.prepareReturnList(TypeName.OBJECT, "converter").build().toString());
-    }
-
-    @Test
     void returnAsList() {
         Assertions.assertEquals("""
                 final java.util.List<java.lang.Object> list = new java.util.ArrayList<>();

@@ -13,8 +13,6 @@ package wtf.metio.yosql;
 @FunctionalInterface
 public interface YoSql {
 
-    // TODO: add builder default method that returns Dagger generated builder
-
     /**
      * Generates .java files based on the configured .sql files and generator options.
      */
