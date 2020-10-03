@@ -26,6 +26,12 @@ public class I18nModule {
 
     @Provides
     @Singleton
+    Locale provideLocale() {
+        return Locale.ENGLISH;
+    }
+
+    @Provides
+    @Singleton
     Translator provideTranslator(final IMessageConveyor systemMessages) {
         return new DefaultTranslator(systemMessages);
     }
@@ -38,12 +44,6 @@ public class I18nModule {
 
     @Provides
     @Singleton
-    Locale provideLocale() {
-        return Locale.ENGLISH;
-    }
-
-    @Provides
-    @Singleton
     LocLoggerFactory provideLocLoggerFactory(final IMessageConveyor messages) {
         return new LocLoggerFactory(messages);
     }
@@ -51,43 +51,43 @@ public class I18nModule {
     @Writer
     @Provides
     @Singleton
-    LocLogger provideWriterLocLogger(final LocLoggerFactory factory, final IMessageConveyor messages) {
-        return factory.getLocLogger(messages.getMessage(Loggers.WRITER));
+    LocLogger provideWriterLocLogger(final LocLoggerFactory factory, final Translator translator) {
+        return factory.getLocLogger(translator.get(Loggers.WRITER));
     }
 
     @Parser
     @Provides
     @Singleton
-    LocLogger provideParserLocLogger(final LocLoggerFactory factory, final IMessageConveyor messages) {
-        return factory.getLocLogger(messages.getMessage(Loggers.PARSER));
+    LocLogger provideParserLocLogger(final LocLoggerFactory factory, final Translator translator) {
+        return factory.getLocLogger(translator.get(Loggers.PARSER));
     }
 
     @Reader
     @Provides
     @Singleton
-    LocLogger provideReaderLocLogger(final LocLoggerFactory factory, final IMessageConveyor messages) {
-        return factory.getLocLogger(messages.getMessage(Loggers.READER));
+    LocLogger provideReaderLocLogger(final LocLoggerFactory factory, final Translator translator) {
+        return factory.getLocLogger(translator.get(Loggers.READER));
     }
 
     @Generator
     @Provides
     @Singleton
-    LocLogger provideGeneratorLocLogger(final LocLoggerFactory factory, final IMessageConveyor messages) {
-        return factory.getLocLogger(messages.getMessage(Loggers.GENERATOR));
+    LocLogger provideGeneratorLocLogger(final LocLoggerFactory factory, final Translator translator) {
+        return factory.getLocLogger(translator.get(Loggers.GENERATOR));
     }
 
     @TimeLogger
     @Provides
     @Singleton
-    LocLogger provideTimerLocLogger(final LocLoggerFactory factory, final IMessageConveyor messages) {
-        return factory.getLocLogger(messages.getMessage(Loggers.TIMER));
+    LocLogger provideTimerLocLogger(final LocLoggerFactory factory, final Translator translator) {
+        return factory.getLocLogger(translator.get(Loggers.TIMER));
     }
 
     @Utilities
     @Provides
     @Singleton
-    LocLogger provideUtilitiesLocLogger(final LocLoggerFactory factory, final IMessageConveyor messages) {
-        return factory.getLocLogger(messages.getMessage(Loggers.UTILITIES));
+    LocLogger provideUtilitiesLocLogger(final LocLoggerFactory factory, final Translator translator) {
+        return factory.getLocLogger(translator.get(Loggers.UTILITIES));
     }
 
 }
