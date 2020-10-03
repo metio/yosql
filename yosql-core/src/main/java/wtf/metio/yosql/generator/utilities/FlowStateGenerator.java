@@ -26,8 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-// TODO: mark package private
-public final class FlowStateGenerator {
+final class FlowStateGenerator {
 
     private final LocLogger logger;
     private final RuntimeConfiguration runtimeConfiguration;

@@ -28,7 +28,6 @@ public interface LoggingGenerator {
 
     CodeBlock shouldLog();
 
-    // TODO: align with shouldLog()?
     boolean isEnabled();
 
     Optional<FieldSpec> logger(TypeName repoClass);

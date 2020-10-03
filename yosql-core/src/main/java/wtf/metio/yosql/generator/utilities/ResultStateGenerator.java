@@ -28,11 +28,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: mark package private
-public final class ResultStateGenerator {
+final class ResultStateGenerator {
 
     private final LocLogger logger;
-    private final RuntimeConfiguration runtime;
+    private final RuntimeConfiguration runtimeConfiguration;
     private final AnnotationGenerator annotations;
     private final GenericBlocks blocks;
     private final Classes classes;
@@ -43,7 +42,7 @@ public final class ResultStateGenerator {
     @Inject
     ResultStateGenerator(
             final @Utilities LocLogger logger,
-            final RuntimeConfiguration runtime,
+            final RuntimeConfiguration runtimeConfiguration,
             final AnnotationGenerator annotations,
             final GenericBlocks blocks,
             final Classes classes,
@@ -51,7 +50,7 @@ public final class ResultStateGenerator {
             final JdbcParameters jdbcParameters,
             final JdbcNames jdbcNames) {
         this.annotations = annotations;
-        this.runtime = runtime;
+        this.runtimeConfiguration = runtimeConfiguration;
         this.logger = logger;
         this.blocks = blocks;
         this.classes = classes;
@@ -61,7 +60,7 @@ public final class ResultStateGenerator {
     }
 
     PackageTypeSpec generateResultStateClass() {
-        final var resultStateClass = runtime.result().resultStateClass();
+        final var resultStateClass = runtimeConfiguration.result().resultStateClass();
         final var type = classes.openClass(resultStateClass)
                 .addFields(fields())
                 .addMethods(methods())
@@ -77,19 +76,19 @@ public final class ResultStateGenerator {
     }
 
     private FieldSpec resultSetField() {
-        return FieldSpec.builder(ResultSet.class, runtime.jdbcNames().resultSet())
+        return FieldSpec.builder(ResultSet.class, runtimeConfiguration.jdbcNames().resultSet())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }
 
     private FieldSpec metaDataField() {
-        return FieldSpec.builder(ResultSetMetaData.class, runtime.jdbcNames().metaData())
+        return FieldSpec.builder(ResultSetMetaData.class, runtimeConfiguration.jdbcNames().metaData())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }
 
     private FieldSpec columnCountField() {
-        return FieldSpec.builder(int.class, runtime.jdbcNames().columnCount())
+        return FieldSpec.builder(int.class, runtimeConfiguration.jdbcNames().columnCount())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }

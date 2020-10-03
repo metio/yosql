@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 
-// TODO: move class to 'api' package?
 final class DefaultCodeGenerator implements CodeGenerator {
 
     private final RepositoryGenerator repositoryGenerator;
