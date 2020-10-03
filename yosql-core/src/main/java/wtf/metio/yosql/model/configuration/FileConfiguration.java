@@ -9,6 +9,7 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 @Value.Immutable
@@ -36,7 +37,7 @@ public interface FileConfiguration {
     /**
      * @return The charset to use while reading SQL files, e.g. "UTF-8".
      */
-    String sqlFilesCharset(); // TODO: replace with type safe value Charset
+    Charset sqlFilesCharset();
 
     /**
      * @return The file suffix to use while searching for SQL files, e.g. ".sql".

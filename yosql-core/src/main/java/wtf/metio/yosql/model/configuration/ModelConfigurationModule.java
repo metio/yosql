@@ -14,6 +14,7 @@ import wtf.metio.yosql.model.options.*;
 
 import javax.inject.Singleton;
 import javax.lang.model.element.Modifier;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 
 import static java.lang.Boolean.parseBoolean;
@@ -132,7 +133,7 @@ public final class ModelConfigurationModule {
                 .setOutputBaseDirectory(Paths.get(translator.get(CURRENT_DIRECTORY)))
                 .setSqlStatementSeparator(translator.get(SQL_STATEMENT_SEPARATOR_DEFAULT))
                 .setSqlFilesSuffix(translator.get(SQL_FILES_SUFFIX_DEFAULT))
-                .setSqlFilesCharset(translator.get(SQL_FILES_CHARSET_DEFAULT))
+                .setSqlFilesCharset(Charset.forName(translator.get(SQL_FILES_CHARSET_DEFAULT)))
                 .build();
     }
 
