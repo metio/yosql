@@ -11,6 +11,10 @@ import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.blocks.api.Javadoc;
 import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.model.sql.SqlStatement;
+
+import javax.lang.model.element.Modifier;
+import java.util.List;
 
 final class DefaultMethods implements Methods {
 
@@ -24,20 +28,32 @@ final class DefaultMethods implements Methods {
 
     @Override
     public MethodSpec.Builder publicMethod(final String name) {
-        // TODO: implement
-        return null;
+        return MethodSpec.methodBuilder(name)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addAnnotations(annotations.generatedMethod());
+    }
+
+    @Override
+    public MethodSpec.Builder publicMethod(final String name, final List<SqlStatement> statements) {
+        return MethodSpec.methodBuilder(name)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addAnnotations(annotations.generatedMethod())
+                .addJavadoc(javadoc.methodJavadoc(statements));
     }
 
     @Override
     public MethodSpec.Builder implementation(final String name) {
-        // TODO: implement
-        return null;
+        return MethodSpec.methodBuilder(name)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addAnnotation(Override.class)
+                .addAnnotations(annotations.generatedMethod());
     }
 
     @Override
     public MethodSpec.Builder constructor() {
-        // TODO: implement
-        return null;
+        return MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotations(annotations.generatedMethod());
     }
 
 }

@@ -11,17 +11,16 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.Java8StreamMethodGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 import java.util.List;
 import java.util.Spliterator;
@@ -32,8 +31,6 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
     private final GenericBlocks blocks;
     private final ControlFlows controlFlow;
     private final Names names;
-    private final Javadoc javadoc;
-    private final AnnotationGenerator annotations;
     private final Methods methods;
     private final Parameters parameters;
     private final LoggingGenerator logging;
@@ -45,8 +42,6 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
             final Names names,
-            final Javadoc javadoc,
-            final AnnotationGenerator annotations,
             final Methods methods,
             final Parameters parameters,
             final LoggingGenerator logging,
@@ -54,9 +49,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
             final JdbcTransformer jdbcTransformer,
             final JdbcNamesConfiguration jdbcNames) {
         this.names = names;
-        this.annotations = annotations;
         this.logging = logging;
-        this.javadoc = javadoc;
         this.blocks = blocks;
         this.jdbcBlocks = jdbcBlocks;
         this.jdbcTransformer = jdbcTransformer;
@@ -74,9 +67,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
         final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var streamOfResults = TypicalTypes.streamOf(resultType);
-        return methods.publicMethod(configuration.getStreamEagerName())
-                .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod())
+        return methods.publicMethod(configuration.getStreamEagerName(), statements)
                 .returns(streamOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
@@ -103,9 +94,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
         final var converter = configuration.getResultRowConverter();
         final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final var streamOfResults = TypicalTypes.streamOf(resultType);
-        return methods.publicMethod(configuration.getStreamLazyName())
-                .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod())
+        return methods.publicMethod(configuration.getStreamLazyName(), statements)
                 .returns(streamOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
@@ -135,7 +124,6 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
                 .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
                 .addSuperinterface(superinterface)
                 .addMethod(methods.implementation("tryAdvance")
-                        .addAnnotations(annotations.generatedMethod())
                         .addParameter(parameters.parameter(consumerType, names.action()))
                         .returns(boolean.class)
                         .addCode(controlFlow.startTryBlock())
@@ -155,7 +143,6 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(Runnable.class)
                 .addMethod(methods.implementation("run")
-                        .addAnnotations(annotations.generatedMethod())
                         .returns(void.class)
                         .addCode(controlFlow.startTryBlock())
                         .addCode(jdbcBlocks.closeResultSet())

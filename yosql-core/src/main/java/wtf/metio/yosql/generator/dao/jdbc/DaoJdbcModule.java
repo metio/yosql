@@ -48,7 +48,6 @@ public class DaoJdbcModule {
             final @JDBC RxJavaMethodGenerator rxjavaMethods,
             final @JDBC StandardMethodGenerator standardMethods,
             final GenericBlocks blocks,
-            final AnnotationGenerator annotations,
             final Methods methods,
             final JdbcNamesConfiguration jdbcNames,
             final JdbcParameters jdbcParameters) {
@@ -58,7 +57,6 @@ public class DaoJdbcModule {
                 rxjavaMethods,
                 standardMethods,
                 blocks,
-                annotations,
                 methods,
                 jdbcNames,
                 jdbcParameters);
@@ -78,8 +76,6 @@ public class DaoJdbcModule {
     @Provides
     BatchMethodGenerator provideBatchMethodGenerator(
             final ControlFlows controlFlow,
-            final AnnotationGenerator annotations,
-            final Javadoc javadoc,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
@@ -87,8 +83,6 @@ public class DaoJdbcModule {
             final JdbcTransformer transformer) {
         return new JdbcBatchMethodGenerator(
                 controlFlow,
-                annotations,
-                javadoc,
                 methods,
                 parameters,
                 logging,
@@ -102,8 +96,6 @@ public class DaoJdbcModule {
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
             final Names names,
-            final Javadoc javadoc,
-            final AnnotationGenerator annotations,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
@@ -114,8 +106,6 @@ public class DaoJdbcModule {
                 blocks,
                 controlFlow,
                 names,
-                javadoc,
-                annotations,
                 methods,
                 parameters,
                 logging,
@@ -130,8 +120,6 @@ public class DaoJdbcModule {
             final RuntimeConfiguration configuration,
             final ControlFlows controlFlows,
             final Names names,
-            final AnnotationGenerator annotations,
-            final Javadoc javadoc,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
@@ -140,8 +128,6 @@ public class DaoJdbcModule {
                 configuration,
                 controlFlows,
                 names,
-                annotations,
-                javadoc,
                 methods,
                 parameters,
                 logging,
@@ -152,18 +138,14 @@ public class DaoJdbcModule {
     @Provides
     StandardMethodGenerator provideStandardMethodGenerator(
             final ControlFlows controlFlows,
-            final AnnotationGenerator annotations,
             final Methods methods,
-            final Javadoc javadoc,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final JdbcTransformer jdbcTransformer) {
         return new JdbcStandardMethodGenerator(
                 controlFlows,
-                annotations,
                 methods,
-                javadoc,
                 parameters,
                 logging,
                 jdbc,

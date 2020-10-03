@@ -7,15 +7,13 @@
 package wtf.metio.yosql.generator.dao.jdbc;
 
 import com.squareup.javapoet.MethodSpec;
-import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.BatchMethodGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.Javadoc;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.blocks.api.ControlFlows;
 import wtf.metio.yosql.generator.blocks.api.Methods;
 import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
@@ -25,8 +23,6 @@ import java.util.List;
 final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
 
     private final ControlFlows controlFlow;
-    private final AnnotationGenerator annotations;
-    private final Javadoc javadoc;
     private final Methods methods;
     private final Parameters parameters;
     private final LoggingGenerator logging;
@@ -35,16 +31,12 @@ final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
 
     JdbcBatchMethodGenerator(
             final ControlFlows controlFlow,
-            final AnnotationGenerator annotations,
-            final Javadoc javadoc,
             final Methods methods,
             final Parameters parameters,
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final JdbcTransformer transformer) {
-        this.annotations = annotations;
         this.logging = logging;
-        this.javadoc = javadoc;
         this.jdbc = jdbc;
         this.transformer = transformer;
         this.controlFlow = controlFlow;
@@ -56,9 +48,7 @@ final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
     public MethodSpec batchWriteMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.getBatchName())
-                .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod())
+        return methods.publicMethod(configuration.getBatchName(), statements)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecs(configuration.getParameters()))
                 .addExceptions(transformer.sqlException(configuration))
