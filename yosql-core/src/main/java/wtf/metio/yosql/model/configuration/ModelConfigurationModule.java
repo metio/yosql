@@ -47,6 +47,7 @@ public final class ModelConfigurationModule {
                 .setUseVar(javaVersion >= SUPPORTS_VAR_KEYWORD)
                 .setUseTextBlocks(javaVersion >= SUPPORTS_TEXT_BLOCKS)
                 .setUseRecords(javaVersion >= SUPPORTS_RECORDS)
+                .setUseFinal(parseBoolean(translator.get(USE_FINAL)))
                 .build();
     }
 

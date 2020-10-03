@@ -11,6 +11,7 @@ import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.blocks.api.Javadoc;
 import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.model.configuration.JavaConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import javax.lang.model.element.Modifier;
@@ -20,31 +21,42 @@ final class DefaultMethods implements Methods {
 
     private final AnnotationGenerator annotations;
     private final Javadoc javadoc;
+    private final JavaConfiguration java;
 
-    DefaultMethods(final AnnotationGenerator annotations, final Javadoc javadoc) {
+    DefaultMethods(final AnnotationGenerator annotations, final Javadoc javadoc, final JavaConfiguration java) {
         this.annotations = annotations;
         this.javadoc = javadoc;
+        this.java = java;
     }
 
     @Override
     public MethodSpec.Builder publicMethod(final String name) {
+        final var modifiers = java.useFinal()
+                ? List.of(Modifier.PUBLIC, Modifier.FINAL)
+                : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(modifiers)
                 .addAnnotations(annotations.generatedMethod());
     }
 
     @Override
     public MethodSpec.Builder publicMethod(final String name, final List<SqlStatement> statements) {
+        final var modifiers = java.useFinal()
+                ? List.of(Modifier.PUBLIC, Modifier.FINAL)
+                : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(modifiers)
                 .addAnnotations(annotations.generatedMethod())
                 .addJavadoc(javadoc.methodJavadoc(statements));
     }
 
     @Override
     public MethodSpec.Builder implementation(final String name) {
+        final var modifiers = java.useFinal()
+                ? List.of(Modifier.PUBLIC, Modifier.FINAL)
+                : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(modifiers)
                 .addAnnotation(Override.class)
                 .addAnnotations(annotations.generatedMethod());
     }

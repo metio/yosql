@@ -432,4 +432,9 @@ public enum GenerateOptions {
      */
     TO_RESULT_ROW_CONVERTER_CLASS_NAME,
 
+    /**
+     * Should fields and methods marked "final"?
+     */
+    USE_FINAL,
+
 }
