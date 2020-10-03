@@ -38,24 +38,24 @@ public enum ApplicationEvents {
     APPLICATION_RUNTIME,
 
     /**
-     * Signals that a file is about to be parsed.
+     * Signals that a SQL statement is about to be parsed.
      */
-    FILE_PARSING_STARTING,
+    STATEMENT_PARSING_STARTING,
 
     /**
      * Signals that a SQL statement within a file was parsed.
      */
-    FILE_SQL_STATEMENT_PARSED,
+    STATEMENT_PARSED,
 
     /**
-     * Signals that a YAML frontmatter within a file was parsed.
+     * Signals that a YAML front-matter of a SQL statement was parsed.
      */
-    FILE_YAML_FRONTMATTER_PARSED,
+    STATEMENT_YAML_FRONT_MATTER_PARSED,
 
     /**
-     * Signals that a file was parsed.
+     * Signals that a SQL statement was parsed.
      */
-    FILE_PARSING_FINISHED,
+    STATEMENT_PARSING_FINISHED,
 
     /**
      * Signals that a file could not be parsed.

@@ -80,19 +80,16 @@ final class DefaultSqlFileParser implements SqlFileParser {
 
         splitUpYamlAndSql(rawStatement, yaml::append, sql::append);
 
-        // TODO: rename to STATEMENT_PARSING_STARTING
-        logger.trace(ApplicationEvents.FILE_PARSING_STARTING, rawStatement);
+        logger.trace(ApplicationEvents.STATEMENT_PARSING_STARTING, rawStatement);
         final String rawYaml = yaml.toString();
         final String rawSqlStatement = sql.toString();
-        // TODO: rename to STATEMENT_XYZ
-        logger.trace(ApplicationEvents.FILE_YAML_FRONTMATTER_PARSED, rawYaml);
-        logger.trace(ApplicationEvents.FILE_SQL_STATEMENT_PARSED, rawSqlStatement);
+        logger.trace(ApplicationEvents.STATEMENT_YAML_FRONT_MATTER_PARSED, rawYaml);
+        logger.trace(ApplicationEvents.STATEMENT_PARSED, rawSqlStatement);
 
         final var parameterIndices = extractParameterIndices(rawSqlStatement);
         final var configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
-        // TODO: rename to STATEMENT_PARSING_FINISHED
-        logger.debug(ApplicationEvents.FILE_PARSING_FINISHED, source, configuration.getName());
+        logger.debug(ApplicationEvents.STATEMENT_PARSING_FINISHED, source, configuration.getName());
         return new SqlStatement(source, configuration, rawSqlStatement);
     }
 
