@@ -9,10 +9,10 @@ package wtf.metio.yosql.benchmark;
 import dagger.Component;
 import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.YoSqlModule;
-import wtf.metio.yosql.dagger.DaggerModule;
 import wtf.metio.yosql.files.FilesModule;
 import wtf.metio.yosql.generator.CodeGeneratorModule;
 import wtf.metio.yosql.i18n.I18nModule;
+import wtf.metio.yosql.model.configuration.ModelConfigurationModule;
 import wtf.metio.yosql.orchestration.OrchestrationModule;
 
 import javax.inject.Singleton;
@@ -23,7 +23,7 @@ import javax.inject.Singleton;
 @Singleton
 @Component(modules = {
         I18nModule.class,
-        DaggerModule.class,
+        ModelConfigurationModule.class,
         OrchestrationModule.class,
         FilesModule.class,
         CodeGeneratorModule.class,

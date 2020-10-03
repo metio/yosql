@@ -68,8 +68,13 @@ public final class ModelConfigurationObjectMother {
     public static JavaConfiguration javaConfiguration() {
         return JavaConfiguration.builder()
                 .setTargetVersion(15)
-                .setUseRecords(true)
+                .setUseGenerics(true)
+                .setUseDiamondOperator(true)
+                .setUseStreamAPI(true)
+                .setUseProcessingApi(true)
                 .setUseVar(true)
+                .setUseTextBlocks(true)
+                .setUseRecords(true)
                 .build();
     }
 

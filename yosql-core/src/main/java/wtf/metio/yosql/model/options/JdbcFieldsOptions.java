@@ -4,19 +4,22 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.dagger;
 
-import dagger.Module;
+package wtf.metio.yosql.model.options;
 
-@Module(includes = {
-        DefaultConfigurationModule.class,
-        DefaultLocaleModule.class,
-        ErrorModule.class,
-        LoggerModule.class,
-})
-// TODO: remove after moving other modules to OrchestrationModule
-public class DaggerModule {
+import ch.qos.cal10n.BaseName;
+import ch.qos.cal10n.Locale;
+import ch.qos.cal10n.LocaleData;
 
-    // module aggregate
+/**
+ * Options for JDBC fields.
+ */
+@LocaleData(@Locale("en"))
+@BaseName("options.jdbc-fields")
+public enum JdbcFieldsOptions {
+
+    INDEX_SUFFIX,
+
+    RAW_SUFFIX;
 
 }

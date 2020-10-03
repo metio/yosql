@@ -11,7 +11,7 @@ import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
 
 /**
- * Enumeration of known help options.
+ * Enumeration of help options.
  */
 @LocaleData(@Locale("en"))
 @BaseName("options.help")

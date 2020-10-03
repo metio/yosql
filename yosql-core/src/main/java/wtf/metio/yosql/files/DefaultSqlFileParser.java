@@ -7,7 +7,7 @@
 package wtf.metio.yosql.files;
 
 import org.slf4j.cal10n.LocLogger;
-import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.configuration.FileConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
 import wtf.metio.yosql.model.sql.SqlStatement;
@@ -24,6 +24,8 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.util.function.Predicate.not;
+
 /**
  * Default SQL file parser.
  */
@@ -35,41 +37,41 @@ final class DefaultSqlFileParser implements SqlFileParser {
     private final Pattern statementSplitter;
     private final LocLogger logger;
     private final SqlConfigurationFactory factory;
-    private final RuntimeConfiguration runtimeConfiguration; // TODO: replace with FileConfiguration
+    private final FileConfiguration fileConfiguration;
     private final ExecutionErrors errors;
 
     DefaultSqlFileParser(
             final LocLogger logger,
             final SqlConfigurationFactory factory,
-            final RuntimeConfiguration runtimeConfiguration,
+            final FileConfiguration fileConfiguration,
             final ExecutionErrors errors) {
-        statementSplitter = Pattern.compile(runtimeConfiguration.files().sqlStatementSeparator());
+        statementSplitter = Pattern.compile(fileConfiguration.sqlStatementSeparator());
         this.logger = logger;
         this.factory = factory;
-        this.runtimeConfiguration = runtimeConfiguration;
+        this.fileConfiguration = fileConfiguration;
         this.errors = errors;
     }
 
     @Override
     public Stream<SqlStatement> parse(final Path source) {
         try {
-            final var charset = Charset.forName(runtimeConfiguration.files().sqlFilesCharset());
+            final var charset = Charset.forName(fileConfiguration.sqlFilesCharset());
             final var rawText = Files.readString(source, charset);
             final var counter = new AtomicInteger(1);
             return statementSplitter.splitAsStream(rawText)
                     .parallel()
                     .filter(Objects::nonNull)
-                    .filter(text -> !text.strip().isEmpty()) // TODO: map first and then filter?
-                    .map(statement -> convert(source, statement, counter.getAndIncrement()));
+                    .map(String::strip)
+                    .filter(not(String::isBlank))
+                    .map(statement -> parseStatement(source, statement, counter.getAndIncrement()));
         } catch (final IOException exception) {
-            // ToDO: use some factory method of 'errors'
             errors.add(exception);
             logger.debug(ApplicationEvents.FILE_PARSING_FAILED, source);
             return Stream.empty();
         }
     }
 
-    private SqlStatement convert(
+    private SqlStatement parseStatement(
             final Path source,
             final String rawStatement,
             final int statementInFile) {
@@ -94,23 +96,27 @@ final class DefaultSqlFileParser implements SqlFileParser {
         return new SqlStatement(source, configuration, rawSqlStatement);
     }
 
-    private static void splitUpYamlAndSql(
+    private void splitUpYamlAndSql(
             final String rawStatement,
             final Consumer<String> yaml,
             final Consumer<String> sql) {
-        new BufferedReader(new StringReader(rawStatement))
-                .lines()
-                .filter(line -> !line.strip().isEmpty())
-                .filter(line -> !SQL_COMMENT_PREFIX.equals(line.strip()))
-                .forEach(line -> {
-                    if (line.startsWith(SQL_COMMENT_PREFIX)) {
-                        yaml.accept(line.substring(2));
-                        yaml.accept(NEWLINE);
-                    } else {
-                        sql.accept(line);
-                        sql.accept(NEWLINE);
-                    }
-                });
+        try (final var reader = new StringReader(rawStatement);
+             final var buffer = new BufferedReader(reader)) {
+            buffer.lines()
+                    .filter(line -> !line.strip().isEmpty())
+                    .filter(line -> !SQL_COMMENT_PREFIX.equals(line.strip()))
+                    .forEach(line -> {
+                        if (line.startsWith(SQL_COMMENT_PREFIX)) {
+                            yaml.accept(line.substring(2));
+                            yaml.accept(NEWLINE);
+                        } else {
+                            sql.accept(line);
+                            sql.accept(NEWLINE);
+                        }
+                    });
+        } catch (final IOException exception) {
+            errors.add(exception);
+        }
     }
 
 }

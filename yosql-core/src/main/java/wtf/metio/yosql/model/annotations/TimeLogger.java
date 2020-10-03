@@ -22,6 +22,6 @@ import static java.lang.annotation.ElementType.*;
   @Documented
   @Retention(RetentionPolicy.RUNTIME)
   @Target({ TYPE, PARAMETER, METHOD })
-  public @interface Timer {
+  public @interface TimeLogger {
       // marker annotation
   }

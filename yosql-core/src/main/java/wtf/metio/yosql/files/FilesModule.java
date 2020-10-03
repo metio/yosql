@@ -13,6 +13,7 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.annotations.Parser;
 import wtf.metio.yosql.model.annotations.Reader;
+import wtf.metio.yosql.model.configuration.FileConfiguration;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 
@@ -43,9 +44,9 @@ public class FilesModule {
     SqlFileParser provideSqlFileParser(
             @Parser final LocLogger logger,
             final SqlConfigurationFactory factory,
-            final RuntimeConfiguration runtimeConfiguration,
+            final FileConfiguration fileConfiguration,
             final ExecutionErrors errors) {
-        return new DefaultSqlFileParser(logger, factory, runtimeConfiguration, errors);
+        return new DefaultSqlFileParser(logger, factory, fileConfiguration, errors);
     }
 
     @Provides

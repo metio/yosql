@@ -24,10 +24,10 @@ class DefaultTranslatorTest {
     void shouldProvideLocalization() {
         // given
         final var messages = new MessageConveyor(Locale.ENGLISH);
-        final var translator = new DefaultTranslator(messages, messages);
+        final var translator = new DefaultTranslator(messages);
 
         // when
-        final var text = translator.localized(GeneralOptionsDescriptions.LOCALE_DESCRIPTION);
+        final var text = translator.get(GeneralOptionsDescriptions.LOCALE_DESCRIPTION);
 
         // then
         assertEquals("The locale to use.", text);

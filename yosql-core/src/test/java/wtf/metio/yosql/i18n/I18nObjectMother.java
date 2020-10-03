@@ -18,7 +18,7 @@ public final class I18nObjectMother {
 
     public static Translator testTranslator() {
         final var messages = new MessageConveyor(Locale.ENGLISH);
-        return new DefaultTranslator(messages, messages);
+        return new DefaultTranslator(messages);
     }
 
     private I18nObjectMother() {

@@ -12,7 +12,7 @@ import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
 
 /**
- * Enumeration of all known options for the "@Generated" annotation class itself.
+ * Options for the "@Generated" annotation class.
  */
 @LocaleData(@Locale("en"))
 @BaseName("options.annotation-class")
@@ -29,7 +29,7 @@ public enum AnnotationClassOptions {
     ANNOTATION_API,
 
     /**
-     * Uses the "javax.annotation.Generated" annotation
+     * Uses the "javax.annotation.processing.Generated" annotation
      */
     PROCESSING_API;
 

@@ -12,7 +12,7 @@ import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
 
 /**
- * Enumeration of JDBC names.
+ * Options of JDBC names.
  */
 @LocaleData(@Locale("en"))
 @BaseName("options.jdbc-names")
