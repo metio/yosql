@@ -6,35 +6,22 @@
  */
 package wtf.metio.yosql.model.sql;
 
-// TODO: use AutoValue
-public final class ParameterConverter {
+import org.immutables.value.Value;
 
-    private String alias;
-    private String parameterType;
-    private String converterType;
+@Value.Immutable
+public interface ParameterConverter {
 
-    public String getAlias() {
-        return alias;
+    static Builder builder() {
+        return new Builder();
     }
 
-    public void setAlias(final String alias) {
-        this.alias = alias;
-    }
+    String alias();
 
-    public String getParameterType() {
-        return parameterType;
-    }
+    String parameterType();
 
-    public void setParameterType(final String parameterType) {
-        this.parameterType = parameterType;
-    }
+    String converterType();
 
-    public String getConverterType() {
-        return converterType;
-    }
-
-    public void setConverterType(final String converterType) {
-        this.converterType = converterType;
+    class Builder extends ImmutableParameterConverter.Builder {
     }
 
 }

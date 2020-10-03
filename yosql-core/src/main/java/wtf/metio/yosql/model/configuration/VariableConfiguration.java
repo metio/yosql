@@ -20,7 +20,6 @@ public interface VariableConfiguration {
         return new VariableConfiguration.Builder();
     }
 
-    // TODO: align with JavaConfiguration#useVar
     VariableTypeOptions variableType();
 
     List<Modifier> modifiers();

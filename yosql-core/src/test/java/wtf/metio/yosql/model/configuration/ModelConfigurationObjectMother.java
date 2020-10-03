@@ -17,7 +17,6 @@ import java.util.List;
 
 import static wtf.metio.yosql.model.options.AnnotationMemberOptions.WITHOUT_DATE;
 
-// TODO: rename to ConfigurationObjectMother?
 public final class ModelConfigurationObjectMother {
 
     public static AnnotationConfiguration annotationConfig() {

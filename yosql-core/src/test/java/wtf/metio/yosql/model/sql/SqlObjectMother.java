@@ -8,9 +8,12 @@ public final class SqlObjectMother {
     public static SqlConfiguration sqlConfiguration() {
         final var config = new SqlConfiguration();
         config.setName("queryTest");
-        final var parameter = new SqlParameter();
-        parameter.setName("test");
-        config.getParameters().add(parameter);
+        config.getParameters().add(SqlParameter.builder()
+                .setName("test")
+                .setType(Object.class.getName())
+                .setIndices(0)
+                .setConverter("")
+                .build());
         return config;
     }
     
