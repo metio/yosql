@@ -21,7 +21,6 @@ final class DefaultJavadoc implements Javadoc {
 
     @Override
     public CodeBlock repositoryJavadoc(final List<SqlStatement> statements) {
-        // TODO: i18n
         final var builder = CodeBlock.builder()
                 .add("Generated based on the following file(s):\n")
                 .add("<ul>\n");
@@ -35,7 +34,6 @@ final class DefaultJavadoc implements Javadoc {
 
     @Override
     public CodeBlock methodJavadoc(final List<SqlStatement> statements) {
-        // TODO: i18n
         final var builder = CodeBlock.builder();
         if (statements.size() > 1) {
             builder.add("<p>Executes one of the following statements:</p>");
@@ -77,7 +75,6 @@ final class DefaultJavadoc implements Javadoc {
 
     @Override
     public CodeBlock fieldJavaDoc(final SqlStatement statement) {
-        // TODO: i18n
         final var builder = CodeBlock.builder()
                 .add("Generated based on the following file:\n")
                 .add("<ul>\n")

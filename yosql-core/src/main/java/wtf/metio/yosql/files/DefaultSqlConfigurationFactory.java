@@ -172,7 +172,6 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                     }
                     break;
                 default:
-                    // TODO: I18N
                     errors.illegalArgument("[%s] has unsupported type [%s]",
                             source, configuration.getType());
                     break;
@@ -181,7 +180,6 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private void invalidPrefix(final Path source, final SqlType sqlType, final String name) {
-        // TODO: I18N
         errors.illegalArgument("[%s] has invalid %s prefix in its name [%s]", source, sqlType, name);
     }
 
@@ -249,7 +247,6 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private String calculateRepositoryNameFromParentFolder(final Path source) {
         final var relativePathToSqlFile = runtimeConfiguration.files().inputBaseDirectory().relativize(source);
-        // TODO: I18N
         logger.debug("input path: " + runtimeConfiguration.files().inputBaseDirectory());
         logger.debug("source path: " + source);
         logger.debug("relative path: " + relativePathToSqlFile);
@@ -429,7 +426,6 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final SqlConfiguration configuration) {
         final var parameterErrors = configuration.getParameters().stream()
                 .filter(param -> !parameterIndices.containsKey(param.name()))
-                // TODO: I18N
                 .map(param -> String.format("[%s] declares unknown parameter [%s]", source, param.name()))
                 .peek(errors::illegalArgument)
                 .peek(logger::error)
