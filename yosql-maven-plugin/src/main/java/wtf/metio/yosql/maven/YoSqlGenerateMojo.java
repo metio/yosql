@@ -13,9 +13,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.DaggerYoSqlComponent;
 import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
-import wtf.metio.yosql.model.errors.ExecutionErrors;
-
-import javax.inject.Inject;
 
 /**
  * The *generate* goal generates Java code based on SQL files.
@@ -51,7 +48,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private Variables variables;
 
     @Parameter
-    private Names names;
+    private Packages packages;
 
     @Parameter
     private Results results;
@@ -78,7 +75,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private RuntimeConfiguration createConfiguration() {
-        final var utilityPackage = names.getUtilityPackageName();
+        final var utilityPackage = packages.getUtilityPackageName();
         return RuntimeConfiguration.builder()
                 .setFiles(files.asConfiguration())
                 .setAnnotations(annotations.asConfiguration())
@@ -89,7 +86,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 .setResources(resources.asConfiguration())
                 .setVariables(variables.asConfiguration())
                 .setStatements(statements.asConfiguration())
-                .setNames(names.asConfiguration())
+                .setNames(packages.asConfiguration())
                 .setResult(results.asConfiguration(utilityPackage))
                 .setJdbcNames(jdbcNames.asConfiguration())
                 .setRxJava(rxJava.asConfiguration(utilityPackage))

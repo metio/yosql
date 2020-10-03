@@ -24,14 +24,14 @@ public class Methods {
      * case of SQL SELECT statements or a single call to 'executeUpdate' for SQL UPDATE statements. (default:
      * <strong>true</strong>).
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean methodStandardApi;
 
     /**
      * Controls whether the generated repositories should contain batch methods for SQL INSERT/UPDATE/DELETE statements.
      * (default: <strong>true</strong>).
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean methodBatchApi;
 
     /**
@@ -43,21 +43,21 @@ public class Methods {
     /**
      * The method name suffix to apply to all batch methods (default: <strong>"Batch"</strong>).
      */
-    @Parameter(required = true, defaultValue = "Batch")
+    @Parameter(defaultValue = "Batch")
     private String methodBatchSuffix;
 
     /**
      * Controls whether an eager {@link Stream} based method should be generated (default: <strong>true</strong>). If
      * the target Java version is set to anything below 1.8, defaults to <strong>false</strong>
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean methodStreamEagerApi;
 
     /**
      * Controls whether a lazy {@link Stream} based method should be generated (default: <strong>true</strong>). If the
      * target Java version is set to anything below 1.8, defaults to <strong>false</strong>
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean methodStreamLazyApi;
 
     /**
@@ -77,7 +77,7 @@ public class Methods {
     /**
      * The method name suffix to apply to all stream methods (default: <strong>Stream</strong>).
      */
-    @Parameter(required = true, defaultValue = "Stream")
+    @Parameter(defaultValue = "Stream")
     private String methodStreamSuffix;
 
     /**
@@ -89,19 +89,19 @@ public class Methods {
     /**
      * The method name suffix to apply to all RxJava methods (default: <strong>Flow</strong>).
      */
-    @Parameter(required = true, defaultValue = "Flow")
+    @Parameter(defaultValue = "Flow")
     private String methodRxJavaSuffix;
 
     /**
      * The method name extra to apply to all lazy stream methods (default: <strong>Lazy</strong>).
      */
-    @Parameter(required = true, defaultValue = "Lazy")
+    @Parameter(defaultValue = "Lazy")
     private String methodLazyName;
 
     /**
      * The method name extra to apply to all eager stream methods (default: <strong>Eager</strong>).
      */
-    @Parameter(required = true, defaultValue = "Eager")
+    @Parameter(defaultValue = "Eager")
     private String methodEagerName;
 
     /**
@@ -109,33 +109,33 @@ public class Methods {
      * <strong>true</strong>). If set to <strong>false</strong>, this will cause methods to declare that they throw a
      * checked exception which in turn will force all its users to handle the exception.
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean methodCatchAndRethrow;
 
     /**
      * Controls whether method names are validated according to <strong>methodAllowedReadPrefixes</strong> and
      * <strong>methodAllowedWritePrefixes</strong> (default: <strong>true</strong>).
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean methodValidateNamePrefixes;
 
     /**
-     * The allow method name prefixes for writing methods (default: <strong>"update, insert, delete, create, write, add,
-     * remove, merge,drop"</strong>).
+     * The allow method name prefixes for writing methods (default: <strong>update, insert, delete, create, write, add,
+     * remove, merge, drop</strong>).
      */
-    @Parameter(required = true, defaultValue = "update,insert,delete,create,write,add,remove,merge,drop")
+    @Parameter(defaultValue = "update,insert,delete,create,write,add,remove,merge,drop")
     private String methodAllowedWritePrefixes;
 
     /**
-     * The allow method name prefixes for writing methods (default: <strong>"select,read,query,find"</strong>).
+     * The allow method name prefixes for reading methods (default: <strong>select, read, query, find</strong>).
      */
-    @Parameter(required = true, defaultValue = "select,read,query,find")
+    @Parameter(defaultValue = "select,read,query,find")
     private String methodAllowedReadPrefixes;
 
     /**
-     * The allow method name prefixes for writing methods (default: <strong>"select,read,query,find"</strong>).
+     * The allow method name prefixes for calling methods (default: <strong>call, execute</strong>).
      */
-    @Parameter(required = true, defaultValue = "call,execute")
+    @Parameter(defaultValue = "call,execute")
     private String methodAllowedCallPrefixes;
 
     MethodConfiguration asConfiguration() {
@@ -154,9 +154,9 @@ public class Methods {
                 .setMethodEagerName(methodEagerName)
                 .setMethodLazyName(methodLazyName)
                 .setMethodCatchAndRethrow(methodCatchAndRethrow)
-                .addAllowedReadPrefixes("select", "read") // TODO: configure w/ Maven
-                .addAllowedWritePrefixes("insert", "update", "write") // TODO: configure w/ Maven
-                .addAllowedCallPrefixes("call", "execute") // TODO: configure w/ Maven
+                .addAllowedReadPrefixes(methodAllowedReadPrefixes.split(","))
+                .addAllowedWritePrefixes(methodAllowedWritePrefixes.split(","))
+                .addAllowedCallPrefixes(methodAllowedCallPrefixes.split(","))
                 .setValidateMethodNamePrefixes(methodValidateNamePrefixes)
                 .build();
     }

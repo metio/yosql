@@ -15,7 +15,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class Jdbc {
 
     /**
-     * Optional list of converters that are applied to input parameters.
+     * The names to use in the generated JDBC code.
      */
     @Parameter
     private JdbcNames names;

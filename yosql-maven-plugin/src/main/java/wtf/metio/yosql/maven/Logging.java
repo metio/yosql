@@ -58,7 +58,7 @@ public class Logging {
             case "auto", "slf4j" -> LoggingApiOptions.SLF4J;
             case "log4j" -> LoggingApiOptions.LOG4J;
             case "jdk" -> LoggingApiOptions.JDK;
-            default -> null;
+            default -> LoggingApiOptions.NONE;
         };
     }
 

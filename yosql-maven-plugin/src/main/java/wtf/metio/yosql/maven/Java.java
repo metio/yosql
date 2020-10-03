@@ -16,17 +16,38 @@ import wtf.metio.yosql.model.configuration.JavaConfiguration;
 public class Java {
 
     /**
-     * The target Java source version (default: <strong>1.8</strong>). Use either '1.X' syntax or just '8', '11'
-     * and so on.
+     * The target Java source version (default: <strong>11</strong>).
      */
-    @Parameter(required = true, defaultValue = "1.8")
-    private String java;
+    @Parameter(defaultValue = "11")
+    private String targetVersion;
+
+    @Parameter(defaultValue = "false")
+    private boolean useVar;
+
+    @Parameter(defaultValue = "false")
+    private boolean useRecords;
+
+    @Parameter(defaultValue = "false")
+    private boolean useTextBlocks;
+
+    @Parameter(defaultValue = "true")
+    private boolean useProcessingApi;
+
+    @Parameter(defaultValue = "false")
+    private boolean useFinal;
 
     JavaConfiguration asConfiguration() {
+        final var javaVersion = Integer.parseInt(this.targetVersion);
         return JavaConfiguration.builder()
-                .setTargetVersion(1)
-                .setUseVar(true) // TODO: configure w/ Maven
-                .setUseRecords(true) // TODO: configure w/ Maven
+                .setTargetVersion(javaVersion)
+                .setUseFinal(useFinal)
+                .setUseGenerics(javaVersion >= 5)
+                .setUseDiamondOperator(javaVersion >= 7)
+                .setUseStreamAPI(javaVersion >= 8)
+                .setUseProcessingApi(useProcessingApi)
+                .setUseVar(useVar)
+                .setUseTextBlocks(useTextBlocks)
+                .setUseRecords(useRecords)
                 .build();
     }
 

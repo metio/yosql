@@ -11,9 +11,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.PackagesConfiguration;
 
 /**
- * Configures general names used during code generation.
+ * Configures general packages used during code generation.
  */
-public class Names {
+public class Packages {
 
     /**
      * The base package name for all generated classes (default: <strong>com.example.persistence</strong>).

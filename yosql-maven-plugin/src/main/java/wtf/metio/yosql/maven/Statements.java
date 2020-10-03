@@ -18,14 +18,14 @@ public class Statements {
 
     /**
      * Controls whether the SQL statements should be inlined in the generated repositories or loaded at options
-     * (default: <strong>inline</strong>). Other possible value is <strong>load</strong>.
+     * (default: <strong>INLINE_CONCAT</strong>). Other possible value is <strong>INLINE_TEXT_BLOCK</strong>.
      */
-    @Parameter(required = true, defaultValue = "inline")
+    @Parameter(defaultValue = "INLINE_CONCAT")
     private String repositorySqlStatements;
 
     StatementConfiguration asConfiguration() {
         return StatementConfiguration.builder()
-                .setEmbed(StatementInRepositoryOptions.INLINE_CONCAT) // TODO: configure w/ Maven
+                .setEmbed(StatementInRepositoryOptions.valueOf(repositorySqlStatements))
                 .build();
     }
 
