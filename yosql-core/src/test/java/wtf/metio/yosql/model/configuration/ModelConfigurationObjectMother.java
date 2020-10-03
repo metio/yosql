@@ -11,6 +11,7 @@ import com.squareup.javapoet.ClassName;
 import wtf.metio.yosql.model.options.*;
 
 import javax.lang.model.element.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public final class ModelConfigurationObjectMother {
         return FileConfiguration.builder()
                 .setInputBaseDirectory(Paths.get("."))
                 .setOutputBaseDirectory(Paths.get("."))
-                .setSqlFilesCharset("UTF-8")
+                .setSqlFilesCharset(StandardCharsets.UTF_8)
                 .setSqlFilesSuffix(".sql")
                 .setSqlStatementSeparator(";")
                 .build();

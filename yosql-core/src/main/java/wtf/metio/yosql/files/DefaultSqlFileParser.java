@@ -55,7 +55,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
     @Override
     public Stream<SqlStatement> parse(final Path source) {
         try {
-            final var charset = Charset.forName(fileConfiguration.sqlFilesCharset());
+            final var charset = fileConfiguration.sqlFilesCharset();
             final var rawText = Files.readString(source, charset);
             final var counter = new AtomicInteger(1);
             return statementSplitter.splitAsStream(rawText)

@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.FileConfiguration;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 /**
  * Configures how files are handled.
@@ -53,7 +54,7 @@ public class Files {
                 .setInputBaseDirectory(inputBaseDirectory.toPath())
                 .setOutputBaseDirectory(outputBaseDirectory.toPath())
                 .setSqlFilesSuffix(sqlFilesSuffix)
-                .setSqlFilesCharset(sqlFilesCharset)
+                .setSqlFilesCharset(Charset.forName(sqlFilesCharset))
                 .setSqlStatementSeparator(sqlStatementSeparator)
                 .build();
     }
