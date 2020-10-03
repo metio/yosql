@@ -8,11 +8,9 @@ package wtf.metio.yosql.generator.dao.jdbc;
 
 import com.squareup.javapoet.MethodSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.api.StandardMethodGenerator;
 import wtf.metio.yosql.generator.blocks.api.ControlFlows;
-import wtf.metio.yosql.generator.blocks.api.Javadoc;
 import wtf.metio.yosql.generator.blocks.api.Methods;
 import wtf.metio.yosql.generator.blocks.api.Parameters;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
@@ -26,9 +24,7 @@ import java.util.List;
 final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     private final ControlFlows controlFlows;
-    private final AnnotationGenerator annotations;
     private final Methods methods;
-    private final Javadoc javadoc;
     private final Parameters parameters;
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbc;
@@ -36,16 +32,12 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     JdbcStandardMethodGenerator(
             final ControlFlows controlFlows,
-            final AnnotationGenerator annotations,
             final Methods methods,
-            final Javadoc javadoc,
             final Parameters parameters,
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final JdbcTransformer jdbcTransformer) {
-        this.annotations = annotations;
         this.logging = logging;
-        this.javadoc = javadoc;
         this.jdbc = jdbc;
         this.jdbcTransformer = jdbcTransformer;
         this.controlFlows = controlFlows;
@@ -61,9 +53,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var methodName = configuration.getName();
-        return methods.publicMethod(methodName)
-                .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod())
+        return methods.publicMethod(methodName, statements)
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
@@ -88,9 +78,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var methodName = configuration.getName();
-        return methods.publicMethod(methodName)
-                .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod())
+        return methods.publicMethod(methodName, statements)
                 .returns(int.class)
                 .addExceptions(jdbcTransformer.sqlException(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
@@ -114,9 +102,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
         final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var methodName = configuration.getName();
-        return methods.publicMethod(methodName)
-                .addJavadoc(javadoc.methodJavadoc(statements))
-                .addAnnotations(annotations.generatedMethod())
+        return methods.publicMethod(methodName, statements)
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.getParameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))

@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 /**
  * Generic implementation of a {@link MethodsGenerator}. Delegates most of its work to the injected members.
  */
-// TODO: rename to DelegatingMethodsGenerator?
 public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     private final BatchMethodGenerator batchMethods;
@@ -33,7 +32,6 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     private final RxJavaMethodGenerator rxjavaMethods;
     private final StandardMethodGenerator standardMethods;
     private final GenericBlocks blocks;
-    private final AnnotationGenerator annotations;
     private final Methods methods;
     private final JdbcNamesConfiguration jdbcNames;
     private final JdbcParameters jdbcParameters;
@@ -43,7 +41,6 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
      * @param streamMethods   The Java8 stream methods generator to use.
      * @param rxjavaMethods   The RxJava methods generator to use.
      * @param standardMethods The generic methods generator to use.
-     * @param annotations     The annotation gnerator to use.
      * @param blocks          The generic code blocks to use.
      * @param methods         The method code blocks to use.
      * @param jdbcNames       The JDBC names to use.
@@ -55,7 +52,6 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
             final RxJavaMethodGenerator rxjavaMethods,
             final StandardMethodGenerator standardMethods,
             final GenericBlocks blocks,
-            final AnnotationGenerator annotations,
             final Methods methods,
             final JdbcNamesConfiguration jdbcNames,
             final JdbcParameters jdbcParameters) {
@@ -63,7 +59,6 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
         this.streamMethods = streamMethods;
         this.rxjavaMethods = rxjavaMethods;
         this.standardMethods = standardMethods;
-        this.annotations = annotations;
         this.blocks = blocks;
         this.methods = methods;
         this.jdbcParameters = jdbcParameters;
@@ -72,11 +67,9 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     @Override
     protected MethodSpec constructor(final List<SqlStatement> statements) {
-        // TODO: add GenericConstructorGenerator and let it handle constructors
         final var builder = CodeBlock.builder();
         resultConverters(statements).forEach(converter -> builder.add(blocks.initializeConverter(converter)));
         return methods.constructor()
-                .addAnnotations(annotations.generatedMethod())
                 .addParameter(jdbcParameters.dataSource())
                 .addCode(blocks.initializeFieldToSelf(jdbcNames.dataSource()))
                 .addCode(builder.build())

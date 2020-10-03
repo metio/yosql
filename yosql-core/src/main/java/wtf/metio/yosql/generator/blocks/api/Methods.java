@@ -8,10 +8,25 @@
 package wtf.metio.yosql.generator.blocks.api;
 
 import com.squareup.javapoet.MethodSpec;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
+import java.util.List;
+
+/**
+ * Generator for {@link MethodSpec}s.
+ */
 public interface Methods {
 
     MethodSpec.Builder publicMethod(String name);
+
+    /**
+     * Prepare {@link MethodSpec} with Javadoc
+     *
+     * @param name       The name of the generated method.
+     * @param statements The SQL statements used for Javadocs
+     * @return The resulting builder for the MethodSpec.
+     */
+    MethodSpec.Builder publicMethod(String name, List<SqlStatement> statements);
 
     MethodSpec.Builder implementation(String name);
 

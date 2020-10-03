@@ -12,10 +12,12 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import io.reactivex.Emitter;
-import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.api.RxJavaMethodGenerator;
-import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.generator.blocks.api.ControlFlows;
+import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.api.Names;
+import wtf.metio.yosql.generator.blocks.api.Parameters;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
@@ -33,8 +35,6 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     private final RuntimeConfiguration runtime;
     private final ControlFlows controlFlows;
     private final Names names;
-    private final AnnotationGenerator annotations;
-    private final Javadoc javadoc;
     private final Methods methods;
     private final Parameters parameters;
     private final LoggingGenerator logging;
@@ -44,8 +44,6 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
             final RuntimeConfiguration runtime,
             final ControlFlows controlFlows,
             final Names names,
-            final AnnotationGenerator annotations,
-            final Javadoc javadoc,
             final Methods methods,
             final Parameters parameters,
             final LoggingGenerator logging,
@@ -53,9 +51,7 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         this.runtime = runtime;
         this.controlFlows = controlFlows;
         this.names = names;
-        this.annotations = annotations;
         this.logging = logging;
-        this.javadoc = javadoc;
         this.jdbcBlocks = jdbcBlocks;
         this.methods = methods;
         this.parameters = parameters;
@@ -64,18 +60,16 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     @Override
     public MethodSpec rxJava2ReadMethod(
             final SqlConfiguration mergedConfiguration,
-            final List<SqlStatement> vendorStatements) {
+            final List<SqlStatement> statements) {
         final var converter = mergedConfiguration.getResultRowConverter();
         final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
         final var flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
 
-        final var initialState = createFlowState(mergedConfiguration, vendorStatements);
+        final var initialState = createFlowState(mergedConfiguration, statements);
         final var generator = createFlowGenerator(converter);
         final var disposer = createFlowDisposer();
 
-        return methods.publicMethod(mergedConfiguration.getFlowableName())
-                .addJavadoc(javadoc.methodJavadoc(vendorStatements))
-                .addAnnotations(annotations.generatedMethod())
+        return methods.publicMethod(mergedConfiguration.getFlowableName(), statements)
                 .returns(flowReturn)
                 .addParameters(parameters.asParameterSpecs(mergedConfiguration.getParameters()))
                 .addCode(logging.entering(mergedConfiguration.getRepository(),
@@ -93,7 +87,6 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(initialStateType)
                 .addMethod(methods.implementation("call")
-                        .addAnnotations(annotations.generatedMethod())
                         .returns(runtime.rxJava().flowStateClass())
                         .addException(Exception.class)
                         .addCode(jdbcBlocks.connectionVariable())
@@ -119,7 +112,6 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(generatorType)
                 .addMethod(methods.implementation("accept")
-                        .addAnnotations(annotations.generatedMethod())
                         .addParameter(parameters.parameter(runtime.rxJava().flowStateClass(), names.state()))
                         .addParameter(parameters.parameter(emitter, names.emitter()))
                         .returns(void.class)
@@ -144,7 +136,6 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(disposerType)
                 .addMethod(methods.implementation("accept")
-                        .addAnnotations(annotations.generatedMethod())
                         .addParameter(parameters.parameter(runtime.rxJava().flowStateClass(), names.state()))
                         .returns(void.class)
                         .addException(Exception.class)
