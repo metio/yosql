@@ -75,4 +75,15 @@ final class DefaultJavadoc implements Javadoc {
         return builder.build();
     }
 
+    @Override
+    public CodeBlock fieldJavaDoc(final SqlStatement statement) {
+        // TODO: i18n
+        final var builder = CodeBlock.builder()
+                .add("Generated based on the following file:\n")
+                .add("<ul>\n")
+                .add("<li>$L</li>\n", statement.getSourcePath());
+        builder.add("</ul>\n");
+        return builder.build();
+    }
+
 }

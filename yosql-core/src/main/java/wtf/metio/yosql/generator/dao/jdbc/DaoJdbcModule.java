@@ -68,8 +68,9 @@ public class DaoJdbcModule {
             final Fields fields,
             @Delegating final LoggingGenerator logging,
             final JdbcFields jdbcFields,
-            final JdbcNamesConfiguration jdbcNames) {
-        return new JdbcFieldsGenerator(fields, logging, jdbcFields, jdbcNames);
+            final JdbcNamesConfiguration jdbcNames,
+            final Javadoc javadoc) {
+        return new JdbcFieldsGenerator(fields, logging, jdbcFields, jdbcNames, javadoc);
     }
 
     @JDBC

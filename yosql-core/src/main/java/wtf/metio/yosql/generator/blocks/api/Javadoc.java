@@ -17,21 +17,27 @@ import java.util.List;
 public interface Javadoc {
 
     /**
-     * Creates the typical javadoc documentation for generated repositories.
+     * Creates typical javadoc documentation for generated repositories.
      *
-     * @param statements
-     *            The vendor statements of the repository.
+     * @param statements The statements of the repository.
      * @return The class javadoc for a repository.
      */
     CodeBlock repositoryJavadoc(List<SqlStatement> statements);
 
     /**
-     * Creates the typical javadoc documentation for generated methods.
+     * Creates typical javadoc documentation for generated methods.
      *
-     * @param statements
-     *            The vendor statements of the method.
+     * @param statements The statements of the method.
      * @return The javadoc for a single method based on the given statements.
      */
     CodeBlock methodJavadoc(List<SqlStatement> statements);
+
+    /**
+     * Creates typical javadoc documentation for generated fields.
+     *
+     * @param statement The statement of the field.
+     * @return The javadoc for a single field based on the given statement.
+     */
+    CodeBlock fieldJavaDoc(SqlStatement statement);
 
 }
