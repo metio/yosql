@@ -14,6 +14,7 @@ import wtf.metio.yosql.model.sql.ResultRowConverter;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlParameter;
 import wtf.metio.yosql.model.sql.SqlType;
+import wtf.metio.yosql.utils.Strings;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -341,47 +342,44 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         if (configuration.getResultRowConverter() == null) {
             getDefaultRowConverter().ifPresent(configuration::setResultRowConverter);
         } else {
-            final ResultRowConverter resultConverter = configuration.getResultRowConverter();
-            if (resultConverter.getAlias() == null || resultConverter.getAlias().isEmpty()) {
-                resultConverter.setAlias(getDefaultAlias(resultConverter));
-            }
-            if (resultConverter.getConverterType() == null || resultConverter.getConverterType().isEmpty()) {
-                resultConverter.setConverterType(getDefaultConverterType(resultConverter));
-            }
-            if (resultConverter.getResultType() == null || resultConverter.getResultType().isEmpty()) {
-                resultConverter.setResultType(getDefaultResultType(resultConverter));
-            }
+            final var currentConverter = configuration.getResultRowConverter();
+            final var converter = ResultRowConverter.builder()
+                    .setAlias(Strings.isBlank(currentConverter.alias()) ? getDefaultAlias(currentConverter) : currentConverter.alias())
+                    .setConverterType(Strings.isBlank(currentConverter.converterType()) ? getDefaultConverterType(currentConverter) : currentConverter.converterType())
+                    .setResultType(Strings.isBlank(currentConverter.resultType()) ? getDefaultResultType(currentConverter) : currentConverter.resultType())
+                    .build();
+            configuration.setResultRowConverter(converter);
         }
     }
 
     private String getDefaultAlias(final ResultRowConverter resultConverter) {
         return getConverterFieldOrEmptyString(
                 converter -> converterTypeMatches(resultConverter, converter),
-                ResultRowConverter::getAlias);
+                ResultRowConverter::alias);
     }
 
     private String getDefaultConverterType(final ResultRowConverter resultConverter) {
         return getConverterFieldOrEmptyString(
                 converter -> aliasMatches(resultConverter, converter),
-                ResultRowConverter::getConverterType);
+                ResultRowConverter::converterType);
     }
 
     private String getDefaultResultType(final ResultRowConverter resultConverter) {
         return getConverterFieldOrEmptyString(
                 converter -> aliasMatches(resultConverter, converter)
                         || converterTypeMatches(resultConverter, converter),
-                ResultRowConverter::getResultType);
+                ResultRowConverter::resultType);
     }
 
     private static boolean aliasMatches(
             final ResultRowConverter resultConverter,
             final ResultRowConverter converter) {
-        return converter.getAlias().equals(resultConverter.getAlias());
+        return converter.alias().equals(resultConverter.alias());
     }
 
     private static boolean converterTypeMatches(final ResultRowConverter resultConverter,
                                                 final ResultRowConverter converter) {
-        return converter.getConverterType().equals(resultConverter.getConverterType());
+        return converter.converterType().equals(resultConverter.converterType());
     }
 
     private Optional<ResultRowConverter> getDefaultRowConverter() {

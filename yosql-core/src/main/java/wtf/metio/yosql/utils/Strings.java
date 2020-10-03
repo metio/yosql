@@ -4,25 +4,17 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.model.sql;
 
+package wtf.metio.yosql.utils;
 
-import org.immutables.value.Value;
+public final class Strings {
 
-@Value.Immutable
-public interface ResultRowConverter {
-
-    static Builder builder() {
-        return new Builder();
+    public static boolean isBlank(final String value) {
+        return value == null || value.isBlank();
     }
-
-    String alias();
-
-    String converterType();
-
-    String resultType();
-
-    class Builder extends ImmutableResultRowConverter.Builder {
+    
+    private Strings() {
+        // utility class
     }
 
 }

@@ -50,7 +50,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.getResultRowConverter();
-        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var methodName = configuration.getName();
         return methods.publicMethod(methodName, statements)
@@ -67,7 +67,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
                 .addCode(jdbc.readMetaData())
                 .addCode(jdbc.readColumnCount())
                 .addCode(jdbc.createResultState())
-                .addCode(jdbc.returnAsList(listOfResults, converter.getAlias()))
+                .addCode(jdbc.returnAsList(listOfResults, converter.alias()))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
@@ -99,7 +99,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.getResultRowConverter();
-        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var methodName = configuration.getName();
         return methods.publicMethod(methodName, statements)
@@ -116,7 +116,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
                 .addCode(jdbc.readMetaData())
                 .addCode(jdbc.readColumnCount())
                 .addCode(jdbc.createResultState())
-                .addCode(jdbc.returnAsList(listOfResults, converter.getAlias()))
+                .addCode(jdbc.returnAsList(listOfResults, converter.alias()))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

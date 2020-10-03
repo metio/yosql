@@ -62,7 +62,7 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
             final SqlConfiguration mergedConfiguration,
             final List<SqlStatement> statements) {
         final var converter = mergedConfiguration.getResultRowConverter();
-        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var flowReturn = ParameterizedTypeName.get(TypicalTypes.FLOWABLE, resultType);
 
         final var initialState = createFlowState(mergedConfiguration, statements);
@@ -103,7 +103,7 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     }
 
     private TypeSpec createFlowGenerator(final ResultRowConverter converter) {
-        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var biConsumer = ClassName.get(io.reactivex.functions.BiConsumer.class);
         final var rawEmitter = ClassName.get(Emitter.class);
         final var emitter = ParameterizedTypeName.get(rawEmitter, resultType);
@@ -118,7 +118,7 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                         .addException(Exception.class)
                         .addCode(controlFlows.startTryBlock())
                         .addCode(controlFlows.ifHasNext())
-                        .addStatement("$N.onNext($N.asUserType($N))", names.emitter(), converter.getAlias(),
+                        .addStatement("$N.onNext($N.asUserType($N))", names.emitter(), converter.alias(),
                                 names.state())
                         .addCode(controlFlows.nextElse())
                         .addStatement("$N.onComplete()", names.emitter())

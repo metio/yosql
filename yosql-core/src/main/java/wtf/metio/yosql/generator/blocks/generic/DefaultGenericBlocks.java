@@ -45,9 +45,9 @@ final class DefaultGenericBlocks implements GenericBlocks {
 
     @Override
     public CodeBlock initializeConverter(final ResultRowConverter converter) {
-        final ClassName converterClass = ClassName.bestGuess(converter.getConverterType());
+        final ClassName converterClass = ClassName.bestGuess(converter.converterType());
         return CodeBlock.builder()
-                .addStatement("this.$N = new $T()", converter.getAlias(), converterClass)
+                .addStatement("this.$N = new $T()", converter.alias(), converterClass)
                 .build();
     }
 

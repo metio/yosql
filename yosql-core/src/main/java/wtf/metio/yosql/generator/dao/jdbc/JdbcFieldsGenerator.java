@@ -145,8 +145,8 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
 
     private FieldSpec asConverterField(final ResultRowConverter converter) {
         return fields.field(
-                TypeGuesser.guessTypeName(converter.getConverterType()),
-                converter.getAlias());
+                TypeGuesser.guessTypeName(converter.converterType()),
+                converter.alias());
     }
 
     private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {

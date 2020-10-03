@@ -38,18 +38,19 @@ public class BenchmarkConfigurationModule {
     }
 
     @Provides
-    RuntimeConfiguration provideExecutionConfiguration(final Translator translator) {
+    RuntimeConfiguration provideRuntimeConfiguration(final Translator translator) {
         final String basePackageName = translator.get(BASE_PACKAGE_NAME_DEFAULT);
         final String utilityPackageName = translator.get(UTILITY_PACKAGE_NAME_DEFAULT);
         final String converterPackageName = translator.get(CONVERTER_PACKAGE_NAME_DEFAULT);
         final String defaultRowConverterAlias = translator.get(DEFAULT_ROW_CONVERTER_DEFAULT);
         final String defaultResultRowClassName = translator.get(DEFAULT_RESULT_ROW_CLASS_NAME_DEFAULT);
 
-        final ResultRowConverter toResultRow = new ResultRowConverter();
-        toResultRow.setAlias(defaultRowConverterAlias);
-        toResultRow.setResultType(String.join(".", basePackageName, utilityPackageName, defaultResultRowClassName));
-        toResultRow.setConverterType(String.join(".", basePackageName, converterPackageName,
-                translator.get(TO_RESULT_ROW_CONVERTER_CLASS_NAME)));
+        final ResultRowConverter toResultRow = ResultRowConverter.builder()
+                .setAlias(defaultRowConverterAlias)
+                .setResultType(String.join(".", basePackageName, utilityPackageName, defaultResultRowClassName))
+                .setConverterType(String.join(".", basePackageName, converterPackageName,
+                        translator.get(TO_RESULT_ROW_CONVERTER_CLASS_NAME)))
+                .build();
 
         return RuntimeConfiguration.builder()
                 .build();

@@ -63,7 +63,7 @@ final class DefaultJavadoc implements Javadoc {
                 .map(SqlStatement::getConfiguration)
                 .map(SqlConfiguration::getResultRowConverter)
                 .filter(Objects::nonNull)
-                .map(ResultRowConverter::getResultType)
+                .map(ResultRowConverter::resultType)
                 .filter(Objects::nonNull)
                 .filter(type -> !type.startsWith("java"))
                 .map(type -> type.substring(0, type.contains("<") ? type.indexOf("<") : type.length()))

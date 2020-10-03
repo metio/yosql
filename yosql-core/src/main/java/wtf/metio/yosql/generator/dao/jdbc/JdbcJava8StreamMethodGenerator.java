@@ -64,7 +64,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.getResultRowConverter();
-        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var streamOfResults = TypicalTypes.streamOf(resultType);
         return methods.publicMethod(configuration.getStreamEagerName(), statements)
@@ -81,7 +81,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
                 .addCode(jdbcBlocks.readMetaData())
                 .addCode(jdbcBlocks.readColumnCount())
                 .addCode(jdbcBlocks.createResultState())
-                .addCode(jdbcBlocks.returnAsStream(listOfResults, converter.getAlias()))
+                .addCode(jdbcBlocks.returnAsStream(listOfResults, converter.alias()))
                 .addCode(controlFlow.endTryBlock(3))
                 .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();
@@ -92,7 +92,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.getResultRowConverter();
-        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var streamOfResults = TypicalTypes.streamOf(resultType);
         return methods.publicMethod(configuration.getStreamLazyName(), statements)
                 .returns(streamOfResults)
@@ -117,7 +117,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
 
     private TypeSpec lazyStreamSpliterator(final ResultRowConverter converter) {
         final var spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
-        final var resultType = TypeGuesser.guessTypeName(converter.getResultType());
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
         final var consumerType = TypicalTypes.consumerOf(resultType);
         return TypeSpec
@@ -128,8 +128,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
                         .returns(boolean.class)
                         .addCode(controlFlow.startTryBlock())
                         .addCode(controlFlow.ifHasNext())
-                        .addStatement("$N.accept($N.asUserType($N))", names.action(), converter.getAlias(),
-                                names.state())
+                        .addStatement("$N.accept($N.asUserType($N))", names.action(), converter.alias(), names.state())
                         .addCode(blocks.returnTrue())
                         .addCode(controlFlow.endIf())
                         .addCode(blocks.returnFalse())

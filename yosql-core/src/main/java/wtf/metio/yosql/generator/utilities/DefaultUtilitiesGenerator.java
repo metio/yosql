@@ -45,7 +45,7 @@ final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
             if (flowStateClass == null) {
                 flowStateClass = flowStateGenerator.generateFlowStateClass();
             }
-            if (statement.getConfiguration().getResultRowConverter().getConverterType()
+            if (statement.getConfiguration().getResultRowConverter().converterType()
                     .endsWith(ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)) {
                 toResultRowConverterClass = toResultRowConverterGenerator.generateToResultRowConverterClass();
                 resultRowClass = resultRowGenerator.generateResultRowClass();
