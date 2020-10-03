@@ -298,7 +298,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                             .setName(parameterName)
                             .setIndices(asIntArray(entry.getValue()))
                             .setType(Object.class.getName())
-                            .setConverter("TODO") // TODO: set converter name
+                            .setConverter("") // TODO: set converter name
                             .build();
                     configuration.getParameters().add(sqlParameter);
                 }
