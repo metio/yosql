@@ -8,7 +8,6 @@
 package wtf.metio.yosql.maven;
 
 import org.apache.maven.plugins.annotations.Parameter;
-import wtf.metio.yosql.generator.utilities.ToResultRowConverterGenerator;
 import wtf.metio.yosql.model.sql.ParameterConverter;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 
@@ -36,7 +35,7 @@ public class Converter {
      * The default row converter which is being used if no custom converter is specified for a statement. Can be either
      * the alias or fully-qualified name of a converter. Default 'resultRow'.
      */
-    @Parameter(required = true, defaultValue = ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)
+    @Parameter(required = true, defaultValue = "ToResultRowConverter")
     private String defaultRowConverter;
 
     //        final RuntimeConfiguration.Builder builder = RuntimeConfiguration.builder()

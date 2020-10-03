@@ -26,7 +26,7 @@ import javax.inject.Singleton;
         BlocksModule.class,
         LoggingModule.class
 })
-public class CodeGeneratorModule {
+public final class CodeGeneratorModule {
 
     @Provides
     @Singleton

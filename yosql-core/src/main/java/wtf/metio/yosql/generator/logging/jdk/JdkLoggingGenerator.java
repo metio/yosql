@@ -89,7 +89,6 @@ final class JdkLoggingGenerator implements LoggingGenerator {
 
     @Override
     public boolean isEnabled() {
-        // TODO: read from config?
         return true;
     }
 

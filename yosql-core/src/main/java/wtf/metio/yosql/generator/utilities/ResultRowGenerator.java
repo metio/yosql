@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import java.util.LinkedHashMap;
 
 // TODO: move to jdbc package
-public final class ResultRowGenerator {
+final class ResultRowGenerator {
 
     private final LocLogger logger;
     private final RuntimeConfiguration runtimeConfiguration;
