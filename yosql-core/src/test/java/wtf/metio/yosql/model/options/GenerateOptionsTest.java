@@ -25,6 +25,7 @@ final class GenerateOptionsTest implements EnumTCK<GenerateOptions>, PropertiesT
         return Stream.of(
                 "MAX_THREADS",
                 "MAX_THREADS_DEFAULT",
+                "GENERATOR_NAME",
                 "INPUT_BASE_DIRECTORY",
                 "OUTPUT_BASE_DIRECTORY",
                 "CURRENT_DIRECTORY",

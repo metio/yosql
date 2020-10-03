@@ -7,7 +7,7 @@
 package wtf.metio.yosql.model.options;
 
 /**
- * Configuration options for the logging API used in the generated code.
+ * Options for the logging API used in the generated code.
  */
 public enum LoggingApiOptions {
 

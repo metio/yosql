@@ -17,7 +17,7 @@ final class DefaultTranslator implements Translator {
     }
 
     @Override
-    public <E extends Enum<E>> String localized(final E key, final Object... arguments) {
+    public <E extends Enum<E>> String get(final E key, final Object... arguments) {
         return nonLocalizedMessages.getMessage(key, arguments);
     }
 

@@ -28,6 +28,11 @@ public enum GenerateOptions {
     MAX_THREADS_DEFAULT,
 
     /**
+     * The name of the code generator.
+     */
+    GENERATOR_NAME,
+
+    /**
      * The base input directory.
      */
     INPUT_BASE_DIRECTORY,

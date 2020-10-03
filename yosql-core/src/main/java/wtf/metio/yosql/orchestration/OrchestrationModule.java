@@ -12,6 +12,7 @@ import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.annotations.Delegating;
+import wtf.metio.yosql.model.annotations.TimeLogger;
 import wtf.metio.yosql.model.annotations.Writer;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
@@ -25,7 +26,7 @@ public class OrchestrationModule {
 
     @Provides
     @Singleton
-    Timer provideTimer(@wtf.metio.yosql.model.annotations.Timer final LocLogger logger) {
+    Timer provideTimer(@TimeLogger final LocLogger logger) {
         return new DefaultTimer(logger);
     }
 
@@ -33,9 +34,9 @@ public class OrchestrationModule {
     @Singleton
     TypeWriter provideTypeWriter(
             @Writer final LocLogger logger,
-            final RuntimeConfiguration runtime,
+            final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
-        return new DefaultTypeWriter(logger, runtime.files(), errors);
+        return new DefaultTypeWriter(logger, runtimeConfiguration.files(), errors);
     }
 
     @Provides
@@ -73,14 +74,20 @@ public class OrchestrationModule {
     @Singleton
     ThreadPoolFactory provideThreadPoolFactory(
             @Delegating final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory,
-            final RuntimeConfiguration runtime) {
-        return new ThreadPoolFactory(threadFactory, runtime.resources());
+            final RuntimeConfiguration runtimeConfiguration) {
+        return new ThreadPoolFactory(threadFactory, runtimeConfiguration.resources());
     }
 
     @Provides
     @Singleton
     Executor provideExecutor(final ThreadPoolFactory threadPoolFactory) {
         return threadPoolFactory.createThreadPool();
+    }
+
+    @Provides
+    @Singleton
+    ExecutionErrors provideExecutionErrors() {
+        return new ExecutionErrors();
     }
 
 }

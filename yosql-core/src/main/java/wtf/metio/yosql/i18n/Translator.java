@@ -10,7 +10,6 @@ package wtf.metio.yosql.i18n;
 /**
  * Translates the descriptions of several options.
  */
-// TODO: remove & replace with IMessageConveyor
 public interface Translator {
 
     /**
@@ -18,6 +17,6 @@ public interface Translator {
      * @param arguments The arguments to apply.
      * @return The resulting system message.
      */
-    <E extends Enum<E>> String localized(E key, Object... arguments);
+    <E extends Enum<E>> String get(E key, Object... arguments);
 
 }

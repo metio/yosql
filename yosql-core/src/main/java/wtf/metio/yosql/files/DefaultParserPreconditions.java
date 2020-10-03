@@ -31,30 +31,30 @@ final class DefaultParserPreconditions implements ParserPreconditions {
         if (Files.notExists(directory)) {
             try {
                 if (Files.createDirectories(directory) != null) {
-                    errors.illegalState(translator.localized(FileErrors.CANNOT_CREATE_DIRECTORY, directory));
+                    errors.illegalState(translator.get(FileErrors.CANNOT_CREATE_DIRECTORY, directory));
                 }
             } catch (final IOException cause) {
-                errors.illegalState(cause, translator.localized(FileErrors.DIRECTORY_CREATION_FAILED, directory));
+                errors.illegalState(cause, translator.get(FileErrors.DIRECTORY_CREATION_FAILED, directory));
             }
         }
         if (!Files.isDirectory(directory)) {
-            errors.illegalState(translator.localized(FileErrors.NOT_A_DIRECTORY, directory));
+            errors.illegalState(translator.get(FileErrors.NOT_A_DIRECTORY, directory));
         }
         if (!Files.isWritable(directory)) {
-            errors.illegalState(translator.localized(FileErrors.NO_WRITE_PERMISSION, directory));
+            errors.illegalState(translator.get(FileErrors.NO_WRITE_PERMISSION, directory));
         }
     }
 
     @Override
     public void assertDirectoryIsReadable(final Path directory) {
         if (Files.notExists(directory)) {
-            errors.illegalState(translator.localized(FileErrors.NOT_EXISTS, directory));
+            errors.illegalState(translator.get(FileErrors.NOT_EXISTS, directory));
         }
         if (!Files.isDirectory(directory)) {
-            errors.illegalState(translator.localized(FileErrors.NOT_A_DIRECTORY, directory));
+            errors.illegalState(translator.get(FileErrors.NOT_A_DIRECTORY, directory));
         }
         if (!Files.isReadable(directory)) {
-            errors.illegalState(translator.localized(FileErrors.NO_READ_PERMISSION, directory));
+            errors.illegalState(translator.get(FileErrors.NO_READ_PERMISSION, directory));
         }
     }
 

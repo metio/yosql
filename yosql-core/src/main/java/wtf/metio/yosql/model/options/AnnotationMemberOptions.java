@@ -7,6 +7,9 @@
 
 package wtf.metio.yosql.model.options;
 
+/**
+ * Options for members of the "@Generated" annotation.
+ */
 public enum AnnotationMemberOptions {
 
     /**

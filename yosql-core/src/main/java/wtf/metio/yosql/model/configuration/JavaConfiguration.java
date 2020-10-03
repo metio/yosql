@@ -22,6 +22,16 @@ public interface JavaConfiguration {
 
     boolean useRecords();
 
+    boolean useTextBlocks();
+
+    boolean useProcessingApi();
+
+    boolean useGenerics();
+
+    boolean useDiamondOperator();
+
+    boolean useStreamAPI();
+
     class Builder extends ImmutableJavaConfiguration.Builder {
     }
 
