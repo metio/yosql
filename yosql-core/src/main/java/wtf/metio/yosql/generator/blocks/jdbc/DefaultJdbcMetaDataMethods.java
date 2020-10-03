@@ -8,7 +8,6 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
 import com.squareup.javapoet.CodeBlock;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 final class DefaultJdbcMetaDataMethods implements JdbcMethods.JdbcMetaDataMethods {
 

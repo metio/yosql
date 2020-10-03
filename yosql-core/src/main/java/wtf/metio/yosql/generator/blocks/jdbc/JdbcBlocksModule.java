@@ -74,8 +74,8 @@ public class JdbcBlocksModule {
     }
 
     @Provides
-    JdbcNames provideJdbcNames() {
-        return new DefaultJdbcNames();
+    JdbcNames provideJdbcNames(final JdbcNamesConfiguration configuration) {
+        return new DefaultJdbcNames(configuration);
     }
 
     @Provides

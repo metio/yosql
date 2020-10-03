@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNames;
-import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNamesConfiguration;
 
 @DisplayName("DefaultJdbcMetaDataMethods")
 class DefaultJdbcMetaDataMethodsTest {

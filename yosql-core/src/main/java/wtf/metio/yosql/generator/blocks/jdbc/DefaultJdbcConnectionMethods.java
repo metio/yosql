@@ -9,7 +9,6 @@ package wtf.metio.yosql.generator.blocks.jdbc;
 
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.yosql.generator.blocks.api.Names;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 final class DefaultJdbcConnectionMethods implements JdbcMethods.JdbcConnectionMethods {
 

@@ -15,9 +15,9 @@ import wtf.metio.yosql.generator.api.Java8StreamMethodGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
@@ -36,7 +36,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbcBlocks;
     private final JdbcTransformer jdbcTransformer;
-    private final JdbcNamesConfiguration jdbcNames;
+    private final JdbcNames jdbcNames;
 
     JdbcJava8StreamMethodGenerator(
             final GenericBlocks blocks,
@@ -47,7 +47,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
             final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
             final JdbcTransformer jdbcTransformer,
-            final JdbcNamesConfiguration jdbcNames) {
+            final JdbcNames jdbcNames) {
         this.names = names;
         this.logging = logging;
         this.blocks = blocks;

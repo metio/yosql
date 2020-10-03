@@ -10,14 +10,14 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
+import wtf.metio.yosql.files.SqlFileParser;
 import wtf.metio.yosql.generator.api.FieldsGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.blocks.api.Fields;
 import wtf.metio.yosql.generator.blocks.api.Javadoc;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
-import wtf.metio.yosql.files.SqlFileParser;
 import wtf.metio.yosql.model.sql.*;
 
 import javax.sql.DataSource;
@@ -31,14 +31,14 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
     private final Fields fields;
     private final LoggingGenerator logging;
     private final JdbcFields jdbcFields;
-    private final JdbcNamesConfiguration jdbcNames;
+    private final JdbcNames jdbcNames;
     private final Javadoc javadoc;
 
     JdbcFieldsGenerator(
             final Fields fields,
             final LoggingGenerator logging,
             final JdbcFields jdbcFields,
-            final JdbcNamesConfiguration jdbcNames, 
+            final JdbcNames jdbcNames,
             final Javadoc javadoc) {
         this.fields = fields;
         this.logging = logging;

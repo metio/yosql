@@ -11,15 +11,11 @@ import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.*;
 import wtf.metio.yosql.generator.blocks.api.*;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
+import wtf.metio.yosql.generator.blocks.jdbc.*;
 import wtf.metio.yosql.generator.dao.generic.GenericMethodsGenerator;
 import wtf.metio.yosql.generator.dao.generic.GenericRepositoryGenerator;
 import wtf.metio.yosql.model.annotations.Delegating;
 import wtf.metio.yosql.model.annotations.Generator;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
 /**
@@ -49,7 +45,7 @@ public class DaoJdbcModule {
             final @JDBC StandardMethodGenerator standardMethods,
             final GenericBlocks blocks,
             final Methods methods,
-            final JdbcNamesConfiguration jdbcNames,
+            final JdbcNames jdbcNames,
             final JdbcParameters jdbcParameters) {
         return new GenericMethodsGenerator(
                 batchMethods,
@@ -68,7 +64,7 @@ public class DaoJdbcModule {
             final Fields fields,
             @Delegating final LoggingGenerator logging,
             final JdbcFields jdbcFields,
-            final JdbcNamesConfiguration jdbcNames,
+            final JdbcNames jdbcNames,
             final Javadoc javadoc) {
         return new JdbcFieldsGenerator(fields, logging, jdbcFields, jdbcNames, javadoc);
     }
@@ -102,7 +98,7 @@ public class DaoJdbcModule {
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
             final JdbcTransformer jdbcTransformer,
-            final JdbcNamesConfiguration jdbcNames) {
+            final JdbcNames jdbcNames) {
         return new JdbcJava8StreamMethodGenerator(
                 blocks,
                 controlFlow,

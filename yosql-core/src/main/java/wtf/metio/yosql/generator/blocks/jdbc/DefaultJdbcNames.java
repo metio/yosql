@@ -7,66 +7,74 @@
 
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
+
 final class DefaultJdbcNames implements JdbcNames {
+
+    private final JdbcNamesConfiguration configuration;
+
+    DefaultJdbcNames(final JdbcNamesConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public String dataSource() {
-        return "dataSource";
+        return configuration.dataSource();
     }
 
     @Override
     public String connection() {
-        return "connection";
+        return configuration.connection();
     }
 
     @Override
     public String statement() {
-        return "statement";
+        return configuration.statement();
     }
 
     @Override
     public String metaData() {
-        return "metaData";
+        return configuration.metaData();
     }
 
     @Override
     public String resultSet() {
-        return "resultSet";
+        return configuration.resultSet();
     }
 
     @Override
     public String columnCount() {
-        return "columnCount";
+        return configuration.columnCount();
     }
 
     @Override
     public String columnLabel() {
-        return "columnLabel";
+        return configuration.columnLabel();
     }
 
     @Override
     public String batch() {
-        return "batch";
+        return configuration.batch();
     }
 
     @Override
     public String list() {
-        return "list";
+        return configuration.list();
     }
 
     @Override
     public String jdbcIndex() {
-        return "jdbcIndex";
+        return configuration.jdbcIndex();
     }
 
     @Override
     public String index() {
-        return "index";
+        return configuration.index();
     }
 
     @Override
     public String row() {
-        return "row";
+        return configuration.row();
     }
 
 }

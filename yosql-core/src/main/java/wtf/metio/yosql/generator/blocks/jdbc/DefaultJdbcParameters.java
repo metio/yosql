@@ -11,7 +11,6 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.generator.blocks.api.Parameters;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

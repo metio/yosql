@@ -8,9 +8,9 @@
 package wtf.metio.yosql.generator.blocks.jdbc;
 
 import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.names;
+import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.jdbcNamesConfiguration;
 
 public final class JdbcObjectMother {
 
@@ -18,23 +18,6 @@ public final class JdbcObjectMother {
         return JdbcFieldsConfiguration.builder()
                 .setIndexSuffix("_INDEX")
                 .setRawSuffix("_RAW")
-                .build();
-    }
-
-    public static JdbcNamesConfiguration jdbcNamesConfiguration() {
-        return JdbcNamesConfiguration.builder()
-                .setStatement("statement")
-                .setRow("row")
-                .setResultSet("resultSet")
-                .setMetaData("metaData")
-                .setList("list")
-                .setJdbcIndex("jdbcIndex")
-                .setIndex("index")
-                .setDataSource("dataSource")
-                .setConnection("connection")
-                .setColumnLabel("columnLabel")
-                .setColumnCount("columnCount")
-                .setBatch("batch")
                 .build();
     }
 
@@ -72,7 +55,7 @@ public final class JdbcObjectMother {
     }
 
     public static JdbcNames jdbcNames() {
-        return new DefaultJdbcNames();
+        return new DefaultJdbcNames(jdbcNamesConfiguration());
     }
 
     private JdbcObjectMother() {

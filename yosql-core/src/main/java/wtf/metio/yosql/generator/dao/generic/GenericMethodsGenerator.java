@@ -11,12 +11,12 @@ import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.generator.api.*;
 import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
 import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
 import wtf.metio.yosql.model.sql.SqlType;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +33,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     private final StandardMethodGenerator standardMethods;
     private final GenericBlocks blocks;
     private final Methods methods;
-    private final JdbcNamesConfiguration jdbcNames;
+    private final JdbcNames jdbcNames;
     private final JdbcParameters jdbcParameters;
 
     /**
@@ -53,7 +53,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
             final StandardMethodGenerator standardMethods,
             final GenericBlocks blocks,
             final Methods methods,
-            final JdbcNamesConfiguration jdbcNames,
+            final JdbcNames jdbcNames,
             final JdbcParameters jdbcParameters) {
         this.batchMethods = batchMethods;
         this.streamMethods = streamMethods;
