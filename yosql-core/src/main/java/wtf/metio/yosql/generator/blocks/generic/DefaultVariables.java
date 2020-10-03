@@ -48,13 +48,13 @@ final class DefaultVariables implements Variables {
     }
 
     @Override
-    // TODO: call variableStatement?
-    public CodeBlock variable(final String name, final TypeName variableClass, CodeBlock initializer) {
+    public CodeBlock variable(final String name, final TypeName variableClass, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
-        switch (options.variableType()) {
-            case VAR -> builder.add(code.toString(), name, initializer);
-            default -> builder.add(code.toString(), variableClass, name, initializer);
+        if (options.variableType() == VariableTypeOptions.VAR) {
+            builder.add(code.toString(), name, initializer);
+        } else {
+            builder.add(code.toString(), variableClass, name, initializer);
         }
         return builder.build();
     }
@@ -63,9 +63,10 @@ final class DefaultVariables implements Variables {
     public CodeBlock variableStatement(final String name, final Class<?> variableClass, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
-        switch (options.variableType()) {
-            case VAR -> builder.addStatement(code.toString(), name, initializer);
-            default -> builder.addStatement(code.toString(), variableClass, name, initializer);
+        if (options.variableType() == VariableTypeOptions.VAR) {
+            builder.addStatement(code.toString(), name, initializer);
+        } else {
+            builder.addStatement(code.toString(), variableClass, name, initializer);
         }
         return builder.build();
     }
@@ -78,9 +79,10 @@ final class DefaultVariables implements Variables {
             final Object... initializerArgs) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = " + initializer);
-        switch (options.variableType()) {
-            case VAR -> builder.add(code.toString(), name, initializerArgs);
-            default -> builder.add(code.toString(), variableClass, name, initializerArgs);
+        if (options.variableType() == VariableTypeOptions.VAR) {
+            builder.add(code.toString(), name, initializerArgs);
+        } else {
+            builder.add(code.toString(), variableClass, name, initializerArgs);
         }
         return builder.build();
     }
@@ -91,9 +93,10 @@ final class DefaultVariables implements Variables {
         if (!modifiers.isEmpty()) {
             modifiers.forEach(modifier -> code.add(modifier.toString()));
         }
-        switch (options.variableType()) {
-            case VAR -> code.add("var");
-            default -> code.add("$T");
+        if (options.variableType() == VariableTypeOptions.VAR) {
+            code.add("var");
+        } else {
+            code.add("$T");
         }
         code.add(closer);
         return code;
