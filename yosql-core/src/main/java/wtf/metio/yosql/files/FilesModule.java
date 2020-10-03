@@ -35,9 +35,9 @@ public class FilesModule {
     SqlFileResolver provideSqlFileResolver(
             @Reader final LocLogger logger,
             final ParserPreconditions preconditions,
-            final RuntimeConfiguration runtimeConfiguration,
+            final FileConfiguration fileConfiguration,
             final ExecutionErrors errors) {
-        return new DefaultSqlFileResolver(logger, preconditions, runtimeConfiguration, errors);
+        return new DefaultSqlFileResolver(logger, preconditions, fileConfiguration, errors);
     }
 
     @Provides

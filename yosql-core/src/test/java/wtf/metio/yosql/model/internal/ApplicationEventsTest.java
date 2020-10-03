@@ -28,8 +28,8 @@ final class ApplicationEventsTest implements EnumTCK<ApplicationEvents>, Propert
                 "FILE_WRITE_FAILED",
                 "TASK_RUNTIME",
                 "APPLICATION_RUNTIME",
-                "FILE_PARSING_STARTING",
-                "FILE_PARSING_FINISHED",
+                "STATEMENT_PARSING_STARTING",
+                "STATEMENT_PARSING_FINISHED",
                 "FILE_PARSING_FAILED",
                 "TYPE_GENERATED",
                 "READ_FILES",
@@ -43,8 +43,8 @@ final class ApplicationEventsTest implements EnumTCK<ApplicationEvents>, Propert
                 "GENERATE_UTILITIES",
                 "WRITE_FILES",
                 "WORKER_POOL_NAME",
-                "FILE_SQL_STATEMENT_PARSED",
-                "FILE_YAML_FRONTMATTER_PARSED");
+                "STATEMENT_PARSED",
+                "STATEMENT_YAML_FRONT_MATTER_PARSED");
     }
 
 }

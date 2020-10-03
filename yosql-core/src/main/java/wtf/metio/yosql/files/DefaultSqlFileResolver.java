@@ -8,7 +8,6 @@ package wtf.metio.yosql.files;
 
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.model.configuration.FileConfiguration;
-import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
 
@@ -26,25 +25,23 @@ final class DefaultSqlFileResolver implements SqlFileResolver {
 
     private final LocLogger logger;
     private final ParserPreconditions preconditions;
-    // TODO: inject inputBaseDirectory instead
-    //       allows to use this class w/o RuntimeConfiguration
-    private final RuntimeConfiguration runtimeConfiguration; // TODO: replace with FileConfiguration
+    private final FileConfiguration fileConfiguration;
     private final ExecutionErrors errors;
 
     DefaultSqlFileResolver(
             final LocLogger logger,
             final ParserPreconditions preconditions,
-            final RuntimeConfiguration runtimeConfiguration,
+            final FileConfiguration fileConfiguration,
             final ExecutionErrors errors) {
         this.logger = logger;
         this.preconditions = preconditions;
-        this.runtimeConfiguration = runtimeConfiguration;
+        this.fileConfiguration = fileConfiguration;
         this.errors = errors;
     }
 
     @Override
     public Stream<Path> resolveFiles() {
-        final var source = runtimeConfiguration.files().inputBaseDirectory();
+        final var source = fileConfiguration.inputBaseDirectory();
         logger.trace(ApplicationEvents.READ_FILES, source);
         preconditions.assertDirectoryIsReadable(source);
 
@@ -54,10 +51,9 @@ final class DefaultSqlFileResolver implements SqlFileResolver {
                         .parallel()
                         .peek(path -> logger.trace(ApplicationEvents.ENCOUNTER_FILE, path))
                         .filter(Files::isRegularFile)
-                        .filter(path -> path.toString().endsWith(runtimeConfiguration.files().sqlFilesSuffix()))
+                        .filter(path -> path.toString().endsWith(fileConfiguration.sqlFilesSuffix()))
                         .peek(path -> logger.trace(ApplicationEvents.CONSIDER_FILE, path));
             } catch (final IOException | SecurityException exception) {
-                // TODO: use 'errors.illegalState' or similar
                 logger.error(ApplicationEvents.READ_FILES_FAILED, exception.getLocalizedMessage());
                 errors.add(exception);
             }
