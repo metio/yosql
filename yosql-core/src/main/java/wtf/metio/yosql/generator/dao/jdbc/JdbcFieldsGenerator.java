@@ -13,6 +13,7 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.generator.api.FieldsGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.blocks.api.Fields;
+import wtf.metio.yosql.generator.blocks.api.Javadoc;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
@@ -31,16 +32,19 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
     private final LoggingGenerator logging;
     private final JdbcFields jdbcFields;
     private final JdbcNamesConfiguration jdbcNames;
+    private final Javadoc javadoc;
 
     JdbcFieldsGenerator(
             final Fields fields,
             final LoggingGenerator logging,
             final JdbcFields jdbcFields,
-            final JdbcNamesConfiguration jdbcNames) {
+            final JdbcNamesConfiguration jdbcNames, 
+            final Javadoc javadoc) {
         this.fields = fields;
         this.logging = logging;
         this.jdbcFields = jdbcFields;
         this.jdbcNames = jdbcNames;
+        this.javadoc = javadoc;
     }
 
     @Override
@@ -105,10 +109,10 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
 
     private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
         final var configuration = sqlStatement.getConfiguration();
-        // TODO: add javadocs similar to methods
         return fields.prepareConstant(String.class,
                 jdbcFields.constantRawSqlStatementFieldName(configuration))
                 .initializer("$S", sqlStatement.getRawStatement())
+                .addJavadoc(javadoc.fieldJavaDoc(sqlStatement))
                 .build();
     }
 
@@ -116,10 +120,10 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
         final var configuration = sqlStatement.getConfiguration();
         final var rawStatement = sqlStatement.getRawStatement();
         final var statement = replaceNamedParameters(rawStatement);
-        // TODO: add javadocs similar to methods
         return fields.prepareConstant(String.class,
                 jdbcFields.constantSqlStatementFieldName(configuration))
                 .initializer("$S", statement)
+                .addJavadoc(javadoc.fieldJavaDoc(sqlStatement))
                 .build();
     }
 
