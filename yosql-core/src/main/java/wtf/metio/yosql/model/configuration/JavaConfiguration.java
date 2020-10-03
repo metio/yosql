@@ -32,6 +32,8 @@ public interface JavaConfiguration {
 
     boolean useStreamAPI();
 
+    boolean useFinal();
+
     class Builder extends ImmutableJavaConfiguration.Builder {
     }
 

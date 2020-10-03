@@ -75,6 +75,7 @@ public final class ModelConfigurationObjectMother {
                 .setUseVar(true)
                 .setUseTextBlocks(true)
                 .setUseRecords(true)
+                .setUseFinal(true)
                 .build();
     }
 

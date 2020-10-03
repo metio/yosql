@@ -36,6 +36,7 @@ final class GenerateOptionsTest implements EnumTCK<GenerateOptions>, PropertiesT
                 "CONVERTER_PACKAGE_NAME",
                 "CONVERTER_PACKAGE_NAME_DEFAULT",
                 "JAVA",
+                "USE_FINAL",
                 "JAVA_DEFAULT",
                 "REPOSITORY_NAME_SUFFIX",
                 "REPOSITORY_NAME_SUFFIX_DEFAULT",

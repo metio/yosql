@@ -12,6 +12,7 @@ import dagger.Provides;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
 import wtf.metio.yosql.i18n.Translator;
+import wtf.metio.yosql.model.configuration.JavaConfiguration;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.configuration.VariableConfiguration;
 
@@ -46,8 +47,8 @@ public class GenericBlocksModule {
     }
 
     @Provides
-    Methods methods(final AnnotationGenerator annotations, final Javadoc javadoc) {
-        return new DefaultMethods(annotations, javadoc);
+    Methods methods(final AnnotationGenerator annotations, final Javadoc javadoc, final JavaConfiguration java) {
+        return new DefaultMethods(annotations, javadoc, java);
     }
 
     @Provides
