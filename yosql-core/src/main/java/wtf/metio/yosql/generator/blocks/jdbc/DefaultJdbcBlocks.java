@@ -152,26 +152,17 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock prepareBatch(final SqlConfiguration config) {
-        // TODO: use this block and return it
-        controlFlows.forLoop(
+        return controlFlows.forLoop(
                 code("int $N = 0; $N < $N.length; $N++",
                         jdbcNames.batch(),
                         jdbcNames.batch(),
                         config.getParameters().get(0).name(),
                         jdbcNames.batch()),
-                jdbcMethods.statement().addBatch()
+                CodeBlock.builder()
+                        .add(setBatchParameters(config))
+                        .add(jdbcMethods.statement().addBatch())
+                        .build()
         );
-
-        return CodeBlock.builder()
-                .beginControlFlow("for (int $N = 0; $N < $N.length; $N++)",
-                        jdbcNames.batch(),
-                        jdbcNames.batch(),
-                        config.getParameters().get(0).name(),
-                        jdbcNames.batch())
-                .add(setBatchParameters(config))
-                .add(jdbcMethods.statement().addBatch())
-                .endControlFlow()
-                .build();
     }
 
     @Override

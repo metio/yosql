@@ -10,7 +10,6 @@ package wtf.metio.yosql.maven;
 import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.MethodConfiguration;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -144,7 +143,7 @@ public class Methods {
                 .setGenerateStandardApi(methodStandardApi)
                 .setGenerateStreamEagerApi(methodStreamEagerApi)
                 .setGenerateStreamLazyApi(methodStreamLazyApi)
-                .setGenerateRxJavaApi(true) // TODO: configure w/ Maven
+                .setGenerateRxJavaApi(methodRxJavaApi)
                 .setMethodBatchPrefix(methodBatchPrefix)
                 .setMethodBatchSuffix(methodBatchSuffix)
                 .setMethodStreamPrefix(methodStreamPrefix)

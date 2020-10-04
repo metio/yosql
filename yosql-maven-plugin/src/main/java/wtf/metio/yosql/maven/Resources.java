@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.maven;
 
+import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.ResourceConfiguration;
 
 /**
@@ -14,9 +15,15 @@ import wtf.metio.yosql.model.configuration.ResourceConfiguration;
  */
 public class Resources {
 
+    /**
+     * The maximum number of threads to use during code generation.
+     */
+    @Parameter(defaultValue = "1")
+    private int maxThreads;
+
     ResourceConfiguration asConfiguration() {
         return ResourceConfiguration.builder()
-                .setMaxThreads(1) // TODO: configure w/ Maven
+                .setMaxThreads(maxThreads)
                 .build();
     }
 
