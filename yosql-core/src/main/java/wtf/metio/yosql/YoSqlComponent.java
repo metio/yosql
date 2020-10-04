@@ -7,17 +7,20 @@
 package wtf.metio.yosql;
 
 import dagger.Component;
+import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.files.FilesModule;
 import wtf.metio.yosql.generator.CodeGeneratorModule;
-import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.api.LoggingGenerator;
+import wtf.metio.yosql.generator.api.*;
 import wtf.metio.yosql.generator.blocks.api.*;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcMethods;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
+import wtf.metio.yosql.generator.dao.jdbc.JDBC;
 import wtf.metio.yosql.i18n.I18nModule;
 import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.annotations.Delegating;
+import wtf.metio.yosql.model.annotations.Generator;
 import wtf.metio.yosql.model.configuration.*;
 import wtf.metio.yosql.orchestration.OrchestrationModule;
 
@@ -107,6 +110,12 @@ public interface YoSqlComponent {
     Fields fields();
 
     /**
+     * @return The Methods instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    Methods methods();
+
+    /**
      * @return The Variables instance configured by the list of modules specified in the
      * <code>@Component</code> class annotation.
      */
@@ -132,6 +141,67 @@ public interface YoSqlComponent {
     LoggingGenerator loggingGenerator();
 
     /**
+     * @return The LocLogger instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    @Generator
+    LocLogger loggerForGenerators();
+
+    /**
+     * @return The Classes instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    Classes classes();
+
+    /**
+     * @return The Javadoc instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    Javadoc javadoc();
+
+    /**
+     * @return The FieldsGenerator instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    @JDBC
+    FieldsGenerator fieldsGenerator();
+
+    /**
+     * @return The MethodsGenerator instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    @JDBC
+    MethodsGenerator methodsGenerator();
+
+    /**
+     * @return The StandardMethodGenerator instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    @JDBC
+    StandardMethodGenerator standardMethods();
+
+    /**
+     * @return The BatchMethodGenerator instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    @JDBC
+    BatchMethodGenerator batchMethods();
+
+    /**
+     * @return The Java8StreamMethodGenerator instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    @JDBC
+    Java8StreamMethodGenerator streamMethods();
+
+    /**
+     * @return The RxJavaMethodGenerator instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    @JDBC
+    RxJavaMethodGenerator rxjavaMethods();
+
+    /**
      * @return The JdbcFields instance configured by the list of modules specified in the
      * <code>@Component</code> class annotation.
      */
@@ -142,6 +212,12 @@ public interface YoSqlComponent {
      * <code>@Component</code> class annotation.
      */
     JdbcMethods jdbcMethods();
+
+    /**
+     * @return The JdbcParameters instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcParameters jdbcParameters();
 
     /**
      * @return The JdbcDataSourceMethods instance configured by the list of modules specified in the

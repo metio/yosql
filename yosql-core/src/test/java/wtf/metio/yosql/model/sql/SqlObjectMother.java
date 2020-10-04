@@ -19,8 +19,14 @@ public final class SqlObjectMother {
                 .setName("test")
                 .setType(Object.class.getName())
                 .setIndices(0)
-                .setConverter("")
+                .setConverter("defaultRowConverter")
                 .build());
+        config.setResultRowConverter(ResultRowConverter.builder()
+                .setAlias("defaultRowConverter")
+                .setConverterType("com.example.DefaultConverter")
+                .setResultType(Object.class.getName())
+                .build());
+        config.setRepository("Test");
         return config;
     }
 

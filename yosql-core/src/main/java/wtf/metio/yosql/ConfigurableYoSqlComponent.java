@@ -17,6 +17,10 @@ import wtf.metio.yosql.orchestration.OrchestrationModule;
 
 import javax.inject.Singleton;
 
+/**
+ * Configures the entire dependency graph without a {@link RuntimeConfiguration} which needs to be provided
+ * through the builder method.
+ */
 @Singleton
 @Component(modules = {
         I18nModule.class,
@@ -27,8 +31,14 @@ import javax.inject.Singleton;
 })
 public interface ConfigurableYoSqlComponent {
 
+    /**
+     * @return The configured YoSql instance.
+     */
     YoSql yosql();
 
+    /**
+     * Custom builder that allows to inject a user provided {@link RuntimeConfiguration}.
+     */
     @Component.Builder
     interface Builder {
 
