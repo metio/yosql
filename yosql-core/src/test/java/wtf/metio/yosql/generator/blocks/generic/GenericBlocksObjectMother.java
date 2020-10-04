@@ -9,13 +9,11 @@ package wtf.metio.yosql.generator.blocks.generic;
 
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.tests.ObjectMother;
 
-import static wtf.metio.yosql.i18n.I18nObjectMother.testTranslator;
-import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.annotationConfig;
 import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.variableConfiguration;
-import static wtf.metio.yosql.model.options.AnnotationClassOptions.PROCESSING_API;
 
-public final class GenericBlocksObjectMother {
+public final class GenericBlocksObjectMother extends ObjectMother {
 
     public static GenericBlocks genericBlocks() {
         return new DefaultGenericBlocks();
@@ -30,7 +28,7 @@ public final class GenericBlocksObjectMother {
     }
 
     public static Parameters parameters() {
-        return new DefaultParameters(names());
+        return yoSqlComponent().parameters();
     }
 
     public static Variables variables() {
@@ -38,15 +36,11 @@ public final class GenericBlocksObjectMother {
     }
 
     public static AnnotationGenerator annotationGenerator() {
-        return new DefaultAnnotationGenerator(annotationConfig(PROCESSING_API), testTranslator());
-    }
-    
-    public static ControlFlows controlFlows() {
-        return new DefaultControlFlows(variables(), names());
+        return yoSqlComponent().annotationGenerator();
     }
 
-    private GenericBlocksObjectMother() {
-        // factory class
+    public static ControlFlows controlFlows() {
+        return yoSqlComponent().controlFlows();
     }
 
 }

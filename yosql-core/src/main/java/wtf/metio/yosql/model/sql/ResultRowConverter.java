@@ -12,8 +12,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface ResultRowConverter {
 
-    static Builder builder() {
-        return new Builder();
+    static ImmutableResultRowConverter.Builder builder() {
+        return ImmutableResultRowConverter.builder();
     }
 
     String alias();
@@ -21,8 +21,5 @@ public interface ResultRowConverter {
     String converterType();
 
     String resultType();
-
-    class Builder extends ImmutableResultRowConverter.Builder {
-    }
 
 }

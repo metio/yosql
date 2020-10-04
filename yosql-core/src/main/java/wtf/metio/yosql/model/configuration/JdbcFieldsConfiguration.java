@@ -12,15 +12,12 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface JdbcFieldsConfiguration {
 
-    static JdbcFieldsConfiguration.Builder builder() {
-        return new JdbcFieldsConfiguration.Builder();
+    static ImmutableJdbcFieldsConfiguration.Builder builder() {
+        return ImmutableJdbcFieldsConfiguration.builder();
     }
 
     String rawSuffix();
 
     String indexSuffix();
-
-    class Builder extends ImmutableJdbcFieldsConfiguration.Builder {
-    }
 
 }

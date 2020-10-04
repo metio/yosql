@@ -12,8 +12,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface JavaConfiguration {
 
-    static JavaConfiguration.Builder builder() {
-        return new JavaConfiguration.Builder();
+    static ImmutableJavaConfiguration.Builder builder() {
+        return ImmutableJavaConfiguration.builder();
     }
 
     int targetVersion();
@@ -33,8 +33,5 @@ public interface JavaConfiguration {
     boolean useStreamAPI();
 
     boolean useFinal();
-
-    class Builder extends ImmutableJavaConfiguration.Builder {
-    }
 
 }

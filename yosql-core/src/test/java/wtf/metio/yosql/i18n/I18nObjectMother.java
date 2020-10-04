@@ -7,18 +7,15 @@
 
 package wtf.metio.yosql.i18n;
 
-import ch.qos.cal10n.MessageConveyor;
-
-import java.util.Locale;
+import wtf.metio.yosql.tests.ObjectMother;
 
 /**
  * Object mother for i18n related classes
  */
-public final class I18nObjectMother {
+public final class I18nObjectMother extends ObjectMother {
 
-    public static Translator testTranslator() {
-        final var messages = new MessageConveyor(Locale.ENGLISH);
-        return new DefaultTranslator(messages);
+    public static Translator translator() {
+        return yoSqlComponent().translator();
     }
 
     private I18nObjectMother() {

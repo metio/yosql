@@ -429,7 +429,7 @@ public class SqlConfiguration {
                                 .setConverter((param.converter() == null || param.converter().isBlank()) ? other.converter() : param.converter())
                                 .setIndices(param.indices() == null ? other.indices() : param.indices())
                                 .build())
-                        .orElse(param))
+                        .orElse(SqlParameter.copy(param)))
                 .collect(Collectors.toList());
     }
 

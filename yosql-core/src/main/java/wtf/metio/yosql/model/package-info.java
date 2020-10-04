@@ -10,9 +10,7 @@
 @Value.Style(
         get = {"is*", "get*"},
         init = "set*",
-        strictBuilder = true,
-        visibility = Value.Style.ImplementationVisibility.PACKAGE,
-        overshadowImplementation = true
+        strictBuilder = true
 )
 package wtf.metio.yosql.model;
 

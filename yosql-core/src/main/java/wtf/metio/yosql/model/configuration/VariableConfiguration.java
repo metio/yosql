@@ -16,15 +16,16 @@ import java.util.List;
 @Value.Immutable
 public interface VariableConfiguration {
 
-    static VariableConfiguration.Builder builder() {
-        return new VariableConfiguration.Builder();
+    static ImmutableVariableConfiguration.Builder builder() {
+        return ImmutableVariableConfiguration.builder();
+    }
+
+    static ImmutableVariableConfiguration copy(final VariableConfiguration configuration) {
+        return ImmutableVariableConfiguration.copyOf(configuration);
     }
 
     VariableTypeOptions variableType();
 
     List<Modifier> modifiers();
-
-    class Builder extends ImmutableVariableConfiguration.Builder {
-    }
 
 }

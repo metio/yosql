@@ -13,13 +13,10 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface RxJavaConfiguration {
 
-    static RxJavaConfiguration.Builder builder() {
-        return new RxJavaConfiguration.Builder();
+    static ImmutableRxJavaConfiguration.Builder builder() {
+        return ImmutableRxJavaConfiguration.builder();
     }
 
     ClassName flowStateClass();
-
-    class Builder extends ImmutableRxJavaConfiguration.Builder {
-    }
 
 }

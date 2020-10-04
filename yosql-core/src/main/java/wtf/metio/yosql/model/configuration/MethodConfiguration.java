@@ -14,8 +14,8 @@ import java.util.List;
 @Value.Immutable
 public interface MethodConfiguration {
 
-    static MethodConfiguration.Builder builder() {
-        return new MethodConfiguration.Builder();
+    static ImmutableMethodConfiguration.Builder builder() {
+        return ImmutableMethodConfiguration.builder();
     }
 
     boolean generateStandardApi();
@@ -53,8 +53,5 @@ public interface MethodConfiguration {
     List<String> allowedCallPrefixes();
 
     boolean validateMethodNamePrefixes();
-
-    class Builder extends ImmutableMethodConfiguration.Builder {
-    }
 
 }

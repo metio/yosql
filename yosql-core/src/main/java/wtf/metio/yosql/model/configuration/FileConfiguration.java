@@ -15,8 +15,8 @@ import java.nio.file.Path;
 @Value.Immutable
 public interface FileConfiguration {
 
-    static FileConfiguration.Builder builder() {
-        return new FileConfiguration.Builder();
+    static ImmutableFileConfiguration.Builder builder() {
+        return ImmutableFileConfiguration.builder();
     }
 
     /**
@@ -43,8 +43,5 @@ public interface FileConfiguration {
      * @return The file suffix to use while searching for SQL files, e.g. ".sql".
      */
     String sqlFilesSuffix();
-
-    class Builder extends ImmutableFileConfiguration.Builder {
-    }
 
 }

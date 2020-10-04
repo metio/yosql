@@ -14,8 +14,12 @@ import wtf.metio.yosql.model.options.AnnotationMemberOptions;
 @Value.Immutable
 public interface AnnotationConfiguration {
 
-    static Builder builder() {
-        return new Builder();
+    static ImmutableAnnotationConfiguration.Builder builder() {
+        return ImmutableAnnotationConfiguration.builder();
+    }
+
+    static ImmutableAnnotationConfiguration copy(final AnnotationConfiguration configuration) {
+        return ImmutableAnnotationConfiguration.copyOf(configuration);
     }
 
     AnnotationClassOptions classAnnotation();
@@ -37,8 +41,5 @@ public interface AnnotationConfiguration {
     String methodComment();
 
     String generatorName();
-
-    class Builder extends ImmutableAnnotationConfiguration.Builder {
-    }
 
 }

@@ -13,8 +13,8 @@ import wtf.metio.yosql.model.options.LoggingApiOptions;
 @Value.Immutable
 public interface LoggingConfiguration {
 
-    static LoggingConfiguration.Builder builder() {
-        return new LoggingConfiguration.Builder();
+    static ImmutableLoggingConfiguration.Builder builder() {
+        return ImmutableLoggingConfiguration.builder();
     }
 
     /**
@@ -29,8 +29,5 @@ public interface LoggingConfiguration {
      * @see LoggingApiOptions
      */
     LoggingApiOptions api();
-
-    class Builder extends ImmutableLoggingConfiguration.Builder {
-    }
 
 }

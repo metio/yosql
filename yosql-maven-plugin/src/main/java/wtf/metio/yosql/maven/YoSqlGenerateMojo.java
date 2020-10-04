@@ -70,7 +70,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private YoSql createYoSql(final RuntimeConfiguration configuration) {
-        // Allow to pass in config
+        // TODO: Allow to pass in config
         return DaggerYoSqlComponent.builder().build().yosql();
     }
 

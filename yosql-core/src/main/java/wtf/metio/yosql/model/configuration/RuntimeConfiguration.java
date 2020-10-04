@@ -12,8 +12,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface RuntimeConfiguration {
 
-    static RuntimeConfiguration.Builder builder() {
-        return new RuntimeConfiguration.Builder();
+    static ImmutableRuntimeConfiguration.Builder builder() {
+        return ImmutableRuntimeConfiguration.builder();
     }
 
     FileConfiguration files();
@@ -41,8 +41,5 @@ public interface RuntimeConfiguration {
     ResultConfiguration result();
 
     AnnotationConfiguration annotations();
-
-    class Builder extends ImmutableRuntimeConfiguration.Builder {
-    }
 
 }

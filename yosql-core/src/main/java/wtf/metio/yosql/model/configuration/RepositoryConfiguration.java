@@ -12,15 +12,12 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface RepositoryConfiguration {
 
-    static RepositoryConfiguration.Builder builder() {
-        return new RepositoryConfiguration.Builder();
+    static ImmutableRepositoryConfiguration.Builder builder() {
+        return ImmutableRepositoryConfiguration.builder();
     }
 
     String repositoryNameSuffix();
 
     boolean repositoryGenerateInterface();
-
-    class Builder extends ImmutableRepositoryConfiguration.Builder {
-    }
 
 }

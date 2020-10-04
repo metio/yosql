@@ -11,8 +11,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface ParameterConverter {
 
-    static Builder builder() {
-        return new Builder();
+    static ImmutableParameterConverter.Builder builder() {
+        return ImmutableParameterConverter.builder();
     }
 
     String alias();
@@ -20,8 +20,5 @@ public interface ParameterConverter {
     String parameterType();
 
     String converterType();
-
-    class Builder extends ImmutableParameterConverter.Builder {
-    }
 
 }

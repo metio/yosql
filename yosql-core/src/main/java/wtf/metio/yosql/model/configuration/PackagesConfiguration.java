@@ -12,8 +12,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface PackagesConfiguration {
 
-    static PackagesConfiguration.Builder builder() {
-        return new PackagesConfiguration.Builder();
+    static ImmutablePackagesConfiguration.Builder builder() {
+        return ImmutablePackagesConfiguration.builder();
     }
 
     String utilityPackageName();
@@ -21,8 +21,5 @@ public interface PackagesConfiguration {
     String converterPackageName();
 
     String basePackageName();
-
-    class Builder extends ImmutablePackagesConfiguration.Builder {
-    }
 
 }

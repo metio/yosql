@@ -13,15 +13,12 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface ResultConfiguration {
 
-    static ResultConfiguration.Builder builder() {
-        return new ResultConfiguration.Builder();
+    static ImmutableResultConfiguration.Builder builder() {
+        return ImmutableResultConfiguration.builder();
     }
 
     ClassName resultStateClass();
 
     ClassName resultRowClass();
-
-    class Builder extends ImmutableResultConfiguration.Builder {
-    }
 
 }

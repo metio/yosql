@@ -14,8 +14,12 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface SqlParameter {
 
-    static Builder builder() {
-        return new Builder();
+    static ImmutableSqlParameter.Builder builder() {
+        return ImmutableSqlParameter.builder();
+    }
+
+    static ImmutableSqlParameter copy(final SqlParameter parameter) {
+        return ImmutableSqlParameter.copyOf(parameter);
     }
 
     /**
@@ -43,9 +47,6 @@ public interface SqlParameter {
      */
     default boolean hasIndices() {
         return indices() != null && indices().length > 0;
-    }
-
-    class Builder extends ImmutableSqlParameter.Builder {
     }
 
 }

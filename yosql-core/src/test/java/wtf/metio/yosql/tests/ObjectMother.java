@@ -5,20 +5,21 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.model.configuration;
+package wtf.metio.yosql.tests;
 
-import org.immutables.value.Value;
+import wtf.metio.yosql.DaggerYoSqlComponent;
+import wtf.metio.yosql.YoSqlComponent;
 
-@Value.Immutable
-public interface ResourceConfiguration {
-
-    static ImmutableResourceConfiguration.Builder builder() {
-        return ImmutableResourceConfiguration.builder();
-    }
+/**
+ * Object mother that provides {@link YoSqlComponent}.
+ */
+public abstract class ObjectMother {
 
     /**
-     * @return The maximum number of threads to use while working.
+     * @return The default configuration for YoSqlComponent.
      */
-    int maxThreads();
+    public static YoSqlComponent yoSqlComponent() {
+        return DaggerYoSqlComponent.builder().build();
+    }
 
 }

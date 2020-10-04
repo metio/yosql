@@ -10,6 +10,7 @@ package wtf.metio.yosql.generator.blocks.generic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.model.configuration.VariableConfiguration;
 
 import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.variableConfiguration;
 import static wtf.metio.yosql.model.options.VariableTypeOptions.VAR;
@@ -36,7 +37,8 @@ class DefaultVariablesTest {
     @DisplayName("creates variables with the 'var' keyword")
     void shouldCreateVariableWithVarKeyword() {
         // given
-        final var config = variableConfiguration(VAR);
+        final var config = VariableConfiguration.copy(variableConfiguration())
+                .withVariableType(VAR);
         final var variables = new DefaultVariables(config);
 
         // when

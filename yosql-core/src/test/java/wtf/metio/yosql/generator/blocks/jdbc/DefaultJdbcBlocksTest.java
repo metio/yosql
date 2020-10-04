@@ -220,14 +220,14 @@ class DefaultJdbcBlocksTest {
     @Test
     void createResultState() {
         Assertions.assertEquals("""
-                        final com.example.state.ResultState state = new com.example.state.ResultState(resultSet, metaData, columnCount)""",
+                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount)""",
                 generator.createResultState().toString());
     }
 
     @Test
     void returnNewFlowState() {
         Assertions.assertEquals("""
-                return new com.example.state.FlowState(connection, statement, resultSet, metaData, columnCount);
+                return new com.example.persistence.util.FlowState(connection, statement, resultSet, metaData, columnCount);
                 """, generator.returnNewFlowState().toString());
     }
 

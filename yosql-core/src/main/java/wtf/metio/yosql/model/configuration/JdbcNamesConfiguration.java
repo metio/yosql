@@ -12,8 +12,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface JdbcNamesConfiguration {
 
-    static JdbcNamesConfiguration.Builder builder() {
-        return new JdbcNamesConfiguration.Builder();
+    static ImmutableJdbcNamesConfiguration.Builder builder() {
+        return ImmutableJdbcNamesConfiguration.builder();
     }
 
     String dataSource();
@@ -39,8 +39,5 @@ public interface JdbcNamesConfiguration {
     String index();
 
     String row();
-
-    class Builder extends ImmutableJdbcNamesConfiguration.Builder {
-    }
 
 }

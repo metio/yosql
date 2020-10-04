@@ -62,13 +62,13 @@ public final class ModelConfigurationModule {
                 : AnnotationClassOptions.ANNOTATION_API;
         return AnnotationConfiguration.builder()
                 .setGeneratorName(translator.get(GENERATOR_NAME))
-                .setClassAnnotation(AnnotationClassOptions.valueOf(translator.get(annotationClass)))
+                .setClassAnnotation(annotationClass)
                 .setClassComment(translator.get(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setClassMembers(AnnotationMemberOptions.WITHOUT_DATE)
-                .setFieldAnnotation(AnnotationClassOptions.valueOf(translator.get(annotationClass)))
+                .setFieldAnnotation(annotationClass)
                 .setFieldComment(translator.get(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setFieldMembers(AnnotationMemberOptions.WITHOUT_DATE)
-                .setMethodAnnotation(AnnotationClassOptions.valueOf(translator.get(annotationClass)))
+                .setMethodAnnotation(annotationClass)
                 .setMethodComment(translator.get(GENERATED_ANNOTATION_COMMENT_DEFAULT))
                 .setMethodMembers(AnnotationMemberOptions.WITHOUT_DATE)
                 .build();
@@ -246,7 +246,9 @@ public final class ModelConfigurationModule {
             final StatementConfiguration statements,
             final VariableConfiguration variables,
             final LoggingConfiguration logging,
-            final RxJavaConfiguration rxJava) {
+            final RxJavaConfiguration rxJava,
+            final JdbcNamesConfiguration jdbcNames,
+            final ResultConfiguration result) {
         return RuntimeConfiguration.builder()
                 .setFiles(files)
                 .setJava(java)
@@ -259,6 +261,8 @@ public final class ModelConfigurationModule {
                 .setVariables(variables)
                 .setLogging(logging)
                 .setRxJava(rxJava)
+                .setJdbcNames(jdbcNames)
+                .setResult(result)
                 .build();
     }
 

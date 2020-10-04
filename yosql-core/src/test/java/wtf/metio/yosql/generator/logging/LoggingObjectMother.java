@@ -8,23 +8,12 @@
 package wtf.metio.yosql.generator.logging;
 
 import wtf.metio.yosql.generator.api.LoggingGenerator;
+import wtf.metio.yosql.tests.ObjectMother;
 
-import static wtf.metio.yosql.generator.logging.jdk.JdkLoggingObjectMother.jdkLoggingGenerator;
-import static wtf.metio.yosql.generator.logging.log4j.Log4jLoggingObjectMother.log4jLoggingGenerator;
-import static wtf.metio.yosql.generator.logging.noop.NoOpLoggingObjectMother.noOpLoggingGenerator;
-import static wtf.metio.yosql.generator.logging.slf4j.Slf4jLoggingObjectMother.slf4jLoggingGenerator;
-import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.runtimeConfiguration;
-
-public final class LoggingObjectMother {
+public final class LoggingObjectMother extends ObjectMother {
 
     public static LoggingGenerator loggingGenerator() {
-        return new DelegatingLoggingGenerator(
-                runtimeConfiguration(),
-                jdkLoggingGenerator(),
-                log4jLoggingGenerator(),
-                noOpLoggingGenerator(),
-                slf4jLoggingGenerator()
-        );
+        return yoSqlComponent().loggingGenerator();
     }
 
     private LoggingObjectMother() {

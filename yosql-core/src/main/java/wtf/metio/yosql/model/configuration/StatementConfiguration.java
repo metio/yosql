@@ -13,13 +13,10 @@ import wtf.metio.yosql.model.options.StatementInRepositoryOptions;
 @Value.Immutable
 public interface StatementConfiguration {
 
-    static StatementConfiguration.Builder builder() {
-        return new StatementConfiguration.Builder();
+    static ImmutableStatementConfiguration.Builder builder() {
+        return ImmutableStatementConfiguration.builder();
     }
 
     StatementInRepositoryOptions embed();
-
-    class Builder extends ImmutableStatementConfiguration.Builder {
-    }
 
 }
