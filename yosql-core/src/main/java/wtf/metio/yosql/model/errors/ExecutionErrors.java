@@ -88,7 +88,7 @@ public final class ExecutionErrors {
      * @param exception The parent exception to use.
      * @throws T The given exception enriched with all captured suppressed exceptions so far.
      */
-    public <T extends Exception> void throwWith(final T exception) throws T {
+    private <T extends Exception> void throwWith(final T exception) throws T {
         errors.forEach(exception::addSuppressed);
         errors.clear();
         throw exception;
