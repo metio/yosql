@@ -11,20 +11,18 @@ import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
 import wtf.metio.yosql.tests.ObjectMother;
 
-import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.variableConfiguration;
-
 public final class GenericBlocksObjectMother extends ObjectMother {
 
     public static GenericBlocks genericBlocks() {
-        return new DefaultGenericBlocks();
+        return yoSqlComponent().genericBlocks();
     }
 
     public static Names names() {
-        return new DefaultNames();
+        return yoSqlComponent().names();
     }
 
     public static Fields fields() {
-        return new DefaultFields(annotationGenerator());
+        return yoSqlComponent().fields();
     }
 
     public static Parameters parameters() {
@@ -32,7 +30,7 @@ public final class GenericBlocksObjectMother extends ObjectMother {
     }
 
     public static Variables variables() {
-        return new DefaultVariables(variableConfiguration());
+        return yoSqlComponent().variables();
     }
 
     public static AnnotationGenerator annotationGenerator() {

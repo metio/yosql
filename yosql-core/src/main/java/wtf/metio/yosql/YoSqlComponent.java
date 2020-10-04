@@ -11,9 +11,7 @@ import wtf.metio.yosql.files.FilesModule;
 import wtf.metio.yosql.generator.CodeGeneratorModule;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.ControlFlows;
-import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
-import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.api.*;
 import wtf.metio.yosql.i18n.I18nModule;
 import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.annotations.Delegating;
@@ -92,6 +90,24 @@ public interface YoSqlComponent {
      * <code>@Component</code> class annotation.
      */
     Parameters parameters();
+
+    /**
+     * @return The Fields instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    Fields fields();
+
+    /**
+     * @return The Variables instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    Variables variables();
+
+    /**
+     * @return The Names instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    Names names();
 
     /**
      * @return The AnnotationGenerator instance configured by the list of modules specified in the
