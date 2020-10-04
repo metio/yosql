@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.maven;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 /**
@@ -15,30 +14,18 @@ import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
  */
 public class JdbcNames {
 
-    @Parameter(defaultValue = "batch")
-    private String batch;
-    @Parameter(defaultValue = "columnCount")
-    private String columnCount;
-    @Parameter(defaultValue = "columnLabel")
-    private String columnLabel;
-    @Parameter(defaultValue = "connection")
-    private String connection;
-    @Parameter(defaultValue = "dataSource")
-    private String dataSource;
-    @Parameter(defaultValue = "index")
-    private String index;
-    @Parameter(defaultValue = "jdbcIndex")
-    private String jdbcIndex;
-    @Parameter(defaultValue = "list")
-    private String list;
-    @Parameter(defaultValue = "metaData")
-    private String metaData;
-    @Parameter(defaultValue = "resultSet")
-    private String resultSet;
-    @Parameter(defaultValue = "row")
-    private String row;
-    @Parameter(defaultValue = "statement")
-    private String statement;
+    private final String batch = "batch";
+    private final String columnCount = "columnCount";
+    private final String columnLabel = "columnLabel";
+    private final String connection = "connection";
+    private final String dataSource = "dataSource";
+    private final String index = "index";
+    private final String jdbcIndex = "jdbcIndex";
+    private final String list = "list";
+    private final String metaData = "metaData";
+    private final String resultSet = "resultSet";
+    private final String row = "row";
+    private final String statement = "statement";
 
     JdbcNamesConfiguration asConfiguration() {
         return JdbcNamesConfiguration.builder()

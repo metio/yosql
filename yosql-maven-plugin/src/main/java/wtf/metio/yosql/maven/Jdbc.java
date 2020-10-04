@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.maven;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
 import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
@@ -19,11 +18,9 @@ public class Jdbc {
     /**
      * The names to use in the generated JDBC code.
      */
-    @Parameter
-    private JdbcNames names;
+    private final JdbcNames names = new JdbcNames();
 
-    @Parameter
-    private JdbcFields fields;
+    private final JdbcFields fields = new JdbcFields();
 
     public JdbcNamesConfiguration namesConfiguration() {
         return names.asConfiguration();

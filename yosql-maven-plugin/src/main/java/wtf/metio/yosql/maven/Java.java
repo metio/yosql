@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.maven;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.JavaConfiguration;
 
 /**
@@ -18,32 +17,25 @@ public class Java {
     /**
      * The target Java source version (default: <strong>11</strong>).
      */
-    @Parameter(defaultValue = "11")
-    private String targetVersion;
+    private final int targetVersion = 11;
 
-    @Parameter(defaultValue = "false")
-    private boolean useVar;
+    private final boolean useVar = false;
 
-    @Parameter(defaultValue = "false")
-    private boolean useRecords;
+    private final boolean useRecords = false;
 
-    @Parameter(defaultValue = "false")
-    private boolean useTextBlocks;
+    private final boolean useTextBlocks = false;
 
-    @Parameter(defaultValue = "true")
-    private boolean useProcessingApi;
+    private final boolean useProcessingApi = true;
 
-    @Parameter(defaultValue = "false")
-    private boolean useFinal;
+    private final boolean useFinal = true;
 
     JavaConfiguration asConfiguration() {
-        final var javaVersion = Integer.parseInt(this.targetVersion);
         return JavaConfiguration.builder()
-                .setTargetVersion(javaVersion)
+                .setTargetVersion(targetVersion)
                 .setUseFinal(useFinal)
-                .setUseGenerics(javaVersion >= 5)
-                .setUseDiamondOperator(javaVersion >= 7)
-                .setUseStreamAPI(javaVersion >= 8)
+                .setUseGenerics(targetVersion >= 5)
+                .setUseDiamondOperator(targetVersion >= 7)
+                .setUseStreamAPI(targetVersion >= 8)
                 .setUseProcessingApi(useProcessingApi)
                 .setUseVar(useVar)
                 .setUseTextBlocks(useTextBlocks)

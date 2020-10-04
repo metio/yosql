@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.maven;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.VariableConfiguration;
 import wtf.metio.yosql.model.options.VariableTypeOptions;
 
@@ -18,15 +17,13 @@ import javax.lang.model.element.Modifier;
  */
 public class Variables {
 
-    @Parameter(defaultValue = "FINAL")
-    private String modifiers;
-    @Parameter(defaultValue = "TYPE")
-    private String variableType;
+    private final Modifier modifiers = Modifier.FINAL;
+    private final VariableTypeOptions variableType = VariableTypeOptions.TYPE;
 
     VariableConfiguration asConfiguration() {
         return VariableConfiguration.builder()
-                .addModifiers(Modifier.valueOf(modifiers))
-                .setVariableType(VariableTypeOptions.valueOf(variableType))
+                .addModifiers(modifiers)
+                .setVariableType(variableType)
                 .build();
     }
 

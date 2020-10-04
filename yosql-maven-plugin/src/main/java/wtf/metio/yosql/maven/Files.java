@@ -7,11 +7,10 @@
 
 package wtf.metio.yosql.maven;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.FileConfiguration;
 
-import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 
 /**
  * Configures how files are handled.
@@ -21,38 +20,33 @@ public class Files {
     /**
      * The input directory for the user written SQL files (default: <strong>${project.baseDir}/src/main/yosql</strong>).
      */
-    @Parameter(required = true, defaultValue = "${project.baseDir}/src/main/yosql")
-    private File inputBaseDirectory;
+    private final String inputBaseDirectory = "src/main/yosql";
 
     /**
      * The output directory for the generated classes (default:
      * <strong>${project.build.directory}/generated-sources/yosql</strong>).
      */
-    @Parameter(required = true, defaultValue = "${project.build.directory}/generated-sources/yosql")
-    private File outputBaseDirectory;
+    private final String outputBaseDirectory = "generated-sources/yosql";
 
     /**
      * The file ending to use while searching for SQL files (default: <strong>.sql</strong>).
      */
-    @Parameter(required = true, defaultValue = ".sql")
-    private String sqlFilesSuffix;
+    private final String sqlFilesSuffix = ".sql";
 
     /**
      * The charset to use while reading .sql files (default: <strong>UTF-8</strong>).
      */
-    @Parameter(required = true, defaultValue = "UTF-8")
-    private String sqlFilesCharset;
+    private final String sqlFilesCharset = "UTF-8";
 
     /**
      * The separator to split SQL statements inside a single .sql file (default: <strong>";"</strong>).
      */
-    @Parameter(required = true, defaultValue = ";")
-    private String sqlStatementSeparator;
+    private final String sqlStatementSeparator = ";";
 
-    public FileConfiguration asConfiguration() {
+    public FileConfiguration asConfiguration(final Path baseDirectory, final Path buildDirectory) {
         return FileConfiguration.builder()
-                .setInputBaseDirectory(inputBaseDirectory.toPath())
-                .setOutputBaseDirectory(outputBaseDirectory.toPath())
+                .setInputBaseDirectory(baseDirectory.resolve(inputBaseDirectory))
+                .setOutputBaseDirectory(buildDirectory.resolve(outputBaseDirectory))
                 .setSqlFilesSuffix(sqlFilesSuffix)
                 .setSqlFilesCharset(Charset.forName(sqlFilesCharset))
                 .setSqlStatementSeparator(sqlStatementSeparator)

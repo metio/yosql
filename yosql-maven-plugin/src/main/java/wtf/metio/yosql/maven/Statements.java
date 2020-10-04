@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.maven;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.StatementConfiguration;
 import wtf.metio.yosql.model.options.StatementInRepositoryOptions;
 
@@ -20,12 +19,11 @@ public class Statements {
      * Controls whether the SQL statements should be inlined in the generated repositories or loaded at options
      * (default: <strong>INLINE_CONCAT</strong>). Other possible value is <strong>INLINE_TEXT_BLOCK</strong>.
      */
-    @Parameter(defaultValue = "INLINE_CONCAT")
-    private String repositorySqlStatements;
+    private final StatementInRepositoryOptions repositorySqlStatements = StatementInRepositoryOptions.INLINE_CONCAT;
 
     StatementConfiguration asConfiguration() {
         return StatementConfiguration.builder()
-                .setEmbed(StatementInRepositoryOptions.valueOf(repositorySqlStatements))
+                .setEmbed(repositorySqlStatements)
                 .build();
     }
 

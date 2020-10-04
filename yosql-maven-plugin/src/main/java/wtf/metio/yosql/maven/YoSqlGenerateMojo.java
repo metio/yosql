@@ -10,54 +10,60 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import wtf.metio.yosql.DaggerConfigurableYoSqlComponent;
 import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
+import java.nio.file.Paths;
+
 /**
- * The *generate* goal generates Java code based on SQL files.
+ * The generate goal generates Java code based on SQL files.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class YoSqlGenerateMojo extends AbstractMojo {
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Files files;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Annotations annotations;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Java java;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Logging logging;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Methods methods;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Repositories repositories;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Statements statements;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Resources resources;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Variables variables;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Packages packages;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Results results;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Jdbc jdbc;
 
-    @Parameter
+    @Parameter(required = true, defaultValue = "${classObject}")
     private RxJava rxJava;
+
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+    MavenProject project;
 
     @Override
     public void execute() {
@@ -77,7 +83,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private RuntimeConfiguration createConfiguration() {
         final var utilityPackage = packages.getUtilityPackageName();
         return RuntimeConfiguration.builder()
-                .setFiles(files.asConfiguration())
+                .setFiles(files.asConfiguration(project.getBasedir().toPath(), Paths.get(project.getBuild().getOutputDirectory())))
                 .setAnnotations(annotations.asConfiguration())
                 .setJava(java.asConfiguration())
                 .setLogging(logging.asConfiguration())

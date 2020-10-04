@@ -7,9 +7,9 @@
 
 package wtf.metio.yosql.maven;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.AnnotationConfiguration;
 import wtf.metio.yosql.model.options.AnnotationClassOptions;
+import wtf.metio.yosql.model.options.AnnotationMemberOptions;
 
 import javax.annotation.processing.Generated;
 
@@ -21,53 +21,59 @@ public class Annotations {
     /**
      * Controls whether {@link Generated} annotations should be added to the generated classes.
      */
-    @Parameter(defaultValue = "true")
-    private boolean annotateClasses;
+    private final boolean annotateClasses = true;
 
     /**
      * Controls whether {@link Generated} annotations should be added to the generated fields.
      */
-    @Parameter(defaultValue = "false")
-    private boolean annotateFields;
+    private final boolean annotateFields = false;
 
     /**
      * Controls whether {@link Generated} annotations should be added to the generated methods.
      */
-    @Parameter(defaultValue = "false")
-    private boolean annotateMethods;
+    private final boolean annotateMethods = false;
 
     /**
      * Sets the comment used for annotated classes.
      */
-    @Parameter(defaultValue = "DO NOT EDIT")
-    private String classComment;
+    private final String classComment = "DO NOT EDIT";
 
     /**
      * Sets the comment used for annotated fields.
      */
-    @Parameter(defaultValue = "DO NOT EDIT")
-    private String fieldComment;
+    private final String fieldComment = "DO NOT EDIT";
 
     /**
      * Sets the comment used for annotated methods.
      */
-    @Parameter(defaultValue = "DO NOT EDIT")
-    private String methodComment;
+    private final String methodComment = "DO NOT EDIT";
 
     /**
      * Controls which @Generated annotation should be used.
      */
-    @Parameter(defaultValue = "ANNOTATION_API")
-    private String api;
+    private final AnnotationClassOptions api = AnnotationClassOptions.ANNOTATION_API;
+
+    /**
+     * The name of the code generator
+     */
+    private final String generatorName = "YoSQL";
+
+    private final AnnotationMemberOptions classMembers = AnnotationMemberOptions.WITHOUT_DATE;
+    private final AnnotationMemberOptions methodMembers = AnnotationMemberOptions.WITHOUT_DATE;
+    private final AnnotationMemberOptions fieldMembers = AnnotationMemberOptions.WITHOUT_DATE;
 
     public AnnotationConfiguration asConfiguration() {
         return AnnotationConfiguration.builder()
                 .setClassComment(classComment)
                 .setFieldComment(fieldComment)
                 .setMethodComment(methodComment)
-                .setClassAnnotation(AnnotationClassOptions.valueOf(api))
-                .setFieldAnnotation(AnnotationClassOptions.valueOf(api))
-                .setMethodAnnotation(AnnotationClassOptions.valueOf(api))
+                .setClassAnnotation(api)
+                .setFieldAnnotation(api)
+                .setMethodAnnotation(api)
+                .setClassMembers(classMembers)
+                .setMethodMembers(methodMembers)
+                .setFieldMembers(fieldMembers)
+                .setGeneratorName(generatorName)
                 .build();
     }
 

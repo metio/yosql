@@ -8,7 +8,6 @@
 package wtf.metio.yosql.maven;
 
 import com.squareup.javapoet.ClassName;
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.ResultConfiguration;
 
 /**
@@ -19,14 +18,12 @@ public class Results {
     /**
      * The simple name of the generated result row class (default: <strong>ResultRow</strong>).
      */
-    @Parameter(required = true, defaultValue = "ResultRow")
-    private String resultRow;
+    private final String resultRow = "ResultRow";
 
     /**
      * The simple name of the generated result state class (default: <strong>ResultState</strong>).
      */
-    @Parameter(required = true, defaultValue = "ResultState")
-    private String resultState;
+    private final String resultState = "ResultState";
 
     ResultConfiguration asConfiguration(final String utilPackage) {
         return ResultConfiguration.builder()

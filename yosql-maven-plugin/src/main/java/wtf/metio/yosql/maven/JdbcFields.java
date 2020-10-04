@@ -11,8 +11,13 @@ import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
 
 public class JdbcFields {
 
+    private final String indexSuffix = "_INDEX";
+    private final String rawSuffix = "_RAW";
+
     JdbcFieldsConfiguration asConfiguration() {
         return JdbcFieldsConfiguration.builder()
+                .setIndexSuffix(indexSuffix)
+                .setRawSuffix(rawSuffix)
                 .build();
     }
 

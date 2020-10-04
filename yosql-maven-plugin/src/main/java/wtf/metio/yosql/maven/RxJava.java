@@ -8,7 +8,6 @@
 package wtf.metio.yosql.maven;
 
 import com.squareup.javapoet.ClassName;
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.RxJavaConfiguration;
 
 /**
@@ -19,20 +18,17 @@ public class RxJava {
     /**
      * The simple name of the generated flow state class (default: <strong>FlowState</strong>).
      */
-    @Parameter(required = true, defaultValue = "FlowState")
-    private String flowState;
+    private final String flowState = "FlowState";
 
     /**
      * The groupId to match for automatic RxJava detection (default: <strong>"io.reactivex.rxjava2"</strong>).
      */
-    @Parameter(required = true, defaultValue = "io.reactivex.rxjava2")
-    private String groupId;
+    private final String groupId = "io.reactivex.rxjava2";
 
     /**
      * The artifactId to match for automatic RxJava detection (default: <strong>"rxjava"</strong>).
      */
-    @Parameter(required = true, defaultValue = "rxjava")
-    private String artifactId;
+    private final String artifactId = "rxjava";
 
     RxJavaConfiguration asConfiguration(final String utilPackage) {
         return RxJavaConfiguration.builder()

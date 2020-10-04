@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.maven;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.PackagesConfiguration;
 
 /**
@@ -18,20 +17,17 @@ public class Packages {
     /**
      * The base package name for all generated classes (default: <strong>com.example.persistence</strong>).
      */
-    @Parameter(required = true, defaultValue = "com.example.persistence")
-    private String basePackageName;
+    private final String basePackageName = "com.example.persistence";
 
     /**
      * The package name for utility classes (default: <strong>util</strong>).
      */
-    @Parameter(required = true, defaultValue = "util")
-    private String utilityPackageName;
+    private final String utilityPackageName = "util";
 
     /**
      * The package name for utility classes (default: <strong>converter</strong>).
      */
-    @Parameter(required = true, defaultValue = "converter")
-    private String converterPackageName;
+    private final String converterPackageName = "converter";
 
     PackagesConfiguration asConfiguration() {
         return PackagesConfiguration.builder()
