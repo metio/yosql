@@ -78,9 +78,6 @@
         <module>yosql-core</module>
         <module>yosql-cli</module>
         <module>yosql-maven-plugin</module>
-        <module>yosql-gradle-plugin</module>
-        <module>yosql-ant-task</module>
-        <module>yosql-sbt-plugin</module>
         <module>yosql-yeps</module>
         <module>yosql-example</module>
         <module>yosql-benchmarks</module>
