@@ -5,12 +5,10 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.maven;
+package wtf.metio.yosql;
 
 import dagger.BindsInstance;
 import dagger.Component;
-import wtf.metio.yosql.YoSql;
-import wtf.metio.yosql.YoSqlModule;
 import wtf.metio.yosql.files.FilesModule;
 import wtf.metio.yosql.generator.CodeGeneratorModule;
 import wtf.metio.yosql.i18n.I18nModule;
@@ -25,9 +23,9 @@ import javax.inject.Singleton;
         OrchestrationModule.class,
         FilesModule.class,
         CodeGeneratorModule.class,
-        YoSqlModule.class,
+        YoSqlModule.class
 })
-public interface YoSqlMavenComponent {
+public interface ConfigurableYoSqlComponent {
 
     YoSql yosql();
 
@@ -37,7 +35,7 @@ public interface YoSqlMavenComponent {
         @BindsInstance
         Builder runtimeConfiguration(RuntimeConfiguration runtimeConfiguration);
 
-        YoSqlMavenComponent build();
+        ConfigurableYoSqlComponent build();
 
     }
 

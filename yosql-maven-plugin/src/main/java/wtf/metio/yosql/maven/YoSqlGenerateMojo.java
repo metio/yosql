@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import wtf.metio.yosql.DaggerConfigurableYoSqlComponent;
 import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
@@ -67,7 +68,7 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private YoSql createYoSql(final RuntimeConfiguration configuration) {
-        return DaggerYoSqlMavenComponent.builder()
+        return DaggerConfigurableYoSqlComponent.builder()
                 .runtimeConfiguration(configuration)
                 .build()
                 .yosql();
