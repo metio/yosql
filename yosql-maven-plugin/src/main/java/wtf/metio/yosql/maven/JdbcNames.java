@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.maven;
 
+import org.apache.maven.plugins.annotations.Parameter;
 import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 
 /**
@@ -14,20 +15,45 @@ import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
  */
 public class JdbcNames {
 
+    @Parameter(defaultValue = "batch")
+    private String batch;
+    @Parameter(defaultValue = "columnCount")
+    private String columnCount;
+    @Parameter(defaultValue = "columnLabel")
+    private String columnLabel;
+    @Parameter(defaultValue = "connection")
+    private String connection;
+    @Parameter(defaultValue = "dataSource")
+    private String dataSource;
+    @Parameter(defaultValue = "index")
+    private String index;
+    @Parameter(defaultValue = "jdbcIndex")
+    private String jdbcIndex;
+    @Parameter(defaultValue = "list")
+    private String list;
+    @Parameter(defaultValue = "metaData")
+    private String metaData;
+    @Parameter(defaultValue = "resultSet")
+    private String resultSet;
+    @Parameter(defaultValue = "row")
+    private String row;
+    @Parameter(defaultValue = "statement")
+    private String statement;
+
     JdbcNamesConfiguration asConfiguration() {
         return JdbcNamesConfiguration.builder()
-                .setBatch("batch") // TODO: configure w/ Maven
-                .setColumnCount("columnCount") // TODO: configure w/ Maven
-                .setColumnLabel("columnLabel") // TODO: configure w/ Maven
-                .setConnection("connection") // TODO: configure w/ Maven
-                .setDataSource("dataSource") // TODO: configure w/ Maven
-                .setIndex("index") // TODO: configure w/ Maven
-                .setJdbcIndex("jdbcIndex") // TODO: configure w/ Maven
-                .setList("list") // TODO: configure w/ Maven
-                .setMetaData("metaData") // TODO: configure w/ Maven
-                .setResultSet("resultSet") // TODO: configure w/ Maven
-                .setRow("row") // TODO: configure w/ Maven
-                .setStatement("statement") // TODO: configure w/ Maven
+                .setBatch(batch)
+                .setColumnCount(columnCount)
+                .setColumnLabel(columnLabel)
+                .setConnection(connection)
+                .setDataSource(dataSource)
+                .setIndex(index)
+                .setJdbcIndex(jdbcIndex)
+                .setList(list)
+                .setMetaData(metaData)
+                .setResultSet(resultSet)
+                .setRow(row)
+                .setStatement(statement)
                 .build();
     }
 

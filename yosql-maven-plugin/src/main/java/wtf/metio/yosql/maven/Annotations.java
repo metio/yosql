@@ -21,47 +21,53 @@ public class Annotations {
     /**
      * Controls whether {@link Generated} annotations should be added to the generated classes.
      */
-    @Parameter(required = true, defaultValue = "true")
+    @Parameter(defaultValue = "true")
     private boolean annotateClasses;
 
     /**
      * Controls whether {@link Generated} annotations should be added to the generated fields.
      */
-    @Parameter(required = true, defaultValue = "false")
+    @Parameter(defaultValue = "false")
     private boolean annotateFields;
 
     /**
      * Controls whether {@link Generated} annotations should be added to the generated methods.
      */
-    @Parameter(required = true, defaultValue = "false")
+    @Parameter(defaultValue = "false")
     private boolean annotateMethods;
 
     /**
      * Sets the comment used for annotated classes.
      */
-    @Parameter(required = true, defaultValue = "DO NOT EDIT")
+    @Parameter(defaultValue = "DO NOT EDIT")
     private String classComment;
 
     /**
      * Sets the comment used for annotated fields.
      */
-    @Parameter(required = true, defaultValue = "DO NOT EDIT")
+    @Parameter(defaultValue = "DO NOT EDIT")
     private String fieldComment;
 
     /**
      * Sets the comment used for annotated methods.
      */
-    @Parameter(required = true, defaultValue = "DO NOT EDIT")
+    @Parameter(defaultValue = "DO NOT EDIT")
     private String methodComment;
-    
+
+    /**
+     * Controls which @Generated annotation should be used.
+     */
+    @Parameter(defaultValue = "ANNOTATION_API")
+    private String api;
+
     public AnnotationConfiguration asConfiguration() {
         return AnnotationConfiguration.builder()
                 .setClassComment(classComment)
                 .setFieldComment(fieldComment)
                 .setMethodComment(methodComment)
-                .setClassAnnotation(AnnotationClassOptions.ANNOTATION_API) // TODO: configure w/ Maven
-                .setFieldAnnotation(AnnotationClassOptions.ANNOTATION_API) // TODO: configure w/ Maven
-                .setMethodAnnotation(AnnotationClassOptions.ANNOTATION_API) // TODO: configure w/ Maven
+                .setClassAnnotation(AnnotationClassOptions.valueOf(api))
+                .setFieldAnnotation(AnnotationClassOptions.valueOf(api))
+                .setMethodAnnotation(AnnotationClassOptions.valueOf(api))
                 .build();
     }
 

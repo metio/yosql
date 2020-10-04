@@ -20,31 +20,31 @@ public class Logging {
      * The logging API to use (default: <strong>auto</strong> which picks the logging API based on the projects
      * dependencies). Possible other values are "jdk", "log4j", "slf4j" and "none".
      */
-    @Parameter(required = true, defaultValue = "auto")
+    @Parameter(defaultValue = "auto")
     private String loggingApi;
 
     /**
      * The groupId to match for automatic Log4j detection (default: <strong>"org.apache.logging.log4j"</strong>).
      */
-    @Parameter(required = true, defaultValue = "org.apache.logging.log4j")
+    @Parameter(defaultValue = "org.apache.logging.log4j")
     private String log4jGroupId;
 
     /**
      * The artifactId to match for automatic Log4j detection (default: <strong>"log4j-api"</strong>).
      */
-    @Parameter(required = true, defaultValue = "log4j-api")
+    @Parameter(defaultValue = "log4j-api")
     private String log4jArtifactId;
 
     /**
      * The groupId to match for automatic SLF4j detection (default: <strong>"org.slf4j"</strong>).
      */
-    @Parameter(required = true, defaultValue = "org.slf4j")
+    @Parameter(defaultValue = "org.slf4j")
     private String slf4jGroupId;
 
     /**
      * The artifactId to match for automatic SLF4j detection (default: <strong>"slf4j-api"</strong>).
      */
-    @Parameter(required = true, defaultValue = "slf4j-api")
+    @Parameter(defaultValue = "slf4j-api")
     private String slf4jArtifactId;
 
     LoggingConfiguration asConfiguration() {
