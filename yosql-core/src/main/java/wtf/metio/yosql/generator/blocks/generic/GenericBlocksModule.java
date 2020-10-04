@@ -12,16 +12,14 @@ import dagger.Provides;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
 import wtf.metio.yosql.i18n.Translator;
-import wtf.metio.yosql.model.configuration.JavaConfiguration;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
-import wtf.metio.yosql.model.configuration.VariableConfiguration;
 
 @Module
 public class GenericBlocksModule {
 
     @Provides
-    AnnotationGenerator annotationGenerator(final RuntimeConfiguration runtime, final Translator translator) {
-        return new DefaultAnnotationGenerator(runtime.annotations(), translator);
+    AnnotationGenerator annotationGenerator(final RuntimeConfiguration runtimeConfiguration, final Translator translator) {
+        return new DefaultAnnotationGenerator(runtimeConfiguration.annotations(), translator);
     }
 
     @Provides
@@ -47,8 +45,8 @@ public class GenericBlocksModule {
     }
 
     @Provides
-    Methods methods(final AnnotationGenerator annotations, final Javadoc javadoc, final JavaConfiguration java) {
-        return new DefaultMethods(annotations, javadoc, java);
+    Methods methods(final AnnotationGenerator annotations, final Javadoc javadoc, final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultMethods(annotations, javadoc, runtimeConfiguration.java());
     }
 
     @Provides
@@ -62,8 +60,8 @@ public class GenericBlocksModule {
     }
 
     @Provides
-    Variables variables(final VariableConfiguration options) {
-        return new DefaultVariables(options);
+    Variables variables(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultVariables(runtimeConfiguration.variables());
     }
 
 }

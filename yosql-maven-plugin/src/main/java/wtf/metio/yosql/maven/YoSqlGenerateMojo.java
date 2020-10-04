@@ -10,7 +10,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import wtf.metio.yosql.DaggerYoSqlComponent;
 import wtf.metio.yosql.YoSql;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
@@ -54,12 +53,10 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     private Results results;
 
     @Parameter
-    private JdbcNames jdbcNames;
+    private Jdbc jdbc;
 
     @Parameter
     private RxJava rxJava;
-    // TODO: Support Spring React
-    // TODO: Support Microprofile SmallRye
 
     @Override
     public void execute() {
@@ -70,8 +67,10 @@ public class YoSqlGenerateMojo extends AbstractMojo {
     }
 
     private YoSql createYoSql(final RuntimeConfiguration configuration) {
-        // TODO: Allow to pass in config
-        return DaggerYoSqlComponent.builder().build().yosql();
+        return DaggerYoSqlMavenComponent.builder()
+                .runtimeConfiguration(configuration)
+                .build()
+                .yosql();
     }
 
     private RuntimeConfiguration createConfiguration() {
@@ -88,7 +87,8 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 .setStatements(statements.asConfiguration())
                 .setNames(packages.asConfiguration())
                 .setResult(results.asConfiguration(utilityPackage))
-                .setJdbcNames(jdbcNames.asConfiguration())
+                .setJdbcNames(jdbc.namesConfiguration())
+                .setJdbcFields(jdbc.fieldsConfiguration())
                 .setRxJava(rxJava.asConfiguration(utilityPackage))
                 .build();
     }

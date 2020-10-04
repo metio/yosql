@@ -36,6 +36,8 @@ public interface RuntimeConfiguration {
 
     JdbcNamesConfiguration jdbcNames();
 
+    JdbcFieldsConfiguration jdbcFields();
+
     RxJavaConfiguration rxJava();
 
     ResultConfiguration result();

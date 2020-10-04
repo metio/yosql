@@ -12,8 +12,6 @@ import dagger.Provides;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
 import wtf.metio.yosql.model.annotations.Delegating;
-import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
 @Module
@@ -25,8 +23,8 @@ public class JdbcBlocksModule {
     }
 
     @Provides
-    JdbcFields provideJdbcFields(final JdbcFieldsConfiguration options) {
-        return new DefaultJdbcFields(options);
+    JdbcFields provideJdbcFields(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcFields(runtimeConfiguration.jdbcFields());
     }
 
     @Provides
@@ -74,13 +72,13 @@ public class JdbcBlocksModule {
     }
 
     @Provides
-    JdbcNames provideJdbcNames(final JdbcNamesConfiguration configuration) {
-        return new DefaultJdbcNames(configuration);
+    JdbcNames provideJdbcNames(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcNames(runtimeConfiguration.jdbcNames());
     }
 
     @Provides
     JdbcBlocks provideJdbcBlocks(
-            final RuntimeConfiguration configuration,
+            final RuntimeConfiguration runtimeConfiguration,
             final GenericBlocks blocks,
             final ControlFlows controlFlows,
             final Names names,
@@ -90,7 +88,7 @@ public class JdbcBlocksModule {
             final JdbcMethods jdbcMethods,
             @Delegating final LoggingGenerator logging) {
         return new DefaultJdbcBlocks(
-                configuration,
+                runtimeConfiguration,
                 blocks,
                 controlFlows,
                 names,

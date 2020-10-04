@@ -248,6 +248,7 @@ public final class ModelConfigurationModule {
             final LoggingConfiguration logging,
             final RxJavaConfiguration rxJava,
             final JdbcNamesConfiguration jdbcNames,
+            final JdbcFieldsConfiguration jdbcFields,
             final ResultConfiguration result) {
         return RuntimeConfiguration.builder()
                 .setFiles(files)
@@ -262,6 +263,7 @@ public final class ModelConfigurationModule {
                 .setLogging(logging)
                 .setRxJava(rxJava)
                 .setJdbcNames(jdbcNames)
+                .setJdbcFields(jdbcFields)
                 .setResult(result)
                 .build();
     }
