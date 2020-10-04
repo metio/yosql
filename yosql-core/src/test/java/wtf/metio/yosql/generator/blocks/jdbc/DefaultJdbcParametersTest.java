@@ -11,18 +11,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.parameters;
-import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.jdbcNames;
+import wtf.metio.yosql.tests.ObjectMother;
 
 @DisplayName("DefaultJdbcParameters")
-class DefaultJdbcParametersTest {
+class DefaultJdbcParametersTest extends ObjectMother {
 
     private DefaultJdbcParameters generator;
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcParameters(parameters(), jdbcNames());
+        generator = new DefaultJdbcParameters(yoSqlComponent().parameters(), yoSqlComponent().jdbcNames());
     }
 
     @Test

@@ -11,19 +11,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.model.configuration.VariableConfiguration;
+import wtf.metio.yosql.tests.ObjectMother;
 
-import static wtf.metio.yosql.model.configuration.ModelConfigurationObjectMother.variableConfiguration;
 import static wtf.metio.yosql.model.options.VariableTypeOptions.VAR;
 
 @DisplayName("DefaultVariables")
-class DefaultVariablesTest {
+class DefaultVariablesTest extends ObjectMother {
 
     @Test
     @DisplayName("creates variables")
     void shouldCreateVariable() {
         // given
-        final var config = variableConfiguration();
-        final var variables = new DefaultVariables(config);
+        final var variables = new DefaultVariables(yoSqlComponent().variableConfiguration());
 
         // when
         final var variable = variables.variable("test", String.class);
@@ -37,7 +36,7 @@ class DefaultVariablesTest {
     @DisplayName("creates variables with the 'var' keyword")
     void shouldCreateVariableWithVarKeyword() {
         // given
-        final var config = VariableConfiguration.copy(variableConfiguration())
+        final var config = VariableConfiguration.copy(yoSqlComponent().variableConfiguration())
                 .withVariableType(VAR);
         final var variables = new DefaultVariables(config);
 

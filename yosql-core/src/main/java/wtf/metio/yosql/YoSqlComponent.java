@@ -12,6 +12,9 @@ import wtf.metio.yosql.generator.CodeGeneratorModule;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcMethods;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.i18n.I18nModule;
 import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.annotations.Delegating;
@@ -60,6 +63,12 @@ public interface YoSqlComponent {
      * <code>@Component</code> class annotation.
      */
     JdbcNamesConfiguration jdbcNamesConfiguration();
+
+    /**
+     * @return The JdbcFieldsConfiguration instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcFieldsConfiguration jdbcFieldsConfiguration();
 
     /**
      * @return The VariableConfiguration instance configured by the list of modules specified in the
@@ -121,6 +130,54 @@ public interface YoSqlComponent {
      */
     @Delegating
     LoggingGenerator loggingGenerator();
+
+    /**
+     * @return The JdbcFields instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcFields jdbcFields();
+
+    /**
+     * @return The JdbcMethods instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcMethods jdbcMethods();
+
+    /**
+     * @return The JdbcDataSourceMethods instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcMethods.JdbcDataSourceMethods jdbcDataSourceMethods();
+
+    /**
+     * @return The JdbcConnectionMethods instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcMethods.JdbcConnectionMethods jdbcConnectionMethods();
+
+    /**
+     * @return The JdbcResultSetMethods instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcMethods.JdbcResultSetMethods jdbcResultSetMethods();
+
+    /**
+     * @return The JdbcMetaDataMethods instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcMethods.JdbcMetaDataMethods jdbcMetaDataMethods();
+
+    /**
+     * @return The JdbcStatementMethods instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcMethods.JdbcStatementMethods jdbcStatementMethods();
+
+    /**
+     * @return The JdbcNames instance configured by the list of modules specified in the
+     * <code>@Component</code> class annotation.
+     */
+    JdbcNames jdbcNames();
 
     //endregion
 

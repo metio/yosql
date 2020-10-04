@@ -10,23 +10,23 @@ package wtf.metio.yosql.generator.blocks.jdbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.tests.ObjectMother;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static wtf.metio.yosql.generator.blocks.jdbc.JdbcObjectMother.*;
 
 @DisplayName("DefaultJdbcMethods")
-class DefaultJdbcMethodsTest {
+class DefaultJdbcMethodsTest extends ObjectMother {
 
     private DefaultJdbcMethods generator;
 
     @BeforeEach
     void setUp() {
         generator = new DefaultJdbcMethods(
-                jdbcDataSourceMethods(),
-                jdbcConnectionMethods(),
-                jdbcResultSetMethods(),
-                jdbcMetaDataMethods(),
-                jdbcStatementMethods());
+                yoSqlComponent().jdbcDataSourceMethods(),
+                yoSqlComponent().jdbcConnectionMethods(),
+                yoSqlComponent().jdbcResultSetMethods(),
+                yoSqlComponent().jdbcMetaDataMethods(),
+                yoSqlComponent().jdbcStatementMethods());
     }
 
     @Test

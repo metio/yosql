@@ -12,18 +12,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.fields;
-import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.names;
+import wtf.metio.yosql.tests.ObjectMother;
 
 @DisplayName("Slf4jLoggingGenerator")
-class Slf4jLoggingGeneratorTest {
+class Slf4jLoggingGeneratorTest extends ObjectMother {
 
     private Slf4jLoggingGenerator generator;
 
     @BeforeEach
     void setUp() {
-        generator = new Slf4jLoggingGenerator(names(), fields());
+        generator = new Slf4jLoggingGenerator(yoSqlComponent().names(), yoSqlComponent().fields());
     }
 
     @Test

@@ -11,17 +11,16 @@ import com.squareup.javapoet.TypeName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static wtf.metio.yosql.generator.blocks.generic.GenericBlocksObjectMother.names;
+import wtf.metio.yosql.tests.ObjectMother;
 
 @DisplayName("DefaultParameters")
-class DefaultParametersTest {
+class DefaultParametersTest extends ObjectMother {
 
     @Test
     @DisplayName("generates parameter")
     void shouldGenerateParameter() {
         // given
-        final var generator = new DefaultParameters(names());
+        final var generator = new DefaultParameters(yoSqlComponent().names());
 
         // when
         final var parameter = generator.parameter(String.class, "test");
@@ -35,7 +34,7 @@ class DefaultParametersTest {
     @DisplayName("generates parameter with TypeName")
     void shouldGenerateParameterWithTypeName() {
         // given
-        final var generator = new DefaultParameters(names());
+        final var generator = new DefaultParameters(yoSqlComponent().names());
 
         // when
         final var parameter = generator.parameter(TypeName.BOOLEAN, "test");
