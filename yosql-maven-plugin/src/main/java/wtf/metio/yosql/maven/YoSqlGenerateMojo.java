@@ -16,12 +16,16 @@ import wtf.metio.yosql.YoSQL;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * The generate goal generates Java code based on SQL files.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class YoSqlGenerateMojo extends AbstractMojo {
+
+    private static final List<Locale> SUPPORTED_LOCALES = List.of(Locale.ENGLISH, Locale.GERMAN);
 
     @Parameter(required = true, defaultValue = "${classObject}")
     private Files files;
@@ -67,15 +71,13 @@ public class YoSqlGenerateMojo extends AbstractMojo {
 
     @Override
     public void execute() {
-        final var configuration = createConfiguration();
-        final var yosql = createYoSql(configuration);
-
-        yosql.generateCode();
+        buildYoSQL().generateCode();
     }
 
-    private YoSQL createYoSql(final RuntimeConfiguration configuration) {
+    private YoSQL buildYoSQL() {
         return DaggerYoSQLComponent.builder()
-                .runtimeConfiguration(configuration)
+                .runtimeConfiguration(createConfiguration())
+                .locale(determineLocale())
                 .build()
                 .yosql();
     }
@@ -98,6 +100,13 @@ public class YoSqlGenerateMojo extends AbstractMojo {
                 .setJdbcFields(jdbc.fieldsConfiguration())
                 .setRxJava(rxJava.asConfiguration(utilityPackage))
                 .build();
+    }
+
+    private Locale determineLocale() {
+        if (SUPPORTED_LOCALES.contains(Locale.getDefault())) {
+            return Locale.getDefault();
+        }
+        return Locale.ENGLISH;
     }
 
 }
