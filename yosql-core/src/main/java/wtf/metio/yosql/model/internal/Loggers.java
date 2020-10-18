@@ -6,50 +6,50 @@
  */
 package wtf.metio.yosql.model.internal;
 
-import ch.qos.cal10n.BaseName;
-import ch.qos.cal10n.Locale;
-import ch.qos.cal10n.LocaleData;
-
 /**
  * Enumeration of known loggers.
  */
-@LocaleData(@Locale("en"))
-@BaseName("internal.loggers")
 public enum Loggers {
 
     /**
      * Logger for file writers.
      */
-    WRITER,
+    WRITER("yosql.writer"),
 
     /**
      * Logger for file parsers.
      */
-    PARSER,
+    PARSER("yosql.parser"),
 
     /**
      * Logger for file readers.
      */
-    READER,
+    READER("yosql.reader"),
 
     /**
      * Logger for file generators.
      */
-    GENERATOR,
+    GENERATOR("yosql.generator"),
 
     /**
      * Logger for timers.
      */
-    TIMER,
+    TIMER("yosql.timer"),
 
     /**
      * Logger for utilities.
      */
-    UTILITIES,
+    UTILITIES("yosql.utilities"),
 
     /**
      * Logger for CLIs.
      */
-    CLI,
+    CLI("yosql.cli"); // TODO: remove?
+
+    public final String loggerName;
+
+    Loggers(String loggerName) {
+        this.loggerName = loggerName;
+    }
 
 }

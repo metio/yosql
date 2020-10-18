@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
@@ -19,13 +20,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("DefaultJdbcTransformer")
 class DefaultJdbcTransformerTest {
 
+    private DefaultJdbcTransformer generator;
+
+    @BeforeEach
+    void setUp() {
+        generator = new DefaultJdbcTransformer();
+    }
+
     @Test
     void sqlException() {
         // given
-        final var generator = new DefaultJdbcTransformer();
+        final var configuration = new SqlConfiguration();
 
         // when
-        final var exception = generator.sqlException(new SqlConfiguration());
+        final var exception = generator.sqlException(configuration);
 
         // then
         assertFalse(((Collection<?>) exception).isEmpty());
@@ -34,7 +42,6 @@ class DefaultJdbcTransformerTest {
     @Test
     void noSqlException() {
         // given
-        final var generator = new DefaultJdbcTransformer();
         final var configuration = new SqlConfiguration();
         configuration.setMethodCatchAndRethrow(true);
 

@@ -6,6 +6,8 @@
  */
 package wtf.metio.yosql.model.sql;
 
+import org.immutables.value.Value;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static java.util.function.Predicate.not;
 
-// TODO: use Immutables
+@Value.Immutable // TODO: convert to interface
 public class SqlConfiguration {
 
     private String name;
@@ -46,29 +48,33 @@ public class SqlConfiguration {
     private String vendor;
     private ReturningMode returningMode;
 
+    @Value.Derived
     public String getFlowableName() {
-        return join(methodRxJavaPrefix, name, methodRxJavaSuffix);
+        return joinMethodNameParts(methodRxJavaPrefix, name, methodRxJavaSuffix);
     }
 
+    @Value.Derived
     public String getBatchName() {
-        return join(methodBatchPrefix, name, methodBatchSuffix);
+        return joinMethodNameParts(methodBatchPrefix, name, methodBatchSuffix);
     }
 
+    @Value.Derived
     public String getStreamLazyName() {
-        return join(methodStreamPrefix, name, methodStreamSuffix, methodLazyName);
+        return joinMethodNameParts(methodStreamPrefix, name, methodStreamSuffix, methodLazyName);
     }
 
+    @Value.Derived
     public String getStreamEagerName() {
-        return join(methodStreamPrefix, name, methodStreamSuffix, methodEagerName);
+        return joinMethodNameParts(methodStreamPrefix, name, methodStreamSuffix, methodEagerName);
     }
 
-    private static String join(final String... strings) {
-        final AtomicInteger hits = new AtomicInteger(0);
+    private static String joinMethodNameParts(final String... strings) {
+        final var part = new AtomicInteger();
         return Arrays.stream(strings)
                 .filter(Objects::nonNull)
                 .map(String::strip)
                 .filter(not(String::isBlank))
-                .map(string -> hits.getAndIncrement() == 0
+                .map(string -> part.getAndIncrement() == 0
                         ? string
                         : string.substring(0, 1).toUpperCase() + string.substring(1))
                 .collect(Collectors.joining());
@@ -380,13 +386,13 @@ public class SqlConfiguration {
     }
 
     public static SqlConfiguration fromStatements(final List<SqlStatement> statements) {
-        final SqlConfiguration configuration = new SqlConfiguration();
+        final var configuration = new SqlConfiguration();
         statements.forEach(configuration::merge);
         return configuration;
     }
 
     public void merge(final SqlStatement statement) {
-        final SqlConfiguration other = statement.getConfiguration();
+        final var other = statement.getConfiguration();
         name = name != null ? name : other.name;
         repository = repository != null ? repository : other.repository;
         type = type != null ? type : other.type;

@@ -14,10 +14,10 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import io.reactivex.Emitter;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.api.RxJavaMethodGenerator;
-import wtf.metio.yosql.generator.blocks.api.ControlFlows;
-import wtf.metio.yosql.generator.blocks.api.Methods;
-import wtf.metio.yosql.generator.blocks.api.Names;
-import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.generic.ControlFlows;
+import wtf.metio.yosql.generator.blocks.generic.Methods;
+import wtf.metio.yosql.generator.blocks.generic.Names;
+import wtf.metio.yosql.generator.blocks.generic.Parameters;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
 
 import static wtf.metio.yosql.generator.blocks.generic.CodeBlocks.code;
 
-final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
+public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
 
     private final RuntimeConfiguration runtime;
     private final ControlFlows controlFlows;
@@ -40,7 +40,7 @@ final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbcBlocks;
 
-    JdbcRxJavaMethodGenerator(
+    public JdbcRxJavaMethodGenerator(
             final RuntimeConfiguration runtime,
             final ControlFlows controlFlows,
             final Names names,

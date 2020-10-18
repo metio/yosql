@@ -20,6 +20,9 @@ import wtf.metio.yosql.model.annotations.Delegating;
 
 import javax.inject.Singleton;
 
+/**
+ * Dagger module for all code generator related components.
+ */
 @Module(includes = {
         DaoModule.class,
         UtilitiesModule.class,

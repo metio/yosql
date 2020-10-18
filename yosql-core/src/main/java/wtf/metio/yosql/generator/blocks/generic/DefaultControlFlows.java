@@ -8,9 +8,6 @@
 package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.CodeBlock;
-import wtf.metio.yosql.generator.blocks.api.ControlFlows;
-import wtf.metio.yosql.generator.blocks.api.Names;
-import wtf.metio.yosql.generator.blocks.api.Variables;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 
 import java.sql.SQLException;

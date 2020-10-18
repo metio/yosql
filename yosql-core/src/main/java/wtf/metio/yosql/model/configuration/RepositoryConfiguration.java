@@ -9,6 +9,9 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+/**
+ * Configures the various repository related options.
+ */
 @Value.Immutable
 public interface RepositoryConfiguration {
 
@@ -16,8 +19,27 @@ public interface RepositoryConfiguration {
         return ImmutableRepositoryConfiguration.builder();
     }
 
-    String repositoryNameSuffix();
+    /**
+     * @return A repository configuration using default values.
+     */
+    static ImmutableRepositoryConfiguration usingDefaults() {
+        return builder().build();
+    }
 
-    boolean repositoryGenerateInterface();
+    /**
+     * @return The repository name suffix to use.
+     */
+    @Value.Default
+    default String repositoryNameSuffix() {
+        return "Repository";
+    }
+
+    /**
+     * @return Should interfaces be generated for each repository?
+     */
+    @Value.Default
+    default boolean repositoryGenerateInterface() {
+        return true;
+    }
 
 }

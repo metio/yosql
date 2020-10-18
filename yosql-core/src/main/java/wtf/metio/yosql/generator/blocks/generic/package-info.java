@@ -5,3 +5,4 @@
  * in the LICENSE file.
  */
 package wtf.metio.yosql.generator.blocks.generic;
+// TODO: move api interfaces into this package

@@ -11,17 +11,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
-import wtf.metio.yosql.tests.ObjectMother;
 
 @DisplayName("DefaultJdbcFields")
-class DefaultJdbcFieldsTest extends ObjectMother {
+class DefaultJdbcFieldsTest {
 
     private DefaultJdbcFields generator;
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcFields(yoSqlComponent().jdbcFieldsConfiguration());
+        generator = new DefaultJdbcFields(JdbcFieldsConfiguration.usingDefaults());
     }
 
     @Test

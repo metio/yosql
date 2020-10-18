@@ -9,6 +9,7 @@ package wtf.metio.yosql.maven;
 
 import wtf.metio.yosql.model.configuration.MethodConfiguration;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -22,122 +23,122 @@ public class Methods {
      * case of SQL SELECT statements or a single call to 'executeUpdate' for SQL UPDATE statements. (default:
      * <strong>true</strong>).
      */
-    private final boolean methodStandardApi = true;
+    private final boolean standardApi = true;
 
     /**
      * Controls whether the generated repositories should contain batch methods for SQL INSERT/UPDATE/DELETE statements.
      * (default: <strong>true</strong>).
      */
-    private final boolean methodBatchApi = true;
+    private final boolean batchApi = true;
 
     /**
      * The method name prefix to apply to all batch methods (default: <strong>""</strong>).
      */
-    private final String methodBatchPrefix = "";
+    private final String batchPrefix = "";
 
     /**
      * The method name suffix to apply to all batch methods (default: <strong>"Batch"</strong>).
      */
-    private final String methodBatchSuffix = "Batch";
+    private final String batchSuffix = "Batch";
 
     /**
      * Controls whether an eager {@link Stream} based method should be generated (default: <strong>true</strong>). If
      * the target Java version is set to anything below 1.8, defaults to <strong>false</strong>
      */
-    private final boolean methodStreamEagerApi = true;
+    private final boolean streamEagerApi = true;
 
     /**
      * Controls whether a lazy {@link Stream} based method should be generated (default: <strong>true</strong>). If the
      * target Java version is set to anything below 1.8, defaults to <strong>false</strong>
      */
-    private final boolean methodStreamLazyApi = true;
+    private final boolean streamLazyApi = true;
 
     /**
      * Controls whether a RxJava {@link io.reactivex.Flowable} based method should be generated (default:
      * <strong>false</strong>). In case <strong>io.reactivex.rxjava2:rxjava</strong> is a declared dependency, defaults
      * to <strong>true</strong>.
      */
-    private final boolean methodRxJavaApi = false;
+    private final boolean rxJavaApi = false;
 
     /**
      * The method name prefix to apply to all stream methods (default: <strong>""</strong>).
      */
-    private final String methodStreamPrefix = "";
+    private final String streamPrefix = "";
 
     /**
      * The method name suffix to apply to all stream methods (default: <strong>Stream</strong>).
      */
-    private final String methodStreamSuffix = "Stream";
+    private final String streamSuffix = "Stream";
 
     /**
      * The method name prefix to apply to all RxJava methods (default: <strong>""</strong>).
      */
-    private final String methodRxJavaPrefix = "";
+    private final String rxJavaPrefix = "";
 
     /**
      * The method name suffix to apply to all RxJava methods (default: <strong>Flow</strong>).
      */
-    private final String methodRxJavaSuffix = "Flow";
+    private final String rxJavaSuffix = "Flow";
 
     /**
      * The method name extra to apply to all lazy stream methods (default: <strong>Lazy</strong>).
      */
-    private final String methodLazyName = "Lazy";
+    private final String lazyName = "Lazy";
 
     /**
      * The method name extra to apply to all eager stream methods (default: <strong>Eager</strong>).
      */
-    private final String methodEagerName = "Eager";
+    private final String eagerName = "Eager";
 
     /**
      * Whether generated methods should catch SqlExceptions and rethrow them as RuntimeExceptions (default:
      * <strong>true</strong>). If set to <strong>false</strong>, this will cause methods to declare that they throw a
      * checked exception which in turn will force all its users to handle the exception.
      */
-    private final boolean methodCatchAndRethrow = true;
+    private final boolean catchAndRethrow = true;
 
     /**
-     * Controls whether method names are validated according to <strong>methodAllowedReadPrefixes</strong> and
-     * <strong>methodAllowedWritePrefixes</strong> (default: <strong>true</strong>).
+     * Controls whether method names are validated according to <strong>allowedReadPrefixes</strong> and
+     * <strong>allowedWritePrefixes</strong> (default: <strong>true</strong>).
      */
-    private final boolean methodValidateNamePrefixes = true;
+    private final boolean validateNamePrefixes = true;
 
     /**
      * The allow method name prefixes for writing methods (default: <strong>update, insert, delete, create, write, add,
      * remove, merge, drop</strong>).
      */
-    private final String methodAllowedWritePrefixes = "update,insert,delete,create,write,add,remove,merge,drop";
+    private final List<String> allowedWritePrefixes = List.of("update", "insert", "delete", "create", "write", "add", "remove", "merge", "drop");
 
     /**
      * The allow method name prefixes for reading methods (default: <strong>select, read, query, find</strong>).
      */
-    private final String methodAllowedReadPrefixes = "select,read,query,find";
+    private final List<String> allowedReadPrefixes = List.of("select", "read", "query", "find");
 
     /**
      * The allow method name prefixes for calling methods (default: <strong>call, execute</strong>).
      */
-    private final String methodAllowedCallPrefixes = "call,execute";
+    private final List<String> allowedCallPrefixes = List.of("call", "execute");
 
     MethodConfiguration asConfiguration() {
         return MethodConfiguration.builder()
-                .setGenerateBatchApi(methodBatchApi)
-                .setGenerateStandardApi(methodStandardApi)
-                .setGenerateStreamEagerApi(methodStreamEagerApi)
-                .setGenerateStreamLazyApi(methodStreamLazyApi)
-                .setGenerateRxJavaApi(methodRxJavaApi)
-                .setMethodBatchPrefix(methodBatchPrefix)
-                .setMethodBatchSuffix(methodBatchSuffix)
-                .setMethodStreamPrefix(methodStreamPrefix)
-                .setMethodStreamSuffix(methodStreamSuffix)
-                .setMethodRxJavaPrefix(methodRxJavaPrefix)
-                .setMethodRxJavaSuffix(methodRxJavaSuffix)
-                .setMethodEagerName(methodEagerName)
-                .setMethodLazyName(methodLazyName)
-                .setMethodCatchAndRethrow(methodCatchAndRethrow)
-                .addAllowedReadPrefixes(methodAllowedReadPrefixes.split(","))
-                .addAllowedWritePrefixes(methodAllowedWritePrefixes.split(","))
-                .addAllowedCallPrefixes(methodAllowedCallPrefixes.split(","))
-                .setValidateMethodNamePrefixes(methodValidateNamePrefixes)
+                .setGenerateBatchApi(batchApi)
+                .setGenerateStandardApi(standardApi)
+                .setGenerateStreamEagerApi(streamEagerApi)
+                .setGenerateStreamLazyApi(streamLazyApi)
+                .setGenerateRxJavaApi(rxJavaApi)
+                .setMethodBatchPrefix(batchPrefix)
+                .setMethodBatchSuffix(batchSuffix)
+                .setMethodStreamPrefix(streamPrefix)
+                .setMethodStreamSuffix(streamSuffix)
+                .setMethodRxJavaPrefix(rxJavaPrefix)
+                .setMethodRxJavaSuffix(rxJavaSuffix)
+                .setMethodEagerName(eagerName)
+                .setMethodLazyName(lazyName)
+                .setMethodCatchAndRethrow(catchAndRethrow)
+                .setAllowedReadPrefixes(allowedReadPrefixes)
+                .setAllowedWritePrefixes(allowedWritePrefixes)
+                .setAllowedCallPrefixes(allowedCallPrefixes)
+                .setValidateMethodNamePrefixes(validateNamePrefixes)
                 .build();
     }
 

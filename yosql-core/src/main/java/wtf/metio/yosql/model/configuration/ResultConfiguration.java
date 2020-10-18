@@ -10,6 +10,9 @@ package wtf.metio.yosql.model.configuration;
 import com.squareup.javapoet.ClassName;
 import org.immutables.value.Value;
 
+/**
+ * Configures the various result related options.
+ */
 @Value.Immutable
 public interface ResultConfiguration {
 
@@ -17,8 +20,31 @@ public interface ResultConfiguration {
         return ImmutableResultConfiguration.builder();
     }
 
-    ClassName resultStateClass();
+    /**
+     * @return A result configuration using default values.
+     */
+    static ImmutableResultConfiguration usingDefaults() {
+        return builder().build();
+    }
 
-    ClassName resultRowClass();
+    @Value.Default
+    default ClassName resultStateClass() {
+        final var packagesConfiguration = PackagesConfiguration.usingDefaults();
+        return ClassName.get(
+                packagesConfiguration.basePackageName()
+                        + "."
+                        + packagesConfiguration.utilityPackageName(),
+                "ResultState");
+    }
+
+    @Value.Default
+    default ClassName resultRowClass() {
+        final var packagesConfiguration = PackagesConfiguration.usingDefaults();
+        return ClassName.get(
+                packagesConfiguration.basePackageName()
+                        + "."
+                        + packagesConfiguration.utilityPackageName(),
+                "ResultRow");
+    }
 
 }

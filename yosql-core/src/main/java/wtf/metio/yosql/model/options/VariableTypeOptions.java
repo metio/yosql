@@ -19,6 +19,8 @@ public enum VariableTypeOptions {
 
     /**
      * Generate variable declarations using the 'var' keyword introduced in Java 11 (<code>var x = 123</code>).
+     *
+     * @since Java 11
      */
     VAR
 

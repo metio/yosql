@@ -9,8 +9,6 @@ package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.blocks.api.Javadoc;
-import wtf.metio.yosql.generator.blocks.api.Methods;
 import wtf.metio.yosql.model.configuration.JavaConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
 

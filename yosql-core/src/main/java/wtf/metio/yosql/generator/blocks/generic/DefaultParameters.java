@@ -12,8 +12,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.generator.blocks.api.Names;
-import wtf.metio.yosql.generator.blocks.api.Parameters;
 import wtf.metio.yosql.model.sql.SqlParameter;
 
 import javax.lang.model.element.Modifier;

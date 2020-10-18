@@ -10,13 +10,13 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.generator.blocks.generic.*;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
@@ -56,7 +56,7 @@ final class ResultRowGenerator {
         this.jdbcParameters = jdbcParameters;
     }
 
-    PackageTypeSpec generateResultRowClass() {
+    PackagedTypeSpec generateResultRowClass() {
         final var resultRowClass = runtimeConfiguration.result().resultRowClass();
         final var type = classes.publicClass(resultRowClass)
                 .addField(row())
@@ -67,7 +67,7 @@ final class ResultRowGenerator {
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, resultRowClass.packageName(),
                 resultRowClass.simpleName());
-        return new PackageTypeSpec(type, resultRowClass.packageName());
+        return PackagedTypeSpec.of(type, resultRowClass.packageName());
     }
 
     private FieldSpec row() {

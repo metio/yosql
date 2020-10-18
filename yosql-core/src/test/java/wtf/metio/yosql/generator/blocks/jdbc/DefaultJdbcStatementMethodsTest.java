@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("DefaultJdbcStatementMethods")
-class DefaultJdbcStatementMethodsTest extends ObjectMother {
+class DefaultJdbcStatementMethodsTest {
 
     private DefaultJdbcStatementMethods generator;
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcStatementMethods(yoSqlComponent().jdbcNames());
+        generator = new DefaultJdbcStatementMethods(ObjectMother.jdbcNames());
     }
 
     @Test

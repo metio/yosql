@@ -10,8 +10,13 @@ package wtf.metio.yosql.model.configuration;
 import org.immutables.value.Value;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
+/**
+ * Configures the various file related options.
+ */
 @Value.Immutable
 public interface FileConfiguration {
 
@@ -20,28 +25,50 @@ public interface FileConfiguration {
     }
 
     /**
+     * @return A file configuration using default values.
+     */
+    static ImmutableFileConfiguration usingDefaults() {
+        return builder().build();
+    }
+
+    /**
      * @return The base directory for SQL file parsing.
      */
-    Path inputBaseDirectory();
+    @Value.Default
+    default Path inputBaseDirectory() {
+        return Paths.get(".");
+    }
 
     /**
      * @return The base directory for writing .java files.
      */
-    Path outputBaseDirectory();
+    @Value.Default
+    default Path outputBaseDirectory() {
+        return Paths.get(".");
+    }
 
     /**
      * @return The SQL statement separator to use, e.g. ";".
      */
-    String sqlStatementSeparator();
+    @Value.Default
+    default String sqlStatementSeparator() {
+        return ";";
+    }
 
     /**
      * @return The charset to use while reading SQL files, e.g. "UTF-8".
      */
-    Charset sqlFilesCharset();
+    @Value.Default
+    default Charset sqlFilesCharset() {
+        return StandardCharsets.UTF_8;
+    }
 
     /**
      * @return The file suffix to use while searching for SQL files, e.g. ".sql".
      */
-    String sqlFilesSuffix();
+    @Value.Default
+    default String sqlFilesSuffix() {
+        return ".sql";
+    }
 
 }

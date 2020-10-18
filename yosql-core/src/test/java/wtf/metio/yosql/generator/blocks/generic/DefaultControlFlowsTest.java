@@ -12,16 +12,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("DefaultControlFlows")
-class DefaultControlFlowsTest extends ObjectMother {
+class DefaultControlFlowsTest {
 
     private DefaultControlFlows generator;
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultControlFlows(yoSqlComponent().variables(), yoSqlComponent().names());
+        generator = new DefaultControlFlows(
+                ObjectMother.variables(),
+                ObjectMother.names());
     }
 
     @Test

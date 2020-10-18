@@ -7,10 +7,10 @@
 
 package wtf.metio.yosql.orchestration;
 
+import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
-import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.annotations.Delegating;
 import wtf.metio.yosql.model.annotations.TimeLogger;
 import wtf.metio.yosql.model.annotations.Writer;
@@ -44,13 +44,13 @@ public class OrchestrationModule {
     Orchestrator provideOrchestrator(
             final Executor pool,
             final Timer timer,
-            final Translator translator,
+            final IMessageConveyor messages,
             final TypeWriter typeWriter,
             final ExecutionErrors errors) {
         return new DefaultOrchestrator(
                 pool,
                 timer,
-                translator,
+                messages,
                 typeWriter,
                 errors);
     }
@@ -64,10 +64,8 @@ public class OrchestrationModule {
     @Provides
     @Singleton
     @Delegating
-    ForkJoinPool.ForkJoinWorkerThreadFactory provideForkJoinWorkerThreadFactory(
-            final Translator translator,
-            final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory) {
-        return new NamedForkJoinWorkerThreadFactory(translator, threadFactory);
+    ForkJoinPool.ForkJoinWorkerThreadFactory provideForkJoinWorkerThreadFactory(final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory) {
+        return new NamedForkJoinWorkerThreadFactory(threadFactory);
     }
 
     @Provides

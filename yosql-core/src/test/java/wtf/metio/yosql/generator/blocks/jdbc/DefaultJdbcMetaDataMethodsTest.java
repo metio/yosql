@@ -10,15 +10,15 @@ package wtf.metio.yosql.generator.blocks.jdbc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("DefaultJdbcMetaDataMethods")
-class DefaultJdbcMetaDataMethodsTest extends ObjectMother {
+class DefaultJdbcMetaDataMethodsTest {
 
     @Test
     void getColumnCount() {
         // given
-        final var generator = new DefaultJdbcMetaDataMethods(yoSqlComponent().jdbcNames());
+        final var generator = new DefaultJdbcMetaDataMethods(ObjectMother.jdbcNames());
 
         // when
         final var columnCount = generator.getColumnCount();

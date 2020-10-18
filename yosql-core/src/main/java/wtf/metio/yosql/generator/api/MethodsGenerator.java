@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Generates methods for a repository.
  */
-@FunctionalInterface
 public interface MethodsGenerator {
 
     /**

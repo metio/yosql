@@ -9,6 +9,9 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+/**
+ * Configures the various JDBC names related options.
+ */
 @Value.Immutable
 public interface JdbcNamesConfiguration {
 
@@ -16,28 +19,107 @@ public interface JdbcNamesConfiguration {
         return ImmutableJdbcNamesConfiguration.builder();
     }
 
-    String dataSource();
+    /**
+     * @return A JDBC names configuration using default values.
+     */
+    static ImmutableJdbcNamesConfiguration usingDefaults() {
+        return builder().build();
+    }
 
-    String connection();
+    /**
+     * @return The name of the 'dataSource' variable.
+     */
+    @Value.Default
+    default String dataSource() {
+        return "dataSource";
+    }
 
-    String columnCount();
+    /**
+     * @return The name of the 'connection' variable.
+     */
+    @Value.Default
+    default String connection() {
+        return "connection";
+    }
 
-    String columnLabel();
+    /**
+     * @return The name of the 'columnCount' variable.
+     */
+    @Value.Default
+    default String columnCount() {
+        return "columnCount";
+    }
 
-    String statement();
+    /**
+     * @return The name of the 'columnLabel' variable.
+     */
+    @Value.Default
+    default String columnLabel() {
+        return "columnLabel";
+    }
 
-    String metaData();
+    /**
+     * @return The name of the 'statement' variable.
+     */
+    @Value.Default
+    default String statement() {
+        return "statement";
+    }
 
-    String resultSet();
+    /**
+     * @return The name of the 'metaData' variable.
+     */
+    @Value.Default
+    default String metaData() {
+        return "metaData";
+    }
 
-    String batch();
+    /**
+     * @return The name of the 'resultSet' variable.
+     */
+    @Value.Default
+    default String resultSet() {
+        return "resultSet";
+    }
 
-    String list();
+    /**
+     * @return The name of the 'batch' variable.
+     */
+    @Value.Default
+    default String batch() {
+        return "batch";
+    }
 
-    String jdbcIndex();
+    /**
+     * @return The name of the 'list' variable.
+     */
+    @Value.Default
+    default String list() {
+        return "list";
+    }
 
-    String index();
+    /**
+     * @return The name of the 'jdbcIndex' variable.
+     */
+    @Value.Default
+    default String jdbcIndex() {
+        return "jdbcIndex";
+    }
 
-    String row();
+    /**
+     * @return The name of the 'index' variable.
+     */
+    @Value.Default
+    default String index() {
+        return "index";
+    }
+
+    /**
+     * @return The name of the 'row' variable.
+     */
+    @Value.Default
+    default String row() {
+        return "row";
+    }
 
 }

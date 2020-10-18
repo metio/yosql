@@ -11,7 +11,7 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.model.configuration.FileConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ final class DefaultTypeWriter implements TypeWriter {
     }
 
     @Override
-    public void writeType(final PackageTypeSpec typeSpec) {
+    public void writeType(final PackagedTypeSpec typeSpec) {
         try {
             JavaFile.builder(typeSpec.getPackageName(), typeSpec.getType())
                     .build()

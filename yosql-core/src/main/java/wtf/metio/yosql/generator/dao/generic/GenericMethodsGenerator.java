@@ -9,8 +9,8 @@ package wtf.metio.yosql.generator.dao.generic;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.generator.api.*;
-import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
-import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.generic.GenericBlocks;
+import wtf.metio.yosql.generator.blocks.generic.Methods;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
@@ -53,8 +53,8 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
             final StandardMethodGenerator standardMethods,
             final GenericBlocks blocks,
             final Methods methods,
-            final JdbcNames jdbcNames,
-            final JdbcParameters jdbcParameters) {
+            final JdbcNames jdbcNames, // TODO: replace with Names?
+            final JdbcParameters jdbcParameters) { // TODO: replace with Parameters?
         this.batchMethods = batchMethods;
         this.streamMethods = streamMethods;
         this.rxjavaMethods = rxjavaMethods;
@@ -66,6 +66,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     }
 
     @Override
+    // TODO: move to JDBC implementation because of jdbcParams and jdbcNames usage
     protected MethodSpec constructor(final List<SqlStatement> statements) {
         final var builder = CodeBlock.builder();
         resultConverters(statements).forEach(converter -> builder.add(blocks.initializeConverter(converter)));

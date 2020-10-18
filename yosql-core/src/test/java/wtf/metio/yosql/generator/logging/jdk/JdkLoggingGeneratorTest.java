@@ -12,16 +12,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("JdkLoggingGenerator")
-class JdkLoggingGeneratorTest extends ObjectMother {
+class JdkLoggingGeneratorTest {
 
     private JdkLoggingGenerator generator;
 
     @BeforeEach
     void setUp() {
-        generator = new JdkLoggingGenerator(yoSqlComponent().names(), yoSqlComponent().fields());
+        generator = new JdkLoggingGenerator(
+                ObjectMother.names(),
+                ObjectMother.fields());
     }
 
     @Test

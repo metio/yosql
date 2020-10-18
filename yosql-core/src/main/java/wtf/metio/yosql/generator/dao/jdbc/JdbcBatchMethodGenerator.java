@@ -9,9 +9,9 @@ package wtf.metio.yosql.generator.dao.jdbc;
 import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.generator.api.BatchMethodGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.ControlFlows;
-import wtf.metio.yosql.generator.blocks.api.Methods;
-import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.generic.ControlFlows;
+import wtf.metio.yosql.generator.blocks.generic.Methods;
+import wtf.metio.yosql.generator.blocks.generic.Parameters;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
@@ -20,7 +20,7 @@ import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
 
-final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
+public final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
 
     private final ControlFlows controlFlow;
     private final Methods methods;
@@ -29,7 +29,7 @@ final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
     private final JdbcBlocks jdbc;
     private final JdbcTransformer transformer;
 
-    JdbcBatchMethodGenerator(
+    public JdbcBatchMethodGenerator(
             final ControlFlows controlFlow,
             final Methods methods,
             final Parameters parameters,

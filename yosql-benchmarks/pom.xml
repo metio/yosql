@@ -52,6 +52,7 @@
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
+            <scope>provided</scope>
         </dependency>
 
 

@@ -9,6 +9,9 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+/**
+ * Configures the various JDBC fields related options.
+ */
 @Value.Immutable
 public interface JdbcFieldsConfiguration {
 
@@ -16,8 +19,27 @@ public interface JdbcFieldsConfiguration {
         return ImmutableJdbcFieldsConfiguration.builder();
     }
 
-    String rawSuffix();
+    /**
+     * @return A JDBC fields configuration using default values.
+     */
+    static ImmutableJdbcFieldsConfiguration usingDefaults() {
+        return builder().build();
+    }
 
-    String indexSuffix();
+    /**
+     * @return The field name suffix for the raw SQL statement.
+     */
+    @Value.Default
+    default String rawSuffix() {
+        return "_RAW";
+    }
+
+    /**
+     * @return The field name suffix for the JDBC parameter indexes.
+     */
+    @Value.Default
+    default String indexSuffix() {
+        return "_INDEX";
+    }
 
 }

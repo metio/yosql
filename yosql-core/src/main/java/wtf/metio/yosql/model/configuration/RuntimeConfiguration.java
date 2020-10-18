@@ -9,6 +9,9 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+/**
+ * Configuration that holds all possible runtime configurations.
+ */
 @Value.Immutable
 public interface RuntimeConfiguration {
 
@@ -16,32 +19,81 @@ public interface RuntimeConfiguration {
         return ImmutableRuntimeConfiguration.builder();
     }
 
-    FileConfiguration files();
+    /**
+     * @return A runtime configuration using default values.
+     */
+    static ImmutableRuntimeConfiguration usingDefaults() {
+        return builder().build();
+    }
 
-    JavaConfiguration java();
+    @Value.Default
+    default FileConfiguration files() {
+        return FileConfiguration.usingDefaults();
+    }
 
-    LoggingConfiguration logging();
+    @Value.Default
+    default JavaConfiguration java() {
+        return JavaConfiguration.usingDefaults();
+    }
 
-    MethodConfiguration methods();
+    @Value.Default
+    default LoggingConfiguration logging() {
+        return LoggingConfiguration.usingDefaults();
+    }
 
-    PackagesConfiguration names();
+    @Value.Default
+    default MethodConfiguration methods() {
+        return MethodConfiguration.usingDefaults();
+    }
 
-    ResourceConfiguration resources();
+    @Value.Default
+    default PackagesConfiguration names() { // TODO: rename to packages
+        return PackagesConfiguration.usingDefaults();
+    }
 
-    RepositoryConfiguration repositories();
+    @Value.Default
+    default ResourceConfiguration resources() {
+        return ResourceConfiguration.usingDefaults();
+    }
 
-    StatementConfiguration statements();
+    @Value.Default
+    default RepositoryConfiguration repositories() {
+        return RepositoryConfiguration.usingDefaults();
+    }
 
-    VariableConfiguration variables();
+    @Value.Default
+    default StatementConfiguration statements() {
+        return StatementConfiguration.usingDefaults();
+    }
 
-    JdbcNamesConfiguration jdbcNames();
+    @Value.Default
+    default VariableConfiguration variables() {
+        return VariableConfiguration.usingDefaults();
+    }
 
-    JdbcFieldsConfiguration jdbcFields();
+    @Value.Default
+    default JdbcNamesConfiguration jdbcNames() {
+        return JdbcNamesConfiguration.usingDefaults();
+    }
 
-    RxJavaConfiguration rxJava();
+    @Value.Default
+    default JdbcFieldsConfiguration jdbcFields() {
+        return JdbcFieldsConfiguration.usingDefaults();
+    }
 
-    ResultConfiguration result();
+    @Value.Default
+    default RxJavaConfiguration rxJava() {
+        return RxJavaConfiguration.usingDefaults();
+    }
 
-    AnnotationConfiguration annotations();
+    @Value.Default
+    default ResultConfiguration result() {
+        return ResultConfiguration.usingDefaults();
+    }
+
+    @Value.Default
+    default AnnotationConfiguration annotations() {
+        return AnnotationConfiguration.usingDefaults();
+    }
 
 }

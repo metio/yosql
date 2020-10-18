@@ -18,14 +18,14 @@ public enum ReturningMode {
     NONE,
 
     /**
-     * Statement returns the first result.
+     * Statement returns the first result, fails if there are more than one.
      */
     SINGLE,
 
     /**
-     * Statement returns the first result, fails if there are more than one.
+     * Statement returns the first result, ignores all others in case they exist.
      */
-    FIRST,
+    ONE,
 
     /**
      * Statement returns the entire result set.

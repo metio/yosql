@@ -10,6 +10,7 @@ package wtf.metio.yosql.model.sql;
 import java.nio.file.Paths;
 import java.util.List;
 
+// TODO: move to ObjectMother
 public final class SqlObjectMother {
 
     public static SqlConfiguration sqlConfiguration() {

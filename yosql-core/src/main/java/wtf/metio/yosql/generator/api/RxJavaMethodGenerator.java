@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Generates RxJava2 based methods.
  */
-@FunctionalInterface
 public interface RxJavaMethodGenerator {
 
     /**

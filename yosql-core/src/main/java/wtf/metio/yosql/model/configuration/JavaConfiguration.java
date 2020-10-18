@@ -9,6 +9,9 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+/**
+ * Configures the various Java language related options.
+ */
 @Value.Immutable
 public interface JavaConfiguration {
 
@@ -16,22 +19,91 @@ public interface JavaConfiguration {
         return ImmutableJavaConfiguration.builder();
     }
 
-    int targetVersion();
+    /**
+     * @return A Java configuration using default values.
+     */
+    static ImmutableJavaConfiguration usingDefaults() {
+        return builder().build();
+    }
 
-    boolean useVar();
+    /**
+     * @return The Java SDK API version to use.
+     */
+    @Value.Default
+    default int apiVersion() {
+        return 15;
+    }
 
-    boolean useRecords();
+    /**
+     * @return Should variables and parameters declared as final
+     * @since Java 1
+     */
+    @Value.Default
+    default boolean useFinal() {
+        return true;
+    }
 
-    boolean useTextBlocks();
+    /**
+     * @return Should generic types be used
+     * @since Java 5
+     */
+    @Value.Default
+    default boolean useGenerics() {
+        return true;
+    }
 
-    boolean useProcessingApi();
+    /**
+     * @return Should the diamond operator be used
+     * @since Java 7
+     */
+    @Value.Default
+    default boolean useDiamondOperator() {
+        return true;
+    }
 
-    boolean useGenerics();
+    /**
+     * @return Should the stream API be used
+     * @since Java 8
+     */
+    @Value.Default
+    default boolean useStreamAPI() {
+        return true;
+    }
 
-    boolean useDiamondOperator();
+    /**
+     * @return Should the processing API be used
+     * @since Java 9
+     */
+    @Value.Default
+    default boolean useProcessingApi() {
+        return true;
+    }
 
-    boolean useStreamAPI();
+    /**
+     * @return Should variables use the 'var' keyword
+     * @since Java 11
+     */
+    @Value.Default
+    default boolean useVar() {
+        return false;
+    }
 
-    boolean useFinal();
+    /**
+     * @return Should text blocks be used
+     * @since Java 15
+     */
+    @Value.Default
+    default boolean useTextBlocks() {
+        return false;
+    }
+
+    /**
+     * @return Should records be used
+     * @since Java 16?
+     */
+    @Value.Default
+    default boolean useRecords() {
+        return false;
+    }
 
 }

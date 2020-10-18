@@ -12,16 +12,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("DefaultFields")
-class DefaultFieldsTest extends ObjectMother {
+class DefaultFieldsTest {
 
     private DefaultFields generator;
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultFields(yoSqlComponent().annotationGenerator());
+        generator = new DefaultFields(ObjectMother.annotationGenerator());
     }
 
     @Test

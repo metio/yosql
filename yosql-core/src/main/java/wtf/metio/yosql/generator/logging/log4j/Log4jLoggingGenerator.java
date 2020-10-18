@@ -13,12 +13,15 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.Fields;
-import wtf.metio.yosql.generator.blocks.api.Names;
+import wtf.metio.yosql.generator.blocks.generic.Fields;
+import wtf.metio.yosql.generator.blocks.generic.Names;
 
 import java.util.Optional;
 
-final class Log4jLoggingGenerator implements LoggingGenerator {
+/**
+ * Logging generator that uses log4j
+ */
+public final class Log4jLoggingGenerator implements LoggingGenerator {
 
     private final Names names;
     private final Fields fields;

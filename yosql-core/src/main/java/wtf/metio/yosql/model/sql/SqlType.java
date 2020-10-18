@@ -6,12 +6,24 @@
  */
 package wtf.metio.yosql.model.sql;
 
+/**
+ * Enumeration of possible SQL statement types.
+ */
 public enum SqlType {
 
+    /**
+     * Statement reads data from a database.
+     */
     READING,
 
+    /**
+     * Statement writes data to a database.
+     */
     WRITING,
 
+    /**
+     * Statement calls a (stored) procedure in a database.
+     */
     CALLING,
 
 }

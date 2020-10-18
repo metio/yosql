@@ -6,7 +6,7 @@
  */
 package wtf.metio.yosql.generator.api;
 
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
@@ -21,10 +21,9 @@ public interface UtilitiesGenerator {
     /**
      * Creates utilities based on a number of {@link SqlStatement}s.
      *
-     * @param statements
-     *            The statements to use.
+     * @param statements The statements to use.
      * @return A stream of utility type specifications and their target package.
      */
-    Stream<PackageTypeSpec> generateUtilities(List<SqlStatement> statements);
+    Stream<PackagedTypeSpec> generateUtilities(List<SqlStatement> statements);
 
 }

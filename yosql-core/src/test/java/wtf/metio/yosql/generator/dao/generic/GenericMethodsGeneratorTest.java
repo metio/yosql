@@ -12,24 +12,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.model.sql.SqlObjectMother;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("GenericMethodsGenerator")
-class GenericMethodsGeneratorTest extends ObjectMother {
+class GenericMethodsGeneratorTest {
 
     private GenericMethodsGenerator generator;
 
     @BeforeEach
     void setUp() {
         generator = new GenericMethodsGenerator(
-                yoSqlComponent().batchMethods(),
-                yoSqlComponent().streamMethods(),
-                yoSqlComponent().rxjavaMethods(),
-                yoSqlComponent().standardMethods(),
-                yoSqlComponent().genericBlocks(),
-                yoSqlComponent().methods(),
-                yoSqlComponent().jdbcNames(),
-                yoSqlComponent().jdbcParameters());
+                ObjectMother.jdbcBatchMethods(),
+                ObjectMother.jdbcStreamMethods(),
+                ObjectMother.jdbcRxjavaMethods(),
+                ObjectMother.jdbcStandardMethodGenerator(),
+                ObjectMother.genericBlocks(),
+                ObjectMother.methods(),
+                ObjectMother.jdbcNames(),
+                ObjectMother.jdbcParameters());
     }
 
     @Test

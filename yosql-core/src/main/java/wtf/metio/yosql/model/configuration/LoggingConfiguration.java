@@ -10,11 +10,21 @@ package wtf.metio.yosql.model.configuration;
 import org.immutables.value.Value;
 import wtf.metio.yosql.model.options.LoggingApiOptions;
 
+/**
+ * Configures the various logging related options.
+ */
 @Value.Immutable
 public interface LoggingConfiguration {
 
     static ImmutableLoggingConfiguration.Builder builder() {
         return ImmutableLoggingConfiguration.builder();
+    }
+
+    /**
+     * @return A logging configuration using default values.
+     */
+    static ImmutableLoggingConfiguration usingDefaults() {
+        return builder().build();
     }
 
     /**
@@ -26,8 +36,10 @@ public interface LoggingConfiguration {
 
     /**
      * @return The logging API to use.
-     * @see LoggingApiOptions
      */
-    LoggingApiOptions api();
+    @Value.Default
+    default LoggingApiOptions api() {
+        return LoggingApiOptions.JDK;
+    }
 
 }

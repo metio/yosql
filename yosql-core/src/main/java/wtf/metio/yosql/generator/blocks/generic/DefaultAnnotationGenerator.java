@@ -9,7 +9,6 @@ package wtf.metio.yosql.generator.blocks.generic;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.i18n.Translator;
 import wtf.metio.yosql.model.configuration.AnnotationConfiguration;
 import wtf.metio.yosql.model.options.AnnotationClassOptions;
 import wtf.metio.yosql.model.options.AnnotationMemberOptions;
@@ -35,13 +34,9 @@ final class DefaultAnnotationGenerator implements AnnotationGenerator {
             AnnotationMemberOptions.WITHOUT_DATE);
 
     private final AnnotationConfiguration configuration;
-    private final Translator translator;
 
-    DefaultAnnotationGenerator(
-            final AnnotationConfiguration configuration,
-            final Translator translator) {
+    DefaultAnnotationGenerator(final AnnotationConfiguration configuration) {
         this.configuration = configuration;
-        this.translator = translator;
     }
 
     @Override
@@ -73,7 +68,7 @@ final class DefaultAnnotationGenerator implements AnnotationGenerator {
             final AnnotationMemberOptions memberOption,
             final String comment) {
         if (AnnotationClassOptions.NONE != classOption) {
-            final var annotationClass = ClassName.bestGuess(translator.get(classOption));
+            final var annotationClass = ClassName.bestGuess(classOption.annotationClass);
             final var builder = AnnotationSpec.builder(annotationClass);
             if (OPTIONS_WITH_VALUE.contains(memberOption)) {
                 builder.addMember("value", "$S", configuration.generatorName());

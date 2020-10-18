@@ -13,9 +13,8 @@ import com.squareup.javapoet.TypeSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.generator.api.Java8StreamMethodGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.generator.blocks.generic.*;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 
-final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator {
+public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator {
 
     private final GenericBlocks blocks;
     private final ControlFlows controlFlow;
@@ -36,9 +35,8 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbcBlocks;
     private final JdbcTransformer jdbcTransformer;
-    private final JdbcNames jdbcNames;
 
-    JdbcJava8StreamMethodGenerator(
+    public JdbcJava8StreamMethodGenerator(
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
             final Names names,
@@ -46,8 +44,7 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
             final Parameters parameters,
             final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final JdbcTransformer jdbcTransformer,
-            final JdbcNames jdbcNames) {
+            final JdbcTransformer jdbcTransformer) {
         this.names = names;
         this.logging = logging;
         this.blocks = blocks;
@@ -56,7 +53,6 @@ final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator
         this.controlFlow = controlFlow;
         this.methods = methods;
         this.parameters = parameters;
-        this.jdbcNames = jdbcNames;
     }
 
     @Override

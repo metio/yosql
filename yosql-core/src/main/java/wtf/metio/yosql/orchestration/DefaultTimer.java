@@ -54,13 +54,11 @@ final class DefaultTimer implements Timer {
     @Override
     public void printTimings() {
         if (logger.isInfoEnabled()) {
-            Duration totalRuntime = Duration.ofMillis(0);
-            for (final var entry : timings.entrySet()) {
-                final var runtimeInMilliseconds = entry.getValue();
-                logger.info(ApplicationEvents.TASK_RUNTIME, entry.getKey(), runtimeInMilliseconds);
-                totalRuntime = totalRuntime.plus(runtimeInMilliseconds);
-            }
-            logger.info(ApplicationEvents.APPLICATION_RUNTIME, totalRuntime);
+            final var total = timings.entrySet().stream()
+                    .peek(entry -> logger.info(ApplicationEvents.TASK_RUNTIME, entry.getKey(), entry.getValue()))
+                    .map(Map.Entry::getValue)
+                    .reduce(Duration.ofMillis(0), Duration::plus);
+            logger.info(ApplicationEvents.APPLICATION_RUNTIME, total);
         }
         timings.clear();
     }

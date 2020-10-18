@@ -9,6 +9,9 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+/**
+ * Configures the various resource related options.
+ */
 @Value.Immutable
 public interface ResourceConfiguration {
 
@@ -17,8 +20,18 @@ public interface ResourceConfiguration {
     }
 
     /**
+     * @return A resource configuration using default values.
+     */
+    static ImmutableResourceConfiguration usingDefaults() {
+        return builder().build();
+    }
+
+    /**
      * @return The maximum number of threads to use while working.
      */
-    int maxThreads();
+    @Value.Default
+    default int maxThreads() {
+        return 0;
+    }
 
 }

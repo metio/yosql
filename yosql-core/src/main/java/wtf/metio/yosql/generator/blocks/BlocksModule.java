@@ -8,14 +8,12 @@
 package wtf.metio.yosql.generator.blocks;
 
 import dagger.Module;
-import wtf.metio.yosql.generator.blocks.javadoc.JavadocModule;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocksModule;
-import wtf.metio.yosql.generator.blocks.generic.GenericBlocksModule;
+import wtf.metio.yosql.generator.blocks.generic.GenericModule;
+import wtf.metio.yosql.generator.blocks.jdbc.JdbcModule;
 
 @Module(includes = {
-        JavadocModule.class,
-        GenericBlocksModule.class,
-        JdbcBlocksModule.class,
+        GenericModule.class,
+        JdbcModule.class,
 })
-public class BlocksModule {
+public final class BlocksModule {
 }

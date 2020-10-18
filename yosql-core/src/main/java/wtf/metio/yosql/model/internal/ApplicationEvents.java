@@ -13,8 +13,8 @@ import ch.qos.cal10n.LocaleData;
 /**
  * Enumeration of known application events.
  */
-@LocaleData(@Locale("en"))
-@BaseName("internal.application-events")
+@LocaleData({@Locale("en"), @Locale("de")})
+@BaseName("application-events")
 public enum ApplicationEvents {
 
     /**
@@ -115,11 +115,5 @@ public enum ApplicationEvents {
     /**
      * Signals that files are about to be written.
      */
-    WRITE_FILES,
-
-    /**
-     * The name for the internal thread pool.
-     */
-    WORKER_POOL_NAME,
-
+    WRITE_FILES
 }

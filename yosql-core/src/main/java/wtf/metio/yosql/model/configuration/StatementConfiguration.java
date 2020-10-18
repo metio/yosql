@@ -10,13 +10,26 @@ package wtf.metio.yosql.model.configuration;
 import org.immutables.value.Value;
 import wtf.metio.yosql.model.options.StatementInRepositoryOptions;
 
+/**
+ * Configures the statement related options.
+ */
 @Value.Immutable
-public interface StatementConfiguration {
+public interface StatementConfiguration { // TODO: merge into RepositoryConfiguration
 
     static ImmutableStatementConfiguration.Builder builder() {
         return ImmutableStatementConfiguration.builder();
     }
 
-    StatementInRepositoryOptions embed();
+    /**
+     * @return A statement configuration using default values.
+     */
+    static ImmutableStatementConfiguration usingDefaults() {
+        return builder().build();
+    }
+
+    @Value.Default
+    default StatementInRepositoryOptions embed() {
+        return StatementInRepositoryOptions.INLINE_CONCAT;
+    }
 
 }

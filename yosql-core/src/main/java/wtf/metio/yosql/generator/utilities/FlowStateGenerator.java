@@ -10,14 +10,14 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.blocks.api.Classes;
-import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
-import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.generic.Classes;
+import wtf.metio.yosql.generator.blocks.generic.GenericBlocks;
+import wtf.metio.yosql.generator.blocks.generic.Methods;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -54,7 +54,7 @@ final class FlowStateGenerator {
         this.jdbcParameters = jdbcParameters;
     }
 
-    PackageTypeSpec generateFlowStateClass() {
+    PackagedTypeSpec generateFlowStateClass() {
         final var flowStateClass = runtimeConfiguration.rxJava().flowStateClass();
         final var type = classes.publicClass(flowStateClass)
                 .superclass(runtimeConfiguration.rxJava().flowStateClass())
@@ -64,7 +64,7 @@ final class FlowStateGenerator {
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, flowStateClass.packageName(),
                 flowStateClass.simpleName());
-        return new PackageTypeSpec(type, flowStateClass.packageName());
+        return PackagedTypeSpec.of(type, flowStateClass.packageName());
     }
 
     private Iterable<FieldSpec> fields() {

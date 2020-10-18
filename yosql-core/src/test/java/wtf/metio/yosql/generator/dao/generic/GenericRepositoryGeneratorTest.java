@@ -12,22 +12,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.model.sql.SqlObjectMother;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("GenericRepositoryGenerator")
-class GenericRepositoryGeneratorTest extends ObjectMother {
+class GenericRepositoryGeneratorTest {
 
     private GenericRepositoryGenerator generator;
 
     @BeforeEach
     void setUp() {
         generator = new GenericRepositoryGenerator(
-                yoSqlComponent().loggerForGenerators(),
-                yoSqlComponent().annotationGenerator(),
-                yoSqlComponent().classes(),
-                yoSqlComponent().javadoc(),
-                yoSqlComponent().fieldsGenerator(),
-                yoSqlComponent().methodsGenerator());
+                ObjectMother.generatorLocLogger(),
+                ObjectMother.annotationGenerator(),
+                ObjectMother.classes(),
+                ObjectMother.javadoc(),
+                ObjectMother.jdbcFieldsGenerator(),
+                ObjectMother.jdbcMethodsGenerator());
     }
 
     @Test

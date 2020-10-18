@@ -21,16 +21,14 @@ public abstract class AbstractForEachUseCaseBenchmark extends AbstractBenchmark 
      * The supported use cases for file parsing.
      */
     @Param({
-        //@formatter:off
-        "callFunction.sql"
-        ,"callFunctionMultiple.sql"
-        ,"insertData.sql"
-        ,"insertDataMultiple.sql"
-        ,"readData.sql"
-        ,"readDataMultiple.sql"
-        ,"updateData.sql"
-        ,"updateDataMultiple.sql"
-        //@formatter:on
+            "callFunction.sql",
+            "callFunctionMultiple.sql",
+            "insertData.sql",
+            "insertDataMultiple.sql",
+            "readData.sql",
+            "readDataMultiple.sql",
+            "updateData.sql",
+            "updateDataMultiple.sql"
     })
     public String usecase;
 

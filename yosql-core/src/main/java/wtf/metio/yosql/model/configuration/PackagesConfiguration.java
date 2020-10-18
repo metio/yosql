@@ -9,6 +9,9 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+/**
+ * Configuration for the various package related options.
+ */
 @Value.Immutable
 public interface PackagesConfiguration {
 
@@ -16,10 +19,35 @@ public interface PackagesConfiguration {
         return ImmutablePackagesConfiguration.builder();
     }
 
-    String utilityPackageName();
+    /**
+     * @return An package configuration using default values.
+     */
+    static ImmutablePackagesConfiguration usingDefaults() {
+        return builder().build();
+    }
 
-    String converterPackageName();
+    /**
+     * @return The package name for utilities.
+     */
+    @Value.Default
+    default String utilityPackageName() {
+        return "util";
+    }
 
-    String basePackageName();
+    /**
+     * @return The package name for converters.
+     */
+    @Value.Default
+    default String converterPackageName() {
+        return "converter";
+    }
+
+    /**
+     * @return The base package name for all classes.
+     */
+    @Value.Default
+    default String basePackageName() {
+        return "com.example.persistence";
+    }
 
 }

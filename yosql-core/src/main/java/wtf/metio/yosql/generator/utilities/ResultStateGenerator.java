@@ -10,15 +10,15 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.blocks.api.Classes;
-import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
-import wtf.metio.yosql.generator.blocks.api.Methods;
+import wtf.metio.yosql.generator.blocks.generic.Classes;
+import wtf.metio.yosql.generator.blocks.generic.GenericBlocks;
+import wtf.metio.yosql.generator.blocks.generic.Methods;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -59,7 +59,7 @@ final class ResultStateGenerator {
         this.jdbcNames = jdbcNames;
     }
 
-    PackageTypeSpec generateResultStateClass() {
+    PackagedTypeSpec generateResultStateClass() {
         final var resultStateClass = runtimeConfiguration.result().resultStateClass();
         final var type = classes.openClass(resultStateClass)
                 .addFields(fields())
@@ -68,7 +68,7 @@ final class ResultStateGenerator {
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, resultStateClass.packageName(),
                 resultStateClass.simpleName());
-        return new PackageTypeSpec(type, resultStateClass.packageName());
+        return PackagedTypeSpec.of(type, resultStateClass.packageName());
     }
 
     private Iterable<FieldSpec> fields() {

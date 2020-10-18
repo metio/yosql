@@ -7,9 +7,9 @@
 
 package wtf.metio.yosql.orchestration;
 
-import wtf.metio.yosql.i18n.Translator;
+import ch.qos.cal10n.IMessageConveyor;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
@@ -25,27 +25,27 @@ final class DefaultOrchestrator implements Orchestrator {
 
     private final Executor pool;
     private final Timer timer;
-    private final Translator translator;
+    private final IMessageConveyor messages;
     private final TypeWriter typeWriter;
     private final ExecutionErrors errors;
 
     DefaultOrchestrator(
             final Executor pool,
             final Timer timer,
-            final Translator translator,
+            final IMessageConveyor messages,
             final TypeWriter typeWriter,
             final ExecutionErrors errors) {
         this.pool = pool;
         this.timer = timer;
         this.errors = errors;
-        this.translator = translator;
+        this.messages = messages;
         this.typeWriter = typeWriter;
     }
 
     @Override
     public void execute(
             final Supplier<List<SqlStatement>> parser,
-            final Function<List<SqlStatement>, Stream<PackageTypeSpec>> generateCode) {
+            final Function<List<SqlStatement>, Stream<PackagedTypeSpec>> generateCode) {
         supplyAsync(() -> parseFiles(parser), pool)
                 .thenApplyAsync((statements -> timeCodeGeneration(generateCode, statements)), pool)
                 .thenAcceptAsync(this::writeIntoFiles, pool)
@@ -53,29 +53,29 @@ final class DefaultOrchestrator implements Orchestrator {
                 .exceptionally(this::handleExceptions)
                 .join();
         if (errors.hasErrors()) {
-            errors.codeGenerationException(translator.get(CODE_GENERATION_FAILED));
+            errors.codeGenerationException(messages.getMessage(CODE_GENERATION_FAILED));
         }
     }
 
     private List<SqlStatement> parseFiles(final Supplier<List<SqlStatement>> parser) {
-        final var statements = timer.timed(translator.get(PARSE_FILES), parser);
+        final var statements = timer.timed(messages.getMessage(PARSE_FILES), parser);
         if (errors.hasErrors()) {
-            errors.sqlFileParsingException(translator.get(PARSE_FILES_FAILED));
+            errors.sqlFileParsingException(messages.getMessage(PARSE_FILES_FAILED));
         }
         return statements;
     }
 
-    private Stream<PackageTypeSpec> timeCodeGeneration(
-            final Function<List<SqlStatement>, Stream<PackageTypeSpec>> generateCode,
+    private Stream<PackagedTypeSpec> timeCodeGeneration(
+            final Function<List<SqlStatement>, Stream<PackagedTypeSpec>> generateCode,
             final List<SqlStatement> statements) {
-        return timer.timed(translator.get(GENERATE_REPOSITORIES), () -> generateCode.apply(statements));
+        return timer.timed(messages.getMessage(GENERATE_REPOSITORIES), () -> generateCode.apply(statements));
     }
 
-    private void writeIntoFiles(final Stream<PackageTypeSpec> typeSpecs) {
-        timer.timed(translator.get(WRITE_FILES), writeTypeSpecs(typeSpecs));
+    private void writeIntoFiles(final Stream<PackagedTypeSpec> typeSpecs) {
+        timer.timed(messages.getMessage(WRITE_FILES), writeTypeSpecs(typeSpecs));
     }
 
-    private Runnable writeTypeSpecs(final Stream<PackageTypeSpec> typeSpecs) {
+    private Runnable writeTypeSpecs(final Stream<PackagedTypeSpec> typeSpecs) {
         return () -> typeSpecs.parallel().forEach(typeWriter::writeType);
     }
 

@@ -12,6 +12,10 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * Encapsulates everything we know about a single SQL statement.
+ */
+// TODO: convert to record?
 public final class SqlStatement {
 
     public static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByName() {
@@ -57,39 +61,31 @@ public final class SqlStatement {
     }
 
     public boolean shouldGenerateRxJavaAPI() {
-        return configuration.isMethodRxJavaApi()
-                && isReading();
+        return configuration.isMethodRxJavaApi() && isReading();
     }
 
     public boolean shouldGenerateStandardReadAPI() {
-        return configuration.isMethodStandardApi()
-                && isReading();
+        return configuration.isMethodStandardApi() && isReading();
     }
 
     public boolean shouldGenerateStandardCallAPI() {
-        return configuration.isMethodStandardApi()
-                && isCalling();
+        return configuration.isMethodStandardApi() && isCalling();
     }
 
     public boolean shouldGenerateStandardWriteAPI() {
-        return configuration.isMethodStandardApi()
-                && isWriting();
+        return configuration.isMethodStandardApi() && isWriting();
     }
 
     public boolean shouldGenerateStreamEagerAPI() {
-        return configuration.isMethodStreamEagerApi()
-                && isReading();
+        return configuration.isMethodStreamEagerApi() && isReading();
     }
 
     public boolean shouldGenerateStreamLazyAPI() {
-        return configuration.isMethodStreamLazyApi()
-                && isReading();
+        return configuration.isMethodStreamLazyApi() && isReading();
     }
 
     public boolean shouldGenerateBatchAPI() {
-        return configuration.isMethodBatchApi()
-                && configuration.hasParameters()
-                && isWriting();
+        return configuration.isMethodBatchApi() && configuration.hasParameters() && isWriting();
     }
 
     public Path getSourcePath() {

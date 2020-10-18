@@ -6,7 +6,7 @@
  */
 package wtf.metio.yosql.generator.api;
 
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
@@ -20,12 +20,10 @@ public interface RepositoryGenerator {
     /**
      * Generates a single repository.
      *
-     * @param repositoryName
-     *            The fully-qualified name of the repository to generate.
-     * @param statements
-     *            The statements to include in the repository.
+     * @param repositoryName The fully-qualified name of the repository to generate.
+     * @param statements     The statements to include in the repository.
      * @return The repository type specification and its intended target package.
      */
-    PackageTypeSpec generateRepository(String repositoryName, List<SqlStatement> statements);
+    PackagedTypeSpec generateRepository(String repositoryName, List<SqlStatement> statements);
 
 }

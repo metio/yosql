@@ -10,7 +10,7 @@ package wtf.metio.yosql.generator;
 import wtf.metio.yosql.generator.api.CodeGenerator;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
 import wtf.metio.yosql.generator.api.UtilitiesGenerator;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
@@ -31,11 +31,11 @@ final class DefaultCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public Stream<PackageTypeSpec> generateCode(final List<SqlStatement> statements) {
+    public Stream<PackagedTypeSpec> generateCode(final List<SqlStatement> statements) {
         return Stream.concat(generateRepositories(statements), utilitiesGenerator.generateUtilities(statements));
     }
 
-    private Stream<PackageTypeSpec> generateRepositories(final List<SqlStatement> statements) {
+    private Stream<PackagedTypeSpec> generateRepositories(final List<SqlStatement> statements) {
         return statements.parallelStream()
                 .collect(groupingBy(SqlStatement::getRepository))
                 .entrySet()

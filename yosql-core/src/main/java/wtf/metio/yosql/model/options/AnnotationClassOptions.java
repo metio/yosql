@@ -7,30 +7,30 @@
 
 package wtf.metio.yosql.model.options;
 
-import ch.qos.cal10n.BaseName;
-import ch.qos.cal10n.Locale;
-import ch.qos.cal10n.LocaleData;
-
 /**
  * Options for the "@Generated" annotation class.
  */
-@LocaleData(@Locale("en"))
-@BaseName("options.annotation-class")
 public enum AnnotationClassOptions {
 
     /**
      * Option that disables adding a new annotation
      */
-    NONE,
+    NONE("please.report.this.Bug"),
 
     /**
      * Uses the "javax.annotation.Generated" annotation
      */
-    ANNOTATION_API,
+    ANNOTATION_API("javax.annotation.Generated"),
 
     /**
      * Uses the "javax.annotation.processing.Generated" annotation
      */
-    PROCESSING_API;
+    PROCESSING_API("javax.annotation.processing.Generated");
+
+    public final String annotationClass;
+
+    AnnotationClassOptions(String annotationClass) {
+        this.annotationClass = annotationClass;
+    }
 
 }

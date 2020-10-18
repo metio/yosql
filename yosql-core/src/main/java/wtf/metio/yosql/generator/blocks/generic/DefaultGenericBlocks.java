@@ -9,7 +9,6 @@ package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import wtf.metio.yosql.generator.blocks.api.GenericBlocks;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 
 final class DefaultGenericBlocks implements GenericBlocks {

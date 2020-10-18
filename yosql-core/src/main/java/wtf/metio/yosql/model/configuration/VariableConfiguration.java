@@ -13,6 +13,9 @@ import wtf.metio.yosql.model.options.VariableTypeOptions;
 import javax.lang.model.element.Modifier;
 import java.util.List;
 
+/**
+ * Configures the various variable related options.
+ */
 @Value.Immutable
 public interface VariableConfiguration {
 
@@ -20,12 +23,21 @@ public interface VariableConfiguration {
         return ImmutableVariableConfiguration.builder();
     }
 
-    static ImmutableVariableConfiguration copy(final VariableConfiguration configuration) {
-        return ImmutableVariableConfiguration.copyOf(configuration);
+    /**
+     * @return A variable configuration using default values.
+     */
+    static ImmutableVariableConfiguration usingDefaults() {
+        return builder().build();
     }
 
-    VariableTypeOptions variableType();
+    @Value.Default
+    default VariableTypeOptions variableType() {
+        return VariableTypeOptions.TYPE;
+    }
 
-    List<Modifier> modifiers();
+    @Value.Default
+    default List<Modifier> modifiers() {
+        return List.of(Modifier.FINAL);
+    }
 
 }

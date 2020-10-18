@@ -10,15 +10,15 @@ package wtf.metio.yosql.generator.blocks.jdbc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("DefaultJdbcDataSourceMethods")
-class DefaultJdbcDataSourceMethodsTest extends ObjectMother {
+class DefaultJdbcDataSourceMethodsTest {
 
     @Test
     void getConnection() {
         // given
-        final var generator = new DefaultJdbcDataSourceMethods(yoSqlComponent().jdbcNames());
+        final var generator = new DefaultJdbcDataSourceMethods(ObjectMother.jdbcNames());
 
         // when
         final var connection = generator.getConnection();

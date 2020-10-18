@@ -9,23 +9,19 @@ package wtf.metio.yosql.benchmark.full_lifecycle;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-
-import wtf.metio.yosql.YoSql;
+import wtf.metio.yosql.YoSQL;
 import wtf.metio.yosql.benchmark.AbstractBenchmark;
 
 @State(Scope.Benchmark)
 abstract class AbstractFullLifecycleBenchmark extends AbstractBenchmark {
 
-    protected YoSql yosql;
+    protected YoSQL yosql;
 
     /**
      * Benchmarks code generation.
-     *
-     * @throws Exception
-     *             In case anything goes wrong while generating files.
      */
     @Benchmark
-    public final void benchmarkGenerateFiles() throws Exception {
+    public final void benchmarkGenerateFiles() {
         yosql.generateCode();
     }
 

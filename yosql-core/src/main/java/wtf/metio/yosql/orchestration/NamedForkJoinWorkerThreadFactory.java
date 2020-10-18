@@ -6,34 +6,25 @@
  */
 package wtf.metio.yosql.orchestration;
 
-import wtf.metio.yosql.i18n.Translator;
-import wtf.metio.yosql.model.internal.ApplicationEvents;
-
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 import java.util.concurrent.ForkJoinWorkerThread;
 
-import static wtf.metio.yosql.model.internal.ApplicationEvents.WORKER_POOL_NAME;
-
 /**
- * Names new threads according to a {@link ApplicationEvents#WORKER_POOL_NAME predefined pattern}.
+ * Names new threads used by YoSQL.
  */
 final class NamedForkJoinWorkerThreadFactory implements ForkJoinWorkerThreadFactory {
 
-    private final Translator translator;
     private final ForkJoinWorkerThreadFactory threadFactory;
 
-    NamedForkJoinWorkerThreadFactory(
-            final Translator translator,
-            final ForkJoinWorkerThreadFactory threadFactory) {
-        this.translator = translator;
+    NamedForkJoinWorkerThreadFactory(final ForkJoinWorkerThreadFactory threadFactory) {
         this.threadFactory = threadFactory;
     }
 
     @Override
     public ForkJoinWorkerThread newThread(final ForkJoinPool pool) {
         final var worker = threadFactory.newThread(pool);
-        worker.setName(translator.get(WORKER_POOL_NAME, worker.getPoolIndex()));
+        worker.setName("yosql-worker-" + worker.getPoolIndex());
         return worker;
     }
 

@@ -11,6 +11,9 @@ import org.immutables.value.Value;
 
 import java.util.List;
 
+/**
+ * Configures the various methods related options.
+ */
 @Value.Immutable
 public interface MethodConfiguration {
 
@@ -18,40 +21,101 @@ public interface MethodConfiguration {
         return ImmutableMethodConfiguration.builder();
     }
 
-    boolean generateStandardApi();
+    /**
+     * @return A method configuration using default values.
+     */
+    static ImmutableMethodConfiguration usingDefaults() {
+        return builder().build();
+    }
 
-    boolean generateBatchApi();
+    @Value.Default
+    default boolean generateStandardApi() {
+        return true;
+    }
 
-    boolean generateRxJavaApi();
+    @Value.Default
+    default boolean generateBatchApi() {
+        return false;
+    }
 
-    boolean generateStreamEagerApi();
+    @Value.Default
+    default boolean generateRxJavaApi() {
+        return false;
+    }
 
-    boolean generateStreamLazyApi();
+    @Value.Default
+    default boolean generateStreamEagerApi() {
+        return false;
+    }
 
-    String methodBatchPrefix();
+    @Value.Default
+    default boolean generateStreamLazyApi() {
+        return false;
+    }
 
-    String methodBatchSuffix();
+    @Value.Default
+    default boolean methodCatchAndRethrow() {
+        return true;
+    }
 
-    String methodStreamPrefix();
+    @Value.Default
+    default boolean validateMethodNamePrefixes() {
+        return true;
+    }
 
-    String methodStreamSuffix();
+    @Value.Default
+    default String methodBatchPrefix() {
+        return "";
+    }
 
-    String methodRxJavaPrefix();
+    @Value.Default
+    default String methodBatchSuffix() {
+        return "Batch";
+    }
 
-    String methodRxJavaSuffix();
+    @Value.Default
+    default String methodStreamPrefix() {
+        return "";
+    }
 
-    String methodLazyName();
+    @Value.Default
+    default String methodStreamSuffix() {
+        return "Stream";
+    }
 
-    String methodEagerName();
+    @Value.Default
+    default String methodRxJavaPrefix() {
+        return "";
+    }
 
-    boolean methodCatchAndRethrow();
+    @Value.Default
+    default String methodRxJavaSuffix() {
+        return "Flow";
+    }
 
-    List<String> allowedWritePrefixes();
+    @Value.Default
+    default String methodLazyName() {
+        return "Lazy";
+    }
 
-    List<String> allowedReadPrefixes();
+    @Value.Default
+    default String methodEagerName() {
+        return "Eager";
+    }
 
-    List<String> allowedCallPrefixes();
+    @Value.Default
+    default List<String> allowedWritePrefixes() {
+        return List.of("update", "insert", "delete", "create", "write", "add", "remove", "merge", "drop");
+    }
 
-    boolean validateMethodNamePrefixes();
+    @Value.Default
+    default List<String> allowedReadPrefixes() {
+        return List.of("select", "read", "query", "find");
+    }
+
+    @Value.Default
+    default List<String> allowedCallPrefixes() {
+        return List.of("call", "execute");
+    }
 
 }

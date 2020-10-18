@@ -10,14 +10,14 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.blocks.api.Classes;
-import wtf.metio.yosql.generator.blocks.api.Methods;
-import wtf.metio.yosql.generator.blocks.api.Names;
-import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.generic.Classes;
+import wtf.metio.yosql.generator.blocks.generic.Methods;
+import wtf.metio.yosql.generator.blocks.generic.Names;
+import wtf.metio.yosql.generator.blocks.generic.Parameters;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 
 import javax.inject.Inject;
 import java.sql.SQLException;
@@ -52,7 +52,7 @@ final class ToResultRowConverterGenerator {
         this.parameters = parameters;
     }
 
-    public PackageTypeSpec generateToResultRowConverterClass() {
+    public PackagedTypeSpec generateToResultRowConverterClass() {
         final var resultRowConverterClass = ClassName.get(
                 runtimeConfiguration.names().basePackageName() + "." + runtimeConfiguration.names().converterPackageName(),
                 TO_RESULT_ROW_CONVERTER_CLASS_NAME);
@@ -62,7 +62,7 @@ final class ToResultRowConverterGenerator {
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, resultRowConverterClass.packageName(),
                 resultRowConverterClass.simpleName());
-        return new PackageTypeSpec(type, resultRowConverterClass.packageName());
+        return PackagedTypeSpec.of(type, resultRowConverterClass.packageName());
     }
 
     private MethodSpec asUserType() {

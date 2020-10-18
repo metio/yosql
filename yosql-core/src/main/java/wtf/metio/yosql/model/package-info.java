@@ -11,6 +11,7 @@
         get = {"is*", "get*"},
         init = "set*",
         strictBuilder = true
+        // stagedBuilder = true // TODO: enable staged builder
 )
 package wtf.metio.yosql.model;
 

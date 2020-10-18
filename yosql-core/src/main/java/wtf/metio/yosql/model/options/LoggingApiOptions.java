@@ -19,7 +19,7 @@ public enum LoggingApiOptions {
     /**
      * Uses java.util.logging in the generated code.
      */
-    JDK,
+    JDK, // TODO: add System.logger?
 
     /**
      * Uses log4j in the generated code.
@@ -29,6 +29,6 @@ public enum LoggingApiOptions {
     /**
      * Uses slf4j in the generated code.
      */
-    SLF4J,
+    SLF4J
 
 }

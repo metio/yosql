@@ -7,14 +7,28 @@
 package wtf.metio.yosql.model.internal;
 
 import org.junit.jupiter.api.DisplayName;
-import wtf.metio.yosql.testutils.PropertiesTCK;
+import wtf.metio.yosql.testutils.EnumTCK;
+
+import java.util.stream.Stream;
 
 @DisplayName("Loggers")
-final class LoggersPropertiesTest implements PropertiesTCK<Loggers> {
+final class LoggersPropertiesTest implements EnumTCK<Loggers> {
 
     @Override
     public Class<Loggers> getEnumClass() {
         return Loggers.class;
+    }
+
+    @Override
+    public Stream<String> validValues() {
+        return Stream.of(
+                "WRITER",
+                "PARSER",
+                "READER",
+                "GENERATOR",
+                "TIMER",
+                "UTILITIES",
+                "CLI");
     }
 
 }

@@ -12,28 +12,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.sql.SqlObjectMother;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 import static wtf.metio.yosql.model.sql.SqlObjectMother.sqlConfiguration;
 
 @DisplayName("DefaultJdbcBlocks")
-class DefaultJdbcBlocksTest extends ObjectMother {
+class DefaultJdbcBlocksTest {
 
     private DefaultJdbcBlocks generator;
 
     @BeforeEach
     void setUp() {
         generator = new DefaultJdbcBlocks(
-                yoSqlComponent().runtimeConfiguration(),
-                yoSqlComponent().genericBlocks(),
-                yoSqlComponent().controlFlows(),
-                yoSqlComponent().names(),
-                yoSqlComponent().variables(),
-                yoSqlComponent().jdbcNames(),
-                yoSqlComponent().jdbcFields(),
-                yoSqlComponent().jdbcMethods(),
-                yoSqlComponent().loggingGenerator());
+                RuntimeConfiguration.usingDefaults(),
+                ObjectMother.genericBlocks(),
+                ObjectMother.controlFlows(),
+                ObjectMother.names(),
+                ObjectMother.variables(),
+                ObjectMother.jdbcNames(),
+                ObjectMother.jdbcFields(),
+                ObjectMother.jdbcMethods(),
+                ObjectMother.loggingGenerator());
     }
 
     @Test

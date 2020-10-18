@@ -9,7 +9,7 @@ package wtf.metio.yosql.generator.blocks.jdbc;
 
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
-import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.generic.Parameters;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 
 import javax.sql.DataSource;

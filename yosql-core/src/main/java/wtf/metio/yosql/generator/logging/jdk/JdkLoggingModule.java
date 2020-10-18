@@ -9,8 +9,8 @@ package wtf.metio.yosql.generator.logging.jdk;
 import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.Fields;
-import wtf.metio.yosql.generator.blocks.api.Names;
+import wtf.metio.yosql.generator.blocks.generic.Fields;
+import wtf.metio.yosql.generator.blocks.generic.Names;
 
 /**
  * Dagger module for java.util.logging based logging generators.

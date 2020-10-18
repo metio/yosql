@@ -11,16 +11,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tests.ObjectMother;
+import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("DefaultJdbcConnectionMethods")
-class DefaultJdbcConnectionMethodsTest extends ObjectMother {
+class DefaultJdbcConnectionMethodsTest {
 
     private DefaultJdbcConnectionMethods generator;
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcConnectionMethods(yoSqlComponent().names(), yoSqlComponent().jdbcNames());
+        generator = new DefaultJdbcConnectionMethods(
+                ObjectMother.names(),
+                ObjectMother.jdbcNames());
     }
 
     @Test

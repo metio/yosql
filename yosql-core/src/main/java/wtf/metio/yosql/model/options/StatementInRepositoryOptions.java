@@ -22,6 +22,6 @@ public enum StatementInRepositoryOptions {
      *
      * @since Java 15
      */
-    INLINE_TEXT_BLOCK,
+    INLINE_TEXT_BLOCK
 
 }

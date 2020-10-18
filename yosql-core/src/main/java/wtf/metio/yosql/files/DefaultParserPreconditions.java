@@ -6,7 +6,7 @@
  */
 package wtf.metio.yosql.files;
 
-import wtf.metio.yosql.i18n.Translator;
+import ch.qos.cal10n.IMessageConveyor;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.errors.FileErrors;
 
@@ -17,13 +17,13 @@ import java.nio.file.Path;
 final class DefaultParserPreconditions implements ParserPreconditions {
 
     private final ExecutionErrors errors;
-    private final Translator translator;
+    private final IMessageConveyor messages;
 
     DefaultParserPreconditions(
             final ExecutionErrors errors,
-            final Translator translator) {
+            final IMessageConveyor messages) {
         this.errors = errors;
-        this.translator = translator;
+        this.messages = messages;
     }
 
     @Override
@@ -31,30 +31,30 @@ final class DefaultParserPreconditions implements ParserPreconditions {
         if (Files.notExists(directory)) {
             try {
                 if (Files.createDirectories(directory) != null) {
-                    errors.illegalState(translator.get(FileErrors.CANNOT_CREATE_DIRECTORY, directory));
+                    errors.illegalState(messages.getMessage(FileErrors.CANNOT_CREATE_DIRECTORY, directory));
                 }
             } catch (final IOException cause) {
-                errors.illegalState(cause, translator.get(FileErrors.DIRECTORY_CREATION_FAILED, directory));
+                errors.illegalState(cause, messages.getMessage(FileErrors.DIRECTORY_CREATION_FAILED, directory));
             }
         }
         if (!Files.isDirectory(directory)) {
-            errors.illegalState(translator.get(FileErrors.NOT_A_DIRECTORY, directory));
+            errors.illegalState(messages.getMessage(FileErrors.NOT_A_DIRECTORY, directory));
         }
         if (!Files.isWritable(directory)) {
-            errors.illegalState(translator.get(FileErrors.NO_WRITE_PERMISSION, directory));
+            errors.illegalState(messages.getMessage(FileErrors.NO_WRITE_PERMISSION, directory));
         }
     }
 
     @Override
     public void assertDirectoryIsReadable(final Path directory) {
         if (Files.notExists(directory)) {
-            errors.illegalState(translator.get(FileErrors.NOT_EXISTS, directory));
+            errors.illegalState(messages.getMessage(FileErrors.NOT_EXISTS, directory));
         }
         if (!Files.isDirectory(directory)) {
-            errors.illegalState(translator.get(FileErrors.NOT_A_DIRECTORY, directory));
+            errors.illegalState(messages.getMessage(FileErrors.NOT_A_DIRECTORY, directory));
         }
         if (!Files.isReadable(directory)) {
-            errors.illegalState(translator.get(FileErrors.NO_READ_PERMISSION, directory));
+            errors.illegalState(messages.getMessage(FileErrors.NO_READ_PERMISSION, directory));
         }
     }
 

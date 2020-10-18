@@ -12,11 +12,14 @@ import com.squareup.javapoet.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.Fields;
-import wtf.metio.yosql.generator.blocks.api.Names;
+import wtf.metio.yosql.generator.blocks.generic.Fields;
+import wtf.metio.yosql.generator.blocks.generic.Names;
 
 import java.util.Optional;
 
+/**
+ * Logging generator that uses slf4j
+ */
 final class Slf4jLoggingGenerator implements LoggingGenerator {
 
     private final Names names;

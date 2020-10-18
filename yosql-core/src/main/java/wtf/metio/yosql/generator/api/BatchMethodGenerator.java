@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Generates batch methods that take in a multitude of inputs and produce multiple outputs.
  */
-@FunctionalInterface
 public interface BatchMethodGenerator {
 
     /**

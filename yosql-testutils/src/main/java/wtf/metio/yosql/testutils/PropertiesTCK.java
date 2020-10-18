@@ -6,17 +6,16 @@
  */
 package wtf.metio.yosql.testutils;
 
-import java.util.List;
-
+import ch.qos.cal10n.verifier.Cal10nError;
+import ch.qos.cal10n.verifier.IMessageKeyVerifier;
+import ch.qos.cal10n.verifier.MessageKeyVerifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.cal10n.verifier.Cal10nError;
-import ch.qos.cal10n.verifier.IMessageKeyVerifier;
-import ch.qos.cal10n.verifier.MessageKeyVerifier;
+import java.util.List;
 
 /**
  * Verifies .properties files.
@@ -26,7 +25,7 @@ import ch.qos.cal10n.verifier.MessageKeyVerifier;
  */
 public interface PropertiesTCK<ENUMERATION extends Enum<ENUMERATION>> {
 
-    static final Logger LOGGER = LoggerFactory.getLogger(PropertiesTCK.class);
+    Logger LOGGER = LoggerFactory.getLogger(PropertiesTCK.class);
 
     /**
      * @return The class of the enum to test.

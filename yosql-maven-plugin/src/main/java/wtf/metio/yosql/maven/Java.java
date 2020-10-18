@@ -15,9 +15,9 @@ import wtf.metio.yosql.model.configuration.JavaConfiguration;
 public class Java {
 
     /**
-     * The target Java source version (default: <strong>11</strong>).
+     * The target Java API version (default: <strong>11</strong>).
      */
-    private final int targetVersion = 11;
+    private final int apiVersion = 11;
 
     private final boolean useVar = false;
 
@@ -31,11 +31,11 @@ public class Java {
 
     JavaConfiguration asConfiguration() {
         return JavaConfiguration.builder()
-                .setTargetVersion(targetVersion)
+                .setApiVersion(apiVersion)
                 .setUseFinal(useFinal)
-                .setUseGenerics(targetVersion >= 5)
-                .setUseDiamondOperator(targetVersion >= 7)
-                .setUseStreamAPI(targetVersion >= 8)
+                .setUseGenerics(apiVersion >= 5)
+                .setUseDiamondOperator(apiVersion >= 7)
+                .setUseStreamAPI(apiVersion >= 8)
                 .setUseProcessingApi(useProcessingApi)
                 .setUseVar(useVar)
                 .setUseTextBlocks(useTextBlocks)

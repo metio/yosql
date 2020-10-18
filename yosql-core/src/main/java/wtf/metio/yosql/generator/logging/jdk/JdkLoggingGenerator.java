@@ -10,14 +10,17 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.Fields;
-import wtf.metio.yosql.generator.blocks.api.Names;
+import wtf.metio.yosql.generator.blocks.generic.Fields;
+import wtf.metio.yosql.generator.blocks.generic.Names;
 
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-final class JdkLoggingGenerator implements LoggingGenerator {
+/**
+ * Logging generator that uses java.util.logging
+ */
+public final class JdkLoggingGenerator implements LoggingGenerator {
 
     private final Names names;
     private final Fields fields;

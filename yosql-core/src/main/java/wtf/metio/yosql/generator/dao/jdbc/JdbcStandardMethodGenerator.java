@@ -10,9 +10,9 @@ import com.squareup.javapoet.MethodSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
 import wtf.metio.yosql.generator.api.StandardMethodGenerator;
-import wtf.metio.yosql.generator.blocks.api.ControlFlows;
-import wtf.metio.yosql.generator.blocks.api.Methods;
-import wtf.metio.yosql.generator.blocks.api.Parameters;
+import wtf.metio.yosql.generator.blocks.generic.ControlFlows;
+import wtf.metio.yosql.generator.blocks.generic.Methods;
+import wtf.metio.yosql.generator.blocks.generic.Parameters;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcBlocks;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcTransformer;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
@@ -21,7 +21,7 @@ import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
 
-final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
+public final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
 
     private final ControlFlows controlFlows;
     private final Methods methods;
@@ -30,7 +30,7 @@ final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
     private final JdbcBlocks jdbc;
     private final JdbcTransformer jdbcTransformer;
 
-    JdbcStandardMethodGenerator(
+    public JdbcStandardMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,

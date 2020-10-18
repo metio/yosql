@@ -10,7 +10,7 @@ import dagger.Module;
 import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.generator.api.*;
-import wtf.metio.yosql.generator.blocks.api.*;
+import wtf.metio.yosql.generator.blocks.generic.*;
 import wtf.metio.yosql.generator.blocks.jdbc.*;
 import wtf.metio.yosql.generator.dao.generic.GenericMethodsGenerator;
 import wtf.metio.yosql.generator.dao.generic.GenericRepositoryGenerator;
@@ -97,8 +97,7 @@ public class DaoJdbcModule {
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final JdbcTransformer jdbcTransformer,
-            final JdbcNames jdbcNames) {
+            final JdbcTransformer jdbcTransformer) {
         return new JdbcJava8StreamMethodGenerator(
                 blocks,
                 controlFlow,
@@ -107,8 +106,8 @@ public class DaoJdbcModule {
                 parameters,
                 logging,
                 jdbcBlocks,
-                jdbcTransformer,
-                jdbcNames);
+                jdbcTransformer
+        );
     }
 
     @JDBC

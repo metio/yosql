@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * No-op logging generator. Use when no logging statements should be generated.
  */
-final class NoOpLoggingGenerator implements LoggingGenerator {
+public final class NoOpLoggingGenerator implements LoggingGenerator {
 
     @Override
     public Optional<FieldSpec> logger(final TypeName repoClass) {

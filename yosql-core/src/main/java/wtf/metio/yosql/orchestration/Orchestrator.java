@@ -7,7 +7,7 @@
 
 package wtf.metio.yosql.orchestration;
 
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
@@ -19,5 +19,5 @@ public interface Orchestrator {
 
     void execute(
             Supplier<List<SqlStatement>> parseFiles,
-            Function<List<SqlStatement>, Stream<PackageTypeSpec>> generateCode);
+            Function<List<SqlStatement>, Stream<PackagedTypeSpec>> generateCode);
 }

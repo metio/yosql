@@ -10,6 +10,9 @@ package wtf.metio.yosql.model.configuration;
 import com.squareup.javapoet.ClassName;
 import org.immutables.value.Value;
 
+/**
+ * Configures the various RxJava related options.
+ */
 @Value.Immutable
 public interface RxJavaConfiguration {
 
@@ -17,6 +20,21 @@ public interface RxJavaConfiguration {
         return ImmutableRxJavaConfiguration.builder();
     }
 
-    ClassName flowStateClass();
+    /**
+     * @return A RxJava configuration using default values.
+     */
+    static ImmutableRxJavaConfiguration usingDefaults() {
+        return builder().build();
+    }
+
+    @Value.Default
+    default ClassName flowStateClass() {
+        final var packagesConfiguration = PackagesConfiguration.usingDefaults();
+        return ClassName.get(
+                packagesConfiguration.basePackageName()
+                        + "."
+                        + packagesConfiguration.utilityPackageName(),
+                "FlowState");
+    }
 
 }

@@ -35,15 +35,6 @@ final class DelegatingLoggingGenerator implements LoggingGenerator {
         this.slf4jLoggingGenerator = slf4jLoggingGenerator;
     }
 
-    private LoggingGenerator log() {
-        return switch (runtimeConfiguration.logging().api()) {
-            case JDK -> jdkLoggingGenerator;
-            case LOG4J -> log4jLoggingGenerator;
-            case SLF4J -> slf4jLoggingGenerator;
-            default -> noOpLoggingGenerator;
-        };
-    }
-
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return log().queryPicked(fieldName);
@@ -92,6 +83,15 @@ final class DelegatingLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock entering(final String repository, final String method) {
         return log().entering(repository, method);
+    }
+
+    private LoggingGenerator log() {
+        return switch (runtimeConfiguration.logging().api()) {
+            case JDK -> jdkLoggingGenerator;
+            case LOG4J -> log4jLoggingGenerator;
+            case SLF4J -> slf4jLoggingGenerator;
+            default -> noOpLoggingGenerator;
+        };
     }
 
 }

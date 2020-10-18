@@ -11,6 +11,7 @@ import wtf.metio.yosql.model.configuration.VariableConfiguration;
 import wtf.metio.yosql.model.options.VariableTypeOptions;
 
 import javax.lang.model.element.Modifier;
+import java.util.List;
 
 /**
  * Configures how variables are generated.
@@ -22,7 +23,7 @@ public class Variables {
 
     VariableConfiguration asConfiguration() {
         return VariableConfiguration.builder()
-                .addModifiers(modifiers)
+                .setModifiers(List.of(modifiers))
                 .setVariableType(variableType)
                 .build();
     }

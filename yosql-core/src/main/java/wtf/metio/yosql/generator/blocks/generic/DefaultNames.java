@@ -7,8 +7,6 @@
 
 package wtf.metio.yosql.generator.blocks.generic;
 
-import wtf.metio.yosql.generator.blocks.api.Names;
-
 final class DefaultNames implements Names {
 
     // TODO: read from configuration

@@ -12,10 +12,10 @@ import wtf.metio.yosql.generator.api.AnnotationGenerator;
 import wtf.metio.yosql.generator.api.FieldsGenerator;
 import wtf.metio.yosql.generator.api.MethodsGenerator;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
-import wtf.metio.yosql.generator.blocks.api.Classes;
-import wtf.metio.yosql.generator.blocks.api.Javadoc;
+import wtf.metio.yosql.generator.blocks.generic.Classes;
+import wtf.metio.yosql.generator.blocks.generic.Javadoc;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
     }
 
     @Override
-    public PackageTypeSpec generateRepository(
+    public PackagedTypeSpec generateRepository(
             final String repositoryName,
             final List<SqlStatement> sqlStatements) {
         final var className = ClassName.bestGuess(repositoryName);
@@ -68,7 +68,7 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
                 .addStaticBlock(fields.staticInitializer(sqlStatements))
                 .build();
         logger.debug(ApplicationEvents.TYPE_GENERATED, className.packageName(), className.simpleName());
-        return new PackageTypeSpec(repository, className.packageName());
+        return PackagedTypeSpec.of(repository, className.packageName());
     }
 
 }

@@ -7,12 +7,19 @@
 
 package wtf.metio.yosql.utils;
 
+/**
+ * Utility methods that handle {@link String Strings}.
+ */
 public final class Strings {
 
+    /**
+     * @param value The value to check.
+     * @return true if value is blank, false otherwise.
+     */
     public static boolean isBlank(final String value) {
         return value == null || value.isBlank();
     }
-    
+
     private Strings() {
         // utility class
     }

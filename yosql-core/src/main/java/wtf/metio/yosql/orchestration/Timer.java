@@ -36,7 +36,7 @@ public interface Timer {
     <T> T timed(String taskName, Supplier<T> supplier);
 
     /**
-     * Prints the previously recorded timings.
+     * Prints the previously recorded timings and clear them.
      */
     void printTimings();
 

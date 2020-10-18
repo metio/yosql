@@ -10,8 +10,6 @@ package wtf.metio.yosql.generator.blocks.generic;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.generator.api.AnnotationGenerator;
-import wtf.metio.yosql.generator.blocks.api.Fields;
-import wtf.metio.yosql.generator.blocks.api.Javadoc;
 
 import javax.lang.model.element.Modifier;
 import java.lang.reflect.Type;

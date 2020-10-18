@@ -36,31 +36,31 @@ public class Annotations {
     /**
      * Sets the comment used for annotated classes.
      */
-    private final String classComment = "DO NOT EDIT";
+    private final String classComment = AnnotationConfiguration.DEFAULT_COMMENT;
 
     /**
      * Sets the comment used for annotated fields.
      */
-    private final String fieldComment = "DO NOT EDIT";
+    private final String fieldComment = AnnotationConfiguration.DEFAULT_COMMENT;
 
     /**
      * Sets the comment used for annotated methods.
      */
-    private final String methodComment = "DO NOT EDIT";
+    private final String methodComment = AnnotationConfiguration.DEFAULT_COMMENT;
 
     /**
      * Controls which @Generated annotation should be used.
      */
-    private final AnnotationClassOptions api = AnnotationClassOptions.ANNOTATION_API;
+    private final AnnotationClassOptions api = AnnotationConfiguration.DEFAULT_CLASS_OPTION;
 
     /**
      * The name of the code generator
      */
-    private final String generatorName = "YoSQL";
+    private final String generatorName = AnnotationConfiguration.DEFAULT_GENERATOR_NAME;
 
-    private final AnnotationMemberOptions classMembers = AnnotationMemberOptions.WITHOUT_DATE;
-    private final AnnotationMemberOptions methodMembers = AnnotationMemberOptions.WITHOUT_DATE;
-    private final AnnotationMemberOptions fieldMembers = AnnotationMemberOptions.WITHOUT_DATE;
+    private final AnnotationMemberOptions classMembers = AnnotationConfiguration.DEFAULT_MEMBER_OPTION;
+    private final AnnotationMemberOptions methodMembers = AnnotationConfiguration.DEFAULT_MEMBER_OPTION;
+    private final AnnotationMemberOptions fieldMembers = AnnotationConfiguration.DEFAULT_MEMBER_OPTION;
 
     public AnnotationConfiguration asConfiguration() {
         return AnnotationConfiguration.builder()

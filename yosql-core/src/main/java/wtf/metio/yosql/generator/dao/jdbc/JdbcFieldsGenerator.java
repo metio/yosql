@@ -13,8 +13,8 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.files.SqlFileParser;
 import wtf.metio.yosql.generator.api.FieldsGenerator;
 import wtf.metio.yosql.generator.api.LoggingGenerator;
-import wtf.metio.yosql.generator.blocks.api.Fields;
-import wtf.metio.yosql.generator.blocks.api.Javadoc;
+import wtf.metio.yosql.generator.blocks.generic.Fields;
+import wtf.metio.yosql.generator.blocks.generic.Javadoc;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
@@ -82,12 +82,11 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
 
         repositoryFields.add(asDataSourceField());
         if (logging.isEnabled() && !statements.isEmpty()) {
-            // doesn't matter which statement we pick since they all end up in
-            // the same repository anyway
-            final SqlStatement firstStatement = statements.get(0);
+            // doesn't matter which statement we pick since they all end up in the same repository anyway
+            final var firstStatement = statements.get(0);
             loggerField(firstStatement).ifPresent(repositoryFields::add);
         }
-        for (final SqlStatement statement : statements) {
+        for (final var statement : statements) {
             if (logging.isEnabled()) {
                 repositoryFields.add(asConstantRawSqlField(statement));
             }

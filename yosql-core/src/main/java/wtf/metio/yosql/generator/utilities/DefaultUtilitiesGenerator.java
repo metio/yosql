@@ -7,7 +7,7 @@
 package wtf.metio.yosql.generator.utilities;
 
 import wtf.metio.yosql.generator.api.UtilitiesGenerator;
-import wtf.metio.yosql.model.sql.PackageTypeSpec;
+import wtf.metio.yosql.model.sql.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
@@ -32,11 +32,11 @@ final class DefaultUtilitiesGenerator implements UtilitiesGenerator {
     }
 
     @Override
-    public Stream<PackageTypeSpec> generateUtilities(final List<SqlStatement> allStatements) {
-        PackageTypeSpec resultStateClass = null;
-        PackageTypeSpec flowStateClass = null;
-        PackageTypeSpec toResultRowConverterClass = null;
-        PackageTypeSpec resultRowClass = null;
+    public Stream<PackagedTypeSpec> generateUtilities(final List<SqlStatement> allStatements) {
+        PackagedTypeSpec resultStateClass = null;
+        PackagedTypeSpec flowStateClass = null;
+        PackagedTypeSpec toResultRowConverterClass = null;
+        PackagedTypeSpec resultRowClass = null;
 
         for (final SqlStatement statement : allStatements) {
             if (resultStateClass == null) {
