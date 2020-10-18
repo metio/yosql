@@ -247,7 +247,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private String calculateRepositoryNameFromParentFolder(final Path source) {
         final var relativePathToSqlFile = runtimeConfiguration.files().inputBaseDirectory().relativize(source);
-        logger.debug("input path: " + runtimeConfiguration.files().inputBaseDirectory());
+        logger.debug("input path: " + runtimeConfiguration.files().inputBaseDirectory()); // TODO: add enums & translations
         logger.debug("source path: " + source);
         logger.debug("relative path: " + relativePathToSqlFile);
         final var rawRepositoryName = relativePathToSqlFile.getParent().toString();
@@ -426,7 +426,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final SqlConfiguration configuration) {
         final var parameterErrors = configuration.getParameters().stream()
                 .filter(param -> !parameterIndices.containsKey(param.name()))
-                .map(param -> String.format("[%s] declares unknown parameter [%s]", source, param.name()))
+                .map(param -> String.format("[%s] declares unknown parameter [%s]", source, param.name())) // TODO: add enum & translation
                 .peek(errors::illegalArgument)
                 .peek(logger::error)
                 .collect(Collectors.toList());

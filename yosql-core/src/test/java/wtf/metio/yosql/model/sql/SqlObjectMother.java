@@ -13,6 +13,7 @@ import java.util.List;
 // TODO: move to ObjectMother
 public final class SqlObjectMother {
 
+    @Deprecated
     public static SqlConfiguration sqlConfiguration() {
         final var config = new SqlConfiguration();
         config.setName("queryTest");
@@ -31,8 +32,13 @@ public final class SqlObjectMother {
         return config;
     }
 
+    @Deprecated
     public static List<SqlStatement> sqlStatements() {
-        return List.of(new SqlStatement(Paths.get("/some/path/query.sql"), sqlConfiguration(), "SELECT raw FROM table;"));
+        return List.of(SqlStatement.builder()
+                .setSourcePath(Paths.get("/some/path/query.sql"))
+                .setRawStatement("SELECT raw FROM table;")
+                .setConfiguration(sqlConfiguration())
+                .build());
     }
 
     private SqlObjectMother() {

@@ -10,7 +10,8 @@
 @Value.Style(
         get = {"is*", "get*"},
         init = "set*",
-        strictBuilder = true
+        strictBuilder = true,
+        jdkOnly = true
         // stagedBuilder = true // TODO: enable staged builder
 )
 package wtf.metio.yosql.model;

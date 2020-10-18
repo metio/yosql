@@ -15,7 +15,6 @@ import wtf.metio.yosql.model.sql.SqlStatement;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -90,7 +89,11 @@ final class DefaultSqlFileParser implements SqlFileParser {
         final var configuration = factory.createStatementConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
         logger.debug(ApplicationEvents.STATEMENT_PARSING_FINISHED, source, configuration.getName());
-        return new SqlStatement(source, configuration, rawSqlStatement);
+        return SqlStatement.builder()
+                .setConfiguration(configuration)
+                .setRawStatement(rawSqlStatement)
+                .setSourcePath(source)
+                .build();
     }
 
     private void splitUpYamlAndSql(
@@ -102,17 +105,22 @@ final class DefaultSqlFileParser implements SqlFileParser {
             buffer.lines()
                     .filter(line -> !line.strip().isEmpty())
                     .filter(line -> !SQL_COMMENT_PREFIX.equals(line.strip()))
-                    .forEach(line -> {
-                        if (line.startsWith(SQL_COMMENT_PREFIX)) {
-                            yaml.accept(line.substring(2));
-                            yaml.accept(NEWLINE);
-                        } else {
-                            sql.accept(line);
-                            sql.accept(NEWLINE);
-                        }
-                    });
+                    .forEach(line -> split(yaml, sql, line));
         } catch (final IOException exception) {
             errors.add(exception);
+        }
+    }
+
+    private void split(
+            final Consumer<String> yaml,
+            final Consumer<String> sql,
+            final String line) {
+        if (line.startsWith(SQL_COMMENT_PREFIX)) {
+            yaml.accept(line.substring(2));
+            yaml.accept(NEWLINE);
+        } else {
+            sql.accept(line);
+            sql.accept(NEWLINE);
         }
     }
 

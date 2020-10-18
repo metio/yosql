@@ -17,10 +17,42 @@ import wtf.metio.yosql.generator.blocks.jdbc.JdbcMethods;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.sql.ResultRowConverter;
+import wtf.metio.yosql.model.sql.SqlConfiguration;
+import wtf.metio.yosql.model.sql.SqlParameter;
+import wtf.metio.yosql.model.sql.SqlStatement;
 
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Locale;
 
 public final class ObjectMother {
+
+    public static SqlConfiguration sqlConfiguration() {
+        final var config = new SqlConfiguration();
+        config.setName("queryTest");
+        config.getParameters().add(SqlParameter.builder()
+                .setName("test")
+                .setType(Object.class.getName())
+                .setIndices(0)
+                .setConverter("defaultRowConverter")
+                .build());
+        config.setResultRowConverter(ResultRowConverter.builder()
+                .setAlias("defaultRowConverter")
+                .setConverterType("com.example.DefaultConverter")
+                .setResultType(Object.class.getName())
+                .build());
+        config.setRepository("Test");
+        return config;
+    }
+
+    public static List<SqlStatement> sqlStatements() {
+        return List.of(SqlStatement.builder()
+                .setSourcePath(Paths.get("/some/path/query.sql"))
+                .setRawStatement("SELECT raw FROM table;")
+                .setConfiguration(sqlConfiguration())
+                .build());
+    }
 
     public static LoggingGenerator loggingGenerator() {
         return loggingGenerator(RuntimeConfiguration.usingDefaults());

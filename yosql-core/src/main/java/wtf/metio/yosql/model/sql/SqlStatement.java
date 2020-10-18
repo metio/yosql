@@ -6,6 +6,8 @@
  */
 package wtf.metio.yosql.model.sql;
 
+import org.immutables.value.Value;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -15,81 +17,85 @@ import java.util.stream.Collectors;
 /**
  * Encapsulates everything we know about a single SQL statement.
  */
-// TODO: convert to record?
-public final class SqlStatement {
+@Value.Immutable
+public interface SqlStatement {
 
-    public static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByName() {
+    //region builders
+
+    static ImmutableSqlStatement.Builder builder() {
+        return ImmutableSqlStatement.builder();
+    }
+
+    //endregion
+
+    static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByName() {
         return Collectors.groupingBy(statement -> statement.getConfiguration().getName());
     }
 
-    private final SqlConfiguration configuration;
-    private final String rawStatement;
-    private final Path source;
+    Path getSourcePath();
 
-    public SqlStatement(final Path source, final SqlConfiguration configuration, final String rawStatement) {
-        this.source = source;
-        this.configuration = configuration;
-        this.rawStatement = rawStatement;
+    SqlConfiguration getConfiguration();
+
+    String getRawStatement();
+
+    @Value.Derived
+    default String getName() {
+        return getConfiguration().getName();
     }
 
-    public SqlConfiguration getConfiguration() {
-        return configuration;
+    @Value.Derived
+    default String getRepository() {
+        return getConfiguration().getRepository();
     }
 
-    public String getName() {
-        return configuration.getName();
+    @Value.Derived
+    default boolean isReading() {
+        return SqlType.READING == getConfiguration().getType();
     }
 
-    public String getRawStatement() {
-        return rawStatement;
+    @Value.Derived
+    default boolean isWriting() {
+        return SqlType.WRITING == getConfiguration().getType();
     }
 
-    public String getRepository() {
-        return configuration.getRepository();
+    @Value.Derived
+    default boolean isCalling() {
+        return SqlType.CALLING == getConfiguration().getType();
     }
 
-    public boolean isReading() {
-        return SqlType.READING == configuration.getType();
+    @Value.Derived
+    default boolean shouldGenerateRxJavaAPI() {
+        return getConfiguration().isMethodRxJavaApi() && isReading();
     }
 
-    public boolean isWriting() {
-        return SqlType.WRITING == configuration.getType();
+    @Value.Derived
+    default boolean shouldGenerateStandardReadAPI() {
+        return getConfiguration().isMethodStandardApi() && isReading();
     }
 
-    public boolean isCalling() {
-        return SqlType.CALLING == configuration.getType();
+    @Value.Derived
+    default boolean shouldGenerateStandardCallAPI() {
+        return getConfiguration().isMethodStandardApi() && isCalling();
     }
 
-    public boolean shouldGenerateRxJavaAPI() {
-        return configuration.isMethodRxJavaApi() && isReading();
+    @Value.Derived
+    default boolean shouldGenerateStandardWriteAPI() {
+        return getConfiguration().isMethodStandardApi() && isWriting();
     }
 
-    public boolean shouldGenerateStandardReadAPI() {
-        return configuration.isMethodStandardApi() && isReading();
+    @Value.Derived
+    default boolean shouldGenerateStreamEagerAPI() {
+        return getConfiguration().isMethodStreamEagerApi() && isReading();
     }
 
-    public boolean shouldGenerateStandardCallAPI() {
-        return configuration.isMethodStandardApi() && isCalling();
+    @Value.Derived
+    default boolean shouldGenerateStreamLazyAPI() {
+        return getConfiguration().isMethodStreamLazyApi() && isReading();
     }
 
-    public boolean shouldGenerateStandardWriteAPI() {
-        return configuration.isMethodStandardApi() && isWriting();
-    }
-
-    public boolean shouldGenerateStreamEagerAPI() {
-        return configuration.isMethodStreamEagerApi() && isReading();
-    }
-
-    public boolean shouldGenerateStreamLazyAPI() {
-        return configuration.isMethodStreamLazyApi() && isReading();
-    }
-
-    public boolean shouldGenerateBatchAPI() {
-        return configuration.isMethodBatchApi() && configuration.hasParameters() && isWriting();
-    }
-
-    public Path getSourcePath() {
-        return source;
+    @Value.Derived
+    default boolean shouldGenerateBatchAPI() {
+        return getConfiguration().isMethodBatchApi() && getConfiguration().hasParameters() && isWriting();
     }
 
 }

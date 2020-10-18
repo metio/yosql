@@ -6,8 +6,6 @@
  */
 package wtf.metio.yosql.model.sql;
 
-import org.immutables.value.Value;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +15,6 @@ import java.util.stream.Collectors;
 
 import static java.util.function.Predicate.not;
 
-@Value.Immutable // TODO: convert to interface
 public class SqlConfiguration {
 
     private String name;
@@ -48,22 +45,18 @@ public class SqlConfiguration {
     private String vendor;
     private ReturningMode returningMode;
 
-    @Value.Derived
     public String getFlowableName() {
         return joinMethodNameParts(methodRxJavaPrefix, name, methodRxJavaSuffix);
     }
 
-    @Value.Derived
     public String getBatchName() {
         return joinMethodNameParts(methodBatchPrefix, name, methodBatchSuffix);
     }
 
-    @Value.Derived
     public String getStreamLazyName() {
         return joinMethodNameParts(methodStreamPrefix, name, methodStreamSuffix, methodLazyName);
     }
 
-    @Value.Derived
     public String getStreamEagerName() {
         return joinMethodNameParts(methodStreamPrefix, name, methodStreamSuffix, methodEagerName);
     }

@@ -25,13 +25,11 @@ public interface PackagedTypeSpec {
     /**
      * @return The target type to wrap.
      */
-    // TODO: use @Parameter
     TypeSpec getType();
 
     /**
      * @return The target package name for the type.
      */
-    // TODO: use @Parameter
     String getPackageName();
 
 }

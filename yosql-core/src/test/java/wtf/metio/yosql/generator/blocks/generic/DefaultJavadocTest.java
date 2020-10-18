@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
+import wtf.metio.yosql.test.ObjectMother;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -52,8 +52,11 @@ class DefaultJavadocTest {
     @DisplayName("generate class comment with statements")
     void shouldGenerateClassCommentWithStatement() {
         // given
-        final List<SqlStatement> statements = List.of(
-                new SqlStatement(Paths.get("test"), new SqlConfiguration(), "SELECT 1"));
+        final List<SqlStatement> statements = List.of(SqlStatement.builder()
+                .setConfiguration(ObjectMother.sqlConfiguration())
+                .setRawStatement("SELECT 1")
+                .setSourcePath(Paths.get("test"))
+                .build());
 
         // when
         final var comment = generator.repositoryJavadoc(statements);
@@ -71,8 +74,11 @@ class DefaultJavadocTest {
     @DisplayName("generate method comment with statements")
     void shouldGenerateMethodCommentWithStatement() {
         // given
-        final List<SqlStatement> statements = List.of(
-                new SqlStatement(Paths.get("test"), new SqlConfiguration(), "SELECT 1"));
+        final List<SqlStatement> statements = List.of(SqlStatement.builder()
+                .setConfiguration(ObjectMother.sqlConfiguration())
+                .setRawStatement("SELECT 1")
+                .setSourcePath(Paths.get("test"))
+                .build());
 
         // when
         final var comment = generator.repositoryJavadoc(statements);
