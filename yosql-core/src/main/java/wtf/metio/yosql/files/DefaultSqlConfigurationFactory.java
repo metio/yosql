@@ -10,12 +10,10 @@ import org.slf4j.cal10n.LocLogger;
 import org.yaml.snakeyaml.Yaml;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
-import wtf.metio.yosql.model.sql.ResultRowConverter;
-import wtf.metio.yosql.model.sql.SqlConfiguration;
-import wtf.metio.yosql.model.sql.SqlParameter;
-import wtf.metio.yosql.model.sql.SqlType;
+import wtf.metio.yosql.model.sql.*;
 import wtf.metio.yosql.utils.Strings;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +50,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
      * @return The resulting configuration.
      */
     @Override
-    public SqlConfiguration createStatementConfiguration(
+    public SqlConfiguration createConfiguration(
             final Path source,
             final String yaml,
             final Map<String, List<Integer>> parameterIndices,
@@ -69,6 +67,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         lazyName(configuration);
         eagerName(configuration);
         type(configuration);
+        returningMode(configuration);
 
         validateNames(source, configuration);
 
@@ -89,7 +88,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     private static void name(final SqlConfiguration configuration, final Path source, final int statementInFile) {
         if (nullOrEmpty(configuration.getName())) {
             final String fileName = getFileNameWithoutExtension(source);
-            configuration.setName(statementInFile == 1 ? fileName : fileName + statementInFile);
+            configuration.setName(statementInFile > 1 ? fileName + statementInFile : fileName);
         }
     }
 
@@ -149,7 +148,17 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 configuration.setType(SqlType.READING);
             } else if (startsWith(configuration.getName(), runtimeConfiguration.methods().allowedCallPrefixes())) {
                 configuration.setType(SqlType.CALLING);
+            } else {
+                configuration.setType(SqlType.UNKNOWN);
             }
+        }
+    }
+
+    private void returningMode(final SqlConfiguration configuration) {
+        switch (configuration.getType()) {
+            case READING -> configuration.setReturningMode(ReturningMode.LIST);
+            case WRITING -> configuration.setReturningMode(ReturningMode.ONE);
+            default -> configuration.setReturningMode(ReturningMode.NONE);
         }
     }
 
@@ -172,15 +181,14 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                     }
                     break;
                 default:
-                    errors.illegalArgument("[%s] has unsupported type [%s]",
-                            source, configuration.getType());
+                    errors.illegalArgument("[%s] has unsupported type [%s]", source, configuration.getType()); // TODO: add enum & translation
                     break;
             }
         }
     }
 
     private void invalidPrefix(final Path source, final SqlType sqlType, final String name) {
-        errors.illegalArgument("[%s] has invalid %s prefix in its name [%s]", source, sqlType, name);
+        errors.illegalArgument("[%s] has invalid %s prefix in its name [%s]", source, sqlType, name); // TODO: add enum & translation
     }
 
     private void standard(final SqlConfiguration configuration) {
@@ -237,11 +245,9 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private void repository(final Path source, final SqlConfiguration configuration) {
         if (configuration.hasRepository()) {
-            final String repositoryName = calculateRepositoryNameFromUserInput(configuration);
-            configuration.setRepository(repositoryName);
+            configuration.setRepository(calculateRepositoryNameFromUserInput(configuration));
         } else {
-            final String fullRepositoryName = calculateRepositoryNameFromParentFolder(source);
-            configuration.setRepository(fullRepositoryName);
+            configuration.setRepository(calculateRepositoryNameFromParentFolder(source));
         }
     }
 
@@ -251,7 +257,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         logger.debug("source path: " + source);
         logger.debug("relative path: " + relativePathToSqlFile);
         final var rawRepositoryName = relativePathToSqlFile.getParent().toString();
-        final var dottedRepositoryName = rawRepositoryName.replace("/", ".");
+        final var dottedRepositoryName = rawRepositoryName.replace(File.separator, ".");
         final var upperCaseName = upperCaseFirstLetterInLastSegment(dottedRepositoryName);
         final var actualRepository = repositoryInBasePackage(upperCaseName);
         return repositoryWithNameSuffix(actualRepository);
@@ -443,7 +449,8 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private static String getFileNameWithoutExtension(final Path path) {
         final var fileName = path.getFileName().toString();
-        return fileName.substring(0, fileName.lastIndexOf('.'));
+        final var dotIndex = fileName.lastIndexOf('.');
+        return dotIndex > 0 ? fileName.substring(0, dotIndex) : fileName;
     }
 
 }

@@ -22,6 +22,7 @@ import wtf.metio.yosql.generator.dao.jdbc.JDBC;
 import wtf.metio.yosql.i18n.I18nModule;
 import wtf.metio.yosql.model.annotations.Delegating;
 import wtf.metio.yosql.model.annotations.Generator;
+import wtf.metio.yosql.model.annotations.Parser;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.orchestration.OrchestrationModule;
 
@@ -54,6 +55,9 @@ public interface YoSQLComponent {
 
     @Generator
     LocLogger generatorLocLogger();
+
+    @Parser
+    LocLogger parserLocLogger();
 
     AnnotationGenerator annotationGenerator();
 

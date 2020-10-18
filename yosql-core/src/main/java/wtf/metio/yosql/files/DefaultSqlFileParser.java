@@ -86,7 +86,7 @@ final class DefaultSqlFileParser implements SqlFileParser {
         logger.trace(ApplicationEvents.STATEMENT_PARSED, rawSqlStatement);
 
         final var parameterIndices = extractParameterIndices(rawSqlStatement);
-        final var configuration = factory.createStatementConfiguration(source, rawYaml,
+        final var configuration = factory.createConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
         logger.debug(ApplicationEvents.STATEMENT_PARSING_FINISHED, source, configuration.getName());
         return SqlStatement.builder()

@@ -26,4 +26,9 @@ public enum SqlType {
      */
     CALLING,
 
+    /**
+     * Statement type is unknown.
+     */
+    UNKNOWN
+
 }

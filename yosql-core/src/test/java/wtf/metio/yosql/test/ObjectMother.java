@@ -230,6 +230,14 @@ public final class ObjectMother {
         return yoSQLComponent(runtimeConfiguration).generatorLocLogger();
     }
 
+    public static LocLogger parserLocLogger() {
+        return parserLocLogger(RuntimeConfiguration.usingDefaults());
+    }
+
+    public static LocLogger parserLocLogger(final RuntimeConfiguration runtimeConfiguration) {
+        return yoSQLComponent(runtimeConfiguration).parserLocLogger();
+    }
+
     public static Classes classes() {
         return classes(RuntimeConfiguration.usingDefaults());
     }

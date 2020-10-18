@@ -25,7 +25,7 @@ public interface SqlConfigurationFactory {
      * @param statementInFile  The counter for statements with the same name in the same source file.
      * @return The resulting configuration.
      */
-    SqlConfiguration createStatementConfiguration(
+    SqlConfiguration createConfiguration(
             Path source,
             String yaml,
             Map<String, List<Integer>> parameterIndices,

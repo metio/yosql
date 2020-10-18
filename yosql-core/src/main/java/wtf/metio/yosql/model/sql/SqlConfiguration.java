@@ -224,7 +224,7 @@ public class SqlConfiguration {
     }
 
     public boolean hasRepository() {
-        return repository != null && !repository.isEmpty();
+        return repository != null && !repository.isBlank();
     }
 
     public String getRepository() {
