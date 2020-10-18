@@ -23,7 +23,7 @@ import java.util.Locale;
  * The generate goal generates Java code based on SQL files.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
-public class YoSqlGenerateMojo extends AbstractMojo {
+public class YoSQLGenerateMojo extends AbstractMojo {
 
     private static final List<Locale> SUPPORTED_LOCALES = List.of(Locale.ENGLISH, Locale.GERMAN);
 
