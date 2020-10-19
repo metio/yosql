@@ -5,8 +5,9 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.maven;
+package wtf.metio.yosql.cli;
 
+import picocli.CommandLine;
 import wtf.metio.yosql.model.configuration.PackagesConfiguration;
 
 /**
@@ -14,20 +15,23 @@ import wtf.metio.yosql.model.configuration.PackagesConfiguration;
  */
 public class Packages {
 
-    /**
-     * The base package name for all generated classes (default: <strong>com.example.persistence</strong>).
-     */
-    private final String basePackageName = "com.example.persistence";
+    @CommandLine.Option(
+            names = "--package-base-name",
+            description = "The base package name for all generated classes.",
+            defaultValue = "com.example.persistence")
+    String basePackageName;
 
-    /**
-     * The package name for utility classes (default: <strong>util</strong>).
-     */
-    private final String utilityPackageName = "util";
+    @CommandLine.Option(
+            names = "--package-utility-name",
+            description = "The package name for utility classes.",
+            defaultValue = "util")
+    String utilityPackageName;
 
-    /**
-     * The package name for converter classes (default: <strong>converter</strong>).
-     */
-    private final String converterPackageName = "converter";
+    @CommandLine.Option(
+            names = "--package-converter-name",
+            description = "The package name for converter classes.",
+            defaultValue = "converter")
+    String converterPackageName;
 
     PackagesConfiguration asConfiguration() {
         return PackagesConfiguration.builder()

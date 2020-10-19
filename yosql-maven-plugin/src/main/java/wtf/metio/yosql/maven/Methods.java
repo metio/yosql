@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public class Methods {
 
     /**
-     * Controls whether the generated repositories should contain <em>generic</em> methods that. Standard methods
+     * Controls whether the generated repositories should contain <em>generic</em> methods. Standard methods
      * execute depending on the type of the query and could either be a single 'executeQuery' on a PreparedStatement in
      * case of SQL SELECT statements or a single call to 'executeUpdate' for SQL UPDATE statements. (default:
      * <strong>true</strong>).
