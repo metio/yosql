@@ -12,10 +12,7 @@ import wtf.metio.yosql.DaggerYoSQLComponent;
 import wtf.metio.yosql.YoSQLComponent;
 import wtf.metio.yosql.generator.api.*;
 import wtf.metio.yosql.generator.blocks.generic.*;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcMethods;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
+import wtf.metio.yosql.generator.blocks.jdbc.*;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
@@ -278,6 +275,22 @@ public final class ObjectMother {
         return yoSQLComponent(runtimeConfiguration).fields();
     }
 
+    public static JdbcBlocks jdbcBlocks() {
+        return jdbcBlocks(RuntimeConfiguration.usingDefaults());
+    }
+
+    public static JdbcBlocks jdbcBlocks(final RuntimeConfiguration runtimeConfiguration) {
+        return yoSQLComponent(runtimeConfiguration).jdbcBlocks();
+    }
+
+    public static JdbcTransformer jdbcTransformer() {
+        return jdbcTransformer(RuntimeConfiguration.usingDefaults());
+    }
+
+    public static JdbcTransformer jdbcTransformer(final RuntimeConfiguration runtimeConfiguration) {
+        return yoSQLComponent(runtimeConfiguration).jdbcTransformer();
+    }
+
     private static YoSQLComponent yoSQLComponent(final RuntimeConfiguration runtimeConfiguration) {
         return DaggerYoSQLComponent.builder()
                 .locale(Locale.ENGLISH)
@@ -288,4 +301,6 @@ public final class ObjectMother {
     private ObjectMother() {
         // factory class
     }
+
+
 }

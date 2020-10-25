@@ -14,10 +14,7 @@ import wtf.metio.yosql.files.FilesModule;
 import wtf.metio.yosql.generator.CodeGeneratorModule;
 import wtf.metio.yosql.generator.api.*;
 import wtf.metio.yosql.generator.blocks.generic.*;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcMethods;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
+import wtf.metio.yosql.generator.blocks.jdbc.*;
 import wtf.metio.yosql.generator.dao.jdbc.JDBC;
 import wtf.metio.yosql.i18n.I18nModule;
 import wtf.metio.yosql.model.annotations.Delegating;
@@ -114,6 +111,10 @@ public interface YoSQLComponent {
     JdbcMethods.JdbcMetaDataMethods jdbcMetaDataMethods();
 
     JdbcMethods.JdbcStatementMethods jdbcStatementMethods();
+
+    JdbcBlocks jdbcBlocks();
+
+    JdbcTransformer jdbcTransformer();
 
     //endregion
 

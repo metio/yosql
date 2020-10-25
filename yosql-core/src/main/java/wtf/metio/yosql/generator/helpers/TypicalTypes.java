@@ -10,7 +10,7 @@ import com.squareup.javapoet.*;
 
 public final class TypicalTypes {
 
-    private static final ClassName OBJECT = ClassName.get("java.lang", "Object");
+    public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
     public static final ClassName STRING = ClassName.get("java.lang", "String");
 
     private static final ClassName LIST = ClassName.get("java.util", "List");

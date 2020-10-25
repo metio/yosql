@@ -13,10 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
-import wtf.metio.yosql.model.sql.SqlObjectMother;
 import wtf.metio.yosql.test.ObjectMother;
-
-import static wtf.metio.yosql.model.sql.SqlObjectMother.sqlConfiguration;
 
 @DisplayName("DefaultJdbcBlocks")
 class DefaultJdbcBlocksTest {
@@ -157,7 +154,7 @@ class DefaultJdbcBlocksTest {
                     statement.setObject(jdbcIndex, test[batch]);
                   }
                   statement.addBatch()}
-                """, generator.prepareBatch(sqlConfiguration()).toString());
+                """, generator.prepareBatch(ObjectMother.sqlConfiguration()).toString());
     }
 
     @Test
@@ -168,7 +165,7 @@ class DefaultJdbcBlocksTest {
                 final java.lang.String rawQuery = QUERY_TEST_RAW;
                 final java.util.Map<java.lang.String, int[]> index = QUERY_TEST_INDEX;
                 LOG.finer(() -> String.format("Picked index [%s]", "QUERY_TEST_INDEX"));
-                """, generator.pickVendorQuery(SqlObjectMother.sqlStatements()).toString());
+                """, generator.pickVendorQuery(ObjectMother.sqlStatements()).toString());
     }
 
     @Test
@@ -179,7 +176,7 @@ class DefaultJdbcBlocksTest {
                     .replace(":test", test == null ? "null" : test.toString());
                   LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                 }
-                """, generator.logExecutedQuery(sqlConfiguration()).toString());
+                """, generator.logExecutedQuery(ObjectMother.sqlConfiguration()).toString());
     }
 
     @Test
@@ -190,7 +187,7 @@ class DefaultJdbcBlocksTest {
                     .replace(":test", test == null ? "null" : java.util.Arrays.toString(test));
                   LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                 }
-                """, generator.logExecutedBatchQuery(sqlConfiguration()).toString());
+                """, generator.logExecutedBatchQuery(ObjectMother.sqlConfiguration()).toString());
     }
 
     @Test
@@ -235,7 +232,7 @@ class DefaultJdbcBlocksTest {
                 for (final int jdbcIndex : index.get("test")) {
                   statement.setObject(jdbcIndex, test);
                 }
-                """, generator.setParameters(sqlConfiguration()).toString());
+                """, generator.setParameters(ObjectMother.sqlConfiguration()).toString());
     }
 
     @Test
@@ -244,7 +241,7 @@ class DefaultJdbcBlocksTest {
                 for (final int jdbcIndex : index.get("test")) {
                   statement.setObject(jdbcIndex, test[batch]);
                 }
-                """, generator.setBatchParameters(sqlConfiguration()).toString());
+                """, generator.setBatchParameters(ObjectMother.sqlConfiguration()).toString());
     }
 
 }

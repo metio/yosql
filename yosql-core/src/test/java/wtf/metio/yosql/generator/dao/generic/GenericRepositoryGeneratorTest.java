@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.model.sql.SqlObjectMother;
 import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("GenericRepositoryGenerator")
@@ -98,7 +97,7 @@ class GenericRepositoryGeneratorTest {
                     this.dataSource = dataSource;
                   }
                 }
-                """, generator.generateRepository("Test", SqlObjectMother.sqlStatements()).getType().toString());
+                """, generator.generateRepository("Test", ObjectMother.sqlStatements()).getType().toString());
     }
 
 }

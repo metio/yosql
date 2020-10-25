@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.model.sql.SqlObjectMother;
 import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("GenericMethodsGenerator")
@@ -42,7 +41,7 @@ class GenericMethodsGeneratorTest {
                 public Constructor(final javax.sql.DataSource dataSource) {
                   this.dataSource = dataSource;
                 }
-                """, generator.constructor(SqlObjectMother.sqlStatements()).toString());
+                """, generator.constructor(ObjectMother.sqlStatements()).toString());
     }
 
     @Test
@@ -89,7 +88,7 @@ class GenericMethodsGeneratorTest {
                     }
                   }
                 }
-                """, generator.standardReadMethod(SqlObjectMother.sqlConfiguration(), SqlObjectMother.sqlStatements()).toString());
+                """, generator.standardReadMethod(ObjectMother.sqlConfiguration(), ObjectMother.sqlStatements()).toString());
     }
 
     @Test
@@ -129,7 +128,7 @@ class GenericMethodsGeneratorTest {
                     }
                   }
                 }
-                """, generator.standardWriteMethod(SqlObjectMother.sqlConfiguration(), SqlObjectMother.sqlStatements()).toString());
+                """, generator.standardWriteMethod(ObjectMother.sqlConfiguration(), ObjectMother.sqlStatements()).toString());
     }
 
     @Test
@@ -176,7 +175,7 @@ class GenericMethodsGeneratorTest {
                     }
                   }
                 }
-                """, generator.standardCallMethod(SqlObjectMother.sqlConfiguration(), SqlObjectMother.sqlStatements()).toString());
+                """, generator.standardCallMethod(ObjectMother.sqlConfiguration(), ObjectMother.sqlStatements()).toString());
     }
 
     @Test
@@ -218,7 +217,7 @@ class GenericMethodsGeneratorTest {
                     }
                   }
                 }
-                """, generator.batchWriteMethod(SqlObjectMother.sqlConfiguration(), SqlObjectMother.sqlStatements()).toString());
+                """, generator.batchWriteMethod(ObjectMother.sqlConfiguration(), ObjectMother.sqlStatements()).toString());
     }
 
     @Test
@@ -265,7 +264,7 @@ class GenericMethodsGeneratorTest {
                     }
                   }
                 }
-                """, generator.streamEagerReadMethod(SqlObjectMother.sqlConfiguration(), SqlObjectMother.sqlStatements()).toString());
+                """, generator.streamEagerReadMethod(ObjectMother.sqlConfiguration(), ObjectMother.sqlStatements()).toString());
     }
 
     @Test
@@ -337,7 +336,7 @@ class GenericMethodsGeneratorTest {
                     }
                   });
                 }
-                """, generator.streamLazyReadMethod(SqlObjectMother.sqlConfiguration(), SqlObjectMother.sqlStatements()).toString());
+                """, generator.streamLazyReadMethod(ObjectMother.sqlConfiguration(), ObjectMother.sqlStatements()).toString());
     }
 
     @Test
@@ -411,7 +410,7 @@ class GenericMethodsGeneratorTest {
                     }
                   });
                 }
-                """, generator.rxJavaReadMethod(SqlObjectMother.sqlConfiguration(), SqlObjectMother.sqlStatements()).toString());
+                """, generator.rxJavaReadMethod(ObjectMother.sqlConfiguration(), ObjectMother.sqlStatements()).toString());
     }
 
 }
