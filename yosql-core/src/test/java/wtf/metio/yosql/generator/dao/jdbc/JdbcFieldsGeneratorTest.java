@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.test.ObjectMother;
+import wtf.metio.yosql.test.TestIterables;
 
 @DisplayName("JdbcFieldsGenerator")
 class JdbcFieldsGeneratorTest {
@@ -37,7 +38,7 @@ class JdbcFieldsGeneratorTest {
 
     @Test
     void asFields() {
-        assertIterable(generator.asFields(ObjectMother.sqlStatements()),
+        TestIterables.assertIterable(generator.asFields(ObjectMother.sqlStatements()),
                 """
                         @javax.annotation.processing.Generated(
                             value = "YoSQL",
@@ -85,14 +86,6 @@ class JdbcFieldsGeneratorTest {
                         )
                         private static final java.util.Map<java.lang.String, int[]> QUERY_TEST_INDEX = new java.util.HashMap<>(1);
                         """);
-    }
-
-    private void assertIterable(Iterable<?> values, String... expectedValues) {
-        int index = 0;
-        for (final var value : values) {
-            Assertions.assertEquals(value.toString(), expectedValues[index]);
-            index++;
-        }
     }
 
 }
