@@ -11,45 +11,40 @@ package wtf.metio.yosql.model.internal;
  */
 public enum Loggers {
 
-    /**
-     * Logger for file writers.
-     */
-    WRITER("yosql.writer"),
+  /**
+   * Logger for file writers.
+   */
+  WRITER("yosql.writer"),
 
-    /**
-     * Logger for file parsers.
-     */
-    PARSER("yosql.parser"),
+  /**
+   * Logger for file parsers.
+   */
+  PARSER("yosql.parser"),
 
-    /**
-     * Logger for file readers.
-     */
-    READER("yosql.reader"),
+  /**
+   * Logger for file readers.
+   */
+  READER("yosql.reader"),
 
-    /**
-     * Logger for file generators.
-     */
-    GENERATOR("yosql.generator"),
+  /**
+   * Logger for file generators.
+   */
+  GENERATOR("yosql.generator"),
 
-    /**
-     * Logger for timers.
-     */
-    TIMER("yosql.timer"),
+  /**
+   * Logger for timers.
+   */
+  TIMER("yosql.timer"),
 
-    /**
-     * Logger for utilities.
-     */
-    UTILITIES("yosql.utilities"),
+  /**
+   * Logger for utilities.
+   */
+  UTILITIES("yosql.utilities");
 
-    /**
-     * Logger for CLIs.
-     */
-    CLI("yosql.cli"); // TODO: remove?
+  public final String loggerName;
 
-    public final String loggerName;
-
-    Loggers(String loggerName) {
-        this.loggerName = loggerName;
-    }
+  Loggers(String loggerName) {
+    this.loggerName = loggerName;
+  }
 
 }

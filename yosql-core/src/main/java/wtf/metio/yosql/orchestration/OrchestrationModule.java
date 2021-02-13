@@ -11,7 +11,6 @@ import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
-import wtf.metio.yosql.model.annotations.Delegating;
 import wtf.metio.yosql.model.annotations.TimeLogger;
 import wtf.metio.yosql.model.annotations.Writer;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
@@ -57,29 +56,26 @@ public class OrchestrationModule {
 
     @Provides
     @Singleton
-    ForkJoinPool.ForkJoinWorkerThreadFactory provideNativeForkJoinWorkerThreadFactory() {
-        return ForkJoinPool.defaultForkJoinWorkerThreadFactory;
+    ForkJoinPool.ForkJoinWorkerThreadFactory provideForkJoinWorkerThreadFactory() {
+        return (pool) -> {
+            final var threadFactory = ForkJoinPool.defaultForkJoinWorkerThreadFactory;
+            final var worker = threadFactory.newThread(pool);
+            worker.setName("yosql-worker-" + worker.getPoolIndex());
+            return worker;
+        };
     }
 
     @Provides
     @Singleton
-    @Delegating
-    ForkJoinPool.ForkJoinWorkerThreadFactory provideForkJoinWorkerThreadFactory(final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory) {
-        return new NamedForkJoinWorkerThreadFactory(threadFactory);
+    Executor provideExecutor(final RuntimeConfiguration runtimeConfiguration,
+                             final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory) {
+        return new ForkJoinPool(calculateNumberOfThreadsToUse(runtimeConfiguration), threadFactory, null, false);
     }
 
-    @Provides
-    @Singleton
-    ThreadPoolFactory provideThreadPoolFactory(
-            @Delegating final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory,
-            final RuntimeConfiguration runtimeConfiguration) {
-        return new ThreadPoolFactory(threadFactory, runtimeConfiguration.resources());
-    }
-
-    @Provides
-    @Singleton
-    Executor provideExecutor(final ThreadPoolFactory threadPoolFactory) {
-        return threadPoolFactory.createThreadPool();
+    private int calculateNumberOfThreadsToUse(final RuntimeConfiguration runtimeConfiguration) {
+        final var threads = runtimeConfiguration.resources().maxThreads();
+        final var processors = Runtime.getRuntime().availableProcessors();
+        return threads < 1 ? processors : Math.max(1, Math.min(threads, processors));
     }
 
     @Provides
