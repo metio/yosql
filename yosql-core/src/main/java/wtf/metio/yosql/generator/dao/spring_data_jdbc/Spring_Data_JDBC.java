@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.generator.dao.r2dbc;
+package wtf.metio.yosql.generator.dao.spring_data_jdbc;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Documented;
@@ -15,15 +15,13 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 
 /**
- * Marks a type as related to the R2DBC API.
- *
- * @see <a href="https://r2dbc.io/">R2DBC Website</a>
+ * Marks a type as related to the Spring-Data JDBC API.
  */
 @Qualifier
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({TYPE, PARAMETER, METHOD})
-public @interface R2DBC {
+public @interface Spring_Data_JDBC {
 
     // marker annotation
 

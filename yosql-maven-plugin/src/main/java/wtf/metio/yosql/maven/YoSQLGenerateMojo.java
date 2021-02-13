@@ -37,34 +37,22 @@ public class YoSQLGenerateMojo extends AbstractMojo {
     private Java java;
 
     @Parameter(required = true, defaultValue = "${classObject}")
-    private Logging logging;
-
-    @Parameter(required = true, defaultValue = "${classObject}")
-    private Methods methods;
+    private Api api;
 
     @Parameter(required = true, defaultValue = "${classObject}")
     private Repositories repositories;
 
     @Parameter(required = true, defaultValue = "${classObject}")
-    private Statements statements;
-
-    @Parameter(required = true, defaultValue = "${classObject}")
     private Resources resources;
 
     @Parameter(required = true, defaultValue = "${classObject}")
-    private Variables variables;
-
-    @Parameter(required = true, defaultValue = "${classObject}")
-    private Packages packages;
+    private Utilities utilities;
 
     @Parameter(required = true, defaultValue = "${classObject}")
     private Results results;
 
     @Parameter(required = true, defaultValue = "${classObject}")
     private Jdbc jdbc;
-
-    @Parameter(required = true, defaultValue = "${classObject}")
-    private RxJava rxJava;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     MavenProject project;
@@ -83,22 +71,17 @@ public class YoSQLGenerateMojo extends AbstractMojo {
     }
 
     private RuntimeConfiguration createConfiguration() {
-        final var utilityPackage = packages.getUtilityPackageName();
+        final var utilityPackage = utilities.getUtilityPackageName();
         return RuntimeConfiguration.builder()
                 .setFiles(files.asConfiguration(project.getBasedir().toPath(), Paths.get(project.getBuild().getOutputDirectory())))
                 .setAnnotations(annotations.asConfiguration())
                 .setJava(java.asConfiguration())
-                .setLogging(logging.asConfiguration())
-                .setMethods(methods.asConfiguration())
+                .setApi(api.asConfiguration())
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
-                .setVariables(variables.asConfiguration())
-                .setStatements(statements.asConfiguration())
-                .setNames(packages.asConfiguration())
+                .setUtility(utilities.asConfiguration())
                 .setResult(results.asConfiguration(utilityPackage))
-                .setJdbcNames(jdbc.namesConfiguration())
-                .setJdbcFields(jdbc.fieldsConfiguration())
-                .setRxJava(rxJava.asConfiguration(utilityPackage))
+                .setJdbc(jdbc.asConfiguration())
                 .build();
     }
 

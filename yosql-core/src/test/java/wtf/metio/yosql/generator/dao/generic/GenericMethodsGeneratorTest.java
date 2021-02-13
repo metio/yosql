@@ -25,10 +25,7 @@ class GenericMethodsGeneratorTest {
                 ObjectMother.jdbcStreamMethods(),
                 ObjectMother.jdbcRxjavaMethods(),
                 ObjectMother.jdbcStandardMethodGenerator(),
-                ObjectMother.genericBlocks(),
-                ObjectMother.methods(),
-                ObjectMother.jdbcNames(),
-                ObjectMother.jdbcParameters());
+                ObjectMother.jdbcConstructor());
     }
 
     @Test

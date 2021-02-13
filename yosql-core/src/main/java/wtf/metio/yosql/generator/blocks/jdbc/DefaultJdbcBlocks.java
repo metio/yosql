@@ -18,6 +18,7 @@ import wtf.metio.yosql.generator.blocks.generic.Names;
 import wtf.metio.yosql.generator.blocks.generic.Variables;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
+import wtf.metio.yosql.model.options.LoggingApiOptions;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
@@ -246,7 +247,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
     @Override
     public CodeBlock logExecutedQuery(final SqlConfiguration sqlConfiguration) {
         final var builder = CodeBlock.builder();
-        if (runtimeConfiguration.logging().shouldLog()) {
+        if (runtimeConfiguration.api().loggingApi() != LoggingApiOptions.NONE) {
             builder.beginControlFlow("if ($L)", logging.shouldLog());
             builder.add("final $T $N = $N", String.class, names.executedQuery(), names.rawQuery());
             sqlConfiguration.getParameters()
@@ -272,7 +273,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
     @Override
     public CodeBlock logExecutedBatchQuery(final SqlConfiguration sqlConfiguration) {
         final var builder = CodeBlock.builder();
-        if (runtimeConfiguration.logging().shouldLog()) {
+        if (runtimeConfiguration.api().loggingApi() != LoggingApiOptions.NONE) {
             builder.beginControlFlow("if ($L)", logging.shouldLog());
             builder.add("final $T $N = $N", String.class, names.executedQuery(), names.rawQuery());
             sqlConfiguration.getParameters()
@@ -346,7 +347,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
     @Override
     public CodeBlock returnNewFlowState() {
         return CodeBlock.builder()
-                .addStatement("return new $T($N, $N, $N, $N, $N)", runtimeConfiguration.rxJava().flowStateClass(),
+                .addStatement("return new $T($N, $N, $N, $N, $N)", runtimeConfiguration.result().flowStateClass(),
                         jdbcNames.connection(),
                         jdbcNames.statement(),
                         jdbcNames.resultSet(),

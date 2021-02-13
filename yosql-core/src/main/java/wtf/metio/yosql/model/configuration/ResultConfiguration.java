@@ -29,22 +29,24 @@ public interface ResultConfiguration {
 
     @Value.Default
     default ClassName resultStateClass() {
-        final var packagesConfiguration = PackagesConfiguration.usingDefaults();
-        return ClassName.get(
-                packagesConfiguration.basePackageName()
-                        + "."
-                        + packagesConfiguration.utilityPackageName(),
-                "ResultState");
+        final var config = UtilityConfiguration.usingDefaults();
+        return ClassName.get(config.basePackageName(), "ResultState");
     }
 
     @Value.Default
     default ClassName resultRowClass() {
-        final var packagesConfiguration = PackagesConfiguration.usingDefaults();
+        final var config = UtilityConfiguration.usingDefaults();
         return ClassName.get(
-                packagesConfiguration.basePackageName()
-                        + "."
-                        + packagesConfiguration.utilityPackageName(),
+                config.basePackageName(),
                 "ResultRow");
+    }
+
+    @Value.Default
+    default ClassName flowStateClass() {
+        final var config = UtilityConfiguration.usingDefaults();
+        return ClassName.get(
+                config.basePackageName(),
+                "FlowState");
     }
 
 }

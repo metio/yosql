@@ -76,19 +76,19 @@ final class ResultStateGenerator {
     }
 
     private FieldSpec resultSetField() {
-        return FieldSpec.builder(ResultSet.class, runtimeConfiguration.jdbcNames().resultSet())
+        return FieldSpec.builder(ResultSet.class, runtimeConfiguration.jdbc().resultSet())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }
 
     private FieldSpec metaDataField() {
-        return FieldSpec.builder(ResultSetMetaData.class, runtimeConfiguration.jdbcNames().metaData())
+        return FieldSpec.builder(ResultSetMetaData.class, runtimeConfiguration.jdbc().metaData())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }
 
     private FieldSpec columnCountField() {
-        return FieldSpec.builder(int.class, runtimeConfiguration.jdbcNames().columnCount())
+        return FieldSpec.builder(int.class, runtimeConfiguration.jdbc().columnCount())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }

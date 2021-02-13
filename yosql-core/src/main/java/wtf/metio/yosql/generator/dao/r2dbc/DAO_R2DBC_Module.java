@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.generator.dao.jdbc;
+package wtf.metio.yosql.generator.dao.r2dbc;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,46 +19,50 @@ import wtf.metio.yosql.model.annotations.Generator;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
 /**
- * Dagger module for the JDBC based DAO implementation.
+ * Dagger module for the R2DBC based DAO implementation.
  */
 @Module
-public class DaoJdbcModule {
+public class DAO_R2DBC_Module {
 
-    @JDBC
+    @R2DBC
     @Provides
     RepositoryGenerator provideRepositoryGenerator(
             final @Generator LocLogger logger,
             final AnnotationGenerator annotations,
             final Classes classes,
             final Javadoc javadoc,
-            final @JDBC FieldsGenerator fields,
-            final @JDBC MethodsGenerator methods) {
+            final @R2DBC FieldsGenerator fields,
+            final @R2DBC MethodsGenerator methods) {
         return new GenericRepositoryGenerator(logger, annotations, classes, javadoc, fields, methods);
     }
 
-    @JDBC
+    @R2DBC
     @Provides
     MethodsGenerator provideMethodsGenerator(
-            final @JDBC BatchMethodGenerator batchMethods,
-            final @JDBC Java8StreamMethodGenerator streamMethods,
-            final @JDBC RxJavaMethodGenerator rxjavaMethods,
-            final @JDBC StandardMethodGenerator standardMethods,
-            final GenericBlocks blocks,
-            final Methods methods,
-            final JdbcNames jdbcNames,
-            final JdbcParameters jdbcParameters) {
+            final @R2DBC BatchMethodGenerator batchMethods,
+            final @R2DBC Java8StreamMethodGenerator streamMethods,
+            final @R2DBC RxJavaMethodGenerator rxjavaMethods,
+            final @R2DBC StandardMethodGenerator standardMethods,
+            final @R2DBC ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 batchMethods,
                 streamMethods,
                 rxjavaMethods,
                 standardMethods,
-                blocks,
-                methods,
-                jdbcNames,
-                jdbcParameters);
+                constructor);
     }
 
-    @JDBC
+    @R2DBC
+    @Provides
+    ConstructorGenerator provideConstructorGenerator(
+            final GenericBlocks blocks,
+            final Methods methods,
+            final JdbcNames jdbcNames,
+            final JdbcParameters jdbcParameters) {
+        return new R2dbcConstructorGenerator(blocks, methods, jdbcNames, jdbcParameters);
+    }
+
+    @R2DBC
     @Provides
     FieldsGenerator provideFieldsGenerator(
             final Fields fields,
@@ -66,10 +70,10 @@ public class DaoJdbcModule {
             final JdbcFields jdbcFields,
             final JdbcNames jdbcNames,
             final Javadoc javadoc) {
-        return new JdbcFieldsGenerator(fields, logging, jdbcFields, jdbcNames, javadoc);
+        return new R2dbcFieldsGenerator(fields, logging, jdbcFields, jdbcNames, javadoc);
     }
 
-    @JDBC
+    @R2DBC
     @Provides
     BatchMethodGenerator provideBatchMethodGenerator(
             final ControlFlows controlFlow,
@@ -78,7 +82,7 @@ public class DaoJdbcModule {
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final JdbcTransformer transformer) {
-        return new JdbcBatchMethodGenerator(
+        return new R2dbcBatchMethodGenerator(
                 controlFlow,
                 methods,
                 parameters,
@@ -87,7 +91,7 @@ public class DaoJdbcModule {
                 transformer);
     }
 
-    @JDBC
+    @R2DBC
     @Provides
     Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final GenericBlocks blocks,
@@ -98,7 +102,7 @@ public class DaoJdbcModule {
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
             final JdbcTransformer jdbcTransformer) {
-        return new JdbcJava8StreamMethodGenerator(
+        return new R2dbcJava8StreamMethodGenerator(
                 blocks,
                 controlFlow,
                 names,
@@ -110,7 +114,7 @@ public class DaoJdbcModule {
         );
     }
 
-    @JDBC
+    @R2DBC
     @Provides
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
             final RuntimeConfiguration configuration,
@@ -120,7 +124,7 @@ public class DaoJdbcModule {
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks) {
-        return new JdbcRxJavaMethodGenerator(
+        return new R2dbcRxJavaMethodGenerator(
                 configuration,
                 controlFlows,
                 names,
@@ -130,7 +134,7 @@ public class DaoJdbcModule {
                 jdbcBlocks);
     }
 
-    @JDBC
+    @R2DBC
     @Provides
     StandardMethodGenerator provideStandardMethodGenerator(
             final ControlFlows controlFlows,
@@ -139,7 +143,7 @@ public class DaoJdbcModule {
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final JdbcTransformer jdbcTransformer) {
-        return new JdbcStandardMethodGenerator(
+        return new R2dbcStandardMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

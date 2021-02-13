@@ -9,21 +9,42 @@ package wtf.metio.yosql.generator.dao;
 import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
-import wtf.metio.yosql.generator.dao.jdbc.DaoJdbcModule;
+import wtf.metio.yosql.generator.dao.jdbc.DAO_JDBC_Module;
 import wtf.metio.yosql.generator.dao.jdbc.JDBC;
+import wtf.metio.yosql.generator.dao.r2dbc.DAO_R2DBC_Module;
+import wtf.metio.yosql.generator.dao.r2dbc.R2DBC;
+import wtf.metio.yosql.generator.dao.spring_data_jdbc.DAO_Spring_Data_JDBC_Module;
+import wtf.metio.yosql.generator.dao.spring_data_jdbc.Spring_Data_JDBC;
+import wtf.metio.yosql.generator.dao.spring_jdbc.DAO_Spring_JDBC_Module;
+import wtf.metio.yosql.generator.dao.spring_jdbc.Spring_JDBC;
 import wtf.metio.yosql.model.annotations.Delegating;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
 /**
  * Dagger module for the DAO API.
  */
-@Module(includes = DaoJdbcModule.class)
+@Module(includes = {
+        DAO_JDBC_Module.class,
+        DAO_R2DBC_Module.class,
+        DAO_Spring_Data_JDBC_Module.class,
+        DAO_Spring_JDBC_Module.class
+})
 public final class DaoModule {
 
-    @Delegating
     @Provides
+    @Delegating
     RepositoryGenerator provideRepositoryGenerator(
-            @JDBC final RepositoryGenerator jdbcRepositoryGenerator) {
-        return new DelegatingRepositoryGenerator(jdbcRepositoryGenerator);
+            final RuntimeConfiguration runtime,
+            @JDBC final RepositoryGenerator jdbcRepositoryGenerator,
+            @R2DBC final RepositoryGenerator r2dbcRepositoryGenerator,
+            @Spring_Data_JDBC final RepositoryGenerator springDataJdbcRepositoryGenerator,
+            @Spring_JDBC final RepositoryGenerator springJdbcRepositoryGenerator) {
+        return new DelegatingRepositoryGenerator(
+                runtime,
+                jdbcRepositoryGenerator,
+                r2dbcRepositoryGenerator,
+                springDataJdbcRepositoryGenerator,
+                springJdbcRepositoryGenerator);
     }
 
 }

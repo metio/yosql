@@ -7,19 +7,27 @@
 
 package wtf.metio.yosql.maven;
 
-import wtf.metio.yosql.model.configuration.LoggingConfiguration;
+import wtf.metio.yosql.model.configuration.ApiConfiguration;
+import wtf.metio.yosql.model.options.DaoApiOptions;
 import wtf.metio.yosql.model.options.LoggingApiOptions;
 
 /**
  * Configures how logging is applied to generated code.
  */
-public class Logging {
+public class Api {
 
     /**
      * The logging API to use (default: <strong>auto</strong> which picks the logging API based on the projects
      * dependencies). Possible other values are "jdk", "log4j", "slf4j" and "none".
      */
     String loggingApi = "auto";
+
+    /**
+     * The DAO API to use (default: <strong>auto</strong> which picks the DAO API based on the projects
+     * dependencies). Possible other values are "ebean", "jdbc", "jdbi", "jooq", "jpa", "r2dbc", "spring_data_jdbc" and
+     * "spring_jdbc".
+     */
+    String daoApi = "auto";
 
     /**
      * The groupId to match for automatic Log4j detection (default: <strong>"org.apache.logging.log4j"</strong>).
@@ -41,9 +49,10 @@ public class Logging {
      */
     String slf4jArtifactId = "slf4j-api";
 
-    LoggingConfiguration asConfiguration() {
-        return LoggingConfiguration.builder()
-                .setApi(determineLoggingApi())
+    ApiConfiguration asConfiguration() {
+        return ApiConfiguration.builder()
+                .setLoggingApi(determineLoggingApi())
+                .setDaoApi(determineDaoApi())
                 .build();
     }
 
@@ -53,6 +62,19 @@ public class Logging {
             case "log4j" -> LoggingApiOptions.LOG4J;
             case "jdk" -> LoggingApiOptions.JDK;
             default -> LoggingApiOptions.NONE;
+        };
+    }
+
+    private DaoApiOptions determineDaoApi() {
+        return switch (daoApi) {
+            case "ebean" -> DaoApiOptions.EBEAN;
+            case "jdbi" -> DaoApiOptions.JDBI;
+            case "jooq" -> DaoApiOptions.JOOQ;
+            case "jpa" -> DaoApiOptions.JPA;
+            case "spring_data_jdbc" -> DaoApiOptions.SPRING_DATA_JDBC;
+            case "spring_jdbc" -> DaoApiOptions.SPRING_JDBC;
+            case "r2dbc" -> DaoApiOptions.R2DBC;
+            default -> DaoApiOptions.JDBC;
         };
     }
 

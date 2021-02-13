@@ -86,7 +86,7 @@ final class DelegatingLoggingGenerator implements LoggingGenerator {
     }
 
     private LoggingGenerator log() {
-        return switch (runtimeConfiguration.logging().api()) {
+        return switch (runtimeConfiguration.api().loggingApi()) {
             case JDK -> jdkLoggingGenerator;
             case LOG4J -> log4jLoggingGenerator;
             case SLF4J -> slf4jLoggingGenerator;

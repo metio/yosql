@@ -55,9 +55,9 @@ final class FlowStateGenerator {
     }
 
     PackagedTypeSpec generateFlowStateClass() {
-        final var flowStateClass = runtimeConfiguration.rxJava().flowStateClass();
+        final var flowStateClass = runtimeConfiguration.result().flowStateClass();
         final var type = classes.publicClass(flowStateClass)
-                .superclass(runtimeConfiguration.rxJava().flowStateClass())
+                .superclass(runtimeConfiguration.result().flowStateClass())
                 .addFields(fields())
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass())
@@ -75,13 +75,13 @@ final class FlowStateGenerator {
     }
 
     private FieldSpec connectionField() {
-        return FieldSpec.builder(Connection.class, runtimeConfiguration.jdbcNames().connection())
+        return FieldSpec.builder(Connection.class, runtimeConfiguration.jdbc().connection())
                 .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
     }
 
     private FieldSpec preparedStatementField() {
-        return FieldSpec.builder(PreparedStatement.class, runtimeConfiguration.jdbcNames().statement())
+        return FieldSpec.builder(PreparedStatement.class, runtimeConfiguration.jdbc().statement())
                 .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
     }
@@ -101,11 +101,11 @@ final class FlowStateGenerator {
                 .addParameter(jdbcParameters.metaData())
                 .addParameter(jdbcParameters.columnCount())
                 .addStatement("super($N, $N, $N)",
-                        runtimeConfiguration.jdbcNames().resultSet(),
-                        runtimeConfiguration.jdbcNames().metaData(),
-                        runtimeConfiguration.jdbcNames().columnCount())
-                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbcNames().connection()))
-                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbcNames().statement()))
+                        runtimeConfiguration.jdbc().resultSet(),
+                        runtimeConfiguration.jdbc().metaData(),
+                        runtimeConfiguration.jdbc().columnCount())
+                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().connection()))
+                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().statement()))
                 .build();
     }
 
@@ -113,9 +113,9 @@ final class FlowStateGenerator {
         return methods.publicMethod("close")
                 .returns(void.class)
                 .addException(SQLException.class)
-                .addStatement("$N.close()", runtimeConfiguration.jdbcNames().resultSet())
-                .addStatement("$N.close()", runtimeConfiguration.jdbcNames().statement())
-                .addStatement("$N.close()", runtimeConfiguration.jdbcNames().connection())
+                .addStatement("$N.close()", runtimeConfiguration.jdbc().resultSet())
+                .addStatement("$N.close()", runtimeConfiguration.jdbc().statement())
+                .addStatement("$N.close()", runtimeConfiguration.jdbc().connection())
                 .build();
     }
 

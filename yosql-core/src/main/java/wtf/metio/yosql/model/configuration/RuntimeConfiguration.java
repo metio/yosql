@@ -37,18 +37,18 @@ public interface RuntimeConfiguration {
     }
 
     @Value.Default
-    default LoggingConfiguration logging() {
-        return LoggingConfiguration.usingDefaults();
+    default ApiConfiguration api() {
+        return ApiConfiguration.usingDefaults();
     }
 
     @Value.Default
-    default MethodConfiguration methods() {
-        return MethodConfiguration.usingDefaults();
+    default UtilityConfiguration utility() { // TODO: rename to packages
+        return UtilityConfiguration.usingDefaults();
     }
 
     @Value.Default
-    default PackagesConfiguration names() { // TODO: rename to packages
-        return PackagesConfiguration.usingDefaults();
+    default ConverterConfiguration converter() { // TODO: rename to packages
+        return ConverterConfiguration.usingDefaults();
     }
 
     @Value.Default
@@ -62,28 +62,8 @@ public interface RuntimeConfiguration {
     }
 
     @Value.Default
-    default StatementConfiguration statements() {
-        return StatementConfiguration.usingDefaults();
-    }
-
-    @Value.Default
-    default VariableConfiguration variables() {
-        return VariableConfiguration.usingDefaults();
-    }
-
-    @Value.Default
-    default JdbcNamesConfiguration jdbcNames() {
-        return JdbcNamesConfiguration.usingDefaults();
-    }
-
-    @Value.Default
-    default JdbcFieldsConfiguration jdbcFields() {
-        return JdbcFieldsConfiguration.usingDefaults();
-    }
-
-    @Value.Default
-    default RxJavaConfiguration rxJava() {
-        return RxJavaConfiguration.usingDefaults();
+    default JdbcConfiguration jdbc() {
+        return JdbcConfiguration.usingDefaults();
     }
 
     @Value.Default

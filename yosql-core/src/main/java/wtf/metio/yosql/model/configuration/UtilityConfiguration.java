@@ -8,28 +8,29 @@
 package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
-import wtf.metio.yosql.model.options.StatementInRepositoryOptions;
 
 /**
- * Configures the statement related options.
+ * Configuration for the various utility related options.
  */
 @Value.Immutable
-public interface StatementConfiguration { // TODO: merge into RepositoryConfiguration
+public interface UtilityConfiguration {
 
-    static ImmutableStatementConfiguration.Builder builder() {
-        return ImmutableStatementConfiguration.builder();
+    static ImmutableUtilityConfiguration.Builder builder() {
+        return ImmutableUtilityConfiguration.builder();
     }
 
     /**
-     * @return A statement configuration using default values.
+     * @return An package configuration using default values.
      */
-    static ImmutableStatementConfiguration usingDefaults() {
+    static ImmutableUtilityConfiguration usingDefaults() {
         return builder().build();
     }
 
+    /**
+     * @return The base package name for all converter related classes.
+     */
     @Value.Default
-    default StatementInRepositoryOptions embed() {
-        return StatementInRepositoryOptions.INLINE_CONCAT;
+    default String basePackageName() {
+        return "com.example.persistence.util";
     }
-
 }

@@ -219,6 +219,14 @@ public final class ObjectMother {
         return yoSQLComponent(runtimeConfiguration).jdbcRxjavaMethods();
     }
 
+    public static ConstructorGenerator jdbcConstructor() {
+        return jdbcConstructor(RuntimeConfiguration.usingDefaults());
+    }
+
+    public static ConstructorGenerator jdbcConstructor(final RuntimeConfiguration runtimeConfiguration) {
+        return yoSQLComponent(runtimeConfiguration).jdbcConstructor();
+    }
+
     public static LocLogger generatorLocLogger() {
         return generatorLocLogger(RuntimeConfiguration.usingDefaults());
     }

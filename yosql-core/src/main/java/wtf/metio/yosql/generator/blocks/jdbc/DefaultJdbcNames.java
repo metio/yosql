@@ -7,13 +7,13 @@
 
 package wtf.metio.yosql.generator.blocks.jdbc;
 
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
+import wtf.metio.yosql.model.configuration.JdbcConfiguration;
 
 final class DefaultJdbcNames implements JdbcNames {
 
-    private final JdbcNamesConfiguration configuration;
+    private final JdbcConfiguration configuration;
 
-    DefaultJdbcNames(final JdbcNamesConfiguration configuration) {
+    DefaultJdbcNames(final JdbcConfiguration configuration) {
         this.configuration = configuration;
     }
 

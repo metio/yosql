@@ -13,17 +13,33 @@ import org.immutables.value.Value;
  * Configures the various JDBC names related options.
  */
 @Value.Immutable
-public interface JdbcNamesConfiguration {
+public interface JdbcConfiguration {
 
-    static ImmutableJdbcNamesConfiguration.Builder builder() {
-        return ImmutableJdbcNamesConfiguration.builder();
+    static ImmutableJdbcConfiguration.Builder builder() {
+        return ImmutableJdbcConfiguration.builder();
     }
 
     /**
      * @return A JDBC names configuration using default values.
      */
-    static ImmutableJdbcNamesConfiguration usingDefaults() {
+    static ImmutableJdbcConfiguration usingDefaults() {
         return builder().build();
+    }
+
+    /**
+     * @return The field name suffix for the raw SQL statement.
+     */
+    @Value.Default
+    default String rawSuffix() {
+        return "_RAW";
+    }
+
+    /**
+     * @return The field name suffix for the JDBC parameter indexes.
+     */
+    @Value.Default
+    default String indexSuffix() {
+        return "_INDEX";
     }
 
     /**

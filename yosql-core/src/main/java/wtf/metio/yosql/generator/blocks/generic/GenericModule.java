@@ -64,7 +64,7 @@ public final class GenericModule {
 
     @Provides
     Variables provideVariables(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultVariables(runtimeConfiguration.variables());
+        return new DefaultVariables(runtimeConfiguration.java());
     }
 
 }

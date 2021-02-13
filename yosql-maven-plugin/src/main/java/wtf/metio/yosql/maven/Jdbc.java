@@ -7,27 +7,45 @@
 
 package wtf.metio.yosql.maven;
 
-import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
-import wtf.metio.yosql.model.configuration.JdbcNamesConfiguration;
+import wtf.metio.yosql.model.configuration.JdbcConfiguration;
 
 /**
- * Configures how the JDBC API is used.
+ * Configures code generation for the JDBC API.
  */
 public class Jdbc {
 
-    /**
-     * The names to use in the generated JDBC code.
-     */
-    private final JdbcNames names = new JdbcNames();
+    private final String batch = "batch";
+    private final String columnCount = "columnCount";
+    private final String columnLabel = "columnLabel";
+    private final String connection = "connection";
+    private final String dataSource = "dataSource";
+    private final String index = "index";
+    private final String jdbcIndex = "jdbcIndex";
+    private final String list = "list";
+    private final String metaData = "metaData";
+    private final String resultSet = "resultSet";
+    private final String row = "row";
+    private final String statement = "statement";
+    private final String indexSuffix = "_INDEX";
+    private final String rawSuffix = "_RAW";
 
-    private final JdbcFields fields = new JdbcFields();
-
-    public JdbcNamesConfiguration namesConfiguration() {
-        return names.asConfiguration();
-    }
-
-    public JdbcFieldsConfiguration fieldsConfiguration() {
-        return fields.asConfiguration();
+    JdbcConfiguration asConfiguration() {
+        return JdbcConfiguration.builder()
+                .setBatch(batch)
+                .setColumnCount(columnCount)
+                .setColumnLabel(columnLabel)
+                .setConnection(connection)
+                .setDataSource(dataSource)
+                .setIndex(index)
+                .setJdbcIndex(jdbcIndex)
+                .setList(list)
+                .setMetaData(metaData)
+                .setResultSet(resultSet)
+                .setRow(row)
+                .setStatement(statement)
+                .setIndexSuffix(indexSuffix)
+                .setRawSuffix(rawSuffix)
+                .build();
     }
 
 }

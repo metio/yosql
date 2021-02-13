@@ -4,12 +4,4 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-
-package wtf.metio.yosql.cli;
-
-/**
- * Configures how methods are generated.
- */
-public class Methods {
-
-}
+package wtf.metio.yosql.generator.dao.spring_data_jdbc;

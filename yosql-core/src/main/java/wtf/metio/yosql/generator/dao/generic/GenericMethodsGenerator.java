@@ -6,21 +6,12 @@
  */
 package wtf.metio.yosql.generator.dao.generic;
 
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.generator.api.*;
-import wtf.metio.yosql.generator.blocks.generic.GenericBlocks;
-import wtf.metio.yosql.generator.blocks.generic.Methods;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
-import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
-import wtf.metio.yosql.model.sql.ResultRowConverter;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
-import wtf.metio.yosql.model.sql.SqlType;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * Generic implementation of a {@link MethodsGenerator}. Delegates most of its work to the injected members.
@@ -31,59 +22,31 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     private final Java8StreamMethodGenerator streamMethods;
     private final RxJavaMethodGenerator rxjavaMethods;
     private final StandardMethodGenerator standardMethods;
-    private final GenericBlocks blocks;
-    private final Methods methods;
-    private final JdbcNames jdbcNames;
-    private final JdbcParameters jdbcParameters;
+    private final ConstructorGenerator constructor;
 
     /**
      * @param batchMethods    The batch methods generator to use.
      * @param streamMethods   The Java8 stream methods generator to use.
      * @param rxjavaMethods   The RxJava methods generator to use.
      * @param standardMethods The generic methods generator to use.
-     * @param blocks          The generic code blocks to use.
-     * @param methods         The method code blocks to use.
-     * @param jdbcNames       The JDBC names to use.
-     * @param jdbcParameters  The JDBC parameters to use.
+     * @param constructor     The constructor generator to use.
      */
     public GenericMethodsGenerator(
             final BatchMethodGenerator batchMethods,
             final Java8StreamMethodGenerator streamMethods,
             final RxJavaMethodGenerator rxjavaMethods,
             final StandardMethodGenerator standardMethods,
-            final GenericBlocks blocks,
-            final Methods methods,
-            final JdbcNames jdbcNames, // TODO: replace with Names?
-            final JdbcParameters jdbcParameters) { // TODO: replace with Parameters?
+            final ConstructorGenerator constructor) {
         this.batchMethods = batchMethods;
         this.streamMethods = streamMethods;
         this.rxjavaMethods = rxjavaMethods;
         this.standardMethods = standardMethods;
-        this.blocks = blocks;
-        this.methods = methods;
-        this.jdbcParameters = jdbcParameters;
-        this.jdbcNames = jdbcNames;
+        this.constructor = constructor;
     }
 
     @Override
-    // TODO: move to JDBC implementation because of jdbcParams and jdbcNames usage
     protected MethodSpec constructor(final List<SqlStatement> statements) {
-        final var builder = CodeBlock.builder();
-        resultConverters(statements).forEach(converter -> builder.add(blocks.initializeConverter(converter)));
-        return methods.constructor()
-                .addParameter(jdbcParameters.dataSource())
-                .addCode(blocks.initializeFieldToSelf(jdbcNames.dataSource()))
-                .addCode(builder.build())
-                .build();
-    }
-
-    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {
-        return statements.stream()
-                .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlType.READING == config.getType() || SqlType.CALLING == config.getType())
-                .map(SqlConfiguration::getResultRowConverter)
-                .filter(Objects::nonNull)
-                .distinct();
+        return constructor.forRepository(statements);
     }
 
     @Override

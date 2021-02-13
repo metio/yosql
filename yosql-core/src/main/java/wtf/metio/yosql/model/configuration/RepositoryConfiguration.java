@@ -9,6 +9,8 @@ package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
 
+import java.util.List;
+
 /**
  * Configures the various repository related options.
  */
@@ -27,6 +29,14 @@ public interface RepositoryConfiguration {
     }
 
     /**
+     * @return The base package name for all classes.
+     */
+    @Value.Default
+    default String basePackageName() {
+        return "com.example.persistence";
+    }
+
+    /**
      * @return The repository name suffix to use.
      */
     @Value.Default
@@ -40,6 +50,96 @@ public interface RepositoryConfiguration {
     @Value.Default
     default boolean repositoryGenerateInterface() {
         return true;
+    }
+
+    @Value.Default
+    default boolean generateStandardApi() {
+        return true;
+    }
+
+    @Value.Default
+    default boolean generateBatchApi() {
+        return false;
+    }
+
+    @Value.Default
+    default boolean generateRxJavaApi() {
+        return false;
+    }
+
+    @Value.Default
+    default boolean generateStreamEagerApi() {
+        return false;
+    }
+
+    @Value.Default
+    default boolean generateStreamLazyApi() {
+        return false;
+    }
+
+    @Value.Default
+    default boolean methodCatchAndRethrow() {
+        return true;
+    }
+
+    @Value.Default
+    default String methodBatchPrefix() {
+        return "";
+    }
+
+    @Value.Default
+    default String methodBatchSuffix() {
+        return "Batch";
+    }
+
+    @Value.Default
+    default String methodStreamPrefix() {
+        return "";
+    }
+
+    @Value.Default
+    default String methodStreamSuffix() {
+        return "Stream";
+    }
+
+    @Value.Default
+    default String methodRxJavaPrefix() {
+        return "";
+    }
+
+    @Value.Default
+    default String methodRxJavaSuffix() {
+        return "Flow";
+    }
+
+    @Value.Default
+    default String methodLazyName() {
+        return "Lazy";
+    }
+
+    @Value.Default
+    default String methodEagerName() {
+        return "Eager";
+    }
+
+    @Value.Default
+    default boolean validateMethodNamePrefixes() {
+        return true;
+    }
+
+    @Value.Default
+    default List<String> allowedWritePrefixes() {
+        return List.of("update", "insert", "delete", "create", "write", "add", "remove", "merge", "drop");
+    }
+
+    @Value.Default
+    default List<String> allowedReadPrefixes() {
+        return List.of("select", "read", "query", "find");
+    }
+
+    @Value.Default
+    default List<String> allowedCallPrefixes() {
+        return List.of("call", "execute");
     }
 
 }

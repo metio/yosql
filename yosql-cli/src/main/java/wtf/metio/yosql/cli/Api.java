@@ -8,13 +8,14 @@
 package wtf.metio.yosql.cli;
 
 import picocli.CommandLine;
-import wtf.metio.yosql.model.configuration.LoggingConfiguration;
+import wtf.metio.yosql.model.configuration.ApiConfiguration;
+import wtf.metio.yosql.model.options.DaoApiOptions;
 import wtf.metio.yosql.model.options.LoggingApiOptions;
 
 /**
- * Configures how logging is applied to generated code.
+ * Configures the API used in generated code.
  */
-public class Logging {
+public class Api {
 
     @CommandLine.Option(
             names = "--logging-api",
@@ -22,9 +23,16 @@ public class Logging {
             defaultValue = "JDK")
     LoggingApiOptions loggingApi;
 
-    LoggingConfiguration asConfiguration() {
-        return LoggingConfiguration.builder()
-                .setApi(loggingApi)
+    @CommandLine.Option(
+            names = "--dao-api",
+            description = "The DAO API to use.",
+            defaultValue = "JDBC")
+    DaoApiOptions daoApi;
+
+    ApiConfiguration asConfiguration() {
+        return ApiConfiguration.builder()
+                .setLoggingApi(loggingApi)
+                .setDaoApi(daoApi)
                 .build();
     }
 

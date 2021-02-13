@@ -54,7 +54,7 @@ final class ToResultRowConverterGenerator {
 
     public PackagedTypeSpec generateToResultRowConverterClass() {
         final var resultRowConverterClass = ClassName.get(
-                runtimeConfiguration.names().basePackageName() + "." + runtimeConfiguration.names().converterPackageName(),
+                runtimeConfiguration.converter().basePackageName(),
                 TO_RESULT_ROW_CONVERTER_CLASS_NAME);
         final var type = classes.publicClass(resultRowConverterClass)
                 .addMethod(asUserType())
@@ -71,22 +71,22 @@ final class ToResultRowConverterGenerator {
                 .addException(SQLException.class)
                 .returns(runtimeConfiguration.result().resultRowClass())
                 .addStatement("final $T $N = new $T($N.getColumnCount())", runtimeConfiguration.result().resultRowClass(),
-                        runtimeConfiguration.jdbcNames().row(),
+                        runtimeConfiguration.jdbc().row(),
                         runtimeConfiguration.result().resultRowClass(),
                         names.result())
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
-                        runtimeConfiguration.jdbcNames().index(),
-                        runtimeConfiguration.jdbcNames().index(),
+                        runtimeConfiguration.jdbc().index(),
+                        runtimeConfiguration.jdbc().index(),
                         names.result(),
-                        runtimeConfiguration.jdbcNames().index())
+                        runtimeConfiguration.jdbc().index())
                 .addStatement("$N.setColumnValue($N.getColumnName($N), $N.getResultSet().getObject($N))",
-                        runtimeConfiguration.jdbcNames().row(),
+                        runtimeConfiguration.jdbc().row(),
                         names.result(),
-                        runtimeConfiguration.jdbcNames().index(),
+                        runtimeConfiguration.jdbc().index(),
                         names.result(),
-                        runtimeConfiguration.jdbcNames().index())
+                        runtimeConfiguration.jdbc().index())
                 .endControlFlow()
-                .addStatement("return $N", runtimeConfiguration.jdbcNames().row())
+                .addStatement("return $N", runtimeConfiguration.jdbc().row())
                 .build();
     }
 

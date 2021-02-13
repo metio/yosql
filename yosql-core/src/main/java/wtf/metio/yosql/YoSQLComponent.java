@@ -70,6 +70,9 @@ public interface YoSQLComponent {
     @JDBC
     RxJavaMethodGenerator jdbcRxjavaMethods();
 
+    @JDBC
+    ConstructorGenerator jdbcConstructor();
+
     Names names();
 
     Variables variables();

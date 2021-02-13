@@ -35,10 +35,10 @@ public class Generate implements Callable<Integer> {
     public Java java;
 
     @CommandLine.Mixin
-    public Packages packages;
+    public Utilities utilities;
 
     @CommandLine.Mixin
-    public Logging logging;
+    public Api api;
 
     @CommandLine.Mixin
     public Annotations annotations;
@@ -64,7 +64,7 @@ public class Generate implements Callable<Integer> {
     }
 
     private RuntimeConfiguration createConfiguration() {
-        final var utilityPackage = packages.getUtilityPackageName();
+        final var utilityPackage = utilities.getUtilityPackageName();
         return RuntimeConfiguration.usingDefaults()
                 .withAnnotations(annotations.asConfiguration());
     }

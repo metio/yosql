@@ -9,36 +9,30 @@ package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.TypeName;
-import wtf.metio.yosql.model.configuration.VariableConfiguration;
-import wtf.metio.yosql.model.options.VariableTypeOptions;
+import wtf.metio.yosql.model.configuration.JavaConfiguration;
 
-import javax.lang.model.element.Modifier;
 import java.util.StringJoiner;
-
-import static java.util.stream.Collectors.joining;
 
 final class DefaultVariables implements Variables {
 
-    private final VariableConfiguration configuration;
+    private final JavaConfiguration javaConfiguration;
 
-    DefaultVariables(final VariableConfiguration configuration) {
-        this.configuration = configuration;
+    DefaultVariables(final JavaConfiguration javaConfiguration) {
+        this.javaConfiguration = javaConfiguration;
     }
 
     @Override
     public CodeBlock variable(final String name, final Class<?> variableClass) {
-        final var modifiers = configuration.modifiers();
-        if (modifiers.isEmpty()) {
-            if (VariableTypeOptions.VAR.equals(configuration.variableType())) {
-                return CodeBlock.builder().add("var $N", name).build();
+        if (javaConfiguration.useFinal()) {
+            if (javaConfiguration.useVar()) {
+                return CodeBlock.builder().add("final var $N", name).build();
             }
-            return CodeBlock.builder().add("$T $N", variableClass, name).build();
+            return CodeBlock.builder().add("final $T $N", variableClass, name).build();
         }
-        final var modifier = modifiers.stream().map(Modifier::toString).collect(joining(" "));
-        if (VariableTypeOptions.VAR.equals(configuration.variableType())) {
-            return CodeBlock.builder().add("$N var $N", modifier, name).build();
+        if (javaConfiguration.useVar()) {
+            return CodeBlock.builder().add("var $N", name).build();
         }
-        return CodeBlock.builder().add("$N $T $N", modifier, variableClass, name).build();
+        return CodeBlock.builder().add("$T $N", variableClass, name).build();
     }
 
     @Override
@@ -50,7 +44,7 @@ final class DefaultVariables implements Variables {
     public CodeBlock variable(final String name, final TypeName variableClass, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
-        if (configuration.variableType() == VariableTypeOptions.VAR) {
+        if (javaConfiguration.useVar()) {
             builder.add(code.toString(), name, initializer);
         } else {
             builder.add(code.toString(), variableClass, name, initializer);
@@ -62,7 +56,7 @@ final class DefaultVariables implements Variables {
     public CodeBlock variableStatement(final String name, final Class<?> variableClass, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
-        if (configuration.variableType() == VariableTypeOptions.VAR) {
+        if (javaConfiguration.useVar()) {
             builder.addStatement(code.toString(), name, initializer);
         } else {
             builder.addStatement(code.toString(), variableClass, name, initializer);
@@ -78,7 +72,7 @@ final class DefaultVariables implements Variables {
             final Object... initializerArgs) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = " + initializer);
-        if (configuration.variableType() == VariableTypeOptions.VAR) {
+        if (javaConfiguration.useVar()) {
             builder.add(code.toString(), name, initializerArgs);
         } else {
             builder.add(code.toString(), variableClass, name, initializerArgs);
@@ -88,11 +82,10 @@ final class DefaultVariables implements Variables {
 
     private StringJoiner leftHandSide(final String closer) {
         final var code = new StringJoiner(" ");
-        final var modifiers = configuration.modifiers();
-        if (!modifiers.isEmpty()) {
-            modifiers.forEach(modifier -> code.add(modifier.toString()));
+        if (javaConfiguration.useFinal()) {
+            code.add("final");
         }
-        if (configuration.variableType() == VariableTypeOptions.VAR) {
+        if (javaConfiguration.useVar()) {
             code.add("var");
         } else {
             code.add("$T");

@@ -25,10 +25,16 @@ public class Results {
      */
     private final String resultState = "ResultState";
 
+    /**
+     * The simple name of the generated flow state class (default: <strong>FlowState</strong>).
+     */
+    private final String flowState = "FlowState";
+
     ResultConfiguration asConfiguration(final String utilPackage) {
         return ResultConfiguration.builder()
                 .setResultRowClass(ClassName.get(utilPackage, resultRow))
                 .setResultStateClass(ClassName.get(utilPackage, resultState))
+                .setFlowStateClass(ClassName.get(utilPackage, flowState))
                 .build();
     }
 

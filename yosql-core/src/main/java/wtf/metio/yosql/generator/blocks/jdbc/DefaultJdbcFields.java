@@ -7,17 +7,17 @@
 
 package wtf.metio.yosql.generator.blocks.jdbc;
 
+import wtf.metio.yosql.model.configuration.JdbcConfiguration;
 import wtf.metio.yosql.model.sql.SqlConfiguration;
-import wtf.metio.yosql.model.configuration.JdbcFieldsConfiguration;
 
 final class DefaultJdbcFields implements JdbcFields {
 
     private static final String NAME_REGEX = "([a-z])([A-Z])";
     private static final String NAME_REPLACEMENT = "$1_$2";
 
-    private final JdbcFieldsConfiguration options;
+    private final JdbcConfiguration options;
 
-    DefaultJdbcFields(final JdbcFieldsConfiguration options) {
+    DefaultJdbcFields(final JdbcConfiguration options) {
         this.options = options;
     }
 

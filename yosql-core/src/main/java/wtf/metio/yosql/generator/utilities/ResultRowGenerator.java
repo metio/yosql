@@ -71,16 +71,16 @@ final class ResultRowGenerator {
     }
 
     private FieldSpec row() {
-        return fields.field(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, runtimeConfiguration.jdbcNames().row());
+        return fields.field(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, runtimeConfiguration.jdbc().row());
     }
 
     private MethodSpec constructor() {
         return methods.constructor()
                 .addParameter(jdbcParameters.columnCount())
                 .addStatement("$N = new $T<>($N)",
-                        runtimeConfiguration.jdbcNames().row(),
+                        runtimeConfiguration.jdbc().row(),
                         LinkedHashMap.class,
-                        runtimeConfiguration.jdbcNames().columnCount())
+                        runtimeConfiguration.jdbc().columnCount())
                 .build();
     }
 
@@ -90,7 +90,7 @@ final class ResultRowGenerator {
                 .addParameter(parameters.parameter(Object.class, names.value()))
                 .returns(void.class)
                 .addStatement("$N.put($N, $N)",
-                        runtimeConfiguration.jdbcNames().row(),
+                        runtimeConfiguration.jdbc().row(),
                         names.name(),
                         names.value())
                 .build();
@@ -99,7 +99,7 @@ final class ResultRowGenerator {
     private MethodSpec toStringMethod() {
         return methods.implementation("toString")
                 .returns(String.class)
-                .addStatement("return $N.toString()", runtimeConfiguration.jdbcNames().row())
+                .addStatement("return $N.toString()", runtimeConfiguration.jdbc().row())
                 .build();
     }
 

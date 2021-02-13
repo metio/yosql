@@ -24,7 +24,7 @@ public class JdbcModule {
 
     @Provides
     public JdbcFields provideJdbcFields(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcFields(runtimeConfiguration.jdbcFields());
+        return new DefaultJdbcFields(runtimeConfiguration.jdbc());
     }
 
     @Provides
@@ -73,7 +73,7 @@ public class JdbcModule {
 
     @Provides
     public JdbcNames provideJdbcNames(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcNames(runtimeConfiguration.jdbcNames());
+        return new DefaultJdbcNames(runtimeConfiguration.jdbc());
     }
 
     @Provides
