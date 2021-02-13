@@ -76,7 +76,7 @@ public class YoSQLGenerateMojo extends AbstractMojo {
                 .setFiles(files.asConfiguration(project.getBasedir().toPath(), Paths.get(project.getBuild().getOutputDirectory())))
                 .setAnnotations(annotations.asConfiguration())
                 .setJava(java.asConfiguration())
-                .setApi(api.asConfiguration())
+                .setApi(api.asConfiguration(project))
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
                 .setUtility(utilities.asConfiguration())

@@ -7,9 +7,12 @@
 
 package wtf.metio.yosql.maven;
 
+import org.apache.maven.project.MavenProject;
 import wtf.metio.yosql.model.configuration.ApiConfiguration;
 import wtf.metio.yosql.model.options.DaoApiOptions;
 import wtf.metio.yosql.model.options.LoggingApiOptions;
+
+import java.util.Locale;
 
 /**
  * Configures how logging is applied to generated code.
@@ -49,16 +52,30 @@ public class Api {
      */
     String slf4jArtifactId = "slf4j-api";
 
-    ApiConfiguration asConfiguration() {
+    ApiConfiguration asConfiguration(final MavenProject project) {
         return ApiConfiguration.builder()
-                .setLoggingApi(determineLoggingApi())
+                .setLoggingApi(determineLoggingApi(project))
                 .setDaoApi(determineDaoApi())
                 .build();
     }
 
-    private LoggingApiOptions determineLoggingApi() {
-        return switch (loggingApi) {
-            case "auto", "slf4j" -> LoggingApiOptions.SLF4J;
+    private LoggingApiOptions determineLoggingApi(final MavenProject project) {
+        var logging = loggingApi.toLowerCase(Locale.ROOT);
+        if ("auto".equals(logging)) {
+            logging = project.getDependencies().stream()
+                    .filter(dependency -> slf4jGroupId.equals(dependency.getGroupId()))
+                    .filter(dependency -> slf4jArtifactId.equals(dependency.getArtifactId()))
+                    .findFirst()
+                    .map(dependency -> "slf4j")
+                    .or(() -> project.getDependencies().stream()
+                            .filter(dependency -> log4jGroupId.equals(dependency.getGroupId()))
+                            .filter(dependency -> log4jArtifactId.equals(dependency.getArtifactId()))
+                            .findFirst()
+                            .map(dependency -> "log4j"))
+                    .orElse("jdk");
+        }
+        return switch (logging) {
+            case "slf4j" -> LoggingApiOptions.SLF4J;
             case "log4j" -> LoggingApiOptions.LOG4J;
             case "jdk" -> LoggingApiOptions.JDK;
             default -> LoggingApiOptions.NONE;
@@ -66,7 +83,7 @@ public class Api {
     }
 
     private DaoApiOptions determineDaoApi() {
-        return switch (daoApi) {
+        return switch (daoApi.toLowerCase(Locale.ROOT)) {
             case "ebean" -> DaoApiOptions.EBEAN;
             case "jdbi" -> DaoApiOptions.JDBI;
             case "jooq" -> DaoApiOptions.JOOQ;
