@@ -9,16 +9,10 @@ package com.example.app;
 import com.example.persistence.CompanyRepository;
 import com.example.persistence.PersonRepository;
 import com.example.persistence.SchemaRepository;
-import com.example.persistence.util.ResultRow;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class ExampleApp {
 

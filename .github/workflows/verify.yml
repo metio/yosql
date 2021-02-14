@@ -27,8 +27,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - id: verify
-        name: Verify Project
-        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml verify
+      - id: install
+        name: Install Project
+        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml install
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
