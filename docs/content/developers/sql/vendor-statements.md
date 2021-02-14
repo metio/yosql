@@ -1,13 +1,18 @@
 ---
-title: "Vendor Statements"
+title: Vendor Statements
 date: 2019-06-16T18:51:18+02:00
-draft: true
+menu:
+  main:
+    parent: SQL
+categories:
+  - SQL 
+tags:
+  - Vendor
 ---
 
-Vendor specific statements are support as well. Just add a *vendor* key to your frontmatter like this:
+Vendor specific statements are support as well. Just add a *vendor* key to your front-matter like this:
 
-[source, sql]
-----
+```sql
 -- name: findUsers
 -- vendor: Oracle
 SELECT  *
@@ -39,6 +44,6 @@ WHERE   id = :userId
 OFFSET  :offset
 LIMIT   :limit
 ;
-----
+```
 
 The first two statements specify a vendor which means that those queries will only be executed when running against the specified database. In case you want to specify a fallback-query that is used whenever no other vendor matches, specify another statement with the same name but no vendor.
