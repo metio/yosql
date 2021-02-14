@@ -1,7 +1,7 @@
 name: Publish Website
 on:
   schedule:
-    - cron: "45 4 * * MON"
+    - cron: "45 6 * * MON"
   push:
     branches:
       - main
