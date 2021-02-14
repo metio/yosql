@@ -148,27 +148,23 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
         return fields.field(DataSource.class, jdbcNames.dataSource());
     }
 
-    private static String alias(final String rawAlias) {
-        return rawAlias.endsWith("Converter") ? rawAlias : rawAlias + "Converter";
-    }
-
     private FieldSpec asConverterField(final ResultRowConverter converter) {
         return runtimeConfiguration.converter().converters().stream()
                 .filter(rowConverter -> rowConverter.alias().equals(converter.alias()))
                 .map(rowConverter -> TypeGuesser.guessTypeName(rowConverter.converterType()))
                 .map(typeName -> fields.field(
                         typeName,
-                        alias(converter.alias())))
+                        converter.alias()))
                 .findFirst()
                 .or(() -> Optional.ofNullable(converter.converterType())
                         .map(String::strip)
                         .filter(not(String::isBlank))
                         .map(type -> fields.field(
                                 TypeGuesser.guessTypeName(type),
-                                alias(converter.alias()))))
+                                converter.alias())))
                 .orElseGet(() -> fields.field(
                         TypeGuesser.guessTypeName("java.lang.Object"),
-                        alias(converter.alias())));
+                        converter.alias()));
     }
 
     private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {

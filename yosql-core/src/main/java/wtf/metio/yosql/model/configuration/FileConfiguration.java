@@ -71,4 +71,12 @@ public interface FileConfiguration {
         return ".sql";
     }
 
+    /**
+     * @return The number of lines to skip in each .sql file.
+     */
+    @Value.Default
+    default int skipLines() {
+        return 0;
+    }
+
 }

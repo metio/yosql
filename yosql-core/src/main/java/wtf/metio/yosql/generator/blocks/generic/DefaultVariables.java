@@ -54,6 +54,11 @@ final class DefaultVariables implements Variables {
 
     @Override
     public CodeBlock variableStatement(final String name, final Class<?> variableClass, final CodeBlock initializer) {
+        return variableStatement(name, TypeName.get(variableClass), initializer);
+    }
+
+    @Override
+    public CodeBlock variableStatement(final String name, final TypeName variableClass, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
         if (javaConfiguration.useVar()) {

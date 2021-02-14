@@ -57,7 +57,7 @@ final class FlowStateGenerator {
     PackagedTypeSpec generateFlowStateClass() {
         final var flowStateClass = runtimeConfiguration.result().flowStateClass();
         final var type = classes.publicClass(flowStateClass)
-                .superclass(runtimeConfiguration.result().flowStateClass())
+                .superclass(runtimeConfiguration.result().resultStateClass())
                 .addFields(fields())
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass())

@@ -72,16 +72,25 @@ public class YoSQLGenerateMojo extends AbstractMojo {
 
     private RuntimeConfiguration createConfiguration() {
         final var utilityPackage = utilities.getUtilityPackageName();
+        final var files = this.files.asConfiguration(project.getBasedir().toPath(), Paths.get(project.getBuild().getDirectory()));
+        final var annotations = this.annotations.asConfiguration();
+        final var java = this.java.asConfiguration();
+        final var api = this.api.asConfiguration(project);
+        final var repositories = this.repositories.asConfiguration();
+        final var resources = this.resources.asConfiguration();
+        final var utility = utilities.asConfiguration();
+        final var result = results.asConfiguration(utilityPackage);
+        final var jdbc = this.jdbc.asConfiguration();
         return RuntimeConfiguration.builder()
-                .setFiles(files.asConfiguration(project.getBasedir().toPath(), Paths.get(project.getBuild().getOutputDirectory())))
-                .setAnnotations(annotations.asConfiguration())
-                .setJava(java.asConfiguration())
-                .setApi(api.asConfiguration(project))
-                .setRepositories(repositories.asConfiguration())
-                .setResources(resources.asConfiguration())
-                .setUtility(utilities.asConfiguration())
-                .setResult(results.asConfiguration(utilityPackage))
-                .setJdbc(jdbc.asConfiguration())
+                .setFiles(files)
+                .setAnnotations(annotations)
+                .setJava(java)
+                .setApi(api)
+                .setRepositories(repositories)
+                .setResources(resources)
+                .setUtility(utility)
+                .setResult(result)
+                .setJdbc(jdbc)
                 .build();
     }
 

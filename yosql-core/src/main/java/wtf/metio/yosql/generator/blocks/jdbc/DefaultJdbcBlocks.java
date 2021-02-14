@@ -83,13 +83,13 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock readMetaData() {
-        return variables.variable(jdbcNames.metaData(), ResultSetMetaData.class,
+        return variables.variableStatement(jdbcNames.metaData(), ResultSetMetaData.class,
                 jdbcMethods.resultSet().getMetaData());
     }
 
     @Override
     public CodeBlock readColumnCount() {
-        return variables.variable(jdbcNames.columnCount(), int.class,
+        return variables.variableStatement(jdbcNames.columnCount(), int.class,
                 jdbcMethods.metaData().getColumnCount());
     }
 
@@ -336,7 +336,7 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock createResultState() {
-        return variables.variable(names.state(), runtimeConfiguration.result().resultStateClass(),
+        return variables.variableStatement(names.state(), runtimeConfiguration.result().resultStateClass(),
                 code("new $T($N, $N, $N)",
                         runtimeConfiguration.result().resultStateClass(),
                         jdbcNames.resultSet(),

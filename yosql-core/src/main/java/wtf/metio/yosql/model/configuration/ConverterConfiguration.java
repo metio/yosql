@@ -43,10 +43,10 @@ public interface ConverterConfiguration {
     @Value.Default
     default ResultRowConverter defaultConverter() {
         return ResultRowConverter.builder()
-                .setAlias("default")
-                .setConverterType("ToResultRowConverter")
+                .setAlias("defaultConverter")
+                .setConverterType("com.example.persistence.converter.ToResultRowConverter")
                 .setMethodName("asUserType")
-                .setResultType("java.util.List<java.util.Map<String, Object>>")
+                .setResultType("com.example.persistence.util.ResultRow")
                 .build();
     }
 

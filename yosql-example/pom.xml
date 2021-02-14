@@ -59,6 +59,11 @@
                         <phase>generate-sources</phase>
                     </execution>
                 </executions>
+                <configuration>
+                    <files>
+                        <skipLines>6</skipLines>
+                    </files>
+                </configuration>
             </plugin>
         </plugins>
     </build>

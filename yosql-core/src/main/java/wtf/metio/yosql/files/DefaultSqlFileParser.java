@@ -56,8 +56,9 @@ final class DefaultSqlFileParser implements SqlFileParser {
         try {
             final var charset = fileConfiguration.sqlFilesCharset();
             final var rawText = Files.readString(source, charset);
+            final var skippedText = skipLines(rawText);
             final var counter = new AtomicInteger(1);
-            return statementSplitter.splitAsStream(rawText)
+            return statementSplitter.splitAsStream(skippedText)
                     .parallel()
                     .filter(Objects::nonNull)
                     .map(String::strip)
@@ -68,6 +69,14 @@ final class DefaultSqlFileParser implements SqlFileParser {
             logger.debug(ApplicationEvents.FILE_PARSING_FAILED, source);
             return Stream.empty();
         }
+    }
+
+    private String skipLines(final String rawText) {
+        final var builder = new StringBuilder(rawText);
+        for (int index = 0; index < fileConfiguration.skipLines(); index++) {
+            builder.delete(0, builder.indexOf("\n") + 1);
+        }
+        return builder.toString();
     }
 
     private SqlStatement parseStatement(

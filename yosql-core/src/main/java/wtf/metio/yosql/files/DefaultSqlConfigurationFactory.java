@@ -372,7 +372,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                             .setName(parameterName)
                             .setIndices(asIntArray(entry.getValue()))
                             .setType(Object.class.getName())
-                            .setConverter("default")
+                            .setConverter("defaultConverter")
                             .build();
                     if (configuration.getParameters() != null) {
                         configuration.getParameters().add(sqlParameter);

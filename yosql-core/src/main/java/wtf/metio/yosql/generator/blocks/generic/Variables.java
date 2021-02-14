@@ -20,6 +20,8 @@ public interface Variables {
 
     CodeBlock variableStatement(String name, Class<?> variableClass, CodeBlock initializer);
 
+    CodeBlock variableStatement(String name, TypeName variableClass, CodeBlock initializer);
+
     CodeBlock variable(String name, Class<?> variableClass, String initializer, Object... initializerArgs);
 
 }
