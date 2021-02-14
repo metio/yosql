@@ -4,11 +4,21 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.yeps;
 
-/**
- * Defines steps for YEP-2.
- */
-public final class Yep2Steps {
+package wtf.metio.yosql.setup;
+
+import io.cucumber.java.en.Given;
+
+public final class DatabaseSteps {
+
+    @Given("database has schema")
+    public void schema() {
+        // database has data
+    }
+
+    @Given("database has data")
+    public void data() {
+        // database has data
+    }
 
 }

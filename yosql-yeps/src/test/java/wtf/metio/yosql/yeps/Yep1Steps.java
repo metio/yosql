@@ -6,30 +6,12 @@
  */
 package wtf.metio.yosql.yeps;
 
-import wtf.metio.yosql.utils.AbstractDatabaseSteps;
+
+import io.cucumber.java.en.Given;
 
 /**
  * Defines steps for YEP-1.
  */
-public final class Yep1Steps extends AbstractDatabaseSteps {
-
-//    private PersonRepository repository;
-//    private List<ResultRow> data;
-
-    /**
-     * Creates the steps for YEP-1.
-     */
-    public Yep1Steps() {
-        super(1);
-        Given("database has data", () -> {
-            // repository = new PersonRepository(dataSource);
-        });
-        When("the standard read method is called", () -> {
-            // data = repository.readPerson();
-        });
-        Then("data should be returned from the database", () -> {
-            // Assertions.assertFalse(data.isEmpty());
-        });
-    }
+public final class Yep1Steps {
 
 }

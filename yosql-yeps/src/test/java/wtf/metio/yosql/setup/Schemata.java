@@ -5,7 +5,7 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.utils;
+package wtf.metio.yosql.setup;
 
 import javax.sql.DataSource;
 

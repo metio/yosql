@@ -4,11 +4,8 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.yeps;
 
-/**
- * Defines steps for YEP-2.
- */
-public final class Yep2Steps {
+package wtf.metio.yosql.state;
 
+public final class DatabaseState {
 }
