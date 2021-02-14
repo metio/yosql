@@ -19,23 +19,53 @@ public class Java {
      */
     private final int apiVersion = 11;
 
+    /**
+     * Toggles whether the 'var' keyword should be used (default: <strong>false</strong>).
+     */
     private final boolean useVar = false;
 
+    /**
+     * Toggles whether records should be used (default: <strong>false</strong>).
+     */
     private final boolean useRecords = false;
 
+    /**
+     * Toggles whether text blocks should be used (default: <strong>false</strong>).
+     */
     private final boolean useTextBlocks = false;
 
+    /**
+     * Toggles whether the processing API should be used (default: <strong>true</strong>).
+     */
     private final boolean useProcessingApi = true;
 
+    /**
+     * Toggles whether the 'final' modified should be used (default: <strong>true</strong>).
+     */
     private final boolean useFinal = true;
+
+    /**
+     * Toggles whether generics should be used (default: <strong>true</strong>).
+     */
+    private final boolean useGenerics = true;
+
+    /**
+     * Toggles whether the 'diamond' operator should be used (default: <strong>true</strong>).
+     */
+    private final boolean useDiamondOperator = true;
+
+    /**
+     * Toggles whether the 'stream' API should be used (default: <strong>true</strong>).
+     */
+    private final boolean useStreamAPI = true;
 
     JavaConfiguration asConfiguration() {
         return JavaConfiguration.builder()
                 .setApiVersion(apiVersion)
                 .setUseFinal(useFinal)
-                .setUseGenerics(apiVersion >= 5)
-                .setUseDiamondOperator(apiVersion >= 7)
-                .setUseStreamAPI(apiVersion >= 8)
+                .setUseGenerics(useGenerics)
+                .setUseDiamondOperator(useDiamondOperator)
+                .setUseStreamAPI(useStreamAPI)
                 .setUseProcessingApi(useProcessingApi)
                 .setUseVar(useVar)
                 .setUseTextBlocks(useTextBlocks)

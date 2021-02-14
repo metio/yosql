@@ -26,15 +26,22 @@ public class Repositories {
     private final boolean generateInterfaces = true;
 
     /**
-     * Controls whether the SQL statements should be inlined in the generated repositories or loaded at options
-     * (default: <strong>inline</strong>). Other possible value is <strong>load</strong>.
+     * The base package name for all repositories (default: <strong>com.example.persistence</strong>).
      */
-    private final String repositorySqlStatements = "inline";
+    private final String basePackageName = "com.example.persistence";
+
+    /**
+     * Controls whether RxJava compatible methods should be generated. (default:
+     * <strong>true</strong>).
+     */
+    private final boolean generateRxJavaApi = false;
 
     RepositoryConfiguration asConfiguration() {
         return RepositoryConfiguration.builder()
                 .setRepositoryGenerateInterface(generateInterfaces)
                 .setRepositoryNameSuffix(nameSuffix)
+                .setBasePackageName(basePackageName)
+                .setGenerateRxJavaApi(generateRxJavaApi)
                 .build();
     }
 

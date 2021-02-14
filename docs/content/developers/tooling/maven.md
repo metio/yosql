@@ -57,7 +57,9 @@ You can configure how YoSQL operates and how the generated code like by using th
             <groupId>wtf.metio.yosql</groupId>
             <artifactId>yosql-maven-plugin</artifactId>
             <configuration>
+              <repositories>
                 <basePackageName>your.domain.persistence</basePackageName>
+              </repositories>
             </configuration>
         </plugin>
         ...
@@ -85,14 +87,20 @@ Make sure that multiple executions do not make use of the same .sql files. Other
             <groupId>wtf.metio.yosql</groupId>
             <artifactId>yosql-maven-plugin</artifactId>
             <configuration>
+              <repositories>
                 <basePackageName>your.domain.persistence</basePackageName>
+              </repositories>
             </configuration>
             <executions>
                 <execution>
                     <id>config-a</id>
                     <configuration>
-                        <input>src/main/database/reactive</input>
-                        <rxJava>true</rxJava>
+                      <files>
+                        <inputBaseDirectory>src/main/database/reactive</inputBaseDirectory>
+                      </files>
+                      <repositories>
+                        <generateRxJavaApi>true</generateRxJavaApi>
+                      </repositories>
                     </configuration>
                 </execution>
             </executions>
@@ -100,8 +108,12 @@ Make sure that multiple executions do not make use of the same .sql files. Other
                 <execution>
                     <id>config-b</id>
                     <configuration>
-                        <input>src/main/database/synchronous</input>
-                        <java>15</java>
+                      <files>
+                        <inputBaseDirectory>src/main/database/synchronous</inputBaseDirectory>
+                      </files>
+                      <java>
+                        <apiVersion>15</apiVersion>
+                      </java>
                     </configuration>
                 </execution>
             </executions>
