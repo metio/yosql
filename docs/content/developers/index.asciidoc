@@ -1,5 +1,0 @@
-This part of the documentation is intended for link:../project/roles.asciidoc[developers]. All information relates to how the published YoSQL artifacts can be used by developers in their own project.
-
-- link:api/index.asciidoc[APIs]: Documentation about the various frameworks and libraries to access a database supported by YoSQL.
-- link:logging/index.asciidoc[Loggers]: Documentation about the various logging frameworks supported by YoSQL.
-- link:tooling/index.asciidoc[Tooling]: Documentation about how the various YoSQL tools can be used and integrated in your project.
