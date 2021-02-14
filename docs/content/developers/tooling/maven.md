@@ -47,7 +47,9 @@ tags:
 
 ## Configuration
 
-You can configure how YoSQL operates and how the generated code like by using the default Maven configuration mechanism (TODO: add link). Take a look at the link:../configuration/index.asciidoc[available configuration options] in order to see what can be configured.
+You can configure how YoSQL operates and how the generated code like by using the default Maven configuration 
+mechanism (TODO: add link). Take a look at the [available configuration options](../configuration/index.asciidoc) in order to see what can be 
+configured.
 
 ```xml
 <build>
@@ -77,7 +79,8 @@ In some cases it might be preferable to generate some repositories (TODO: link t
 
 #### Multiple `execution`s
 
-Make sure that multiple executions do not make use of the same .sql files. Otherwise the executions will overwrite the generated code of each other. The last execution will win. Share configuration across all executions by using a single top level `configuration` block.
+Make sure that multiple executions do not make use of the same .sql files. Otherwise, the executions will overwrite 
+the generated code of each other. The last execution will win. Share configuration across all executions by using a single top level `configuration` block.
 
 ```xml
 <build>
