@@ -31,3 +31,8 @@ persistence APIs.
 
 The generated code is as correct as possible and widely tested across multiple configurations. While the focus of 
 `YoSQL` is to generate correct code, it offers best-in-class performance as well!
+
+### Plug and Play
+
+`YoSQL` tries hard to always-work(tm) - which means that even with an invalid configuration, `YoSQL` should generate 
+as much code as possible. Just add the appropriate plugin to your project and you are good to go in under a  minute.
