@@ -38,6 +38,7 @@ public final class ObjectMother {
                 .setAlias("defaultRowConverter")
                 .setConverterType("com.example.DefaultConverter")
                 .setResultType(Object.class.getName())
+                .setMethodName("apply")
                 .build());
         config.setRepository("Test");
         return config;

@@ -27,8 +27,7 @@ final class LoggersPropertiesTest implements EnumTCK<Loggers> {
                 "READER",
                 "GENERATOR",
                 "TIMER",
-                "UTILITIES",
-                "CLI");
+                "UTILITIES");
     }
 
 }

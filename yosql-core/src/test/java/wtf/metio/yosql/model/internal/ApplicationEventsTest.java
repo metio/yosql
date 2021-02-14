@@ -43,7 +43,15 @@ final class ApplicationEventsTest implements EnumTCK<ApplicationEvents>, Propert
                 "GENERATE_UTILITIES",
                 "WRITE_FILES",
                 "STATEMENT_PARSED",
-                "STATEMENT_YAML_FRONT_MATTER_PARSED");
+                "STATEMENT_YAML_FRONT_MATTER_PARSED",
+                "REPOSITORY_NAME_CALC_INPUT",
+                "REPOSITORY_NAME_CALC_SOURCE",
+                "REPOSITORY_NAME_CALC_RELATIVE",
+                "REPOSITORY_NAME_CALC_RAW",
+                "REPOSITORY_NAME_CALC_DOTTED",
+                "REPOSITORY_NAME_CALC_UPPER",
+                "REPOSITORY_NAME_CALC_ACTUAL",
+                "REPOSITORY_NAME_CALC_NAME");
     }
 
 }
