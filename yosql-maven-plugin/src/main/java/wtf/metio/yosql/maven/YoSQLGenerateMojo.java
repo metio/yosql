@@ -43,6 +43,9 @@ public class YoSQLGenerateMojo extends AbstractMojo {
     private Repositories repositories;
 
     @Parameter(required = true, defaultValue = "${classObject}")
+    private Converters converters;
+
+    @Parameter(required = true, defaultValue = "${classObject}")
     private Resources resources;
 
     @Parameter(required = true, defaultValue = "${classObject}")
@@ -80,7 +83,6 @@ public class YoSQLGenerateMojo extends AbstractMojo {
         final var resources = this.resources.asConfiguration();
         final var utility = utilities.asConfiguration();
         final var result = results.asConfiguration(utilityPackage);
-        final var jdbc = this.jdbc.asConfiguration();
         return RuntimeConfiguration.builder()
                 .setFiles(files)
                 .setAnnotations(annotations)
@@ -90,7 +92,8 @@ public class YoSQLGenerateMojo extends AbstractMojo {
                 .setResources(resources)
                 .setUtility(utility)
                 .setResult(result)
-                .setJdbc(jdbc)
+                .setJdbc(jdbc.asConfiguration())
+                .setConverter(converters.asConfiguration())
                 .build();
     }
 
