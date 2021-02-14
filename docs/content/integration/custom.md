@@ -3,9 +3,9 @@ title: Custom
 date: 2019-06-16T18:51:48+02:00
 menu:
   main:
-    parent: Integrators
+    parent: Integration
 categories:
-  - Integrators 
+  - Integration 
 tags:
   - custom
 ---
