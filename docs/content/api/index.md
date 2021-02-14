@@ -1,9 +1,7 @@
 ---
 title: DAO APIs
 date: 2020-04-13
-menu:
-  main:
-    parent: Developers
+menu: main
 ---
 
 `YoSQL` supports the following APIs to interact with a database:
