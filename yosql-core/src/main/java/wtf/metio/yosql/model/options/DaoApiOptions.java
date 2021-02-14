@@ -37,6 +37,11 @@ public enum DaoApiOptions {
     JPA,
 
     /**
+     * Uses Mybatis in generated code.
+     */
+    MYBATIS,
+
+    /**
      * Uses R2DBC in generated code.
      */
     R2DBC,
@@ -45,6 +50,16 @@ public enum DaoApiOptions {
      * Uses Spring-Data-JDBC in generated code.
      */
     SPRING_DATA_JDBC,
+
+    /**
+     * Uses Spring-Data-JPA in generated code.
+     */
+    SPRING_DATA_JPA,
+
+    /**
+     * Uses Spring-Data-R2DBC in generated code.
+     */
+    SPRING_DATA_R2DBC,
 
     /**
      * Uses Spring-JDBC in generated code.
