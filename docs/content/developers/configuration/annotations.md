@@ -1,5 +1,5 @@
 ---
-title: classGeneratedAnnotation
+title: Annotations
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
@@ -7,9 +7,11 @@ menu:
 categories:
   - Configuration
 tags:
-  - classes
   - annotations
+  - annotateClasses
 ---
+
+# `annotateClasses`
 
 Should `@Generated` annotations be added to generated classes?. Defaults to `false`.
 
@@ -24,14 +26,14 @@ package com.example.persistence;
 
 public class SomeRepository {
 
-    // ... rest of generaed code
+    // ... rest of generated code
 
 }
 ```
 
 ### Option: 'true'
 
-Changing the `classGeneratedAnnotation` configuration option to `true` adds the `@Generated` annotation to every generated class. Its is possible to configure each value individually using other config options (TODO: link here?).
+Changing the `annotateClasses` configuration option to `true` adds the `@Generated` annotation to every generated class. Its is possible to configure each value individually using other config options (TODO: link here?).
 
 ```java
 package com.example.persistence;
@@ -69,7 +71,9 @@ for Maven](../tooling/maven).
         <groupId>wtf.metio.yosql</groupId>
         <artifactId>yosql-maven-plugin</artifactId>
         <configuration>
-          <classGeneratedAnnotation>true</classGeneratedAnnotation>
+          <annotations>
+            <annotateClasses>true</annotateClasses>
+          </annotations>
         </configuration>
       </plugin>
       ...
@@ -79,14 +83,13 @@ for Maven](../tooling/maven).
 
 ### Gradle
 
-In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for 
-Gradle](../tooling/gradle).
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../tooling/gradle).
 
 ```groovy
 apply plugin: 'yosql'
 
 yosql {
-  classGeneratedAnnotation: true
+    annotateClasses: true
 }
 ```
 
@@ -104,5 +107,5 @@ TODO: info for bazel
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
 
 ```shell
-$ yosql --classGeneratedAnnotation=true
+$ yosql --annotateClasses=true
 ```
