@@ -7,7 +7,7 @@
 
 package wtf.metio.yosql.maven;
 
-public class Converter {
+public class RowConverter {
 
     String alias;
 

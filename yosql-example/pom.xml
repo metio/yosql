@@ -61,6 +61,16 @@
                             <files>
                                 <skipLines>6</skipLines>
                             </files>
+                            <converters>
+                                <resultRowConverters>
+                                    <rowConverter>
+                                        <alias>itemConverter</alias>
+                                        <converterType>com.example.app.converter.ToItemConverter</converterType>
+                                        <methodName>asUserType</methodName>
+                                        <resultType>com.example.app.model.Item</resultType>
+                                    </rowConverter>
+                                </resultRowConverters>
+                            </converters>
                         </configuration>
                     </execution>
                 </executions>
