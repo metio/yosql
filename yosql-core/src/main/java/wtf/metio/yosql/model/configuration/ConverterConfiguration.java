@@ -8,6 +8,9 @@
 package wtf.metio.yosql.model.configuration;
 
 import org.immutables.value.Value;
+import wtf.metio.yosql.model.sql.ResultRowConverter;
+
+import java.util.Set;
 
 /**
  * Configuration for the various converter related options.
@@ -33,4 +36,26 @@ public interface ConverterConfiguration {
     default String basePackageName() {
         return "com.example.persistence.converter";
     }
+
+    /**
+     * @return The default converter to use, if no other is specified on a query itself.
+     */
+    @Value.Default
+    default ResultRowConverter defaultConverter() {
+        return ResultRowConverter.builder()
+                .setAlias("default")
+                .setConverterType("ToResultRowConverter")
+                .setMethodName("asUserType")
+                .setResultType("java.util.List<java.util.Map<String, Object>>")
+                .build();
+    }
+
+    /**
+     * @return The set of known converters. Use this to lookup converters by alias instead of fully-qualified name.
+     */
+    @Value.Default
+    default Set<ResultRowConverter> converters() {
+        return Set.of(defaultConverter());
+    }
+
 }

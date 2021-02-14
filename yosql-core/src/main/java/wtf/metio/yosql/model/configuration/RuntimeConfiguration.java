@@ -47,7 +47,7 @@ public interface RuntimeConfiguration {
     }
 
     @Value.Default
-    default ConverterConfiguration converter() { // TODO: rename to packages
+    default ConverterConfiguration converter() {
         return ConverterConfiguration.usingDefaults();
     }
 

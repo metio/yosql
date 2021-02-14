@@ -6,10 +6,13 @@
  */
 package wtf.metio.yosql.files;
 
+import ch.qos.cal10n.IMessageConveyor;
 import org.slf4j.cal10n.LocLogger;
 import org.yaml.snakeyaml.Yaml;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
+import wtf.metio.yosql.model.errors.ValidationErrors;
+import wtf.metio.yosql.model.internal.ApplicationEvents;
 import wtf.metio.yosql.model.sql.*;
 import wtf.metio.yosql.utils.Strings;
 
@@ -27,19 +30,22 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     private final LocLogger logger;
     private final RuntimeConfiguration runtimeConfiguration;
     private final ExecutionErrors errors;
+    private final IMessageConveyor messages;
 
     /**
      * @param logger               The logger to use.
      * @param runtimeConfiguration The runtime config to use.
      * @param errors               The error collector to use.
+     * @param messages             The messages to use.
      */
     public DefaultSqlConfigurationFactory(
             final LocLogger logger,
             final RuntimeConfiguration runtimeConfiguration,
-            final ExecutionErrors errors) {
+            final ExecutionErrors errors, IMessageConveyor messages) {
         this.runtimeConfiguration = runtimeConfiguration;
         this.errors = errors;
         this.logger = logger;
+        this.messages = messages;
     }
 
     /**
@@ -181,14 +187,14 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                     }
                     break;
                 default:
-                    errors.illegalArgument("[%s] has unsupported type [%s]", source, configuration.getType()); // TODO: add enum & translation
+                    errors.illegalArgument(messages.getMessage(ValidationErrors.UNSUPPORTED_TYPE, source, configuration.getType()));
                     break;
             }
         }
     }
 
     private void invalidPrefix(final Path source, final SqlType sqlType, final String name) {
-        errors.illegalArgument("[%s] has invalid %s prefix in its name [%s]", source, sqlType, name); // TODO: add enum & translation
+        errors.illegalArgument(messages.getMessage(ValidationErrors.INVALID_PREFIX, source, sqlType, name));
     }
 
     private void standard(final SqlConfiguration configuration) {
@@ -252,15 +258,21 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private String calculateRepositoryNameFromParentFolder(final Path source) {
+        logger.debug(ApplicationEvents.REPOSITORY_NAME_CALC_INPUT, runtimeConfiguration.files().inputBaseDirectory());
+        logger.debug(ApplicationEvents.REPOSITORY_NAME_CALC_SOURCE, source);
         final var relativePathToSqlFile = runtimeConfiguration.files().inputBaseDirectory().relativize(source);
-        logger.debug("input path: " + runtimeConfiguration.files().inputBaseDirectory()); // TODO: add enums & translations
-        logger.debug("source path: " + source);
-        logger.debug("relative path: " + relativePathToSqlFile);
+        logger.debug(ApplicationEvents.REPOSITORY_NAME_CALC_RELATIVE, relativePathToSqlFile);
         final var rawRepositoryName = relativePathToSqlFile.getParent().toString();
+        logger.debug(ApplicationEvents.REPOSITORY_NAME_CALC_RAW, rawRepositoryName);
         final var dottedRepositoryName = rawRepositoryName.replace(File.separator, ".");
+        logger.debug(ApplicationEvents.REPOSITORY_NAME_CALC_DOTTED, dottedRepositoryName);
         final var upperCaseName = upperCaseFirstLetterInLastSegment(dottedRepositoryName);
+        logger.debug(ApplicationEvents.REPOSITORY_NAME_CALC_UPPER, upperCaseName);
         final var actualRepository = repositoryInBasePackage(upperCaseName);
-        return repositoryWithNameSuffix(actualRepository);
+        logger.debug(ApplicationEvents.REPOSITORY_NAME_CALC_ACTUAL, actualRepository);
+        final var repository = repositoryWithNameSuffix(actualRepository);
+        logger.debug(ApplicationEvents.REPOSITORY_NAME_CALC_NAME, repository);
+        return repository;
     }
 
     private static String upperCaseFirstLetterInLastSegment(final String name) {
@@ -302,7 +314,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                             .setName(parameterName)
                             .setIndices(asIntArray(entry.getValue()))
                             .setType(Object.class.getName())
-                            .setConverter("") // TODO: set converter name
+                            .setConverter("default")
                             .build();
                     configuration.getParameters().add(sqlParameter);
                 }
@@ -390,32 +402,26 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private boolean isDefaultConverter(final ResultRowConverter converter) {
-        //getDefaultRowConverter()
-        //        .filter(def -> def.getAlias().equals(converter.getAlias())
-        //                  || def.getConverterType().equals(converter.getConverterType()))
-        //        .isPresent();
-//        return config.defaultRowConverter().equals(converter.getAlias())
-//                || config.defaultRowConverter().equals(converter.getConverterType());
-        return true;
+        final var defaultConverter = runtimeConfiguration.converter().defaultConverter();
+        final var defaultAlias = defaultConverter.alias();
+        final var defaultType = defaultConverter.converterType();
+        return converter.alias().equals(defaultAlias) || converter.converterType().equals(defaultType);
     }
 
     private Optional<ResultRowConverter> getRowConverter(final Predicate<ResultRowConverter> predicate) {
-//        return Optional.ofNullable(config.resultRowConverters()).stream()
-//                .flatMap(Collection::stream)
-//                .filter(predicate)
-//                .findFirst();
-        return Optional.empty();
+        return runtimeConfiguration.converter().converters().stream()
+                .filter(predicate)
+                .findFirst();
     }
 
     private String getConverterFieldOrEmptyString(
             final Predicate<ResultRowConverter> predicate,
             final Function<ResultRowConverter, String> mapper) {
-//        return config.resultRowConverters().stream()
-//                .filter(predicate)
-//                .map(mapper)
-//                .findFirst()
-//                .orElse("");
-        return "";
+        return runtimeConfiguration.converter().converters().stream()
+                .filter(predicate)
+                .map(mapper)
+                .findFirst()
+                .orElse("");
     }
 
     private static boolean nullOrEmpty(final String object) {
@@ -432,7 +438,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final SqlConfiguration configuration) {
         final var parameterErrors = configuration.getParameters().stream()
                 .filter(param -> !parameterIndices.containsKey(param.name()))
-                .map(param -> String.format("[%s] declares unknown parameter [%s]", source, param.name())) // TODO: add enum & translation
+                .map(param -> messages.getMessage(ValidationErrors.UNKNOWN_PARAMETER, source, param.name()))
                 .peek(errors::illegalArgument)
                 .peek(logger::error)
                 .collect(Collectors.toList());

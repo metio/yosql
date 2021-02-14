@@ -115,5 +115,46 @@ public enum ApplicationEvents {
     /**
      * Signals that files are about to be written.
      */
-    WRITE_FILES
+    WRITE_FILES,
+
+    /**
+     * Signals the input path during repository name calculation.
+     */
+    REPOSITORY_NAME_CALC_INPUT,
+
+    /**
+     * Signals the source path during repository name calculation.
+     */
+    REPOSITORY_NAME_CALC_SOURCE,
+
+    /**
+     * Signals the relative path during repository name calculation.
+     */
+    REPOSITORY_NAME_CALC_RELATIVE,
+
+    /**
+     * Signals the raw name during repository name calculation.
+     */
+    REPOSITORY_NAME_CALC_RAW,
+
+    /**
+     * Signals the dotted name during repository name calculation.
+     */
+    REPOSITORY_NAME_CALC_DOTTED,
+
+    /**
+     * Signals the upper name during repository name calculation.
+     */
+    REPOSITORY_NAME_CALC_UPPER,
+
+    /**
+     * Signals the actual name during repository name calculation.
+     */
+    REPOSITORY_NAME_CALC_ACTUAL,
+
+    /**
+     * Signals the final name during repository name calculation.
+     */
+    REPOSITORY_NAME_CALC_NAME,
+
 }

@@ -26,8 +26,9 @@ public class FilesModule {
     SqlConfigurationFactory provideSqlConfigurationFactory(
             @Parser final LocLogger logger,
             final RuntimeConfiguration runtimeConfiguration,
-            final ExecutionErrors errors) {
-        return new DefaultSqlConfigurationFactory(logger, runtimeConfiguration, errors);
+            final ExecutionErrors errors,
+            final IMessageConveyor messages) {
+        return new DefaultSqlConfigurationFactory(logger, runtimeConfiguration, errors, messages);
     }
 
     @Provides

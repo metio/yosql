@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.files;
 
+import ch.qos.cal10n.MessageConveyor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
@@ -17,6 +18,7 @@ import wtf.metio.yosql.test.ObjectMother;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -93,7 +95,8 @@ class DefaultSqlConfigurationFactoryTest {
         return new DefaultSqlConfigurationFactory(
                 ObjectMother.parserLocLogger(),
                 runtimeConfiguration,
-                new ExecutionErrors());
+                new ExecutionErrors(),
+                new MessageConveyor(Locale.ENGLISH));
     }
 
 }

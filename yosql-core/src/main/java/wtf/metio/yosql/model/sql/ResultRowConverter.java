@@ -20,6 +20,8 @@ public interface ResultRowConverter {
 
     String converterType();
 
+    String methodName();
+
     String resultType();
 
 }
