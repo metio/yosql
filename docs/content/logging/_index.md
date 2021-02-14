@@ -11,5 +11,6 @@ YoSQL supports the following logging frameworks and APIs:
 | [java.util.logging](./jul) | ✔      |
 | [log4j](./log4j)           | ✔      |
 | [slf4j](./slf4j)           | ✔      |
+| [no-op](./no-op)           | ✔      |
 | thats-interesting          | ✘      |
 | System.Logger              | ✘      |
