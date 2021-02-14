@@ -1,5 +1,5 @@
 ---
-title: DAO APIs
+title: APIs
 date: 2020-04-13
 menu: main
 ---
@@ -8,7 +8,7 @@ menu: main
 
 | Name       | Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
 |------------|------|-------|------|-------------|--------|--------------|-------------|
-| JDBC       | ✔    | ✔     | ✔    | ✔           | ✔      | ✔            | ✔           |
+| [JDBC](./jdbc)       | ✔    | ✔     | ✔    | ✔           | ✔      | ✔            | ✔           |
 | SpringJDBC | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
 | jOOQ       | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
 | JPA        | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
