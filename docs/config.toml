@@ -1,4 +1,24 @@
-baseURL = "https://yosql.metio.wtf/"
-languageCode = "en-us"
-title = "YoSQL - use more SQL!"
+baseURL = "https://yosql.projects.metio.wtf/"
+languageCode = "en"
 theme = "metio"
+title = "YoSQL - write more SQL"
+
+pygmentsUseClasses = true
+sectionPagesMenu = "main"
+enableRobotsTXT = true
+DefaultContentLanguage = "en"
+
+[outputs]
+home = ["HTML", "RSS", "ATOM", "HUMANS", "FOAF"]
+section = ["HTML", "RSS", "ATOM"]
+term = ["HTML", "RSS", "ATOM"]
+
+[params]
+mainSections = ["developers", "integrators", "project"]
+author = "metio.wtf"
+email = "https://metio.groups.io/g/yosql/topics"
+matrix = "#yosql:matrix.org"
+github = "metio/yosql"
+work = "yosql.projects.metio.wtf"
+calendar = "https://metio.groups.io/g/yosql/calendar"
+description = "Write more SQL"
