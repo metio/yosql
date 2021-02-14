@@ -23,11 +23,9 @@ import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static wtf.metio.yosql.generator.blocks.generic.CodeBlocks.code;
@@ -250,7 +248,8 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
         if (runtimeConfiguration.api().loggingApi() != LoggingApiOptions.NONE) {
             builder.beginControlFlow("if ($L)", logging.shouldLog());
             builder.add("final $T $N = $N", String.class, names.executedQuery(), names.rawQuery());
-            sqlConfiguration.getParameters()
+            Stream.ofNullable(sqlConfiguration.getParameters())
+                    .flatMap(Collection::stream)
                     .forEach(parameter -> {
                         if (TypeGuesser.guessTypeName(parameter.type()).isPrimitive()) {
                             builder
@@ -276,7 +275,8 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
         if (runtimeConfiguration.api().loggingApi() != LoggingApiOptions.NONE) {
             builder.beginControlFlow("if ($L)", logging.shouldLog());
             builder.add("final $T $N = $N", String.class, names.executedQuery(), names.rawQuery());
-            sqlConfiguration.getParameters()
+            Stream.ofNullable(sqlConfiguration.getParameters())
+                    .flatMap(Collection::stream)
                     .forEach(parameter -> {
                         if (TypeGuesser.guessTypeName(parameter.type()).isPrimitive()) {
                             builder

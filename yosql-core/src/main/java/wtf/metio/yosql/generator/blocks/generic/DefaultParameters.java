@@ -12,21 +12,26 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.sql.SqlParameter;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 final class DefaultParameters implements Parameters {
 
     private final Names names;
+    private final RuntimeConfiguration runtimeConfiguration;
+    private final ConcurrentHashMap<TypeName, Integer> args = new ConcurrentHashMap<>();
 
-    DefaultParameters(final Names names) {
+    DefaultParameters(final Names names, final RuntimeConfiguration runtimeConfiguration) {
         this.names = names;
+        this.runtimeConfiguration = runtimeConfiguration;
     }
 
     @Override
@@ -36,7 +41,16 @@ final class DefaultParameters implements Parameters {
 
     @Override
     public ParameterSpec parameter(final TypeName type, final String name) {
-        return ParameterSpec.builder(type, name, Modifier.FINAL).build();
+        final var safeName = name == null || name.isBlank() ? "arg" + args.compute(type, (k, v) -> {
+            if (v == null) {
+                return 1;
+            }
+            return v + 1;
+        }) : name;
+        if (runtimeConfiguration.java().useFinal()) {
+            return ParameterSpec.builder(type, safeName, Modifier.FINAL).build();
+        }
+        return ParameterSpec.builder(type, safeName).build();
     }
 
     @Override

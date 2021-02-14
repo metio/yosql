@@ -69,8 +69,9 @@ public class DAO_JDBC_Module {
             @Delegating final LoggingGenerator logging,
             final JdbcFields jdbcFields,
             final JdbcNames jdbcNames,
-            final Javadoc javadoc) {
-        return new JdbcFieldsGenerator(fields, logging, jdbcFields, jdbcNames, javadoc);
+            final Javadoc javadoc,
+            final RuntimeConfiguration runtimeConfiguration) {
+        return new JdbcFieldsGenerator(fields, logging, jdbcFields, jdbcNames, javadoc, runtimeConfiguration);
     }
 
     @JDBC
@@ -117,7 +118,7 @@ public class DAO_JDBC_Module {
     @JDBC
     @Provides
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
-            final RuntimeConfiguration configuration,
+            final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
             final Names names,
             final Methods methods,
@@ -125,7 +126,7 @@ public class DAO_JDBC_Module {
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks) {
         return new JdbcRxJavaMethodGenerator(
-                configuration,
+                runtimeConfiguration,
                 controlFlows,
                 names,
                 methods,

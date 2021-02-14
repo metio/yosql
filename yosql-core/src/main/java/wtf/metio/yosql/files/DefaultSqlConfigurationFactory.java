@@ -7,6 +7,8 @@
 package wtf.metio.yosql.files;
 
 import ch.qos.cal10n.IMessageConveyor;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.slf4j.cal10n.LocLogger;
 import org.yaml.snakeyaml.Yaml;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
@@ -18,12 +20,14 @@ import wtf.metio.yosql.utils.Strings;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class DefaultSqlConfigurationFactory implements SqlConfigurationFactory {
 
@@ -302,26 +306,8 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 : runtimeConfiguration.repositories().basePackageName() + "." + repository;
     }
 
-    private void parameters(
-            final Path source,
-            final Map<String, List<Integer>> parameterIndices,
-            final SqlConfiguration configuration) {
-        if (parametersAreValid(source, parameterIndices, configuration)) {
-            for (final var entry : parameterIndices.entrySet()) {
-                final var parameterName = entry.getKey();
-                if (isMissingParameter(configuration, parameterName)) {
-                    final var sqlParameter = SqlParameter.builder()
-                            .setName(parameterName)
-                            .setIndices(asIntArray(entry.getValue()))
-                            .setType(Object.class.getName())
-                            .setConverter("default")
-                            .build();
-                    configuration.getParameters().add(sqlParameter);
-                }
-                final var currentParameters = configuration.getParameters();
-                configuration.setParameters(updateIndices(currentParameters, entry.getValue(), parameterName));
-            }
-        }
+    private static boolean isMissingParameter(final SqlConfiguration configuration, final String parameterName) {
+        return Stream.ofNullable(configuration.getParameters()).flatMap(Collection::stream).noneMatch(nameMatches(parameterName));
     }
 
     private static List<SqlParameter> updateIndices(
@@ -345,25 +331,58 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 .toArray();
     }
 
-    private static boolean isMissingParameter(final SqlConfiguration configuration, final String parameterName) {
-        return configuration.getParameters().stream().noneMatch(nameMatches(parameterName));
+    private static boolean methodNamesMatch(
+            final ResultRowConverter resultConverter,
+            final ResultRowConverter converter) {
+        return converter.methodName().equals(resultConverter.methodName());
     }
 
     private static Predicate<? super SqlParameter> nameMatches(final String parameterName) {
         return parameter -> parameterName.equals(parameter.name());
     }
 
-    private void resultConverter(final SqlConfiguration configuration) {
-        if (configuration.getResultRowConverter() == null) {
-            getDefaultRowConverter().ifPresent(configuration::setResultRowConverter);
-        } else {
-            final var currentConverter = configuration.getResultRowConverter();
-            final var converter = ResultRowConverter.builder()
-                    .setAlias(Strings.isBlank(currentConverter.alias()) ? getDefaultAlias(currentConverter) : currentConverter.alias())
-                    .setConverterType(Strings.isBlank(currentConverter.converterType()) ? getDefaultConverterType(currentConverter) : currentConverter.converterType())
-                    .setResultType(Strings.isBlank(currentConverter.resultType()) ? getDefaultResultType(currentConverter) : currentConverter.resultType())
-                    .build();
-            configuration.setResultRowConverter(converter);
+    private static SqlConfiguration loadConfig(final Yaml yamlParser, final String yaml) {
+        SqlConfiguration configuration = null;
+        try {
+            if (!yaml.isBlank()) {
+                final var yoSqlModule = new SimpleModule();
+                yoSqlModule.addDeserializer(SqlParameter.class, new SqlParameterDeserializer());
+                yoSqlModule.addDeserializer(ResultRowConverter.class, new ResultRowConverterDeserializer());
+                var mapper = YAMLMapper.builder().addModule(yoSqlModule).build();
+                configuration = mapper.readValue(yaml, SqlConfiguration.class);
+            }
+        } catch (final Exception exception) {
+            throw new RuntimeException(exception);
+        }
+        if (configuration == null) {
+            configuration = new SqlConfiguration();
+        }
+        return configuration;
+    }
+
+    private void parameters(
+            final Path source,
+            final Map<String, List<Integer>> parameterIndices,
+            final SqlConfiguration configuration) {
+        if (parametersAreValid(source, parameterIndices, configuration)) {
+            for (final var entry : parameterIndices.entrySet()) {
+                final var parameterName = entry.getKey();
+                if (isMissingParameter(configuration, parameterName)) {
+                    final var sqlParameter = SqlParameter.builder()
+                            .setName(parameterName)
+                            .setIndices(asIntArray(entry.getValue()))
+                            .setType(Object.class.getName())
+                            .setConverter("default")
+                            .build();
+                    if (configuration.getParameters() != null) {
+                        configuration.getParameters().add(sqlParameter);
+                    } else {
+                        configuration.setParameters(List.of(sqlParameter));
+                    }
+                }
+                final var currentParameters = configuration.getParameters();
+                configuration.setParameters(updateIndices(currentParameters, entry.getValue(), parameterName));
+            }
         }
     }
 
@@ -390,6 +409,22 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final ResultRowConverter resultConverter,
             final ResultRowConverter converter) {
         return converter.alias().equals(resultConverter.alias());
+    }
+
+    private void resultConverter(final SqlConfiguration configuration) {
+        if (configuration.getResultRowConverter() == null) {
+            getDefaultRowConverter().ifPresent(configuration::setResultRowConverter);
+        } else {
+            final var currentConverter = configuration.getResultRowConverter();
+            final var converter = ResultRowConverter.builder()
+                    .setAlias(Strings.isBlank(currentConverter.alias()) ? getDefaultAlias(currentConverter) : currentConverter.alias())
+                    .setConverterType(Strings.isBlank(currentConverter.converterType()) ? getDefaultConverterType(currentConverter) : currentConverter.converterType())
+                    .setResultType(Strings.isBlank(currentConverter.resultType()) ? getDefaultResultType(currentConverter) : currentConverter.resultType())
+                    .setMethodName(Strings.isBlank(currentConverter.methodName()) ?
+                            getDefaultMethodName(currentConverter) : currentConverter.methodName())
+                    .build();
+            configuration.setResultRowConverter(converter);
+        }
     }
 
     private static boolean converterTypeMatches(final ResultRowConverter resultConverter,
@@ -432,25 +467,24 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         return prefixes != null && prefixes.stream().anyMatch(fileName::startsWith);
     }
 
+    private String getDefaultMethodName(final ResultRowConverter resultConverter) {
+        return getConverterFieldOrEmptyString(
+                converter -> methodNamesMatch(resultConverter, converter),
+                ResultRowConverter::alias);
+    }
+
     private boolean parametersAreValid(
             final Path source,
             final Map<String, List<Integer>> parameterIndices,
             final SqlConfiguration configuration) {
-        final var parameterErrors = configuration.getParameters().stream()
+        final var parameterErrors = Stream.ofNullable(configuration.getParameters())
+                .flatMap(Collection::stream)
                 .filter(param -> !parameterIndices.containsKey(param.name()))
                 .map(param -> messages.getMessage(ValidationErrors.UNKNOWN_PARAMETER, source, param.name()))
                 .peek(errors::illegalArgument)
                 .peek(logger::error)
                 .collect(Collectors.toList());
         return parameterErrors.isEmpty();
-    }
-
-    private static SqlConfiguration loadConfig(final Yaml yamlParser, final String yaml) {
-        var configuration = yamlParser.loadAs(yaml, SqlConfiguration.class);
-        if (configuration == null) {
-            configuration = new SqlConfiguration();
-        }
-        return configuration;
     }
 
     private static String getFileNameWithoutExtension(final Path path) {

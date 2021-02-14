@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.test.ObjectMother;
 import wtf.metio.yosql.test.TestIterables;
 
@@ -26,7 +27,8 @@ class JdbcFieldsGeneratorTest {
                 ObjectMother.loggingGenerator(),
                 ObjectMother.jdbcFields(),
                 ObjectMother.jdbcNames(),
-                ObjectMother.javadoc());
+                ObjectMother.javadoc(),
+                RuntimeConfiguration.usingDefaults());
     }
 
     @Test

@@ -18,6 +18,7 @@ import wtf.metio.yosql.generator.blocks.generic.Javadoc;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcFields;
 import wtf.metio.yosql.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.sql.*;
 
 import javax.sql.DataSource;
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.function.Predicate.not;
+
 final class JdbcFieldsGenerator implements FieldsGenerator {
 
     private final Fields fields;
@@ -33,18 +36,21 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
     private final JdbcFields jdbcFields;
     private final JdbcNames jdbcNames;
     private final Javadoc javadoc;
+    private final RuntimeConfiguration runtimeConfiguration;
 
     JdbcFieldsGenerator(
             final Fields fields,
             final LoggingGenerator logging,
             final JdbcFields jdbcFields,
             final JdbcNames jdbcNames,
-            final Javadoc javadoc) {
+            final Javadoc javadoc,
+            final RuntimeConfiguration runtimeConfiguration) {
         this.fields = fields;
         this.logging = logging;
         this.jdbcFields = jdbcFields;
         this.jdbcNames = jdbcNames;
         this.javadoc = javadoc;
+        this.runtimeConfiguration = runtimeConfiguration;
     }
 
     @Override
@@ -142,10 +148,27 @@ final class JdbcFieldsGenerator implements FieldsGenerator {
         return fields.field(DataSource.class, jdbcNames.dataSource());
     }
 
+    private static String alias(final String rawAlias) {
+        return rawAlias.endsWith("Converter") ? rawAlias : rawAlias + "Converter";
+    }
+
     private FieldSpec asConverterField(final ResultRowConverter converter) {
-        return fields.field(
-                TypeGuesser.guessTypeName(converter.converterType()),
-                converter.alias());
+        return runtimeConfiguration.converter().converters().stream()
+                .filter(rowConverter -> rowConverter.alias().equals(converter.alias()))
+                .map(rowConverter -> TypeGuesser.guessTypeName(rowConverter.converterType()))
+                .map(typeName -> fields.field(
+                        typeName,
+                        alias(converter.alias())))
+                .findFirst()
+                .or(() -> Optional.ofNullable(converter.converterType())
+                        .map(String::strip)
+                        .filter(not(String::isBlank))
+                        .map(type -> fields.field(
+                                TypeGuesser.guessTypeName(type),
+                                alias(converter.alias()))))
+                .orElseGet(() -> fields.field(
+                        TypeGuesser.guessTypeName("java.lang.Object"),
+                        alias(converter.alias())));
     }
 
     private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {

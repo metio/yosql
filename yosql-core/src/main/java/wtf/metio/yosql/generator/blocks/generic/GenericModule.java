@@ -59,7 +59,7 @@ public final class GenericModule {
 
     @Provides
     Parameters provideParameters(final Names names) {
-        return new DefaultParameters(names);
+        return new DefaultParameters(names, RuntimeConfiguration.usingDefaults());
     }
 
     @Provides

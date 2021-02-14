@@ -11,6 +11,8 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.yosql.model.sql.ResultRowConverter;
 
+import java.util.Objects;
+
 final class DefaultGenericBlocks implements GenericBlocks {
 
     @Override
@@ -44,7 +46,9 @@ final class DefaultGenericBlocks implements GenericBlocks {
 
     @Override
     public CodeBlock initializeConverter(final ResultRowConverter converter) {
-        final ClassName converterClass = ClassName.bestGuess(converter.converterType());
+        final var type = converter.converterType();
+        final ClassName converterClass = ClassName.bestGuess((Objects.isNull(type) || type.isBlank()) ? "java.lang.Object" :
+                type);
         return CodeBlock.builder()
                 .addStatement("this.$N = new $T()", converter.alias(), converterClass)
                 .build();

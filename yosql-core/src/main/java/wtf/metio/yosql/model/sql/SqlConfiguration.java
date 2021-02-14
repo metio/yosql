@@ -6,7 +6,6 @@
  */
 package wtf.metio.yosql.model.sql;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +19,7 @@ public class SqlConfiguration {
     private String name;
     private String repository;
     private SqlType type;
-    private List<SqlParameter> parameters = new ArrayList<>();
+    private List<SqlParameter> parameters;
     private ResultRowConverter resultRowConverter;
     private boolean methodStandardApi;
     private boolean generateStandardApiOverwritten;
