@@ -1,35 +1,35 @@
 [mediaTypes."application/atom+xml"]
-suffixes = ["xml"]
+  suffixes = ["xml"]
 [outputFormats.Atom]
-name = "Atom"
-mediaType = "application/atom+xml"
-baseName = "atom"
-isPlainText = false
-rel = "alternate"
-isHTML = false
-noUgly = true
-permalinkable = false
+  name = "Atom"
+  mediaType = "application/atom+xml"
+  baseName = "atom"
+  isPlainText = false
+  rel = "alternate"
+  isHTML = false
+  noUgly = true
+  permalinkable = false
 
 [mediaTypes."application/rdf+xml"]
-suffixes = ["rdf"]
+  suffixes = ["rdf"]
 [outputFormats.Foaf]
-name = "FOAF"
-mediaType = "application/rdf+xml"
-baseName = "foaf"
-isPlainText = false
-rel = "alternate"
-isHTML = false
-noUgly = true
-permalinkable = false
+  name = "FOAF"
+  mediaType = "application/rdf+xml"
+  baseName = "foaf"
+  isPlainText = false
+  rel = "alternate"
+  isHTML = false
+  noUgly = true
+  permalinkable = false
 
 [mediaTypes."text/plain"]
-suffixes = ["txt"]
+  suffixes = ["txt"]
 [outputFormats.Humans]
-name = "Humans"
-mediaType = "text/plain"
-baseName = "humans"
-isPlainText = true
-rel = "alternate"
-isHTML = false
-noUgly = true
-permalinkable = false
+  name = "Humans"
+  mediaType = "text/plain"
+  baseName = "humans"
+  isPlainText = true
+  rel = "alternate"
+  isHTML = false
+  noUgly = true
+  permalinkable = false

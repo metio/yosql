@@ -17,19 +17,8 @@
 {{ $tablet := slice $normalize $font $header $footer $navigation $layout $syntax $navigation_tablet $layout_tablet | resources.Concat "css/tablet.css" | minify | fingerprint "sha512" }}
 {{ $desktop := slice $normalize $font $header $footer $navigation $layout $syntax $navigation_desktop $layout_desktop | resources.Concat "css/desktop.css" | minify | fingerprint "sha512" }}
 
-<!--
-  ~ This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
-  ~ directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
-  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
-  ~ in the LICENSE file.
-  -->
+<link href="{{ $mobile.Permalink }}" integrity="{{ $mobile.Data.Integrity }}" media="screen and (max-width: 800px)" rel="stylesheet">
+<link href="{{ $tablet.Permalink }}" integrity="{{ $tablet.Data.Integrity }}" media="screen and (min-width: 801px) and (max-width: 1199px)" rel="stylesheet">
+<link href="{{ $desktop.Permalink }}" integrity="{{ $desktop.Data.Integrity }}" media="screen and (min-width: 1200px)" rel="stylesheet">
 
-<link href="{{ $mobile.Permalink }}" integrity="{{ $mobile.Data.Integrity }}" media="screen and (max-width: 800px)"
-      rel="stylesheet">
-<link href="{{ $tablet.Permalink }}" integrity="{{ $tablet.Data.Integrity }}"
-      media="screen and (min-width: 801px) and (max-width: 1199px)" rel="stylesheet">
-<link href="{{ $desktop.Permalink }}" integrity="{{ $desktop.Data.Integrity }}" media="screen and (min-width: 1200px)"
-      rel="stylesheet">
-
-<link href="{{ $darkmode.Permalink }}" integrity="{{ $darkmode.Data.Integrity }}"
-      media="screen and (prefers-color-scheme: dark)" rel="stylesheet">
+<link href="{{ $darkmode.Permalink }}" integrity="{{ $darkmode.Data.Integrity }}" media="screen and (prefers-color-scheme: dark)" rel="stylesheet">

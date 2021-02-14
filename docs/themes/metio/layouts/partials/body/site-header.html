@@ -1,20 +1,13 @@
 {{ block "header" . }}
-<!--
-  ~ This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
-  ~ directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
-  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
-  ~ in the LICENSE file.
-  -->
-
 <header id="header">
-  <h1 id="projectname">
-    <a href="{{ " id="rootlink"/" | absLangURL }}">{{ .Site.Title }}</a>
-    <a href="{{ " sitemap/" | absLangURL }}" title="show me all pages" id="sitemaplink">
-    <img class="svgimg" src="{{ "/images/sitemap.svg" | absURL }}" alt="sitemap" width="30" height="30">
-    </a>
-  </h1>
-  {{ partial "i18n/translations.html" . }}
-  <span id="actions">
+    <h1 id="projectname">
+        <a id="rootlink" href="{{ "/" | absLangURL }}">{{ .Site.Title }}</a>
+        <a href="{{ "sitemap/" | absLangURL }}" title="show me all pages" id="sitemaplink">
+            <img class="svgimg" src="{{ "/images/sitemap.svg" | absURL }}" alt="sitemap" width="30" height="30">
+        </a>
+    </h1>
+    {{ partial "i18n/translations.html" . }}
+    <span id="actions">
         {{ with .Site.Params.matrix }}
             <a href="https://matrix.to/#/{{ . }}" id="matrix" title="lets talk">
                 <img class="svgimg" src="{{ "/images/matrix.svg" | absURL }}" alt="matrix" width="32" height="32">
@@ -37,7 +30,7 @@
         {{ end }}
         <a href="{{ "/atom.xml" | absURL }}" id="newsfeed" title="get notified about updates">
             <img class="svgimg" src="{{ "/images/rss.svg" | absURL }}" alt="newsfeed" width="32" height="32">
-    </a>
+        </a>
     </span>
 </header>
 {{ end }}

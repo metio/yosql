@@ -6,5 +6,5 @@ homepage = "https://github.com/metio/metio-hugo-theme"
 tags = ["metio", "theme"]
 
 [author]
-name = "Sebastian Hoß"
-homepage = "https://seb.hoß.de"
+  name = "Sebastian Hoß"
+  homepage = "https://seb.hoß.de"

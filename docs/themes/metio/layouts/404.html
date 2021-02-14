@@ -1,17 +1,8 @@
 {{ define "title" }}
-{{ .Site.Title }} &ndash; {{ .Title }}
+    {{ .Site.Title }} &ndash; {{ .Title }}
 {{ end }}
 {{ define "main"}}
-<!--
-  ~ This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
-  ~ directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
-  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
-  ~ in the LICENSE file.
-  -->
-
-<h1>404 - Not Found</h1>
-<p>The page you are looking for does not exist or was moved to another location.</p>
-<p>Either go back to the <a href="{{ "/" | absLangURL }}">start page</a> or search for something like <code>site:ilo.projects.metio.wtf
-  YOUR_SEARCH_TERM</code> on <a href="https://www.google.com/search?q=site%3Ailo.projects.metio.wtf+YOUR_SEARCH_TERM">google</a>.
-</p>
+    <h1>404 - Not Found</h1>
+    <p>The page you are looking for does not exist or was moved to another location.</p>
+    <p>Either go back to the <a href="{{ "/" | absLangURL }}">start page</a> or search for something like <code>site:ilo.projects.metio.wtf YOUR_SEARCH_TERM</code> on <a href="https://www.google.com/search?q=site%3Ailo.projects.metio.wtf+YOUR_SEARCH_TERM">google</a>.</p>
 {{ end }}
