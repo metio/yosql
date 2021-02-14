@@ -6,10 +6,10 @@ menu: main
 
 YoSQL supports the following logging frameworks and APIs:
 
-| Name              | Status |
-|-------------------|--------|
-| java.util.logging | ✔      |
-| log4j             | ✔      |
-| slf4j             | ✔      |
-| thats-interesting | ✘      |
-| System.Logger     | ✘      |
+| Name                       | Status |
+|----------------------------|--------|
+| [java.util.logging](./jul) | ✔      |
+| [log4j](./log4j)           | ✔      |
+| [slf4j](./slf4j)           | ✔      |
+| thats-interesting          | ✘      |
+| System.Logger              | ✘      |
