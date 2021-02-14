@@ -36,3 +36,7 @@ The generated code is as correct as possible and widely tested across multiple c
 
 `YoSQL` tries hard to always-work(tm) - which means that even with an invalid configuration, `YoSQL` should generate 
 as much code as possible. Just add the appropriate plugin to your project and you are good to go in under a  minute.
+
+## Usage
+
+Want to try it out? Head over to the [tooling](./tooling) section to find out how you can add `YoSQL` to your project.
