@@ -5,7 +5,7 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.setup;
+package wtf.metio.yosql.utils;
 
 /**
  * Utility methods that handle {@link String Strings}.

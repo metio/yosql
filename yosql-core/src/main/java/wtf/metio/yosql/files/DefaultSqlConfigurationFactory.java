@@ -16,7 +16,7 @@ import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.errors.ValidationErrors;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
 import wtf.metio.yosql.model.sql.*;
-import wtf.metio.yosql.setup.Strings;
+import wtf.metio.yosql.utils.Strings;
 
 import java.io.File;
 import java.nio.file.Path;
