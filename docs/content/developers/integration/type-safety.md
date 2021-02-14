@@ -1,7 +1,13 @@
 ---
-title: "Type Safety"
+title: Type Safety
 date: 2019-06-16T18:53:54+02:00
-draft: true
+menu:
+  main:
+    parent: Integration
+categories:
+  - Integration
+tags:
+  - parameters
 ---
 
 [source]
@@ -26,7 +32,7 @@ WHERE   id = :userId
 
 The type of the generated `userId` parameter will default to `java.lang.Object` as long as no other information is 
 given. YoSQL does not parse your database schema, nor does it somehow infer the type of `userId` using some smart 
-algorithm. Instead it relies on its users to do the work (sorry!).
+algorithm. Instead, it relies on its users to do the work (sorry!).
 
 We can change the type of `userId` by adding a front matter to the statement that looks like this:
 

@@ -1,41 +1,42 @@
 ---
-title: "Converters"
+title: Converters
 date: 2019-07-07T14:29:29+02:00
-draft: true
+menu:
+  main:
+    parent: Integration
+categories:
+  - Integration
+tags:
+  - results
 ---
-
 
 Changing the result type is possible with the help of a converter:
 
-[source, sql]
-----
+```sql
 -- parameters:
 --   - name: userId
 --     type: int
--- resultConverter:
---   converterType: my.own.UserConverter
+-- results:
+--   converter: my.own.UserConverter
 --   resultType: my.own.User
 SELECT  *
 FROM    users
 WHERE   id = :userId
-----
+```
 
 Which in turn changes the generated code into this:
 
-[source]
-----
+```java
 // uses 'User' instead of 'ResultRow' & 'int' instead of 'Object'
 List<User> findUser(int userId)
 Stream<User> findUserStreamEager(int userId)
 Stream<User> findUserStreamLazy(int userId)
 Flowable<User> findUserFlow(int userId)
-----
-
+```
 
 `my.own.UserConverter` could look like this:
 
-[source, java]
-----
+```java
 package my.own;
 
 import java.sql.ResultSet;
@@ -55,4 +56,4 @@ public class UserConverter {
     }
 
 }
-----
+```
