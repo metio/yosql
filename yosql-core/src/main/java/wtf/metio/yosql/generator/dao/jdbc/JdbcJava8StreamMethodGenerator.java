@@ -101,7 +101,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
                 .addCode(jdbcBlocks.statementVariable())
                 .addCode(jdbcBlocks.setParameters(configuration))
                 .addCode(jdbcBlocks.logExecutedQuery(configuration))
-                .addCode(jdbcBlocks.resultSetVariable())
+                .addCode(jdbcBlocks.resultSetVariableStatement())
                 .addCode(jdbcBlocks.readMetaData())
                 .addCode(jdbcBlocks.readColumnCount())
                 .addCode(jdbcBlocks.createResultState())

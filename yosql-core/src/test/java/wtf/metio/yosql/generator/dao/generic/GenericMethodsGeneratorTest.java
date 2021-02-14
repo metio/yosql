@@ -76,7 +76,10 @@ class GenericMethodsGeneratorTest {
                         LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                       }
                       try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                        final java.sql.ResultSetMetaData metaData = resultSet.getMetaData()final int columnCount = metaData.getColumnCount()final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount)final java.util.List<java.lang.Object> list = new java.util.ArrayList<>();
+                        final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
+                        final int columnCount = metaData.getColumnCount();
+                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                        final java.util.List<java.lang.Object> list = new java.util.ArrayList<>();
                         while (state.next()) {
                           list.add(defaultRowConverter.asUserType(state));
                         }
@@ -163,7 +166,10 @@ class GenericMethodsGeneratorTest {
                         LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                       }
                       try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                        final java.sql.ResultSetMetaData metaData = resultSet.getMetaData()final int columnCount = metaData.getColumnCount()final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount)final java.util.List<java.lang.Object> list = new java.util.ArrayList<>();
+                        final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
+                        final int columnCount = metaData.getColumnCount();
+                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                        final java.util.List<java.lang.Object> list = new java.util.ArrayList<>();
                         while (state.next()) {
                           list.add(defaultRowConverter.asUserType(state));
                         }
@@ -252,7 +258,10 @@ class GenericMethodsGeneratorTest {
                         LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                       }
                       try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                        final java.sql.ResultSetMetaData metaData = resultSet.getMetaData()final int columnCount = metaData.getColumnCount()final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount)final java.util.List<java.lang.Object> list = new java.util.ArrayList<>();
+                        final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
+                        final int columnCount = metaData.getColumnCount();
+                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                        final java.util.List<java.lang.Object> list = new java.util.ArrayList<>();
                         while (state.next()) {
                           list.add(defaultRowConverter.asUserType(state));
                         }
@@ -296,7 +305,11 @@ class GenericMethodsGeneratorTest {
                       .replace(":test", test == null ? "null" : test.toString());
                     LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                   }
-                  final java.sql.ResultSet resultSet = statement.executeQuery()final java.sql.ResultSetMetaData metaData = resultSet.getMetaData()final int columnCount = metaData.getColumnCount()final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount)return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<java.lang.Object>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
+                  final java.sql.ResultSet resultSet = statement.executeQuery();
+                  final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
+                  final int columnCount = metaData.getColumnCount();
+                  final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                  return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<java.lang.Object>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                     @java.lang.Override
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -374,7 +387,10 @@ class GenericMethodsGeneratorTest {
                           .replace(":test", test == null ? "null" : test.toString());
                         LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                       }
-                      final java.sql.ResultSet resultSet = statement.executeQuery()final java.sql.ResultSetMetaData metaData = resultSet.getMetaData()final int columnCount = metaData.getColumnCount()return new com.example.persistence.util.FlowState(connection, statement, resultSet, metaData, columnCount);
+                      final java.sql.ResultSet resultSet = statement.executeQuery();
+                      final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
+                      final int columnCount = metaData.getColumnCount();
+                      return new com.example.persistence.util.FlowState(connection, statement, resultSet, metaData, columnCount);
                     }
                   }, new io.reactivex.functions.BiConsumer<com.example.persistence.util.FlowState, io.reactivex.Emitter<java.lang.Object>>() {
                     @java.lang.Override

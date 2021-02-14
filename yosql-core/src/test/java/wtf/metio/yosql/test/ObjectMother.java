@@ -28,12 +28,12 @@ public final class ObjectMother {
     public static SqlConfiguration sqlConfiguration() {
         final var config = new SqlConfiguration();
         config.setName("queryTest");
-        config.getParameters().add(SqlParameter.builder()
+        config.setParameters(List.of(SqlParameter.builder()
                 .setName("test")
                 .setType(Object.class.getName())
                 .setIndices(0)
                 .setConverter("defaultRowConverter")
-                .build());
+                .build()));
         config.setResultRowConverter(ResultRowConverter.builder()
                 .setAlias("defaultRowConverter")
                 .setConverterType("com.example.DefaultConverter")

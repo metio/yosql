@@ -100,6 +100,12 @@ final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
+    public CodeBlock resultSetVariableStatement() {
+        return variables.variableStatement(jdbcNames.resultSet(), ResultSet.class,
+                jdbcMethods.statement().executeQuery());
+    }
+
+    @Override
     public CodeBlock executeUpdate() {
         return blocks.returnValue(jdbcMethods.statement().executeUpdate());
     }

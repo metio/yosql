@@ -46,7 +46,7 @@ public class Files {
     /**
      * The separator to split SQL statements inside a single .sql file (default: <strong>";"</strong>).
      */
-    private final int skipLines = 0;
+    private final Integer skipLines = 0;
 
     public FileConfiguration asConfiguration(final Path baseDirectory, final Path buildDirectory) {
         return FileConfiguration.builder()

@@ -13,7 +13,6 @@ import wtf.metio.yosql.model.sql.SqlConfiguration;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Reusable code blocks using the JDBC API.
@@ -31,6 +30,8 @@ public interface JdbcBlocks {
     CodeBlock readColumnCount();
 
     CodeBlock resultSetVariable();
+
+    CodeBlock resultSetVariableStatement();
 
     CodeBlock executeUpdate();
 

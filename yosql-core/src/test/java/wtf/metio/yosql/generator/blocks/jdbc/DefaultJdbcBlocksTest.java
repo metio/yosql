@@ -58,14 +58,16 @@ class DefaultJdbcBlocksTest {
     @Test
     void readMetaData() {
         Assertions.assertEquals("""
-                        final java.sql.ResultSetMetaData metaData = resultSet.getMetaData()""",
+                        final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
+                        """,
                 generator.readMetaData().toString());
     }
 
     @Test
     void readColumnCount() {
         Assertions.assertEquals("""
-                        final int columnCount = metaData.getColumnCount()""",
+                        final int columnCount = metaData.getColumnCount();
+                        """,
                 generator.readColumnCount().toString());
     }
 
@@ -215,7 +217,8 @@ class DefaultJdbcBlocksTest {
     @Test
     void createResultState() {
         Assertions.assertEquals("""
-                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount)""",
+                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                        """,
                 generator.createResultState().toString());
     }
 

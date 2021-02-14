@@ -57,13 +57,14 @@
                             <goal>generate</goal>
                         </goals>
                         <phase>generate-sources</phase>
+                        <configuration>
+                            <files>
+                                <skipLines>6</skipLines>
+                            </files>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <files>
-                        <skipLines>6</skipLines>
-                    </files>
-                </configuration>
+
             </plugin>
         </plugins>
     </build>
