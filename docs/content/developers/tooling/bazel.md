@@ -1,25 +1,28 @@
 ---
-title: "Bazel"
+title: Bazel
 date: 2019-06-16T18:22:51+02:00
-draft: true
+menu:
+  main:
+    parent: Tooling
+categories:
+  - Tooling
+tags:
+  - Bazel
 ---
 
 1) Add git repository to your `WORKSPACE`:
 
-[source]
-----
+```
 git_repository(
     name = "yosql",
     remote = "https://github.com/sebhoss/yosql.git",
     tag = "0.0.1-bazel",
 )
-----
-
+```
 
 2) Write .sql files in a directory of your choice (e.g. `persistence`)
 
-[source]
-----
+```
 project/
 ├── WORKSPACE
 └── persistence/
@@ -30,12 +33,11 @@ project/
     └── item/
         ├── queryAllItems.sql
         └── createItemTable.sql
-----
+```
 
 3) Declare a `genrule` in one of your BUILD files:
 
-[source]
-----
+```
 filegroup(
   name = "your-sql-files",
   srcs = glob(["persistence/**/*.sql"]),
@@ -60,6 +62,6 @@ genrule(
   """,
   tools = ["@yosql//yosql-cli"],
 )
-----
+```
 
 4) Depend on the generated sources by using `:yosql-example` in the `srcs` of another rule.
