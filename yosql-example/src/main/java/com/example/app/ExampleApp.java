@@ -6,10 +6,19 @@
  */
 package com.example.app;
 
+import com.example.persistence.CompanyRepository;
+import com.example.persistence.PersonRepository;
+import com.example.persistence.SchemaRepository;
+import com.example.persistence.util.ResultRow;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class ExampleApp {
 
@@ -21,7 +30,6 @@ public class ExampleApp {
             dataSource.setUsername("example");
             dataSource.setPassword("example");
             runTests(arguments, dataSource);
-            // stop psql with 'docker-compose stop postgres'
         } else if (match(arguments, "mysql")) {
             // start mysql first with 'docker-compose up -d mysql'
             final var dataSource = new HikariDataSource();
@@ -29,7 +37,6 @@ public class ExampleApp {
             dataSource.setUsername("example");
             dataSource.setPassword("example");
             runTests(arguments, dataSource);
-            // stop mysql with 'docker-compose stop mysql'
         } else {
             // Use in-memory database
             final var dataSource = new HikariDataSource();
@@ -40,27 +47,62 @@ public class ExampleApp {
     }
 
     private static void runTests(final String[] arguments, final DataSource dataSource) {
-//        final var schemaRepository = new SchemaRepository(dataSource);
-//        final var companyRepository = new CompanyRepository(dataSource);
-//        final var personRepository = new PersonRepository(dataSource);
+        final var schemaRepository = new SchemaRepository(dataSource);
+        final var companyRepository = new CompanyRepository(dataSource);
+        final var personRepository = new PersonRepository(dataSource);
 
         if (match(arguments, "generic", "stream", "rxjava")) {
-            // initializeDatabase(schemaRepository, companyRepository, personRepository);
+            initializeDatabase(schemaRepository, companyRepository, personRepository);
         }
-
         if (match(arguments, "generic")) {
-            // standardTests(companyRepository, personRepository);
+            standardTests(companyRepository, personRepository);
         }
         if (match(arguments, "stream")) {
-            // streamTests(companyRepository, personRepository);
-        }
-        if (match(arguments, "rxjava")) {
-            // rxJavaTests(companyRepository, personRepository);
+            streamTests(companyRepository, personRepository);
         }
     }
 
     private static boolean match(final String[] arguments, final String... values) {
         return Arrays.stream(arguments).anyMatch(argument -> Arrays.asList(values).contains(argument));
+    }
+
+    private static void initializeDatabase(
+            final SchemaRepository schemaRepository,
+            final CompanyRepository companyRepository,
+            final PersonRepository personRepository) {
+        createSchema(schemaRepository);
+        writeCompanies(companyRepository);
+    }
+
+    private static void createSchema(final SchemaRepository schemaRepository) {
+        schemaRepository.dropCompaniesTable();
+        schemaRepository.dropPersonsTable();
+        schemaRepository.dropItemsTable();
+
+        schemaRepository.createCompaniesTable();
+        schemaRepository.createPersonsTable();
+        schemaRepository.createItemsTable();
+    }
+
+    private static void writeCompanies(final CompanyRepository companyRepository) {
+        companyRepository.insertCompany("test");
+        companyRepository.insertCompany("two");
+        companyRepository.insertCompany("three");
+    }
+
+    private static void standardTests(
+            final CompanyRepository companyRepository,
+            final PersonRepository personRepository) {
+        companyRepository.queryAllCompanies();
+        companyRepository.findCompanyByName("test");
+        companyRepository.findCompanies(30);
+        personRepository.findPerson("test");
+    }
+
+    private static void streamTests(
+            final CompanyRepository companyRepository,
+            final PersonRepository personRepository) {
+        companyRepository.queryAllCompanies();
     }
 
 }
