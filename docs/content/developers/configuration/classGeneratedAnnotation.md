@@ -1,19 +1,25 @@
 ---
-title: "classGeneratedAnnotation - YoSQL Configuration Option"
+title: classGeneratedAnnotation
 date: 2019-09-27T18:51:08+02:00
-draft: true
+menu:
+  main:
+    parent: Configuration
+categories:
+  - Configuration
+tags:
+  - classes
+  - annotations
 ---
 
 Should `@Generated` annotations be added to generated classes?. Defaults to `false`.
 
-== Configuration Options
+## Configuration Options
 
-=== Option: 'false'
+### Option: 'false'
 
 The default value of the `classGeneratedAnnotation` is `false`. Setting the option to `false` therefore produces the same code generated as the default configuration.
 
-[source]
-----
+```java
 package com.example.persistence;
 
 public class SomeRepository {
@@ -21,14 +27,13 @@ public class SomeRepository {
     // ... rest of generaed code
 
 }
-----
+```
 
-=== Option: 'true'
+### Option: 'true'
 
 Changing the `classGeneratedAnnotation` configuration option to `true` adds the `@Generated` annotation to every generated class. Its is possible to configure each value individually using other config options (TODO: link here?).
 
-[source]
-----
+```java
 package com.example.persistence;
 
 import javax.annotation.processing.Generated;
@@ -43,20 +48,20 @@ public class SomeRepository {
     // ... rest of generated code (same as above)
 
 }
-----
+```
 
-== Related Options
+## Related Options
 
 - TODO: list of related config options that somehow influence or are influenced by this options
 
-== Tooling
+## Tooling
 
-=== Maven
+### Maven
 
-In order to use YoSQL together with link:https://maven.apache.org/[Maven], take a look at the tooling link:../tooling/maven.asciidoc[documentation for Maven].
+In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation 
+for Maven](../tooling/maven).
 
-[source, xml]
-----
+```xml
   <build>
     <plugins>
       ...
@@ -70,34 +75,34 @@ In order to use YoSQL together with link:https://maven.apache.org/[Maven], take 
       ...
     </plugins>
   </build>
-----
+```
 
-=== Gradle
+### Gradle
 
-In order to use YoSQL together with link:https://gradle.org/[Gradle], take a look at the tooling link:../tooling/gradle.asciidoc[documentation for Gradle].
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for 
+Gradle](../tooling/gradle).
 
-[source, groovy]
-----
+```groovy
 apply plugin: 'yosql'
 
 yosql {
   classGeneratedAnnotation: true
 }
-----
+```
 
 TODO: info for kotlin
 
-=== Bazel
+### Bazel
 
-In order to use YoSQL together with link:https://bazel.build/[Bazel], take a look at the tooling link:../tooling/bazel.asciidoc[documentation for Bazel].
+In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for 
+Bazel](../tooling/bazel).
 
 TODO: info for bazel
 
-=== CLI
+### CLI
 
-In order to use YoSQL on the command line, take a look at the tooling link:../tooling/cli.asciidoc[documentation for CLI].
+In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
 
-[source]
-----
+```shell
 $ yosql --classGeneratedAnnotation=true
-----
+```

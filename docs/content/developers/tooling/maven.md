@@ -48,7 +48,7 @@ tags:
 ## Configuration
 
 You can configure how YoSQL operates and how the generated code like by using the default Maven configuration 
-mechanism (TODO: add link). Take a look at the [available configuration options](../configuration/index.asciidoc) in order to see what can be 
+mechanism (TODO: add link). Take a look at the [available configuration options](../configuration/) in order to see what can be 
 configured.
 
 ```xml
