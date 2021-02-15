@@ -14,7 +14,7 @@ import picocli.CommandLine;
  */
 @CommandLine.Command(
         name = "yosql",
-        description = "generate Java code from SQL files",
+        description = "write more SQL!",
         mixinStandardHelpOptions = true,
         showAtFileInUsageHelp = true,
         usageHelpAutoWidth = true,

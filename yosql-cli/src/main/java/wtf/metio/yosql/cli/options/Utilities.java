@@ -5,7 +5,7 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.cli;
+package wtf.metio.yosql.cli.options;
 
 import picocli.CommandLine;
 import wtf.metio.yosql.model.configuration.UtilityConfiguration;
@@ -21,13 +21,13 @@ public class Utilities {
             defaultValue = "com.example.persistence.util")
     String basePackageName;
 
-    UtilityConfiguration asConfiguration() {
+    public UtilityConfiguration asConfiguration() {
         return UtilityConfiguration.builder()
                 .setBasePackageName(basePackageName)
                 .build();
     }
 
-    String getUtilityPackageName() {
+    public String getUtilityPackageName() {
         return basePackageName;
     }
 

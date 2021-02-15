@@ -5,11 +5,16 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.cli;
+package wtf.metio.yosql.ant;
 
-/**
- * Configures how methods are generated.
- */
-public class Methods {
+public class RowConverter {
+
+    String alias;
+
+    String converterType;
+
+    String methodName;
+
+    String resultType;
 
 }

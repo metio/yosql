@@ -34,4 +34,16 @@
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: Ant Task</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>wtf.metio.yosql</groupId>
+            <artifactId>yosql-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.10.9</version>
+        </dependency>
+    </dependencies>
 </project>

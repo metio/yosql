@@ -9,6 +9,13 @@ package wtf.metio.yosql.cli;
 
 import picocli.CommandLine;
 import wtf.metio.yosql.DaggerYoSQLComponent;
+import wtf.metio.yosql.cli.options.Annotations;
+import wtf.metio.yosql.cli.options.Api;
+import wtf.metio.yosql.cli.options.Files;
+import wtf.metio.yosql.cli.options.Java;
+import wtf.metio.yosql.cli.options.Repositories;
+import wtf.metio.yosql.cli.options.Resources;
+import wtf.metio.yosql.cli.options.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 
 import java.util.List;
@@ -42,9 +49,6 @@ public class Generate implements Callable<Integer> {
 
     @CommandLine.Mixin
     public Annotations annotations;
-
-    @CommandLine.Mixin
-    public Methods methods;
 
     @CommandLine.Mixin
     public Repositories repositories;

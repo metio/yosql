@@ -5,7 +5,7 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.cli;
+package wtf.metio.yosql.cli.options;
 
 import picocli.CommandLine;
 import wtf.metio.yosql.model.configuration.ApiConfiguration;
