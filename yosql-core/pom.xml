@@ -115,10 +115,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-      </dependency>
-      <dependency>
         <artifactId>jackson-dataformat-yaml</artifactId>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <version>2.12.1</version>
