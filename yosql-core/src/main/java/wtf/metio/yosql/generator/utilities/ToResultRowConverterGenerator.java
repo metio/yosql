@@ -17,7 +17,7 @@ import wtf.metio.yosql.generator.blocks.generic.Parameters;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 
 import javax.inject.Inject;
 import java.sql.SQLException;
@@ -67,12 +67,12 @@ final class ToResultRowConverterGenerator {
 
     private MethodSpec asUserType() {
         return methods.publicMethod("asUserType")
-                .addParameters(parameters.resultState(runtimeConfiguration.result().resultStateClass()))
+                .addParameters(parameters.resultState(runtimeConfiguration.utility().resultStateClass()))
                 .addException(SQLException.class)
-                .returns(runtimeConfiguration.result().resultRowClass())
-                .addStatement("final $T $N = new $T($N.getColumnCount())", runtimeConfiguration.result().resultRowClass(),
+                .returns(runtimeConfiguration.utility().resultRowClass())
+                .addStatement("final $T $N = new $T($N.getColumnCount())", runtimeConfiguration.utility().resultRowClass(),
                         runtimeConfiguration.jdbc().row(),
-                        runtimeConfiguration.result().resultRowClass(),
+                        runtimeConfiguration.utility().resultRowClass(),
                         names.result())
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
                         runtimeConfiguration.jdbc().index(),

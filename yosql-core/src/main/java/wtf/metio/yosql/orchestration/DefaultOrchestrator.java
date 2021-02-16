@@ -9,7 +9,7 @@ package wtf.metio.yosql.orchestration;
 
 import ch.qos.cal10n.IMessageConveyor;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;

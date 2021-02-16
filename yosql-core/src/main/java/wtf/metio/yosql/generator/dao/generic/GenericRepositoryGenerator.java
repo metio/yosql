@@ -15,7 +15,7 @@ import wtf.metio.yosql.generator.api.RepositoryGenerator;
 import wtf.metio.yosql.generator.blocks.generic.Classes;
 import wtf.metio.yosql.generator.blocks.generic.Javadoc;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;

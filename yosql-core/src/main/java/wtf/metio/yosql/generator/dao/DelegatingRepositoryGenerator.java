@@ -8,7 +8,7 @@ package wtf.metio.yosql.generator.dao;
 
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;

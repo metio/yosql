@@ -11,7 +11,7 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.model.configuration.FileConfiguration;
 import wtf.metio.yosql.model.errors.ExecutionErrors;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 
 import java.io.IOException;
 

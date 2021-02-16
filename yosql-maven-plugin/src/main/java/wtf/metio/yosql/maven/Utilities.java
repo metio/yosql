@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.maven;
 
+import com.squareup.javapoet.ClassName;
 import wtf.metio.yosql.model.configuration.UtilityConfiguration;
 
 /**
@@ -19,14 +20,28 @@ public class Utilities {
      */
     private final String basePackageName = "com.example.persistence.util";
 
+    /**
+     * The simple name of the generated result row class (default: <strong>ResultRow</strong>).
+     */
+    private final String resultRow = "ResultRow";
+
+    /**
+     * The simple name of the generated result state class (default: <strong>ResultState</strong>).
+     */
+    private final String resultState = "ResultState";
+
+    /**
+     * The simple name of the generated flow state class (default: <strong>FlowState</strong>).
+     */
+    private final String flowState = "FlowState";
+
     UtilityConfiguration asConfiguration() {
         return UtilityConfiguration.builder()
                 .setBasePackageName(basePackageName)
+                .setResultRowClass(ClassName.get(basePackageName, resultRow))
+                .setResultStateClass(ClassName.get(basePackageName, resultState))
+                .setFlowStateClass(ClassName.get(basePackageName, flowState))
                 .build();
-    }
-
-    String getUtilityPackageName() {
-        return basePackageName;
     }
 
 }

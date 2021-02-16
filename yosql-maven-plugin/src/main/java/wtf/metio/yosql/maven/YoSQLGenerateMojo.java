@@ -52,9 +52,6 @@ public class YoSQLGenerateMojo extends AbstractMojo {
     private Utilities utilities;
 
     @Parameter(required = true, defaultValue = "${classObject}")
-    private Results results;
-
-    @Parameter(required = true, defaultValue = "${classObject}")
     private Jdbc jdbc;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
@@ -74,24 +71,14 @@ public class YoSQLGenerateMojo extends AbstractMojo {
     }
 
     private RuntimeConfiguration createConfiguration() {
-        final var utilityPackage = utilities.getUtilityPackageName();
-        final var files = this.files.asConfiguration(project.getBasedir().toPath(), Paths.get(project.getBuild().getDirectory()));
-        final var annotations = this.annotations.asConfiguration();
-        final var java = this.java.asConfiguration();
-        final var api = this.api.asConfiguration(project);
-        final var repositories = this.repositories.asConfiguration();
-        final var resources = this.resources.asConfiguration();
-        final var utility = utilities.asConfiguration();
-        final var result = results.asConfiguration(utilityPackage);
         return RuntimeConfiguration.builder()
-                .setFiles(files)
-                .setAnnotations(annotations)
-                .setJava(java)
-                .setApi(api)
-                .setRepositories(repositories)
-                .setResources(resources)
-                .setUtility(utility)
-                .setResult(result)
+                .setFiles(files.asConfiguration(project.getBasedir().toPath(), Paths.get(project.getBuild().getDirectory())))
+                .setAnnotations(annotations.asConfiguration())
+                .setJava(java.asConfiguration())
+                .setApi(api.asConfiguration(project))
+                .setRepositories(repositories.asConfiguration())
+                .setResources(resources.asConfiguration())
+                .setUtility(utilities.asConfiguration())
                 .setJdbc(jdbc.asConfiguration())
                 .setConverter(converters.asConfiguration())
                 .build();

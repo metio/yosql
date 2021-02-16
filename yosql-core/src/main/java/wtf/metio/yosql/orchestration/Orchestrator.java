@@ -7,7 +7,7 @@
 
 package wtf.metio.yosql.orchestration;
 
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;

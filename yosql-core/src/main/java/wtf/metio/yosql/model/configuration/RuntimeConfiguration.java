@@ -67,11 +67,6 @@ public interface RuntimeConfiguration {
     }
 
     @Value.Default
-    default ResultConfiguration result() {
-        return ResultConfiguration.usingDefaults();
-    }
-
-    @Value.Default
     default AnnotationConfiguration annotations() {
         return AnnotationConfiguration.usingDefaults();
     }

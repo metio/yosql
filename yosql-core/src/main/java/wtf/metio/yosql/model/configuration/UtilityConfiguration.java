@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.model.configuration;
 
+import com.squareup.javapoet.ClassName;
 import org.immutables.value.Value;
 
 /**
@@ -33,4 +34,20 @@ public interface UtilityConfiguration {
     default String basePackageName() {
         return "com.example.persistence.util";
     }
+
+    @Value.Default
+    default ClassName resultStateClass() {
+        return ClassName.get(basePackageName(), "ResultState");
+    }
+
+    @Value.Default
+    default ClassName resultRowClass() {
+        return ClassName.get(basePackageName(), "ResultRow");
+    }
+
+    @Value.Default
+    default ClassName flowStateClass() {
+        return ClassName.get(basePackageName(), "FlowState");
+    }
+
 }

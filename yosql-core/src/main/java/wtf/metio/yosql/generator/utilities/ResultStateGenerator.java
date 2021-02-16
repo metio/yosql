@@ -18,7 +18,7 @@ import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -60,7 +60,7 @@ final class ResultStateGenerator {
     }
 
     PackagedTypeSpec generateResultStateClass() {
-        final var resultStateClass = runtimeConfiguration.result().resultStateClass();
+        final var resultStateClass = runtimeConfiguration.utility().resultStateClass();
         final var type = classes.openClass(resultStateClass)
                 .addFields(fields())
                 .addMethods(methods())

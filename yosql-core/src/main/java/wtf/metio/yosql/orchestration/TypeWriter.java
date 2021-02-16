@@ -7,7 +7,7 @@
 
 package wtf.metio.yosql.orchestration;
 
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 
 /**
  * Writes a single {@link com.squareup.javapoet.TypeSpec type} into a directory.

@@ -16,7 +16,7 @@ import wtf.metio.yosql.generator.helpers.TypicalTypes;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
@@ -57,7 +57,7 @@ final class ResultRowGenerator {
     }
 
     PackagedTypeSpec generateResultRowClass() {
-        final var resultRowClass = runtimeConfiguration.result().resultRowClass();
+        final var resultRowClass = runtimeConfiguration.utility().resultRowClass();
         final var type = classes.publicClass(resultRowClass)
                 .addField(row())
                 .addMethod(constructor())

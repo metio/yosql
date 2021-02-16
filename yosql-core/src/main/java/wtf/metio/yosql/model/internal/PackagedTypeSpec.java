@@ -4,10 +4,11 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.model.sql;
+package wtf.metio.yosql.model.internal;
 
 import com.squareup.javapoet.TypeSpec;
 import org.immutables.value.Value;
+import wtf.metio.yosql.model.sql.ImmutablePackagedTypeSpec;
 
 /**
  * Wrapper around JavaPoet's {@link TypeSpec} that adds the package name.

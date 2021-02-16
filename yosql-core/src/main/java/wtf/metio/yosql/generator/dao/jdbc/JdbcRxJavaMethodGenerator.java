@@ -83,11 +83,11 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
             final List<SqlStatement> statements) {
         final var callable = ClassName.get(Callable.class);
         final var initialStateType = ParameterizedTypeName.get(callable,
-                runtime.result().flowStateClass());
+                runtime.utility().flowStateClass());
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(initialStateType)
                 .addMethod(methods.implementation("call")
-                        .returns(runtime.result().flowStateClass())
+                        .returns(runtime.utility().flowStateClass())
                         .addException(Exception.class)
                         .addCode(jdbcBlocks.connectionVariable())
                         .addCode(jdbcBlocks.pickVendorQuery(statements))
@@ -108,11 +108,11 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         final var rawEmitter = ClassName.get(Emitter.class);
         final var emitter = ParameterizedTypeName.get(rawEmitter, resultType);
         final var generatorType = ParameterizedTypeName.get(biConsumer,
-                runtime.result().flowStateClass(), emitter);
+                runtime.utility().flowStateClass(), emitter);
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(generatorType)
                 .addMethod(methods.implementation("accept")
-                        .addParameter(parameters.parameter(runtime.result().flowStateClass(), names.state()))
+                        .addParameter(parameters.parameter(runtime.utility().flowStateClass(), names.state()))
                         .addParameter(parameters.parameter(emitter, names.emitter()))
                         .returns(void.class)
                         .addException(Exception.class)
@@ -132,11 +132,11 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     private TypeSpec createFlowDisposer() {
         final var consumerClass = ClassName.get(io.reactivex.functions.Consumer.class);
         final var disposerType = ParameterizedTypeName.get(consumerClass,
-                runtime.result().flowStateClass());
+                runtime.utility().flowStateClass());
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(disposerType)
                 .addMethod(methods.implementation("accept")
-                        .addParameter(parameters.parameter(runtime.result().flowStateClass(), names.state()))
+                        .addParameter(parameters.parameter(runtime.utility().flowStateClass(), names.state()))
                         .returns(void.class)
                         .addException(Exception.class)
                         .addCode(jdbcBlocks.closeState())

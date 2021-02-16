@@ -10,7 +10,7 @@ package wtf.metio.yosql.generator;
 import wtf.metio.yosql.generator.api.CodeGenerator;
 import wtf.metio.yosql.generator.api.RepositoryGenerator;
 import wtf.metio.yosql.generator.api.UtilitiesGenerator;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 import wtf.metio.yosql.model.sql.SqlStatement;
 
 import java.util.List;

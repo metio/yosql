@@ -17,7 +17,7 @@ import wtf.metio.yosql.generator.blocks.jdbc.JdbcParameters;
 import wtf.metio.yosql.model.annotations.Utilities;
 import wtf.metio.yosql.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.model.internal.ApplicationEvents;
-import wtf.metio.yosql.model.sql.PackagedTypeSpec;
+import wtf.metio.yosql.model.internal.PackagedTypeSpec;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -55,9 +55,9 @@ final class FlowStateGenerator {
     }
 
     PackagedTypeSpec generateFlowStateClass() {
-        final var flowStateClass = runtimeConfiguration.result().flowStateClass();
+        final var flowStateClass = runtimeConfiguration.utility().flowStateClass();
         final var type = classes.publicClass(flowStateClass)
-                .superclass(runtimeConfiguration.result().resultStateClass())
+                .superclass(runtimeConfiguration.utility().resultStateClass())
                 .addFields(fields())
                 .addMethods(methods())
                 .addAnnotations(annotations.generatedClass())
