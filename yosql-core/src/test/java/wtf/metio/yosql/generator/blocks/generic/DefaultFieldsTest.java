@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.model.configuration.JavaConfiguration;
 import wtf.metio.yosql.test.ObjectMother;
 
 @DisplayName("DefaultFields")
@@ -21,7 +22,7 @@ class DefaultFieldsTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultFields(ObjectMother.annotationGenerator());
+        generator = new DefaultFields(ObjectMother.annotationGenerator(), JavaConfiguration.usingDefaults());
     }
 
     @Test

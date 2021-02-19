@@ -9,19 +9,31 @@ package wtf.metio.yosql.generator.blocks.generic;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
+import wtf.metio.yosql.model.configuration.JavaConfiguration;
+import wtf.metio.yosql.std.generator.StandardClasses;
 
 import javax.lang.model.element.Modifier;
 
 final class DefaultClasses implements Classes {
 
+    private final JavaConfiguration java;
+
+    DefaultClasses(final JavaConfiguration java) {
+        this.java = java;
+    }
+
     @Override
     public TypeSpec.Builder publicClass(final ClassName name) {
-        return TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC, Modifier.FINAL);
+        final var builder = StandardClasses.openClass(name);
+        if (java.useFinal()) {
+            builder.addModifiers(Modifier.FINAL);
+        }
+        return builder;
     }
 
     @Override
     public TypeSpec.Builder openClass(final ClassName name) {
-        return TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC);
+        return StandardClasses.openClass(name);
     }
 
 }

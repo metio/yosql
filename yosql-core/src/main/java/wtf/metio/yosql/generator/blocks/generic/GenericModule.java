@@ -26,8 +26,8 @@ public final class GenericModule {
     }
 
     @Provides
-    Classes provideClasses() {
-        return new DefaultClasses();
+    Classes provideClasses(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultClasses(runtimeConfiguration.java());
     }
 
     @Provides
@@ -38,8 +38,8 @@ public final class GenericModule {
     }
 
     @Provides
-    Fields provideFields(final AnnotationGenerator annotations) {
-        return new DefaultFields(annotations);
+    Fields provideFields(final AnnotationGenerator annotations, final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultFields(annotations, runtimeConfiguration.java());
     }
 
     @Provides
