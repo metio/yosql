@@ -2,5 +2,5 @@ target/
 *.iml
 .ansible-git-*
 /bin/
-/docs/public
+/yosql-website/public
 .idea/

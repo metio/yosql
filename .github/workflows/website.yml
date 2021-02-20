@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - "docs/**"
+      - "yosql-website/**"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,13 +25,13 @@ jobs:
         name: Get Last Release
         run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
       - name: Build Website
-        run: hugo --minify --i18n-warnings --path-warnings --source docs
+        run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
         env:
           ILO_RELEASE: ${{ steps.previous.outputs.version }}
       - name: Deploy Website
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/public
+          publish_dir: ./yosql-website/public
           force_orphan: true
           cname: yosql.projects.metio.wtf
