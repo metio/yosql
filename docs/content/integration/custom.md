@@ -10,4 +10,4 @@ tags:
   - custom
 ---
 
-It is possible to use `yosql-core` as an external dependency and build your own code generator on top. 
+It is possible to use `yosql-codegen` as an external dependency and build your own code generator on top. 

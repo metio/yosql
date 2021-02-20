@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>yosql</artifactId>
+        <groupId>wtf.metio.yosql</groupId>
+        <version>0.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>wtf.metio.yosql.internals</groupId>
+    <artifactId>yosql-internals</artifactId>
+    <packaging>pom</packaging>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               INFORMATIONS                              -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#More_Project_Information -->
+    <name>YoSQL :: Internals</name>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                  MODULES                                -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Aggregation -->
+    <modules>
+        <module>yosql-test-utils</module>
+        <module>yosql-meta-model</module>
+        <module>yosql-generator-utils</module>
+        <module>yosql-config-generator</module>
+        <module>yosql-model-immutables</module>
+        <module>yosql-model-ant</module>
+        <module>yosql-model-cli</module>
+        <module>yosql-model-maven</module>
+    </modules>
+
+</project>

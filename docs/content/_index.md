@@ -21,11 +21,11 @@ business cases. Use any existing database tooling and integrate DBAs more closel
 `YoSQL` is a true zero dependency solution. Instead of adding a new dependency to your project, `YoSQL` is available 
 as a build-tool that is only active during build-time. Once everything is generated, `YoSQL` is no longer required.
 
-### Flexibility
+### cCll us, we won't call you
 
 `YoSQL` recognizes that lots of project already have an existing persistence layer in place. Instead of forcing 
 users to rewrite big parts of their software, `YoSQL` adapts to your project and supports a wide selection of 
-persistence APIs.
+persistence APIs in order to re-use as much existing infrastructure as possible.
 
 ### Fast and Correct
 
@@ -35,7 +35,7 @@ The generated code is as correct as possible and widely tested across multiple c
 ### Plug and Play
 
 `YoSQL` tries hard to always-work(tm) - which means that even with an invalid configuration, `YoSQL` should generate 
-as much code as possible. Just add the appropriate plugin to your project and you are good to go in under a  minute.
+as much code as possible. Just add the appropriate plugin to your project, and you are good to go in under a  minute.
 
 ## Usage
 

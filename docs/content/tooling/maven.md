@@ -12,7 +12,7 @@ tags:
 
 ## Getting Started
 
-1) Add the plugin to your `pom.xml`:
+1. Add the plugin to your `pom.xml`:
 
 ```xml
 <build>
@@ -27,7 +27,7 @@ tags:
 </build>
 ```
 
-2) Add .sql files in *src/main/yosql* and write SQL statements into them.
+2. Add .sql files in *src/main/yosql* and write SQL statements into them.
 
 ```
 <project_root>/
@@ -43,13 +43,14 @@ tags:
                 └── addData.sql
 ```
 
-3) Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
+3. Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
+
+TODO: add `yosql;repositories`, `yosql;utilities`, `yosql;converters`, etc. goals as well?
 
 ## Configuration
 
-You can configure how YoSQL operates and how the generated code like by using the default Maven configuration 
-mechanism (TODO: add link). Take a look at the [available configuration options](../configuration/) in order to see what can be 
-configured.
+You can configure how YoSQL operates and how the generated code looks like by using the [default Maven configuration 
+mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html). Take a look at the [available configuration options](../configuration/) in order to see what can be configured.
 
 ```xml
 <build>

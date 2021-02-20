@@ -74,17 +74,9 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
-        <module>yosql-standard-generator</module>
-        <module>yosql-meta-config</module>
-        <module>yosql-config-generator</module>
-        <module>yosql-testutils</module>
-        <module>yosql-core</module>
-        <module>yosql-cli</module>
-        <module>yosql-maven-plugin</module>
-        <module>yosql-ant-task</module>
-        <module>yosql-yeps</module>
-        <module>yosql-example</module>
-        <module>yosql-benchmarks</module>
+        <module>yosql-internals</module>
+        <module>yosql-tooling</module>
+        <module>yosql-verification</module>
     </modules>
 
 </project>
