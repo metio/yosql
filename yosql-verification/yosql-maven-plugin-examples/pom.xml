@@ -32,7 +32,7 @@
     <!--                               INFORMATIONS                              -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
-    <name>YoSQL :: Verification :: Maven Plugin Examples</name>
+    <name>YoSQL :: Verification :: Examples Maven</name>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!--                               DEPENDENCIES                              -->

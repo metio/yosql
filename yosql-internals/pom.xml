@@ -27,7 +27,7 @@
         <module>yosql-test-utils</module>
         <module>yosql-meta-model</module>
         <module>yosql-generator-utils</module>
-        <module>yosql-config-generator</module>
+        <module>yosql-model-generator</module>
         <module>yosql-model-immutables</module>
         <module>yosql-model-ant</module>
         <module>yosql-model-cli</module>
