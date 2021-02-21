@@ -75,6 +75,7 @@
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
         <module>yosql-internals</module>
+        <module>yosql-models</module>
         <module>yosql-tooling</module>
         <module>yosql-verification</module>
     </modules>

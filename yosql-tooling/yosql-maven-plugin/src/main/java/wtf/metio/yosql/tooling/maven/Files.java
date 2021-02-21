@@ -23,8 +23,7 @@ public class Files {
     private final String inputBaseDirectory = "src/main/yosql";
 
     /**
-     * The output directory for the generated classes (default:
-     * <strong>${project.build.directory}/generated-sources/yosql</strong>).
+     * The output directory for the generated classes (default: <strong>generated-sources/yosql</strong>).
      */
     private final String outputBaseDirectory = "generated-sources/yosql";
 
@@ -44,7 +43,7 @@ public class Files {
     private final String sqlStatementSeparator = ";";
 
     /**
-     * The separator to split SQL statements inside a single .sql file (default: <strong>";"</strong>).
+     * The number of lines to skip in each file (e.g. a copyright header) (default: <strong>6</strong>).
      */
     private final Integer skipLines = 0;
 

@@ -16,6 +16,7 @@ public interface ConfigurationGroup {
     //endregion
 
     String name();
+    String description();
     List<ConfigurationSetting> settings();
 
 }

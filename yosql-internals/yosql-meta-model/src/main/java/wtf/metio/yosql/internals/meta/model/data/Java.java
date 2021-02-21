@@ -6,9 +6,10 @@ import wtf.metio.yosql.internals.meta.model.ConfigurationSetting;
 
 public final class Java {
 
-    public static ConfigurationGroup java() {
+    public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
                 .setName("Java")
+                .setDescription("Configures Java version and related settings.")
                 .addSettings(apiVersion())
                 .addSettings(useFinal())
                 .addSettings(useGenerics())
