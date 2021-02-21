@@ -41,7 +41,7 @@ public final class MavenGenerator implements Generator {
     }
 
     private MethodSpec asConfiguration(final ConfigurationGroup group) {
-        final var returnType = ClassName.get(immutablesBasePackage, group.name());
+        final var returnType = ClassName.get(immutablesBasePackage, "Immutable" + group.name());
         final var builder = MethodSpec.methodBuilder("asConfiguration")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(returnType);
