@@ -26,14 +26,13 @@
     <!--                               COORDINATES                               -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Maven_Coordinates -->
-    <artifactId>yosql-model-generator</artifactId>
+    <artifactId>yosql-meta-model</artifactId>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!--                               INFORMATIONS                              -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
-    <name>YoSQL :: Internals :: Model Generator</name>
-    <packaging>maven-plugin</packaging>
+    <name>YoSQL :: Internals :: Meta Model</name>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!--                               DEPENDENCIES                              -->
@@ -43,11 +42,6 @@
         <dependency>
             <groupId>wtf.metio.yosql.internals</groupId>
             <artifactId>yosql-test-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.internals</groupId>
-            <artifactId>yosql-meta-model</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -101,43 +95,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <version>2.12.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-annotations</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.6.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>descriptor</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm</artifactId>
-                        <version>9.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

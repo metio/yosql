@@ -6,7 +6,7 @@
  */
 package wtf.metio.yosql.tooling.codegen.model.sql;
 
-import wtf.metio.yosql.testutils.EnumTCK;
+import wtf.metio.yosql.internals.utils.test.EnumTCK;
 
 import java.util.stream.Stream;
 

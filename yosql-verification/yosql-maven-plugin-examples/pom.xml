@@ -48,9 +48,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>wtf.metio.yosql</groupId>
+                <groupId>wtf.metio.yosql.tooling</groupId>
                 <artifactId>yosql-maven-plugin</artifactId>
-                <version>${project.version}</version>
+                <version>0.0.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <goals>

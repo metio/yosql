@@ -40,8 +40,8 @@
     <!-- https://maven.apache.org/pom.html#Dependencies -->
     <dependencies>
         <dependency>
-            <groupId>wtf.metio.yosql</groupId>
-            <artifactId>yosql-testutils</artifactId>
+            <groupId>wtf.metio.yosql.internals</groupId>
+            <artifactId>yosql-test-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

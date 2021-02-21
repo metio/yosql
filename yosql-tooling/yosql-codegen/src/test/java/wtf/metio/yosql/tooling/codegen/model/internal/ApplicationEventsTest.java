@@ -8,8 +8,8 @@
 package wtf.metio.yosql.tooling.codegen.model.internal;
 
 import org.junit.jupiter.api.DisplayName;
-import wtf.metio.yosql.testutils.EnumTCK;
-import wtf.metio.yosql.testutils.PropertiesTCK;
+import wtf.metio.yosql.internals.utils.test.EnumTCK;
+import wtf.metio.yosql.internals.utils.test.PropertiesTCK;
 
 import java.util.stream.Stream;
 

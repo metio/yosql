@@ -9,8 +9,8 @@ package wtf.metio.yosql.tooling.codegen.generator.blocks.generic;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
+import wtf.metio.yosql.internals.utils.generator.StandardClasses;
 import wtf.metio.yosql.tooling.codegen.model.configuration.JavaConfiguration;
-import wtf.metio.yosql.std.generator.StandardClasses;
 
 import javax.lang.model.element.Modifier;
 

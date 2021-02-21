@@ -1,9 +1,9 @@
 package wtf.metio.yosql.internals.config.generator.settings;
 
 import com.squareup.javapoet.TypeName;
-import wtf.metio.yosql.config.meta.ConfigurationGroup;
-import wtf.metio.yosql.config.meta.ConfigurationSetting;
-import wtf.metio.yosql.config.meta.options.DaoApiOptions;
+import wtf.metio.yosql.internals.meta.model.ConfigurationGroup;
+import wtf.metio.yosql.internals.meta.model.ConfigurationSetting;
+import wtf.metio.yosql.internals.meta.model.options.DaoApiOptions;
 
 public final class Api {
 
