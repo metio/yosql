@@ -13,6 +13,7 @@ import org.immutables.value.Value;
  * Configures the various Java language related options.
  */
 @Value.Immutable
+@Deprecated(forRemoval = true) // Use class "Java" instead
 public interface JavaConfiguration {
 
     static ImmutableJavaConfiguration.Builder builder() {
