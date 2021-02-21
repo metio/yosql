@@ -19,9 +19,4 @@ public interface ConfigurationGroup {
     String description();
     List<ConfigurationSetting> settings();
 
-    @Value.Derived
-    default String immutableName() {
-        return "Immutable" + name();
-    }
-
 }

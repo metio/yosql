@@ -18,6 +18,7 @@ import java.nio.file.Paths;
  * Configures the various file related options.
  */
 @Value.Immutable
+@Deprecated(forRemoval = true) // use "Files" class instead
 public interface FileConfiguration {
 
     static ImmutableFileConfiguration.Builder builder() {

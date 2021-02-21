@@ -35,7 +35,7 @@ public final class ImmutablesGenerator implements Generator {
     }
 
     private MethodSpec builder(final ConfigurationGroup group) {
-        final var configName = ClassName.get(basePackageName, group.immutableName());
+        final var configName = ClassName.get(basePackageName, "Immutable" + group.name());
         return MethodSpec.methodBuilder("builder")
                 .addJavadoc("@return Builder for new $L", group.name())
                 .addModifiers(Modifier.PUBLIC)
@@ -46,7 +46,7 @@ public final class ImmutablesGenerator implements Generator {
     }
 
     private MethodSpec usingDefaults(final ConfigurationGroup group) {
-        final var configName = ClassName.get(basePackageName, group.immutableName());
+        final var configName = ClassName.get(basePackageName, "Immutable" + group.name());
         return MethodSpec.methodBuilder("usingDefaults")
                 .addJavadoc("@return A file configuration using default values.")
                 .addModifiers(Modifier.PUBLIC)
