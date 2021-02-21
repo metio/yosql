@@ -18,6 +18,7 @@ public interface ConfigurationSetting {
 
     String name();
     TypeName type();
+    Optional<TypeName> mavenType();
     String description();
     Optional<Object> defaultValue();
 

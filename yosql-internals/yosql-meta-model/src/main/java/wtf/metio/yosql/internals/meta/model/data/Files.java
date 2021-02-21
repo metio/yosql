@@ -4,6 +4,8 @@ import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.internals.meta.model.ConfigurationGroup;
 import wtf.metio.yosql.internals.meta.model.ConfigurationSetting;
 
+import java.nio.file.Path;
+
 public final class Files {
 
     public static ConfigurationGroup configurationGroup() {
@@ -23,7 +25,8 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("inputBaseDirectory")
                 .setDescription("The input directory for the user written SQL files (default: <strong>src/main/yosql</strong>).")
-                .setType(TypeName.get(String.class))
+                .setType(TypeName.get(Path.class))
+                .setMavenType(TypeName.get(String.class))
                 .setDefaultValue("src/main/yosql")
                 .build();
     }
@@ -32,7 +35,8 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("outputBaseDirectory")
                 .setDescription("The output directory for the generated classes (default: <strong>generated-sources/yosql</strong>).")
-                .setType(TypeName.get(String.class))
+                .setType(TypeName.get(Path.class))
+                .setMavenType(TypeName.get(String.class))
                 .setDefaultValue("generated-sources/yosql")
                 .build();
     }

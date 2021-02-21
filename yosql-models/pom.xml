@@ -24,9 +24,9 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
+        <module>yosql-models-immutables</module>
         <module>yosql-models-ant</module>
         <module>yosql-models-cli</module>
-        <module>yosql-models-immutables</module>
         <module>yosql-models-maven</module>
     </modules>
 
