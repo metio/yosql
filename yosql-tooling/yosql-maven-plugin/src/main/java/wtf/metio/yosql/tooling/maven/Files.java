@@ -15,6 +15,7 @@ import java.nio.file.Path;
 /**
  * Configures how files are handled.
  */
+@Deprecated(forRemoval = true) // Use class w/ same name from modals-maven package.
 public class Files {
 
     /**

@@ -4,6 +4,7 @@ import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.internals.meta.model.ConfigurationGroup;
 import wtf.metio.yosql.internals.meta.model.ConfigurationSetting;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 public final class Files {
@@ -54,7 +55,8 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("sqlFilesCharset")
                 .setDescription("The charset to use while reading .sql files (default: <strong>UTF-8</strong>).")
-                .setType(TypeName.get(String.class))
+                .setType(TypeName.get(Charset.class))
+                .setMavenType(TypeName.get(String.class))
                 .setDefaultValue("UTF-8")
                 .build();
     }

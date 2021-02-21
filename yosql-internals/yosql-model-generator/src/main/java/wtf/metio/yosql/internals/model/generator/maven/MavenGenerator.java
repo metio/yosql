@@ -15,6 +15,10 @@ public final class MavenGenerator implements Generator {
 
     private final String immutablesBasePackage;
 
+    public MavenGenerator(final String immutablesBasePackage) {
+        this.immutablesBasePackage = immutablesBasePackage;
+    }
+
     @Override
     public TypeSpec apply(final ConfigurationGroup group) {
         final var builder = StandardClasses.openClass(ClassName.bestGuess(group.name()))
@@ -52,18 +56,14 @@ public final class MavenGenerator implements Generator {
                     .addParameter(ParameterSpec.builder(Path.class, "buildDirectory").addModifiers(Modifier.FINAL).build());
             configBuilder
                     .add(".setInputBaseDirectory(baseDirectory.resolve(inputBaseDirectory))\n")
-                    .add(".setOutputBaseDirectory(buildDirectory.resolve(outputBaseDirectory))\n");
-//                    .add(".setSqlFilesSuffix(sqlFilesSuffix)\n")
-//                    .add(".setSqlFilesCharset($T.forName(sqlFilesCharset))\n", Charset.class)
-//                    .add(".setSqlStatementSeparator(sqlStatementSeparator)\n")
-//                    .add(".setSkipLines(skipLines)\n");
+                    .add(".setOutputBaseDirectory(buildDirectory.resolve(outputBaseDirectory))\n")
+                    .add(".setSqlFilesSuffix(sqlFilesSuffix)\n")
+                    .add(".setSqlFilesCharset($T.forName(sqlFilesCharset))\n", Charset.class)
+                    .add(".setSqlStatementSeparator(sqlStatementSeparator)\n")
+                    .add(".setSkipLines(skipLines)\n");
         }
         configBuilder.add(".build()");
         return builder.addStatement(configBuilder.build()).build();
-    }
-
-    public MavenGenerator(final String immutablesBasePackage) {
-        this.immutablesBasePackage = immutablesBasePackage;
     }
 
 }

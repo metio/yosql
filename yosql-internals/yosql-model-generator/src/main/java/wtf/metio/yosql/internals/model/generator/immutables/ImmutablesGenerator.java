@@ -10,6 +10,7 @@ import wtf.metio.yosql.internals.meta.model.ConfigurationSetting;
 import wtf.metio.yosql.internals.model.generator.api.Generator;
 
 import javax.lang.model.element.Modifier;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,6 +82,8 @@ public final class ImmutablesGenerator implements Generator {
                 return CodeBlock.builder().add("return $S", value).build();
             } else if ("java.nio.file.Path".equals(typeName)) {
                 return CodeBlock.builder().add("return $T.get($S)", Paths.class, value).build();
+            } else if ("java.nio.charset.Charset".equals(typeName)) {
+                return CodeBlock.builder().add("return $T.forName($S)", Charset.class, value).build();
             } else if (value.getClass().isEnum()) {
                 return CodeBlock.of("return $T.$L", value.getClass(), value);
             } else if (setting.type().isPrimitive() || setting.type().isBoxedPrimitive()) {
