@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlStatement;
+import wtf.metio.yosql.tooling.codegen.sql.SqlStatement;
 import wtf.metio.yosql.tooling.codegen.test.ObjectMother;
 
 import java.nio.file.Paths;

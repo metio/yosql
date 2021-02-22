@@ -17,7 +17,7 @@ The `annotations` configuration can be used to control how `YoSQL` outputs annot
 ### Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation 
-for Maven](../tooling/maven).
+for Maven](../../tooling/maven).
 
 ```xml
   <build>
@@ -28,7 +28,7 @@ for Maven](../tooling/maven).
         <artifactId>yosql-maven-plugin</artifactId>
         <configuration>
           <annotations>
-            <configSetting>configValue</configSetting>
+            <configOption>configValue</configOption>
           </annotations>
         </configuration>
       </plugin>
@@ -39,7 +39,7 @@ for Maven](../tooling/maven).
 
 ### Gradle
 
-In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../tooling/gradle).
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../../tooling/gradle).
 
 ```groovy
 plugins {
@@ -48,7 +48,7 @@ plugins {
 
 yosql {
   annotations {
-    configSetting = configValue
+    configOption = configValue
   }
 }
 ```
@@ -56,14 +56,18 @@ yosql {
 ### Bazel
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for 
-Bazel](../tooling/bazel).
-
-TODO: info for bazel
+Bazel](../../tooling/bazel).
 
 ### CLI
 
-In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
+In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../../tooling/cli).
 
 ```shell
-$ yosql --annotations_configSetting=configValue
+$ yosql --annotations-config-option=configValue
+```
+
+As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
+
+```shell
+$ yosql --config-option=configValue
 ```

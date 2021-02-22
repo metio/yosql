@@ -17,7 +17,7 @@ The `repositories` configuration can be used to control how `YoSQL` outputs repo
 ### Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](../tooling/maven).
+for Maven](../../tooling/maven).
 
 ```xml
   <build>
@@ -28,7 +28,7 @@ for Maven](../tooling/maven).
         <artifactId>yosql-maven-plugin</artifactId>
         <configuration>
           <repositories>
-            <configSetting>configValue</configSetting>
+            <configOption>configValue</configOption>
           </repositories>
         </configuration>
       </plugin>
@@ -48,7 +48,7 @@ plugins {
 
 yosql {
   repositories {
-    configSetting = configValue
+    configOption = configValue
   }
 }
 ```
@@ -65,5 +65,11 @@ TODO: info for bazel
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
 
 ```shell
-$ yosql --repositories_configSetting=configValue
+$ yosql --repositories-config-option=configValue
+```
+
+As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
+
+```shell
+$ yosql --config-option=configValue
 ```

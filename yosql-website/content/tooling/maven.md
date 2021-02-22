@@ -72,7 +72,7 @@ mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html).
 
 ### Multiple Configurations
 
-In some cases it might be preferable to generate some repositories (TODO: link to glossary) with a specific set of configuration options while using another set for other repositories. There are several ways how this can be accomplished:
+In some cases it might be preferable to generate some repositories with a specific set of configuration options while using another set for other repositories. There are several ways how this can be accomplished:
 
 1. Place SQL files in different Maven modules.
 2. Use a single module with multiple `execution` configurations.

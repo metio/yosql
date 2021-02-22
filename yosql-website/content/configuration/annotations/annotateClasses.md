@@ -31,7 +31,7 @@ public class SomeRepository {
 
 ### Option: 'true'
 
-Changing the `annotateClasses` configuration option to `true` adds the `@Generated` annotation to every generated class. Its is possible to configure each value individually using other config options (TODO: link here?).
+Changing the `annotateClasses` configuration option to `true` adds the `@Generated` annotation to every generated class. Its is possible to configure each value individually using other config options.
 
 ```java
 package com.example.persistence;
@@ -59,12 +59,11 @@ public class SomeRepository {
 ### Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](../tooling/maven).
+for Maven](../../tooling/maven).
 
 ```xml
   <build>
     <plugins>
-      ...
       <plugin>
         <groupId>wtf.metio.yosql</groupId>
         <artifactId>yosql-maven-plugin</artifactId>
@@ -74,38 +73,35 @@ for Maven](../tooling/maven).
           </annotations>
         </configuration>
       </plugin>
-      ...
     </plugins>
   </build>
 ```
 
 ### Gradle
 
-In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../tooling/gradle).
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../../tooling/gradle).
 
 ```groovy
-apply plugin: 'yosql'
+plugins {
+  id("wtf.metio.yosql")
+}
 
 yosql {
-    annotations {
-        annotateClasses: true
-    }
+  annotations {
+    annotateClasses = true
+  }
 }
 ```
-
-TODO: info for kotlin
 
 ### Bazel
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](../tooling/bazel).
-
-TODO: info for bazel
+Bazel](../../tooling/bazel).
 
 ### CLI
 
-In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
+In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../../tooling/cli).
 
 ```shell
-$ yosql --annotations_annotateClasses=true
+$ yosql --annotations-annotate-classes=true
 ```

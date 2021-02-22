@@ -14,3 +14,4 @@ YoSQL supports the following logging frameworks and APIs:
 | [no-op](./no-op)           | ✔      |
 | thats-interesting          | ✘      |
 | System.Logger              | ✘      |
+| tinylog                    | ✘      |

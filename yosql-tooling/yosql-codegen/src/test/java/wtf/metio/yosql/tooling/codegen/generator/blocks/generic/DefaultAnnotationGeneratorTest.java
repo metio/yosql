@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.tooling.codegen.model.configuration.AnnotationConfiguration;
 
-import static wtf.metio.yosql.tooling.codegen.model.options.AnnotationClassOptions.ANNOTATION_API;
-import static wtf.metio.yosql.tooling.codegen.model.options.AnnotationClassOptions.PROCESSING_API;
-import static wtf.metio.yosql.tooling.codegen.model.options.AnnotationMemberOptions.ALL;
+import static wtf.metio.yosql.tooling.codegen.options.AnnotationClassOptions.ANNOTATION_API;
+import static wtf.metio.yosql.tooling.codegen.options.AnnotationClassOptions.PROCESSING_API;
+import static wtf.metio.yosql.tooling.codegen.options.AnnotationMemberOptions.ALL;
 
 @DisplayName("DefaultAnnotationGenerator")
 class DefaultAnnotationGeneratorTest {

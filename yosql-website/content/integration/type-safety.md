@@ -32,7 +32,7 @@ The type of the generated `userId` parameter will default to `java.lang.Object` 
 given. YoSQL does not parse your database schema, nor does it somehow infer the type of `userId` using some smart 
 algorithm. Instead, it relies on its users to do the work (sorry!).
 
-We can change the type of `userId` by adding a front matter to the statement that looks like this:
+You can change the type of `userId` by adding a front matter to the statement that looks like this:
 
 ```sql
 --

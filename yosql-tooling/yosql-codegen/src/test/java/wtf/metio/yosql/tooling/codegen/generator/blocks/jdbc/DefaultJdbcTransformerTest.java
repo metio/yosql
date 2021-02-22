@@ -10,7 +10,7 @@ package wtf.metio.yosql.tooling.codegen.generator.blocks.jdbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlConfiguration;
+import wtf.metio.yosql.tooling.codegen.sql.SqlConfiguration;
 
 import java.util.Collection;
 

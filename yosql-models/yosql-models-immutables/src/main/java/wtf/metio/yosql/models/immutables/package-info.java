@@ -8,7 +8,6 @@
  * The model used during code generation.
  */
 @Value.Style(
-        get = {"is*", "get*"},
         init = "set*",
         strictBuilder = true,
         jdkOnly = true

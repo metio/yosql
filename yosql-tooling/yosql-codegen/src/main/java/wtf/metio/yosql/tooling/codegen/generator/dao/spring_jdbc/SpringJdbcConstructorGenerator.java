@@ -13,7 +13,7 @@ import wtf.metio.yosql.tooling.codegen.generator.blocks.generic.GenericBlocks;
 import wtf.metio.yosql.tooling.codegen.generator.blocks.generic.Methods;
 import wtf.metio.yosql.tooling.codegen.generator.blocks.jdbc.JdbcNames;
 import wtf.metio.yosql.tooling.codegen.generator.blocks.jdbc.JdbcParameters;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlStatement;
+import wtf.metio.yosql.tooling.codegen.sql.SqlStatement;
 
 import java.util.List;
 

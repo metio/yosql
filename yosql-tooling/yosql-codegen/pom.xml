@@ -40,16 +40,6 @@
     <!-- https://maven.apache.org/pom.html#Dependencies -->
     <dependencies>
         <dependency>
-            <groupId>wtf.metio.yosql.internals</groupId>
-            <artifactId>yosql-test-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.internals</groupId>
-            <artifactId>yosql-generator-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>wtf.metio.yosql.models</groupId>
             <artifactId>yosql-models-immutables</artifactId>
             <version>${project.version}</version>

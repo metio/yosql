@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+  ~ directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+  ~ in the LICENSE file.
+  -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ordering follows https://maven.apache.org/developers/conventions/code.html#POM_Code_Convention -->
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                 PARENT                                  -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Inheritance -->
+    <parent>
+        <groupId>wtf.metio.yosql</groupId>
+        <artifactId>yosql</artifactId>
+        <version>0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               COORDINATES                               -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Maven_Coordinates -->
+
+    <groupId>wtf.metio.yosql.benchmarks</groupId>
+    <artifactId>yosql-benchmarks</artifactId>
+    <packaging>pom</packaging>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               INFORMATIONS                              -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#More_Project_Information -->
+    <name>YoSQL :: Benchmarks</name>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                  MODULES                                -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Aggregation -->
+    <modules>
+        <module>yosql-benchmarks-codegen</module>
+        <module>yosql-benchmarks-ebean</module>
+        <module>yosql-benchmarks-jdbc</module>
+        <module>yosql-benchmarks-jdbi</module>
+        <module>yosql-benchmarks-jooq</module>
+        <module>yosql-benchmarks-jpa</module>
+        <module>yosql-benchmarks-r2dbc</module>
+        <module>yosql-benchmarks-spring-data-jdbc</module>
+        <module>yosql-benchmarks-spring-jdbc</module>
+        <module>yosql-benchmarks-common-scenarios</module>
+        <module>yosql-benchmarks-vs-ebean</module>
+        <module>yosql-benchmarks-vs-jdbi</module>
+        <module>yosql-benchmarks-vs-jooq</module>
+        <module>yosql-benchmarks-vs-jpa</module>
+    </modules>
+
+</project>

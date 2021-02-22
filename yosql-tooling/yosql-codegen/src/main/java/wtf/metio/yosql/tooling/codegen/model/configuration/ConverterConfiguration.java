@@ -8,7 +8,7 @@
 package wtf.metio.yosql.tooling.codegen.model.configuration;
 
 import org.immutables.value.Value;
-import wtf.metio.yosql.tooling.codegen.model.sql.ResultRowConverter;
+import wtf.metio.yosql.tooling.codegen.sql.ResultRowConverter;
 
 import java.util.Set;
 

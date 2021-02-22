@@ -11,9 +11,9 @@ import ch.qos.cal10n.MessageConveyor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.tooling.codegen.model.configuration.RuntimeConfiguration;
-import wtf.metio.yosql.tooling.codegen.model.errors.ExecutionErrors;
-import wtf.metio.yosql.tooling.codegen.model.sql.ReturningMode;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlType;
+import wtf.metio.yosql.tooling.codegen.errors.ExecutionErrors;
+import wtf.metio.yosql.tooling.codegen.sql.ReturningMode;
+import wtf.metio.yosql.tooling.codegen.sql.SqlType;
 import wtf.metio.yosql.tooling.codegen.test.ObjectMother;
 
 import java.nio.file.Paths;

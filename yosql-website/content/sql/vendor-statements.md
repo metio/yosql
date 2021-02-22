@@ -10,7 +10,7 @@ tags:
   - Vendor
 ---
 
-Vendor specific statements are support as well. Just add a *vendor* key to your front-matter like this:
+Vendor specific statements are support. Just add a *vendor* key to your front-matter like this:
 
 ```sql
 -- name: findUsers

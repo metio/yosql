@@ -15,7 +15,7 @@ import wtf.metio.yosql.tooling.codegen.generator.blocks.generic.Fields;
 import wtf.metio.yosql.tooling.codegen.generator.blocks.generic.Javadoc;
 import wtf.metio.yosql.tooling.codegen.generator.blocks.jdbc.JdbcFields;
 import wtf.metio.yosql.tooling.codegen.generator.blocks.jdbc.JdbcNames;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlStatement;
+import wtf.metio.yosql.tooling.codegen.sql.SqlStatement;
 
 import java.util.List;
 

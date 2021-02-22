@@ -10,6 +10,7 @@ tags:
   - CLI
 ---
 
-1. Download the latest release
-2. Write .sql files in a directory of your choice (e.g. `/path/to/your/sql/files`)
-3. Call `java -jar yosql-cli.jar --inputBaseDirectory /path/to/your/sql/files --outputBaseDirectory /output/path`
+
+1. Download the `yosql-tooling-cli` binary.
+2. Write .sql files in a directory of your choice (e.g. `/path/to/your/sql/files`).
+3. Call `yosql --inputBaseDirectory /path/to/your/sql/files`.

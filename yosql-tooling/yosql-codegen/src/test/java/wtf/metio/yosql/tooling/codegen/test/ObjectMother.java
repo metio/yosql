@@ -14,10 +14,10 @@ import wtf.metio.yosql.tooling.codegen.generator.api.*;
 import wtf.metio.yosql.tooling.codegen.generator.blocks.generic.*;
 import wtf.metio.yosql.tooling.codegen.generator.blocks.jdbc.*;
 import wtf.metio.yosql.tooling.codegen.model.configuration.RuntimeConfiguration;
-import wtf.metio.yosql.tooling.codegen.model.sql.ResultRowConverter;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlConfiguration;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlParameter;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlStatement;
+import wtf.metio.yosql.tooling.codegen.sql.ResultRowConverter;
+import wtf.metio.yosql.tooling.codegen.sql.SqlConfiguration;
+import wtf.metio.yosql.tooling.codegen.sql.SqlParameter;
+import wtf.metio.yosql.tooling.codegen.sql.SqlStatement;
 
 import java.nio.file.Paths;
 import java.util.List;

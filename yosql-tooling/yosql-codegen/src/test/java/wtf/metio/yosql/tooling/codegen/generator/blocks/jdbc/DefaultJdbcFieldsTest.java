@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.tooling.codegen.model.configuration.JdbcConfiguration;
-import wtf.metio.yosql.tooling.codegen.model.sql.SqlConfiguration;
+import wtf.metio.yosql.tooling.codegen.sql.SqlConfiguration;
 
 @DisplayName("DefaultJdbcFields")
 class DefaultJdbcFieldsTest {

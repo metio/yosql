@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.tooling.codegen.generator.helpers.TypicalTypes;
+import wtf.metio.yosql.tooling.codegen.utils.TypicalTypes;
 import wtf.metio.yosql.tooling.codegen.model.configuration.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.codegen.test.ObjectMother;
 

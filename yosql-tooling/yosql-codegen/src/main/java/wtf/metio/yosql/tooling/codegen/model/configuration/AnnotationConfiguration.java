@@ -8,8 +8,8 @@
 package wtf.metio.yosql.tooling.codegen.model.configuration;
 
 import org.immutables.value.Value;
-import wtf.metio.yosql.tooling.codegen.model.options.AnnotationClassOptions;
-import wtf.metio.yosql.tooling.codegen.model.options.AnnotationMemberOptions;
+import wtf.metio.yosql.tooling.codegen.options.AnnotationClassOptions;
+import wtf.metio.yosql.tooling.codegen.options.AnnotationMemberOptions;
 
 /**
  * Configures the annotation related options.

@@ -8,8 +8,8 @@
 package wtf.metio.yosql.tooling.codegen.model.configuration;
 
 import org.immutables.value.Value;
-import wtf.metio.yosql.tooling.codegen.model.options.DaoApiOptions;
-import wtf.metio.yosql.tooling.codegen.model.options.LoggingApiOptions;
+import wtf.metio.yosql.tooling.codegen.options.DaoApiOptions;
+import wtf.metio.yosql.tooling.codegen.options.LoggingApiOptions;
 
 /**
  * Configures the various API related options.

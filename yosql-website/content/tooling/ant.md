@@ -10,7 +10,8 @@ tags:
   - Ant
 ---
 
-1. Download the `yosql-ant-task`
-2. Define custom task based on that jar
-3. Point task to your SQL statements
-4. Generate Java code to call your SQL statements
+1. Download the `yosql-tooling-ant` task jar file.
+2. Define a custom task based on that jar.
+3. Write .sql files in a directory of your choice (e.g. `/path/to/your/sql/files`).
+4. Point the task to your SQL statements.
+5. Execute your task in order to generate Java code to call your SQL statements.
