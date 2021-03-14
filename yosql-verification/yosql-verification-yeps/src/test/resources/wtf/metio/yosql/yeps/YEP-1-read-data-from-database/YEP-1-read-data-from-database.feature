@@ -8,7 +8,7 @@ Feature: Read data from a database
   The JDBC implementation for example uses the 'executeQuery'
   method of a 'PreparedStatement'.
 
-  @YEP-1-0-0 @JDBC
+  @YEP-1-0 @YEP-1-0-0 @JDBC
   Scenario: Using YoSQL's default configuration and the JDBC API
     Given the JDBC API is used
     And YoSQL uses its defaults configuration
