@@ -45,8 +45,6 @@ tags:
 
 3. Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
 
-TODO: add `yosql;repositories`, `yosql;utilities`, `yosql;converters`, etc. goals as well?
-
 ## Configuration
 
 You can configure how YoSQL operates and how the generated code looks like by using the [default Maven configuration 
