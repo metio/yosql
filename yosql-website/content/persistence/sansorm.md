@@ -1,5 +1,5 @@
 ---
-title: jOOQ
+title: SansOrm
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
@@ -7,10 +7,10 @@ menu:
 categories:
   - Persistence
 tags:
-  - jOOQ
+  - SansOrm
 ---
 
-The `jOOQ` based implementation. It uses the `DSLContext` class to execute SQL statements and map results to your domain objects.
+The `SansOrm` based implementation.
 
 | Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
 |------|-------|------|-------------|--------|--------------|-------------|

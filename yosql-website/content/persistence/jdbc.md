@@ -5,7 +5,7 @@ menu:
   main:
     parent: Persistence APIs
 categories:
-  - DAO
+  - Persistence
 tags:
   - JDBC
 ---

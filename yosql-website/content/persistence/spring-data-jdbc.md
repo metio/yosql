@@ -5,10 +5,11 @@ menu:
   main:
     parent: Persistence APIs
 categories:
-  - DAO
+  - Persistence
 tags:
   - JDBC
   - Spring-Data
+  - Spring
 ---
 
 The `spring-data-jdbc` based implementation. It generates Spring-Data repository interfaces that use the entire SQL statements as annotation value.

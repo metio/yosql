@@ -1,5 +1,5 @@
 ---
-title: jOOQ
+title: Fluent JDBC
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
@@ -7,10 +7,10 @@ menu:
 categories:
   - Persistence
 tags:
-  - jOOQ
+  - Fluent JDBC
 ---
 
-The `jOOQ` based implementation. It uses the `DSLContext` class to execute SQL statements and map results to your domain objects.
+The `EBean` based implementation.
 
 | Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
 |------|-------|------|-------------|--------|--------------|-------------|
