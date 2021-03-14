@@ -8,11 +8,20 @@ menu: main
 
 | Name                                      | Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
 |-------------------------------------------|------|-------|------|-------------|--------|--------------|-------------|
+| [EBean](./ebean)                          | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Fluent JDBC](./fluent-jdbc)              | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
 | [JDBC](./jdbc)                            | ✔    | ✔     | ✔    | ✔           | ✔      | ✔            | ✔           |
-| [Spring-JDBC](./spring-jdbc)              | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
-| [Spring-Data JDBC](./spring-data-jdbc)    | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [JDBI](./jdbi)                            | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
 | [jOOQ](./jooq)                            | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
 | [JPA](./jpa)                              | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
-
-- TODO: https://github.com/eclipse-vertx/vertx-sql-client
-- TODO: https://www.sql2o.org/
+| [MyBatis](./mybatis)                      | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Pyranid](./pyranid)                      | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [R22DBC](./r2dbc)                         | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [SansOrm](./sansorm)                      | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Spring-Data JDBC](./spring-data-jdbc)    | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Spring-Data JPA](./spring-data-jpa)      | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Spring-Data R2DBC](./spring-data-r2dbc)  | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Spring-JDBC](./spring-jdbc)              | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Sql2o](./sql2o)                          | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Vert.x PG Client](./vertx-pg-client)     | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
+| [Vert.x JDBC Client](./vertx-jdbc-client) | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
