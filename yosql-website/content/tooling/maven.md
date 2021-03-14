@@ -58,9 +58,9 @@ mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html).
             <groupId>wtf.metio.yosql</groupId>
             <artifactId>yosql-maven-plugin</artifactId>
             <configuration>
-              <repositories>
-                <basePackageName>your.domain.persistence</basePackageName>
-              </repositories>
+              <configGroup>
+                <configOption>configValue</configOption>
+              </configGroup>
             </configuration>
         </plugin>
         ...

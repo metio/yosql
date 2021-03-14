@@ -25,7 +25,7 @@ date: 2020-04-13
 
 ### Developer friendly
 
-No magic involved - `YoSQL` generates code that is easy to read and debug. Step-through in case you encounter an error or use the extensive logging capabilities of `YoSQL` to monitor both code generation and SQL execution. No hidden `SELECT` statements or opened transactions, developers using `YoSQL` are 100% in control on how their SQL statements are executed. Get started quickly in under a minute (not reading this included): Just add the appropriate plugin to your project, and you are good to go.
+No magic involved - `YoSQL` generates code that is easy to read and debug. Step-through in case you encounter an error or use the extensive logging capabilities of `YoSQL` to monitor both code generation and SQL execution. No hidden SELECT statements or opened transactions, developers using `YoSQL` are 100% in control on how their SQL statements are executed. Get started quickly in under a minute (not reading this included): Just add the appropriate plugin to your project, and you are good to go.
 
 ## Usage
 
