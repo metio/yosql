@@ -1,10 +1,10 @@
 ---
-title: APIs
+title: Persistence APIs
 date: 2020-04-13
 menu: main
 ---
 
-`YoSQL` supports the following APIs to interact with a database:
+`YoSQL` supports the following persistence APIs to interact with a database:
 
 | Name                                      | Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
 |-------------------------------------------|------|-------|------|-------------|--------|--------------|-------------|
@@ -14,6 +14,5 @@ menu: main
 | [jOOQ](./jooq)                            | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
 | [JPA](./jpa)                              | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
 
-- https://github.com/eclipse-vertx/vertx-sql-client
-- TODO: https://github.com/speedment/speedment
+- TODO: https://github.com/eclipse-vertx/vertx-sql-client
 - TODO: https://www.sql2o.org/
