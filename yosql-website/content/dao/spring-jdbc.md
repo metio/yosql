@@ -1,5 +1,5 @@
 ---
-title: jOOQ
+title: Spring-JDBC
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
@@ -7,10 +7,11 @@ menu:
 categories:
   - DAO
 tags:
-  - jOOQ
+  - JDBC
+  - Spring
 ---
 
-The `jOOQ` based implementation. It uses the `DSLContext` class to execute SQL statements and map results to your domain objects.
+The `spring-jdbc` based implementation. It uses the `JdbcTemplate` or `NamedParameterJdbcTemplate` class to execute SQL staements and map result to your domain objects.
 
 | Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
 |------|-------|------|-------------|--------|--------------|-------------|

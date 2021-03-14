@@ -10,4 +10,8 @@ tags:
   - JPA
 ---
 
-The `JPA` based implementation.
+The `JPA` based implementation. It uses the `EntityManager` class to execute SQL statements and map results to your domain objects.
+
+| Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
+|------|-------|------|-------------|--------|--------------|-------------|
+| ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
