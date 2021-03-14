@@ -14,7 +14,7 @@ tags:
 
 `YoSQL` supports several reactive APIs like **rxJava** or **reactor**.
 
-The `yosql-maven-plugin` automatically enables reactive methods like the following in case a reactive API was detected as a dependency of the current project.
+The `yosql-tooling-maven` plugin for Maven automatically enables reactive methods like the following in case a reactive API was detected as a dependency of the current project.
 
 ```java
 // lazily loads all rows in a stateful flow which closes automatically
