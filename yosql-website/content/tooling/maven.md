@@ -48,7 +48,7 @@ tags:
 ## Configuration
 
 You can configure how YoSQL operates and how the generated code looks like by using the [default Maven configuration 
-mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html). Take a look at the [available configuration options](../configuration/) in order to see what can be configured.
+mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html). Take a look at the [available configuration options](../../configuration/) in order to see what can be configured.
 
 ```xml
 <build>

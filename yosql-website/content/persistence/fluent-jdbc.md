@@ -10,7 +10,7 @@ tags:
   - Fluent JDBC
 ---
 
-The `EBean` based implementation.
+The `Fluent JDBC` based implementation.
 
 | Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
 |------|-------|------|-------------|--------|--------------|-------------|

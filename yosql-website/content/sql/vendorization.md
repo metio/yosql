@@ -1,5 +1,5 @@
 ---
-title: Vendor Statements
+title: Vendorization
 date: 2019-06-16T18:51:18+02:00
 menu:
   main:
@@ -7,6 +7,7 @@ menu:
 categories:
   - SQL 
 tags:
+  - Vendorization
   - Vendor
 ---
 

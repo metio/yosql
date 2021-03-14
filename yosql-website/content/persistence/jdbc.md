@@ -11,7 +11,3 @@ tags:
 ---
 
 The `javax.sql` based implementation. It does not require any dependencies outside from standard JDK classes.
-
-| Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
-|------|-------|------|-------------|--------|--------------|-------------|
-| ✔    | ✔     | ✔    | ✔           | ✔      | ✔            | ✔           |

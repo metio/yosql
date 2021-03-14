@@ -1,5 +1,5 @@
 ---
-title: Write Sql Files
+title: SQL Files
 date: 2019-06-16T18:33:06+02:00
 menu:
   main:
