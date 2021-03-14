@@ -7,7 +7,7 @@ menu:
 categories:
   - Persistence
 tags:
-  - Sql2o
+  - sql2o
 ---
 
 The `Sql2o` based implementation.

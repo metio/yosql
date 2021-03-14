@@ -7,8 +7,8 @@ menu:
 categories:
   - SQL 
 tags:
-  - Vendorization
-  - Vendor
+  - vendorization
+  - vendor
 ---
 
 Vendor specific statements are support. Just add a *vendor* key to your front-matter like this:

@@ -3,10 +3,11 @@ title: Converters
 date: 2019-07-07T14:29:29+02:00
 menu:
   main:
-    parent: Integration
+    parent: SQL
 categories:
-  - Integration
+  - SQL
 tags:
+  - converters
   - results
 ---
 

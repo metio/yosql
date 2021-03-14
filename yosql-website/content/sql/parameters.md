@@ -1,13 +1,14 @@
 ---
-title: Type Safety
+title: Parameters
 date: 2019-06-16T18:53:54+02:00
 menu:
   main:
-    parent: Integration
+    parent: SQL
 categories:
-  - Integration
+  - SQL
 tags:
   - parameters
+  - converters
 ---
 
 ```
