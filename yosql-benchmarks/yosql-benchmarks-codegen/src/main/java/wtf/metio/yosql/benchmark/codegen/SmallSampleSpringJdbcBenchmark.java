@@ -8,7 +8,6 @@ package wtf.metio.yosql.benchmark.codegen;
 
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.ApiConfiguration;
-import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
  * JMH based micro benchmark for YoSQL using Spring-JDBC as persistence API.
@@ -16,10 +15,8 @@ import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 public class SmallSampleSpringJdbcBenchmark extends AbstractSmallSampleBenchmark {
 
     @Override
-    protected RuntimeConfiguration runtimeConfiguration() {
-        return RuntimeConfiguration.usingDefaults()
-                .setApi(ApiConfiguration.usingDefaults().setDaoApi(PersistenceApis.SPRING_JDBC).build())
-                .build();
+    protected ApiConfiguration apiConfig() {
+        return ApiConfiguration.usingDefaults().setDaoApi(PersistenceApis.SPRING_JDBC).build();
     }
 
 }

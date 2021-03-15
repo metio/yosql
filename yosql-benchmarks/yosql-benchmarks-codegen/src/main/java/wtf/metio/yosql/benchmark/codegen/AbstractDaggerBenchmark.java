@@ -7,7 +7,11 @@
 package wtf.metio.yosql.benchmark.codegen;
 
 import org.openjdk.jmh.annotations.Setup;
+import wtf.metio.yosql.models.immutables.ApiConfiguration;
+import wtf.metio.yosql.models.immutables.FilesConfiguration;
+import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
 import java.util.Locale;
@@ -18,11 +22,30 @@ abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
     public final void setUpYoSQL() {
         yosql = DaggerYoSQLComponent.builder()
                 .locale(Locale.ENGLISH)
-                .runtimeConfiguration(runtimeConfiguration())
+                .runtimeConfiguration(config())
                 .build()
                 .yosql();
     }
 
-    protected abstract RuntimeConfiguration runtimeConfiguration();
+    private RuntimeConfiguration config() {
+        final var jdbcDefaults = JdbcConfiguration.usingDefaults().build();
+        return RuntimeConfiguration.usingDefaults()
+                .setFiles(FilesConfiguration.usingDefaults()
+                        .setInputBaseDirectory(inputDirectory)
+                        .setOutputBaseDirectory(outputDirectory)
+                        .build())
+                .setApi(apiConfig())
+                .setJdbc(jdbcDefaults.withDefaultConverter(ResultRowConverter.builder()
+                        .setAlias("resultRow")
+                        .setConverterType(jdbcDefaults.utilityPackageName() + ".ToResultRowConverter")
+                        .setMethodName("asUserType")
+                        .setResultType(jdbcDefaults.utilityPackageName() + "." + jdbcDefaults.resultRowClassName())
+                        .build()))
+                .build();
+    }
+
+    protected ApiConfiguration apiConfig() {
+        return ApiConfiguration.usingDefaults().build();
+    }
 
 }

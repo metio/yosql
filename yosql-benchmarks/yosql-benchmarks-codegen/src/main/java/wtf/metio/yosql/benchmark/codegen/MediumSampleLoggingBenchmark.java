@@ -8,7 +8,6 @@ package wtf.metio.yosql.benchmark.codegen;
 
 import wtf.metio.yosql.models.constants.api.LoggingApis;
 import wtf.metio.yosql.models.immutables.ApiConfiguration;
-import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
  * JMH based micro benchmark for YoSQL using a logging-enabled configuration.
@@ -16,10 +15,8 @@ import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 public class MediumSampleLoggingBenchmark extends AbstractMediumSampleBenchmark {
 
     @Override
-    protected RuntimeConfiguration runtimeConfiguration() {
-        return RuntimeConfiguration.usingDefaults()
-                .setApi(ApiConfiguration.usingDefaults().setLoggingApi(LoggingApis.JUL).build())
-                .build();
+    protected ApiConfiguration apiConfig() {
+        return ApiConfiguration.usingDefaults().setLoggingApi(LoggingApis.JUL).build();
     }
 
 }

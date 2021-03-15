@@ -6,16 +6,9 @@
  */
 package wtf.metio.yosql.benchmark.codegen;
 
-import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
-
 /**
  * JMH based micro benchmark for YoSQL using the default configuration.
  */
 public class LargeSampleDefaultsBenchmark extends AbstractLargeSampleBenchmark {
-
-    @Override
-    protected RuntimeConfiguration runtimeConfiguration() {
-        return RuntimeConfiguration.usingDefaults().build();
-    }
 
 }

@@ -59,6 +59,10 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -82,7 +86,7 @@
                             <forks>1</forks>
                             <warmupForks>1</warmupForks>
                             <threads>1</threads>
-                            <mode>thrpt</mode>
+                            <mode>avgt</mode>
                             <timeUnit>s</timeUnit>
                             <measurementTime>1s</measurementTime>
                             <warmupTime>1s</warmupTime>

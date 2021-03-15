@@ -20,7 +20,7 @@ abstract class AbstractLargeSampleBenchmark extends AbstractDaggerBenchmark {
      */
     @Setup
     public final void generateSqlFiles() throws IOException {
-        prepareRepositoriesForAllUseCases(500);
+        prepareRepositoriesForAllUseCases(250);
     }
 
 }
