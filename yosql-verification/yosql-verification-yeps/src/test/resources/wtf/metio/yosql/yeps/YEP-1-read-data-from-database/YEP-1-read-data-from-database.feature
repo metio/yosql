@@ -10,7 +10,7 @@ Feature: Read data from a database
 
   @YEP-1-0 @YEP-1-0-0 @JDBC
   Scenario: Using YoSQL's default configuration and the JDBC API
-    Given the JDBC API is used
-    And YoSQL uses its defaults configuration
+    Given YoSQL uses its defaults configuration
+    And JDBC persistence is used
     When an SQL statement gets converted to a read method
     Then the generated methods looks as expected

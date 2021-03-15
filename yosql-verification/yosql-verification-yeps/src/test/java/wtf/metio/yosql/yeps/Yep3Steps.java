@@ -4,8 +4,15 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
+package wtf.metio.yosql.yeps;
 
-package wtf.metio.yosql.state;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
-public final class DatabaseState {
+/**
+ * Defines steps for YEP-3.
+ */
+public final class Yep3Steps {
+
 }

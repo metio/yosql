@@ -11,8 +11,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 /**
- * Defines steps for YEP-2.
+ * Defines steps for YEP-5.
  */
-public final class Yep2Steps {
+public final class Yep5Steps {
 
 }

@@ -47,6 +47,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>6.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <scope>test</scope>
@@ -62,6 +68,56 @@
             <version>6.10.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.models</groupId>
+            <artifactId>yosql-models-immutables</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>wtf.metio.yosql.tooling</groupId>
+                <artifactId>yosql-tooling-maven</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <files>
+                        <inputBaseDirectory>src/test/yosql/ALL</inputBaseDirectory>
+                        <outputBaseDirectory>target/generated-test-sources/yosql</outputBaseDirectory>
+                        <skipLines>6</skipLines>
+                    </files>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-test-sources/yosql</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

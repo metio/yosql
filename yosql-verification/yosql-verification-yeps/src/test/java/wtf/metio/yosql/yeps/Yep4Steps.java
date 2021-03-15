@@ -6,13 +6,17 @@
  */
 package wtf.metio.yosql.yeps;
 
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 /**
- * Defines steps for YEP-2.
+ * Defines steps for YEP-4.
  */
-public final class Yep2Steps {
+public final class Yep4Steps {
+
+    @When("an SQL statement gets converted to a write method")
+    public void an_sql_statement_gets_converted_to_a_write_method() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
 
 }

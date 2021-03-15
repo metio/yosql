@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 public class DataSources {
 
     public static DataSource createDataSource(final int yep) {
-        HikariDataSource dataSource = new HikariDataSource();
+        final var dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:h2:mem:YEP-" + yep);
         dataSource.setUsername("sa");
         dataSource.setMinimumIdle(1);

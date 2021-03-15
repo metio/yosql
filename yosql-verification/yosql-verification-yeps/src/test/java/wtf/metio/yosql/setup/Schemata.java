@@ -7,20 +7,16 @@
 
 package wtf.metio.yosql.setup;
 
+import com.example.persistence.SchemaRepository;
+
 import javax.sql.DataSource;
 
 public class Schemata {
 
-    public static void initSchema(DataSource dataSource) {
-//    final var schemaRepository = new SchemaRepository(dataSource);
-//    schemaRepository.dropCompaniesTable();
-//    schemaRepository.dropItemsTable();
-//    schemaRepository.dropPersonsTable();
-//    schemaRepository.createCompaniesTable();
-//    schemaRepository.createCompaniesTable();
-//    schemaRepository.createPersonsTable();
-//    schemaRepository.createPersonsTable2();
-//    repository.writePerson(1, "YEP-1");
+    public static void initSchema(final DataSource dataSource) {
+        final var schemaRepository = new SchemaRepository(dataSource);
+        schemaRepository.dropTables();
+        schemaRepository.createTables();
     }
 
 }
