@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.81.0">Hugo</generator><title type="html">Bazel on YoSQL - write more SQL</title><link href="https://yosql.projects.metio.wtf/tags/bazel/" rel="alternate" type="text/html" title="HTML"/><link href="https://yosql.projects.metio.wtf/tags/bazel/index.xml" rel="alternate" type="application/rss+xml" title="RSS"/><link href="https://yosql.projects.metio.wtf/tags/bazel/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2021-03-15T22:14:22+00:00</updated><id>https://yosql.projects.metio.wtf/tags/bazel/</id><entry><title type="html">Bazel</title><link href="https://yosql.projects.metio.wtf/tooling/bazel/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/bazel/</id><published>2019-06-16T18:22:51+02:00</published><updated>2019-06-16T18:22:51+02:00</updated><content type="html"><![CDATA[<p><a href="https://bazel.build/">bazel</a> users can use the <code>yosql-cli</code> in their builds by following the steps. Replace placeholders with values from the actual release notes.</p>
+<ol>
+<li>Add git repository to your <code>WORKSPACE</code>:</li>
+</ol>
+<pre><code>git_repository(
+    name = &quot;yosql&quot;,
+    remote = &quot;https://github.com/metio/yosql.git&quot;,
+    tag = &quot;0.0.1-bazel&quot;,
+)
+</code></pre><ol start="2">
+<li>Write .sql files in a directory of your choice (e.g. <code>persistence</code>)</li>
+</ol>
+<pre><code>project/
+├── WORKSPACE
+├── BUILD
+└── persistence/   
+    └── user/
+        ├── findUser.sql
+        └── addUser.sql
+    └── item/
+        ├── queryAllItems.sql
+        └── createItemTable.sql
+</code></pre><ol start="3">
+<li>Declare a <code>filegroup</code> that contains all of your SQL files:</li>
+</ol>
+<pre><code>filegroup(
+  name = &quot;your-sql-files&quot;,
+  srcs = glob([&quot;persistence/**/*.sql&quot;]),
+)
+</code></pre><ol start="4">
+<li>Generate utilities first since they dont change that often:</li>
+</ol>
+<pre><code>genrule(
+  name = &quot;your-utilities&quot;,
+  srcs = [&quot;:your-sql-files&quot;],
+  outs = [
+    &quot;com/example/persistence/util/ResultRow.java&quot;,
+    &quot;com/example/persistence/util/ResultState.java&quot;,
+    &quot;com/example/persistence/util/FlowState.java&quot;,
+  ],
+  cmd = &quot;&quot;&quot;
+    $(location @yosql//yosql-cli) generate utilities
+  &quot;&quot;&quot;,
+  tools = [&quot;@yosql//yosql-cli&quot;],
+)
+</code></pre><ol start="5">
+<li>Generate converters next, in order to connect user code to repositories</li>
+</ol>
+<pre><code>genrule(
+  name = &quot;your-converters&quot;,
+  srcs = [&quot;:your-sql-files&quot;],
+  outs = [
+    &quot;com/example/persistence/converter/ToResultRowConverter.java&quot;,
+  ],
+  cmd = &quot;&quot;&quot;
+    $(location @yosql//yosql-cli) generate converters
+  &quot;&quot;&quot;,
+  tools = [&quot;@yosql//yosql-cli&quot;],
+)
+</code></pre><ol start="6">
+<li>Generate repositories last, since they&rsquo;ll change everytime a SQL file changes as well:</li>
+</ol>
+<pre><code>genrule(
+  name = &quot;your-repositories&quot;,
+  srcs = [&quot;:your-sql-files&quot;],
+  outs = [
+    &quot;com/example/persistence/UserRepository.java&quot;,
+    &quot;com/example/persistence/ItemRepository.java&quot;,
+  ],
+  cmd = &quot;&quot;&quot;
+    $(location @yosql//yosql-cli) generate repositories
+  &quot;&quot;&quot;,
+  tools = [&quot;@yosql//yosql-cli&quot;],
+)
+</code></pre><ol start="8">
+<li>Depend on the generated sources by using the target name of the generated code in the <code>srcs</code> of another rule.</li>
+</ol>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/bazel" term="bazel" label="Bazel"/></entry></feed>

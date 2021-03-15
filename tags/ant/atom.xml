@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.81.0">Hugo</generator><title type="html">Ant on YoSQL - write more SQL</title><link href="https://yosql.projects.metio.wtf/tags/ant/" rel="alternate" type="text/html" title="HTML"/><link href="https://yosql.projects.metio.wtf/tags/ant/index.xml" rel="alternate" type="application/rss+xml" title="RSS"/><link href="https://yosql.projects.metio.wtf/tags/ant/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2021-03-15T22:14:22+00:00</updated><id>https://yosql.projects.metio.wtf/tags/ant/</id><entry><title type="html">Ant</title><link href="https://yosql.projects.metio.wtf/tooling/ant/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/ant/</id><published>2019-06-16T18:23:45+02:00</published><updated>2019-06-16T18:23:45+02:00</updated><content type="html"><![CDATA[<ol>
+<li>Download the <code>yosql-tooling-ant</code> task jar file.</li>
+<li>Define a custom task based on that jar.</li>
+<li>Write .sql files in a directory of your choice (e.g. <code>/path/to/your/sql/files</code>).</li>
+<li>Point the task to your SQL statements.</li>
+<li>Execute your task in order to generate Java code to call your SQL statements.</li>
+</ol>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/ant" term="ant" label="Ant"/></entry></feed>
