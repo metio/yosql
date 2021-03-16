@@ -15,6 +15,7 @@ import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.dao.jdbc.*;
 import wtf.metio.yosql.codegen.logging.Generator;
+import wtf.metio.yosql.dao.jdbc.utilities.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
@@ -161,6 +162,21 @@ public class JdbcDaoModule {
                 logging,
                 jdbc,
                 jdbcTransformer,
+                runtimeConfiguration.jdbc());
+    }
+
+    @Provides
+    UtilitiesGenerator provideUtilitiesGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
+            final FlowStateGenerator flowStateGenerator,
+            final ResultStateGenerator resultStateGenerator,
+            final ToResultRowConverterGenerator toResultRowConverterGenerator,
+            final ResultRowGenerator resultRowGenerator) {
+        return new JdbcUtilitiesGenerator(
+                flowStateGenerator,
+                resultStateGenerator,
+                toResultRowConverterGenerator,
+                resultRowGenerator,
                 runtimeConfiguration.jdbc());
     }
 

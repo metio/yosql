@@ -17,7 +17,6 @@ import wtf.metio.yosql.codegen.blocks.DefaultCodeGenerator;
 import wtf.metio.yosql.tooling.dagger.codegen.blocks.DefaultGenericBlocksModule;
 import wtf.metio.yosql.tooling.dagger.codegen.dao.DefaultDaoModule;
 import wtf.metio.yosql.tooling.dagger.codegen.logging.DefaultLoggingModule;
-import wtf.metio.yosql.tooling.dagger.codegen.utilities.DefaultUtilitiesModule;
 
 import javax.inject.Singleton;
 
@@ -27,7 +26,6 @@ import javax.inject.Singleton;
 @Module(includes = {
         DefaultGenericBlocksModule.class,
         DefaultDaoModule.class,
-        DefaultUtilitiesModule.class,
         DefaultLoggingModule.class
 })
 public class DefaultCodeGeneratorModule {
