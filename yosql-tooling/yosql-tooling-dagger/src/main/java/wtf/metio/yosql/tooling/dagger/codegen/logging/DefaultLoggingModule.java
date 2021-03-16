@@ -11,11 +11,9 @@ import dagger.Provides;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.logging.api.DelegatingLoggingGenerator;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
-import wtf.metio.yosql.logging.jul.JUL;
-import wtf.metio.yosql.logging.log4j.Log4j;
-import wtf.metio.yosql.logging.noop.NoOp;
-import wtf.metio.yosql.logging.slf4j.Slf4j;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+
+import java.util.Set;
 
 /**
  * Dagger module for the logging API.
@@ -32,16 +30,10 @@ public class DefaultLoggingModule {
     @Delegating
     public LoggingGenerator provideLoggingGenerator(
             final RuntimeConfiguration runtime,
-            final @JUL LoggingGenerator julLoggingGenerator,
-            final @Log4j LoggingGenerator log4jLoggingGenerator,
-            final @Slf4j LoggingGenerator slf4jLoggingGenerator,
-            final @NoOp LoggingGenerator noOpLoggingGenerator) {
+            final Set<LoggingGenerator> loggingGenerators) {
         return new DelegatingLoggingGenerator(
                 runtime.api(),
-                julLoggingGenerator,
-                log4jLoggingGenerator,
-                slf4jLoggingGenerator,
-                noOpLoggingGenerator);
+                loggingGenerators);
     }
 
 }

@@ -13,19 +13,19 @@ import wtf.metio.yosql.codegen.exceptions.CodeGenerationException;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
 import wtf.metio.yosql.models.immutables.ApiConfiguration;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public final class DelegatingLoggingGenerator implements LoggingGenerator {
 
     private final ApiConfiguration apiConfiguration;
-    private final List<LoggingGenerator> generators;
+    private final Set<LoggingGenerator> generators;
 
     public DelegatingLoggingGenerator(
             final ApiConfiguration apiConfiguration,
-            final LoggingGenerator... generators) {
+            final Set<LoggingGenerator> generators) {
         this.apiConfiguration = apiConfiguration;
-        this.generators = List.of(generators);
+        this.generators = generators;
     }
 
     @Override

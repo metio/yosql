@@ -8,10 +8,10 @@ package wtf.metio.yosql.tooling.dagger.codegen.logging;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoSet;
 import wtf.metio.yosql.codegen.api.Fields;
 import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
-import wtf.metio.yosql.logging.jul.JUL;
 import wtf.metio.yosql.logging.jul.JulLoggingGenerator;
 
 /**
@@ -20,7 +20,7 @@ import wtf.metio.yosql.logging.jul.JulLoggingGenerator;
 @Module
 public class JulLoggingModule {
 
-    @JUL
+    @IntoSet
     @Provides
     public LoggingGenerator provideJdkLoggingGenerator(
             final Names names,

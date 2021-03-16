@@ -16,18 +16,20 @@ import wtf.metio.yosql.logging.slf4j.Slf4jLoggingGenerator;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.Apis;
 
+import java.util.Set;
+
 public final class Loggers {
 
     public static LoggingGenerator loggingGenerator() {
         return new DelegatingLoggingGenerator(Apis.defaults(),
-                new JulLoggingGenerator(Blocks.names(), Blocks.fields()),
-                new Log4jLoggingGenerator(Blocks.names(), Blocks.fields()),
-                new NoOpLoggingGenerator(),
-                new Slf4jLoggingGenerator(Blocks.names(), Blocks.fields()));
+                Set.of(new JulLoggingGenerator(Blocks.names(), Blocks.fields()),
+                        new Log4jLoggingGenerator(Blocks.names(), Blocks.fields()),
+                        new NoOpLoggingGenerator(),
+                        new Slf4jLoggingGenerator(Blocks.names(), Blocks.fields())));
     }
 
     private Loggers() {
         // factory class
     }
-    
+
 }
