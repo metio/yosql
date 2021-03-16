@@ -50,4 +50,5 @@ public final class R2dbcStandardMethodGenerator implements StandardMethodGenerat
     public MethodSpec standardCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
+
 }

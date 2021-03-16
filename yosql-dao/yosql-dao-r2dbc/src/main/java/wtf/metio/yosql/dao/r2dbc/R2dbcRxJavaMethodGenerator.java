@@ -44,4 +44,5 @@ public final class R2dbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     public MethodSpec rxJava2ReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
+
 }

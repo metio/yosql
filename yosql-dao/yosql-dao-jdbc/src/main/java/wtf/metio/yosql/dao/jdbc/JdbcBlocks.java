@@ -74,8 +74,8 @@ public interface JdbcBlocks {
 
     CodeBlock newFlowable(TypeSpec initialState, TypeSpec generator, TypeSpec disposer);
 
-    CodeBlock setParameters(final SqlConfiguration configuration);
+    CodeBlock setParameters(SqlConfiguration configuration);
 
-    CodeBlock setBatchParameters(final SqlConfiguration configuration);
+    CodeBlock setBatchParameters(SqlConfiguration configuration);
 
 }

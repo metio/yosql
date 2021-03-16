@@ -13,8 +13,15 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Code generators transform SQL statements into Java code.
+ */
 public interface CodeGenerator {
 
+    /**
+     * @param statements The statements to use.
+     * @return The generated Java code.
+     */
     Stream<PackagedTypeSpec> generateCode(List<SqlStatement> statements);
 
 }

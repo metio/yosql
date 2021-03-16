@@ -41,4 +41,5 @@ public final class R2dbcFieldsGenerator implements FieldsGenerator {
     public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
         return null;
     }
+
 }

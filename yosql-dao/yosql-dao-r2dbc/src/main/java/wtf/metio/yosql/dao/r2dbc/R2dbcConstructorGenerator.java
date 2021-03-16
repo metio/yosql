@@ -31,4 +31,5 @@ public final class R2dbcConstructorGenerator implements ConstructorGenerator {
     public MethodSpec forRepository(final List<SqlStatement> statements) {
         return null;
     }
+
 }

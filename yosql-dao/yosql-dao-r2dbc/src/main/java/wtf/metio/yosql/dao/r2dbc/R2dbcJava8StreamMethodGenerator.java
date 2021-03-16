@@ -49,4 +49,5 @@ public final class R2dbcJava8StreamMethodGenerator implements Java8StreamMethodG
     public MethodSpec streamLazyMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
+
 }
