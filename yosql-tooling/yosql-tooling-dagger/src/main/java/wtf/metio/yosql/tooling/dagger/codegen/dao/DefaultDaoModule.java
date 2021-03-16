@@ -26,6 +26,8 @@ import java.util.Set;
         JpaDaoModule.class,
         R2dbcDaoModule.class,
         SpringDataJdbcDaoModule.class,
+        SpringDataJpaDaoModule.class,
+        SpringDataR2dbcDaoModule.class,
         SpringJdbcDaoModule.class
 })
 public class DefaultDaoModule {
