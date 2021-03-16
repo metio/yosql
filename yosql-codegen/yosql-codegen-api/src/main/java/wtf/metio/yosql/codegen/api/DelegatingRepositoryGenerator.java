@@ -12,6 +12,7 @@ import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Delegates its work to first implementation matching the configured {@link PersistenceApis}.
@@ -19,7 +20,7 @@ import java.util.List;
 public final class DelegatingRepositoryGenerator implements RepositoryGenerator {
 
     private final ApiConfiguration apis;
-    private final List<RepositoryGenerator> generators;
+    private final Set<RepositoryGenerator> generators;
 
     /**
      * @param apis       The API configuration.
@@ -27,9 +28,9 @@ public final class DelegatingRepositoryGenerator implements RepositoryGenerator 
      */
     public DelegatingRepositoryGenerator(
             final ApiConfiguration apis,
-            final RepositoryGenerator... generators) {
+            final Set<RepositoryGenerator> generators) {
         this.apis = apis;
-        this.generators = List.of(generators);
+        this.generators = generators;
     }
 
     @Override

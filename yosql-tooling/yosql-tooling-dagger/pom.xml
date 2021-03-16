@@ -116,6 +116,16 @@
         </dependency>
         <dependency>
             <groupId>wtf.metio.yosql.dao</groupId>
+            <artifactId>yosql-dao-jooq</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.dao</groupId>
+            <artifactId>yosql-dao-jpa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.dao</groupId>
             <artifactId>yosql-dao-r2dbc</artifactId>
             <version>${project.version}</version>
         </dependency>

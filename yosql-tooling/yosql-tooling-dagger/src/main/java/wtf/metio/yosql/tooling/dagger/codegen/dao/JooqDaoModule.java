@@ -12,18 +12,20 @@ import dagger.multibindings.IntoSet;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
-import wtf.metio.yosql.codegen.blocks.*;
-import wtf.metio.yosql.dao.spring.data.jdbc.*;
+import wtf.metio.yosql.codegen.blocks.GenericBlocks;
+import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
+import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
+import wtf.metio.yosql.dao.jooq.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the Spring-Data-JDBC based DAO implementation.
+ * Dagger module for the JPA based DAO implementation.
  */
 @Module
-public class SpringDataJdbcDaoModule {
+public class JooqDaoModule {
 
     @IntoSet
     @Provides
@@ -32,8 +34,8 @@ public class SpringDataJdbcDaoModule {
             final AnnotationGenerator annotations,
             final Classes classes,
             final Javadoc javadoc,
-            final @SpringDataJDBC FieldsGenerator fields,
-            final @SpringDataJDBC MethodsGenerator methods) {
+            final @Jooq FieldsGenerator fields,
+            final @Jooq MethodsGenerator methods) {
         return new GenericRepositoryGenerator(
                 logger,
                 annotations,
@@ -41,17 +43,17 @@ public class SpringDataJdbcDaoModule {
                 javadoc,
                 fields,
                 methods,
-                PersistenceApis.SPRING_DATA_JDBC);
+                PersistenceApis.JOOQ);
     }
 
+    @Jooq
     @Provides
-    @SpringDataJDBC
     MethodsGenerator provideMethodsGenerator(
-            final @SpringDataJDBC BatchMethodGenerator batchMethods,
-            final @SpringDataJDBC Java8StreamMethodGenerator streamMethods,
-            final @SpringDataJDBC RxJavaMethodGenerator rxjavaMethods,
-            final @SpringDataJDBC StandardMethodGenerator standardMethods,
-            final @SpringDataJDBC ConstructorGenerator constructor) {
+            final @Jooq BatchMethodGenerator batchMethods,
+            final @Jooq Java8StreamMethodGenerator streamMethods,
+            final @Jooq RxJavaMethodGenerator rxjavaMethods,
+            final @Jooq StandardMethodGenerator standardMethods,
+            final @Jooq ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
                 streamMethods,
@@ -59,39 +61,39 @@ public class SpringDataJdbcDaoModule {
         );
     }
 
+    @Jooq
     @Provides
-    @SpringDataJDBC
     ConstructorGenerator provideConstructorGenerator(
             final GenericBlocks blocks,
             final Methods methods) {
-        return new SpringDataJdbcConstructorGenerator(blocks, methods);
+        return new JooqConstructorGenerator(blocks, methods);
     }
 
+    @Jooq
     @Provides
-    @SpringDataJDBC
     FieldsGenerator provideFieldsGenerator(
             final Fields fields,
             @Delegating final LoggingGenerator logging,
             final Javadoc javadoc) {
-        return new SpringDataJdbcFieldsGenerator(fields, logging, javadoc);
+        return new JooqFieldsGenerator(fields, logging, javadoc);
     }
 
+    @Jooq
     @Provides
-    @SpringDataJDBC
     BatchMethodGenerator provideBatchMethodGenerator(
             final ControlFlows controlFlow,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new SpringDataJdbcBatchMethodGenerator(
+        return new JooqBatchMethodGenerator(
                 controlFlow,
                 methods,
                 parameters,
                 logging);
     }
 
+    @Jooq
     @Provides
-    @SpringDataJDBC
     Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
@@ -99,7 +101,7 @@ public class SpringDataJdbcDaoModule {
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new SpringDataJdbcJava8StreamMethodGenerator(
+        return new JooqJava8StreamMethodGenerator(
                 blocks,
                 controlFlow,
                 names,
@@ -108,8 +110,8 @@ public class SpringDataJdbcDaoModule {
                 logging);
     }
 
+    @Jooq
     @Provides
-    @SpringDataJDBC
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
             final RuntimeConfiguration configuration,
             final ControlFlows controlFlows,
@@ -117,7 +119,7 @@ public class SpringDataJdbcDaoModule {
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new SpringDataJdbcRxJavaMethodGenerator(
+        return new JooqRxJavaMethodGenerator(
                 configuration,
                 controlFlows,
                 names,
@@ -126,14 +128,14 @@ public class SpringDataJdbcDaoModule {
                 logging);
     }
 
+    @Jooq
     @Provides
-    @SpringDataJDBC
     StandardMethodGenerator provideStandardMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new SpringDataJdbcStandardMethodGenerator(
+        return new JooqStandardMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

@@ -8,6 +8,7 @@ package wtf.metio.yosql.tooling.dagger.codegen.dao;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoSet;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
@@ -24,7 +25,7 @@ import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 @Module
 public class R2dbcDaoModule {
 
-    @R2DBC
+    @IntoSet
     @Provides
     RepositoryGenerator provideRepositoryGenerator(
             final @Generator LocLogger logger,

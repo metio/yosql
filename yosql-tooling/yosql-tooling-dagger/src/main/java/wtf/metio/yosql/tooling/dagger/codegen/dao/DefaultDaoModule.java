@@ -11,11 +11,9 @@ import dagger.Provides;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.DelegatingRepositoryGenerator;
 import wtf.metio.yosql.codegen.api.RepositoryGenerator;
-import wtf.metio.yosql.dao.jdbc.Jdbc;
-import wtf.metio.yosql.dao.r2dbc.R2DBC;
-import wtf.metio.yosql.dao.spring.data.jdbc.SpringDataJDBC;
-import wtf.metio.yosql.dao.spring.jdbc.SpringJDBC;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+
+import java.util.Set;
 
 /**
  * Dagger module for the DAO APIs.
@@ -32,16 +30,10 @@ public class DefaultDaoModule {
     @Delegating
     public RepositoryGenerator provideRepositoryGenerator(
             final RuntimeConfiguration runtime,
-            final @Jdbc RepositoryGenerator jdbcRepositoryGenerator,
-            final @R2DBC RepositoryGenerator r2dbcRepositoryGenerator,
-            final @SpringDataJDBC RepositoryGenerator springDataJdbcRepositoryGenerator,
-            final @SpringJDBC RepositoryGenerator springJdbcRepositoryGenerator) {
+            final Set<RepositoryGenerator> repositoryGenerators) {
         return new DelegatingRepositoryGenerator(
                 runtime.api(),
-                jdbcRepositoryGenerator,
-                r2dbcRepositoryGenerator,
-                springDataJdbcRepositoryGenerator,
-                springJdbcRepositoryGenerator);
+                repositoryGenerators);
     }
 
 }
