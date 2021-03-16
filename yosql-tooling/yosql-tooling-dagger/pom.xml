@@ -111,7 +111,17 @@
         </dependency>
         <dependency>
             <groupId>wtf.metio.yosql.dao</groupId>
+            <artifactId>yosql-dao-ebean</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.dao</groupId>
             <artifactId>yosql-dao-jdbc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.dao</groupId>
+            <artifactId>yosql-dao-jdbi</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

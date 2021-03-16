@@ -34,4 +34,26 @@
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: DAO :: JDBI</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>wtf.metio.yosql.codegen</groupId>
+            <artifactId>yosql-codegen-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.codegen</groupId>
+            <artifactId>yosql-codegen-blocks</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.logging</groupId>
+            <artifactId>yosql-logging-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+    </dependencies>
 </project>

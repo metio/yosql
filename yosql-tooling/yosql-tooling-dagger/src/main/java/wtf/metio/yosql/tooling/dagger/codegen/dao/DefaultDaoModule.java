@@ -19,7 +19,11 @@ import java.util.Set;
  * Dagger module for the DAO APIs.
  */
 @Module(includes = {
+        EBeanDaoModule.class,
         JdbcDaoModule.class,
+        JdbiDaoModule.class,
+        JooqDaoModule.class,
+        JpaDaoModule.class,
         R2dbcDaoModule.class,
         SpringDataJdbcDaoModule.class,
         SpringJdbcDaoModule.class
