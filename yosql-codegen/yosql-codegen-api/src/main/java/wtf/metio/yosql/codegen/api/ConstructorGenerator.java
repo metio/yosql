@@ -24,4 +24,5 @@ public interface ConstructorGenerator {
      * @return The constructor for a repository.
      */
     MethodSpec forRepository(List<SqlStatement> statements);
+
 }

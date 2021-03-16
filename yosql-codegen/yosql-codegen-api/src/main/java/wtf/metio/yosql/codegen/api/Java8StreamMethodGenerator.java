@@ -20,10 +20,8 @@ public interface Java8StreamMethodGenerator {
     /**
      * Creates an eager streaming method for reading data out of a database.
      *
-     * @param configuration
-     *            The configuration to use.
-     * @param vendorStatements
-     *            The vendor statements to use.
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
      * @return An eager streaming method.
      */
     MethodSpec streamEagerMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
@@ -31,10 +29,8 @@ public interface Java8StreamMethodGenerator {
     /**
      * Creates a lazy streaming method for reading data out of a database.
      *
-     * @param configuration
-     *            The configuration to use.
-     * @param vendorStatements
-     *            The vendor statements to use.
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
      * @return A lazy streaming method.
      */
     MethodSpec streamLazyMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);

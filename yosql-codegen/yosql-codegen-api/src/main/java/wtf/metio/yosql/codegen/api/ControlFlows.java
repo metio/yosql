@@ -23,13 +23,17 @@ public interface ControlFlows {
     CodeBlock forLoop(CodeBlock init, CodeBlock runner);
 
     CodeBlock startTryBlock();
+
     CodeBlock endTryBlock();
+
     CodeBlock endTryBlock(int flowsToClose);
 
     CodeBlock maybeTry(SqlConfiguration configuration);
+
     CodeBlock endMaybeTry(SqlConfiguration configuration);
 
     CodeBlock ifHasNext();
+
     CodeBlock endIf();
 
     CodeBlock whileHasNext();

@@ -20,10 +20,8 @@ public interface RxJavaMethodGenerator {
     /**
      * Creates a RxJava2 based method for reading data out of a database.
      *
-     * @param configuration
-     *            The configuration to use.
-     * @param vendorStatements
-     *            The vendor statements to use.
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
      * @return A RxJava2 based read method.
      */
     MethodSpec rxJava2ReadMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);

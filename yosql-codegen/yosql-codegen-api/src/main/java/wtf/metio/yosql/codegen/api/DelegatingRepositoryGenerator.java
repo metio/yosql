@@ -22,7 +22,7 @@ public final class DelegatingRepositoryGenerator implements RepositoryGenerator 
     private final List<RepositoryGenerator> generators;
 
     /**
-     * @param apis The API configuration.
+     * @param apis       The API configuration.
      * @param generators The generators to delegate to.
      */
     public DelegatingRepositoryGenerator(
