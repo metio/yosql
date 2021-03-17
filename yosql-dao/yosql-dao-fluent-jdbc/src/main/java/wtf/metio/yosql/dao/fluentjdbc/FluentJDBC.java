@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.dao.ebean;
+package wtf.metio.yosql.dao.fluentjdbc;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Documented;
@@ -15,15 +15,15 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 
 /**
- * Marks a type as related to the EBean API.
+ * Marks a type as related to the Fluent JDBC API.
  *
- * @see <a href="https://ebean.io/">EBean Website</a>
+ * @see <a href="https://github.com/zsoltherpai/fluent-jdbc">Fluent JDBC Website</a>
  */
 @Qualifier
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({TYPE, PARAMETER, METHOD})
-public @interface EBean {
+public @interface FluentJDBC {
 
     // marker annotation
 

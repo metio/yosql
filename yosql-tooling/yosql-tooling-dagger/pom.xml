@@ -116,6 +116,11 @@
         </dependency>
         <dependency>
             <groupId>wtf.metio.yosql.dao</groupId>
+            <artifactId>yosql-dao-fluent-jdbc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.dao</groupId>
             <artifactId>yosql-dao-jdbc</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -136,7 +141,22 @@
         </dependency>
         <dependency>
             <groupId>wtf.metio.yosql.dao</groupId>
+            <artifactId>yosql-dao-mybatis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.dao</groupId>
+            <artifactId>yosql-dao-pyranid</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.dao</groupId>
             <artifactId>yosql-dao-r2dbc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.dao</groupId>
+            <artifactId>yosql-dao-sansorm</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

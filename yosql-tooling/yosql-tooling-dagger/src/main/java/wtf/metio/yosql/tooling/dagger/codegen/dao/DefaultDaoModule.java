@@ -20,11 +20,15 @@ import java.util.Set;
  */
 @Module(includes = {
         EBeanDaoModule.class,
+        FluentJdbcDaoModule.class,
         JdbcDaoModule.class,
         JdbiDaoModule.class,
         JooqDaoModule.class,
         JpaDaoModule.class,
+        MyBatisDaoModule.class,
+        PyranidDaoModule.class,
         R2dbcDaoModule.class,
+        SansOrmDaoModule.class,
         SpringDataJdbcDaoModule.class,
         SpringDataJpaDaoModule.class,
         SpringDataR2dbcDaoModule.class,
