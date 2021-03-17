@@ -20,7 +20,7 @@ public final class Sql {
 
     public static List<SqlStatement> sqlStatements() {
         return List.of(SqlStatement.builder()
-                .setSourcePath(Paths.get("src/main/java/yosql/data/queryData.sql"))
+                .setSourcePath(Paths.get("src/main/yosql/data/queryData.sql"))
                 .setRawStatement("SELECT raw FROM table WHERE test = ? AND id = ?;")
                 .setConfiguration(sqlConfiguration())
                 .build());

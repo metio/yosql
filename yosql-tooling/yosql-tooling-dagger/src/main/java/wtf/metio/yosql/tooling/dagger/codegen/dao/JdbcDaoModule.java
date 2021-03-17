@@ -34,8 +34,8 @@ public class JdbcDaoModule {
             final AnnotationGenerator annotations,
             final Classes classes,
             final Javadoc javadoc,
-            final @Jdbc FieldsGenerator fields,
-            final @Jdbc MethodsGenerator methods) {
+            final @JDBC FieldsGenerator fields,
+            final @JDBC MethodsGenerator methods) {
         return new GenericRepositoryGenerator(
                 logger,
                 annotations,
@@ -46,14 +46,14 @@ public class JdbcDaoModule {
                 PersistenceApis.JDBC);
     }
 
-    @Jdbc
+    @JDBC
     @Provides
     public MethodsGenerator provideMethodsGenerator(
-            final @Jdbc BatchMethodGenerator batchMethods,
-            final @Jdbc Java8StreamMethodGenerator streamMethods,
-            final @Jdbc RxJavaMethodGenerator rxjavaMethods,
-            final @Jdbc StandardMethodGenerator standardMethods,
-            final @Jdbc ConstructorGenerator constructor) {
+            final @JDBC BatchMethodGenerator batchMethods,
+            final @JDBC Java8StreamMethodGenerator streamMethods,
+            final @JDBC RxJavaMethodGenerator rxjavaMethods,
+            final @JDBC StandardMethodGenerator standardMethods,
+            final @JDBC ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
                 streamMethods,
@@ -61,7 +61,7 @@ public class JdbcDaoModule {
         );
     }
 
-    @Jdbc
+    @JDBC
     @Provides
     public ConstructorGenerator provideConstructorGenerator(
             final GenericBlocks blocks,
@@ -71,7 +71,7 @@ public class JdbcDaoModule {
         return new JdbcConstructorGenerator(blocks, methods, runtimeConfiguration.jdbc(), jdbcParameters);
     }
 
-    @Jdbc
+    @JDBC
     @Provides
     public FieldsGenerator provideFieldsGenerator(
             final Fields fields,
@@ -82,7 +82,7 @@ public class JdbcDaoModule {
         return new JdbcFieldsGenerator(runtimeConfiguration.jdbc(), logging, javadoc, fields, jdbcFields);
     }
 
-    @Jdbc
+    @JDBC
     @Provides
     public BatchMethodGenerator provideBatchMethodGenerator(
             final ControlFlows controlFlow,
@@ -100,7 +100,7 @@ public class JdbcDaoModule {
                 transformer);
     }
 
-    @Jdbc
+    @JDBC
     @Provides
     public Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
@@ -125,7 +125,7 @@ public class JdbcDaoModule {
         );
     }
 
-    @Jdbc
+    @JDBC
     @Provides
     public RxJavaMethodGenerator provideRxJavaMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
@@ -145,7 +145,7 @@ public class JdbcDaoModule {
                 jdbcBlocks);
     }
 
-    @Jdbc
+    @JDBC
     @Provides
     public StandardMethodGenerator provideStandardMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,

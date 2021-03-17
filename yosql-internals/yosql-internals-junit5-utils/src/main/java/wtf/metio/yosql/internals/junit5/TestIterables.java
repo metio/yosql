@@ -8,13 +8,33 @@
 package wtf.metio.yosql.internals.junit5;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.function.Executable;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 public final class TestIterables {
 
-    public static void assertIterable(Iterable<?> values, String... expectedValues) {
-        int index = 0;
-        for (final var value : values) {
-            Assertions.assertEquals(value.toString(), expectedValues[index++]);
+    public static void assertIterable(final Iterable<?> values, final String... expectedValues) {
+        Assertions.assertAll(mustEqual(values, expectedValues));
+    }
+
+    private static Executable[] mustEqual(final Iterable<?> values, final String[] expectedValues) {
+        final var userInputs =
+                StreamSupport.stream(values.spliterator(), false)
+                        .collect(Collectors.toList());
+        return IntStream.range(0, expectedValues.length)
+            .mapToObj(index -> asExecutable(index, userInputs, expectedValues))
+            .toArray(Executable[]::new);
+    }
+
+    private static Executable asExecutable(final int index, final List<?> userInputs, final String[] expectedValues) {
+        if (index < expectedValues.length) {
+            return () -> Assertions.assertEquals(expectedValues[index], userInputs.get(index).toString());
+        } else {
+            return () -> Assertions.fail("No expected value for:\n" + userInputs.get(index).toString());
         }
     }
 

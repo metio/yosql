@@ -45,54 +45,54 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     }
 
     @Override
-    protected MethodSpec constructor(final List<SqlStatement> statements) {
+    public MethodSpec constructor(final List<SqlStatement> statements) {
         return constructor.forRepository(statements);
     }
 
     @Override
-    protected MethodSpec standardReadMethod(
+    public MethodSpec standardReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         return standardMethods.standardReadMethod(configuration, statements);
     }
 
     @Override
-    protected MethodSpec standardWriteMethod(
+    public MethodSpec standardWriteMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         return standardMethods.standardWriteMethod(configuration, statements);
     }
 
     @Override
-    protected MethodSpec standardCallMethod(
+    public MethodSpec standardCallMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         return standardMethods.standardCallMethod(configuration, statements);
     }
 
     @Override
-    protected MethodSpec batchWriteMethod(
+    public MethodSpec batchWriteMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         return batchMethods.batchWriteMethod(configuration, statements);
     }
 
     @Override
-    protected MethodSpec streamEagerReadMethod(
+    public MethodSpec streamEagerReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         return streamMethods.streamEagerMethod(configuration, statements);
     }
 
     @Override
-    protected MethodSpec streamLazyReadMethod(
+    public MethodSpec streamLazyReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         return streamMethods.streamLazyMethod(configuration, statements);
     }
 
     @Override
-    protected MethodSpec rxJavaReadMethod(
+    public MethodSpec rxJavaReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         return rxjavaMethods.rxJava2ReadMethod(configuration, statements);

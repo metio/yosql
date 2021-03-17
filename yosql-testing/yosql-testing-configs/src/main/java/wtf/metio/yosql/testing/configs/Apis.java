@@ -27,6 +27,11 @@ public final class Apis {
                 .withLoggingApi(LoggingApis.SLF4J);
     }
 
+    public static ApiConfiguration jul() {
+        return ApiConfiguration.copyOf(defaults())
+                .withLoggingApi(LoggingApis.JUL);
+    }
+
     private Apis() {
         // factory class
     }

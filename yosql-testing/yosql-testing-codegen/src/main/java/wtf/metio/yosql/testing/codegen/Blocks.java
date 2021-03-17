@@ -7,14 +7,8 @@
 
 package wtf.metio.yosql.testing.codegen;
 
-import wtf.metio.yosql.codegen.api.AnnotationGenerator;
-import wtf.metio.yosql.codegen.api.Fields;
-import wtf.metio.yosql.codegen.api.Javadoc;
-import wtf.metio.yosql.codegen.api.Names;
-import wtf.metio.yosql.codegen.blocks.DefaultAnnotationGenerator;
-import wtf.metio.yosql.codegen.blocks.DefaultFields;
-import wtf.metio.yosql.codegen.blocks.DefaultJavadoc;
-import wtf.metio.yosql.codegen.blocks.DefaultNames;
+import wtf.metio.yosql.codegen.api.*;
+import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.testing.configs.Annotations;
@@ -30,6 +24,18 @@ public final class Blocks {
         return new DefaultNames();
     }
 
+    public static Classes classes() {
+        return new DefaultClasses(Java.defaults());
+    }
+
+    public static Parameters parameters() {
+        return new DefaultParameters(names(), Java.defaults());
+    }
+
+    public static Methods methods() {
+        return new DefaultMethods(annotationGenerator(), javadoc(), Java.defaults());
+    }
+
     public static Fields fields() {
         return fields(Java.defaults());
     }
@@ -38,12 +44,24 @@ public final class Blocks {
         return new DefaultFields(annotationGenerator(), java);
     }
 
+    public static Variables variables() {
+        return new DefaultVariables(Java.defaults());
+    }
+
+    public static GenericBlocks genericBlocks() {
+        return new DefaultGenericBlocks();
+    }
+
+    public static ControlFlows controlFlows() {
+        return new DefaultControlFlows(variables(), names());
+    }
+
     public static AnnotationGenerator annotationGenerator() {
         return new DefaultAnnotationGenerator(Annotations.defaults());
     }
 
     public static Javadoc javadoc() {
-        return javadoc(Files.defaults());
+        return javadoc(Files.maven());
     }
 
     public static Javadoc javadoc(final FilesConfiguration files) {

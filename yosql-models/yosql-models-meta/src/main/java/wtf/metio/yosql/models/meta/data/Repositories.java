@@ -145,7 +145,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("batchSuffix")
                 .setType(TypicalTypes.STRING)
-                .setValue("")
+                .setValue("Batch")
                 .setDescription("")
                 .build();
     }

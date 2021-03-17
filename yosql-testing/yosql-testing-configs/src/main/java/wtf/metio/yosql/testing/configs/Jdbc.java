@@ -8,11 +8,22 @@
 package wtf.metio.yosql.testing.configs;
 
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 public final class Jdbc {
 
     public static JdbcConfiguration defaults() {
         return JdbcConfiguration.usingDefaults().build();
+    }
+
+    public static JdbcConfiguration withResultRowConverter() {
+        return JdbcConfiguration.copyOf(defaults())
+                .withDefaultConverter(ResultRowConverter.builder()
+                        .setAlias("resultRow")
+                        .setConverterType("com.example.persistence.util.ToResultRowConverter")
+                        .setMethodName("asUserType")
+                        .setResultType("com.example.persistence.util.ResultRow")
+                        .build());
     }
 
     private Jdbc() {

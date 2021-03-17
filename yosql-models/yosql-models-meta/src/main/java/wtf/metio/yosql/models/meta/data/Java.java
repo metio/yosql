@@ -33,7 +33,7 @@ public final class Java {
         return ConfigurationSetting.builder()
                 .setName("useRecords")
                 .setType(TypeName.get(boolean.class))
-                .setValue(false)
+                .setValue(true)
                 .setDescription("Should records be used")
                 .build();
     }

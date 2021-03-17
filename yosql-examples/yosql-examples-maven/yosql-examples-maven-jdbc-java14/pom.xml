@@ -45,6 +45,7 @@
                     </files>
                     <java>
                         <apiVersion>14</apiVersion>
+                        <useRecords>false</useRecords>
                     </java>
                     <jdbc>
                         <utilityPackageName>wtf.metio.yosql.example.maven.jdbc.java14.persistence.util</utilityPackageName>

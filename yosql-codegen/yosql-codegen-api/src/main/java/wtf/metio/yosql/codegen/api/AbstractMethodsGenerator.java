@@ -62,33 +62,33 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
         return methods;
     }
 
-    protected abstract MethodSpec constructor(List<SqlStatement> sqlStatementsInRepository);
+    public abstract MethodSpec constructor(List<SqlStatement> sqlStatementsInRepository);
 
-    protected abstract MethodSpec standardReadMethod(
+    public abstract MethodSpec standardReadMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 
-    protected abstract MethodSpec standardWriteMethod(
+    public abstract MethodSpec standardWriteMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 
-    protected abstract MethodSpec standardCallMethod(
+    public abstract MethodSpec standardCallMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 
-    protected abstract MethodSpec batchWriteMethod(
+    public abstract MethodSpec batchWriteMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 
-    protected abstract MethodSpec streamEagerReadMethod(
+    public abstract MethodSpec streamEagerReadMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 
-    protected abstract MethodSpec streamLazyReadMethod(
+    public abstract MethodSpec streamLazyReadMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 
-    protected abstract MethodSpec rxJavaReadMethod(
+    public abstract MethodSpec rxJavaReadMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 

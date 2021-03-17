@@ -24,10 +24,7 @@ import wtf.metio.yosql.models.sql.SqlParameter;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -477,12 +474,12 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         return converter.converterType().equals(resultConverter.converterType());
     }
 
-    private ResultRowConverter getDefaultRowConverter() {
-        final var resultRowConverter = runtimeConfiguration.jdbc().defaultConverter().orElseThrow();
+    private Optional<ResultRowConverter> getDefaultRowConverter() {
+        final var resultRowConverter = runtimeConfiguration.jdbc().defaultConverter();
         return runtimeConfiguration.jdbc().userTypes().stream()
-                .filter(resultRowConverter::equals)
+                .filter(converter -> resultRowConverter.isEmpty() || resultRowConverter.get().equals(converter))
                 .findFirst()
-                .orElse(resultRowConverter);
+                .or(() -> resultRowConverter);
     }
 
     private String getConverterFieldOrEmptyString(

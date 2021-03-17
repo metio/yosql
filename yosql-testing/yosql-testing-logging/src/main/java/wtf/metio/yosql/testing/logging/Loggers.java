@@ -16,16 +16,18 @@ import wtf.metio.yosql.logging.slf4j.Slf4jLoggingGenerator;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.Apis;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public final class Loggers {
 
     public static LoggingGenerator loggingGenerator() {
-        return new DelegatingLoggingGenerator(Apis.defaults(),
-                Set.of(new JulLoggingGenerator(Blocks.names(), Blocks.fields()),
-                        new Log4jLoggingGenerator(Blocks.names(), Blocks.fields()),
-                        new NoOpLoggingGenerator(),
-                        new Slf4jLoggingGenerator(Blocks.names(), Blocks.fields())));
+        final var generators = new LinkedHashSet<LoggingGenerator>();
+        generators.add(new JulLoggingGenerator(Blocks.names(), Blocks.fields()));
+        generators.add(new Log4jLoggingGenerator(Blocks.names(), Blocks.fields()));
+        generators.add(new Slf4jLoggingGenerator(Blocks.names(), Blocks.fields()));
+        generators.add(new NoOpLoggingGenerator());
+        return new DelegatingLoggingGenerator(Apis.jul(), generators);
     }
 
     private Loggers() {

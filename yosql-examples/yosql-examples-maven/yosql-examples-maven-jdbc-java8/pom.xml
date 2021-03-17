@@ -48,6 +48,7 @@
                         <useProcessingApi>false</useProcessingApi>
                         <useVar>false</useVar>
                         <useTextBlocks>false</useTextBlocks>
+                        <useRecords>false</useRecords>
                     </java>
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.java8.persistence</basePackageName>
