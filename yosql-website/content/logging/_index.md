@@ -9,9 +9,11 @@ YoSQL supports various logging frameworks and APIs. We recommend that you select
 - [JUL](./jul): The `java.util.logging` based implementation. It uses the constant `JUL` to identify itself.
 - [log4j](./log4j): The `log4j` based implementation. It uses the constant `LOG4J` to identify itself.
 - [No-Op](./no-op): The `No-Op` based implementation. It uses the constant `NONE` to identify itself.
-- [slf4j](./slf4j): The `slf4j` based implementation. It uses the constant `SLF4J to identify itself.
+- [slf4j](./slf4j): The `slf4j` based implementation. It uses the constant `SLF4J` to identify itself.
 
 ## Tooling
+
+Replace `configValue` with the constant value for whatever logging API you want to use in the generated code.
 
 ### Maven
 
@@ -27,7 +29,7 @@ for Maven](../../../tooling/maven).
         <artifactId>yosql-tooling-maven</artifactId>
         <configuration>
           <apis>
-            <loggingApi>JUL</loggingApi>
+            <loggingApi>configValue</loggingApi>
           </apis>
         </configuration>
       </plugin>
@@ -47,7 +49,7 @@ plugins {
 
 yosql {
   apis {
-    loggingApi = JUL
+    loggingApi = configValue
   }
 }
 ```
@@ -62,11 +64,11 @@ Bazel](../../../tooling/bazel).
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../../../tooling/cli).
 
 ```shell
-$ yosql --apis-logging-api=JUL
+$ yosql --apis-logging-api=configValue
 ```
 
 The shorter form is available as well:
 
 ```shell
-$ yosql --logging-api=JUL
+$ yosql --logging-api=configValue
 ```
