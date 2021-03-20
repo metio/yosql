@@ -10,18 +10,9 @@ This part of the documentation is intended for **developers** looking for inform
 
 By default, `YoSQL` generates code that uses all features of the latest supported Java release without using any non-JDK classes. In case you don't want to use a particular feature, use the relevant configuration option to disable it. We recommend to start with an empty configuration and adapting that to your needs, using as many configuration options as required.
 
-Since the number of options is always growing, they are now grouped into the following categories:
-
-- [Annotations](./annotations): Configures the usage of annotations on generated types, fields, and methods.
-- [Files](./files): Configures how files are read and how output is written.
-- [Java](./java): Configures whether various Java language features are used in the generated code.
-- [JDBC](./jdbc): Configures how the JDBC API is used in the generated code.
-- [Repositories](./repositories): Configures fine-grained details of the generated repositories.
-- [Resources](./resources): Configures how system resources are used while generating code.
-
 Depending on your tooling, `YoSQL` can be configured as explained in the following sections.
 
-### Maven
+## Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](../tooling/maven).
@@ -44,7 +35,7 @@ for Maven](../tooling/maven).
   </build>
 ```
 
-### Gradle
+## Gradle
 
 In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../tooling/gradle).
 
@@ -60,14 +51,14 @@ yosql {
 }
 ```
 
-### Bazel
+## Bazel
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
 Bazel](../tooling/bazel).
 
 TODO: info for bazel
 
-### CLI
+## CLI
 
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
 
