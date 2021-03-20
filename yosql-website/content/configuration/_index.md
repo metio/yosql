@@ -1,7 +1,9 @@
 ---
 title: Configuration
 date: 2019-09-27T18:51:08+02:00
-menu: main
+menu:
+  main:
+    weight: 110
 ---
 
 This part of the documentation is intended for **developers** looking for information on the various configuration options that `YoSql` provides.
