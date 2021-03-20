@@ -73,7 +73,6 @@ package com.example.persistence;
 
 import javax.annotation.processing.Generated;
 
-@Generated
 public class SomeRepository {
 
     @Generated
