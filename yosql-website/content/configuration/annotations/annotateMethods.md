@@ -5,10 +5,10 @@ menu:
   main:
     parent: Annotations
 categories:
-- Configuration
+  - Configuration
 tags:
-- annotations
-- methods
+  - annotations
+  - methods
 ---
 
 Controls whether `@Generated` annotations be added to generated methods. Defaults to `false`.
@@ -60,9 +60,9 @@ public class SomeRepository {
 
 ## Related Options
 
-- [methodAnnotation](../methodAnnotation): Controls which `@Generated` annotation should be used.
-- [methodMembers](../methodMembers): Controls which `@Generated` annotation members should be used.
-- [methodComment](../methodComment): Controls the comment used in the `@Generated` annotation.
+- [methodAnnotation](../methodannotation): Controls which `@Generated` annotation should be used.
+- [methodMembers](../methodmembers): Controls which `@Generated` annotation members should be used.
+- [methodComment](../methodcomment): Controls the comment used in the `@Generated` annotation.
 
 ## Tooling
 

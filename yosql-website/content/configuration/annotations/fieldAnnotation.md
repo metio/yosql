@@ -5,10 +5,10 @@ menu:
   main:
     parent: Annotations
 categories:
-- Configuration
+  - Configuration
 tags:
-- annotations
-- fields
+  - annotations
+  - fields
 ---
 
 Controls which `@Generated` annotation should be added to generated fields. Defaults to `PROCESSING_API` which uses the Java 9 processing API.
@@ -63,9 +63,9 @@ public class SomeRepository {
 
 ## Related Options
 
-- [annotateFields](../annotateFields): Controls whether the `@Generated` annotation should be added at all.
-- [fieldMembers](../fieldMembers): Controls which `@Generated` annotation members should be used.
-- [fieldComment](../fieldComment): Controls the comment used in the `@Generated` annotation.
+- [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added at all.
+- [fieldMembers](../fieldmembers): Controls which `@Generated` annotation members should be used.
+- [fieldComment](../fieldcomment): Controls the comment used in the `@Generated` annotation.
 
 ## Tooling
 

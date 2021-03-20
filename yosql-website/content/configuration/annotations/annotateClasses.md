@@ -5,10 +5,10 @@ menu:
   main:
     parent: Annotations
 categories:
-- Configuration
+  - Configuration
 tags:
-- annotations
-- classes
+  - annotations
+  - classes
 ---
 
 Controls whether `@Generated` annotations be added to generated classes. Defaults to `false`.
@@ -52,9 +52,9 @@ public class SomeRepository {
 
 ## Related Options
 
-- [classAnnotation](../classAnnotation): Controls which `@Generated` annotation should be used.
-- [classMembers](../classMembers): Controls which `@Generated` annotation members should be used.
-- [classComment](../classComment): Controls the comment used in the `@Generated` annotation.
+- [classAnnotation](../classannotation): Controls which `@Generated` annotation should be used.
+- [classMembers](../classmembers): Controls which `@Generated` annotation members should be used.
+- [classComment](../classcomment): Controls the comment used in the `@Generated` annotation.
 
 ## Tooling
 

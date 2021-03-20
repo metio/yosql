@@ -5,13 +5,13 @@ menu:
   main:
     parent: Annotations
 categories:
-- Configuration
+  - Configuration
 tags:
-- annotations
-- fields
+  - annotations
+  - fields
 ---
 
-Controls whether `@Generated` annotations be added to generated classes. Defaults to `false`.
+Controls whether `@Generated` annotations be added to generated fields. Defaults to `false`.
 
 ## Configuration Options
 
@@ -56,9 +56,9 @@ public class SomeRepository {
 
 ## Related Options
 
-- [fieldAnnotation](../fieldAnnotation): Controls which `@Generated` annotation should be used.
-- [fieldMembers](../fieldMembers): Controls which `@Generated` annotation members should be used.
-- [fieldComment](../fieldComment): Controls the comment used in the `@Generated` annotation.
+- [fieldAnnotation](../fieldannotation): Controls which `@Generated` annotation should be used.
+- [fieldMembers](../fieldmembers): Controls which `@Generated` annotation members should be used.
+- [fieldComment](../fieldcomment): Controls the comment used in the `@Generated` annotation.
 
 ## Tooling
 

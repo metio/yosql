@@ -5,10 +5,10 @@ menu:
   main:
     parent: Annotations
 categories:
-- Configuration
+  - Configuration
 tags:
-- annotations
-- classes
+  - annotations
+  - classes
 ---
 
 Controls which `@Generated` annotation members should be added to generated classes. Defaults to `WITHOUT_DATE` which uses all members except `date` in order to support reproducible builds (otherwise the generated classes would change on each generation).
@@ -132,9 +132,9 @@ public class SomeRepository {
 
 ## Related Options
 
-- [annotateClasses](../annotateClasses): Controls whether the `@Generated` annotation should be added at all.
-- [classAnnotation](../classAnnotation): Controls which `@Generated` annotation should be used.
-- [classComment](../classComment): Controls the comment used in the `@Generated` annotation.
+- [annotateClasses](../annotateclasses): Controls whether the `@Generated` annotation should be added at all.
+- [classAnnotation](../classannotation): Controls which `@Generated` annotation should be used.
+- [classComment](../classcomment): Controls the comment used in the `@Generated` annotation.
 
 ## Tooling
 

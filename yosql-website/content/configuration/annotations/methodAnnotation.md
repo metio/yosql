@@ -5,10 +5,10 @@ menu:
   main:
     parent: Annotations
 categories:
-- Configuration
+  - Configuration
 tags:
-- annotations
-- methods
+  - annotations
+  - methods
 ---
 
 Controls which `@Generated` annotation should be added to generated methods. Defaults to `PROCESSING_API` which uses the Java 9 processing API.
@@ -67,9 +67,9 @@ public class SomeRepository {
 
 ## Related Options
 
-- [annotateMethods](../annotateMethods): Controls whether the `@Generated` annotation should be added at all.
-- [methodMembers](../methodMembers): Controls which `@Generated` annotation members should be used.
-- [methodComment](../methodComment): Controls the comment used in the `@Generated` annotation.
+- [annotateMethods](../annotatemethods): Controls whether the `@Generated` annotation should be added at all.
+- [methodMembers](../methodmembers): Controls which `@Generated` annotation members should be used.
+- [methodComment](../methodcomment): Controls the comment used in the `@Generated` annotation.
 
 ## Tooling
 

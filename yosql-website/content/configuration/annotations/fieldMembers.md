@@ -5,10 +5,10 @@ menu:
   main:
     parent: Annotations
 categories:
-- Configuration
+  - Configuration
 tags:
-- annotations
-- fields
+  - annotations
+  - fields
 ---
 
 Controls which `@Generated` annotation members should be added to generated fields. Defaults to `WITHOUT_DATE` which uses all members except `date` in order to support reproducible builds (otherwise the generated classes would change on each generation).
@@ -144,9 +144,9 @@ public class SomeRepository {
 
 ## Related Options
 
-- [annotateFields](../annotateFields): Controls whether the `@Generated` annotation should be added at all.
-- [fieldAnnotation](../fieldAnnotation): Controls which `@Generated` annotation should be used.
-- [fieldComment](../fieldComment): Controls the comment used in the `@Generated` annotation.
+- [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added at all.
+- [fieldAnnotation](../fieldannotation): Controls which `@Generated` annotation should be used.
+- [fieldComment](../fieldcomment): Controls the comment used in the `@Generated` annotation.
 
 ## Tooling
 

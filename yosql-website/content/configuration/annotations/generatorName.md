@@ -63,9 +63,9 @@ public class SomeRepository {
 
 ## Related Options
 
-- [annotateClasses](../annotateField): Controls whether the `@Generated` annotation should be added at all.
-- [annotateFields](../annotateFields): Controls whether the `@Generated` annotation should be added at all.
-- [annotateMethods](../annotateMethods): Controls whether the `@Generated` annotation should be added at all.
+- [annotateClasses](../annotateclasses): Controls whether the `@Generated` annotation should be added at all.
+- [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added at all.
+- [annotateMethods](../annotatemethods): Controls whether the `@Generated` annotation should be added at all.
 
 ## Tooling
 
