@@ -7,6 +7,7 @@
 package wtf.metio.yosql.tooling.maven;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -26,7 +27,12 @@ import java.util.Locale;
 /**
  * The generate goal generates Java code based on SQL files.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
+@Mojo(
+        name = "generate",
+        defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+        instantiationStrategy = InstantiationStrategy.SINGLETON,
+        threadSafe = true
+)
 public class GenerateMojo extends AbstractMojo {
 
     private static final Logger LOG = LoggerFactory.getLogger(Loggers.EXECUTIONS.loggerName);

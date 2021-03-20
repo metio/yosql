@@ -57,12 +57,22 @@ mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html).
               <configGroup>
                 <configOption>configValue</configOption>
               </configGroup>
+              <executions>
+                <execution>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                </execution>
+              </executions>
             </configuration>
         </plugin>
         ...
     </plugins>
 </build>
 ```
+
+The `generate` goal binds itself automatically to the `generate-sources` phase. In case you want to run it in another phase, change the above example accordingly.
 
 ### Multiple Configurations
 
@@ -92,6 +102,9 @@ the generated code of each other. The last execution will win. Share configurati
             <executions>
                 <execution>
                     <id>config-a</id>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
                     <configuration>
                       <files>
                         <inputBaseDirectory>src/main/database/reactive</inputBaseDirectory>
@@ -105,6 +118,9 @@ the generated code of each other. The last execution will win. Share configurati
             <executions>
                 <execution>
                     <id>config-b</id>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
                     <configuration>
                       <files>
                         <inputBaseDirectory>src/main/database/synchronous</inputBaseDirectory>
