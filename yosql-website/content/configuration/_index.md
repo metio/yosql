@@ -12,12 +12,12 @@ By default, `YoSQL` generates code that uses all features of the latest supporte
 
 Since the number of options is always growing, they are now grouped into the following categories:
 
-- [annotations](./annotations): Configures the usage of annotations on generated types, fields, and methods.
-- [files](./files): Configures how files are read and how output is written.
-- [java](./java): Configures whether various Java language features are used in the generated code.
-- [jdbc](./jdbc): Configures how the JDBC API is used in the generated code.
-- [repositories](./repositories): Configures fine-grained details of the generated repositories.
-- [resources](./resources): Configures how system resources are used while generating code.
+- [Annotations](./annotations): Configures the usage of annotations on generated types, fields, and methods.
+- [Files](./files): Configures how files are read and how output is written.
+- [Java](./java): Configures whether various Java language features are used in the generated code.
+- [JDBC](./jdbc): Configures how the JDBC API is used in the generated code.
+- [Repositories](./repositories): Configures fine-grained details of the generated repositories.
+- [Resources](./resources): Configures how system resources are used while generating code.
 
 Depending on your tooling, `YoSQL` can be configured as explained in the following sections.
 
