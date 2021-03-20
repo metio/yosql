@@ -47,7 +47,7 @@
                         <apiVersion>11</apiVersion>
                     </java>
                     <repositories>
-                        <basePackageName>wtf.metio.yosql.example.maven.jdbc.java11.persistence</basePackageName>
+                        <basePackageName>wtf.metio.yosql.example.maven.jdbc.java16.persistence</basePackageName>
                     </repositories>
                     <jdbc>
                         <utilityPackageName>wtf.metio.yosql.example.maven.jdbc.java16.persistence.util</utilityPackageName>
