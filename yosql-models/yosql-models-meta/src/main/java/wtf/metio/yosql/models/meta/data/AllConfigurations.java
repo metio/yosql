@@ -17,7 +17,8 @@ import java.util.List;
 public final class AllConfigurations {
 
     public static List<ConfigurationGroup> allConfigurationGroups() {
-        return List.of(Annotations.configurationGroup(),
+        return List.of(
+                Annotations.configurationGroup(),
                 Api.configurationGroup(),
                 Files.configurationGroup(),
                 Repositories.configurationGroup(),
