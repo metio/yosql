@@ -63,15 +63,15 @@ public class SomeRepository {
 
 ## Related Options
 
-- [annotateClasses](../annotateclasses): Controls whether the `@Generated` annotation should be added at all.
-- [classAnnotation](../classannotation): Controls which `@Generated` annotation should be used.
-- [classMembers](../classmembers): Controls which `@Generated` annotation members should be used.
-- [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added at all.
-- [fieldAnnotation](../fieldannotation): Controls which `@Generated` annotation should be used.
-- [fieldMembers](../fieldmembers): Controls which `@Generated` annotation members should be used.
-- [annotateMethods](../annotatemethods): Controls whether the `@Generated` annotation should be added at all.
-- [methodAnnotation](../methodannotation): Controls which `@Generated` annotation should be used.
-- [methodMembers](../methodmembers): Controls which `@Generated` annotation members should be used.
+- [annotateClasses](../annotateclasses): Controls whether the `@Generated` annotation should be added to classes.
+- [classAnnotation](../classannotation): Controls which `@Generated` annotation should be used on classes.
+- [classMembers](../classmembers): Controls which `@Generated` annotation members should be used on classes.
+- [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added to fields.
+- [fieldAnnotation](../fieldannotation): Controls which `@Generated` annotation should be used on fields.
+- [fieldMembers](../fieldmembers): Controls which `@Generated` annotation members should be used on fields.
+- [annotateMethods](../annotatemethods): Controls whether the `@Generated` annotation should be added to methods.
+- [methodAnnotation](../methodannotation): Controls which `@Generated` annotation should be used on methods.
+- [methodMembers](../methodmembers): Controls which `@Generated` annotation members should be used on methods.
 
 ## Tooling
 
