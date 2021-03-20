@@ -10,7 +10,7 @@ tags:
   - Maven
 ---
 
-[Maven](https://maven.apache.org/) projects can use the `yosql-tooling-maven` plugin to use `YoSQL` in their builds. The following steps show how a basic setup looks like. In case your are looking for more details, check out the configuration section further down below.
+[Maven](https://maven.apache.org/) projects can use the `yosql-tooling-maven` plugin to use `YoSQL` in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.
 
 1. Add the plugin to your `pom.xml`:
     ```xml
