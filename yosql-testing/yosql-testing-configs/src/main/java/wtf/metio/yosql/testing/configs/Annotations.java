@@ -22,7 +22,6 @@ public final class Annotations {
 
     public static AnnotationsConfiguration processingApi() {
         return AnnotationsConfiguration.usingDefaults()
-                .setApi(AnnotationClass.PROCESSING_API)
                 .setAnnotateClasses(true)
                 .setAnnotateFields(true)
                 .setAnnotateMethods(true)
@@ -34,7 +33,6 @@ public final class Annotations {
 
     public static AnnotationsConfiguration annotationApi() {
         return AnnotationsConfiguration.usingDefaults()
-                .setApi(AnnotationClass.ANNOTATION_API)
                 .setAnnotateClasses(true)
                 .setAnnotateFields(true)
                 .setAnnotateMethods(true)

@@ -20,7 +20,7 @@ final class AnnotationClassTest implements EnumTCK<AnnotationClass> {
 
     @Override
     public Stream<String> validValues() {
-        return Stream.of("NONE", "ANNOTATION_API", "PROCESSING_API");
+        return Stream.of("ANNOTATION_API", "PROCESSING_API");
     }
 
 }
