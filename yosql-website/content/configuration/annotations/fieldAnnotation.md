@@ -66,6 +66,7 @@ public class SomeRepository {
 - [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added at all.
 - [fieldMembers](../fieldmembers): Controls which `@Generated` annotation members should be used.
 - [fieldComment](../fieldcomment): Controls the comment used in the `@Generated` annotation.
+- [generatorName](../generatorname): Controls the value used in the `@Generated` annotation.
 
 ## Tooling
 

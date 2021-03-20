@@ -62,6 +62,7 @@ public class SomeRepository {
 - [annotateClasses](../annotateclasses): Controls whether the `@Generated` annotation should be added at all.
 - [classAnnotation](../classannotation): Controls which `@Generated` annotation should be used.
 - [classMembers](../classmembers): Controls which `@Generated` annotation members should be used.
+- [generatorName](../generatorname): Controls the value used in the `@Generated` annotation.
 
 ## Tooling
 

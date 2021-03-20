@@ -70,6 +70,7 @@ public class SomeRepository {
 - [annotateMethods](../annotatemethods): Controls whether the `@Generated` annotation should be added at all.
 - [methodAnnotation](../methodannotation): Controls which `@Generated` annotation should be used.
 - [methodMembers](../methodmembers): Controls which `@Generated` annotation members should be used.
+- [generatorName](../generatorname): Controls the value used in the `@Generated` annotation.
 
 ## Tooling
 

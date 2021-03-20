@@ -64,8 +64,14 @@ public class SomeRepository {
 ## Related Options
 
 - [annotateClasses](../annotateclasses): Controls whether the `@Generated` annotation should be added at all.
+- [classAnnotation](../classannotation): Controls which `@Generated` annotation should be used.
+- [classMembers](../classmembers): Controls which `@Generated` annotation members should be used.
 - [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added at all.
+- [fieldAnnotation](../fieldannotation): Controls which `@Generated` annotation should be used.
+- [fieldMembers](../fieldmembers): Controls which `@Generated` annotation members should be used.
 - [annotateMethods](../annotatemethods): Controls whether the `@Generated` annotation should be added at all.
+- [methodAnnotation](../methodannotation): Controls which `@Generated` annotation should be used.
+- [methodMembers](../methodmembers): Controls which `@Generated` annotation members should be used.
 
 ## Tooling
 
