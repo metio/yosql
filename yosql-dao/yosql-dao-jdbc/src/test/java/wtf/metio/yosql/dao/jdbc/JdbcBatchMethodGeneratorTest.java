@@ -7,30 +7,27 @@
 
 package wtf.metio.yosql.dao.jdbc;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.codegen.api.BatchMethodGenerator;
+import wtf.metio.yosql.codegen.tck.BatchMethodGeneratorTCK;
 import wtf.metio.yosql.testing.configs.Java;
-import wtf.metio.yosql.testing.configs.Sql;
 
 @DisplayName("JdbcBatchMethodGenerator")
 class JdbcBatchMethodGeneratorTest {
 
     @Nested
     @DisplayName("using default configuration")
-    class Defaults {
+    class Defaults implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator();
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator();
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -77,25 +74,23 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
 
     @Nested
     @DisplayName("using java 4 configuration")
-    class Java4 {
+    class Java4 implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator(Java.java4());
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator(Java.java4());
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -142,25 +137,23 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
 
     @Nested
     @DisplayName("using java 5 configuration")
-    class Java5 {
+    class Java5 implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator(Java.java5());
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator(Java.java5());
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -207,25 +200,23 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
 
     @Nested
     @DisplayName("using java 7 configuration")
-    class Java7 {
+    class Java7 implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator(Java.java7());
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator(Java.java7());
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -272,25 +263,23 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
 
     @Nested
     @DisplayName("using java 8 configuration")
-    class Java8 {
+    class Java8 implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator(Java.java8());
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator(Java.java8());
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -337,25 +326,23 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
 
     @Nested
     @DisplayName("using java 9 configuration")
-    class Java9 {
+    class Java9 implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator(Java.java9());
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator(Java.java9());
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -402,25 +389,23 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
 
     @Nested
     @DisplayName("using java 11 configuration")
-    class Java11 {
+    class Java11 implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator(Java.java11());
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator(Java.java11());
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -467,25 +452,23 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
 
     @Nested
     @DisplayName("using java 14 configuration")
-    class Java14 {
+    class Java14 implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator(Java.java14());
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator(Java.java14());
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -532,25 +515,23 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
 
     @Nested
     @DisplayName("using java 16 configuration")
-    class Java16 {
+    class Java16 implements BatchMethodGeneratorTCK {
 
-        @Test
-        void shouldGenerateBatchWriteMethod() {
-            // given
-            final var generator = JdbcObjectMother.batchMethodGenerator(Java.java16());
+        @Override
+        public BatchMethodGenerator generator() {
+            return JdbcObjectMother.batchMethodGenerator(Java.java16());
+        }
 
-            // when
-            final var result = generator.batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements());
-
-            // then
-            Assertions.assertEquals("""
+        @Override
+        public String batchWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -597,7 +578,7 @@ class JdbcBatchMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, result.toString());
+                    """;
         }
 
     }
