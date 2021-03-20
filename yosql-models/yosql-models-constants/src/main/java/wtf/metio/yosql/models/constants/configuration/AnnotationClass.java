@@ -13,11 +13,6 @@ package wtf.metio.yosql.models.constants.configuration;
 public enum AnnotationClass {
 
     /**
-     * Option that disables adding a new annotation
-     */
-    NONE("please.report.this.Bug"),
-
-    /**
      * Uses the "javax.annotation.Generated" annotation
      */
     ANNOTATION_API("javax.annotation.Generated"),

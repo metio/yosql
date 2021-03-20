@@ -71,7 +71,7 @@ public final class DefaultAnnotationGenerator implements AnnotationGenerator {
             final AnnotationClass classOption,
             final AnnotationMembers memberOption,
             final String comment) {
-        if (shouldAnnotate && AnnotationClass.NONE != classOption) {
+        if (shouldAnnotate) {
             final var annotationClass = ClassName.bestGuess(classOption.annotationClass);
             final var builder = AnnotationSpec.builder(annotationClass);
             if (OPTIONS_WITH_VALUE.contains(memberOption)) {

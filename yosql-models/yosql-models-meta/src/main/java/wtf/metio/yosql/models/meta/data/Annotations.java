@@ -36,7 +36,6 @@ public final class Annotations {
                 .addSettings(classComment())
                 .addSettings(fieldComment())
                 .addSettings(methodComment())
-                .addSettings(api())
                 .addSettings(generatorName())
                 .build();
     }
@@ -146,15 +145,6 @@ public final class Annotations {
                 .setDescription("Sets the comment used for annotated methods.")
                 .setType(TypicalTypes.STRING)
                 .setValue(DEFAULT_COMMENT)
-                .build();
-    }
-
-    private static ConfigurationSetting api() {
-        return ConfigurationSetting.builder()
-                .setName("api")
-                .setDescription("Controls which @Generated annotation should be used.")
-                .setType(TypeName.get(AnnotationClass.class))
-                .setValue(AnnotationClass.PROCESSING_API)
                 .build();
     }
 
