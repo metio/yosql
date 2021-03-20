@@ -13,7 +13,6 @@ By default, `YoSQL` generates code that uses all features of the latest supporte
 Since the number of options is always growing, they are now grouped into the following categories:
 
 - [annotations](./annotations): Configures the usage of annotations on generated types, fields, and methods.
-- [api](./api): Configures which APIs are used in the generated code.
 - [files](./files): Configures how files are read and how output is written.
 - [java](./java): Configures whether various Java language features are used in the generated code.
 - [jdbc](./jdbc): Configures how the JDBC API is used in the generated code.
