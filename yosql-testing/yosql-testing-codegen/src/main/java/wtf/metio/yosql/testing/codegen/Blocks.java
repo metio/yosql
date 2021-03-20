@@ -25,15 +25,27 @@ public final class Blocks {
     }
 
     public static Classes classes() {
-        return new DefaultClasses(Java.defaults());
+        return classes(Java.defaults());
+    }
+
+    public static Classes classes(final JavaConfiguration java) {
+        return new DefaultClasses(java);
     }
 
     public static Parameters parameters() {
-        return new DefaultParameters(names(), Java.defaults());
+        return parameters(Java.defaults());
+    }
+
+    public static Parameters parameters(final JavaConfiguration java) {
+        return new DefaultParameters(names(), java);
     }
 
     public static Methods methods() {
-        return new DefaultMethods(annotationGenerator(), javadoc(), Java.defaults());
+        return methods(Java.defaults());
+    }
+
+    public static Methods methods(final JavaConfiguration java) {
+        return new DefaultMethods(annotationGenerator(), javadoc(), java);
     }
 
     public static Fields fields() {
@@ -45,7 +57,11 @@ public final class Blocks {
     }
 
     public static Variables variables() {
-        return new DefaultVariables(Java.defaults());
+        return variables(Java.defaults());
+    }
+
+    public static Variables variables(final JavaConfiguration java) {
+        return new DefaultVariables(java);
     }
 
     public static GenericBlocks genericBlocks() {
@@ -53,7 +69,11 @@ public final class Blocks {
     }
 
     public static ControlFlows controlFlows() {
-        return new DefaultControlFlows(variables(), names());
+        return controlFlows(Java.defaults());
+    }
+
+    public static ControlFlows controlFlows(final JavaConfiguration java) {
+        return new DefaultControlFlows(variables(java), names());
     }
 
     public static AnnotationGenerator annotationGenerator() {

@@ -13,39 +13,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
-import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
-import wtf.metio.yosql.testing.codegen.Blocks;
-import wtf.metio.yosql.testing.configs.Apis;
-import wtf.metio.yosql.testing.configs.Jdbc;
 import wtf.metio.yosql.testing.configs.Sql;
-import wtf.metio.yosql.testing.logging.Loggers;
 
 @DisplayName("DefaultJdbcBlocks")
 class DefaultJdbcBlocksTest {
 
-    private DefaultJdbcBlocks generator;
+    private JdbcBlocks generator;
 
     @BeforeEach
     void setUp() {
-        final var config = Jdbc.defaults();
-        final var names = Blocks.names();
-        generator = new DefaultJdbcBlocks(
-                RuntimeConfiguration.usingDefaults()
-                        .setApi(Apis.jul())
-                        .build(),
-                Blocks.genericBlocks(),
-                Blocks.controlFlows(),
-                names,
-                Blocks.variables(),
-                config,
-                new DefaultJdbcFields(config),
-                new DefaultJdbcMethods(
-                        new DefaultJdbcDataSourceMethods(config),
-                        new DefaultJdbcConnectionMethods(names, config),
-                        new DefaultJdbcResultSetMethods(config),
-                        new DefaultJdbcMetaDataMethods(config),
-                        new DefaultJdbcStatementMethods(config)),
-                Loggers.loggingGenerator());
+        generator = JdbcObjectMother.jdbcBlocks();
     }
 
     @Test

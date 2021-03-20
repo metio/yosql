@@ -10,11 +10,13 @@ package wtf.metio.yosql.dao.jdbc;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
+import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.Apis;
 import wtf.metio.yosql.testing.configs.Files;
+import wtf.metio.yosql.testing.configs.Java;
 import wtf.metio.yosql.testing.configs.Jdbc;
 import wtf.metio.yosql.testing.logging.Loggers;
 
@@ -31,11 +33,15 @@ public final class JdbcObjectMother {
     }
 
     public static FieldsGenerator fieldsGenerator() {
+        return fieldsGenerator(Java.defaults());
+    }
+
+    public static FieldsGenerator fieldsGenerator(final JavaConfiguration java) {
         return new JdbcFieldsGenerator(
                 jdbcConfig(),
                 Loggers.loggingGenerator(),
                 Blocks.javadoc(),
-                Blocks.fields(),
+                Blocks.fields(java),
                 jdbcFields());
     }
 
@@ -43,10 +49,10 @@ public final class JdbcObjectMother {
         return new DefaultJdbcFields(jdbcConfig());
     }
 
-    public static ConstructorGenerator constructorGenerator() {
+    public static ConstructorGenerator constructorGenerator(final JavaConfiguration java) {
         return new JdbcConstructorGenerator(
                 Blocks.genericBlocks(),
-                Blocks.methods(),
+                Blocks.methods(java),
                 jdbcConfig(),
                 jdbcParameter());
     }
@@ -56,12 +62,16 @@ public final class JdbcObjectMother {
     }
 
     public static JdbcBlocks jdbcBlocks() {
+        return jdbcBlocks(Java.defaults());
+    }
+
+    public static JdbcBlocks jdbcBlocks(final JavaConfiguration java) {
         return new DefaultJdbcBlocks(
                 runtimeConfig(),
                 Blocks.genericBlocks(),
-                Blocks.controlFlows(),
+                Blocks.controlFlows(java),
                 Blocks.names(),
-                Blocks.variables(),
+                Blocks.variables(java),
                 jdbcConfig(),
                 jdbcFields(),
                 jdbcMethods(),
@@ -76,49 +86,53 @@ public final class JdbcObjectMother {
                 .build();
     }
 
-    public static StandardMethodGenerator standardMethodGenerator() {
+    public static StandardMethodGenerator standardMethodGenerator(final JavaConfiguration java) {
         return new JdbcStandardMethodGenerator(
-                Blocks.controlFlows(),
-                Blocks.methods(),
-                Blocks.parameters(),
+                Blocks.controlFlows(java),
+                Blocks.methods(java),
+                Blocks.parameters(java),
                 Loggers.loggingGenerator(),
-                jdbcBlocks(),
+                jdbcBlocks(java),
                 jdbcTransformer(),
                 jdbcConfig());
     }
 
     public static BatchMethodGenerator batchMethodGenerator() {
+        return batchMethodGenerator(Java.defaults());
+    }
+
+    public static BatchMethodGenerator batchMethodGenerator(final JavaConfiguration java) {
         return new JdbcBatchMethodGenerator(
-                Blocks.controlFlows(),
-                Blocks.methods(),
-                Blocks.parameters(),
+                Blocks.controlFlows(java),
+                Blocks.methods(java),
+                Blocks.parameters(java),
                 Loggers.loggingGenerator(),
-                jdbcBlocks(),
+                jdbcBlocks(java),
                 jdbcTransformer());
     }
 
-    public static Java8StreamMethodGenerator java8StreamMethodGenerator() {
+    public static Java8StreamMethodGenerator java8StreamMethodGenerator(final JavaConfiguration java) {
         return new JdbcJava8StreamMethodGenerator(
                 jdbcConfig(),
                 Blocks.genericBlocks(),
-                Blocks.controlFlows(),
+                Blocks.controlFlows(java),
                 Blocks.names(),
-                Blocks.methods(),
-                Blocks.parameters(),
+                Blocks.methods(java),
+                Blocks.parameters(java),
                 Loggers.loggingGenerator(),
-                jdbcBlocks(),
+                jdbcBlocks(java),
                 jdbcTransformer());
     }
 
-    public static RxJavaMethodGenerator rxJavaMethodGenerator() {
+    public static RxJavaMethodGenerator rxJavaMethodGenerator(final JavaConfiguration java) {
         return new JdbcRxJavaMethodGenerator(
                 jdbcConfig(),
-                Blocks.controlFlows(),
+                Blocks.controlFlows(java),
                 Blocks.names(),
-                Blocks.methods(),
-                Blocks.parameters(),
+                Blocks.methods(java),
+                Blocks.parameters(java),
                 Loggers.loggingGenerator(),
-                jdbcBlocks());
+                jdbcBlocks(java));
     }
 
     public static JdbcConfiguration jdbcConfig() {
@@ -130,12 +144,16 @@ public final class JdbcObjectMother {
     }
 
     public static GenericMethodsGenerator genericMethodsGenerator() {
+        return genericMethodsGenerator(Java.defaults());
+    }
+
+    public static GenericMethodsGenerator genericMethodsGenerator(final JavaConfiguration java) {
         return new GenericMethodsGenerator(
-                constructorGenerator(),
-                standardMethodGenerator(),
-                batchMethodGenerator(),
-                java8StreamMethodGenerator(),
-                rxJavaMethodGenerator());
+                constructorGenerator(java),
+                standardMethodGenerator(java),
+                batchMethodGenerator(java),
+                java8StreamMethodGenerator(java),
+                rxJavaMethodGenerator(java));
     }
 
     private JdbcObjectMother() {
