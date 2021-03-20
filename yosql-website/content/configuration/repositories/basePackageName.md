@@ -55,7 +55,7 @@ for Maven](../../tooling/maven).
     <plugins>
       <plugin>
         <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-maven-plugin</artifactId>
+        <artifactId>yosql-tooling-maven</artifactId>
         <configuration>
           <repositories>
             <basePackageName>your.own.domain</basePackageName>

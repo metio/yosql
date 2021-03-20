@@ -10,40 +10,36 @@ tags:
   - Maven
 ---
 
-## Getting Started
+[Maven](https://maven.apache.org/) projects can use the `yosql-tooling-maven` plugin to use `YoSQL` in their builds. The following steps show how a basic setup looks like. In case your are looking for more details, check out the configuration section further down below.
 
 1. Add the plugin to your `pom.xml`:
-
-```xml
-<build>
-    <plugins>
-        ...
-        <plugin>
-            <groupId>wtf.metio.yosql</groupId>
-            <artifactId>yosql-maven-plugin</artifactId>
-        </plugin>
-        ...
-    </plugins>
-</build>
-```
-
-2. Add .sql files in *src/main/yosql* and write SQL statements into them.
-
-```
-<project_root>/
-├── pom.xml
-└── src/
-    └── main/
-        └── yosql/
-            └── domainObject/
-                ├── yourQuery.sql
-                └── changeYourData.sql
-            └── aggregateRoot/
-                ├── anotherQuery.sql
-                └── addData.sql
-```
-
-3. Execute the *yosql:generate* goal (or just run `mvn generate-sources`) to generate the Java code.
+    ```xml
+    <build>
+        <plugins>
+            ...
+            <plugin>
+                <groupId>wtf.metio.yosql</groupId>
+                <artifactId>yosql-tooling-maven</artifactId>
+            </plugin>
+            ...
+        </plugins>
+    </build>
+    ```
+2. Add .sql files in `src/main/yosql` and write SQL statements into them.
+    ```
+    <project_root>/
+    ├── pom.xml
+    └── src/
+        └── main/
+            └── yosql/
+                └── domainObject/
+                    ├── yourQuery.sql
+                    └── changeYourData.sql
+                └── aggregateRoot/
+                    ├── anotherQuery.sql
+                    └── addData.sql
+    ```
+3. Execute the `yosql:generate` goal (or just run `mvn generate-sources`) to generate the Java code.
 
 ## Configuration
 
@@ -56,7 +52,7 @@ mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html).
         ...
         <plugin>
             <groupId>wtf.metio.yosql</groupId>
-            <artifactId>yosql-maven-plugin</artifactId>
+            <artifactId>yosql-tooling-maven</artifactId>
             <configuration>
               <configGroup>
                 <configOption>configValue</configOption>
@@ -87,7 +83,7 @@ the generated code of each other. The last execution will win. Share configurati
         ...
         <plugin>
             <groupId>wtf.metio.yosql</groupId>
-            <artifactId>yosql-maven-plugin</artifactId>
+            <artifactId>yosql-tooling-maven</artifactId>
             <configuration>
               <repositories>
                 <basePackageName>your.domain.persistence</basePackageName>

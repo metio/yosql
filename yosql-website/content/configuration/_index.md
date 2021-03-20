@@ -31,7 +31,7 @@ for Maven](../tooling/maven).
       ...
       <plugin>
         <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-maven-plugin</artifactId>
+        <artifactId>yosql-tooling-maven</artifactId>
         <configuration>
           <configGroup>
             <configOption>configValue</configOption>
