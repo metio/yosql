@@ -34,7 +34,7 @@ public class SomeRepository {
     public void someMethod() {
         // ... some code    
     }
-    
+
     // ... rest of generated code
 
 }
@@ -59,7 +59,7 @@ public class SomeRepository {
     public void someMethod() {
       // ... some code    
     }
-  
+
     // ... rest of generated code
 
 }
