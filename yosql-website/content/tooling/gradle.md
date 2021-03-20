@@ -38,7 +38,7 @@ tags:
 
 You can configure how YoSQL operates and how the generated code looks like by using the `yosql` task extension. Take a look at the [available configuration options](../../configuration/) in order to see what can be configured.
 
-```xml
+```kotlin
 yosql {
   configGroup {
     configOption = configValue
