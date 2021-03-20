@@ -10,9 +10,11 @@ This part of the documentation is intended for **developers** looking for inform
 
 By default, `YoSQL` generates code that uses all features of the latest supported Java release without using any non-JDK classes. In case you don't want to use a particular feature, use the relevant configuration option to disable it. We recommend to start with an empty configuration and adapting that to your needs, using as many configuration options as required.
 
+## Tooling
+
 Depending on your tooling, `YoSQL` can be configured as explained in the following sections.
 
-## Maven
+### Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](../tooling/maven).
@@ -35,7 +37,7 @@ for Maven](../tooling/maven).
   </build>
 ```
 
-## Gradle
+### Gradle
 
 In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../tooling/gradle).
 
@@ -51,14 +53,14 @@ yosql {
 }
 ```
 
-## Bazel
+### Bazel
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
 Bazel](../tooling/bazel).
 
 TODO: info for bazel
 
-## CLI
+### CLI
 
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
 
