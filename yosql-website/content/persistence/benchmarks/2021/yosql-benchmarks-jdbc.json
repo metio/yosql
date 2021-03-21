@@ -1,0 +1,59 @@
+[
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbc.JdbcReadBenchmarks.benchmarkReadingData",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/usr/java/openjdk-15/bin/java",
+        "jvmArgs" : [
+            "-Dclassworlds.conf=/usr/share/maven/bin/m2.conf",
+            "-Dmaven.home=/usr/share/maven",
+            "-Dlibrary.jansi.path=/usr/share/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/metio/yosql"
+        ],
+        "jdkVersion" : "15.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "15.0.2+7-27",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1158.3104176618879,
+            "scoreError" : 45.98632801366455,
+            "scoreConfidence" : [
+                1112.3240896482234,
+                1204.2967456755523
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1144.3099934554675,
+                "50.0" : 1160.9322046292652,
+                "90.0" : 1174.5188369919063,
+                "95.0" : 1174.5188369919063,
+                "99.0" : 1174.5188369919063,
+                "99.9" : 1174.5188369919063,
+                "99.99" : 1174.5188369919063,
+                "99.999" : 1174.5188369919063,
+                "99.9999" : 1174.5188369919063,
+                "100.0" : 1174.5188369919063
+            },
+            "scoreUnit" : "ns/op",
+            "rawData" : [
+                [
+                    1160.9322046292652,
+                    1149.0679485161575,
+                    1144.3099934554675,
+                    1174.5188369919063,
+                    1162.7231047166433
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+
