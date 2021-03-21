@@ -12,7 +12,7 @@ tags:
 
 The `javax.sql` based implementation. It does not require any dependencies outside from standard JDK classes.
 
-## Converters
+## Manual Converters
 
 The JDBC API offers no built-in object mapping mechanism. In order to use high level types of your domain, use a converter to map results to your types.
 
