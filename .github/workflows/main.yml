@@ -34,6 +34,11 @@ jobs:
         run: cp ./yosql-benchmarks/yosql-benchmarks-codegen/target/benchmark/yosql-benchmarks-codegen.json ./yosql-website/content/persistence/benchmarks/current/yosql-benchmarks-codegen.json
       - name: Copy JDBC Benchmark Results
         run: cp ./yosql-benchmarks/yosql-benchmarks-jdbc/target/benchmark/yosql-benchmarks-jdbc.json ./yosql-website/content/persistence/benchmarks/current/yosql-benchmarks-jdbc.json
+      - id: hugo
+        name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: latest
       - name: Build Website
         run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
       - name: Deploy Website
