@@ -5,13 +5,15 @@
  * in the LICENSE file.
  */
 
--- name: dropPersonsTable
-DROP TABLE IF EXISTS persons
-;
-
--- name: createPersonsTable
-CREATE TABLE persons (
-    id INTEGER,
-    name VARCHAR(50)
-)
+--
+-- parameters:
+--   - name: userId
+--     type: int
+--   - name: name
+--     type: java.lang.String
+--
+select *
+from users
+where   id = :userId
+  and   name = :name
 ;

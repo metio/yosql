@@ -15,7 +15,7 @@ abstract class AbstractMediumSampleBenchmark extends AbstractDaggerBenchmark {
 
     @Setup
     public final void generateSqlFiles() {
-        prepareRepositoriesForAllUseCases(50);
+        prepareRepositoriesForAllUseCases(100);
     }
 
 }

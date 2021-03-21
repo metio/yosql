@@ -5,13 +5,11 @@
  * in the LICENSE file.
  */
 
--- name: dropPersonsTable
-DROP TABLE IF EXISTS persons
-;
-
--- name: createPersonsTable
-CREATE TABLE persons (
-    id INTEGER,
+--
+--
+CREATE TABLE companies
+(
+    id   INTEGER,
     name VARCHAR(50)
 )
 ;

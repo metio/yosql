@@ -91,7 +91,7 @@
                             <measurementTime>1s</measurementTime>
                             <warmupTime>1s</warmupTime>
                             <resultFormat>json</resultFormat>
-                            <resultFile>benchmark_json_result</resultFile>
+                            <resultFile>yosql-benchmarks-codegen.json</resultFile>
                         </configuration>
                     </plugin>
                 </plugins>

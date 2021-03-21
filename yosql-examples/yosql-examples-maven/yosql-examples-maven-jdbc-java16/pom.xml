@@ -44,7 +44,7 @@
                         <skipLines>6</skipLines>
                     </files>
                     <java>
-                        <apiVersion>11</apiVersion>
+                        <apiVersion>16</apiVersion>
                     </java>
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.java16.persistence</basePackageName>

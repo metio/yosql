@@ -69,6 +69,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final Map<String, List<Integer>> parameterIndices,
             final int statementInFile) {
         final var userConfiguration = loadConfig(yaml);
+        logConfiguration(userConfiguration);
         final var baseConfiguration = apply(userConfiguration, List.of(
                 configuration -> name(configuration, source, statementInFile),
                 this::batchNamePrefix,
@@ -82,6 +83,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 this::type,
                 this::returningMode
         ));
+        logConfiguration(baseConfiguration);
         validateNames(source, baseConfiguration);
         return apply(baseConfiguration, List.of(
                 configuration -> name(configuration, source, statementInFile),
@@ -104,7 +106,23 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         for (final var transformer : transformers) {
             transformed = transformer.apply(transformed);
         }
+        logConfiguration(configuration);
         return transformed;
+    }
+
+    private void logConfiguration(final SqlConfiguration configuration) {
+        logger.debug("SQL CONFIGURATION:");
+        logger.debug("name:             {}", configuration.name());
+        logger.debug("repository:       {}", configuration.repository());
+        logger.debug("standardApi:      {}", configuration.generateStandardApi());
+        logger.debug("batchApi:         {}", configuration.generateBatchApi());
+        logger.debug("rxJava2Api:       {}", configuration.generateRxJavaApi());
+        logger.debug("eagerStreamApi:   {}", configuration.generateStreamEagerApi());
+        logger.debug("lazyStreamApi:    {}", configuration.generateStreamLazyApi());
+        logger.debug("rxJava2Api:       {}", configuration.generateRxJavaApi());
+        logger.debug("type:             {}", configuration.type());
+        logger.debug("returningMode:    {}", configuration.returningMode());
+        logger.debug("vendor:           {}", configuration.vendor());
     }
 
     private static SqlConfiguration name(final SqlConfiguration configuration, final Path source, final int statementInFile) {
@@ -181,7 +199,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private SqlConfiguration type(final SqlConfiguration configuration) {
-        if (configuration.type() == null) {
+        if (configuration.type() == null || UNKNOWN.equals(configuration.type())) {
             return SqlConfiguration.copyOf(configuration)
                     .withType(mapNameToType(configuration.name()));
         }
@@ -209,6 +227,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         return switch (type) {
             case READING -> ReturningMode.LIST;
             case WRITING -> ReturningMode.ONE;
+            case CALLING -> ReturningMode.FIRST;
             default -> ReturningMode.NONE;
         };
     }

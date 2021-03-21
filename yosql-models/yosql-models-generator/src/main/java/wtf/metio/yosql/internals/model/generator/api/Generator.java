@@ -14,8 +14,10 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.function.Function;
 
 public interface Generator extends Function<ConfigurationGroup, TypeSpec> {
@@ -38,7 +40,12 @@ public interface Generator extends Function<ConfigurationGroup, TypeSpec> {
         if ("java.lang.String".equals(type.toString())) {
             builder.add("$S", value);
         } else if (TypicalTypes.listOf(TypicalTypes.STRING).equals(type) && value instanceof String) {
-            builder.add("$T.of($S)", List.class, value);
+            final var split = ((String) value).split(",");
+            final var stringJoiner = new StringJoiner("\", \"", "\"", "\"");
+            Arrays.stream(split)
+                    .map(String::strip)
+                    .forEach(stringJoiner::add);
+            builder.add("$T.of($L)", List.class, stringJoiner.toString());
         }  else if ("java.nio.file.Path".equals(type.toString())) {
             builder.add("$T.get($S)", Paths.class, value);
         } else if ("java.nio.charset.Charset".equals(type.toString())) {

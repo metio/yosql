@@ -5,18 +5,20 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.setup;
+package wtf.metio.yosql.benchmark.jdbc;
 
-import com.example.persistence.SchemaRepository;
+import org.openjdk.jmh.annotations.Benchmark;
 
-import javax.sql.DataSource;
+public class JdbcSchemaBenchmarks extends AbstractBenchmark {
 
-public class Schemata {
+    @Benchmark
+    public final void benchmarkSchemaDrop() {
+        schemaRepository.dropItemsTable();
+    }
 
-    public static void initSchema(final DataSource dataSource) {
-        final var schemaRepository = new SchemaRepository(dataSource);
-        schemaRepository.dropPersonsTable();
-        schemaRepository.createPersonsTable();
+    @Benchmark
+    public final void benchmarkSchemaCreate() {
+        schemaRepository.createItemsTable();
     }
 
 }

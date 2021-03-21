@@ -5,13 +5,15 @@
  * in the LICENSE file.
  */
 
--- name: dropPersonsTable
-DROP TABLE IF EXISTS persons
-;
-
--- name: createPersonsTable
-CREATE TABLE persons (
-    id INTEGER,
-    name VARCHAR(50)
-)
+--
+-- parameters:
+--   - name: min
+--     type: int
+--   - name: max
+--     type: int
+--
+select *
+from companies
+where   id < :max
+  and   id > :min
 ;

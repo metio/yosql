@@ -205,7 +205,7 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting allowedWritePrefixes() {
-        final var stringJoiner = new StringJoiner(", ", "\"", "\"");
+        final var stringJoiner = new StringJoiner("\", \"", "\"", "\"");
         List.of("update", "insert", "delete", "create", "write", "add", "remove", "merge", "drop")
                 .forEach(stringJoiner::add);
         return ConfigurationSetting.builder()
@@ -219,29 +219,29 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting allowedReadPrefixes() {
-        final var stringJoiner = new StringJoiner(", ", "\"", "\"");
-        List.of("").forEach(stringJoiner::add);
+        final var stringJoiner = new StringJoiner("\", \"", "\"", "\"");
+        List.of("read", "select", "find", "query", "lookup", "get").forEach(stringJoiner::add);
         return ConfigurationSetting.builder()
                 .setName("allowedReadPrefixes")
                 .setType(TypicalTypes.listOf(TypicalTypes.STRING))
                 .setValue(CodeBlock.of("$T.of($L)", List.class, stringJoiner.toString()))
                 .setDescription("")
-                .setCliValue("query, read, select, find")
-                .setMavenValue("query, read, select, find")
+                .setCliValue("query, read, select, find, lookup, get")
+                .setMavenValue("query, read, select, find, lookup, get")
                 .build();
     }
 
     private static ConfigurationSetting allowedCallPrefixes() {
-        final var stringJoiner = new StringJoiner(", ", "\"", "\"");
-        List.of("")
+        final var stringJoiner = new StringJoiner("\", \"", "\"", "\"");
+        List.of("call, execute, evaluate, eval")
                 .forEach(stringJoiner::add);
         return ConfigurationSetting.builder()
                 .setName("allowedCallPrefixes")
                 .setType(TypicalTypes.listOf(TypicalTypes.STRING))
                 .setValue(CodeBlock.of("$T.of($L)", List.class, stringJoiner.toString()))
                 .setDescription("")
-                .setCliValue("call")
-                .setMavenValue("call")
+                .setCliValue("call, execute, evaluate, eval")
+                .setMavenValue("call, execute, evaluate, eval")
                 .build();
     }
 

@@ -108,7 +108,7 @@ public final class Sql {
                 .setName("type")
                 .setDescription("The type of the SQL statement.")
                 .setType(TypeName.get(SqlType.class))
-                .setValue(SqlType.READING)
+                .setValue(SqlType.UNKNOWN)
                 .setImmutableAnnotations(List.of(jsonProperty("type")))
                 .build();
     }

@@ -5,13 +5,31 @@
  * in the LICENSE file.
  */
 
--- name: dropPersonsTable
-DROP TABLE IF EXISTS persons
+--
+-- name: findPerson
+-- vendor: Microsoft SQL Server
+-- parameters:
+--   - name: name
+--     type: java.lang.String
+--
+select *
+from persons
+where   name = :name
 ;
 
--- name: createPersonsTable
-CREATE TABLE persons (
-    id INTEGER,
-    name VARCHAR(50)
-)
+--
+-- name: findPerson
+-- vendor: H2
+--
+select  *
+from    persons
+where   name = :name
+;
+
+--
+-- name: findPerson
+--
+select  *
+from    persons
+where   name = :name
 ;

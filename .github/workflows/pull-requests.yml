@@ -1,8 +1,6 @@
-name: Verify
+name: Pull Requests
 on:
   pull_request:
-    branches: [ main ]
-  push:
     branches: [ main ]
 jobs:
   linux:

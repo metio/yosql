@@ -5,13 +5,13 @@
  * in the LICENSE file.
  */
 
--- name: dropPersonsTable
-DROP TABLE IF EXISTS persons
-;
-
--- name: createPersonsTable
-CREATE TABLE persons (
-    id INTEGER,
-    name VARCHAR(50)
-)
+--
+-- parameters:
+--   - name: id
+--     type: int
+--   - name: name
+--     type: java.lang.String
+--
+INSERT INTO companies (id, name)
+VALUES (:id, :name)
 ;

@@ -5,13 +5,17 @@
  * in the LICENSE file.
  */
 
--- name: dropPersonsTable
-DROP TABLE IF EXISTS persons
-;
+package wtf.metio.yosql.benchmark.jdbc;
 
--- name: createPersonsTable
-CREATE TABLE persons (
-    id INTEGER,
-    name VARCHAR(50)
-)
-;
+import org.openjdk.jmh.annotations.Benchmark;
+
+import java.util.Objects;
+
+public class JdbcWriteBenchmarks extends AbstractBenchmark {
+
+    @Benchmark
+    public final void benchmarkWritingData() {
+        companyRepository.insertCompany(99, "jdbc-write");
+    }
+
+}

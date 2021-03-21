@@ -1,0 +1,45 @@
+name: Main Branch Builds
+on:
+  push:
+    branches: [ main ]
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+          java-package: jdk
+          architecture: x64
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: install
+        name: Install Project
+        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --activate-profiles benchmarks install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Copy Codegen Benchmark Results
+        run: cp ./yosql-benchmarks/yosql-benchmarks-codegen/target/benchmark/yosql-benchmarks-codegen.json ./yosql-website/content/persistence/benchmarks/current/yosql-benchmarks-codegen.json
+      - name: Copy JDBC Benchmark Results
+        run: cp ./yosql-benchmarks/yosql-benchmarks-jdbc/target/benchmark/yosql-benchmarks-jdbc.json ./yosql-website/content/persistence/benchmarks/current/yosql-benchmarks-jdbc.json
+      - name: Build Website
+        run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
+      - name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./yosql-website/public
+          force_orphan: true
+          cname: yosql.projects.metio.wtf

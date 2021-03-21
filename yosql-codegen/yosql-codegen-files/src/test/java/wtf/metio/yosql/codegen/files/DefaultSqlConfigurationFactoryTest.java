@@ -42,7 +42,7 @@ class DefaultSqlConfigurationFactoryTest {
     }
 
     @Test
-    void shouldProduceExpectedConfiguration() {
+    void shouldProduceExpectedReadConfiguration() {
         // given
         final var source = Paths.get("Person/read.sql");
         final var yaml = "";
@@ -77,6 +77,62 @@ class DefaultSqlConfigurationFactoryTest {
                 () -> assertEquals("", configuration.vendor(), "vendor"),
                 () -> assertEquals(SqlType.READING, configuration.type(), "type"),
                 () -> assertEquals(ReturningMode.LIST, configuration.returningMode(), "returningMode"));
+    }
+
+    @Test
+    void shouldProduceExpectedWriteConfiguration() {
+        // given
+        final var source = Paths.get("Person/insert.sql");
+        final var yaml = "";
+        final Map<String, List<Integer>> indices = Map.of();
+        final var statementInFile = 1;
+
+        // when
+        final var configuration = factory().createConfiguration(source, yaml, indices, statementInFile);
+
+        // then
+        assertAll("Configuration",
+                () -> assertFalse(configuration.generateBatchApi(), "generateBatchApi"),
+                () -> assertTrue(configuration.catchAndRethrow(), "catchAndRethrow"),
+                () -> assertFalse(configuration.generateRxJavaApi(), "generateRxJavaApi"),
+                () -> assertTrue(configuration.generateStandardApi(), "generateStandardApi"),
+                () -> assertFalse(configuration.generateStreamEagerApi(), "generateStreamEagerApi"),
+                () -> assertFalse(configuration.generateStreamLazyApi(), "generateStreamLazyApi"),
+                () -> assertEquals("insert", configuration.name(), "name"),
+                () -> assertEquals("insertBatch", configuration.batchName(), "batchName"),
+                () -> assertEquals("insertFlow", configuration.flowableName(), "flowableName"),
+                () -> assertEquals("insertStreamEager", configuration.streamEagerName(), "streamEagerName"),
+                () -> assertEquals("insertStreamLazy", configuration.streamLazyName(), "streamLazyName"),
+                () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository(), "repository"),
+                () -> assertEquals("Eager", configuration.eagerName(), "eagerName"),
+                () -> assertEquals("Lazy", configuration.lazyName(), "lazyName"),
+                () -> assertEquals("", configuration.batchPrefix(), "batchPrefix"),
+                () -> assertEquals("Batch", configuration.batchSuffix(), "batchSuffix"),
+                () -> assertEquals("", configuration.rxjava2Prefix(), "rxjava2Prefix"),
+                () -> assertEquals("Flow", configuration.rxjava2Suffix(), "rxjava2Suffix"),
+                () -> assertEquals("", configuration.streamPrefix(), "streamPrefix"),
+                () -> assertEquals("Stream", configuration.streamSuffix(), "streamSuffix"),
+                () -> assertEquals("", configuration.vendor(), "vendor"),
+                () -> assertEquals(SqlType.WRITING, configuration.type(), "type"),
+                () -> assertEquals(ReturningMode.ONE, configuration.returningMode(), "returningMode"));
+    }
+
+    @Test
+    void shouldProduceExpectedWriteConfigurationDrop() {
+        // given
+        final var source = Paths.get("Person/dropPersons.sql");
+        final var yaml = "";
+        final Map<String, List<Integer>> indices = Map.of();
+        final var statementInFile = 1;
+
+        // when
+        final var configuration = factory().createConfiguration(source, yaml, indices, statementInFile);
+
+        // then
+        assertAll("Configuration",
+                () -> assertEquals("dropPersons", configuration.name(), "name"),
+                () -> assertEquals(SqlType.WRITING, configuration.type(), "type"),
+                () -> assertEquals(ReturningMode.ONE, configuration.returningMode(), "returningMode"));
     }
 
     private DefaultSqlConfigurationFactory factory() {

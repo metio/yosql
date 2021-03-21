@@ -5,13 +5,11 @@
  * in the LICENSE file.
  */
 
--- name: dropPersonsTable
-DROP TABLE IF EXISTS persons
-;
-
--- name: createPersonsTable
-CREATE TABLE persons (
-    id INTEGER,
-    name VARCHAR(50)
-)
+--
+-- name: queryAdminUser
+-- repository: Admin
+--
+select *
+from users
+where id = -1
 ;
