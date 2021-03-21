@@ -27,7 +27,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: install
         name: Install Project
-        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --activate-profiles benchmarks install
+        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --activate-profiles benchmarks install -Dorg.slf4j.simpleLogger.log.yosql=warn
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Copy Codegen Benchmark Results
