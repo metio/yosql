@@ -6,13 +6,9 @@ menu:
     weight: 120
 ---
 
-`YoSQL` supports multiple persistence APIs to interact with a database. We recommend that you pick the one that is already available in your project. In case you are starting fresh, `YoSQL` will default to the JDBC implementation because it requires no external dependencies and thus your project should be able to compile the generated code just fine.
+`YoSQL` supports multiple persistence APIs to interact with a database. We recommend that you pick the one that is already available in your project. In case you are starting fresh, `YoSQL` will default to the JDBC implementation because it requires no external dependencies and thus your project should be able to compile the generated code just fine. Some `YoSQL` tooling like the Maven plugin might auto-detect certain settings in your project to make your life easier, however you are always in full control and can change very aspect of the generated code.
 
-Take a look at the available [configuration](../configuration/) options to adapt the generated code according to your needs. In order to monitor execution of your SQL statements, we recommend enabling one of the supported [logging](../logging/) APIs to add log output to the generated code.
-
-Which of the available persistence APIs you are going to use in your project is entirely your choice, however using an API that is already used in your project is recommended to keep the number of dependencies as low as possible (zero).
-
-TODO: link to benchmarks
+Take a look at the available [configuration](../configuration/) options to adapt the generated code according to your needs. In order to monitor execution of your SQL statements, we recommend enabling one of the supported [logging](../logging/) APIs to add log output to the generated code. Read the [SQL](../sql/) section to learn how to write SQL statements in a `YoSQL`-enabled project.
 
 - [EBean](./ebean/): The `Ebean` based implementation. It uses the constant `EBEAN` to identify itself. 
 - [Fluent JDBC](./fluent-jdbc/): The `Fluent JDBC` based implementation. It uses the constant `FLUENT_JDBC` to identify itself.
@@ -31,9 +27,13 @@ TODO: link to benchmarks
 - [Sql2o](./sql2o/): The `Sql2o` based implementation. It uses the constant `SQL2O` to identify itself.
 - [Vert.x PG Client](./vertx-pg-client/): The `Vert.x PG Client` based implementation. It uses the constant `VERTX_PG_CLIENT` to identify itself.
 
+## Benchmarks
+
+TODO: link to benchmarks
+
 ## Tooling
 
-Replace `configValue` with the constant value for whatever logging API you want to use in the generated code.
+Replace `configValue` with the constant value for whatever persistence API you want to use in the generated code.
 
 ### Maven
 
