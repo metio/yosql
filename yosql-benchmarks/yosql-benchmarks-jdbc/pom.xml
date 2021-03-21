@@ -146,7 +146,7 @@
                             <warmupForks>1</warmupForks>
                             <threads>1</threads>
                             <mode>avgt</mode>
-                            <timeUnit>ns</timeUnit>
+                            <timeUnit>us</timeUnit>
                             <measurementTime>1s</measurementTime>
                             <warmupTime>1s</warmupTime>
                             <resultFormat>json</resultFormat>
