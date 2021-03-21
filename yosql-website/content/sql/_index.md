@@ -6,5 +6,5 @@ menu:
     weight: 140
 ---
 
-This part of the documentation is intended for **developers** looking for information on how to write SQL code in 
-their own project. 
+This part of the documentation is intended for **developers** looking for information on how to write SQL statements in 
+their own project.
