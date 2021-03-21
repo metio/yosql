@@ -85,6 +85,16 @@ public enum PersistenceApis {
     /**
      * Uses Spring-JDBC in generated code.
      */
-    SPRING_JDBC
+    SPRING_JDBC,
+
+    /**
+     * Uses Sql2o in generated code.
+     */
+    SQL2O,
+
+    /**
+     * Uses Vert.x Postgres Client in generated code.
+     */
+    VERTX_PG_CLIENT
 
 }

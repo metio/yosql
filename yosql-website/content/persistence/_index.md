@@ -13,3 +13,82 @@ Take a look at the available [configuration](../configuration/) options to adapt
 Which of the available persistence APIs you are going to use in your project is entirely your choice, however using an API that is already used in your project is recommended to keep the number of dependencies as low as possible (zero).
 
 TODO: link to benchmarks
+
+- [EBean](./ebean/): The `Ebean` based implementation. It uses the constant `EBEAN` to identify itself. 
+- [Fluent JDBC](./fluent-jdbc/): The `Fluent JDBC` based implementation. It uses the constant `FLUENT_JDBC` to identify itself.
+- [JDBC](./jdbc/): The `JDBC` based implementation. It uses the constant `JDBC` to identify itself.
+- [JDBI](./jdbi/): The `JDBI` based implementation. It uses the constant `JDBI` to identify itself.
+- [jOOQ](./jooq/): The `jOOQ` based implementation. It uses the constant `JOOQ` to identify itself.
+- [JPA](./jpa/): The `JPA` based implementation. It uses the constant `JPA` to identify itself.
+- [MyBatis](./mybatis/): The `MyBatis` based implementation. It uses the constant `MYBATIS` to identify itself.
+- [Pyranid](./pyranid/): The `Pyranid` based implementation. It uses the constant `PYRANID` to identify itself.
+- [R2DBC](./r2dbc/): The `R2DBC` based implementation. It uses the constant `R2DBC` to identify itself.
+- [SansOrm](./sansorm/): The `SansOrm` based implementation. It uses the constant `SANS_ORM` to identify itself.
+- [Spring-Data JDBC](./spring-data-jdbc/): The `Spring-Data JDBC` based implementation. It uses the constant `SPRING_DATA_JDBC` to identify itself.
+- [Spring-Data JPA](./spring-data-jpa/): The `Spring-Data JPA` based implementation. It uses the constant `SPRING_DATA_JPA` to identify itself.
+- [Spring-Data R2DBC](./spring-data-r2dbc/): The `Spring-Data R2DBC` based implementation. It uses the constant `SPRING_DATA_R2DBC` to identify itself.
+- [Spring JDBC](./spring-jdbc/): The `Spring JDBC` based implementation. It uses the constant `SPRING_JDBC` to identify itself.
+- [Sql2o](./sql2o/): The `Sql2o` based implementation. It uses the constant `SQL2O` to identify itself.
+- [Vert.x PG Client](./vertx-pg-client/): The `Vert.x PG Client` based implementation. It uses the constant `VERTX_PG_CLIENT` to identify itself.
+
+## Tooling
+
+Replace `configValue` with the constant value for whatever logging API you want to use in the generated code.
+
+### Maven
+
+In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
+for Maven](../../../tooling/maven/).
+
+```xml
+  <build>
+    <plugins>
+      ...
+      <plugin>
+        <groupId>wtf.metio.yosql</groupId>
+        <artifactId>yosql-tooling-maven</artifactId>
+        <configuration>
+          <apis>
+            <daoApi>configValue</daoApi>
+          </apis>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+  </build>
+```
+
+### Gradle
+
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../../../tooling/gradle/).
+
+```groovy
+plugins {
+  id("wtf.metio.yosql")
+}
+
+yosql {
+  apis {
+    daoApi = configValue
+  }
+}
+```
+
+### Bazel
+
+In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
+Bazel](../../../tooling/bazel/).
+
+### CLI
+
+In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../../../tooling/cli/).
+
+```shell
+$ yosql --apis-dao-api=configValue
+```
+
+The shorter form is available as well:
+
+```shell
+$ yosql --dao-api=configValue
+```
