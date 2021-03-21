@@ -7,7 +7,7 @@
 
 --
 --
-CREATE TABLE companies
+CREATE TABLE IF NOT EXISTS companies
 (
     id   INTEGER,
     name VARCHAR(50)

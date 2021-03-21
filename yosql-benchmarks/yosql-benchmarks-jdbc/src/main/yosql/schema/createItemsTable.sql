@@ -7,7 +7,7 @@
 
 --
 --
-CREATE TABLE items
+CREATE TABLE IF NOT EXISTS items
 (
     id   INTEGER,
     name VARCHAR(50)

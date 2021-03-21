@@ -7,14 +7,14 @@
 
 --
 --
-CREATE TABLE persons
+CREATE TABLE IF NOT EXISTS persons
 (
     id   INTEGER,
     name VARCHAR(50)
 )
 ;
 
-CREATE TABLE person_to_company
+CREATE TABLE IF NOT EXISTS person_to_company
 (
     person_id INTEGER,
     company_id INTEGER
