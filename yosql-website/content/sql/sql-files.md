@@ -22,7 +22,7 @@ In order to correctly guess which type (reading/writing/calling) your statement 
 - All names that start with the [configured call prefixes](../../configuration/repositories/allowedcallprefixes/) are assigned the `CALLING` type.
 - All other statements are assigned the `UNKNOWN` type. **Statements of this type are ignored while generating code.**
   
-You can always overwrite that guess with a specific `type` value in your [front matter](../frontmatter/). This can be useful if you want to use a special name for your statement, but don't want to adhere to the configured prefixes. On the other hand, use [validateMethodNamePrefixes](../../configuration/repositories/validatemethodnameprefixes/) to enforce that all statements are named accordingly to the configured prefixes.
+You can always overwrite that guess with a specific `type` value in your [front matter](../frontmatter/). This can be useful if you want to use a special name for your statement, but don't want to adhere to the configured prefixes. On the other hand, enable [validateMethodNamePrefixes](../../configuration/repositories/validatemethodnameprefixes/) to enforce that all statements are named accordingly to the configured prefixes.
 
 ## File Extension
 
