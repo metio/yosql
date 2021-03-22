@@ -1,16 +1,32 @@
 ---
-title: Files
+title: sqlFilesCharset
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
-    parent: Configuration
+    parent: Files
 categories:
   - Configuration
 tags:
+  - sql
   - files
+  - charset
 ---
 
-The `files` configuration can be used to control how `YoSQL` interacts with files.
+The `sqlFilesCharset` option can be used to change the charset `YoSQL` uses to read your `.sql` files. It defaults to `UTF-8`.
+
+## Configuration Options
+
+### Option: 'UTF-8'
+
+The default value of the `sqlFilesCharset` configuration option is `UTF-8` which should work on most systems.
+
+### Option: 'ISO-8859-1'
+
+Changing the `sqlFilesCharset` configuration option to `ISO-8859-1` configures `YoSQL` to use the `ISO-8859-1` charset while reading your `.sql` files.
+
+## Related Options
+
+- [inputBaseDirectory](../inputbasedirectory/): Controls the base directory for `.sql` files.
 
 ## Tooling
 
@@ -28,7 +44,7 @@ for Maven](../../tooling/maven).
         <artifactId>yosql-tooling-maven</artifactId>
         <configuration>
           <files>
-            <configOption>configValue</configOption>
+            <sqlFilesCharset>configValue</sqlFilesCharset>
           </files>
         </configuration>
       </plugin>
@@ -48,7 +64,7 @@ plugins {
 
 yosql {
   files {
-    configOption = configValue
+      sqlFilesCharset = configValue
   }
 }
 ```
@@ -65,11 +81,11 @@ TODO: info for bazel
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
 
 ```shell
-$ yosql --files-config-option=configValue
+$ yosql --files-sql-files-charset=configValue
 ```
 
-As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
+The shorter form is available as well:
 
 ```shell
-$ yosql --config-option=configValue
+$ yosql --sql-files-charset=configValue
 ```

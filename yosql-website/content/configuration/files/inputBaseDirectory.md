@@ -12,7 +12,7 @@ tags:
   - input
 ---
 
-Controls the root directory `YoSQL` will use to search for ´.sql` files.
+Controls the root directory `YoSQL` will use to search for ´.sql` files. The given directory itself and all subdirectories will be searched recursively.
 
 ## Configuration Options
 

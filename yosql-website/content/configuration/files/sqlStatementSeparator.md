@@ -1,16 +1,32 @@
 ---
-title: Files
+title: sqlStatementSeparator
 date: 2019-09-27T18:51:08+02:00
 menu:
-  main:
-    parent: Configuration
+main:
+parent: Files
 categories:
-  - Configuration
-tags:
-  - files
+- Configuration
+  tags:
+- sql
+- files
+- suffix
 ---
 
-The `files` configuration can be used to control how `YoSQL` interacts with files.
+The `sqlStatementSeparator` option can be used to change the character that separates multiple SQL statements within a single `.sql` file. It defaults to `;`.
+
+## Configuration Options
+
+### Option: ';'
+
+The default value of the `sqlStatementSeparator` configuration option is `.sql`. It matches all files that end with `.sql`.
+
+### Option: '|'
+
+Changing the `sqlStatementSeparator` configuration option to `|` configures `YoSQL` split `.sql` files using the `|` character.
+
+## Related Options
+
+- [inputBaseDirectory](../inputbasedirectory/): Controls the base directory for `.sql` files.
 
 ## Tooling
 
@@ -28,7 +44,7 @@ for Maven](../../tooling/maven).
         <artifactId>yosql-tooling-maven</artifactId>
         <configuration>
           <files>
-            <configOption>configValue</configOption>
+            <sqlStatementSeparator>configValue</sqlStatementSeparator>
           </files>
         </configuration>
       </plugin>
@@ -48,7 +64,7 @@ plugins {
 
 yosql {
   files {
-    configOption = configValue
+      sqlStatementSeparator = configValue
   }
 }
 ```
@@ -65,11 +81,11 @@ TODO: info for bazel
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
 
 ```shell
-$ yosql --files-config-option=configValue
+$ yosql --files-sql-statement-separator=configValue
 ```
 
-As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
+The shorter form is available as well:
 
 ```shell
-$ yosql --config-option=configValue
+$ yosql --sql-statement-separator=configValue
 ```

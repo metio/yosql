@@ -12,7 +12,7 @@ tags:
   - structure
 ---
 
-In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. `YoSQL` will try to detect which repository your SQL statements will end up in. Based on the [inputBaseDirectory](../../configuration/files/inputBaseDirectory/) configuration option, your project structure could look like this: 
+In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. `YoSQL` will try to detect which repository your SQL statements will end up in. Based on the [inputBaseDirectory](../../configuration/files/inputbasedirectory/) configuration option, your project structure could look like this: 
 
 ```
 <inputBaseDirectory>/
@@ -20,7 +20,7 @@ In order to call your SQL statement, a Java class must be created that contains 
     └── getAllUsers.sql
 ```
 
-Based on the above example, `YoSQL` will determine that you want a method called `getAllUsers` in a repository called `UserRepository`. Use the [basePackageName](../../configuration/repositories/basePackageName/) option to change the base package name for all generated repositories. Together they will form the fully qualified name `<basePackageName>.UserRepository`.
+Based on the above example, `YoSQL` will determine that you want a method called `getAllUsers` in a repository called `UserRepository`. Use the [basePackageName](../../configuration/repositories/basepackagename/) option to change the base package name for all generated repositories. Together they will form the fully qualified name `<basePackageName>.UserRepository`.
 
 ```
 <inputBaseDirectory>/
@@ -29,7 +29,7 @@ Based on the above example, `YoSQL` will determine that you want a method called
         └── getAllUsers.sql
 ```
 
-Nested package structures are supported as well - they are simply interpreted as subpackages, that are appended to the [basePackageName](../../configuration/repositories/basePackageName/) option to form the fully qualified name `<basePackageName>.internal.UserRepository`.
+Nested package structures are supported as well - they are simply interpreted as subpackages, that are appended to the [basePackageName](../../configuration/repositories/basepackagename/) option to form the fully qualified name `<basePackageName>.internal.UserRepository`.
 
 ```
 <inputBaseDirectory>/

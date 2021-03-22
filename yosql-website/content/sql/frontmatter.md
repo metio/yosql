@@ -57,6 +57,9 @@ FROM    users
 WHERE   id = :userId
 ```
 
+The `repository` field takes the [basePackageName]() into account, e.g. you could shorten the above example to just `YourRepository` if your base package is `com.example.persistence`. If your repository starts with the base package already, it won't be added twice.
+
+
 ## vendor
 
 The `vendor` field can be used to assign a SQL statement to a specific database vendor. Use `vendor` in case you are writing SQL statements that are different for each database. We recommend, to provide a vendor-less statement as a fallback, in order to support as many databases as possible.

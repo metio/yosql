@@ -1,16 +1,32 @@
 ---
-title: Files
+title: skipLines
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
-    parent: Configuration
+    parent: Files
 categories:
   - Configuration
 tags:
+  - sql
   - files
+  - skip
 ---
 
-The `files` configuration can be used to control how `YoSQL` interacts with files.
+The `skipLines` option can be used to skip a certain number of lines in each `.sql`, e.g. a license header that is present in each file. It defaults to `0` and thus does not skip any lines.
+
+## Configuration Options
+
+### Option: '0'
+
+The default value of the `skipLines` configuration option is `0` - which does not skip any lines.
+
+### Option: '5'
+
+Changing the `skipLines` configuration option to `5` configures `YoSQL` skip the first 5 lines in each `.sql` file in encounters.
+
+## Related Options
+
+- [inputBaseDirectory](../inputbasedirectory/): Controls the base directory for `.sql` files.
 
 ## Tooling
 
@@ -28,7 +44,7 @@ for Maven](../../tooling/maven).
         <artifactId>yosql-tooling-maven</artifactId>
         <configuration>
           <files>
-            <configOption>configValue</configOption>
+            <skipLines>configValue</skipLines>
           </files>
         </configuration>
       </plugin>
@@ -48,7 +64,7 @@ plugins {
 
 yosql {
   files {
-    configOption = configValue
+      skipLines = configValue
   }
 }
 ```
@@ -65,11 +81,11 @@ TODO: info for bazel
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../tooling/cli).
 
 ```shell
-$ yosql --files-config-option=configValue
+$ yosql --files-skip-lines=configValue
 ```
 
-As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
+The shorter form is available as well:
 
 ```shell
-$ yosql --config-option=configValue
+$ yosql --skip-lines=configValue
 ```
