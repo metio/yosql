@@ -6,7 +6,7 @@ menu:
     weight: 130
 ---
 
-YoSQL supports various logging frameworks and APIs. We recommend that you select one that is already available in your project. By default, `YoSQL` will not generate any logging statements. Tooling may change the default based on information obtained from your project, e.g. a dependency on slf4j.
+YoSQL supports various logging frameworks and APIs. We recommend that you select one that is already available in your project. By default, `YoSQL` will use `NONE` and thus not generate any logging statements. Tooling may change the default based on information obtained from your project, e.g. a dependency on slf4j.
 
 - [JUL](./jul/): The `java.util.logging` based implementation. It uses the constant `JUL` to identify itself.
 - [log4j](./log4j/): The `log4j` based implementation. It uses the constant `LOG4J` to identify itself.

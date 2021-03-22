@@ -11,7 +11,7 @@ tags:
   - java.util.logging
 ---
 
-The `java.util.logging` based implementation for a logging generator. It does not require any external non-JDK classes.
+The `java.util.logging` based implementation for a logging generator. It does not require any external non-JDK classes. All loggers use the [basePackageName]() as their base name.
 
 ## Tooling
 

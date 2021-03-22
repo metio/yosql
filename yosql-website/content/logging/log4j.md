@@ -10,7 +10,7 @@ tags:
   - log4j
 ---
 
-The `log4j` based implementation for a logging generator.
+The [log4j](https://logging.apache.org/log4j/2.x/) based implementation for a logging generator. All loggers use the [basePackageName]() as their base name.
 
 ## Tooling
 

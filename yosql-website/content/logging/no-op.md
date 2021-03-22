@@ -10,7 +10,7 @@ tags:
   - no-op
 ---
 
-The `no-op` implementation for a logging generator.
+The `no-op` implementation for a logging generator. It won't generate any logging statements in your generated code.
 
 ## Tooling
 

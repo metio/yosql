@@ -10,7 +10,7 @@ tags:
   - slf4j
 ---
 
-The `slf4j` based implementation for a logging generator.
+The [slf4j](http://www.slf4j.org/) based implementation for a logging generator. All loggers use the [basePackageName]() as their base name.
 
 ## Tooling
 
