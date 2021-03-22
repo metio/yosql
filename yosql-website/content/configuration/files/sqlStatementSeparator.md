@@ -2,14 +2,14 @@
 title: sqlStatementSeparator
 date: 2019-09-27T18:51:08+02:00
 menu:
-main:
-parent: Files
+  main:
+    parent: Files
 categories:
 - Configuration
-  tags:
-- sql
-- files
-- suffix
+tags:
+  - sql
+  - statement
+  - separator
 ---
 
 The `sqlStatementSeparator` option can be used to change the character that separates multiple SQL statements within a single `.sql` file. It defaults to `;`.
