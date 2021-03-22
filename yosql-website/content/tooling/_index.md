@@ -6,10 +6,7 @@ menu:
     weight: 100
 ---
 
-This part of the documentation is intended for **developers** looking for information on how to use the various 
-`YoSQL` tools. Each currently supported tools has its own documentation page, which is listed below.
-
-We recommend using the tooling that is most appropriate for your project, e.g. Maven projects should use the `YoSQL` Maven tooling. Since `YoSQL` is not required at run-time, you could use it just once to generate code and not add `YoSQL` to your build at all.
+This part of the documentation is intended for **developers** looking for information on how to use the various `YoSQL` tools. Each currently supported tool has its own documentation page, which is listed below. We recommend using the tooling that is most appropriate for your project, e.g. Maven projects should use the `YoSQL` Maven tooling. Since `YoSQL` is not required at run-time, you could use it just once to generate code and not add `YoSQL` to your build at all.
 
 In its default configuration, `YoSQL` will try to generate as much code as possible, and you are expected to configure the generated code, so it matches the requirements of your project. Some `YoSQL` tools will try to auto-detect some settings, e.g. the Maven plugin will look at existing dependencies and how the compiler plugin is configured in order to create a configuration for your project automatically. Take a look at the [configuration](../configuration/) section in order to see all available configuration options in case you want to change something.
 

@@ -13,11 +13,11 @@ date: 2020-04-13
 
 ### Database-first
 
-`YoSQL` allows you to use the full power of your database to overcome your individual challenges. Re-use existing database tooling to iterate quickly by just running an SQL statement directly against your database without ever starting your JVM application. Bridge the gap between developers and DBAs by using your SQL statements as a common meeting ground and place for performance tuning.
+`YoSQL` allows you to use the full power of your database to overcome the individual challenges of your project. Re-use existing database tooling to iterate quickly by just running an SQL statement directly against your database without ever starting your JVM application. Bridge the gap between developers and DBAs by using your SQL statements as a common meeting ground and place for performance tuning.
 
 ### Zero dependency
 
-`YoSQL` is a true zero dependency solution. Instead of adding a new dependency to your project, `YoSQL` is available as a build-tool that is only active during build-time. Once everything is generated, `YoSQL` is no longer required at run-time. Want to rely only on JDK classes without any external dependencies, `YoSQL` got you covered as well.
+`YoSQL` is a true zero dependency solution. Instead of adding a new dependency to your project, `YoSQL` is available as a build-tool that is only active during build-time. Once everything is generated, `YoSQL` is no longer required at run-time. Want to rely only on JDK classes without any external dependencies? - `YoSQL` got you covered as well.
 
 ### call us, we won't call you
 

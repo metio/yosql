@@ -1,5 +1,5 @@
 ---
-title: Repositories
+title: Structure
 date: 2019-06-16T18:33:06+02:00
 menu:
   main:
@@ -9,9 +9,10 @@ categories:
 tags:
   - repositories
   - files
+  - structure
 ---
 
-In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. `YoSQL` will try to detect which repository your SQL statements will end up in. Based on the `inputBaseDirectory` (TODO: link) configuration option, your project structure could look like this: 
+In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. `YoSQL` will try to detect which repository your SQL statements will end up in. Based on the [inputBaseDirectory](../../configuration/files/inputBaseDirectory/) configuration option, your project structure could look like this: 
 
 ```
 <inputBaseDirectory>/
