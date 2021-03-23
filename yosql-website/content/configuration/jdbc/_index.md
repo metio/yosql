@@ -10,7 +10,7 @@ tags:
   - JDBC
 ---
 
-The `jdbc` configuration can be used to control how `YoSQL` uses the [JDBC API](/persistence/jdbc/) in the generated code.
+The `jdbc` configuration can be used to control how `YoSQL` uses the [JDBC API](/persistence/jdbc/) in generated code.
 
 ## Tooling
 

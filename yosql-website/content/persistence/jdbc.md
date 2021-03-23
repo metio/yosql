@@ -10,8 +10,7 @@ tags:
   - JDBC
 ---
 
-The `javax.sql` based implementation. It does not require any dependencies outside from standard JDK classes.
-
+The `javax.sql` based implementation to access your database. It does not require any dependencies outside from standard JDK classes. You can [configure](/configuration/jdbc/) it in multiple ways to accommodate your project.
 
 ## Tooling
 
