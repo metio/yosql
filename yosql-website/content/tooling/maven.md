@@ -41,6 +41,37 @@ tags:
     ```
 3. Execute the `yosql:generate` goal (or just run `mvn generate-sources`) to generate the Java code.
 
+## Build Helper Plugin
+
+As an optional and final step to complete the setup of `YoSQL`, you can add the [build-helper-maven-plugin]() to your build in order to mark the outputBaseDirectory (TODO: link) as a source directory in your IDE like this:
+
+```xml
+<build>
+    <plugins>
+        ...
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>add-source</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                        <sources>
+                            <source>${project.build.directory}/generated-sources/yosql</source>
+                        </sources>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        ...
+    </plugins>
+</build>
+```
+
 ## Configuration
 
 You can configure how YoSQL operates and how the generated code looks like by using the [default Maven configuration 
