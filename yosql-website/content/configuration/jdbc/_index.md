@@ -1,5 +1,5 @@
 ---
-title: JDBC
+title: JDBC API
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
@@ -10,7 +10,7 @@ tags:
   - JDBC
 ---
 
-The `jdbc` configuration can be used to control how `YoSQL` uses JDBC in the generated code.
+The `jdbc` configuration can be used to control how `YoSQL` uses the JDBC API in the generated code.
 
 ## Tooling
 
