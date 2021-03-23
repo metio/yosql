@@ -7,8 +7,9 @@ menu:
 categories:
   - Configuration
 tags:
-  - repositories
-  - utilityPackageName
+  - utilities
+  - package
+  - name
 ---
 
 The base package name for JDBC utility classes in generated code. Defaults to `com.example.persistence.util`.

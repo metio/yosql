@@ -8,7 +8,9 @@ categories:
   - Configuration
 tags:
   - repositories
-  - basePackageName
+  - base
+  - package
+  - name
 ---
 
 The base package name for the generated code. Defaults to `com.example.persistence`.
