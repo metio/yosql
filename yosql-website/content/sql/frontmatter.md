@@ -37,7 +37,7 @@ While parsing your `.sql` files, `YoSQL` will strip the SQL comment prefix (`--`
 
 ## name
 
-The `name` field can be used to change the name of a SQL statement. Typically, the name is auto-detected from the `.sql` file name, however if you want to place multiple SQL statements in one file, use `name` to give each statement a unique name instead of using the auto-numbering `YoSQL` uses by default.
+The `name` field can be used to change the name of a SQL statement. Typically, the name is auto-detected from the `.sql` file name, however if you want to place multiple SQL statements in one file, use `name` to give each statement a unique name instead of relying on the auto-numbering `YoSQL` is using by default.
 
 ```sql
 -- name: someName
@@ -57,8 +57,7 @@ FROM    users
 WHERE   id = :userId
 ```
 
-The `repository` field takes the [basePackageName](../../configuration/repositories/basepackagename/) into account, e.g. you could shorten the above example to just `YourRepository` if your base package is `com.example.persistence`. If your repository starts with the base package already, it won't be added twice.
-
+The `repository` field takes the [basePackageName](../../configuration/repositories/basepackagename/) into account, e.g. you could shorten the above example to just `YourRepository` if your base package is `com.example.persistence`. If your repository starts with the base package already, it won't be added twice. Likewise, it is possible to add any number of subpackages in front of your repository, e.g. `your.own.domain.YourRepository`.
 
 ## vendor
 
