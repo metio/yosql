@@ -33,6 +33,16 @@ Nested package structures are supported as well - they are simply interpreted as
 
 ```
 <inputBaseDirectory>/
+  └── user/
+    └── vips/
+        └── findSpecialUsers.sql
+    └── getAllUsers.sql
+```
+
+Nesting repositories within other repositories is supported as well - `YoSql` will create two repositories for the above example: `<basePackageName>.UserRepository` with a method called `getAllUsers` and `<basePackageName>.user.VipsRepository` with a method called `findSpecialUsers`.
+
+```
+<inputBaseDirectory>/
 └── internal/
     └── user/
         └── getAllUsers.sql
