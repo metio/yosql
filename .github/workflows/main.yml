@@ -31,9 +31,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Copy Codegen Benchmark Results
-        run: cp ./yosql-benchmarks/yosql-benchmarks-codegen/target/benchmark/yosql-benchmarks-codegen.json ./yosql-website/content/persistence/benchmarks/current/yosql-benchmarks-codegen.json
+        run: cp ./yosql-benchmarks/yosql-benchmarks-codegen/target/benchmark/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
       - name: Copy JDBC Benchmark Results
-        run: cp ./yosql-benchmarks/yosql-benchmarks-jdbc/target/benchmark/yosql-benchmarks-jdbc.json ./yosql-website/content/persistence/benchmarks/current/yosql-benchmarks-jdbc.json
+        run: cp ./yosql-benchmarks/yosql-benchmarks-jdbc/target/benchmark/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
       - id: hugo
         name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
