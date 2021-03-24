@@ -3,7 +3,7 @@ title: Integration
 date: 2020-04-13
 menu:
   main:
-    weight: 160
+    weight: 170
 ---
 
 This part of the documentation is intended for **developers** looking for information on how to customize `YoSQL` beyond its [main configuration](../configuration) capabilities. Depending on what you what to achieve, we suggest following the steps:
