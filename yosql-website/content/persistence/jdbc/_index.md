@@ -10,7 +10,7 @@ tags:
   - JDBC
 ---
 
-The `javax.sql` based implementation to access your database. It does not require any dependencies outside from standard JDK classes. You can [configure](/configuration/jdbc/) it in multiple ways to accommodate your project.
+The `javax.sql` based implementation to access your database. It does not require any dependencies outside from standard JDK classes. The available configuration is listed split into multiple pages which are listed at the bottom of this page.
 
 ## Tooling
 
@@ -30,6 +30,9 @@ for Maven](/tooling/maven/).
           <apis>
             <daoApi>JDBC</daoApi>
           </apis>
+          <jdbc>
+            ... jdbc configuration
+          </jdbc>
         </configuration>
       </plugin>
       ...
@@ -49,6 +52,9 @@ plugins {
 yosql {
   apis {
     daoApi = JDBC
+  }
+  jdbc {
+    ... jdbc configuration
   }
 }
 ```

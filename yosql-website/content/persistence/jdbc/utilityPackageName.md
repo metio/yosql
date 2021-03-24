@@ -3,7 +3,7 @@ title: utilityPackageName
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
-    parent: JDBC API
+    parent: JDBC
 categories:
   - Configuration
 tags:
@@ -49,7 +49,7 @@ public class SomeUtility {
 ### Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](../../tooling/maven).
+for Maven](/tooling/maven/).
 
 ```xml
   <build>
@@ -58,9 +58,9 @@ for Maven](../../tooling/maven).
         <groupId>wtf.metio.yosql</groupId>
         <artifactId>yosql-tooling-maven</artifactId>
         <configuration>
-          <repositories>
+          <jdbc>
             <utilityPackageName>your.own.domain.util</utilityPackageName>
-          </repositories>
+          </jdbc>
         </configuration>
       </plugin>
     </plugins>
@@ -69,7 +69,7 @@ for Maven](../../tooling/maven).
 
 ### Gradle
 
-In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../../tooling/gradle).
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/).
 
 ```groovy
 plugins {
@@ -77,7 +77,7 @@ plugins {
 }
 
 yosql {
-  repositories {
+  jdbc {
     utilityPackageName = "your.own.domain.util"
   }
 }
@@ -86,18 +86,18 @@ yosql {
 ### Bazel
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](../../tooling/bazel).
+Bazel](/tooling/bazel/).
 
 ### CLI
 
-In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../../tooling/cli).
+In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
 ```shell
-$ yosql --repositories-base-package-name=your.own.domain.util
+$ yosql --jdbc-utility-package-name=your.own.domain.util
 ```
 
 The shorter form is available as well:
 
 ```shell
-$ yosql --base-package-name=your.own.domain.util
+$ yosql --utility-package-name=your.own.domain.util
 ```
