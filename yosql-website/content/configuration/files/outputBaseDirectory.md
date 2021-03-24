@@ -1,5 +1,5 @@
 ---
-title: inputBaseDirectory
+title: outputBaseDirectory
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
@@ -9,28 +9,28 @@ categories:
 tags:
   - files
   - directories
-  - input
+  - output
 ---
 
-Controls the root directory `YoSQL` will use to search for ´.sql` files. The given directory itself and all subdirectories will be searched recursively.
+Controls the root directory `YoSQL` will use to output generated Java code.
 
 ## Configuration Options
 
 ### Option: '.'
 
-The default value of the `inputBaseDirectory` configuration option is `.` - the current directory. Note that tooling may change the default input base directory to better reflect a typical project structure used with such a tool.
+The default value of the `outputBaseDirectory` configuration option is `.` - the current directory. Note that tooling may change the default input base directory to better reflect a typical project structure used with such a tool.
 
 ### Option: 'some/other/directory'
 
-Changing the `inputBaseDirectory` configuration option to `some/other/directory!` configures `YoSQL` to look into the path relative directory `some/other/directory`.
+Changing the `outputBaseDirectory` configuration option to `some/other/directory!` configures `YoSQL` to look into the path relative directory `some/other/directory`.
 
 ### Option: '/an/absolute/path'
 
-Changing the `inputBaseDirectory` configuration option to `/an/absolute/path!` configures `YoSQL` to look into the absolute directory path `/an/absolute/path`.
+Changing the `outputBaseDirectory` configuration option to `/an/absolute/path!` configures `YoSQL` to look into the absolute directory path `/an/absolute/path`.
 
 ## Related Options
 
-- [outputBaseDirectory](/configuration/files/outputbasedirectory/): Controls the output directory for `.java` files.
+- [inputBaseDirectory](/configuration/files/inputbasedirectory/): Controls the input directory for `.sql` files.
 
 ## Tooling
 
@@ -47,7 +47,7 @@ for Maven](/tooling/maven/). By default, the Maven tooling with set `inputBaseDi
         <artifactId>yosql-tooling-maven</artifactId>
         <configuration>
           <files>
-            <inputBaseDirectory>src/main/resources</inputBaseDirectory>
+            <outputBaseDirectory>${project.build.directory}/generated-sources/yosql</outputBaseDirectory>
           </files>
         </configuration>
       </plugin>
@@ -66,7 +66,7 @@ plugins {
 
 yosql {
   files {
-    inputBaseDirectory = file("src/main/resources")
+    inputBaseDirectory = file("build/generated-sources/yosql")
   }
 }
 ```
@@ -81,11 +81,11 @@ Bazel](/tooling/bazel/).
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
 ```shell
-$ yosql --files-input-base-directory=src/main/resources
+$ yosql --files-input-base-directory=generated-sources/yosql
 ```
 
 The shorter form is available as well:
 
 ```shell
-$ yosql --input-base-directory=src/main/resources
+$ yosql --input-base-directory=generated-sources/yosql
 ```

@@ -18,7 +18,7 @@ tags:
         id("wtf.metio.yosql")
     }
     ```
-2. Add .sql files in `src/main/yosql` and write SQL statements into them.
+2. Add .sql files in `src/main/yosql` and write SQL statements into them. Take a look at the various options to [structure](/sql/structure/) your [SQL files](/sql/sql-files/).
     ```
     <project_root>/
     ├── build.gradle.kts
@@ -26,17 +26,17 @@ tags:
         └── main/
             └── yosql/
                 └── domainObject/
-                    ├── yourQuery.sql
+                    ├── queryData.sql
                     └── changeYourData.sql
                 └── aggregateRoot/
-                    ├── anotherQuery.sql
+                    ├── findRoot.sql
                     └── addData.sql
     ```
 3. Execute the `yosql` task (or just run `gradle build`) to generate the Java code.
 
 ## Configuration
 
-You can configure how YoSQL operates and how the generated code looks like by using the `yosql` task extension. Take a look at the [available configuration options](../../configuration/) in order to see what can be configured.
+You can configure how YoSQL operates and how the generated code looks like by using the `yosql` task extension. Take a look at the [available configuration options](/configuration/) in order to see what can be configured.
 
 ```kotlin
 yosql {

@@ -5,7 +5,7 @@ menu:
   main:
     parent: SQL
 categories:
-  - Integration
+  - SQL
 tags:
   - rxjava
   - reactor

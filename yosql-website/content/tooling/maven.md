@@ -25,7 +25,7 @@ tags:
         </plugins>
     </build>
     ```
-2. Add .sql files in `src/main/yosql` and write SQL statements into them.
+2. Add .sql files in `src/main/yosql` and write SQL statements into them. Take a look at the various options to [structure](/sql/structure/) your [SQL files](/sql/sql-files/).
     ```
     <project_root>/
     ├── pom.xml
@@ -33,17 +33,17 @@ tags:
         └── main/
             └── yosql/
                 └── domainObject/
-                    ├── yourQuery.sql
+                    ├── queryData.sql
                     └── changeYourData.sql
                 └── aggregateRoot/
-                    ├── anotherQuery.sql
+                    ├── findRoot.sql
                     └── addData.sql
     ```
 3. Execute the `yosql:generate` goal (or just run `mvn generate-sources`) to generate the Java code.
 
 ## Build Helper Plugin
 
-As an optional and final step to complete the setup of `YoSQL`, you can add the [build-helper-maven-plugin]() to your build in order to mark the outputBaseDirectory (TODO: link) as a source directory in your IDE like this:
+As an optional and final step to complete the setup of `YoSQL`, you can add the [build-helper-maven-plugin](https://www.mojohaus.org/build-helper-maven-plugin/) to your build in order to mark the [outputBaseDirectory](/configuration/files/outputbasedirectory/) as a source directory in your IDE like this:
 
 ```xml
 <build>
@@ -75,7 +75,7 @@ As an optional and final step to complete the setup of `YoSQL`, you can add the 
 ## Configuration
 
 You can configure how YoSQL operates and how the generated code looks like by using the [default Maven configuration 
-mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html). Take a look at the [available configuration options](../../configuration/) in order to see what can be configured.
+mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html). Take a look at the [available configuration options](/configuration/) in order to see what can be configured.
 
 ```xml
 <build>
@@ -157,7 +157,7 @@ the generated code of each other. The last execution will win. Share configurati
                         <inputBaseDirectory>src/main/database/synchronous</inputBaseDirectory>
                       </files>
                       <java>
-                        <apiVersion>15</apiVersion>
+                        <apiVersion>16</apiVersion>
                       </java>
                     </configuration>
                 </execution>
