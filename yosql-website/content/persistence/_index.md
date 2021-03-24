@@ -8,7 +8,7 @@ menu:
 
 `YoSQL` supports multiple persistence APIs to interact with a database. We recommend that you pick the one that is already available in your project. In case you are starting fresh, `YoSQL` will default to the JDBC implementation because it requires no external dependencies and thus your project should be able to compile the generated code just fine. Some `YoSQL` tooling like the Maven plugin might auto-detect certain settings in your project to make your life easier, however you are always in full control and can change very aspect of the generated code.
 
-Take a look at the available [configuration](../configuration/) options to adapt the generated code according to your needs. In order to monitor execution of your SQL statements, we recommend enabling one of the supported [logging](../logging/) APIs to add log output to the generated code. Read the [SQL](../sql/) section to learn how to write SQL statements in a `YoSQL`-enabled project.
+Take a look at the available [configuration](/configuration/) options to adapt the generated code according to your needs. In order to monitor execution of your SQL statements, we recommend enabling one of the supported [logging](/logging/) APIs to add log output to the generated code. Read the [SQL](/sql/) section to learn how to write SQL statements in a `YoSQL`-enabled project.
 
 - [EBean](./ebean/): The `Ebean` based implementation. It uses the constant `EBEAN` to identify itself. 
 - [Fluent JDBC](./fluent-jdbc/): The `Fluent JDBC` based implementation. It uses the constant `FLUENT_JDBC` to identify itself.
@@ -26,17 +26,6 @@ Take a look at the available [configuration](../configuration/) options to adapt
 - [Spring JDBC](./spring-jdbc/): The `Spring JDBC` based implementation. It uses the constant `SPRING_JDBC` to identify itself.
 - [Sql2o](./sql2o/): The `Sql2o` based implementation. It uses the constant `SQL2O` to identify itself.
 - [Vert.x PG Client](./vertx-pg-client/): The `Vert.x PG Client` based implementation. It uses the constant `VERTX_PG_CLIENT` to identify itself.
-
-## Benchmarks
-
-- [Code Generation](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/persistence/benchmarks/2021/yosql-benchmarks-codegen.json,https://yosql.projects.metio.wtf/persistence/benchmarks/current/yosql-benchmarks-codegen.json): Measures how long it takes to read, parse, and generate 500, 250, 100, and 25 repositories in various configurations.
-    - Defaults: Uses the default configuration of `YoSQL`.
-    - Logging: Enables the use of the `java.util.logging` API in generated code.
-    - Spring: Uses Spring JDBC instead of JDBC in the generated code.
-- [JDBC](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/persistence/benchmarks/2021/yosql-benchmarks-jdbc.json,https://yosql.projects.metio.wtf/persistence/benchmarks/current/yosql-benchmarks-jdbc.json): Measures how long it takes to complete various scenarios using the JDBC API.
-    - Read: Read data from a database
-    - Write: Write data into a database
-    - Schema: Perform schema manipulation
 
 ## Tooling
 
