@@ -20,6 +20,13 @@ tags:
             <plugin>
                 <groupId>wtf.metio.yosql</groupId>
                 <artifactId>yosql-tooling-maven</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             ...
         </plugins>

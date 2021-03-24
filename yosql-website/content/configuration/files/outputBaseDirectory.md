@@ -22,11 +22,11 @@ The default value of the `outputBaseDirectory` configuration option is `.` - the
 
 ### Option: 'some/other/directory'
 
-Changing the `outputBaseDirectory` configuration option to `some/other/directory!` configures `YoSQL` to look into the path relative directory `some/other/directory`.
+Changing the `outputBaseDirectory` configuration option to `some/other/directory!` configures `YoSQL` to write into the relative directory`some/other/directory`.
 
 ### Option: '/an/absolute/path'
 
-Changing the `outputBaseDirectory` configuration option to `/an/absolute/path!` configures `YoSQL` to look into the absolute directory path `/an/absolute/path`.
+Changing the `outputBaseDirectory` configuration option to `/an/absolute/path!` configures `YoSQL` to write into the absolute directory path `/an/absolute/path`.
 
 ## Related Options
 
