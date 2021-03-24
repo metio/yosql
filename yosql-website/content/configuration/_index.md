@@ -65,11 +65,11 @@ TODO: info for bazel
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](/tooling/cli).
 
 ```shell
-$ yosql --config_group_config_option=configValue
+$ yosql --config-group-config-option=configValue
 ```
 
 As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
 
 ```shell
-$ yosql --config_option=configValue
+$ yosql --config-option=configValue
 ```
