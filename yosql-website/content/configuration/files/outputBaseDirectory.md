@@ -18,7 +18,7 @@ Controls the root directory `YoSQL` will use to output generated Java code.
 
 ### Option: '.'
 
-The default value of the `outputBaseDirectory` configuration option is `.` - the current directory. Note that tooling may change the default input base directory to better reflect a typical project structure used with such a tool.
+The default value of the `outputBaseDirectory` configuration option is `.` - the current directory. Note that tooling may change the default output base directory to better reflect a typical project structure used with such a tool.
 
 ### Option: 'some/other/directory'
 
