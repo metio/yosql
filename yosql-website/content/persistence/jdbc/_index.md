@@ -14,6 +14,8 @@ The `javax.sql` based implementation to access your database. It does not requir
 
 ## Tooling
 
+In order to use the JDBC API in generated code, set the `daoApi` option to `JDBC`. Further configuration can be performed using the dedicated `jdbc` section.
+
 ### Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
