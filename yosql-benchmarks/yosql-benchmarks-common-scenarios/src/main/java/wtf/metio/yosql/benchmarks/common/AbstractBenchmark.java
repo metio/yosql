@@ -9,7 +9,6 @@ package wtf.metio.yosql.benchmarks.common;
 import com.zaxxer.hikari.HikariDataSource;
 import org.openjdk.jmh.annotations.*;
 import wtf.metio.yosql.benchmark.common.persistence.*;
-import wtf.metio.yosql.benchmark.common.persistence.util.ResultRow;
 import wtf.metio.yosql.testing.schema.SchemaRepository;
 
 import java.io.IOException;
