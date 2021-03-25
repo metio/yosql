@@ -9,8 +9,6 @@ package wtf.metio.yosql.benchmark.jdbc;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
-import java.util.Objects;
-
 public class JdbcWriteBenchmarks extends AbstractBenchmark {
 
     @Benchmark

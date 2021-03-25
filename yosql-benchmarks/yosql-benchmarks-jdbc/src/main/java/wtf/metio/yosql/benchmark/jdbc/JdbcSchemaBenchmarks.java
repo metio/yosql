@@ -13,12 +13,12 @@ public class JdbcSchemaBenchmarks extends AbstractBenchmark {
 
     @Benchmark
     public final void benchmarkSchemaDrop() {
-        schemaRepository.dropItemsTable();
+        schemaRepository.dropProjectEmployeesTable();
     }
 
     @Benchmark
     public final void benchmarkSchemaCreate() {
-        schemaRepository.createItemsTable();
+        schemaRepository.createProjectEmployeesTable();
     }
 
 }

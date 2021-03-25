@@ -5,11 +5,5 @@
  * in the LICENSE file.
  */
 
---
---
-CREATE TABLE items
-(
-    id   INTEGER,
-    name VARCHAR(50)
-)
+DROP TABLE IF EXISTS departments
 ;

@@ -4,12 +4,11 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.benchmark.jdbc;
+package wtf.metio.yosql.benchmarks.common;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.openjdk.jmh.annotations.*;
-import wtf.metio.yosql.benchmark.jdbc.persistence.CompanyRepository;
-import wtf.metio.yosql.benchmark.jdbc.persistence.PersonRepository;
+import wtf.metio.yosql.benchmark.common.persistence.*;
 import wtf.metio.yosql.testing.schema.SchemaRepository;
 
 import java.io.IOException;
@@ -18,12 +17,15 @@ import java.io.IOException;
  * Encapsulates common benchmark functionality.
  */
 @State(Scope.Benchmark)
-abstract class AbstractBenchmark {
-    
+public abstract class AbstractBenchmark {
+
     protected HikariDataSource dataSource;
     protected SchemaRepository schemaRepository;
     protected CompanyRepository companyRepository;
-    protected PersonRepository personRepository;
+    protected DepartmentRepository departmentRepository;
+    protected EmployeeRepository employeeRepository;
+    protected ProjectRepository projectRepository;
+    protected ProjectEmployeeRepository projectEmployeeRepository;
 
     @Setup(Level.Trial)
     public void setup() throws IOException {
@@ -32,14 +34,14 @@ abstract class AbstractBenchmark {
         dataSource.setUsername("sa");
         schemaRepository = new SchemaRepository(dataSource);
         companyRepository = new CompanyRepository(dataSource);
-        personRepository = new PersonRepository(dataSource);
+        departmentRepository = new DepartmentRepository(dataSource);
         schemaRepository.createCompaniesTable();
         schemaRepository.createProjectsTable();
         schemaRepository.createDepartmentsTable();
         schemaRepository.createEmployeesTable();
         schemaRepository.createProjectEmployeesTable();
-        companyRepository.insertCompany(1, "metio.wtf");
-        companyRepository.insertCompany(2, "test");
+        companyRepository.insertCompany("metio.wtf", "www");
+        companyRepository.insertCompany("test", "musterstraße");
     }
 
     @TearDown(Level.Trial)

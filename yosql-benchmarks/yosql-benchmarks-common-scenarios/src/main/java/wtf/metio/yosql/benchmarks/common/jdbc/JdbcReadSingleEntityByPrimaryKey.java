@@ -7,18 +7,14 @@
 
 package wtf.metio.yosql.benchmarks.common.jdbc;
 
-import wtf.metio.yosql.benchmark.common.persistence.CompanyRepository;
+import org.openjdk.jmh.annotations.Benchmark;
+import wtf.metio.yosql.benchmarks.common.AbstractBenchmark;
 import wtf.metio.yosql.benchmarks.common.ReadSingleEntityByPrimaryKey;
 
-public class JdbcReadSingleEntityByPrimaryKey implements ReadSingleEntityByPrimaryKey {
-
-    private final CompanyRepository companyRepository;
-
-    public JdbcReadSingleEntityByPrimaryKey(final CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
-    }
+public final class JdbcReadSingleEntityByPrimaryKey extends AbstractBenchmark implements ReadSingleEntityByPrimaryKey {
 
     @Override
+    @Benchmark
     public void readSingleEntityByPrimaryKey() {
         companyRepository.findCompany(1);
     }

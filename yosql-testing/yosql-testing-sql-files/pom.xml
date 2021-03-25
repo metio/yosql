@@ -34,4 +34,55 @@
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: Testing :: SQL Files</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>wtf.metio.yosql.tooling</groupId>
+                <artifactId>yosql-tooling-maven</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <files>
+                        <skipLines>6</skipLines>
+                    </files>
+                    <java>
+                        <apiVersion>16</apiVersion>
+                    </java>
+                    <repositories>
+                        <basePackageName>wtf.metio.yosql.testing.schema</basePackageName>
+                    </repositories>
+                    <jdbc>
+                        <utilityPackageName>wtf.metio.yosql.testing.schema.util</utilityPackageName>
+                    </jdbc>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/yosql</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -5,11 +5,10 @@
  * in the LICENSE file.
  */
 
---
---
-CREATE TABLE IF NOT EXISTS items
-(
-    id   INTEGER,
-    name VARCHAR(50)
-)
-;
+package wtf.metio.yosql.benchmarks.common;
+
+public interface DeleteSingleEntityByPrimaryKey {
+
+    void deleteSingleEntityByPrimaryKey();
+
+}
