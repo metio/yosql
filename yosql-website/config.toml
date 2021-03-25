@@ -14,7 +14,7 @@ section = ["HTML", "RSS", "ATOM"]
 term = ["HTML", "RSS", "ATOM"]
 
 [params]
-mainSections = ["tooling", "configuration", "integration", "logging", "persistence", "project", "sql"]
+mainSections = ["tooling", "configuration", "integration", "logging", "persistence", "benchmarks", "project", "sql"]
 author = "metio.wtf"
 email = "https://metio.groups.io/g/yosql/topics"
 matrix = "#yosql:matrix.org"
