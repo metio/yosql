@@ -9,14 +9,16 @@ package wtf.metio.yosql.benchmarks.common.jdbc;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import wtf.metio.yosql.benchmarks.common.AbstractBenchmark;
-import wtf.metio.yosql.benchmarks.common.ReadSingleEntityByPrimaryKey;
+import wtf.metio.yosql.benchmarks.common.WriteSingleEntity;
 
-public class JdbcReadSingleEntityByPrimaryKey extends AbstractBenchmark implements ReadSingleEntityByPrimaryKey {
+import java.time.Instant;
+
+public class JdbcWriteSingleEntity extends AbstractBenchmark implements WriteSingleEntity {
 
     @Override
     @Benchmark
-    public void readSingleEntityByPrimaryKey() {
-        companyRepository.findCompany(1);
+    public void writeSingleEntity() {
+        projectRepository.insertProject("hot fuzz", Instant.now().toEpochMilli());
     }
 
 }

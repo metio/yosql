@@ -5,7 +5,7 @@
  * in the LICENSE file.
  */
 
---
+-- generateBatchApi: true
 -- parameters:
 --   - name: name
 --     type: java.lang.String

@@ -9,9 +9,11 @@ package wtf.metio.yosql.benchmarks.common;
 import com.zaxxer.hikari.HikariDataSource;
 import org.openjdk.jmh.annotations.*;
 import wtf.metio.yosql.benchmark.common.persistence.*;
+import wtf.metio.yosql.benchmark.common.persistence.util.ResultRow;
 import wtf.metio.yosql.testing.schema.SchemaRepository;
 
 import java.io.IOException;
+import java.time.Instant;
 
 /**
  * Encapsulates common benchmark functionality.
@@ -35,13 +37,25 @@ public abstract class AbstractBenchmark {
         schemaRepository = new SchemaRepository(dataSource);
         companyRepository = new CompanyRepository(dataSource);
         departmentRepository = new DepartmentRepository(dataSource);
+        employeeRepository = new EmployeeRepository(dataSource);
+        projectRepository = new ProjectRepository(dataSource);
+        projectEmployeeRepository = new ProjectEmployeeRepository(dataSource);
         schemaRepository.createCompaniesTable();
         schemaRepository.createProjectsTable();
         schemaRepository.createDepartmentsTable();
         schemaRepository.createEmployeesTable();
         schemaRepository.createProjectEmployeesTable();
         companyRepository.insertCompany("metio.wtf", "www");
-        companyRepository.insertCompany("test", "musterstraße");
+        projectRepository.insertProject("example", Instant.now().toEpochMilli());
+        final var company = companyRepository.findCompanyByName("metio.wtf").get(0);
+        final var companyId = Long.parseLong(company.getColumnValue("pid").toString());
+        departmentRepository.insertDepartment(companyId, "engineering");
+        final var department = departmentRepository.findDepartmentByName("engineering").get(0);
+        final var departmentId = Long.parseLong(department.getColumnValue("pid").toString());
+        employeeRepository.insertEmployee(departmentId,
+                "Max", "Mustermann", "max.mustermann@example.com", 0L);
+        employeeRepository.insertEmployee(departmentId,
+                "bob", "", "bob@example.com", 1000L);
     }
 
     @TearDown(Level.Trial)
@@ -57,6 +71,10 @@ public abstract class AbstractBenchmark {
         }
         schemaRepository = null;
         companyRepository = null;
+        departmentRepository = null;
+        employeeRepository = null;
+        projectRepository = null;
+        projectEmployeeRepository = null;
     }
 
 }

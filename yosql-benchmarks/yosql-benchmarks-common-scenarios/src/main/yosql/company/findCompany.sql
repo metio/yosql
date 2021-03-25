@@ -6,9 +6,10 @@
  */
 
 --
+-- returningMode: ONE
 -- parameters:
 --   - name: pid
---     type: int
+--     type: long
 --
 SELECT  *
 FROM    companies

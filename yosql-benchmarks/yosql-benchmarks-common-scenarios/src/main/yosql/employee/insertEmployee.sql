@@ -8,7 +8,7 @@
 --
 -- parameters:
 --   - name: department
---     type: java.lang.String
+--     type: long
 --   - name: name
 --     type: java.lang.String
 --   - name: surname
@@ -16,7 +16,7 @@
 --   - name: email
 --     type: java.lang.String
 --   - name: salary
---     type: java.lang.Long
+--     type: long
 --
 INSERT INTO employees (department_pid, name, surname, email, salary)
 VALUES (:department, :name, :surname, :email, :salary)

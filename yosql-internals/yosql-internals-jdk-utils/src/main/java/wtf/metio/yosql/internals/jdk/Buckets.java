@@ -17,7 +17,7 @@ public final class Buckets {
 
     /**
      * @param collection The collection to check.
-     * @return true if value is blank, false otherwise.
+     * @return true if value is not null and not empty, false otherwise.
      */
     public static boolean hasEntries(final Collection<?> collection) {
         return collection != null && !collection.isEmpty();

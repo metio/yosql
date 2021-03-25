@@ -60,6 +60,7 @@ public class ResultRowGenerator {
                 .addField(row())
                 .addMethod(constructor())
                 .addMethod(setColumnValue())
+                .addMethod(getColumnValue())
                 .addMethod(toStringMethod())
                 .addAnnotations(annotations.generatedClass())
                 .build();
@@ -91,6 +92,16 @@ public class ResultRowGenerator {
                         runtimeConfiguration.jdbc().row(),
                         names.name(),
                         names.value())
+                .build();
+    }
+
+    private MethodSpec getColumnValue() {
+        return methods.publicMethod("getColumnValue")
+                .addParameter(parameters.parameter(String.class, names.name()))
+                .returns(Object.class)
+                .addStatement("return $N.get($N)",
+                        runtimeConfiguration.jdbc().row(),
+                        names.name())
                 .build();
     }
 

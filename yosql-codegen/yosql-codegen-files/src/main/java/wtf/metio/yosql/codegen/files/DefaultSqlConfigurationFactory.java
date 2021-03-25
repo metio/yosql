@@ -72,6 +72,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         logConfiguration(userConfiguration);
         final var baseConfiguration = apply(userConfiguration, List.of(
                 configuration -> name(configuration, source, statementInFile),
+                this::generateBatchApi,
                 this::batchNamePrefix,
                 this::batchNameSuffix,
                 this::streamNamePrefix,
@@ -114,6 +115,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         logger.debug("SQL CONFIGURATION:");
         logger.debug("name:             {}", configuration.name());
         logger.debug("repository:       {}", configuration.repository());
+        logger.debug("parameters:       {}", configuration.parameters().size());
         logger.debug("standardApi:      {}", configuration.generateStandardApi());
         logger.debug("batchApi:         {}", configuration.generateBatchApi());
         logger.debug("rxJava2Api:       {}", configuration.generateRxJavaApi());
@@ -132,6 +134,14 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                     .withName(statementInFile > 1 ? fileName + statementInFile : fileName);
         }
         return configuration;
+    }
+
+    private SqlConfiguration generateBatchApi(final SqlConfiguration configuration) {
+        if (configuration.generateBatchApi()) {
+            return configuration;
+        }
+        return SqlConfiguration.copyOf(configuration)
+                .withGenerateBatchApi(runtimeConfiguration.repositories().generateBatchApi());
     }
 
     private SqlConfiguration batchNamePrefix(final SqlConfiguration configuration) {
