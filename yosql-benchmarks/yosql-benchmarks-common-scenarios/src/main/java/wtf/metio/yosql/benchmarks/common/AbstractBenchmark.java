@@ -47,14 +47,10 @@ public abstract class AbstractBenchmark {
         schemaRepository.createProjectEmployeesTable();
         companyRepository.insertCompany("metio.wtf", "www");
         projectRepository.insertProject("example", Instant.now().toEpochMilli());
-        final var company = companyRepository.findCompanyByName("metio.wtf").get(0);
-        final var companyId = Long.parseLong(company.getColumnValue("pid").toString());
-        departmentRepository.insertDepartment(companyId, "engineering");
-        final var department = departmentRepository.findDepartmentByName("engineering").get(0);
-        final var departmentId = Long.parseLong(department.getColumnValue("pid").toString());
-        employeeRepository.insertEmployee(departmentId,
+        departmentRepository.insertDepartment(1L, "engineering");
+        employeeRepository.insertEmployee(1L,
                 "Max", "Mustermann", "max.mustermann@example.com", 0L);
-        employeeRepository.insertEmployee(departmentId,
+        employeeRepository.insertEmployee(1L,
                 "bob", "", "bob@example.com", 1000L);
     }
 

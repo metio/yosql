@@ -119,4 +119,38 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>benchmarks</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.baidu.maven</groupId>
+                        <artifactId>jmh-maven-plugin</artifactId>
+                        <version>1.0.3</version>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>jmh</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <forks>1</forks>
+                            <warmupForks>1</warmupForks>
+                            <threads>1</threads>
+                            <mode>avgt</mode>
+                            <timeUnit>us</timeUnit>
+                            <measurementTime>1s</measurementTime>
+                            <warmupTime>1s</warmupTime>
+                            <resultFormat>json</resultFormat>
+                            <resultFile>yosql-benchmarks-common-scenarios.json</resultFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

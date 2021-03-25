@@ -1,0 +1,169 @@
+[
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmarks.common.jdbc.JdbcReadMultipleEntitiesBasedOnCondition.readMultipleEntitiesBasedOnCondition",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/usr/java/openjdk-15/bin/java",
+        "jvmArgs" : [
+            "-Dclassworlds.conf=/usr/share/maven/bin/m2.conf",
+            "-Dmaven.home=/usr/share/maven",
+            "-Dlibrary.jansi.path=/usr/share/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/metio/yosql"
+        ],
+        "jdkVersion" : "15.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "15.0.2+7-27",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1.570441066622938,
+            "scoreError" : 0.05637931259625517,
+            "scoreConfidence" : [
+                1.5140617540266827,
+                1.6268203792191933
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.5463834082970884,
+                "50.0" : 1.5719574210259126,
+                "90.0" : 1.5859865246506288,
+                "95.0" : 1.5859865246506288,
+                "99.0" : 1.5859865246506288,
+                "99.9" : 1.5859865246506288,
+                "99.99" : 1.5859865246506288,
+                "99.999" : 1.5859865246506288,
+                "99.9999" : 1.5859865246506288,
+                "100.0" : 1.5859865246506288
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    1.5463834082970884,
+                    1.5859865246506288,
+                    1.57620779656743,
+                    1.5719574210259126,
+                    1.5716701825736312
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmarks.common.jdbc.JdbcReadSingleEntityByPrimaryKey.readSingleEntityByPrimaryKey",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/usr/java/openjdk-15/bin/java",
+        "jvmArgs" : [
+            "-Dclassworlds.conf=/usr/share/maven/bin/m2.conf",
+            "-Dmaven.home=/usr/share/maven",
+            "-Dlibrary.jansi.path=/usr/share/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/metio/yosql"
+        ],
+        "jdkVersion" : "15.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "15.0.2+7-27",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1.2818021282497414,
+            "scoreError" : 0.04876414186176818,
+            "scoreConfidence" : [
+                1.2330379863879732,
+                1.3305662701115095
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.2701099232957431,
+                "50.0" : 1.2779279658201776,
+                "90.0" : 1.302933983329729,
+                "95.0" : 1.302933983329729,
+                "99.0" : 1.302933983329729,
+                "99.9" : 1.302933983329729,
+                "99.99" : 1.302933983329729,
+                "99.999" : 1.302933983329729,
+                "99.9999" : 1.302933983329729,
+                "100.0" : 1.302933983329729
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    1.2701099232957431,
+                    1.2827434483660836,
+                    1.302933983329729,
+                    1.2752953204369735,
+                    1.2779279658201776
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmarks.common.jdbc.JdbcWriteSingleEntity.writeSingleEntity",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/usr/java/openjdk-15/bin/java",
+        "jvmArgs" : [
+            "-Dclassworlds.conf=/usr/share/maven/bin/m2.conf",
+            "-Dmaven.home=/usr/share/maven",
+            "-Dlibrary.jansi.path=/usr/share/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/metio/yosql"
+        ],
+        "jdkVersion" : "15.0.2",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "15.0.2+7-27",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 4.169580549519024,
+            "scoreError" : 2.036200049147374,
+            "scoreConfidence" : [
+                2.1333805003716497,
+                6.205780598666398
+            ],
+            "scorePercentiles" : {
+                "0.0" : 3.7420273804490574,
+                "50.0" : 3.8207523914305797,
+                "90.0" : 4.8578716225077105,
+                "95.0" : 4.8578716225077105,
+                "99.0" : 4.8578716225077105,
+                "99.9" : 4.8578716225077105,
+                "99.99" : 4.8578716225077105,
+                "99.999" : 4.8578716225077105,
+                "99.9999" : 4.8578716225077105,
+                "100.0" : 4.8578716225077105
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    4.623740257038509,
+                    3.7420273804490574,
+                    3.8207523914305797,
+                    4.8578716225077105,
+                    3.803511096169263
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+

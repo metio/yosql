@@ -5,12 +5,13 @@
  * in the LICENSE file.
  */
 
--- generateBatchApi: true
+--
+-- returningMode: ONE
 -- parameters:
---   - name: name
---     type: java.lang.String
---   - name: date
---     type: java.lang.Long
-INSERT INTO projects (NAME, DATESTARTED)
-VALUES (:name, :date)
+--   - name: salary
+--     type: long
+--
+SELECT  *
+FROM    employees
+WHERE   salary >= :salary
 ;
