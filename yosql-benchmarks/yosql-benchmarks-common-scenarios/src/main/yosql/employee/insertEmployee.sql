@@ -5,7 +5,6 @@
  * in the LICENSE file.
  */
 
---
 -- parameters:
 --   - name: department
 --     type: long

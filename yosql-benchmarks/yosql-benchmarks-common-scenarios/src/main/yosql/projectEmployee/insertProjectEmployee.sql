@@ -5,7 +5,6 @@
  * in the LICENSE file.
  */
 
--- generateBatchApi: true
 -- parameters:
 --   - name: project
 --     type: long

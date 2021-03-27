@@ -46,6 +46,7 @@ for Maven](/tooling/maven/).
         <configuration>
           <apis>
             <daoApi>configValue</daoApi>
+            <annotationApi>PROCESSING</annotationApi> <!-- TODO: unify the 3 configs into one api config -->
           </apis>
         </configuration>
       </plugin>

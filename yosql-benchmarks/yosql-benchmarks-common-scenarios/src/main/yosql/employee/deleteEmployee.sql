@@ -5,10 +5,9 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.benchmarks.common;
-
-public interface WriteSingleEntity {
-
-    void writeSingleEntity();
-
-}
+-- parameters:
+--   - name: employee
+--     type: long
+DELETE FROM employees
+WHERE pid = :employee
+;

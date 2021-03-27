@@ -6,16 +6,12 @@
  */
 package wtf.metio.yosql.benchmark.codegen;
 
-import org.openjdk.jmh.annotations.Setup;
-
 /**
- * JMH based micro benchmark for YoSQL with a big sample size.
+ * JMH based micro benchmark for YoSQL using the JDBC API and no logging output. It can be used as a baseline to measure
+ * against in order to check code generation performance while using a medium sample size.
  */
-abstract class AbstractBigSampleBenchmark extends AbstractDaggerBenchmark {
+public class MediumJdbcNoOpBenchmark extends AbstractMediumSampleBenchmark {
 
-    @Setup
-    public final void generateSqlFiles() {
-        prepareRepositoriesForAllUseCases(500);
-    }
+    // default config already uses no-op logging
 
 }

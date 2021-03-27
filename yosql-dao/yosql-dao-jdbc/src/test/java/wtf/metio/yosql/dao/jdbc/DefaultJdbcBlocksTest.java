@@ -149,7 +149,8 @@ class DefaultJdbcBlocksTest {
                   for (final int jdbcIndex : index.get("id")) {
                     statement.setObject(jdbcIndex, id[batch]);
                   }
-                  statement.addBatch()}
+                  statement.addBatch();
+                }
                 """, generator.prepareBatch(Sql.sqlConfiguration()).toString());
     }
 

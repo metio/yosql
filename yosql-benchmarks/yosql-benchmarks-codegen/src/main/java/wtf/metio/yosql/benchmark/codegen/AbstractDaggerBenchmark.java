@@ -16,8 +16,14 @@ import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
 import java.util.Locale;
 
+/**
+ * Subclass of {@link AbstractCodeGenBenchmark} that initializes YoSQL using the yosql-tooling-dagger module.
+ */
 abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
 
+    /**
+     * Creates a new YoSQL instance using the english locale and the determined {@link #config() runtime configuration}.
+     */
     @Setup
     public final void setUpYoSQL() {
         yosql = DaggerYoSQLComponent.builder()
@@ -27,6 +33,11 @@ abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
                 .yosql();
     }
 
+    /**
+     * Determines the runtime configuration based on the currently available input- and output-directories
+     *
+     * @return Fully configured runtime configuration.
+     */
     private RuntimeConfiguration config() {
         final var jdbcDefaults = JdbcConfiguration.usingDefaults().build();
         return RuntimeConfiguration.usingDefaults()
@@ -44,6 +55,11 @@ abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
                 .build();
     }
 
+    /**
+     * Subclasses are allowed to overwrite the APIs used during code generation.
+     *
+     * @return The API configuration to use while generating code.
+     */
     protected ApiConfiguration apiConfig() {
         return ApiConfiguration.usingDefaults().build();
     }

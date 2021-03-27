@@ -55,7 +55,9 @@ public class JdbcDaoModule {
             final @JDBC StandardMethodGenerator standardMethods,
             final @JDBC ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+                constructor,
+                standardMethods,
+                batchMethods,
                 streamMethods,
                 rxjavaMethods
         );

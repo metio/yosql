@@ -16,11 +16,11 @@ import java.io.IOException;
 abstract class AbstractLargeSampleBenchmark extends AbstractDaggerBenchmark {
 
     /**
-     * @throws IOException In case anything goes wrong while creating .sql files.
+     * Generates SQL fies for a large number of repositories.
      */
     @Setup
-    public final void generateSqlFiles() throws IOException {
-        prepareRepositoriesForAllUseCases(250);
+    public final void generateSqlFiles() {
+        prepareRepositoriesForAllUseCases(50);
     }
 
 }

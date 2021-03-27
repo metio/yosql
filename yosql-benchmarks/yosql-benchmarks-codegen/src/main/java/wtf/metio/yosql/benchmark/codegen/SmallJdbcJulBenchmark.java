@@ -6,17 +6,19 @@
  */
 package wtf.metio.yosql.benchmark.codegen;
 
-import wtf.metio.yosql.models.constants.api.PersistenceApis;
+import wtf.metio.yosql.models.constants.api.LoggingApis;
 import wtf.metio.yosql.models.immutables.ApiConfiguration;
 
 /**
- * JMH based micro benchmark for YoSQL using Spring-JDBC as persistence API.
+ * JMH based micro benchmark for YoSQL using the JDBC API and java.util.logging as logging implementation using a small
+ * sample size of repositories. It can be compared against the no-op implementation to check how much extra time is
+ * spent by YoSQL to generate logging code using the java.util.logging API.
  */
-public class MediumSampleSpringJdbcBenchmark extends AbstractMediumSampleBenchmark {
+public class SmallJdbcJulBenchmark extends AbstractSmallSampleBenchmark {
 
     @Override
     protected ApiConfiguration apiConfig() {
-        return ApiConfiguration.usingDefaults().setDaoApi(PersistenceApis.SPRING_JDBC).build();
+        return ApiConfiguration.usingDefaults().setLoggingApi(LoggingApis.JUL).build();
     }
 
 }

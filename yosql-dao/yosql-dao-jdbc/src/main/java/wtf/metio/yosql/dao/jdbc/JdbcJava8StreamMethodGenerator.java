@@ -65,7 +65,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var streamOfResults = TypicalTypes.streamOf(resultType);
-        return methods.publicMethod(configuration.eagerName(), statements)
+        return methods.publicMethod(configuration.streamEagerName(), statements)
                 .returns(streamOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(transformer.sqlException(configuration))
@@ -98,9 +98,9 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
                 .addExceptions(transformer.sqlException(configuration))
                 .addCode(logging.entering(configuration.repository(), configuration.streamLazyName()))
                 .addCode(controlFlow.maybeTry(configuration))
-                .addCode(jdbc.connectionVariable())
+                .addStatement(jdbc.connectionVariable())
                 .addCode(jdbc.pickVendorQuery(statements))
-                .addCode(jdbc.statementVariable())
+                .addStatement(jdbc.statementVariable())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.resultSetVariableStatement())

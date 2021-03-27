@@ -13,7 +13,7 @@ public class JdbcWriteBenchmarks extends AbstractBenchmark {
 
     @Benchmark
     public final void benchmarkWritingData() {
-        companyRepository.insertCompany(99, "jdbc-write");
+        companyRepository.insertCompany("jdbc-write");
     }
 
 }

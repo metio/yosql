@@ -91,7 +91,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("generateBatchApi")
                 .setType(TypeName.get(boolean.class))
-                .setValue(false)
+                .setValue(true)
                 .setDescription("Generate batch methods")
                 .build();
     }
@@ -100,7 +100,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("generateStreamEagerApi")
                 .setType(TypeName.get(boolean.class))
-                .setValue(false)
+                .setValue(true)
                 .setDescription("Generate batch methods")
                 .build();
     }
@@ -109,7 +109,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("generateStreamLazyApi")
                 .setType(TypeName.get(boolean.class))
-                .setValue(false)
+                .setValue(true)
                 .setDescription("Generate batch methods")
                 .build();
     }
@@ -118,7 +118,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("generateRxJavaApi")
                 .setType(TypeName.get(boolean.class))
-                .setValue(false)
+                .setValue(true)
                 .setDescription("Generate batch methods")
                 .build();
     }

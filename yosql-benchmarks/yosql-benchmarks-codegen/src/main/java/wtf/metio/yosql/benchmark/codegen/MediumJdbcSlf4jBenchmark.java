@@ -10,13 +10,15 @@ import wtf.metio.yosql.models.constants.api.LoggingApis;
 import wtf.metio.yosql.models.immutables.ApiConfiguration;
 
 /**
- * JMH based micro benchmark for YoSQL using a logging-enabled configuration.
+ * JMH based micro benchmark for YoSQL using the JDBC API and slf4j as logging implementation using a medium
+ * sample size of repositories. It can be compared against the no-op implementation to check how much extra time is
+ * spent by YoSQL to generate logging code using the slf4j API.
  */
-public class SmallSampleLoggingBenchmark extends AbstractSmallSampleBenchmark {
+public class MediumJdbcSlf4jBenchmark extends AbstractMediumSampleBenchmark {
 
     @Override
     protected ApiConfiguration apiConfig() {
-        return ApiConfiguration.usingDefaults().setLoggingApi(LoggingApis.JUL).build();
+        return ApiConfiguration.usingDefaults().setLoggingApi(LoggingApis.SLF4J).build();
     }
 
 }

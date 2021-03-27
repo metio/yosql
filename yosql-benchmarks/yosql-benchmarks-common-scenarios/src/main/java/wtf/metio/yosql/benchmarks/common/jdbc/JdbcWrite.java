@@ -9,16 +9,39 @@ package wtf.metio.yosql.benchmarks.common.jdbc;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import wtf.metio.yosql.benchmarks.common.AbstractBenchmark;
-import wtf.metio.yosql.benchmarks.common.WriteSingleEntity;
+import wtf.metio.yosql.benchmarks.common.Write;
 
 import java.time.Instant;
 
-public class JdbcWriteSingleEntity extends AbstractBenchmark implements WriteSingleEntity {
+public class JdbcWrite extends AbstractBenchmark implements Write {
+
+    @Override
+    @Benchmark
+    public void writeMultipleEntities() {
+        final var now = Instant.now().toEpochMilli();
+        projectRepository.insertProjectBatch(new String[]{"first", "second"}, new Long[]{now, now});
+    }
 
     @Override
     @Benchmark
     public void writeSingleEntity() {
         projectRepository.insertProject("hot fuzz", Instant.now().toEpochMilli());
+    }
+
+    @Override
+    public void updateOneToManyRelation() {
+        // TODO: implement benchmark
+    }
+
+    @Override
+    public void updateManyToOneRelation() {
+        // TODO: implement benchmark
+    }
+
+    @Override
+    @Benchmark
+    public void deleteSingleEntityByPrimaryKey() {
+        employeeRepository.deleteEmployee(1L);
     }
 
 }

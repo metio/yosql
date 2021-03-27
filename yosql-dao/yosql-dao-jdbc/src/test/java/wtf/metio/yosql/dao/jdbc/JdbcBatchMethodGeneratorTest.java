@@ -60,7 +60,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
@@ -123,7 +124,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
@@ -186,7 +188,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
@@ -249,7 +252,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
@@ -312,7 +316,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
@@ -375,7 +380,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
@@ -438,7 +444,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
@@ -501,7 +508,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
@@ -564,7 +572,8 @@ class JdbcBatchMethodGeneratorTest {
                             for (final int jdbcIndex : index.get("id")) {
                               statement.setObject(jdbcIndex, id[batch]);
                             }
-                            statement.addBatch()}
+                            statement.addBatch();
+                          }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
                             final java.lang.String executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))

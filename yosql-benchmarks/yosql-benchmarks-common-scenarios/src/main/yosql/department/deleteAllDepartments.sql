@@ -5,13 +5,5 @@
  * in the LICENSE file.
  */
 
---
--- returningMode: ONE
--- parameters:
---   - name: name
---     type: java.lang.String
---
-SELECT  *
-FROM    departments
-WHERE   name = :name
+DELETE FROM departments
 ;

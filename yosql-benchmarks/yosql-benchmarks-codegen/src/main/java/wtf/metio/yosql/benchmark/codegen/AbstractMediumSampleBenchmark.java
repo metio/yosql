@@ -13,9 +13,12 @@ import org.openjdk.jmh.annotations.Setup;
  */
 abstract class AbstractMediumSampleBenchmark extends AbstractDaggerBenchmark {
 
+    /**
+     * Generates SQL fies for a medium number of repositories.
+     */
     @Setup
     public final void generateSqlFiles() {
-        prepareRepositoriesForAllUseCases(100);
+        prepareRepositoriesForAllUseCases(25);
     }
 
 }

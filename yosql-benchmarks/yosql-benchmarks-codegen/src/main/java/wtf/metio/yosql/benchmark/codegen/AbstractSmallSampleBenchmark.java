@@ -13,9 +13,12 @@ import org.openjdk.jmh.annotations.Setup;
  */
 abstract class AbstractSmallSampleBenchmark extends AbstractDaggerBenchmark {
 
+    /**
+     * Generates SQL fies for a small number of repositories.
+     */
     @Setup
     public final void generateSqlFiles() {
-        prepareRepositoriesForAllUseCases(25);
+        prepareRepositoriesForAllUseCases(10);
     }
 
 }

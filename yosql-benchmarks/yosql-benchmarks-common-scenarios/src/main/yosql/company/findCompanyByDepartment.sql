@@ -5,10 +5,12 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.benchmarks.common;
-
-public interface ReadMultipleEntitiesBasedOnCondition {
-
-    void readMultipleEntitiesBasedOnCondition();
-
-}
+-- parameters:
+--   - name: department
+--     type: long
+SELECT  c.*
+FROM    companies c
+        INNER JOIN departments d
+        WHERE c.pid = d.company_pid
+          AND d.pid = :department
+;

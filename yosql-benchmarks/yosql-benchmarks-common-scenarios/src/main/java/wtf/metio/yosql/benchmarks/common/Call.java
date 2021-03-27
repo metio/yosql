@@ -4,11 +4,17 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.benchmark.codegen;
+
+package wtf.metio.yosql.benchmarks.common;
 
 /**
- * JMH based micro benchmark for YoSQL using the default configuration.
+ * Describes all benchmark scenarios that call procedures inside your database.
  */
-public class MediumSampleDefaultsBenchmark extends AbstractMediumSampleBenchmark {
+public interface Call {
+
+    /**
+     * Calls a stored procedure.
+     */
+    void callStoredProcedure();
 
 }

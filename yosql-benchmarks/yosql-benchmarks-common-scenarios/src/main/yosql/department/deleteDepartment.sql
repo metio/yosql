@@ -5,10 +5,9 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.benchmarks.common;
-
-public interface ReadMultipleEntities {
-
-    void readMultipleEntities();
-
-}
+-- parameters:
+--   - name: department
+--     type: long
+DELETE FROM departments
+WHERE pid = :department
+;

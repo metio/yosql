@@ -5,10 +5,5 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.benchmarks.common;
-
-public interface UpdateOneToManyRelation {
-
-    void readManyToOneRelation();
-
-}
+DELETE FROM employees
+;

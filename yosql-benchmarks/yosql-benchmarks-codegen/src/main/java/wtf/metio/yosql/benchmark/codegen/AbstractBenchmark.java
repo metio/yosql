@@ -67,7 +67,7 @@ abstract class AbstractBenchmark {
     }
 
     protected void prepareRepositoriesForAllUseCases(final int numberOfRepositories) {
-        SUPPORTED_USE_CASES.forEach(usecase -> prepareRepositories(numberOfRepositories, usecase));
+        SUPPORTED_USE_CASES.forEach(useCase -> prepareRepositories(numberOfRepositories, useCase));
     }
 
     protected void prepareRepositories(

@@ -5,13 +5,11 @@
  * in the LICENSE file.
  */
 
---
 -- parameters:
 --   - name: name
 --     type: java.lang.String
 --   - name: address
 --     type: java.lang.String
---
 INSERT INTO companies (name, address)
 VALUES (:name, :address)
 ;

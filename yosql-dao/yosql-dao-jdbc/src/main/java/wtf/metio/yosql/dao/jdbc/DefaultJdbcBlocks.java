@@ -163,7 +163,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                         this.config.batch()),
                 CodeBlock.builder()
                         .add(setBatchParameters(config))
-                        .add(jdbcMethods.statement().addBatch())
+                        .addStatement(jdbcMethods.statement().addBatch())
                         .build()
         );
     }

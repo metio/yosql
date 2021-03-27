@@ -31,7 +31,7 @@ public abstract class AbstractBenchmark {
     @Setup(Level.Trial)
     public void setup() throws IOException {
         dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:h2:mem:benchmarks-jdbc;DB_CLOSE_DELAY=-1");
+        dataSource.setJdbcUrl("jdbc:h2:mem:benchmarks-common;DB_CLOSE_DELAY=-1");
         dataSource.setUsername("sa");
         schemaRepository = new SchemaRepository(dataSource);
         companyRepository = new CompanyRepository(dataSource);
@@ -45,21 +45,17 @@ public abstract class AbstractBenchmark {
         schemaRepository.createEmployeesTable();
         schemaRepository.createProjectEmployeesTable();
         companyRepository.insertCompany("metio.wtf", "www");
-        projectRepository.insertProject("example", Instant.now().toEpochMilli());
+        projectRepository.insertProject("YoSQL", Instant.now().toEpochMilli());
         departmentRepository.insertDepartment(1L, "engineering");
         employeeRepository.insertEmployee(1L,
-                "Max", "Mustermann", "max.mustermann@example.com", 0L);
+                "Sebastian", "Hoß", "seb@hoß.de", 0L);
         employeeRepository.insertEmployee(1L,
-                "bob", "", "bob@example.com", 1000L);
+                "bob", "developer", "bob@example.com", 1000L);
+        projectEmployeeRepository.insertProjectEmployee(1L, 2L);
     }
 
     @TearDown(Level.Trial)
     public void tearDown() throws IOException {
-        schemaRepository.dropProjectEmployeesTable();
-        schemaRepository.dropEmployeesTable();
-        schemaRepository.dropDepartmentTable();
-        schemaRepository.dropProjectsTable();
-        schemaRepository.dropCompaniesTable();
         if (dataSource != null) {
             dataSource.close();
             dataSource = null;

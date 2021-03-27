@@ -16,10 +16,13 @@ import wtf.metio.yosql.codegen.api.YoSQL;
  */
 abstract class AbstractCodeGenBenchmark extends AbstractBenchmark {
 
+    /**
+     * Shared YoSQL instance that is supposed to be created by subclasses.
+     */
     protected YoSQL yosql;
 
     /**
-     * Benchmarks code generation.
+     * Runs the full code generation lifecycle.
      */
     @Benchmark
     public final void benchmarkGenerateCode() {

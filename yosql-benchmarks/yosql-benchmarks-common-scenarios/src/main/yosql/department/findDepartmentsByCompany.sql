@@ -5,10 +5,10 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.benchmarks.common;
-
-public interface ReadSingleEntityByPrimaryKey {
-
-    void readSingleEntityByPrimaryKey();
-
-}
+-- parameters:
+--   - name: company
+--     type: long
+SELECT  *
+FROM    departments
+WHERE   company_pid = :company
+;

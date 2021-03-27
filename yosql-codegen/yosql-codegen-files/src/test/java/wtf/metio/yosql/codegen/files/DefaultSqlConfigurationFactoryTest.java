@@ -56,10 +56,10 @@ class DefaultSqlConfigurationFactoryTest {
         assertAll("Configuration",
                 () -> assertFalse(configuration.generateBatchApi(), "generateBatchApi"),
                 () -> assertTrue(configuration.catchAndRethrow(), "catchAndRethrow"),
-                () -> assertFalse(configuration.generateRxJavaApi(), "generateRxJavaApi"),
+                () -> assertTrue(configuration.generateRxJavaApi(), "generateRxJavaApi"),
                 () -> assertTrue(configuration.generateStandardApi(), "generateStandardApi"),
-                () -> assertFalse(configuration.generateStreamEagerApi(), "generateStreamEagerApi"),
-                () -> assertFalse(configuration.generateStreamLazyApi(), "generateStreamLazyApi"),
+                () -> assertTrue(configuration.generateStreamEagerApi(), "generateStreamEagerApi"),
+                () -> assertTrue(configuration.generateStreamLazyApi(), "generateStreamLazyApi"),
                 () -> assertEquals("read", configuration.name(), "name"),
                 () -> assertEquals("readBatch", configuration.batchName(), "batchName"),
                 () -> assertEquals("readFlow", configuration.flowableName(), "flowableName"),
@@ -92,7 +92,7 @@ class DefaultSqlConfigurationFactoryTest {
 
         // then
         assertAll("Configuration",
-                () -> assertFalse(configuration.generateBatchApi(), "generateBatchApi"),
+                () -> assertTrue(configuration.generateBatchApi(), "generateBatchApi"),
                 () -> assertTrue(configuration.catchAndRethrow(), "catchAndRethrow"),
                 () -> assertFalse(configuration.generateRxJavaApi(), "generateRxJavaApi"),
                 () -> assertTrue(configuration.generateStandardApi(), "generateStandardApi"),

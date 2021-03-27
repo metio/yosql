@@ -38,23 +38,19 @@ abstract class AbstractBenchmark {
         schemaRepository.createDepartmentsTable();
         schemaRepository.createEmployeesTable();
         schemaRepository.createProjectEmployeesTable();
-        companyRepository.insertCompany(1, "metio.wtf");
-        companyRepository.insertCompany(2, "test");
+        companyRepository.insertCompany("metio.wtf");
+        companyRepository.insertCompany("test");
     }
 
     @TearDown(Level.Trial)
     public void tearDown() throws IOException {
-        schemaRepository.dropProjectEmployeesTable();
-        schemaRepository.dropEmployeesTable();
-        schemaRepository.dropDepartmentTable();
-        schemaRepository.dropProjectsTable();
-        schemaRepository.dropCompaniesTable();
         if (dataSource != null) {
             dataSource.close();
             dataSource = null;
         }
         schemaRepository = null;
         companyRepository = null;
+        personRepository = null;
     }
 
 }
