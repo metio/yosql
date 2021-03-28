@@ -26,7 +26,7 @@ public final class NoOpLoggingGenerator implements LoggingGenerator {
 
     @Override
     public boolean supports(final LoggingApis api) {
-        return true;
+        return LoggingApis.NONE.equals(api);
     }
 
     @Override

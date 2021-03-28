@@ -46,6 +46,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>wtf.metio.yosql.benchmarks</groupId>
+            <artifactId>yosql-benchmarks-common-scenarios</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
         </dependency>
@@ -53,10 +58,6 @@
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -70,6 +71,18 @@
             <groupId>io.reactivex.rxjava2</groupId>
             <artifactId>rxjava</artifactId>
             <version>2.2.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
     </dependencies>
 
@@ -86,19 +99,91 @@
                     <java>
                         <apiVersion>16</apiVersion>
                     </java>
-                    <repositories>
-                        <basePackageName>wtf.metio.yosql.benchmark.jdbc.persistence</basePackageName>
-                    </repositories>
-                    <jdbc>
-                        <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.persistence.util</utilityPackageName>
-                    </jdbc>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>jul</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                        <configuration>
+                            <api>
+                                <loggingApi>JUL</loggingApi>
+                            </api>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/jul</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.jdbc.jul.persistence</basePackageName>
+                            </repositories>
+                            <jdbc>
+                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.jul.persistence.util</utilityPackageName>
+                            </jdbc>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>log4j</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <api>
+                                <loggingApi>LOG4J</loggingApi>
+                            </api>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/log4j</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.jdbc.log4j.persistence</basePackageName>
+                            </repositories>
+                            <jdbc>
+                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.log4j.persistence.util</utilityPackageName>
+                            </jdbc>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>noop</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <api>
+                                <loggingApi>NONE</loggingApi>
+                            </api>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/noop</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.jdbc.noop.persistence</basePackageName>
+                            </repositories>
+                            <jdbc>
+                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.noop.persistence.util</utilityPackageName>
+                            </jdbc>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>slf4j</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <api>
+                                <loggingApi>SLF4J</loggingApi>
+                            </api>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/slf4j</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.jdbc.slf4j.persistence</basePackageName>
+                            </repositories>
+                            <jdbc>
+                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.util</utilityPackageName>
+                            </jdbc>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -115,7 +200,10 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/yosql</source>
+                                <source>${project.build.directory}/generated-sources/jul</source>
+                                <source>${project.build.directory}/generated-sources/log4j</source>
+                                <source>${project.build.directory}/generated-sources/noop</source>
+                                <source>${project.build.directory}/generated-sources/slf4j</source>
                             </sources>
                         </configuration>
                     </execution>

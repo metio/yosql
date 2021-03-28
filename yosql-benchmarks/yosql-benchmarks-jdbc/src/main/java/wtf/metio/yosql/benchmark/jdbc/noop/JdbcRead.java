@@ -5,16 +5,15 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.benchmarks.common.jdbc;
+package wtf.metio.yosql.benchmark.jdbc.noop;
 
 import org.openjdk.jmh.annotations.Benchmark;
-import wtf.metio.yosql.benchmarks.common.AbstractBenchmark;
 import wtf.metio.yosql.benchmarks.common.Read;
 
 /**
- * The JDBI implementation of the {@link Read} benchmarks.
+ * The JDBI implementation of the {@link Read} benchmarks using no logging statements.
  */
-public class JdbcRead extends AbstractBenchmark implements Read {
+public class JdbcRead extends AbstractNoOpBenchmark implements Read {
 
     @Override
     @Benchmark
@@ -35,13 +34,15 @@ public class JdbcRead extends AbstractBenchmark implements Read {
     }
 
     @Override
+    @Benchmark
     public void readMultipleEntities() {
-        // TODO: implement benchmark
+        companyRepository.findCompanies();
     }
 
     @Override
+    @Benchmark
     public void readComplexRelationship() {
-        // TODO: implement benchmark
+        projectRepository.findProjectsWithMinCosts(250);
     }
 
     @Override

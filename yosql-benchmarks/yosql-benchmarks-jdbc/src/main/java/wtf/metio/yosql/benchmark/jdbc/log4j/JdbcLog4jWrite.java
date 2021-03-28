@@ -5,15 +5,17 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.benchmarks.common.jdbc;
+package wtf.metio.yosql.benchmark.jdbc.log4j;
 
 import org.openjdk.jmh.annotations.Benchmark;
-import wtf.metio.yosql.benchmarks.common.AbstractBenchmark;
 import wtf.metio.yosql.benchmarks.common.Write;
 
 import java.time.Instant;
 
-public class JdbcWrite extends AbstractBenchmark implements Write {
+/**
+ * The JDBI implementation of the {@link Write} benchmarks using log4j.
+ */
+public class JdbcLog4jWrite extends AbstractLog4jBenchmark implements Write {
 
     @Override
     @Benchmark

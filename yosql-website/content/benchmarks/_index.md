@@ -6,7 +6,7 @@ menu:
     weight: 130
 ---
 
-This part of the documentation is intended for **developers** looking for information `YoSQL?` itself or its generated code perform in various scenarios.
+This part of the documentation is intended for **developers** looking for information `YoSQL` itself or its generated code perform in various scenarios.
 
 All benchmark results are computed on a free GitHub Actions account - thanks GitHub! The numbers may vary greatly between runs, depending on how much hardware is available to the runner. The numbers within one run are usually consistent and can be used to roughly measure performance. All available benchmarks can be seen at the bottom of this page. Each benchmark page explains how to run the benchmarks yourself. In case you want to make decision based on the performance of the generated code or the code generation itself, run these benchmarks on your own machine in order to see how well `YoSQL` performs against your actual hardware with actual SQL statements. The [initial setup](/tooling/) is simple enough, so that short 1 day/week/sprint spikes should be possible.
 

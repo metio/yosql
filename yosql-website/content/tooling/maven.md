@@ -174,3 +174,5 @@ the generated code of each other. The last execution will win. Share configurati
     </plugins>
 </build>
 ```
+
+TODO: split dev/prod builds? dev build contains log outputs, prod build contains none

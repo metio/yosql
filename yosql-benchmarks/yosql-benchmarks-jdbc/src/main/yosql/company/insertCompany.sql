@@ -8,6 +8,8 @@
 -- parameters:
 --   - name: name
 --     type: java.lang.String
-INSERT INTO companies (name)
-VALUES (:name)
+--   - name: address
+--     type: java.lang.String
+INSERT INTO companies (name, address)
+VALUES (:name, :address)
 ;

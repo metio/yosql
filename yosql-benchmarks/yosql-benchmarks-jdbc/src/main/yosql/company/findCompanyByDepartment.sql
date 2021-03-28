@@ -5,15 +5,12 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.benchmark.jdbc;
-
-import org.openjdk.jmh.annotations.Benchmark;
-
-public class JdbcWriteBenchmarks extends AbstractBenchmark {
-
-    @Benchmark
-    public final void benchmarkWritingData() {
-        companyRepository.insertCompany("jdbc-write");
-    }
-
-}
+-- parameters:
+--   - name: department
+--     type: long
+SELECT  c.*
+FROM    companies c
+    INNER JOIN departments d
+        ON c.pid = d.company_pid
+        AND d.pid = :department
+;
