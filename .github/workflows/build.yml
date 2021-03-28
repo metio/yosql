@@ -58,12 +58,18 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - id: benchmark
+      - id: run-benchmark
         name: Run Benchmark [${{ matrix.benchmark }}]
         run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests > build.log 2>&1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: upload
+      - id: upload-log
+        name: Upload Build Log
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-log-${{ matrix.benchmark }}
+          path: $GITHUB_WORKSPACE/build.log
+      - id: upload-benchmark
         name: Upload Benchmark Results
         uses: actions/upload-artifact@v2
         with:
