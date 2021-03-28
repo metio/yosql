@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: install
         name: Install Project
-        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml install 2>&1 1> $GITHUB_WORKSPACE/build.log
+        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml install 2>&1 1> build.log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: upload-log
@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-log
-          path: $GITHUB_WORKSPACE/build.log
+          path: ./build.log
   benchmarks:
     name: Benchmarks
     runs-on: ubuntu-latest
