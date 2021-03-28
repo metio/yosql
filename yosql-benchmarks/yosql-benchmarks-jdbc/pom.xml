@@ -84,6 +84,10 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-impl</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -185,6 +189,27 @@
                             </jdbc>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>tinylog</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <api>
+                                <loggingApi>TINYLOG</loggingApi>
+                            </api>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/tinylog</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.jdbc.tinylog.persistence</basePackageName>
+                            </repositories>
+                            <jdbc>
+                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.tinylog.persistence.util</utilityPackageName>
+                            </jdbc>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -204,6 +229,7 @@
                                 <source>${project.build.directory}/generated-sources/log4j</source>
                                 <source>${project.build.directory}/generated-sources/noop</source>
                                 <source>${project.build.directory}/generated-sources/slf4j</source>
+                                <source>${project.build.directory}/generated-sources/tinylog</source>
                             </sources>
                         </configuration>
                     </execution>

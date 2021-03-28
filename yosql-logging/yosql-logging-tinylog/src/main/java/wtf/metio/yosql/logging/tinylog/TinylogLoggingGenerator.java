@@ -84,7 +84,7 @@ public final class TinylogLoggingGenerator implements LoggingGenerator {
 
     @Override
     public CodeBlock shouldLog() {
-        return CodeBlock.builder().add("$N.isInfoEnabled()", names.logger()).build();
+        return CodeBlock.builder().add("$T.isInfoEnabled()", Logger.class).build();
     }
 
     @Override
@@ -95,7 +95,7 @@ public final class TinylogLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock entering(final String repository, final String method) {
         return CodeBlock.builder()
-                .addStatement("$T.debug($T.format($S, $S, $S))", Logger.class, String.class,
+                .addStatement("$T.debug(() -> $T.format($S, $S, $S))", Logger.class, String.class,
                         "Entering [%s#%s]", repository, method)
                 .build();
     }

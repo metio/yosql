@@ -63,12 +63,6 @@ jobs:
         run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests 2>&1 1> build.log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: upload-log
-        name: Upload Build Log
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-log-${{ matrix.benchmark }}
-          path: ./build.log
       - id: upload-benchmark
         name: Upload Benchmark Results
         uses: actions/upload-artifact@v2
@@ -89,18 +83,12 @@ jobs:
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: latest
-      - id: download-codegen
-        name: Download Codegen Results
+      - id: download
+        name: Download Benchmarks Results
         uses: actions/download-artifact@v2
-        with:
-          name: benchmark-codegen
-          path: ${{ github.workspace }}/yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
-      - id: download-jdbc
-        name: Download JDBC Results
-        uses: actions/download-artifact@v2
-        with:
-          name: benchmark-jdbc
-          path: ${{ github.workspace }}/yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
+      - id: failsafe
+        name: Checkout Downloads
+        run: ls -R
       - id: website
         name: Build Website
         run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
