@@ -100,13 +100,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: benchmark-codegen
-          path: $GITHUB_WORKSPACE/yosql/yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
+          path: ${{ github.workspace }}/yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
       - id: download-jdbc
         name: Download JDBC Results
         uses: actions/download-artifact@v2
         with:
           name: benchmark-jdbc
-          path: $GITHUB_WORKSPACE/yosql/yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
+          path: ${{ github.workspace }}/yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
       - id: website
         name: Build Website
         run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
