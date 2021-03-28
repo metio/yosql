@@ -48,7 +48,7 @@ In order to run benchmarks for the  [EBean](/persistence/ebean/) implementation 
 
 ```shell
 # run EBean benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-ebean --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-ebean --also-make --activate-profiles benchmarks verify
 ```
 
 ### Fluent JDBC
@@ -57,7 +57,7 @@ In order to run benchmarks for the  [Fluent JDBC](/persistence/fluent-jdbc/) imp
 
 ```shell
 # run EBean benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-fluent-jdbc --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-fluent-jdbc --also-make --activate-profiles benchmarks verify
 ```
 
 ### JDBC
@@ -66,7 +66,7 @@ In order to run benchmarks for the  [JDBC](/persistence/jdbc/) implementation of
 
 ```shell
 # run JDBC benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-jdbc --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-jdbc --also-make --activate-profiles benchmarks verify
 ```
 The [results](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/2021/yosql-benchmarks-jdbc.json,https://yosql.projects.metio.wtf/benchmarks/current/yosql-benchmarks-jdbc.json) are measured in **microseconds**. All available logging implementation are tested with their maximal output configuration in order to gauge how much overhead each implementation causes on top of the no-op implementation without any logging statements.
 
@@ -76,7 +76,7 @@ In order to run benchmarks for the  [JDBI](/persistence/jdbi/) implementation of
 
 ```shell
 # run JDBI benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-jdbi --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-jdbi --also-make --activate-profiles benchmarks verify
 ```
 
 ### jOOQ
@@ -85,7 +85,7 @@ In order to run benchmarks for the  [jOOQ](/persistence/jooq/) implementation of
 
 ```shell
 # run jOOQ benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-jooq --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-jooq --also-make --activate-profiles benchmarks verify
 ```
 
 ### JPA
@@ -94,7 +94,7 @@ In order to run benchmarks for the  [JPA](/persistence/jpa/) implementation of `
 
 ```shell
 # run JPA benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-jpa --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-jpa --also-make --activate-profiles benchmarks verify
 ```
 
 ### MyBatis
@@ -103,7 +103,7 @@ In order to run benchmarks for the  [MyBatis](/persistence/mybatis/) implementat
 
 ```shell
 # run JPA benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-mybatis --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-mybatis --also-make --activate-profiles benchmarks verify
 ```
 
 ### Pyranid
@@ -112,7 +112,7 @@ In order to run benchmarks for the  [Pyranid](/persistence/pyranid/) implementat
 
 ```shell
 # run JPA benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-pyranid --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-pyranid --also-make --activate-profiles benchmarks verify
 ```
 
 ### R2DBC
@@ -121,7 +121,7 @@ In order to run benchmarks for the  [R2DBC](/persistence/r2dbc/) implementation 
 
 ```shell
 # run JPA benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-r2dbc --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-r2dbc --also-make --activate-profiles benchmarks verify
 ```
 
 ### SansOrm
@@ -130,7 +130,7 @@ In order to run benchmarks for the  [SansOrm](/persistence/sansorm/) implementat
 
 ```shell
 # run JPA benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-sansorm --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-sansorm --also-make --activate-profiles benchmarks verify
 ```
 
 ### Spring-Data JDBC
@@ -139,7 +139,7 @@ In order to run benchmarks for the  [Spring-Data JDBC](/persistence/spring-data-
 
 ```shell
 # run Spring-Data JDBC benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-data-jdbc --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-data-jdbc --also-make --activate-profiles benchmarks verify
 ```
 
 ### Spring-Data JPA
@@ -148,7 +148,7 @@ In order to run benchmarks for the  [Spring-Data JPA](/persistence/spring-data-j
 
 ```shell
 # run Spring-Data JDBC benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-data-jpa --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-data-jpa --also-make --activate-profiles benchmarks verify
 ```
 
 ### Spring-Data R2DBC
@@ -157,7 +157,7 @@ In order to run benchmarks for the  [Spring-Data R2DBC](/persistence/spring-data
 
 ```shell
 # run Spring-Data JDBC benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-data-r2dbc --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-data-r2dbc --also-make --activate-profiles benchmarks verify
 ```
 
 ### Spring JDBC
@@ -166,7 +166,7 @@ In order to run benchmarks for the  [Spring JDBC](/persistence/spring-jdbc/) imp
 
 ```shell
 # run Spring JDBC benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-jdbc --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-jdbc --also-make --activate-profiles benchmarks verify
 ```
 
 ## Other Solutions
@@ -179,7 +179,7 @@ In order to run benchmarks for the  [EBean](/persistence/ebean/) *only* implemen
 
 ```shell
 # run EBean benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-ebean --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-ebean --also-make --activate-profiles benchmarks verify
 ```
 
 ### JDBI
@@ -188,7 +188,7 @@ In order to run benchmarks for the  [JDBI](/persistence/jdbi/) *only* implementa
 
 ```shell
 # run EBean benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi --also-make --activate-profiles benchmarks verify
 ```
 
 ### jOOQ
@@ -197,7 +197,7 @@ In order to run benchmarks for the  [jOOQ](/persistence/jooq/) *only* implementa
 
 ```shell
 # run EBean benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jooq --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jooq --also-make --activate-profiles benchmarks verify
 ```
 
 ### JPA
@@ -206,5 +206,5 @@ In order to run benchmarks for the  [JPA](/persistence/jpa/) *only* implementati
 
 ```shell
 # run EBean benchmarks
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jpa --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jpa --also-make --activate-profiles benchmarks verify
 ```
