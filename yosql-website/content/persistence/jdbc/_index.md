@@ -10,7 +10,7 @@ tags:
   - JDBC
 ---
 
-The `javax.sql` based implementation to access your database. It does not require any dependencies outside from standard JDK classes. The available configuration is listed split into multiple pages which are listed at the bottom of this page.
+The `javax.sql` based implementation of `YoSQL` to access your database. It does not require any dependencies outside from standard JDK classes exposed by the [JDBC](https://en.wikipedia.org/wiki/Java_Database_Connectivity) API. The available configuration is listed split into multiple pages which are listed at the bottom of this page.
 
 ## Tooling
 
