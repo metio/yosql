@@ -4,79 +4,72 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.logging.jul;
+package wtf.metio.yosql.logging.tinylog;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
+import org.tinylog.Logger;
 import wtf.metio.yosql.codegen.api.Fields;
 import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
 
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * Logging generator that uses java.util.logging.
+ * Logging generator that uses tinylog.
  */
-public final class JulLoggingGenerator implements LoggingGenerator {
+public final class TinylogLoggingGenerator implements LoggingGenerator {
 
     private final Names names;
-    private final Fields fields;
 
-    public JulLoggingGenerator(final Names names, final Fields fields) {
+    public TinylogLoggingGenerator(final Names names) {
         this.names = names;
-        this.fields = fields;
     }
 
     @Override
     public Optional<FieldSpec> logger(final TypeName repoClass) {
-        return Optional.of(fields.prepareConstant(Logger.class, names.logger())
-                .initializer("$T.getLogger($T.class.getName())", Logger.class, repoClass)
-                .build());
+        return Optional.empty();
     }
 
     @Override
     public boolean supports(final LoggingApis api) {
-        return LoggingApis.JUL.equals(api);
+        return LoggingApis.TINYLOG.equals(api);
     }
 
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", names.logger(), "Picked query [%s]", fieldName)
+                .addStatement("$T.debug(() -> $T.format($S, $S))", Logger.class, String.class, "Picked query [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock indexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", names.logger(), "Picked index [%s]", fieldName)
+                .addStatement("$T.debug(() -> $T.format($S, $S))", Logger.class, String.class, "Picked index [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock vendorQueryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", names.logger(),
-                        "Picked query [%s]", fieldName)
+                .addStatement("$T.debug(() -> $T.format($S, $S))", Logger.class, String.class, "Picked query [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock vendorIndexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", names.logger(),
-                        "Picked index [%s]", fieldName)
+                .addStatement("$T.debug(() -> $T.format($S, $S))", Logger.class, String.class, "Picked index [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock vendorDetected() {
         return CodeBlock.builder()
-                .addStatement("$N.fine(() -> $T.format($S, $N))", names.logger(), String.class,
+                .addStatement("$T.info(() -> $T.format($S, $N))", Logger.class, String.class,
                         "Detected database vendor [%s]", names.databaseProductName())
                 .build();
     }
@@ -84,14 +77,14 @@ public final class JulLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock executingQuery() {
         return CodeBlock.builder()
-                .addStatement("$N.fine(() -> $T.format($S, $N))", names.logger(), String.class,
+                .addStatement("$T.info(() -> $T.format($S, $N))", Logger.class, String.class,
                         "Executing query [%s]", names.executedQuery())
                 .build();
     }
 
     @Override
     public CodeBlock shouldLog() {
-        return CodeBlock.builder().add("$N.isLoggable($T.FINE)", names.logger(), Level.class).build();
+        return CodeBlock.builder().add("$N.isInfoEnabled()", names.logger()).build();
     }
 
     @Override
@@ -102,7 +95,8 @@ public final class JulLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock entering(final String repository, final String method) {
         return CodeBlock.builder()
-                .addStatement("$N.entering($S, $S)", names.logger(), repository, method)
+                .addStatement("$T.debug($T.format($S, $S, $S))", Logger.class, String.class,
+                        "Entering [%s#%s]", repository, method)
                 .build();
     }
 

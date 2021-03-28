@@ -19,7 +19,7 @@ import wtf.metio.yosql.models.constants.api.LoggingApis;
 import java.util.Optional;
 
 /**
- * Logging generator that uses slf4j
+ * Logging generator that uses slf4j.
  */
 public final class Slf4jLoggingGenerator implements LoggingGenerator {
 
@@ -46,32 +46,28 @@ public final class Slf4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(String.format($S, $S))", names.logger(), "Picked query [%s]",
-                        fieldName)
+                .addStatement("$N.debug(String.format($S, $S))", names.logger(), "Picked query [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock indexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(String.format($S, $S))", names.logger(),
-                        "Picked index [%s]", fieldName)
+                .addStatement("$N.debug(String.format($S, $S))", names.logger(), "Picked index [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock vendorQueryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(String.format($S, $S))", names.logger(),
-                        "Picked query [%s]", fieldName)
+                .addStatement("$N.debug(String.format($S, $S))", names.logger(), "Picked query [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock vendorIndexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(String.format($S, $S))", names.logger(),
-                        "Picked index [%s]", fieldName)
+                .addStatement("$N.debug(String.format($S, $S))", names.logger(), "Picked index [%s]", fieldName)
                 .build();
     }
 

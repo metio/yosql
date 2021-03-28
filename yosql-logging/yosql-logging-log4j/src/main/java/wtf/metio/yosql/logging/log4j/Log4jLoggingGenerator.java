@@ -20,7 +20,7 @@ import wtf.metio.yosql.models.constants.api.LoggingApis;
 import java.util.Optional;
 
 /**
- * Logging generator that uses log4j
+ * Logging generator that uses log4j.
  */
 public final class Log4jLoggingGenerator implements LoggingGenerator {
 
@@ -47,8 +47,7 @@ public final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(), "Picked query [%s]",
-                        fieldName)
+                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(), "Picked query [%s]", fieldName)
                 .build();
     }
 

@@ -60,7 +60,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: benchmark
         name: Run Benchmark [${{ matrix.benchmark }}]
-        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests
+        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests > build.log 2>&1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: upload
@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: benchmark-${{ matrix.benchmark }}
-          path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
+          path: $GITHUB_WORKSPACE/yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
   website:
     name: Website
     runs-on: ubuntu-latest
@@ -88,13 +88,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: benchmark-codegen
-          path: ./yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
+          path: $GITHUB_WORKSPACE/yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
       - id: download-jdbc
         name: Download JDBC Results
         uses: actions/download-artifact@v2
         with:
           name: benchmark-jdbc
-          path: ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
+          path: $GITHUB_WORKSPACE/yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
       - id: website
         name: Build Website
         run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
@@ -103,6 +103,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./yosql-website/public
+          publish_dir: $GITHUB_WORKSPACE/yosql-website/public
           force_orphan: true
           cname: yosql.projects.metio.wtf

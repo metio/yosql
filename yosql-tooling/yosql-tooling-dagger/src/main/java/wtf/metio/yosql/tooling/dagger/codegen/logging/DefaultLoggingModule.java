@@ -23,6 +23,7 @@ import java.util.Set;
         Log4jLoggingModule.class,
         NoOpLoggingModule.class,
         Slf4jLoggingModule.class,
+        TinylogLoggingModule.class,
 })
 public class DefaultLoggingModule {
 

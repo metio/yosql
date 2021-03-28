@@ -110,6 +110,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>wtf.metio.yosql.logging</groupId>
+            <artifactId>yosql-logging-tinylog</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>wtf.metio.yosql.dao</groupId>
             <artifactId>yosql-dao-ebean</artifactId>
             <version>${project.version}</version>
