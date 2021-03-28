@@ -91,7 +91,7 @@ jobs:
         run: cp ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
       - id: copy-jdbc-results
         name: Copy JDBC Results
-        run: cp ./benchmark-codegen/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
+        run: cp ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
       - id: website
         name: Build Website
         run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
