@@ -34,8 +34,6 @@ jobs:
         run: cp ./yosql-benchmarks/yosql-benchmarks-codegen/target/benchmark/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
       - name: Copy JDBC Benchmark Results
         run: cp ./yosql-benchmarks/yosql-benchmarks-jdbc/target/benchmark/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
-      - name: Copy Common Scenarios Benchmark Results
-        run: cp ./yosql-benchmarks/yosql-benchmarks-common-scenarios/target/benchmark/yosql-benchmarks-common-scenarios.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-common-scenarios.json
       - id: hugo
         name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
