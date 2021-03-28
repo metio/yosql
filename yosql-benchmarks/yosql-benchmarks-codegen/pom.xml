@@ -76,7 +76,7 @@
                         <version>1.0.3</version>
                         <executions>
                             <execution>
-                                <phase>test</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>jmh</goal>
                                 </goals>
