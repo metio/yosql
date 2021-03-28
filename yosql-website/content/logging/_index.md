@@ -12,6 +12,7 @@ YoSQL supports various logging frameworks and APIs. We recommend that you select
 - [log4j](./log4j/): The `log4j` based implementation. It uses the constant `LOG4J` to identify itself.
 - [No-Op](./no-op/): The `No-Op` based implementation. It uses the constant `NONE` to identify itself.
 - [slf4j](./slf4j/): The `slf4j` based implementation. It uses the constant `SLF4J` to identify itself.
+- [tinylog](./tinylog/): The `tinylog` based implementation. It uses the constant `TINYLOG` to identify itself.
 
 ## Tooling
 

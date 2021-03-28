@@ -16,10 +16,11 @@ tags:
   - JDBC with JUL: Enables the use of the `java.util.logging` API in generated code.
   - JDBC with log4j: Enables the use of the `log4j` API in generated code.
   - JDBC with slf4j: Enables the use of the `slf4j` API in generated code.
+  - JDBC with tinylog: Enables the use of the `tinylog` API in generated code.
 
 ```shell
 # run code generation benchmark
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-codegen --also-make --activate-profiles benchmarks test
+$ mvn --projects yosql-benchmarks/yosql-benchmarks-codegen --also-make --activate-profiles benchmarks verify
 ```
 
 The above command will execute the four configurations mentioned at the top of this page. Each configuration uses repositories that contain:

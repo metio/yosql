@@ -1,5 +1,5 @@
 ---
-title: slf4j
+title: Tinylog
 date: 2019-09-27T18:51:08+02:00
 menu:
   main:
@@ -7,10 +7,10 @@ menu:
 categories:
   - Loggers
 tags:
-  - slf4j
+  - Tinylog
 ---
 
-The [slf4j](http://www.slf4j.org/) based implementation for a logging generator. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.
+The [Tinylog](https://tinylog.org/v2/) based implementation for a logging generator.
 
 ## Tooling
 
