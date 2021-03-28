@@ -1,0 +1,106 @@
+name: Build Project
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+          java-package: jdk
+          architecture: x64
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: install
+        name: Install Project
+        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  benchmarks:
+    runs-on: ubuntu-latest
+    needs: [build]
+    strategy:
+      matrix:
+        benchmark: ["codegen", "jdbc"]
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+          java-package: jdk
+          architecture: x64
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: benchmark
+        name: Run Benchmark [${{ matrix.benchmark }}]
+        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: upload
+        name: Upload Benchmark Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: benchmark-${{ matrix.benchmark }}
+          path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
+  website:
+    runs-on: ubuntu-latest
+    needs: [benchmarks]
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+      - id: hugo
+        name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: latest
+      - id: download-codegen
+        name: Download Codegen Results
+        uses: actions/download-artifact@v2
+        with:
+          name: benchmark-codegen
+          path: ./yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
+      - id: download-jdbc
+        name: Download JDBC Results
+        uses: actions/download-artifact@v2
+        with:
+          name: benchmark-jdbc
+          path: ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
+      - id: hugo
+        name: Build Website
+        run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
+      - id: deploy
+        name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./yosql-website/public
+          force_orphan: true
+          cname: yosql.projects.metio.wtf
