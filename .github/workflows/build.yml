@@ -97,6 +97,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: $GITHUB_WORKSPACE/yosql-website/public
+          publish_dir: ./yosql-website/public
           force_orphan: true
           cname: yosql.projects.metio.wtf
