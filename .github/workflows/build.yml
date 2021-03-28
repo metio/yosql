@@ -93,7 +93,7 @@ jobs:
         with:
           name: benchmark-jdbc
           path: ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
-      - id: hugo
+      - id: website
         name: Build Website
         run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
       - id: deploy
