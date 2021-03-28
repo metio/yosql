@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 jobs:
   build:
-    name: Linux
+    name: Install Project Artifacts
     runs-on: ubuntu-latest
     steps:
       - id: checkout
@@ -33,6 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   benchmarks:
+    name: Benchmarks
     runs-on: ubuntu-latest
     needs: [build]
     strategy:
@@ -69,6 +70,7 @@ jobs:
           name: benchmark-${{ matrix.benchmark }}
           path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
   website:
+    name: Website
     runs-on: ubuntu-latest
     needs: [benchmarks]
     if: ${{ github.ref == 'refs/heads/main' }}
