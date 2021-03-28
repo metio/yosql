@@ -15,22 +15,16 @@ Each supported [persistence](/persistence/) API has their own performance charac
 
 ### Common Scenarios
 
-The common scenarios define what each persistence solution must solve in order to pass the TCK.
-
-```shell
-# run common scenario benchmarks with the best performing YoSQL implementation
-$ mvn --projects yosql-benchmarks/yosql-benchmarks-common-scenarios --also-make --activate-profiles benchmarks test
-```
-The benchmark results for the best performing implementation of `YoSQL` can be found [here](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/2021/yosql-benchmarks-common-scenarios.json,https://yosql.projects.metio.wtf/benchmarks/current/yosql-benchmarks-common-scenarios.json). Those results can be seen as a baseline for other implementations. All benchmarks run through the following benchmarks:
+The common scenarios define what each persistence solution must solve in order to pass the TCK. All benchmarks run through the following benchmarks:
 
 #### Reading Data
 
+- `readComplexRelationship`: Read a complex data relationship.
 - `readManyToOneRelation`: Reads the one part of a many-to-one relation.
+- `readMultipleEntities`: Read multiple entities in one go.
 - `readMultipleEntitiesBasedOnCondition`: Read multiple entities and filter them inside the database.
 - `readOneToManyRelation`: Reads the many part of a one-to-many relation.
 - `readSingleEntityByPrimaryKey`: Read a single entity using its primary key.
-- `readMultipleEntities`: Read multiple entities in one go.
-- `readComplexRelationship`: Read a complex data relationship.
 
 #### Writing Data
 
@@ -74,7 +68,7 @@ In order to run benchmarks for the  [JDBC](/persistence/jdbc/) implementation of
 # run JDBC benchmarks
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-jdbc --also-make --activate-profiles benchmarks test
 ```
-The [results](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/2021/yosql-benchmarks-jdbc.json,https://yosql.projects.metio.wtf/benchmarks/current/yosql-benchmarks-jdbc.json) are measured in **microseconds**.
+The [results](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/2021/yosql-benchmarks-jdbc.json,https://yosql.projects.metio.wtf/benchmarks/current/yosql-benchmarks-jdbc.json) are measured in **microseconds**. All available logging implementation are tested with their maximal output configuration in order to gauge how much overhead each implementation causes on top of the no-op implementation without any logging statements.
 
 ### JDBI
 
