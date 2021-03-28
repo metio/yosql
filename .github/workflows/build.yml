@@ -80,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: benchmark-${{ matrix.benchmark }}
-          path: $GITHUB_WORKSPACE/yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
+          path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
   website:
     name: Website
     runs-on: ubuntu-latest
@@ -100,13 +100,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: benchmark-codegen
-          path: $GITHUB_WORKSPACE/yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
+          path: $GITHUB_WORKSPACE/yosql/yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
       - id: download-jdbc
         name: Download JDBC Results
         uses: actions/download-artifact@v2
         with:
           name: benchmark-jdbc
-          path: $GITHUB_WORKSPACE/yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
+          path: $GITHUB_WORKSPACE/yosql/yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
       - id: website
         name: Build Website
         run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
