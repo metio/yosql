@@ -17,3 +17,8 @@ $ git clone https://github.com/metio/yosql
 ```
 
 Benchmarks are only enabled on demand by activating the `benchmarks` profile (`mvn --activate-profiles benchmarks ...`). You are always more than welcome to improve any of the existing benchmarks or even add new ones. All currently available benchmarks make use of the fantastic [jmh-maven-plugin](https://github.com/jhunters/jmh-maven-plugin) and thus require Maven to run. In case you are working on your own persistence implementation for `YoSQL`, use these benchmarks as baseline for your actual implementation to measure the performance of your code.
+
+```shell
+# run all benchmarks
+$ mvn verify --activate-profiles benchmarks
+```
