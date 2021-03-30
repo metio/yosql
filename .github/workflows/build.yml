@@ -21,7 +21,7 @@ jobs:
           architecture: x64
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -52,7 +52,7 @@ jobs:
           architecture: x64
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
