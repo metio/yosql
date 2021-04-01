@@ -46,6 +46,7 @@ public final class Sql {
         return List.of(
                 repository(),
                 name(),
+                description(),
                 vendor(),
                 type(),
                 returningMode(),
@@ -90,6 +91,16 @@ public final class Sql {
                 .setType(TypicalTypes.STRING)
                 .setValue("")
                 .setImmutableAnnotations(List.of(jsonProperty("name")))
+                .build();
+    }
+
+    private static ConfigurationSetting description() {
+        return ConfigurationSetting.builder()
+                .setName("description")
+                .setDescription("The description for the SQL statement")
+                .setType(TypicalTypes.STRING)
+                .setValue("")
+                .setImmutableAnnotations(List.of(jsonProperty("description")))
                 .build();
     }
 

@@ -12,11 +12,14 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.api.Javadoc;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.function.Predicate.not;
 
 public final class DefaultJavadoc implements Javadoc {
 
@@ -55,6 +58,11 @@ public final class DefaultJavadoc implements Javadoc {
     @Override
     public CodeBlock methodJavadoc(final List<SqlStatement> statements) {
         final var builder = CodeBlock.builder();
+        statements.stream()
+                .map(SqlStatement::getConfiguration)
+                .map(SqlConfiguration::description)
+                .filter(not(Strings::isBlank))
+                .forEach(description -> builder.add("<p>$L<p>\n", description));
         if (statements.size() > 1) {
             builder.add("<p>Executes one of the following statements:</p>");
         } else {

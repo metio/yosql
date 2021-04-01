@@ -15,6 +15,7 @@ Each SQL statement can have an optional front matter section written in YAML tha
 
 ```sql
 -- name: someName
+-- description: Retrieves a single user
 -- repository: com.example.persistence.YourRepository
 -- vendor: H2
 -- parameters:
@@ -37,10 +38,21 @@ While parsing your `.sql` files, `YoSQL` will strip the SQL comment prefix (`--`
 
 ## name
 
-The `name` field can be used to change the name of a SQL statement. Typically, the name is auto-detected from the `.sql` file name, however if you want to place multiple SQL statements in one file, use `name` to give each statement a unique name instead of relying on the auto-numbering `YoSQL` is using by default.
+The `name` field can be used to change the name of an SQL statement. Typically, the name is auto-detected from the `.sql` file name, however if you want to place multiple SQL statements in one file, use `name` to give each statement a unique name instead of relying on the auto-numbering `YoSQL` is using by default.
 
 ```sql
 -- name: someName
+SELECT  *
+FROM    users
+WHERE   id = :userId
+```
+
+## description
+
+The `description` field can be used to add a description to your SQL statements that will be part of generated Javadocs.
+
+```sql
+-- description: Retrieves a single user
 SELECT  *
 FROM    users
 WHERE   id = :userId
