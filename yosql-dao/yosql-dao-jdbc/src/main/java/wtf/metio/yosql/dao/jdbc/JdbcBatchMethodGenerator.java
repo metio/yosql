@@ -46,7 +46,7 @@ public final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
     public MethodSpec batchWriteMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.batchName(), statements)
+        return methods.batchMethod(configuration.batchName(), statements)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecs(configuration.parameters()))
                 .addExceptions(transformer.sqlException(configuration))

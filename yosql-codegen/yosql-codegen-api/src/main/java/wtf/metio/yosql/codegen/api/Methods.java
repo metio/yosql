@@ -17,16 +17,76 @@ import java.util.List;
  */
 public interface Methods {
 
+    /**
+     * Create a new builder for public methods.
+     *
+     * @param name The name of the method.
+     * @return A method builder preconfigured for public methods.
+     */
     MethodSpec.Builder publicMethod(String name);
 
     /**
-     * Prepare {@link MethodSpec} with Javadoc
+     * Prepare {@link MethodSpec} with Javadoc for standard methods.
      *
      * @param name       The name of the generated method.
      * @param statements The SQL statements used for Javadocs
      * @return The resulting builder for the MethodSpec.
      */
-    MethodSpec.Builder publicMethod(String name, List<SqlStatement> statements);
+    MethodSpec.Builder standardMethod(String name, List<SqlStatement> statements);
+
+    /**
+     * Prepare {@link MethodSpec} with Javadoc for batch methods.
+     *
+     * @param name       The name of the generated method.
+     * @param statements The SQL statements used for Javadocs
+     * @return The resulting builder for the MethodSpec.
+     */
+    MethodSpec.Builder batchMethod(String name, List<SqlStatement> statements);
+
+    /**
+     * Prepare {@link MethodSpec} with Javadoc for eager stream methods.
+     *
+     * @param name       The name of the generated method.
+     * @param statements The SQL statements used for Javadocs
+     * @return The resulting builder for the MethodSpec.
+     */
+    MethodSpec.Builder streamEagerMethod(String name, List<SqlStatement> statements);
+
+    /**
+     * Prepare {@link MethodSpec} with Javadoc for lazy stream methods.
+     *
+     * @param name       The name of the generated method.
+     * @param statements The SQL statements used for Javadocs
+     * @return The resulting builder for the MethodSpec.
+     */
+    MethodSpec.Builder streamLazyMethod(String name, List<SqlStatement> statements);
+
+    /**
+     * Prepare {@link MethodSpec} with Javadoc for rxjava methods.
+     *
+     * @param name       The name of the generated method.
+     * @param statements The SQL statements used for Javadocs
+     * @return The resulting builder for the MethodSpec.
+     */
+    MethodSpec.Builder rxJavaMethod(String name, List<SqlStatement> statements);
+
+    /**
+     * Prepare {@link MethodSpec} with Javadoc for reactor methods.
+     *
+     * @param name       The name of the generated method.
+     * @param statements The SQL statements used for Javadocs
+     * @return The resulting builder for the MethodSpec.
+     */
+    MethodSpec.Builder reactorMethod(String name, List<SqlStatement> statements);
+
+    /**
+     * Prepare {@link MethodSpec} with Javadoc for mutiny methods.
+     *
+     * @param name       The name of the generated method.
+     * @param statements The SQL statements used for Javadocs
+     * @return The resulting builder for the MethodSpec.
+     */
+    MethodSpec.Builder mutinyMethod(String name, List<SqlStatement> statements);
 
     MethodSpec.Builder implementation(String name);
 

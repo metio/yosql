@@ -39,8 +39,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -99,8 +100,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -202,8 +204,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -262,8 +265,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -365,8 +369,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -425,8 +430,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -528,8 +534,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -588,8 +595,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -691,8 +699,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -751,8 +760,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -854,8 +864,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -914,8 +925,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1017,8 +1029,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1077,8 +1090,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1180,8 +1194,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1240,8 +1255,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1343,8 +1359,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamEagerApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1403,8 +1420,9 @@ class JdbcJava8StreamMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
+                     * <p>Disable generating this method by setting <strong>generateStreamLazyApi</strong> to <strong>false</strong></p>
                      *
-                     * @see "com.example.util.ResultRow"
+                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",

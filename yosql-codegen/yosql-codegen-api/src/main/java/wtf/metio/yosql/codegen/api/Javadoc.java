@@ -28,9 +28,10 @@ public interface Javadoc {
      * Creates typical javadoc documentation for generated methods.
      *
      * @param statements The statements of the method.
+     * @param configuration The configuration toggle to use.
      * @return The javadoc for a single method based on the given statements.
      */
-    CodeBlock methodJavadoc(List<SqlStatement> statements);
+    CodeBlock methodJavadoc(List<SqlStatement> statements, String configuration);
 
     /**
      * Creates typical javadoc documentation for generated fields.

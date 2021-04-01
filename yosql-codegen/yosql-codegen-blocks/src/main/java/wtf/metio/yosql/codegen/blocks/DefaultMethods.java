@@ -39,15 +39,45 @@ public final class DefaultMethods implements Methods {
                 .addAnnotations(annotations.generatedMethod());
     }
 
-    @Override
-    public MethodSpec.Builder publicMethod(final String name, final List<SqlStatement> statements) {
+    public MethodSpec.Builder standardMethod(final String name, final List<SqlStatement> statements) {
+        return publicMethod(name, statements, "generateStandardApi");
+    }
+
+    public MethodSpec.Builder batchMethod(final String name, final List<SqlStatement> statements) {
+        return publicMethod(name, statements, "generateBatchApi");
+    }
+
+    public MethodSpec.Builder streamEagerMethod(final String name, final List<SqlStatement> statements) {
+        return publicMethod(name, statements, "generateStreamEagerApi");
+    }
+
+    public MethodSpec.Builder streamLazyMethod(final String name, final List<SqlStatement> statements) {
+        return publicMethod(name, statements, "generateStreamLazyApi");
+    }
+
+    public MethodSpec.Builder rxJavaMethod(final String name, final List<SqlStatement> statements) {
+        return publicMethod(name, statements, "generateRxJavaApi");
+    }
+
+    public MethodSpec.Builder reactorMethod(final String name, final List<SqlStatement> statements) {
+        return publicMethod(name, statements, "generateReactorApi");
+    }
+
+    public MethodSpec.Builder mutinyMethod(final String name, final List<SqlStatement> statements) {
+        return publicMethod(name, statements, "generateMutinyApi");
+    }
+
+    public MethodSpec.Builder publicMethod(
+            final String name, 
+            final List<SqlStatement> statements, 
+            final String configuration) {
         final var modifiers = java.useFinal()
                 ? List.of(Modifier.PUBLIC, Modifier.FINAL)
                 : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
                 .addModifiers(modifiers)
                 .addAnnotations(annotations.generatedMethod())
-                .addJavadoc(javadoc.methodJavadoc(statements));
+                .addJavadoc(javadoc.methodJavadoc(statements, configuration));
     }
 
     @Override

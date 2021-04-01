@@ -62,7 +62,7 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
         final var generator = createFlowGenerator(converter);
         final var disposer = createFlowDisposer();
 
-        return methods.publicMethod(configuration.flowableName(), statements)
+        return methods.rxJavaMethod(configuration.flowableName(), statements)
                 .returns(flowReturn)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addCode(logging.entering(configuration.repository(),

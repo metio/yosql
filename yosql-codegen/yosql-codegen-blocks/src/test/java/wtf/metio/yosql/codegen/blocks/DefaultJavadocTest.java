@@ -43,11 +43,12 @@ class DefaultJavadocTest {
     void shouldGenerateMethodComment() {
         Assertions.assertEquals("""
                 <p>Executes the following statement:</p>
-                
+                                
                 <p>Generated based on the following file(s):</p>
                 <ul>
                 </ul>
-                """, generator.methodJavadoc(List.of()).toString());
+                <p>Disable generating this method by setting <strong></strong> to <strong>false</strong></p>
+                """, generator.methodJavadoc(List.of(), "").toString());
     }
 
     @Test

@@ -55,7 +55,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var methodName = configuration.name();
-        return methods.publicMethod(methodName, statements)
+        return methods.standardMethod(methodName, statements)
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
@@ -80,7 +80,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var methodName = configuration.name();
-        return methods.publicMethod(methodName, statements)
+        return methods.standardMethod(methodName, statements)
                 .returns(int.class)
                 .addExceptions(jdbcTransformer.sqlException(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
@@ -104,7 +104,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var methodName = configuration.name();
-        return methods.publicMethod(methodName, statements)
+        return methods.standardMethod(methodName, statements)
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))

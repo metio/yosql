@@ -56,7 +56,7 @@ public final class DefaultJavadoc implements Javadoc {
     }
 
     @Override
-    public CodeBlock methodJavadoc(final List<SqlStatement> statements) {
+    public CodeBlock methodJavadoc(final List<SqlStatement> statements, final String configuration) {
         final var builder = CodeBlock.builder();
         statements.stream()
                 .map(SqlStatement::getConfiguration)
@@ -74,7 +74,7 @@ public final class DefaultJavadoc implements Javadoc {
                     builder.add("\n\n<p>Fallback for other databases:</p>");
                 }
             } else {
-                builder.add("\n\n<p>Vendor: $N</p>", statement.getConfiguration().vendor());
+                builder.add("\n\n<p>Vendor: $L</p>", statement.getConfiguration().vendor());
             }
             builder.add("\n<pre>\n$L</pre>", statement.getRawStatement());
         }
@@ -87,6 +87,7 @@ public final class DefaultJavadoc implements Javadoc {
                 .map(input::relativize)
                 .forEach(path -> builder.add("<li>$L</li>\n", path));
         builder.add("</ul>\n");
+        builder.add("<p>Disable generating this method by setting <strong>$L</strong> to <strong>false</strong></p>\n", configuration);
         statements.stream()
                 .map(SqlStatement::getConfiguration)
                 .flatMap(config -> config.resultRowConverter().stream())
@@ -99,7 +100,7 @@ public final class DefaultJavadoc implements Javadoc {
                 .map(TypeGuesser::guessTypeName)
                 .filter(type -> !type.isPrimitive())
                 .filter(type -> !type.isBoxedPrimitive())
-                .forEach(type -> builder.add("\n@see $S", type));
+                .forEach(type -> builder.add("\n@see $L", type));
         return builder.build();
     }
 
