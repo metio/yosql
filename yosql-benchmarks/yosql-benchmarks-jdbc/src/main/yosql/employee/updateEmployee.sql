@@ -6,6 +6,8 @@
  */
 
 -- parameters:
+--   - name: pid
+--     type: long
 --   - name: department
 --     type: long
 --   - name: name
@@ -16,6 +18,11 @@
 --     type: java.lang.String
 --   - name: salary
 --     type: long
-INSERT INTO employees (department_pid, name, surname, email, salary)
-VALUES (:department, :name, :surname, :email, :salary)
+UPDATE employees
+    SET department_pid = :department,
+        name = :name,
+        surname = :surname,
+        email = :email,
+        salary = :salary
+WHERE pid = :pid
 ;

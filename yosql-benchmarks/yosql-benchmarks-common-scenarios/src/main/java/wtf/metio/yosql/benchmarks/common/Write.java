@@ -30,7 +30,7 @@ public interface Write {
     /**
      * Updates a many-to-one relationship.
      */
-    void updateManyToOneRelation();
+    void updateSingleEntity();
 
     /**
      * Deletes an entity by its primary key.

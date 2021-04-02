@@ -20,8 +20,7 @@ public class JdbcTinylogWrite extends AbstractTinylogBenchmark implements Write 
     @Override
     @Benchmark
     public void writeMultipleEntities() {
-        final var now = Instant.now().toEpochMilli();
-        projectRepository.insertProjectBatch(new String[]{"first", "second"}, new Long[]{now, now});
+        projectRepository.insertProjectBatch(NAMES_BATCH, TIMESTAMP_BATCH);
     }
 
     @Override
@@ -36,8 +35,8 @@ public class JdbcTinylogWrite extends AbstractTinylogBenchmark implements Write 
     }
 
     @Override
-    public void updateManyToOneRelation() {
-        // TODO: implement benchmark
+    public void updateSingleEntity() {
+        employeeRepository.updateEmployee(1L, 1L, "bob", "builder", "bob@example.com", 200L);
     }
 
     @Override

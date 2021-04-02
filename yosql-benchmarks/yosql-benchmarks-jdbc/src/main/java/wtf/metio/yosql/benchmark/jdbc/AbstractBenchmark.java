@@ -11,6 +11,8 @@ import org.openjdk.jmh.annotations.*;
 import wtf.metio.yosql.testing.schema.SchemaRepository;
 
 import java.time.Instant;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 /**
  * Encapsulates common benchmark functionality.
@@ -19,6 +21,14 @@ import java.time.Instant;
 public abstract class AbstractBenchmark {
     
     protected static final long NOW = Instant.now().toEpochMilli();
+    protected static final int BATCH_SIZE = 10;
+    protected static final String[] NAMES_BATCH = IntStream.range(0, BATCH_SIZE)
+            .mapToObj(String::valueOf)
+            .map("project"::concat)
+            .toArray(String[]::new);
+    protected static final Long[] TIMESTAMP_BATCH = LongStream.range(0, BATCH_SIZE)
+            .mapToObj(index -> NOW + index)
+            .toArray(Long[]::new);
 
     protected HikariDataSource dataSource;
     protected SchemaRepository schemaRepository;

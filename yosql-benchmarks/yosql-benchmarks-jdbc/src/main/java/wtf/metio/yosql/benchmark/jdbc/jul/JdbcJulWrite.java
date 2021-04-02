@@ -18,7 +18,7 @@ public class JdbcJulWrite extends AbstractJulBenchmark implements Write {
     @Override
     @Benchmark
     public void writeMultipleEntities() {
-        projectRepository.insertProjectBatch(new String[]{"first", "second"}, new Long[]{NOW, NOW});
+        projectRepository.insertProjectBatch(NAMES_BATCH, TIMESTAMP_BATCH);
     }
 
     @Override
@@ -33,8 +33,8 @@ public class JdbcJulWrite extends AbstractJulBenchmark implements Write {
     }
 
     @Override
-    public void updateManyToOneRelation() {
-        // TODO: implement benchmark
+    public void updateSingleEntity() {
+        employeeRepository.updateEmployee(1L, 1L, "bob", "builder", "bob@example.com", 200L);
     }
 
     @Override
