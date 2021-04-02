@@ -41,6 +41,7 @@ public final class Repositories {
                 generateStreamLazyApi(),
                 generateRxJavaApi(),
                 catchAndRethrow(),
+                injectConverters(),
                 batchPrefix(),
                 batchSuffix(),
                 streamPrefix(),
@@ -129,6 +130,15 @@ public final class Repositories {
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .setDescription("Catch exceptions during SQL execution and re-throw them as RuntimeExceptions")
+                .build();
+    }
+
+    private static ConfigurationSetting injectConverters() {
+        return ConfigurationSetting.builder()
+                .setName("injectConverters")
+                .setType(TypeName.get(boolean.class))
+                .setValue(false)
+                .setDescription("Should converters be injected as constructor parameters or not?")
                 .build();
     }
 

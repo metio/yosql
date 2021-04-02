@@ -70,7 +70,12 @@ public class JdbcDaoModule {
             final Methods methods,
             final RuntimeConfiguration runtimeConfiguration,
             final JdbcParameters jdbcParameters) {
-        return new JdbcConstructorGenerator(blocks, methods, runtimeConfiguration.jdbc(), jdbcParameters);
+        return new JdbcConstructorGenerator(
+                blocks,
+                methods,
+                runtimeConfiguration.jdbc(),
+                jdbcParameters,
+                runtimeConfiguration.repositories());
     }
 
     @JDBC

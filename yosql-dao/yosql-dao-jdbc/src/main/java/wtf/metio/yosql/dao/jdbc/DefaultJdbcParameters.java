@@ -7,11 +7,13 @@
 
 package wtf.metio.yosql.dao.jdbc;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.codegen.api.Parameters;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -67,6 +69,11 @@ public final class DefaultJdbcParameters implements JdbcParameters {
     @Override
     public ParameterSpec columnLabel() {
         return parameters.parameter(TypicalTypes.STRING, names.columnLabel());
+    }
+
+    @Override
+    public ParameterSpec converter(final ResultRowConverter converter) {
+        return parameters.parameter(ClassName.bestGuess(converter.converterType()), converter.alias());
     }
 
 }

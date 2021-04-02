@@ -8,6 +8,8 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 public interface JdbcParameters {
 
@@ -27,4 +29,5 @@ public interface JdbcParameters {
 
     ParameterSpec columnLabel();
 
+    ParameterSpec converter(ResultRowConverter converter);
 }

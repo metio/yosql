@@ -14,10 +14,7 @@ import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.testing.codegen.Blocks;
-import wtf.metio.yosql.testing.configs.Apis;
-import wtf.metio.yosql.testing.configs.Files;
-import wtf.metio.yosql.testing.configs.Java;
-import wtf.metio.yosql.testing.configs.Jdbc;
+import wtf.metio.yosql.testing.configs.*;
 import wtf.metio.yosql.testing.logging.Loggers;
 
 public final class JdbcObjectMother {
@@ -54,7 +51,8 @@ public final class JdbcObjectMother {
                 Blocks.genericBlocks(),
                 Blocks.methods(java),
                 jdbcConfig(),
-                jdbcParameter());
+                jdbcParameter(),
+                Repositories.defaults());
     }
 
     private static DefaultJdbcParameters jdbcParameter() {

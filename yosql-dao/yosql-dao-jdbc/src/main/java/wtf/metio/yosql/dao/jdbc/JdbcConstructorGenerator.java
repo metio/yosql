@@ -14,6 +14,7 @@ import wtf.metio.yosql.codegen.api.Methods;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.models.constants.sql.SqlType;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
@@ -30,21 +31,35 @@ public final class JdbcConstructorGenerator implements ConstructorGenerator {
     private final Methods methods;
     private final JdbcConfiguration jdbcNames;
     private final JdbcParameters jdbcParameters;
+    private final RepositoriesConfiguration repositories;
 
     public JdbcConstructorGenerator(
             final GenericBlocks blocks,
             final Methods methods,
             final JdbcConfiguration jdbcNames,
-            final JdbcParameters jdbcParameters) {
+            final JdbcParameters jdbcParameters, 
+            final RepositoriesConfiguration repositories) {
         this.blocks = blocks;
         this.methods = methods;
         this.jdbcNames = jdbcNames;
         this.jdbcParameters = jdbcParameters;
+        this.repositories = repositories;
     }
 
     @Override
     public MethodSpec forRepository(final List<SqlStatement> statements) {
         final var builder = CodeBlock.builder();
+        if (repositories.injectConverters()) {
+            final var constructor = methods.constructor().addParameter(jdbcParameters.dataSource());
+            resultConverters(statements).forEach(converter -> {
+                constructor.addParameter(jdbcParameters.converter(converter));
+                builder.add(blocks.initializeFieldToSelf(converter.alias()));
+            });
+            return constructor
+                    .addCode(blocks.initializeFieldToSelf(jdbcNames.dataSource()))
+                    .addCode(builder.build())
+                    .build();
+        }
         resultConverters(statements).forEach(converter -> builder.add(blocks.initializeConverter(converter)));
         return methods.constructor()
                 .addParameter(jdbcParameters.dataSource())
