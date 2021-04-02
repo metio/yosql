@@ -137,7 +137,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     }
 
     private static String replaceNamedParameters(final String rawSqlStatement) {
-        return rawSqlStatement.replaceAll(SqlFileParser.PARAMETER_PATTERN.pattern(), "?");
+        return rawSqlStatement.replaceAll(SqlFileParser.NAMED_PARAMETER_PATTERN.pattern(), "?");
     }
 
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {

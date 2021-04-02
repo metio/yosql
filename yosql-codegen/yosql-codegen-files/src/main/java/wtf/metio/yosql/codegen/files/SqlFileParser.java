@@ -23,10 +23,12 @@ import java.util.stream.Stream;
 @FunctionalInterface
 public interface SqlFileParser {
 
-    /** The regex to extract parameters out of SQL statements. */
-    String  PARAMETER_REGEX   = "(?<!')(:[\\w]*)(?!')";
+    /** The regex to extract named parameters out of SQL statements. */
+    String NAMED_PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
+    String PARAMETER_REGEX = "\\?";
 
-    /** The pattern to extract parameters out of SQL statements */
+    /** The pattern to extract named parameters out of SQL statements */
+    Pattern NAMED_PARAMETER_PATTERN = Pattern.compile(NAMED_PARAMETER_REGEX);
     Pattern PARAMETER_PATTERN = Pattern.compile(PARAMETER_REGEX);
 
     /**
@@ -39,17 +41,35 @@ public interface SqlFileParser {
     Stream<SqlStatement> parse(Path pathToFile);
 
     /**
+     * Extracts parameter indices from a given SQL statement.
+     *
      * @param sqlStatement
-     *            The SQL statement to use.
+     *            The raw SQL statement to parse.
      * @return Extracted parameters and their indices.
      */
     default Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {
+        final var namedIndices = parseNamedParameters(sqlStatement);
+        namedIndices.putAll(parseParameters(sqlStatement));
+        return Map.copyOf(namedIndices);
+    }
+
+    private Map<String, List<Integer>> parseNamedParameters(final String sqlStatement) {
         final Map<String, List<Integer>> indices = new LinkedHashMap<>();
-        final Matcher matcher = PARAMETER_PATTERN.matcher(sqlStatement);
+        final Matcher matcher = NAMED_PARAMETER_PATTERN.matcher(sqlStatement);
         int counter = 1;
         while (matcher.find()) {
             final String parameterName = matcher.group().substring(1);
             indices.computeIfAbsent(parameterName, string -> new ArrayList<>(3)).add(counter++);
+        }
+        return indices;
+    }
+
+    private Map<String, List<Integer>> parseParameters(final String sqlStatement) {
+        final Map<String, List<Integer>> indices = new LinkedHashMap<>();
+        final Matcher matcher = PARAMETER_PATTERN.matcher(sqlStatement);
+        int counter = 1;
+        while (matcher.find()) {
+            indices.computeIfAbsent("unnamedParameters", string -> new ArrayList<>(3)).add(counter++);
         }
         return indices;
     }
