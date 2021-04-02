@@ -44,6 +44,7 @@ public abstract class AbstractBenchmark {
         schemaRepository.createDepartmentsTable();
         schemaRepository.createEmployeesTable();
         schemaRepository.createProjectEmployeesTable();
+        schemaRepository.createVersionAlias();
     }
 
     @TearDown(Level.Trial)

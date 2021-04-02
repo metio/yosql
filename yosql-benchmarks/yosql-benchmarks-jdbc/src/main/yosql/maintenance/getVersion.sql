@@ -5,10 +5,4 @@
  * in the LICENSE file.
  */
 
--- parameters:
---   - name: salary
---     type: long
-SELECT  *
-FROM    employees
-WHERE   salary >= :salary
-;
+CALL getVersion();

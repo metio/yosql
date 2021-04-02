@@ -15,6 +15,7 @@ import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.CompanyRepository;
 import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.DepartmentRepository;
 import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.EmployeeRepository;
 import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.ProjectRepository;
+import wtf.metio.yosql.benchmark.jdbc.tinylog.persistence.MaintenanceRepository;
 
 /**
  * Abstract benchmark class for all benchmarks that use the tinylog API.
@@ -25,6 +26,7 @@ abstract class AbstractTinylogBenchmark extends AbstractBenchmark {
     protected DepartmentRepository departmentRepository;
     protected EmployeeRepository employeeRepository;
     protected ProjectRepository projectRepository;
+    protected MaintenanceRepository maintenanceRepository;
 
     @Setup(Level.Trial)
     public void createRepositories() {
@@ -32,6 +34,7 @@ abstract class AbstractTinylogBenchmark extends AbstractBenchmark {
         departmentRepository = new DepartmentRepository(dataSource);
         employeeRepository = new EmployeeRepository(dataSource);
         projectRepository = new ProjectRepository(dataSource);
+        maintenanceRepository = new MaintenanceRepository(dataSource);
         companyRepository.insertCompany("metio.wtf", "tinylog");
         companyRepository.insertCompany("other", "tests");
         departmentRepository.insertDepartment(1L, "benchmarks");

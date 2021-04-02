@@ -15,11 +15,9 @@ import wtf.metio.yosql.benchmark.jdbc.jul.persistence.CompanyRepository;
 import wtf.metio.yosql.benchmark.jdbc.jul.persistence.DepartmentRepository;
 import wtf.metio.yosql.benchmark.jdbc.jul.persistence.EmployeeRepository;
 import wtf.metio.yosql.benchmark.jdbc.jul.persistence.ProjectRepository;
+import wtf.metio.yosql.benchmark.jdbc.jul.persistence.MaintenanceRepository;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.logging.LogManager;
 
 /**
@@ -31,6 +29,7 @@ abstract class AbstractJulBenchmark extends AbstractBenchmark {
     protected DepartmentRepository departmentRepository;
     protected EmployeeRepository employeeRepository;
     protected ProjectRepository projectRepository;
+    protected MaintenanceRepository maintenanceRepository;
 
     @Setup(Level.Trial)
     public void createRepositories() {
@@ -38,6 +37,7 @@ abstract class AbstractJulBenchmark extends AbstractBenchmark {
         departmentRepository = new DepartmentRepository(dataSource);
         employeeRepository = new EmployeeRepository(dataSource);
         projectRepository = new ProjectRepository(dataSource);
+        maintenanceRepository = new MaintenanceRepository(dataSource);
         companyRepository.insertCompany("metio.wtf", "jul");
         companyRepository.insertCompany("other", "tests");
         departmentRepository.insertDepartment(1L, "benchmarks");

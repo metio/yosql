@@ -15,6 +15,7 @@ import wtf.metio.yosql.benchmark.jdbc.noop.persistence.CompanyRepository;
 import wtf.metio.yosql.benchmark.jdbc.noop.persistence.DepartmentRepository;
 import wtf.metio.yosql.benchmark.jdbc.noop.persistence.EmployeeRepository;
 import wtf.metio.yosql.benchmark.jdbc.noop.persistence.ProjectRepository;
+import wtf.metio.yosql.benchmark.jdbc.noop.persistence.MaintenanceRepository;
 
 /**
  * Abstract benchmark class for all benchmarks that use no logging statements.
@@ -25,6 +26,7 @@ abstract class AbstractNoOpBenchmark extends AbstractBenchmark {
     protected DepartmentRepository departmentRepository;
     protected EmployeeRepository employeeRepository;
     protected ProjectRepository projectRepository;
+    protected MaintenanceRepository maintenanceRepository;
 
     @Setup(Level.Trial)
     public void createRepositories() {
@@ -32,6 +34,7 @@ abstract class AbstractNoOpBenchmark extends AbstractBenchmark {
         departmentRepository = new DepartmentRepository(dataSource);
         employeeRepository = new EmployeeRepository(dataSource);
         projectRepository = new ProjectRepository(dataSource);
+        maintenanceRepository = new MaintenanceRepository(dataSource);
         companyRepository.insertCompany("metio.wtf", "NoOp");
         companyRepository.insertCompany("other", "tests");
         departmentRepository.insertDepartment(1L, "benchmarks");
