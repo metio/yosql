@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
+import ch.qos.cal10n.IMessageConveyor;
 import com.squareup.javapoet.CodeBlock;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.api.Javadoc;
@@ -24,23 +25,25 @@ import static java.util.function.Predicate.not;
 public final class DefaultJavadoc implements Javadoc {
 
     private final FilesConfiguration files;
+    private final IMessageConveyor messages;
 
-    public DefaultJavadoc(final FilesConfiguration files) {
+    public DefaultJavadoc(final FilesConfiguration files, final IMessageConveyor messages) {
         this.files = files;
+        this.messages = messages;
     }
 
     @Override
     public CodeBlock repositoryJavadoc(final List<SqlStatement> statements) {
         final var builder = CodeBlock.builder()
-                .add("Generated based on the following file(s):\n")
-                .add("<ul>\n");
+                .add(messages.getMessage(Javadocs.USED_FILES))
+                .add(messages.getMessage(Javadocs.LIST_START));
         final var input = files.inputBaseDirectory();
         statements.stream()
                 .map(SqlStatement::getSourcePath)
                 .distinct()
                 .map(input::relativize)
-                .forEach(path -> builder.add("<li>$L</li>\n", path));
-        builder.add("</ul>\n");
+                .forEach(path -> builder.add(messages.getMessage(Javadocs.LIST_ITEM), path));
+        builder.add(messages.getMessage(Javadocs.LIST_END));
         return builder.build();
     }
 
@@ -48,10 +51,10 @@ public final class DefaultJavadoc implements Javadoc {
     public CodeBlock fieldJavaDoc(final SqlStatement statement) {
         final var input = files.inputBaseDirectory();
         final var builder = CodeBlock.builder()
-                .add("Generated based on the following file:\n")
-                .add("<ul>\n")
-                .add("<li>$L</li>\n", input.relativize(statement.getSourcePath()));
-        builder.add("</ul>\n");
+                .add(messages.getMessage(Javadocs.USED_FILE))
+                .add(messages.getMessage(Javadocs.LIST_START))
+                .add(messages.getMessage(Javadocs.LIST_ITEM), input.relativize(statement.getSourcePath()));
+        builder.add(messages.getMessage(Javadocs.LIST_END));
         return builder.build();
     }
 
@@ -62,32 +65,32 @@ public final class DefaultJavadoc implements Javadoc {
                 .map(SqlStatement::getConfiguration)
                 .map(SqlConfiguration::description)
                 .filter(not(Strings::isBlank))
-                .forEach(description -> builder.add("<p>$L<p>\n", description));
+                .forEach(description -> builder.add(messages.getMessage(Javadocs.DESCRIPTION), description));
         if (statements.size() > 1) {
-            builder.add("<p>Executes one of the following statements:</p>");
+            builder.add(messages.getMessage(Javadocs.EXECUTED_STATEMENTS));
         } else {
-            builder.add("<p>Executes the following statement:</p>");
+            builder.add(messages.getMessage(Javadocs.EXECUTED_STATEMENT));
         }
         for (final var statement : statements) {
             if (Strings.isBlank(statement.getConfiguration().vendor())) {
                 if (statements.size() > 1) {
-                    builder.add("\n\n<p>Fallback for other databases:</p>");
+                    builder.add(messages.getMessage(Javadocs.FALLBACK));
                 }
             } else {
-                builder.add("\n\n<p>Vendor: $L</p>", statement.getConfiguration().vendor());
+                builder.add(messages.getMessage(Javadocs.VENDOR), statement.getConfiguration().vendor());
             }
-            builder.add("\n<pre>\n$L</pre>", statement.getRawStatement());
+            builder.add(messages.getMessage(Javadocs.STATEMENT), statement.getRawStatement());
         }
-        builder.add("\n\n<p>Generated based on the following file(s):</p>\n")
-                .add("<ul>\n");
+        builder.add(messages.getMessage(Javadocs.USED_FILES_METHOD))
+                .add(messages.getMessage(Javadocs.LIST_START));
         final var input = files.inputBaseDirectory();
         statements.stream()
                 .map(SqlStatement::getSourcePath)
                 .distinct()
                 .map(input::relativize)
-                .forEach(path -> builder.add("<li>$L</li>\n", path));
-        builder.add("</ul>\n");
-        builder.add("<p>Disable generating this method by setting <strong>$L</strong> to <strong>false</strong></p>\n", configuration);
+                .forEach(path -> builder.add(messages.getMessage(Javadocs.LIST_ITEM), path));
+        builder.add(messages.getMessage(Javadocs.LIST_END));
+        builder.add(messages.getMessage(Javadocs.DISABLE_WITH), configuration);
         statements.stream()
                 .map(SqlStatement::getConfiguration)
                 .flatMap(config -> config.resultRowConverter().stream())
@@ -100,7 +103,7 @@ public final class DefaultJavadoc implements Javadoc {
                 .map(TypeGuesser::guessTypeName)
                 .filter(type -> !type.isPrimitive())
                 .filter(type -> !type.isBoxedPrimitive())
-                .forEach(type -> builder.add("\n@see $L", type));
+                .forEach(type -> builder.add(messages.getMessage(Javadocs.SEE), type));
         return builder.build();
     }
 

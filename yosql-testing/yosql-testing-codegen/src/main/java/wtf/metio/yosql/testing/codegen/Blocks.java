@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.testing.codegen;
 
+import ch.qos.cal10n.MessageConveyor;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
@@ -14,6 +15,8 @@ import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.testing.configs.Annotations;
 import wtf.metio.yosql.testing.configs.Files;
 import wtf.metio.yosql.testing.configs.Java;
+
+import java.util.Locale;
 
 /**
  * Object mother for types in the codegen package.
@@ -85,7 +88,7 @@ public final class Blocks {
     }
 
     public static Javadoc javadoc(final FilesConfiguration files) {
-        return new DefaultJavadoc(files);
+        return new DefaultJavadoc(files, new MessageConveyor(Locale.ENGLISH));
     }
 
     private Blocks() {

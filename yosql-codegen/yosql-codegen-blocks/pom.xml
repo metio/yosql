@@ -9,6 +9,18 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>15</source>
+                    <target>15</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <!-- ordering follows https://maven.apache.org/developers/conventions/code.html#POM_Code_Convention -->
 
@@ -61,7 +73,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.cal10n</groupId>
+            <artifactId>cal10n-api</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>wtf.metio.yosql.internals</groupId>
+            <artifactId>yosql-internals-cal10n-utils</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>wtf.metio.yosql.testing</groupId>
             <artifactId>yosql-testing-configs</artifactId>

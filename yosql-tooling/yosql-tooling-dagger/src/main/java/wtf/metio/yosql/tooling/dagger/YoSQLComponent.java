@@ -13,7 +13,7 @@ import wtf.metio.yosql.codegen.api.YoSQL;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.codegen.DefaultCodeGeneratorModule;
 import wtf.metio.yosql.tooling.dagger.files.DefaultFilesModule;
-import wtf.metio.yosql.tooling.dagger.logging.Cal10nModule;
+import wtf.metio.yosql.tooling.dagger.i18n.Cal10nModule;
 import wtf.metio.yosql.tooling.dagger.orchestration.DefaultOrchestrationModule;
 
 import javax.inject.Singleton;

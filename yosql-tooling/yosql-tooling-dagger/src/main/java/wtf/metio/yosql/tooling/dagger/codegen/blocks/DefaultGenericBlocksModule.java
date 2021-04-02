@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.tooling.dagger.codegen.blocks;
 
+import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.api.*;
@@ -17,8 +18,8 @@ import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 public class DefaultGenericBlocksModule {
 
     @Provides
-    public Javadoc provideJavadoc(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJavadoc(runtimeConfiguration.files());
+    public Javadoc provideJavadoc(final RuntimeConfiguration runtimeConfiguration, final IMessageConveyor messages) {
+        return new DefaultJavadoc(runtimeConfiguration.files(), messages);
     }
 
     @Provides
