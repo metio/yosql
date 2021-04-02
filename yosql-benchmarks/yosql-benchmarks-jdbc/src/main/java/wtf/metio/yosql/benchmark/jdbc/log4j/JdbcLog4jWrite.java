@@ -31,7 +31,7 @@ public class JdbcLog4jWrite extends AbstractLog4jBenchmark implements Write {
 
     @Override
     public void updateOneToManyRelation() {
-        // TODO: implement benchmark
+        departmentRepository.updateDepartmentsOfCompany(2L, 1L, "benchmarks");
     }
 
     @Override

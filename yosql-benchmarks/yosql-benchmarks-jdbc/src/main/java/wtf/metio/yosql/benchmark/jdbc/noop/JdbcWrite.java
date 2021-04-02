@@ -33,7 +33,7 @@ public class JdbcWrite extends AbstractNoOpBenchmark implements Write {
 
     @Override
     public void updateOneToManyRelation() {
-        // TODO: implement benchmark
+        departmentRepository.updateDepartmentsOfCompany(2L, 1L, "benchmarks");
     }
 
     @Override

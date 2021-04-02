@@ -29,7 +29,7 @@ public class JdbcJulWrite extends AbstractJulBenchmark implements Write {
 
     @Override
     public void updateOneToManyRelation() {
-        // TODO: implement benchmark
+        departmentRepository.updateDepartmentsOfCompany(2L, 1L, "benchmarks");
     }
 
     @Override

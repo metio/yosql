@@ -8,8 +8,12 @@
 -- parameters:
 --   - name: company
 --     type: java.lang.Long
+--   - name: oldCompany
+--     type: java.lang.Long
 --   - name: name
 --     type: java.lang.String
-INSERT INTO departments (company_pid, name)
-VALUES (:company, :name)
+UPDATE departments
+    SET company_pid = :company,
+        name = :name
+WHERE company_pid = :oldCompany
 ;

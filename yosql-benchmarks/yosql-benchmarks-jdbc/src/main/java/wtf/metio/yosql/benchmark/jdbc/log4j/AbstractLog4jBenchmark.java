@@ -32,7 +32,8 @@ abstract class AbstractLog4jBenchmark extends AbstractBenchmark {
         departmentRepository = new DepartmentRepository(dataSource);
         employeeRepository = new EmployeeRepository(dataSource);
         projectRepository = new ProjectRepository(dataSource);
-        companyRepository.insertCompany("metio.wtf", "www");
+        companyRepository.insertCompany("metio.wtf", "log4j");
+        companyRepository.insertCompany("other", "tests");
         departmentRepository.insertDepartment(1L, "benchmarks");
         projectRepository.insertProject("log4j", NOW);
         employeeRepository.insertEmployee(1L, "bob", "example", "bob@example.com", 100L);
