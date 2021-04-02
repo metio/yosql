@@ -7,10 +7,8 @@
 
 -- returningMode: ONE
 -- parameters:
---   - name: id
+--   - name: userId
 --     type: int
 --   - name: name
 --     type: java.lang.String
-INSERT INTO companies (id, name)
-VALUES (:id, :name)
-;
+INSERT INTO users (id, name) VALUES (:userId, :name) RETURNING *;

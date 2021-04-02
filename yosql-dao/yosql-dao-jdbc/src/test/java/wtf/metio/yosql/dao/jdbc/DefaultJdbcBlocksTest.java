@@ -73,7 +73,7 @@ class DefaultJdbcBlocksTest {
     void executeUpdate() {
         Assertions.assertEquals("""
                 return statement.executeUpdate();
-                """, generator.executeUpdate().toString());
+                """, generator.returnExecuteUpdate().toString());
     }
 
     @Test

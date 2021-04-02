@@ -6,7 +6,9 @@
  */
 package wtf.metio.yosql.dao.jdbc;
 
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.api.ControlFlows;
 import wtf.metio.yosql.codegen.api.Methods;
@@ -17,8 +19,10 @@ import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
 
@@ -51,12 +55,46 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
     public MethodSpec standardReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());
+        final var converter = converter(configuration);
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
+        return switch (configuration.returningMode()) {
+            case ONE: yield readAsOne(configuration, statements, resultType);
+            case FIRST: yield readAsFirst(configuration, statements, resultType);
+            default: yield readAsList(configuration, statements, resultType);
+        };
+    }
+
+    private MethodSpec readAsOne(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements,
+            final TypeName resultType) {
+        return read(configuration, statements, resultType, jdbc::returnAsOne);
+    }
+
+    private MethodSpec readAsFirst(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements,
+            final TypeName resultType) {
+        return read(configuration, statements, resultType, jdbc::returnAsFirst);
+    }
+
+    private MethodSpec readAsList(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements,
+            final TypeName resultType) {
         final var listOfResults = TypicalTypes.listOf(resultType);
+        return read(configuration, statements, listOfResults, jdbc::returnAsList);
+    }
+
+    private <T extends TypeName> MethodSpec read(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements,
+            final T resultType,
+            final BiFunction<T, String, CodeBlock> returner) {
+        final var converter = converter(configuration);
         final var methodName = configuration.name();
         return methods.standardMethod(methodName, statements)
-                .returns(listOfResults)
+                .returns(resultType)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
                 .addCode(logging.entering(configuration.repository(), methodName))
@@ -69,7 +107,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
                 .addCode(jdbc.readMetaData())
                 .addCode(jdbc.readColumnCount())
                 .addCode(jdbc.createResultState())
-                .addCode(jdbc.returnAsList(listOfResults, converter.alias()))
+                .addCode(returner.apply(resultType, converter.alias()))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
@@ -77,6 +115,78 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
 
     @Override
     public MethodSpec standardWriteMethod(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements) {
+        final var converter = converter(configuration);
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
+        return switch (configuration.returningMode()) {
+            case ONE: yield writeReturningOne(configuration, statements, converter, resultType);
+            case FIRST: yield writeReturningFirst(configuration, statements, converter, resultType);
+            case LIST: yield writeReturningList(configuration, statements, converter, resultType);
+            default: yield writeReturningNone(configuration, statements);
+        };
+    }
+
+    private ResultRowConverter converter(final SqlConfiguration configuration) {
+        return configuration.resultRowConverter()
+                .or(config::defaultConverter)
+                .orElseThrow();
+    }
+
+    private MethodSpec writeReturningOne(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements,
+            final ResultRowConverter converter,
+            final TypeName resultType) {
+        return write(configuration, statements, converter, resultType, jdbc::returnAsOne);
+    }
+
+    private MethodSpec writeReturningFirst(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements,
+            final ResultRowConverter converter,
+            final TypeName resultType) {
+        return write(configuration, statements, converter, resultType, jdbc::returnAsFirst);
+    }
+
+    private MethodSpec writeReturningList(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements,
+            final ResultRowConverter converter,
+            final TypeName resultType) {
+        final var listOfResults = TypicalTypes.listOf(resultType);
+        return write(configuration, statements, converter, listOfResults, jdbc::returnAsList);
+    }
+
+    private <T extends TypeName> MethodSpec write(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements,
+            final ResultRowConverter converter,
+            final T resultType,
+            final BiFunction<T, String, CodeBlock> returner) {
+        final var methodName = configuration.name();
+        return methods.standardMethod(methodName, statements)
+                .returns(resultType)
+                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addCode(logging.entering(configuration.repository(), methodName))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.createStatement())
+                .addCode(jdbc.setParameters(configuration))
+                .addCode(jdbc.logExecutedQuery(configuration))
+                .addStatement(jdbc.executeForReturning())
+                .addCode(jdbc.getResultSet())
+                .addCode(jdbc.readMetaData())
+                .addCode(jdbc.readColumnCount())
+                .addCode(jdbc.createResultState())
+                .addCode(returner.apply(resultType, converter.alias()))
+                .addCode(controlFlows.endTryBlock(3))
+                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
+                .build();
+    }
+
+    private MethodSpec writeReturningNone(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var methodName = configuration.name();
@@ -90,7 +200,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
                 .addCode(jdbc.createStatement())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addCode(jdbc.executeUpdate())
+                .addCode(jdbc.returnExecuteUpdate())
                 .addCode(controlFlows.endTryBlock(2))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

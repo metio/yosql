@@ -32,9 +32,13 @@ public interface JdbcBlocks {
 
     CodeBlock resultSetVariable();
 
+    CodeBlock getResultSet();
+
     CodeBlock resultSetVariableStatement();
 
-    CodeBlock executeUpdate();
+    CodeBlock returnExecuteUpdate();
+
+    CodeBlock executeForReturning();
 
     CodeBlock executeBatch();
 
@@ -63,6 +67,10 @@ public interface JdbcBlocks {
     CodeBlock logExecutedBatchQuery(SqlConfiguration sqlConfiguration);
 
     CodeBlock returnAsList(ParameterizedTypeName listOfResults, String converterAlias);
+
+    CodeBlock returnAsFirst(TypeName resultType, String converterAlias);
+
+    CodeBlock returnAsOne(TypeName resultType, String converterAlias);
 
     CodeBlock returnAsStream(ParameterizedTypeName listOfResults, String converterAlias);
 

@@ -46,4 +46,18 @@ public final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatem
                 .build();
     }
 
+    @Override
+    public CodeBlock getResultSet() {
+        return CodeBlock.builder()
+                .add("$N.getResultSet()", jdbcNames.statement())
+                .build();
+    }
+
+    @Override
+    public CodeBlock execute() {
+        return CodeBlock.builder()
+                .add("$N.execute()", jdbcNames.statement())
+                .build();
+    }
+
 }

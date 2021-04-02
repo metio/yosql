@@ -76,6 +76,10 @@ public interface JdbcMethods {
         CodeBlock executeBatch();
 
         CodeBlock addBatch();
+
+        CodeBlock getResultSet();
+
+        CodeBlock execute();
     }
 
 }

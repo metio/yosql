@@ -129,7 +129,7 @@ public final class Sql {
                 .setName("returningMode")
                 .setDescription("The returning mode of the SQL statement.")
                 .setType(TypeName.get(ReturningMode.class))
-                .setValue(ReturningMode.LIST)
+                .setValue(ReturningMode.NONE)
                 .setImmutableAnnotations(List.of(jsonProperty("returningMode")))
                 .build();
     }

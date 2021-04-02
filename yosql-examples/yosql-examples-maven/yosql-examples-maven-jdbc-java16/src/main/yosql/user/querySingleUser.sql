@@ -5,7 +5,7 @@
  * in the LICENSE file.
  */
 
---
+-- returningMode: ONE
 -- parameters:
 --   - name: userId
 --     type: int

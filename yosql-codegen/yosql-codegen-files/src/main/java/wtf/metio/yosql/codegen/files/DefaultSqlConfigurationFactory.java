@@ -7,6 +7,7 @@
 package wtf.metio.yosql.codegen.files;
 
 import ch.qos.cal10n.IMessageConveyor;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -248,14 +249,16 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private SqlConfiguration returningMode(final SqlConfiguration configuration) {
-        return SqlConfiguration.copyOf(configuration)
-                .withReturningMode(mapTypeReturningMode(configuration.type()));
+        if (configuration.returningMode() == null || configuration.returningMode() == ReturningMode.NONE) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withReturningMode(mapTypeReturningMode(configuration.type()));
+        }
+        return configuration;
     }
 
     private ReturningMode mapTypeReturningMode(final SqlType type) {
         return switch (type) {
             case READING -> ReturningMode.LIST;
-            case WRITING -> ReturningMode.ONE;
             case CALLING -> ReturningMode.FIRST;
             default -> ReturningMode.NONE;
         };
@@ -429,6 +432,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 final var yamlMapper = YAMLMapper.builder()
                         .addModule(new Jdk8Module())
                         .addModule(yoSqlModule)
+                        .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                         .build();
                 configuration = yamlMapper
                         .readValue(yaml, SqlConfiguration.class);

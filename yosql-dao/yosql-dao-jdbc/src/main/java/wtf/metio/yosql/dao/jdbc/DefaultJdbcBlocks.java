@@ -98,14 +98,25 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
+    public CodeBlock getResultSet() {
+        return controlFlows.tryWithResource(variables.variable(config.resultSet(), ResultSet.class,
+                jdbcMethods.statement().getResultSet()));
+    }
+
+    @Override
     public CodeBlock resultSetVariableStatement() {
         return variables.variableStatement(config.resultSet(), ResultSet.class,
                 jdbcMethods.statement().executeQuery());
     }
 
     @Override
-    public CodeBlock executeUpdate() {
+    public CodeBlock returnExecuteUpdate() {
         return blocks.returnValue(jdbcMethods.statement().executeUpdate());
+    }
+
+    @Override
+    public CodeBlock executeForReturning() {
+        return jdbcMethods.statement().execute();
     }
 
     @Override
@@ -320,6 +331,23 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     public CodeBlock returnAsList(final ParameterizedTypeName listOfResults, final String converterAlias) {
         return prepareReturnList(listOfResults, converterAlias)
                 .addStatement("return $N", config.list())
+                .build();
+    }
+
+    @Override
+    public CodeBlock returnAsFirst(final TypeName resultType, final String converterAlias) {
+        return prepareReturnList(TypicalTypes.listOf(resultType), converterAlias)
+                .addStatement("return $N.size() > 0 ? $N.get(0) : null", config.list(), config.list())
+                .build();
+    }
+
+    @Override
+    public CodeBlock returnAsOne(final TypeName resultType, final String converterAlias) {
+        return prepareReturnList(TypicalTypes.listOf(resultType), converterAlias)
+                .beginControlFlow("if ($N.size() != 1)", config.list())
+                .addStatement("throw new IllegalStateException()")
+                .endControlFlow()
+                .addStatement("return $N.get(0)", config.list())
                 .build();
     }
 

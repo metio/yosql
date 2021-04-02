@@ -114,7 +114,7 @@ class DefaultSqlConfigurationFactoryTest {
                 () -> assertEquals("Stream", configuration.streamSuffix(), "streamSuffix"),
                 () -> assertEquals("", configuration.vendor(), "vendor"),
                 () -> assertEquals(SqlType.WRITING, configuration.type(), "type"),
-                () -> assertEquals(ReturningMode.ONE, configuration.returningMode(), "returningMode"));
+                () -> assertEquals(ReturningMode.NONE, configuration.returningMode(), "returningMode"));
     }
 
     @Test
@@ -132,7 +132,7 @@ class DefaultSqlConfigurationFactoryTest {
         assertAll("Configuration",
                 () -> assertEquals("dropPersons", configuration.name(), "name"),
                 () -> assertEquals(SqlType.WRITING, configuration.type(), "type"),
-                () -> assertEquals(ReturningMode.ONE, configuration.returningMode(), "returningMode"));
+                () -> assertEquals(ReturningMode.NONE, configuration.returningMode(), "returningMode"));
     }
 
     private DefaultSqlConfigurationFactory factory() {
