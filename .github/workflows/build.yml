@@ -16,7 +16,7 @@ jobs:
         name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 16
           java-package: jdk
           architecture: x64
       - id: cache
@@ -47,7 +47,7 @@ jobs:
         name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 16
           java-package: jdk
           architecture: x64
       - id: cache

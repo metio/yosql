@@ -65,7 +65,7 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Properties -->
     <properties>
-        <version.jdk>15</version.jdk>
+        <version.jdk>16</version.jdk>
         <project.build.outputTimestamp>2017</project.build.outputTimestamp>
     </properties>
 
