@@ -22,6 +22,7 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 import wtf.metio.yosql.models.sql.SqlParameter;
 
+import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
@@ -84,7 +85,6 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 this::type,
                 this::returningMode
         ));
-        logConfiguration(baseConfiguration);
         validateNames(source, baseConfiguration);
         return apply(baseConfiguration, List.of(
                 configuration -> name(configuration, source, statementInFile),
@@ -127,13 +127,32 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         logger.debug("vendor:           {}", configuration.vendor());
     }
 
-    private static SqlConfiguration name(final SqlConfiguration configuration, final Path source, final int statementInFile) {
+    private SqlConfiguration name(final SqlConfiguration configuration, final Path source, final int statementInFile) {
         if (nullOrEmpty(configuration.name())) {
-            final String fileName = getFileNameWithoutExtension(source);
+            final var fileName = getFileNameWithoutExtension(source);
+            final var validName = SourceVersion.isName(fileName) ? fileName : generateName(configuration);
             return SqlConfiguration.copyOf(configuration)
-                    .withName(statementInFile > 1 ? fileName + statementInFile : fileName);
+                    .withName(calculateName(validName, statementInFile));
         }
-        return configuration;
+        if (SourceVersion.isName(configuration.name())) {
+            return configuration;
+        }
+        return SqlConfiguration.copyOf(configuration)
+                .withName(calculateName(generateName(configuration), statementInFile));
+    }
+
+    private static String calculateName(final String name, final int statementInFile) {
+        return statementInFile > 1 ? name + statementInFile : name;
+    }
+
+    private String generateName(final SqlConfiguration configuration) {
+        final var typeLookup = switch (configuration.type()) {
+            case READING -> runtimeConfiguration.repositories().allowedReadPrefixes().get(0);
+            case WRITING -> runtimeConfiguration.repositories().allowedWritePrefixes().get(0);
+            case CALLING -> runtimeConfiguration.repositories().allowedCallPrefixes().get(0);
+            case UNKNOWN -> "statement";
+        };
+        return typeLookup + "NameWasChanged";
     }
 
     private SqlConfiguration generateBatchApi(final SqlConfiguration configuration) {
