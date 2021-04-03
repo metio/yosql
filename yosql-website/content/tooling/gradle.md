@@ -10,7 +10,7 @@ tags:
   - Gradle
 ---
 
-[Gradle](https://gradle.org/) projects can use the `yosql-tooling-gradle` plugin to use `YoSQL` in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.
+[Gradle](https://gradle.org/) projects can use the [yosql-tooling-gradle](https://plugins.gradle.org/plugin/wtf.metio.yosql) plugin to use `YoSQL` in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.
 
 1. Add the plugin to your `build.gradle.kts`:
     ```kotlin
@@ -22,6 +22,7 @@ tags:
     ```
     <project_root>/
     ├── build.gradle.kts
+    ├── settings.gradle.kts
     └── src/
         └── main/
             └── yosql/
