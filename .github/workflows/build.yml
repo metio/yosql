@@ -32,6 +32,11 @@ jobs:
         run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml install
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: gradle-plugin
+        name: Gradle Plugin
+        run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   benchmarks:
     name: Benchmarks
     runs-on: ubuntu-latest
