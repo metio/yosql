@@ -11,10 +11,6 @@ SHELL = /bin/bash
 ######################
 # INTERNAL VARIABLES #
 ######################
-TIMESTAMPED_VERSION := $(shell /bin/date "+%Y.%m.%d-%H%M%S")
-CURRENT_DATE := $(shell /bin/date "+%Y-%m-%d")
-USERNAME := $(shell id -u -n)
-USERID := $(shell id -u)
 GREEN  := $(shell tput -Txterm setaf 2)
 WHITE  := $(shell tput -Txterm setaf 7)
 YELLOW := $(shell tput -Txterm setaf 3)
@@ -36,11 +32,12 @@ HELP_FUN = \
 	print "\n"; }
 
 ###############
-# GOALS/RULES #
+# GOALS/RULES/TARGETS #
 ###############
 .PHONY: all
 all: help
 
+.PHONY: help
 help: ##@other Show this help
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
 
@@ -59,3 +56,15 @@ test: ##@hacking Test everything
 .PHONY: sign-waiver
 sign-waiver: ##@contributing Sign the WAIVER
 	echo 'use minisign'
+
+.PHONY: benchmarks
+benchmarks: ##@benchmarks Run all benchmarks
+	mvn verify --activate-profiles benchmarks
+
+.PHONY: benchmarks-codegen
+benchmarks-codegen: ##@benchmarks Run code generation benchmarks
+	mvn verify --projects yosql-benchmarks/yosql-benchmarks-codegen --also-make --activate-profiles benchmarks
+
+.PHONY: benchmarks-jdbc
+benchmarks-jdbc: ##@benchmarks Run JDBC benchmarks
+	mvn verify --projects yosql-benchmarks/yosql-benchmarks-jdbc --also-make --activate-profiles benchmarks
