@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 jobs:
   build:
-    name: Install Project Artifacts
+    name: "Build & Deploy"
     runs-on: ubuntu-latest
     steps:
       - id: checkout
@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: install
         name: Install Project
-        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml install
+        run: mvn --batch-mode install
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: gradle-plugin
@@ -63,7 +63,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: run-benchmark
         name: Run Benchmark [${{ matrix.benchmark }}]
-        run: mvn --batch-mode --settings $GITHUB_WORKSPACE/build/settings.xml --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests 2>&1 1> build.log
+        run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests 2>&1 1> build.log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: upload-benchmark
