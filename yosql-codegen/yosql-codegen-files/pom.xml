@@ -78,22 +78,16 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <version>2.12.1</version>
-        </dependency>
-        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <groupId>com.fasterxml.jackson.core</groupId>
         </dependency>
         <dependency>
-            <artifactId>jackson-core</artifactId>
             <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>2.12.1</version>
         </dependency>
     </dependencies>
 </project>
