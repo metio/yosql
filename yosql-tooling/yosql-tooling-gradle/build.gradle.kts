@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "wtf.metio.yosql.tooling.gradle"
-version = "0.0.0-SNAPSHOT"
+version = "2021.4.13"
 
 repositories {
     mavenCentral()
