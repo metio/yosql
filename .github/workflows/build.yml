@@ -19,6 +19,7 @@ jobs:
           java-version: 16
           java-package: jdk
           architecture: x64
+          distribution: 'adopt'
       - id: cache
         name: Cache Maven Repository
         uses: actions/cache@v2.1.5
@@ -53,6 +54,7 @@ jobs:
           java-version: 16
           java-package: jdk
           architecture: x64
+          distribution: 'adopt'
       - id: cache
         name: Cache Maven Repository
         uses: actions/cache@v2.1.5
