@@ -19,23 +19,7 @@ The [slf4j](http://www.slf4j.org/) based implementation for a logging generator.
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](/tooling/maven/).
 
-```xml
-  <build>
-    <plugins>
-      ...
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <apis>
-            <loggingApi>SLF4J</loggingApi>
-          </apis>
-        </configuration>
-      </plugin>
-      ...
-    </plugins>
-  </build>
-```
+{{< maven/logging/slf4j >}}
 
 ### Gradle
 

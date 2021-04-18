@@ -11,7 +11,7 @@ tags:
   - java.util.logging
 ---
 
-The `java.util.logging` based implementation for a logging generator. It does not require any external non-JDK classes. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.
+The `java.util.logging` based implementation for a logging generator. The generated code does not require any external non-JDK classes. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.
 
 ## Tooling
 
@@ -20,23 +20,7 @@ The `java.util.logging` based implementation for a logging generator. It does no
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](/tooling/maven/).
 
-```xml
-  <build>
-    <plugins>
-      ...
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <apis>
-            <loggingApi>JUL</loggingApi>
-          </apis>
-        </configuration>
-      </plugin>
-      ...
-    </plugins>
-  </build>
-```
+{{< maven/logging/jul >}}
 
 ### Gradle
 

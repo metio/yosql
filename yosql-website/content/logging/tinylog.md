@@ -19,23 +19,7 @@ The [Tinylog](https://tinylog.org/v2/) based implementation for a logging genera
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](/tooling/maven/).
 
-```xml
-  <build>
-    <plugins>
-      ...
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <apis>
-            <loggingApi>SLF4J</loggingApi>
-          </apis>
-        </configuration>
-      </plugin>
-      ...
-    </plugins>
-  </build>
-```
+{{< maven/logging/tinylog >}}
 
 ### Gradle
 

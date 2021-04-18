@@ -19,23 +19,7 @@ The [log4j](https://logging.apache.org/log4j/2.x/) based implementation for a lo
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](/tooling/maven/).
 
-```xml
-  <build>
-    <plugins>
-      ...
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <apis>
-            <loggingApi>LOG4J</loggingApi>
-          </apis>
-        </configuration>
-      </plugin>
-      ...
-    </plugins>
-  </build>
-```
+{{< maven/logging/log4j >}}
 
 ### Gradle
 
