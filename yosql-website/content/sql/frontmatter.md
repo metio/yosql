@@ -69,7 +69,7 @@ FROM    users
 WHERE   id = :userId
 ```
 
-The `repository` field takes the [basePackageName](../../configuration/repositories/basepackagename/) into account, e.g. you could shorten the above example to just `YourRepository` if your base package is `com.example.persistence`. If your repository starts with the base package already, it won't be added twice. Likewise, it is possible to add any number of subpackages in front of your repository, e.g. `your.own.domain.YourRepository`.
+The `repository` field takes the [basePackageName](/configuration/repositories/basepackagename/) into account, e.g. you could shorten the above example to just `YourRepository` if your base package is `com.example.persistence`. If your repository starts with the base package already, it won't be added twice. Likewise, it is possible to add any number of subpackages in front of your repository, e.g. `your.own.domain.YourRepository`.
 
 ## vendor
 

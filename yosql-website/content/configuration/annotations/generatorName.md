@@ -63,22 +63,22 @@ public class SomeRepository {
 
 ## Related Options
 
-- [annotateClasses](../annotateclasses): Controls whether the `@Generated` annotation should be added to classes.
-- [classAnnotation](../classannotation): Controls which `@Generated` annotation should be used on classes.
-- [classMembers](../classmembers): Controls which `@Generated` annotation members should be used on classes.
-- [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added to fields.
-- [fieldAnnotation](../fieldannotation): Controls which `@Generated` annotation should be used on fields.
-- [fieldMembers](../fieldmembers): Controls which `@Generated` annotation members should be used on fields.
-- [annotateMethods](../annotatemethods): Controls whether the `@Generated` annotation should be added to methods.
-- [methodAnnotation](../methodannotation): Controls which `@Generated` annotation should be used on methods.
-- [methodMembers](../methodmembers): Controls which `@Generated` annotation members should be used on methods.
+- [annotateClasses](../annotateclasses/): Controls whether the `@Generated` annotation should be added to classes.
+- [classAnnotation](../classannotation/): Controls which `@Generated` annotation should be used on classes.
+- [classMembers](../classmembers/): Controls which `@Generated` annotation members should be used on classes.
+- [annotateFields](../annotatefields/): Controls whether the `@Generated` annotation should be added to fields.
+- [fieldAnnotation](../fieldannotation/): Controls which `@Generated` annotation should be used on fields.
+- [fieldMembers](../fieldmembers/): Controls which `@Generated` annotation members should be used on fields.
+- [annotateMethods](../annotatemethods/): Controls whether the `@Generated` annotation should be added to methods.
+- [methodAnnotation](../methodannotation/): Controls which `@Generated` annotation should be used on methods.
+- [methodMembers](../methodmembers/): Controls which `@Generated` annotation members should be used on methods.
 
 ## Tooling
 
 ### Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](../../../tooling/maven).
+for Maven](/tooling/maven/).
 
 ```xml
   <build>
@@ -98,7 +98,7 @@ for Maven](../../../tooling/maven).
 
 ### Gradle
 
-In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../../../tooling/gradle).
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/).
 
 ```groovy
 plugins {
@@ -115,11 +115,11 @@ yosql {
 ### Bazel
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](../../../tooling/bazel).
+Bazel](/tooling/bazel/).
 
 ### CLI
 
-In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../../tooling/cli).
+In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
 ```shell
 $ yosql --annotations-generator-name="Hello World!"

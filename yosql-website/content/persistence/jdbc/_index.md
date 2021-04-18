@@ -21,26 +21,7 @@ In order to use the JDBC API in generated code, set the `daoApi` option to `JDBC
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](/tooling/maven/).
 
-```xml
-  <build>
-    <plugins>
-      ...
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <apis>
-            <daoApi>JDBC</daoApi>
-          </apis>
-          <jdbc>
-            ... jdbc configuration
-          </jdbc>
-        </configuration>
-      </plugin>
-      ...
-    </plugins>
-  </build>
-```
+{{< mavenplugin_jdbc >}}
 
 ### Gradle
 

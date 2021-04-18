@@ -51,21 +51,7 @@ public class SomeUtility {
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](/tooling/maven/).
 
-```xml
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <jdbc>
-            <utilityPackageName>your.own.domain.util</utilityPackageName>
-          </jdbc>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-```
+{{< mavenplugin_jdbc_utilityPackageName >}}
 
 ### Gradle
 

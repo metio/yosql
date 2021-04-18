@@ -63,17 +63,17 @@ public class SomeRepository {
 
 ## Related Options
 
-- [annotateFields](../annotatefields): Controls whether the `@Generated` annotation should be added at all.
-- [fieldAnnotation](../fieldannotation): Controls which `@Generated` annotation should be used.
-- [fieldMembers](../fieldmembers): Controls which `@Generated` annotation members should be used.
-- [generatorName](../generatorname): Controls the value used in the `@Generated` annotation.
+- [annotateFields](../annotatefields/): Controls whether the `@Generated` annotation should be added at all.
+- [fieldAnnotation](../fieldannotation/): Controls which `@Generated` annotation should be used.
+- [fieldMembers](../fieldmembers/): Controls which `@Generated` annotation members should be used.
+- [generatorName](../generatorname/): Controls the value used in the `@Generated` annotation.
 
 ## Tooling
 
 ### Maven
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](../../../tooling/maven).
+for Maven](/tooling/maven/).
 
 ```xml
   <build>
@@ -93,7 +93,7 @@ for Maven](../../../tooling/maven).
 
 ### Gradle
 
-In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](../../../tooling/gradle).
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/).
 
 ```groovy
 plugins {
@@ -110,11 +110,11 @@ yosql {
 ### Bazel
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](../../../tooling/bazel).
+Bazel](/tooling/bazel/).
 
 ### CLI
 
-In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](../../tooling/cli).
+In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
 ```shell
 $ yosql --annotations-field-comment="Hello World!"

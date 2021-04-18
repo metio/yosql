@@ -6,7 +6,7 @@ menu:
     weight: 170
 ---
 
-This part of the documentation is intended for **developers** looking for information on how to customize `YoSQL` beyond its [main configuration](../configuration) capabilities. Depending on what you what to achieve, we suggest following the steps:
+This part of the documentation is intended for **developers** looking for information on how to customize `YoSQL` beyond its [main configuration](/configuration/) capabilities. Depending on what you what to achieve, we suggest following the steps:
 
 0. Raise Ticket: Consider raising a ticket in case an additional configuration option would enable your use case.
 1. Single-use `YoSQL`: Copy generated classes into your `src/main/java` folder and adapt them your own needs.
