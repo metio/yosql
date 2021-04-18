@@ -1,7 +1,7 @@
 name: Perform Release
 on:
   schedule:
-    - cron:  "45 3 * * WED"
+    - cron:  "45 3 * * SUN"
 env:
   JAVA_VERSION: 16
   JAVA_PACKAGE: jdk
@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
       - id: commits
         name: Count Commits
-        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday' -- yosql-codegen yosql-converters yosql-dao yosql-internals yosql-logging yosql-models yosql-tooling)"
+        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Sunday' -- yosql-codegen yosql-converters yosql-dao yosql-internals yosql-logging yosql-models yosql-tooling)"
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0
