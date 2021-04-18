@@ -51,7 +51,7 @@ public class SomeUtility {
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](/tooling/maven/).
 
-{{< mavenplugin_jdbc_utilityPackageName >}}
+{{< maven/persistence/jdbc/utilityPackageName >}}
 
 ### Gradle
 

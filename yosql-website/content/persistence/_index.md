@@ -36,7 +36,7 @@ Replace `configValue` with the constant value for whatever persistence API you w
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
 for Maven](/tooling/maven/).
 
-{{< mavenplugin_daoApi >}}
+{{< maven/persistence/index >}}
 
 ### Gradle
 
