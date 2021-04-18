@@ -2,17 +2,32 @@ name: Build Project
 on:
   push:
     branches: [ main ]
+    paths:
+      - "yosql-codegen/**"
+      - "yosql-converters/**"
+      - "yosql-dao/**"
+      - "yosql-internals/**"
+      - "yosql-logging/**"
+      - "yosql-models/**"
+      - "yosql-tooling/**"
   pull_request:
     branches: [ main ]
+    paths:
+      - "yosql-codegen/**"
+      - "yosql-converters/**"
+      - "yosql-dao/**"
+      - "yosql-internals/**"
+      - "yosql-logging/**"
+      - "yosql-models/**"
+      - "yosql-tooling/**"
 env:
   JAVA_VERSION: 16
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
   JAVA_DISTRO: adopt
-  PROJECT_URL: yosql.projects.metio.wtf
 jobs:
   build:
-    name: "Build"
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - id: checkout
@@ -46,7 +61,7 @@ jobs:
     needs: [build]
     strategy:
       matrix:
-        benchmark: ["codegen", "jdbc"]
+        benchmark: [codegen, jdbc]
     steps:
       - id: checkout
         name: Clone Git Repository
@@ -76,42 +91,3 @@ jobs:
         with:
           name: benchmark-${{ matrix.benchmark }}
           path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
-  website:
-    name: Website
-    runs-on: ubuntu-latest
-    needs: [benchmarks]
-    if: ${{ github.ref == 'refs/heads/main' }}
-    steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v2
-      - id: hugo
-        name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: latest
-      - id: download
-        name: Download Benchmarks Results
-        uses: actions/download-artifact@v2
-      - id: copy-codegen-results
-        name: Copy Codegen Results
-        run: cp ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-codegen.json
-      - id: copy-jdbc-results
-        name: Copy JDBC Results
-        run: cp ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
-      - id: previous
-        name: Get Last Release
-        run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
-      - id: website
-        name: Build Website
-        run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
-        env:
-          YOSQL_RELEASE: ${{ steps.previous.outputs.version }}
-      - id: deploy
-        name: Deploy Website
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./yosql-website/public
-          force_orphan: true
-          cname: ${{ env.PROJECT_URL }}

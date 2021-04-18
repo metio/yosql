@@ -1,0 +1,38 @@
+name: Publish Website
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "yosql-website/**"
+env:
+  PROJECT_URL: yosql.projects.metio.wtf
+jobs:
+  website:
+    name: Website
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+      - id: hugo
+        name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: latest
+      - id: previous
+        name: Get Last Release
+        run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
+      - id: website
+        name: Build Website
+        run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
+        env:
+          YOSQL_RELEASE: ${{ steps.previous.outputs.version }}
+      - id: deploy
+        name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./yosql-website/public
+          force_orphan: true
+          cname: ${{ env.PROJECT_URL }}

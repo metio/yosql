@@ -68,7 +68,7 @@ In order to run benchmarks for the  [JDBC](/persistence/jdbc/) implementation of
 # run JDBC benchmarks
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-jdbc --also-make --activate-profiles benchmarks verify
 ```
-The [results](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/2021/yosql-benchmarks-jdbc.json,https://yosql.projects.metio.wtf/benchmarks/current/yosql-benchmarks-jdbc.json) are measured in **microseconds**. All available logging implementation are tested with their maximal output configuration in order to gauge how much overhead each implementation causes on top of the no-op implementation without any logging statements.
+The [results](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-jdbc-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-jdbc-CURRENT.json) are measured in **microseconds**. All available logging implementation are tested with their maximal output configuration in order to gauge how much overhead each implementation causes on top of the no-op implementation without any logging statements.
 
 ### JDBI
 
