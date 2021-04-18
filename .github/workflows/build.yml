@@ -4,9 +4,15 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+env:
+  JAVA_VERSION: 16
+  JAVA_PACKAGE: jdk
+  JAVA_ARCH: x64
+  JAVA_DISTRO: adopt
+  PROJECT_URL: yosql.projects.metio.wtf
 jobs:
   build:
-    name: "Build & Deploy"
+    name: "Build"
     runs-on: ubuntu-latest
     steps:
       - id: checkout
@@ -16,10 +22,10 @@ jobs:
         name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: 16
-          java-package: jdk
-          architecture: x64
-          distribution: 'adopt'
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
       - id: cache
         name: Cache Maven Repository
         uses: actions/cache@v2.1.5
@@ -28,14 +34,12 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - id: install
-        name: Install Project
+      - id: maven
+        name: Maven Artifacts
         run: mvn --batch-mode install
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: gradle-plugin
         name: Gradle Plugin
-        run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew publishPlugins -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
+        run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew build
   benchmarks:
     name: Benchmarks
     runs-on: ubuntu-latest
@@ -51,10 +55,10 @@ jobs:
         name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: 16
-          java-package: jdk
-          architecture: x64
-          distribution: 'adopt'
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
       - id: cache
         name: Cache Maven Repository
         uses: actions/cache@v2.1.5
@@ -66,8 +70,6 @@ jobs:
       - id: run-benchmark
         name: Run Benchmark [${{ matrix.benchmark }}]
         run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests 2>&1 1> build.log
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: upload-benchmark
         name: Upload Benchmark Results
         uses: actions/upload-artifact@v2
@@ -97,9 +99,14 @@ jobs:
       - id: copy-jdbc-results
         name: Copy JDBC Results
         run: cp ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/current/yosql-benchmarks-jdbc.json
+      - id: previous
+        name: Get Last Release
+        run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
       - id: website
         name: Build Website
         run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
+        env:
+          YOSQL_RELEASE: ${{ steps.previous.outputs.version }}
       - id: deploy
         name: Deploy Website
         uses: peaceiris/actions-gh-pages@v3
@@ -107,4 +114,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./yosql-website/public
           force_orphan: true
-          cname: yosql.projects.metio.wtf
+          cname: ${{ env.PROJECT_URL }}

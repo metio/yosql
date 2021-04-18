@@ -1,0 +1,244 @@
+name: Perform Release
+on:
+  schedule:
+    - cron:  "45 3 * * WED"
+env:
+  JAVA_VERSION: 16
+  JAVA_PACKAGE: jdk
+  JAVA_ARCH: x64
+  JAVA_DISTRO: adopt
+  PROJECT_URL: yosql.projects.metio.wtf
+jobs:
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      commit_count: ${{ steps.commits.outputs.count }}
+      release_version: ${{ steps.release.outputs.version }}
+      previous_version: ${{ steps.previous.outputs.version }}
+      changelog: ${{ steps.changelog.outputs.content }}
+      release_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - id: commits
+        name: Count Commits
+        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday')"
+      - id: release
+        name: Create Release Version
+        if: steps.commits.outputs.count > 0
+        run: echo "::set-output name=version::$(date +'%Y.%-m.%-d')"
+      - id: previous
+        name: Get Last Release
+        if: steps.commits.outputs.count > 0
+        run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
+      - id: generate_changelog
+        name: Generate Changelog
+        if: steps.commits.outputs.count > 0
+        uses: heinrichreimer/github-changelog-generator-action@v2.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          unreleased: true
+          issues: true
+          issuesWoLabels: true
+          pullRequests: true
+          prWoLabels: true
+          filterByMilestone: false
+          futureRelease: ${{ steps.release.outputs.version }}
+          sinceTag: ${{ steps.previous.outputs.version }}
+          stripGeneratorNotice: true
+          stripHeaders: true
+      - name: Check Changelog Existence
+        id: check_changelog
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "CHANGELOG.md"
+      - name: Create Empty Changelog
+        id: empty_changelog
+        uses: 1arp/create-a-file-action@0.2
+        if: steps.check_changelog.outputs.files_exists == 'false'
+        with:
+          file: CHANGELOG.md
+          content: |
+            no user facing changes
+      - name: Read Changelog
+        id: changelog
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./CHANGELOG.md
+      - id: create_release
+        name: Create Release
+        if: steps.commits.outputs.count > 0
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release.outputs.version }}
+          release_name: ${{ steps.release.outputs.version }}
+          draft: false
+          prerelease: false
+          body: |
+            # YoSQL
+            Write more SQL! Take a look at the [website](https://${{ env.PROJECT_URL }}/) for detailed information. **This release requires at least Java ${{ env.JAVA_VERSION }}**.
+            ## Changes
+            ${{ steps.changelog.outputs.content }}
+  build:
+    name: "Build & Deploy"
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+        if: needs.prepare.outputs.commit_count > 0
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v2
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
+          server-id: ossrh
+          server-username: MAVEN_CENTRAL_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v2.1.5
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Set release version
+        run: mvn --batch-mode versions:set -DnewVersion=${{ needs.prepare.outputs.release_version }} -DgenerateBackupPoms=false
+        if: needs.prepare.outputs.commit_count > 0
+      - id: deploy-maven
+        name: Deploy Maven Artifacts
+        run: mvn --batch-mode install deploy
+        if: needs.prepare.outputs.commit_count > 0
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+      - id: deploy-gradle
+        name: Deploy Gradle Plugin
+        run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew publishPlugins -Pversion=${{ needs.prepare.outputs.release_version }} -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
+        if: needs.prepare.outputs.commit_count > 0
+  benchmarks:
+    name: Benchmarks
+    runs-on: ubuntu-latest
+    needs: [prepare, build]
+    strategy:
+      matrix:
+        benchmark: ["codegen", "jdbc"]
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+        if: needs.prepare.outputs.commit_count > 0
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v2
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v2.1.5
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: run-benchmark
+        name: Run Benchmark [${{ matrix.benchmark }}]
+        run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests 2>&1 1> build.log
+        if: needs.prepare.outputs.commit_count > 0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: upload-benchmark
+        name: Upload Benchmark Results
+        uses: actions/upload-artifact@v2
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          name: benchmark-${{ matrix.benchmark }}
+          path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
+  website:
+    name: Website
+    runs-on: ubuntu-latest
+    needs: [prepare, benchmarks]
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v2
+        if: needs.prepare.outputs.commit_count > 0
+      - id: hugo
+        name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          hugo-version: latest
+      - id: download
+        name: Download Benchmarks Results
+        uses: actions/download-artifact@v2
+        if: needs.prepare.outputs.commit_count > 0
+      - id: copy-codegen-results
+        name: Copy Codegen Results
+        run: cp ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/releases/yosql-benchmarks-codegen.json
+        if: needs.prepare.outputs.commit_count > 0
+      - id: copy-jdbc-results
+        name: Copy JDBC Results
+        run: cp ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/releases/yosql-benchmarks-jdbc.json
+        if: needs.prepare.outputs.commit_count > 0
+      - id: website
+        name: Build Website
+        run: hugo --minify --i18n-warnings --path-warnings --source yosql-website
+        if: needs.prepare.outputs.commit_count > 0
+        env:
+          YOSQL_RELEASE: ${{ needs.prepare.outputs.release_version }}
+      - id: deploy
+        name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v3
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./yosql-website/public
+          force_orphan: true
+          cname: ${{ env.PROJECT_URL }}
+  announce:
+    name: Announcements
+    needs: [prepare, website]
+    runs-on: ubuntu-latest
+    steps:
+      - id: email
+        name: Send Mail
+        uses: dawidd6/action-send-mail@v2
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: ${{ secrets.MAIL_SENDER }}
+          subject: "release ${{ needs.prepare.outputs.release_version }}"
+          body: See https://github.com/metio/yosql/releases/tag/${{ needs.prepare.outputs.release_version }} for details.
+      - id: matrix
+        name: Send Matrix Message
+        uses: s3krit/matrix-message-action@v0.0.3
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
+          room_id: ${{ secrets.MATRIX_ROOM_ID }}
+          server: ${{ secrets.MATRIX_SERVER }}
+          message: "release ${{ needs.prepare.outputs.release_version }} published - see https://github.com/metio/yosql/releases/tag/${{ needs.prepare.outputs.release_version }} for details"

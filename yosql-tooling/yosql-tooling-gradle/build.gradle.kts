@@ -11,14 +11,6 @@ plugins {
     id("com.gradle.plugin-publish") version "0.12.0"
 }
 
-group = "wtf.metio.yosql.tooling.gradle"
-version = "2021.4.13"
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(16))
@@ -41,7 +33,7 @@ pluginBundle {
 }
 
 dependencies {
-    implementation("wtf.metio.yosql.tooling:yosql-tooling-dagger:0.0.0-SNAPSHOT")
+    implementation("wtf.metio.yosql.tooling:yosql-tooling-dagger:${version}")
 }
 
 tasks.named<Wrapper>("wrapper") {

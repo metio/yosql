@@ -17,12 +17,10 @@ public class YoSqlPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        final var extension = project.getExtensions()
-                .<YoSqlExtension>create("yosql", YoSqlExtension.class);
+        final var extension = project.getExtensions().create("yosql", YoSqlExtension.class);
 
-        project.getTasks().<GenerateTask>register("generateJavaCode", GenerateTask.class, task -> {
-            task.getFiles().set(extension.files());
-        });
+        project.getTasks().register("generateJavaCode", GenerateTask.class, task ->
+                task.getFiles().set(extension.files()));
     }
 
 }
