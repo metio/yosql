@@ -23,7 +23,7 @@ jobs:
         name: Clone Git Repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # required in order to get all tags
       - id: commits
         name: Count Commits
         run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Sunday' -- yosql-codegen yosql-converters yosql-dao yosql-internals yosql-logging yosql-models yosql-tooling)"
