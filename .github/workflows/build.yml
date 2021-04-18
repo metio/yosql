@@ -9,6 +9,7 @@ on:
       - "yosql-internals/**"
       - "yosql-logging/**"
       - "yosql-models/**"
+      - "yosql-testing/**"
       - "yosql-tooling/**"
   pull_request:
     branches: [ main ]
@@ -19,6 +20,7 @@ on:
       - "yosql-internals/**"
       - "yosql-logging/**"
       - "yosql-models/**"
+      - "yosql-testing/**"
       - "yosql-tooling/**"
 env:
   JAVA_VERSION: 16
