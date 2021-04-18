@@ -1,7 +1,7 @@
 name: Perform Release
 on:
   schedule:
-    - cron:  "15 2 * * SUN"
+    - cron:  "25 3 * * SUN"
 env:
   JAVA_VERSION: 16
   JAVA_PACKAGE: jdk
