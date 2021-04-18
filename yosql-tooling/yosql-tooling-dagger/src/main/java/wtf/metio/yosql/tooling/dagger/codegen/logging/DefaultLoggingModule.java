@@ -24,6 +24,8 @@ import java.util.Set;
         NoOpLoggingModule.class,
         Slf4jLoggingModule.class,
         TinylogLoggingModule.class,
+        SystemLoggingModule.class,
+        ThatsInterstingLoggingModule.class,
 })
 public class DefaultLoggingModule {
 
@@ -32,9 +34,7 @@ public class DefaultLoggingModule {
     public LoggingGenerator provideLoggingGenerator(
             final RuntimeConfiguration runtime,
             final Set<LoggingGenerator> loggingGenerators) {
-        return new DelegatingLoggingGenerator(
-                runtime.api(),
-                loggingGenerators);
+        return new DelegatingLoggingGenerator(runtime.api(), loggingGenerators);
     }
 
 }

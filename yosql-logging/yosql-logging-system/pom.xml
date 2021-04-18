@@ -34,4 +34,20 @@
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: Logging :: System</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>wtf.metio.yosql.logging</groupId>
+            <artifactId>yosql-logging-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+        </dependency>
+    </dependencies>
 </project>
