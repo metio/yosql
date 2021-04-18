@@ -51,6 +51,8 @@ In order to run benchmarks for the  [EBean](/persistence/ebean/) implementation 
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-ebean --also-make --activate-profiles benchmarks verify
 ```
 
+**WORK IN PROGRESS*: https://github.com/metio/yosql/issues/135
+
 ### Fluent JDBC
 
 In order to run benchmarks for the  [Fluent JDBC](/persistence/fluent-jdbc/) implementation of `YoSQL` run:
@@ -79,6 +81,8 @@ In order to run benchmarks for the  [JDBI](/persistence/jdbi/) implementation of
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-jdbi --also-make --activate-profiles benchmarks verify
 ```
 
+**WORK IN PROGRESS*: https://github.com/metio/yosql/issues/136
+
 ### jOOQ
 
 In order to run benchmarks for the  [jOOQ](/persistence/jooq/) implementation of `YoSQL` run:
@@ -88,6 +92,8 @@ In order to run benchmarks for the  [jOOQ](/persistence/jooq/) implementation of
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-jooq --also-make --activate-profiles benchmarks verify
 ```
 
+**WORK IN PROGRESS*: https://github.com/metio/yosql/issues/137
+
 ### JPA
 
 In order to run benchmarks for the  [JPA](/persistence/jpa/) implementation of `YoSQL` run:
@@ -96,6 +102,8 @@ In order to run benchmarks for the  [JPA](/persistence/jpa/) implementation of `
 # run JPA benchmarks
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-jpa --also-make --activate-profiles benchmarks verify
 ```
+
+**WORK IN PROGRESS*: https://github.com/metio/yosql/issues/138
 
 ### MyBatis
 
@@ -124,6 +132,8 @@ In order to run benchmarks for the  [R2DBC](/persistence/r2dbc/) implementation 
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-r2dbc --also-make --activate-profiles benchmarks verify
 ```
 
+**WORK IN PROGRESS*: https://github.com/metio/yosql/issues/139
+
 ### SansOrm
 
 In order to run benchmarks for the  [SansOrm](/persistence/sansorm/) implementation of `YoSQL` run:
@@ -141,6 +151,8 @@ In order to run benchmarks for the  [Spring-Data JDBC](/persistence/spring-data-
 # run Spring-Data JDBC benchmarks
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-data-jdbc --also-make --activate-profiles benchmarks verify
 ```
+
+**WORK IN PROGRESS*: https://github.com/metio/yosql/issues/140
 
 ### Spring-Data JPA
 
@@ -168,6 +180,8 @@ In order to run benchmarks for the  [Spring JDBC](/persistence/spring-jdbc/) imp
 # run Spring JDBC benchmarks
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-spring-jdbc --also-make --activate-profiles benchmarks verify
 ```
+
+**WORK IN PROGRESS*: https://github.com/metio/yosql/issues/141
 
 ## Other Solutions
 
