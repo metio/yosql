@@ -72,16 +72,6 @@
         </dependency>
         <dependency>
             <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-system</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-ti</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
             <artifactId>yosql-logging-tinylog</artifactId>
             <version>${project.version}</version>
         </dependency>
