@@ -115,6 +115,9 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - id: gpg
+        name: GPG Key
+        run: echo "${{ secrets.GPG_SECRET_KEY_BASE64 }}" | base64 --decode > $GITHUB_WORKSPACE/signing.key.asc
       - name: Set release version
         run: mvn --batch-mode versions:set -DnewVersion=${{ needs.prepare.outputs.release_version }} -DgenerateBackupPoms=false
         if: needs.prepare.outputs.commit_count > 0
