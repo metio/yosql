@@ -45,6 +45,7 @@ jobs:
           unreleased: true
           issues: true
           issuesWoLabels: true
+          excludeLabels: "Resolved :: Duplicate,Resolved :: Invalid,Resolved :: Wontfix"
           pullRequests: true
           prWoLabels: true
           filterByMilestone: false
