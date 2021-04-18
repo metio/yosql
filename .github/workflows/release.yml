@@ -120,7 +120,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: deploy-maven
         name: Deploy Maven Artifacts
-        run: mvn --batch-mode install deploy
+        run: mvn --batch-mode install deploy --activate-profiles release verify deploy -Dpgp.secretkey=keyfile:$GITHUB_WORKSPACE/signing.key.asc -Dpgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
         if: needs.prepare.outputs.commit_count > 0
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
