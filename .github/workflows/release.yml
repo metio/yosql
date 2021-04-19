@@ -56,7 +56,7 @@ jobs:
         id: check_changelog
         uses: andstor/file-existence-action@v1
         with:
-          files: "CHANGELOG.md"
+          files: CHANGELOG.md
       - name: Create Empty Changelog
         id: empty_changelog
         uses: 1arp/create-a-file-action@0.2
