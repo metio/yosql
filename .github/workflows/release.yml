@@ -83,7 +83,7 @@ jobs:
           prerelease: false
           body: |
             # YoSQL
-            Write more SQL! Take a look at the [website](https://${{ env.PROJECT_URL }}/) for detailed information. **This release requires at least Java ${{ env.JAVA_VERSION }}**.
+            Write more SQL! Take a look at the [website](https://${{ env.PROJECT_URL }}/) for detailed information. **This release requires at least Java ${{ env.JAVA_VERSION }}** at build time.
             ## Changes
             ${{ steps.changelog.outputs.content }}
   deploy:
