@@ -9,6 +9,9 @@ package wtf.metio.yosql.tooling.gradle;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.SourceSet;
 
 /**
  * The YoSQL Gradle plugin. It configures the {@link YoSqlExtension} and registers the {@link GenerateTask}.
@@ -18,9 +21,18 @@ public class YoSqlPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         final var extension = project.getExtensions().create("yosql", YoSqlExtension.class);
-
         project.getTasks().register("generateJavaCode", GenerateTask.class, task ->
-                task.getFiles().set(extension.files()));
+                task.files().set(extension.files()));
+        project.getPlugins().withType(JavaPlugin.class, plugin -> addSourceSet(project, extension));
+    }
+
+    private void addSourceSet(final Project project, final YoSqlExtension extension) {
+        final var mainSourceSet = project.getConvention()
+                .getPlugin(JavaPluginConvention.class)
+                .getSourceSets()
+                .getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+        mainSourceSet.getAllSource()
+                .srcDir(extension.files().outputBaseDirectory());
     }
 
 }
