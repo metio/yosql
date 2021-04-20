@@ -34,6 +34,7 @@ pluginBundle {
 
 dependencies {
     implementation("wtf.metio.yosql.tooling:yosql-tooling-dagger:${version}")
+    testImplementation(gradleTestKit())
 }
 
 tasks.named<Wrapper>("wrapper") {
