@@ -8,11 +8,8 @@
 package wtf.metio.yosql.tooling.gradle;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import wtf.metio.yosql.models.immutables.*;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
@@ -31,7 +28,7 @@ public abstract class GenerateTask extends DefaultTask {
      * @return The file configuration to use.
      */
     @Input
-    abstract public Property<Files> files();
+    abstract public Property<Files> getFiles();
 
     /**
      * Generate Java code.
@@ -47,7 +44,7 @@ public abstract class GenerateTask extends DefaultTask {
 
     private RuntimeConfiguration createConfiguration() {
         return RuntimeConfiguration.builder()
-                .setFiles(files().flatMap(Files::fileConfiguration).get())
+                .setFiles(getFiles().flatMap(Files::asConfiguration).get())
                 .setAnnotations(AnnotationsConfiguration.usingDefaults().build())
                 .setJava(JavaConfiguration.usingDefaults().build())
                 .setApi(ApiConfiguration.usingDefaults().build())

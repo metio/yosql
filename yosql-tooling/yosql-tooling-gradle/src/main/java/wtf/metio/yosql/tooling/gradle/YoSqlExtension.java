@@ -18,6 +18,6 @@ public abstract class YoSqlExtension {
      * @return The files configuration.
      */
     @Nested
-    public abstract Files files();
+    public abstract Files getFiles();
 
 }

@@ -27,28 +27,28 @@ public abstract class Files {
      * @return The base path of the input directory.
      */
     @InputDirectory
-    abstract public DirectoryProperty inputBaseDirectory();
+    abstract public DirectoryProperty getInputBaseDirectory();
 
     /**
      * @return The base path of the output directory.
      */
     @OutputDirectory
-    abstract public DirectoryProperty outputBaseDirectory();
+    abstract public DirectoryProperty getOutputBaseDirectory();
 
     @Internal
-    Property<FilesConfiguration> fileConfiguration() {
+    Property<FilesConfiguration> asConfiguration() {
         final var files = objectFactory.property(FilesConfiguration.class);
         files.set(FilesConfiguration.usingDefaults()
-                .setInputBaseDirectory(inputBaseDirectory().get().getAsFile().toPath())
-                .setOutputBaseDirectory(outputBaseDirectory().get().getAsFile().toPath())
+                .setInputBaseDirectory(getInputBaseDirectory().get().getAsFile().toPath())
+                .setOutputBaseDirectory(getOutputBaseDirectory().get().getAsFile().toPath())
                 .build());
         return files;
     }
 
     Files(final ObjectFactory objectFactory, final ProjectLayout projectLayout) {
         this.objectFactory = objectFactory;
-        inputBaseDirectory().convention(projectLayout.getProjectDirectory().dir("src").dir("main").dir("yosql"));
-        outputBaseDirectory().convention(projectLayout.getBuildDirectory().dir("generated").map(d -> d.dir("sources").dir("yosql")));
+        getInputBaseDirectory().convention(projectLayout.getProjectDirectory().dir("src").dir("main").dir("yosql"));
+        getOutputBaseDirectory().convention(projectLayout.getBuildDirectory().dir("generated").map(d -> d.dir("sources").dir("yosql")));
     }
 
 }

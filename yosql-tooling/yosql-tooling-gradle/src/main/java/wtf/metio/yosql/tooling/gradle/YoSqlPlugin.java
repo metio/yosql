@@ -22,7 +22,7 @@ public class YoSqlPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final var extension = project.getExtensions().create("yosql", YoSqlExtension.class);
         project.getTasks().register("generateJavaCode", GenerateTask.class, task ->
-                task.files().set(extension.files()));
+                task.getFiles().set(extension.getFiles()));
         project.getPlugins().withType(JavaPlugin.class, plugin -> addSourceSet(project, extension));
     }
 
@@ -32,7 +32,7 @@ public class YoSqlPlugin implements Plugin<Project> {
                 .getSourceSets()
                 .getByName(SourceSet.MAIN_SOURCE_SET_NAME);
         mainSourceSet.getAllSource()
-                .srcDir(extension.files().outputBaseDirectory());
+                .srcDir(extension.getFiles().getOutputBaseDirectory());
     }
 
 }
