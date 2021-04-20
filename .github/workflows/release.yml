@@ -193,9 +193,17 @@ jobs:
         name: Copy Codegen Results
         run: cp ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/releases/yosql-benchmarks-codegen-${{ needs.prepare.outputs.release_version }}.json
         if: needs.prepare.outputs.commit_count > 0
+      - id: replace-codegen-results
+        name: Replace CURRENT Codegen Results
+        run: cp ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/releases/yosql-benchmarks-codegen-CURRENT.json
+        if: needs.prepare.outputs.commit_count > 0
       - id: copy-jdbc-results
         name: Copy JDBC Results
         run: cp ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/releases/yosql-benchmarks-jdbc-${{ needs.prepare.outputs.release_version }}.json
+        if: needs.prepare.outputs.commit_count > 0
+      - id: replace-jdbc-results
+        name: Replace CURRENT JDBC Results
+        run: cp ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/releases/yosql-benchmarks-jdbc-CURRENT.json
         if: needs.prepare.outputs.commit_count > 0
       - id: push
         name: Push Benchmarks
