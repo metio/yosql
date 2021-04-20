@@ -27,11 +27,11 @@ public class YoSqlPlugin implements Plugin<Project> {
     }
 
     private void addSourceSet(final Project project, final YoSqlExtension extension) {
-        final var mainSourceSet = project.getConvention()
+        project.getConvention()
                 .getPlugin(JavaPluginConvention.class)
                 .getSourceSets()
-                .getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-        mainSourceSet.getAllSource()
+                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+                .getAllSource()
                 .srcDir(extension.getFiles().getOutputBaseDirectory());
     }
 
