@@ -28,17 +28,16 @@ jobs:
       - name: Update parent
         run: mvn --batch-mode versions:update-parent -DgenerateBackupPoms=false
       - name: Create Pull Request
-        id: cpr
         uses: peter-evans/create-pull-request@v3.8.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update parent to latest version
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          title: 'Update parent to latest version'
+          title: Update parent to latest version
           body: |
             `mvn --batch-mode versions:update-parent -DgenerateBackupPoms=false`
-          labels: enhancement
+          labels: dependencies
           assignees: sebhoss
           draft: false
           branch: update-parent
