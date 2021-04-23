@@ -16,12 +16,37 @@ java {
     }
 }
 
-tasks.named<Wrapper>("wrapper") {
-    distributionType = Wrapper.DistributionType.ALL
-}
-
 yosql {
     files {
-        inputBaseDirectory.set(layout.projectDirectory.dir("yosql"))
+        skipLines.set(6)
     }
+    repositories {
+        basePackageName.set("wtf.metio.yosql.example.gradle.jdbc.java16.persistence")
+    }
+    jdbc {
+        utilityPackageName.set("wtf.metio.yosql.example.gradle.jdbc.java16.persistence.util")
+        userTypes {
+            register("itemConverter") {
+                converterType.set("wtf.metio.yosql.example.gradle.jdbc.java16.converter.ToItemConverter")
+                methodName.set("asUserType")
+                resultType.set("wtf.metio.yosql.example.gradle.jdbc.java16.model.Item")
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation("com.zaxxer:HikariCP:latest.release") {
+        because("we want to use a connection pool")
+    }
+    implementation("com.h2database:h2:latest.release") {
+        because("we want to use an in-memory database")
+    }
+    implementation("io.reactivex.rxjava2:rxjava:latest.release") {
+        because("we want to show reactive access")
+    }
+}
+
+tasks.named<Wrapper>("wrapper") {
+    distributionType = Wrapper.DistributionType.ALL
 }

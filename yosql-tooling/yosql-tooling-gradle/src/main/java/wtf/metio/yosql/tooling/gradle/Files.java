@@ -11,6 +11,7 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
@@ -33,11 +34,24 @@ public abstract class Files {
     @OutputDirectory
     public abstract DirectoryProperty getOutputBaseDirectory();
 
+    /**
+     * @return The number of lines to skip in each .sql file.
+     */
+    @Input
+    public abstract Property<Integer> getSkipLines();
+
     FilesConfiguration asConfiguration() {
         return FilesConfiguration.usingDefaults()
                 .setInputBaseDirectory(getInputBaseDirectory().get().getAsFile().toPath())
                 .setOutputBaseDirectory(getOutputBaseDirectory().get().getAsFile().toPath())
+                .setSkipLines(getSkipLines().get())
                 .build();
+    }
+
+    void configureConventions(final ProjectLayout layout) {
+        getInputBaseDirectory().convention(layout.getProjectDirectory().dir("src/main/yosql"));
+        getOutputBaseDirectory().convention(layout.getBuildDirectory().dir("generated/sources/yosql"));
+        getSkipLines().convention(0);
     }
 
 }

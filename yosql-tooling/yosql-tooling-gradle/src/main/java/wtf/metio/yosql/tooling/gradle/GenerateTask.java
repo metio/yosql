@@ -11,18 +11,17 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
+import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.*;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Generate Java code by reading SQL code.
  */
 public abstract class GenerateTask extends DefaultTask {
-
-    private static final List<Locale> SUPPORTED_LOCALES = List.of(Locale.ENGLISH, Locale.GERMAN);
 
     /**
      * @return The file configuration to use.
@@ -31,34 +30,46 @@ public abstract class GenerateTask extends DefaultTask {
     public abstract Property<FilesConfiguration> getFiles();
 
     /**
+     * @return The JDBC configuration to use.
+     */
+    @Input
+    public abstract Property<JdbcConfiguration> getJdbc();
+
+    /**
+     * @return The Java configuration to use.
+     */
+    @Input
+    public abstract Property<JavaConfiguration> getJava();
+
+    /**
+     * @return The repositories configuration to use.
+     */
+    @Input
+    public abstract Property<RepositoriesConfiguration> getRepositories();
+
+    /**
      * Generate Java code.
      */
     @TaskAction
     public void generateCode() {
         DaggerYoSQLComponent.builder()
                 .runtimeConfiguration(createConfiguration())
-                .locale(determineLocale())
+                .locale(SupportedLocales.defaultLocale())
                 .build()
-                .yosql();
+                .yosql()
+                .generateCode();
     }
 
     private RuntimeConfiguration createConfiguration() {
         return RuntimeConfiguration.builder()
                 .setFiles(getFiles().get())
+                .setJdbc(getJdbc().get())
+                .setJava(getJava().get())
+                .setRepositories(getRepositories().get())
                 .setAnnotations(AnnotationsConfiguration.usingDefaults().build())
-                .setJava(JavaConfiguration.usingDefaults().build())
                 .setApi(ApiConfiguration.usingDefaults().build())
-                .setRepositories(RepositoriesConfiguration.usingDefaults().build())
                 .setResources(ResourcesConfiguration.usingDefaults().build())
-                .setJdbc(JdbcConfiguration.usingDefaults().build())
                 .build();
-    }
-
-    private Locale determineLocale() {
-        return SUPPORTED_LOCALES.stream()
-                .filter(Locale.getDefault()::equals)
-                .findFirst()
-                .orElse(Locale.ENGLISH);
     }
 
 }

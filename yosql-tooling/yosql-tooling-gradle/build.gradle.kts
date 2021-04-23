@@ -34,6 +34,7 @@ pluginBundle {
 
 dependencies {
     implementation("wtf.metio.yosql.tooling:yosql-tooling-dagger:${version}")
+    implementation("wtf.metio.yosql.internals:yosql-internals-jdk-utils:${version}")
     testImplementation(gradleTestKit())
 }
 

@@ -10,10 +10,11 @@ package wtf.metio.yosql.tooling.gradle;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
-import wtf.metio.yosql.models.immutables.FilesConfiguration;
+import org.gradle.api.tasks.compile.JavaCompile;
 
 /**
  * The YoSQL Gradle plugin. It configures the {@link YoSqlExtension} and registers the {@link GenerateTask}.
@@ -23,7 +24,7 @@ public class YoSqlPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         final var extension = configureExtension(project);
-        configureConventions(extension, project.getLayout());
+        configureConventions(extension, project.getLayout(), project.getObjects());
         configureTask(project, extension);
         configureSourceSets(project, extension);
     }
@@ -32,15 +33,21 @@ public class YoSqlPlugin implements Plugin<Project> {
         return project.getExtensions().create("yosql", YoSqlExtension.class);
     }
 
-    private void configureConventions(final YoSqlExtension extension, final ProjectLayout layout) {
-        final var files = extension.getFiles();
-        files.getInputBaseDirectory().convention(layout.getProjectDirectory().dir("src").dir("main").dir("yosql"));
-        files.getOutputBaseDirectory().convention(layout.getBuildDirectory().dir("generated").map(d -> d.dir("sources").dir("yosql")));
+    private void configureConventions(final YoSqlExtension extension, final ProjectLayout layout, final ObjectFactory objects) {
+        extension.getFiles().configureConventions(layout);
+        extension.getJdbc().configureConventions(objects);
+        extension.getRepositories().configureConventions();
+        extension.getJava().configureConventions();
     }
 
     private void configureTask(final Project project, final YoSqlExtension extension) {
-        project.getTasks().register("generateJavaCode", GenerateTask.class, task ->
-                task.getFiles().set(extension.getFiles().asConfiguration()));
+        final var generate = project.getTasks().register("generateJavaCode", GenerateTask.class, task -> {
+            task.getFiles().set(extension.getFiles().asConfiguration());
+            task.getJdbc().set(extension.getJdbc().asConfiguration());
+            task.getJava().set(extension.getJava().asConfiguration());
+            task.getRepositories().set(extension.getRepositories().asConfiguration());
+        });
+        project.getTasks().withType(JavaCompile.class, task -> task.doFirst("yosql", action -> generate.get().generateCode()));
     }
 
     private void configureSourceSets(final Project project, final YoSqlExtension extension) {
@@ -52,8 +59,8 @@ public class YoSqlPlugin implements Plugin<Project> {
                 .getPlugin(JavaPluginConvention.class)
                 .getSourceSets()
                 .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                .getAllSource()
-                .srcDir(extension.getFiles().getOutputBaseDirectory());
+                .getJava()
+                .srcDir(extension.getFiles().getOutputBaseDirectory().get());
     }
 
 }

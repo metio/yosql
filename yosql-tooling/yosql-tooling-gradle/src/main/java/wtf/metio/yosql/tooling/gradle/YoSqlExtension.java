@@ -22,10 +22,49 @@ public abstract class YoSqlExtension {
     public abstract Files getFiles();
 
     /**
-     * @param action The config block to apply.
+     * @return The JDBC configuration.
+     */
+    @Nested
+    public abstract Jdbc getJdbc();
+
+    /**
+     * @return The JDBC configuration.
+     */
+    @Nested
+    public abstract Java getJava();
+
+    /**
+     * @return The JDBC configuration.
+     */
+    @Nested
+    public abstract Repositories getRepositories();
+
+    /**
+     * @param action The files config to apply.
      */
     public void files(Action<? super Files> action) {
         action.execute(getFiles());
+    }
+
+    /**
+     * @param action The JDBC config to apply.
+     */
+    public void jdbc(Action<? super Jdbc> action) {
+        action.execute(getJdbc());
+    }
+
+    /**
+     * @param action The JDBC config to apply.
+     */
+    public void java(Action<? super Java> action) {
+        action.execute(getJava());
+    }
+
+    /**
+     * @param action The JDBC config to apply.
+     */
+    public void repositories(Action<? super Repositories> action) {
+        action.execute(getRepositories());
     }
 
 }

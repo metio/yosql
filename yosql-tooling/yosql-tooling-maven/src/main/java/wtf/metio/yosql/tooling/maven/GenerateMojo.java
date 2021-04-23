@@ -17,12 +17,11 @@ import org.slf4j.LoggerFactory;
 import wtf.metio.yosql.codegen.api.YoSQL;
 import wtf.metio.yosql.codegen.exceptions.CodeGenerationException;
 import wtf.metio.yosql.codegen.logging.Loggers;
+import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * The generate goal generates Java code based on SQL files.
@@ -36,7 +35,6 @@ import java.util.Locale;
 public class GenerateMojo extends AbstractMojo {
 
     private static final Logger LOG = LoggerFactory.getLogger(Loggers.EXECUTIONS.loggerName);
-    private static final List<Locale> SUPPORTED_LOCALES = List.of(Locale.ENGLISH, Locale.GERMAN);
 
     @Parameter(required = true, defaultValue = "${classObject}")
     Files files;
@@ -76,7 +74,7 @@ public class GenerateMojo extends AbstractMojo {
     private YoSQL buildYoSQL() {
         return DaggerYoSQLComponent.builder()
                 .runtimeConfiguration(createConfiguration())
-                .locale(determineLocale())
+                .locale(SupportedLocales.defaultLocale())
                 .build()
                 .yosql();
     }
@@ -91,13 +89,6 @@ public class GenerateMojo extends AbstractMojo {
                 .setResources(resources.asConfiguration())
                 .setJdbc(jdbc.asConfiguration())
                 .build();
-    }
-
-    private Locale determineLocale() {
-        return SUPPORTED_LOCALES.stream()
-                .filter(Locale.getDefault()::equals)
-                .findFirst()
-                .orElse(Locale.ENGLISH);
     }
 
 }
