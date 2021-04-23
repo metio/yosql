@@ -4,3 +4,5 @@ target/
 /bin/
 /yosql-website/public
 .idea/
+build/
+.gradle/

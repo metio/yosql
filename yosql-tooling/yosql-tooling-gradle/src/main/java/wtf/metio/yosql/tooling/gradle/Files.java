@@ -21,34 +21,23 @@ import wtf.metio.yosql.models.immutables.FilesConfiguration;
  */
 public abstract class Files {
 
-    private final ObjectFactory objectFactory;
-
     /**
      * @return The base path of the input directory.
      */
     @InputDirectory
-    abstract public DirectoryProperty getInputBaseDirectory();
+    public abstract DirectoryProperty getInputBaseDirectory();
 
     /**
      * @return The base path of the output directory.
      */
     @OutputDirectory
-    abstract public DirectoryProperty getOutputBaseDirectory();
+    public abstract DirectoryProperty getOutputBaseDirectory();
 
-    @Internal
-    Property<FilesConfiguration> asConfiguration() {
-        final var files = objectFactory.property(FilesConfiguration.class);
-        files.set(FilesConfiguration.usingDefaults()
+    FilesConfiguration asConfiguration() {
+        return FilesConfiguration.usingDefaults()
                 .setInputBaseDirectory(getInputBaseDirectory().get().getAsFile().toPath())
                 .setOutputBaseDirectory(getOutputBaseDirectory().get().getAsFile().toPath())
-                .build());
-        return files;
-    }
-
-    Files(final ObjectFactory objectFactory, final ProjectLayout projectLayout) {
-        this.objectFactory = objectFactory;
-        getInputBaseDirectory().convention(projectLayout.getProjectDirectory().dir("src").dir("main").dir("yosql"));
-        getOutputBaseDirectory().convention(projectLayout.getBuildDirectory().dir("generated").map(d -> d.dir("sources").dir("yosql")));
+                .build();
     }
 
 }

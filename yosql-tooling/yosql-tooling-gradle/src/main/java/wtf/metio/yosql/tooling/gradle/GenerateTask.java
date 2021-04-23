@@ -28,7 +28,7 @@ public abstract class GenerateTask extends DefaultTask {
      * @return The file configuration to use.
      */
     @Input
-    abstract public Property<Files> getFiles();
+    public abstract Property<FilesConfiguration> getFiles();
 
     /**
      * Generate Java code.
@@ -44,7 +44,7 @@ public abstract class GenerateTask extends DefaultTask {
 
     private RuntimeConfiguration createConfiguration() {
         return RuntimeConfiguration.builder()
-                .setFiles(getFiles().flatMap(Files::asConfiguration).get())
+                .setFiles(getFiles().get())
                 .setAnnotations(AnnotationsConfiguration.usingDefaults().build())
                 .setJava(JavaConfiguration.usingDefaults().build())
                 .setApi(ApiConfiguration.usingDefaults().build())

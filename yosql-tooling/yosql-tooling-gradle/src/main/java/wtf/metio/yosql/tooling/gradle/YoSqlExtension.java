@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.tooling.gradle;
 
+import org.gradle.api.Action;
 import org.gradle.api.tasks.Nested;
 
 /**
@@ -19,5 +20,12 @@ public abstract class YoSqlExtension {
      */
     @Nested
     public abstract Files getFiles();
+
+    /**
+     * @param action The config block to apply.
+     */
+    public void files(Action<? super Files> action) {
+        action.execute(getFiles());
+    }
 
 }

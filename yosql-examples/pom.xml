@@ -45,7 +45,6 @@
         <module>yosql-examples-ant</module>
         <module>yosql-examples-bazel</module>
         <module>yosql-examples-cli</module>
-        <module>yosql-examples-gradle</module>
         <module>yosql-examples-maven</module>
     </modules>
 
