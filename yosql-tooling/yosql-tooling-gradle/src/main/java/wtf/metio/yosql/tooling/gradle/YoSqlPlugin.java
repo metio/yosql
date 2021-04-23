@@ -25,7 +25,7 @@ public class YoSqlPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final var extension = configureExtension(project);
         configureConventions(extension, project.getLayout(), project.getObjects());
-        configureTask(project, extension);
+        configureTasks(project, extension);
         configureSourceSets(project, extension);
     }
 
@@ -40,14 +40,18 @@ public class YoSqlPlugin implements Plugin<Project> {
         extension.getJava().configureConventions();
     }
 
-    private void configureTask(final Project project, final YoSqlExtension extension) {
-        final var generate = project.getTasks().register("generateJavaCode", GenerateTask.class, task -> {
-            task.getFiles().set(extension.getFiles().asConfiguration());
-            task.getJdbc().set(extension.getJdbc().asConfiguration());
-            task.getJava().set(extension.getJava().asConfiguration());
-            task.getRepositories().set(extension.getRepositories().asConfiguration());
-        });
-        project.getTasks().withType(JavaCompile.class, task -> task.doFirst("yosql", action -> generate.get().generateCode()));
+    private void configureTasks(final Project project, final YoSqlExtension extension) {
+        final var generate = project.getTasks().register("generateJavaCode",
+                GenerateTask.class, task -> configureTask(extension, task));
+        project.getTasks().withType(JavaCompile.class, task -> task.doFirst("yosql",
+                action -> generate.get().generateCode()));
+    }
+
+    private void configureTask(final YoSqlExtension extension, final GenerateTask task) {
+        task.getFiles().set(extension.getFiles().asConfiguration());
+        task.getJdbc().set(extension.getJdbc().asConfiguration());
+        task.getJava().set(extension.getJava().asConfiguration());
+        task.getRepositories().set(extension.getRepositories().asConfiguration());
     }
 
     private void configureSourceSets(final Project project, final YoSqlExtension extension) {
