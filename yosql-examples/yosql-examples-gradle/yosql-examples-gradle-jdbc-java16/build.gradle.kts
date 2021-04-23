@@ -21,15 +21,15 @@ yosql {
         skipLines.set(6)
     }
     repositories {
-        basePackageName.set("wtf.metio.yosql.example.gradle.jdbc.java16.persistence")
+        basePackageName.set("${group}.persistence")
     }
     jdbc {
-        utilityPackageName.set("wtf.metio.yosql.example.gradle.jdbc.java16.persistence.util")
+        utilityPackageName.set("${group}.persistence.util")
         userTypes {
             register("itemConverter") {
-                converterType.set("wtf.metio.yosql.example.gradle.jdbc.java16.converter.ToItemConverter")
+                converterType.set("${group}.converter.ToItemConverter")
                 methodName.set("asUserType")
-                resultType.set("wtf.metio.yosql.example.gradle.jdbc.java16.model.Item")
+                resultType.set("${group}.model.Item")
             }
         }
     }
