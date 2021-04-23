@@ -23,6 +23,9 @@ yosql {
     repositories {
         basePackageName.set("${group}.persistence")
     }
+    java {
+        apiVersion.set(16)
+    }
     jdbc {
         utilityPackageName.set("${group}.persistence.util")
         userTypes {
