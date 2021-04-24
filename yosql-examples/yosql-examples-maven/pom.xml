@@ -48,7 +48,7 @@
         <module>yosql-examples-maven-jdbc-java8</module>
         <module>yosql-examples-maven-jdbc-java9</module>
         <module>yosql-examples-maven-jdbc-java11</module>
-        <module>yosql-examples-maven-jdbc-java14</module>
+        <module>yosql-examples-maven-jdbc-java15</module>
         <module>yosql-examples-maven-jdbc-java16</module>
     </modules>
 
