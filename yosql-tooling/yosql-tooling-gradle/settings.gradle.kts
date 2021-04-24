@@ -6,5 +6,3 @@ dependencyResolutionManagement {
         mavenLocal()
     }
 }
-
-//include("..:..:yosql-examples-gradle:yosql-examples-gradle-jdbc-java16")

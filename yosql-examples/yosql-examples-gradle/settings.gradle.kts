@@ -1,4 +1,6 @@
-rootProject.name = "yosql-examples-gradle-jdbc-java16"
+rootProject.name = "yosql-examples-gradle"
+
+enableFeaturePreview("VERSION_CATALOGS")
 
 dependencyResolutionManagement {
     repositories {
@@ -26,4 +28,9 @@ pluginManagement {
     }
 }
 
-includeBuild("../../../yosql-tooling/yosql-tooling-gradle")
+includeBuild("../../yosql-tooling/yosql-tooling-gradle")
+include(":yosql-examples-gradle-jdbc-java8")
+include(":yosql-examples-gradle-jdbc-java9")
+include(":yosql-examples-gradle-jdbc-java11")
+include(":yosql-examples-gradle-jdbc-java14")
+include(":yosql-examples-gradle-jdbc-java16")

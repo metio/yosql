@@ -52,11 +52,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - id: maven
-        name: Maven Artifacts
+        name: Maven Tooling
         run: mvn --batch-mode install
-      - id: gradle-plugin
-        name: Gradle Plugin
-        run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew build
+      - id: gradle
+        name: Gradle Tooling
+        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build
   benchmarks:
     name: Benchmarks
     runs-on: ubuntu-latest

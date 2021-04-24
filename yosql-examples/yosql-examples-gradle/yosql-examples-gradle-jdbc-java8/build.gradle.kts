@@ -12,7 +12,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(16))
+        languageVersion.set(JavaLanguageVersion.of(8))
     }
 }
 
@@ -24,7 +24,7 @@ yosql {
         basePackageName.set("${group}.persistence")
     }
     java {
-        apiVersion.set(16)
+        apiVersion.set(8)
     }
     jdbc {
         utilityPackageName.set("${group}.persistence.util")
