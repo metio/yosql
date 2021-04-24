@@ -57,7 +57,7 @@ public final class Repositories {
                 .setName("basePackageName")
                 .setType(TypicalTypes.STRING)
                 .setValue("com.example.persistence")
-                .setDescription("he base package name for all repositories")
+                .setDescription("The base package name for all repositories")
                 .build();
     }
 
