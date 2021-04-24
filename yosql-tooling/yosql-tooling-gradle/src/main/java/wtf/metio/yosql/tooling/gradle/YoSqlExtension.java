@@ -16,6 +16,18 @@ import org.gradle.api.tasks.Nested;
 public abstract class YoSqlExtension {
 
     /**
+     * @return The annotations configuration.
+     */
+    @Nested
+    public abstract Annotations getAnnotations();
+
+    /**
+     * @return The API configuration.
+     */
+    @Nested
+    public abstract Api getApi();
+
+    /**
      * @return The files configuration.
      */
     @Nested
@@ -28,16 +40,36 @@ public abstract class YoSqlExtension {
     public abstract Jdbc getJdbc();
 
     /**
-     * @return The JDBC configuration.
+     * @return The Java configuration.
      */
     @Nested
     public abstract Java getJava();
 
     /**
-     * @return The JDBC configuration.
+     * @return The repository configuration.
      */
     @Nested
     public abstract Repositories getRepositories();
+
+    /**
+     * @return The resources configuration.
+     */
+    @Nested
+    public abstract Resources getResources();
+
+    /**
+     * @param action The annotations config to apply.
+     */
+    public void annotations(Action<? super Annotations> action) {
+        action.execute(getAnnotations());
+    }
+
+    /**
+     * @param action The API config to apply.
+     */
+    public void api(Action<? super Api> action) {
+        action.execute(getApi());
+    }
 
     /**
      * @param action The files config to apply.
@@ -54,17 +86,24 @@ public abstract class YoSqlExtension {
     }
 
     /**
-     * @param action The JDBC config to apply.
+     * @param action The Java config to apply.
      */
     public void java(Action<? super Java> action) {
         action.execute(getJava());
     }
 
     /**
-     * @param action The JDBC config to apply.
+     * @param action The repository config to apply.
      */
     public void repositories(Action<? super Repositories> action) {
         action.execute(getRepositories());
+    }
+
+    /**
+     * @param action The resources config to apply.
+     */
+    public void resources(Action<? super Resources> action) {
+        action.execute(getResources());
     }
 
 }

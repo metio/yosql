@@ -13,15 +13,24 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.*;
-import wtf.metio.yosql.models.sql.ResultRowConverter;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
-
-import java.util.List;
 
 /**
  * Generate Java code by reading SQL code.
  */
 public abstract class GenerateTask extends DefaultTask {
+
+    /**
+     * @return The annotations configuration to use.
+     */
+    @Input
+    public abstract Property<AnnotationsConfiguration> getAnnotations();
+
+    /**
+     * @return The API configuration to use.
+     */
+    @Input
+    public abstract Property<ApiConfiguration> getApi();
 
     /**
      * @return The file configuration to use.
@@ -48,6 +57,12 @@ public abstract class GenerateTask extends DefaultTask {
     public abstract Property<RepositoriesConfiguration> getRepositories();
 
     /**
+     * @return The resources configuration to use.
+     */
+    @Input
+    public abstract Property<ResourcesConfiguration> getResources();
+
+    /**
      * Generate Java code.
      */
     @TaskAction
@@ -66,9 +81,9 @@ public abstract class GenerateTask extends DefaultTask {
                 .setJdbc(getJdbc().get())
                 .setJava(getJava().get())
                 .setRepositories(getRepositories().get())
-                .setAnnotations(AnnotationsConfiguration.usingDefaults().build())
-                .setApi(ApiConfiguration.usingDefaults().build())
-                .setResources(ResourcesConfiguration.usingDefaults().build())
+                .setApi(getApi().get())
+                .setAnnotations(getAnnotations().get())
+                .setResources(getResources().get())
                 .build();
     }
 

@@ -36,8 +36,11 @@ public class YoSqlPlugin implements Plugin<Project> {
     private void configureConventions(final YoSqlExtension extension, final ProjectLayout layout, final ObjectFactory objects) {
         extension.getFiles().configureConventions(layout);
         extension.getJdbc().configureConventions(objects);
+        extension.getAnnotations().configureConventions();
+        extension.getApi().configureConventions();
         extension.getJava().configureConventions();
         extension.getRepositories().configureConventions();
+        extension.getResources().configureConventions();
     }
 
     private void registerTask(final Project project, final YoSqlExtension extension) {
@@ -48,10 +51,13 @@ public class YoSqlPlugin implements Plugin<Project> {
     }
 
     private void configureTask(final YoSqlExtension extension, final GenerateTask task) {
+        task.getAnnotations().set(extension.getAnnotations().asConfiguration());
+        task.getApi().set(extension.getApi().asConfiguration());
         task.getFiles().set(extension.getFiles().asConfiguration());
         task.getJdbc().set(extension.getJdbc().asConfiguration());
         task.getJava().set(extension.getJava().asConfiguration());
         task.getRepositories().set(extension.getRepositories().asConfiguration());
+        task.getResources().set(extension.getResources().asConfiguration());
     }
 
     private void configureSourceSets(final Project project, final YoSqlExtension extension) {

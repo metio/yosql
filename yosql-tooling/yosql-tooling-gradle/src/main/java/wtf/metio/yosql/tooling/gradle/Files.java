@@ -9,13 +9,14 @@ package wtf.metio.yosql.tooling.gradle;
 
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.ProjectLayout;
-import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Configures input- and output-directories as well as other file related options.
@@ -40,11 +41,32 @@ public abstract class Files {
     @Input
     public abstract Property<Integer> getSkipLines();
 
+    /**
+     * @return The file ending to use while searching for SQL files (default: <strong>.sql</strong>).
+     */
+    @Input
+    public abstract Property<String> getSqlFilesSuffix();
+
+    /**
+     * @return The charset to use while reading .sql files (default: <strong>UTF-8</strong>).
+     */
+    @Input
+    public abstract Property<Charset> getSqlFilesCharset();
+
+    /**
+     * @return The separator to split SQL statements inside a single .sql file (default: <strong>;</strong>).
+     */
+    @Input
+    public abstract Property<String> getSqlStatementSeparator();
+
     FilesConfiguration asConfiguration() {
         return FilesConfiguration.usingDefaults()
                 .setInputBaseDirectory(getInputBaseDirectory().get().getAsFile().toPath())
                 .setOutputBaseDirectory(getOutputBaseDirectory().get().getAsFile().toPath())
                 .setSkipLines(getSkipLines().get())
+                .setSqlFilesSuffix(getSqlFilesSuffix().get())
+                .setSqlFilesCharset(getSqlFilesCharset().get())
+                .setSqlStatementSeparator(getSqlStatementSeparator().get())
                 .build();
     }
 
@@ -52,6 +74,9 @@ public abstract class Files {
         getInputBaseDirectory().convention(layout.getProjectDirectory().dir("src/main/yosql"));
         getOutputBaseDirectory().convention(layout.getBuildDirectory().dir("generated/sources/yosql"));
         getSkipLines().convention(0);
+        getSqlFilesSuffix().convention(".sql");
+        getSqlFilesCharset().convention(StandardCharsets.UTF_8);
+        getSqlStatementSeparator().convention(";");
     }
 
 }

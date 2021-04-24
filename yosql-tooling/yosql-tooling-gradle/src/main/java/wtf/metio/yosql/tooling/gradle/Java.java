@@ -22,14 +22,70 @@ public abstract class Java {
     @Input
     public abstract Property<Integer> getApiVersion();
 
+    /**
+     * @return Should variables and parameters declared as final
+     */
+    @Input
+    public abstract Property<Boolean> getUseFinal();
+
+    /**
+     * @return Should generic types be used
+     */
+    @Input
+    public abstract Property<Boolean> getUseGenerics();
+
+    /**
+     * @return Should the diamond operator be used
+     */
+    @Input
+    public abstract Property<Boolean> getUseDiamondOperator();
+
+    /**
+     * @return Should the stream API be used
+     */
+    @Input
+    public abstract Property<Boolean> getUseStreamAPI();
+
+    /**
+     * @return Should variables use the 'var' keyword
+     */
+    @Input
+    public abstract Property<Boolean> getUseVar();
+
+    /**
+     * @return Should text blocks be used
+     */
+    @Input
+    public abstract Property<Boolean> getUseTextBlocks();
+
+    /**
+     * @return Should records be used
+     */
+    @Input
+    public abstract Property<Boolean> getUseRecords();
+
     JavaConfiguration asConfiguration() {
         return JavaConfiguration.usingDefaults()
                 .setApiVersion(getApiVersion().get())
+                .setUseFinal(getUseFinal().get())
+                .setUseGenerics(getUseGenerics().get())
+                .setUseDiamondOperator(getUseDiamondOperator().get())
+                .setUseStreamAPI(getUseStreamAPI().get())
+                .setUseVar(getUseVar().get())
+                .setUseTextBlocks(getUseTextBlocks().get())
+                .setUseRecords(getUseRecords().get())
                 .build();
     }
 
     void configureConventions() {
         getApiVersion().convention(16);
+        getUseFinal().convention(true);
+        getUseGenerics().convention(true);
+        getUseDiamondOperator().convention(true);
+        getUseStreamAPI().convention(true);
+        getUseVar().convention(true);
+        getUseTextBlocks().convention(true);
+        getUseRecords().convention(true);
     }
 
 }
