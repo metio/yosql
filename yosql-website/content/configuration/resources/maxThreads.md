@@ -28,8 +28,6 @@ Changing the `maxThreads` configuration option to `123` will use the available n
 
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/).
 
-{{< maven/config/resources/maxThreads >}}
-
 ### Gradle
 
 In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/).
