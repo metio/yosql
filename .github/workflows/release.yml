@@ -242,7 +242,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
         with:
           commit_message: Update website data for ${{ needs.prepare.outputs.release_version }}
-          file_pattern: "yosql-website/*.json" "yosql-website/*.md"
+          file_pattern: yosql-website/*.json yosql-website/*.md
   announce:
     name: Send Announcements
     needs: [prepare, results]
