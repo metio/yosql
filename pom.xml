@@ -101,6 +101,7 @@
         <module>yosql-verification</module>
         <module>yosql-examples</module>
         <module>yosql-benchmarks</module>
+        <module>yosql-website</module>
     </modules>
 
 </project>

@@ -21,7 +21,7 @@ public final class Repositories {
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
                 .setName(Repositories.class.getSimpleName())
-                .setDescription("Configures converters.")
+                .setDescription("Configures repositories.")
                 .addSettings(basePackageName())
                 .addSettings(repositoryNameSuffix())
                 .addSettings(generateInterface())

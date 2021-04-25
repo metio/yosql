@@ -43,6 +43,11 @@ public interface ConfigurationGroup {
      */
     List<ConfigurationSetting> settings();
 
+    /**
+     * @return The optional list of tags associated with this configuration group.
+     */
+    List<String> tags();
+
     //region derived
 
     @Value.Lazy

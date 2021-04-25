@@ -43,27 +43,30 @@ public final class Annotations {
     private static ConfigurationSetting annotateClasses() {
         return ConfigurationSetting.builder()
                 .setName("annotateClasses")
-                .setDescription("Controls whether {@link javax.annotation.processing.Generated} annotations should be added to the generated classes.")
+                .setDescription("Controls whether Generated annotations should be added to the generated classes.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(false)
+                .addTags(Tags.CLASSES)
                 .build();
     }
 
     private static ConfigurationSetting annotateFields() {
         return ConfigurationSetting.builder()
                 .setName("annotateFields")
-                .setDescription("Controls whether {@link javax.annotation.processing.Generated} annotations should be added to the generated fields.")
+                .setDescription("Controls whether Generated annotations should be added to the generated fields.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(false)
+                .addTags(Tags.FIELDS)
                 .build();
     }
 
     private static ConfigurationSetting annotateMethods() {
         return ConfigurationSetting.builder()
                 .setName("annotateMethods")
-                .setDescription("Controls whether {@link javax.annotation.processing.Generated} annotations should be added to the generated methods.")
+                .setDescription("Controls whether Generated annotations should be added to the generated methods.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(false)
+                .addTags(Tags.METHODS)
                 .build();
     }
 

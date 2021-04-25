@@ -24,9 +24,10 @@ public final class Resources {
     private static ConfigurationSetting maxThreads() {
         return ConfigurationSetting.builder()
                 .setName("maxThreads")
-                .setDescription("The upper limit of threads to use.")
+                .setDescription("Controls how many threads are used during code generation. The maximum number will be capped to the number of available CPU cores of your system.")
                 .setType(TypeName.get(int.class))
                 .setValue(1)
+                .addTags(Tags.THREADS)
                 .build();
     }
 

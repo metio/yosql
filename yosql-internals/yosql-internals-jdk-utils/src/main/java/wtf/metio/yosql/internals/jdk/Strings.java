@@ -28,7 +28,7 @@ public final class Strings {
      * @param value The value to transform.
      * @return The transformed value.
      */
-    public static String upCase(final String value) {
+    public static String upperCase(final String value) {
         return value.substring(0, 1).toUpperCase(Locale.ROOT) + value.substring(1);
     }
 
@@ -38,7 +38,7 @@ public final class Strings {
      * @param value The value to transform.
      * @return The transformed value.
      */
-    public static String lower(final String value) {
+    public static String lowerCase(final String value) {
         return value.toLowerCase(Locale.ROOT);
     }
 

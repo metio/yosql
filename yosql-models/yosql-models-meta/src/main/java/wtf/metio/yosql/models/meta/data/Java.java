@@ -105,7 +105,7 @@ public final class Java {
         return ConfigurationSetting.builder()
                 .setName("apiVersion")
                 .setType(TypeName.get(int.class))
-                .setValue(15)
+                .setValue(16)
                 .setDescription("The Java SDK API version to use.")
                 .build();
     }

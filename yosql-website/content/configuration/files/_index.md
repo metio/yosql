@@ -40,8 +40,6 @@ yosql {
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for Bazel](/tooling/bazel/).
 
-TODO: info for bazel
-
 ### CLI
 
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).

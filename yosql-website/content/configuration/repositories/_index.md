@@ -26,7 +26,21 @@ In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look
 
 ```kotlin
 plugins {
-  id("wtf.metio.yosql")
+  java
+  id("wtf.metio.yosql") version "2021.4.21"
+}
+
+yosql {
+  repositories {
+    configOption.set(configValue)
+  }
+}
+```
+
+```groovy
+plugins {
+  id "java"
+  id "wtf.metio.yosql" version "2021.4.21"
 }
 
 yosql {
@@ -39,8 +53,6 @@ yosql {
 ### Bazel
 
 In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for Bazel](/tooling/bazel/).
-
-TODO: info for bazel
 
 ### CLI
 

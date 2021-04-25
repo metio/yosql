@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.internals.model.generator;
 
+import com.github.mustachejava.DefaultMustacheFactory;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import org.apache.maven.plugin.AbstractMojo;
@@ -17,14 +18,21 @@ import org.apache.maven.project.MavenProject;
 import wtf.metio.yosql.internals.model.generator.cli.CliGenerator;
 import wtf.metio.yosql.internals.model.generator.immutables.ImmutablesGenerator;
 import wtf.metio.yosql.internals.model.generator.maven.MavenGenerator;
+import wtf.metio.yosql.internals.model.generator.website.MarkdownGenerator;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.data.AllConfigurations;
 import wtf.metio.yosql.models.meta.data.Runtime;
 import wtf.metio.yosql.models.meta.data.Sql;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -71,6 +79,31 @@ public class ModelGenerator extends AbstractMojo {
             forAllConfigurations(generator, writer);
         } else if ("ant".equalsIgnoreCase(type)) {
             // CliGenerator.writeCliModels(typeWriter(antBasePackage, outputDirectory));
+        } else if ("website".equalsIgnoreCase(type)) {
+            final var factory = new DefaultMustacheFactory();
+            final var generator = new MarkdownGenerator(factory, project.getVersion());
+            AllConfigurations.allConfigurationGroups().forEach(group ->
+                    writeMarkdownFiles(outputDirectory, generator, group));
+        }
+    }
+
+    private void writeMarkdownFiles(final Path outputDirectory, final MarkdownGenerator generator, final ConfigurationGroup group) {
+        try {
+            final var groupDirectory = outputDirectory.resolve(group.name().toLowerCase(Locale.ROOT));
+            Files.createDirectories(groupDirectory);
+            writeString(groupDirectory.resolve("_index.md"), generator.group(group));
+            group.settings().forEach(setting ->
+                    writeString(groupDirectory.resolve(setting.name() + ".md"), generator.setting(group, setting)));
+        } catch (final IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    private static void writeString(final Path path, final CharSequence content) {
+        try {
+            Files.writeString(path, content, StandardCharsets.UTF_8);
+        } catch (final IOException exception) {
+            throw new RuntimeException(exception);
         }
     }
 

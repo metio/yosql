@@ -171,8 +171,6 @@ jobs:
         name: Run Benchmark [${{ matrix.benchmark }}]
         run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests 2>&1 1> build.log
         if: needs.prepare.outputs.commit_count > 0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: upload-benchmark
         name: Upload Benchmark Results
         uses: actions/upload-artifact@v2
@@ -180,8 +178,8 @@ jobs:
         with:
           name: benchmark-${{ matrix.benchmark }}
           path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
-  results:
-    name: Publish Results
+  website:
+    name: Update Website
     runs-on: ubuntu-latest
     needs: [prepare, benchmarks]
     steps:
@@ -189,33 +187,62 @@ jobs:
         name: Clone Git Repository
         uses: actions/checkout@v2
         if: needs.prepare.outputs.commit_count > 0
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v2
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v2.1.5
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - id: download
         name: Download Benchmarks Results
         uses: actions/download-artifact@v2
         if: needs.prepare.outputs.commit_count > 0
+      - name: Set release version
+        run: mvn --batch-mode versions:set -DnewVersion=${{ needs.prepare.outputs.release_version }} -DgenerateBackupPoms=false
+        if: needs.prepare.outputs.commit_count > 0
+      - id: create-documentation
+        name: Create Documentation
+        run: mvn --batch-mode --projects yosql-website --also-make install -DskipTests
+        if: needs.prepare.outputs.commit_count > 0
+      - id: replace-documentation
+        name: Replace Documentation
+        run: cp --force --recursive ./yosql-website/target/generated-sources/yosql/ ./yosql-website/content/configuration/
+        if: needs.prepare.outputs.commit_count > 0
       - id: copy-codegen-results
         name: Copy Codegen Results
-        run: cp ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-${{ needs.prepare.outputs.release_version }}.json
+        run: cp --force ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-${{ needs.prepare.outputs.release_version }}.json
         if: needs.prepare.outputs.commit_count > 0
       - id: replace-codegen-results
         name: Replace CURRENT Codegen Results
-        run: cp ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json
+        run: cp --force ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json
         if: needs.prepare.outputs.commit_count > 0
       - id: copy-jdbc-results
         name: Copy JDBC Results
-        run: cp ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-jdbc-${{ needs.prepare.outputs.release_version }}.json
+        run: cp --force ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-jdbc-${{ needs.prepare.outputs.release_version }}.json
         if: needs.prepare.outputs.commit_count > 0
       - id: replace-jdbc-results
         name: Replace CURRENT JDBC Results
-        run: cp ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-jdbc-CURRENT.json
+        run: cp --force ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-jdbc-CURRENT.json
         if: needs.prepare.outputs.commit_count > 0
       - id: push
-        name: Push Benchmarks
+        name: Push Changes
         uses: stefanzweifel/git-auto-commit-action@v4
         if: needs.prepare.outputs.commit_count > 0
         with:
-          commit_message: Add benchmark results for ${{ needs.prepare.outputs.release_version }}
-          file_pattern: "*.json"
+          commit_message: Update website data for ${{ needs.prepare.outputs.release_version }}
+          file_pattern: "yosql-website/*.json" "yosql-website/*.md"
   announce:
     name: Send Announcements
     needs: [prepare, results]

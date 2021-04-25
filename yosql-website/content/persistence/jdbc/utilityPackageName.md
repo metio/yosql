@@ -48,8 +48,7 @@ public class SomeUtility {
 
 ### Maven
 
-In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](/tooling/maven/).
+In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/).
 
 {{< maven/persistence/jdbc/utilityPackageName >}}
 
@@ -57,13 +56,27 @@ for Maven](/tooling/maven/).
 
 In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/).
 
-```groovy
+```kotlin
 plugins {
-  id("wtf.metio.yosql")
+  java
+  id("wtf.metio.yosql") version "2021.4.21"
 }
 
 yosql {
-  jdbc {
+  configGroup {
+    utilityPackageName.set("your.own.domain.util")
+  }
+}
+```
+
+```groovy
+plugins {
+  id "java"
+  id "wtf.metio.yosql" version "2021.4.21"
+}
+
+yosql {
+  configGroup {
     utilityPackageName = "your.own.domain.util"
   }
 }
@@ -71,8 +84,7 @@ yosql {
 
 ### Bazel
 
-In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](/tooling/bazel/).
+In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for Bazel](/tooling/bazel/).
 
 ### CLI
 

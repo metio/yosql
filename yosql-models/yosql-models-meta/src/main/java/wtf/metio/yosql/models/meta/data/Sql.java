@@ -207,22 +207,22 @@ public final class Sql {
     private static void addSetting(final CodeBlock.Builder builder, final ConfigurationSetting setting) {
         if (setting.value().isPresent() && SqlType.class.equals(setting.value().get().getClass())) {
             builder.add("\t.with$L($T.UNKNOWN == first.$L() ? second.$L() : first.$L())\n",
-                    Strings.upCase(setting.name()), SqlType.class, setting.name(), setting.name(), setting.name());
+                    Strings.upperCase(setting.name()), SqlType.class, setting.name(), setting.name(), setting.name());
         } else if (setting.value().isPresent() && ReturningMode.class.equals(setting.value().get().getClass())) {
             builder.add("\t.with$L($T.NONE == first.$L() ? second.$L() : first.$L())\n",
-                    Strings.upCase(setting.name()), ReturningMode.class, setting.name(), setting.name(), setting.name());
+                    Strings.upperCase(setting.name()), ReturningMode.class, setting.name(), setting.name(), setting.name());
         } else if (TypicalTypes.STRING.equals(setting.type())) {
             builder.add("\t.with$L($S.equals(first.$L()) ? second.$L() : first.$L())\n",
-                    Strings.upCase(setting.name()), setting.value().orElse(""), setting.name(), setting.name(), setting.name());
+                    Strings.upperCase(setting.name()), setting.value().orElse(""), setting.name(), setting.name(), setting.name());
         } else if (TypeName.get(boolean.class).equals(setting.type())) {
             builder.add("\t.with$L(first.$L() || second.$L())\n",
-                    Strings.upCase(setting.name()), setting.name(), setting.name());
+                    Strings.upperCase(setting.name()), setting.name(), setting.name());
         } else if (TypeName.get(ResultRowConverter.class).equals(setting.type())) {
             builder.add("\t.with$L(first.$L().or(second::resultRowConverter))\n",
-                    Strings.upCase(setting.name()), setting.name());
+                    Strings.upperCase(setting.name()), setting.name());
         } else if (TypicalTypes.listOf(TypeName.get(SqlParameter.class)).equals(setting.type())) {
             builder.add("\t.with$L(mergeParameters(first.$L(), second.$L()))\n",
-                    Strings.upCase(setting.name()), setting.name(), setting.name());
+                    Strings.upperCase(setting.name()), setting.name(), setting.name());
         }
     }
 

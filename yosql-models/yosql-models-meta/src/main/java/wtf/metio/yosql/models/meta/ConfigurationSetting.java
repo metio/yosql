@@ -53,6 +53,11 @@ public interface ConfigurationSetting {
 
     Optional<Object> mavenValue();
 
+    /**
+     * @return The optional list of tags associated with this configuration setting.
+     */
+    List<String> tags();
+
     //region defaults
 
     @Value.Default

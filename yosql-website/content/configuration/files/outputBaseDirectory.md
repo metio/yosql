@@ -30,62 +30,47 @@ Changing the `outputBaseDirectory` configuration option to `/an/absolute/path!` 
 
 ## Related Options
 
-- [inputBaseDirectory](/configuration/files/inputbasedirectory/): Controls the input directory for `.sql` files.
+- [inputBaseDirectory](../inputbasedirectory/): Controls the input directory for `.sql` files.
 
 ## Tooling
 
 ### Maven
 
-In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](/tooling/maven/). By default, the Maven tooling with set `inputBaseDirectory` to `src/main/yosql`.
+In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/). By default, the Maven tooling with set `outputBaseDirectory` to `target/generated-sources/yosql`.
 
-```xml
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <files>
-            <outputBaseDirectory>${project.build.directory}/generated-sources/yosql</outputBaseDirectory>
-          </files>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-```
+{{< maven/config/files/outputBaseDirectory >}}
 
 ### Gradle
 
-In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/).
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/). By default, the Gradle tooling with set `outputBaseDirectory` to `build/generated/sources/yosql`.
 
-```groovy
+```kotlin
 plugins {
-  id("wtf.metio.yosql")
+  java
+  id("wtf.metio.yosql") version "1.2.3"
 }
 
 yosql {
   files {
-    inputBaseDirectory = file("build/generated-sources/yosql")
+    outputBaseDirectory = file("build/generated-sources/yosql")
   }
 }
 ```
 
 ### Bazel
 
-In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](/tooling/bazel/).
+In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for Bazel](/tooling/bazel/).
 
 ### CLI
 
 In order to use YoSQL on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
 ```shell
-$ yosql --files-input-base-directory=generated-sources/yosql
+$ yosql --files-output-base-directory=generated-sources/yosql
 ```
 
 The shorter form is available as well:
 
 ```shell
-$ yosql --input-base-directory=generated-sources/yosql
+$ yosql --output-base-directory=generated-sources/yosql
 ```

@@ -30,30 +30,15 @@ Changing the `inputBaseDirectory` configuration option to `/an/absolute/path!` c
 
 ## Related Options
 
-- [outputBaseDirectory](/configuration/files/outputbasedirectory/): Controls the output directory for `.java` files.
+- [outputBaseDirectory](../outputbasedirectory/): Controls the output directory for `.java` files.
 
 ## Tooling
 
 ### Maven
 
-In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](/tooling/maven/). By default, the Maven tooling with set `inputBaseDirectory` to `src/main/yosql`.
+In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/). By default, the Maven tooling with set `inputBaseDirectory` to `src/main/yosql`.
 
-```xml
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <files>
-            <inputBaseDirectory>src/main/resources</inputBaseDirectory>
-          </files>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-```
+{{< maven/config/files/inputBaseDirectory >}}
 
 ### Gradle
 
@@ -73,8 +58,7 @@ yosql {
 
 ### Bazel
 
-In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](/tooling/bazel/).
+In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for Bazel](/tooling/bazel/).
 
 ### CLI
 

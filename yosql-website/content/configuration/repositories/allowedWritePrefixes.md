@@ -26,30 +26,21 @@ The default value of the `allowedWritePrefixes` configuration option is `update,
 
 Changing the `allowedWritePrefixes` configuration option to `something` only allows names with the prefix `something` to write data.
 
+## Related Options
+
+- [allowedCallPrefixes](../allowedcallprefixes/): Controls which method name prefixes are allowed for calling statements.
+- [allowedReadPrefixes](../allowedreadprefixes/): Controls which method name prefixes are allowed for reading statements.
+- [basePackageName](../basepackagename/): Controls the base package name for generated repositories.
+- [injectConverters](../injectconverters/): Controls whether converters are injected as constructor parameters.
+- [validateMethodNamePrefixes](../validatemethodnameprefixes/): Controls whether method name prefixes are validated.
+
 ## Tooling
 
 ### Maven
 
-In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](/tooling/maven/).
+In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/).
 
-```xml
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <repositories>
-            <allowedWritePrefixes>
-              <allowedWritePrefix>something</allowedWritePrefix>
-            </allowedWritePrefixes>
-          </repositories>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-```
+{{< maven/config/repositories/allowedWritePrefixes >}}
 
 ### Gradle
 
@@ -57,7 +48,8 @@ In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look
 
 ```groovy
 plugins {
-  id("wtf.metio.yosql")
+  java
+  id("wtf.metio.yosql") version "2021.4.21"
 }
 
 yosql {
@@ -69,8 +61,7 @@ yosql {
 
 ### Bazel
 
-In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](/tooling/bazel/).
+In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for Bazel](/tooling/bazel/).
 
 ### CLI
 

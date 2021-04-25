@@ -26,32 +26,19 @@ Changing the `sqlFilesCharset` configuration option to `ISO-8859-1` configures `
 
 ## Related Options
 
-- [inputBaseDirectory](/configuration/files/inputbasedirectory/): Controls the base directory for `.sql` files.
+- [inputBaseDirectory](../inputbasedirectory/): Controls the base directory for `.sql` files.
+- [outputBaseDirectory](../outputbasedirectory/): Controls the output directory for `.java` files.
+- [skipLines](../skiplines/): Skip lines at the beginning of each `.sql` file.
+- [sqlFilesSuffix](../sqlfilessuffix/): Controls the expected file ending when looking for `.sql` files.
+- [sqlStatementSeparator](../sqlstatementseparator/): The statement separator to use when parsing `.sql` files.
 
 ## Tooling
 
 ### Maven
 
-In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](/tooling/maven/).
+In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/).
 
-```xml
-  <build>
-    <plugins>
-      ...
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <configuration>
-          <files>
-            <sqlFilesCharset>configValue</sqlFilesCharset>
-          </files>
-        </configuration>
-      </plugin>
-      ...
-    </plugins>
-  </build>
-```
+{{< maven/config/files/sqlFilesCharset >}}
 
 ### Gradle
 
@@ -71,10 +58,7 @@ yosql {
 
 ### Bazel
 
-In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for
-Bazel](/tooling/bazel/).
-
-TODO: info for bazel
+In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look at the tooling [documentation for Bazel](/tooling/bazel/).
 
 ### CLI
 

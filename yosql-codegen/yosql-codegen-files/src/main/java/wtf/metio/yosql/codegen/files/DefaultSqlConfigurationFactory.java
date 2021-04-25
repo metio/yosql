@@ -376,7 +376,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                     + name.substring(name.lastIndexOf('.') + 1, name.lastIndexOf('.') + 2).toUpperCase()
                     + name.substring(name.lastIndexOf('.') + 2);
         }
-        return Strings.upCase(name);
+        return Strings.upperCase(name);
     }
 
     private String repositoryWithNameSuffix(final String repository) {

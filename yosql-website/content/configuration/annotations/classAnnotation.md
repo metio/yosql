@@ -91,14 +91,15 @@ for Maven](/tooling/maven/).
 
 In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/).
 
-```groovy
+```kotlin
 plugins {
-  id("wtf.metio.yosql")
+  java
+  id("wtf.metio.yosql") version "1.2.3"
 }
 
 yosql {
   annotations {
-    classAnnotation = ANNOTATION_API
+    classAnnotation.set(ANNOTATION_API)
   }
 }
 ```

@@ -46,7 +46,7 @@ public final class CliGenerator extends AbstractFieldsGenerator {
 
     protected Iterable<AnnotationSpec> annotations(final ConfigurationGroup group, final ConfigurationSetting setting) {
         final var builder = AnnotationSpec.builder(CommandLine.Option.class)
-                .addMember("names", "\"--$L-$L\"", Strings.lower(group.name()), Strings.kebabCase(setting.name()))
+                .addMember("names", "\"--$L-$L\"", Strings.lowerCase(group.name()), Strings.kebabCase(setting.name()))
                 .addMember("description", "$S", setting.description());
         valueOf(setting).ifPresent(value -> builder
                 .addMember("defaultValue", "$S", value));

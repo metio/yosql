@@ -76,25 +76,25 @@ public abstract class AbstractFieldsGenerator implements Generator {
     private CodeBlock fieldConfiguration(final ConfigurationSetting setting) {
         if (usesResultRowConverter(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($T.ofNullable($L($L)))\n", Strings.upCase(setting.name()), Optional.class, "createRowConverter", setting.name())
+                    .add(".set$L($T.ofNullable($L($L)))\n", Strings.upperCase(setting.name()), Optional.class, "createRowConverter", setting.name())
                     .build();
         }
         if (usesResultRowConverters(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($L())\n", Strings.upCase(setting.name()), "createRowConverters")
+                    .add(".set$L($L())\n", Strings.upperCase(setting.name()), "createRowConverters")
                     .build();
         }
         if (usesNioPath(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($T.get($L, $L))\n", Strings.upCase(setting.name()), Paths.class, "projectBaseDirectory", setting.name())
+                    .add(".set$L($T.get($L, $L))\n", Strings.upperCase(setting.name()), Paths.class, "projectBaseDirectory", setting.name())
                     .build();
         }
         if (usesCharset(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($T.forName($L))\n", Strings.upCase(setting.name()), Charset.class, setting.name())
+                    .add(".set$L($T.forName($L))\n", Strings.upperCase(setting.name()), Charset.class, setting.name())
                     .build();
         }
-        return CodeBlock.of(".set$L($L)\n", Strings.upCase(setting.name()), setting.name());
+        return CodeBlock.of(".set$L($L)\n", Strings.upperCase(setting.name()), setting.name());
     }
 
     protected final List<MethodSpec> defaultConverters(final ConfigurationGroup group) {
