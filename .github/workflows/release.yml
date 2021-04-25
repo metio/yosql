@@ -218,7 +218,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: replace-documentation
         name: Replace Documentation
-        run: cp --force --recursive ./yosql-website/target/generated-sources/yosql/ ./yosql-website/content/configuration/
+        run: cp --force --recursive ./yosql-website/target/generated-sources/yosql/. ./yosql-website/content/configuration/
         if: needs.prepare.outputs.commit_count > 0
       - id: copy-codegen-results
         name: Copy Codegen Results
