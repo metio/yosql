@@ -41,11 +41,6 @@
     <dependencies>
         <dependency>
             <groupId>wtf.metio.yosql.models</groupId>
-            <artifactId>yosql-models-meta</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.models</groupId>
             <artifactId>yosql-models-cli</artifactId>
             <version>${project.version}</version>
         </dependency>
