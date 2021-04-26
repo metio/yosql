@@ -216,10 +216,6 @@ jobs:
         name: Create Documentation
         run: mvn --batch-mode --projects yosql-website --also-make install -DskipTests
         if: needs.prepare.outputs.commit_count > 0
-      - id: replace-documentation
-        name: Replace Documentation
-        run: cp --force --recursive ./yosql-website/target/generated-sources/yosql/. ./yosql-website/content/configuration/
-        if: needs.prepare.outputs.commit_count > 0
       - id: copy-codegen-results
         name: Copy Codegen Results
         run: cp --force ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-${{ needs.prepare.outputs.release_version }}.json
