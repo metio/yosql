@@ -250,7 +250,7 @@ jobs:
     steps:
       - id: email
         name: Send Mail
-        uses: dawidd6/action-send-mail@v2
+        uses: dawidd6/action-send-mail@v3
         if: needs.prepare.outputs.commit_count > 0
         with:
           server_address: ${{ secrets.MAIL_SERVER }}
