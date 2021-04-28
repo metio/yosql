@@ -241,7 +241,7 @@ jobs:
           file_pattern: yosql-website/*.json yosql-website/*.md
   announce:
     name: Send Announcements
-    needs: [prepare, results]
+    needs: [prepare, website]
     runs-on: ubuntu-latest
     steps:
       - id: email
