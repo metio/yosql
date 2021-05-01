@@ -4,26 +4,26 @@ Thanks a lot for contributing to `YoSQL`!
 
 ## Local Setup
 
-In order to build `YoSQL`, you will need Java 15+ and Maven 3.6.3+. Make sure that both are installed on your system and available on your `PATH`.
+In order to build `YoSQL`, you will need Java 16+ and Maven 3.6.3+. Make sure that both are installed on your system and available on your `PATH`.
 
 ```shell
 # check java
 $ java -version
-openjdk version "15.0.2" 2021-01-19
-OpenJDK Runtime Environment (build 15.0.2+7-27)
-OpenJDK 64-Bit Server VM (build 15.0.2+7-27, mixed mode, sharing)
+penjdk version "16" 2021-03-16
+OpenJDK Runtime Environment (build 16+36-2231)
+OpenJDK 64-Bit Server VM (build 16+36-2231, mixed mode, sharing)
 
 # check javac
 $ javac -version
-javac 15.0.2
+javac 16
 
 # check maven version
 $ mvn --version
 Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
 Maven home: /usr/share/maven
-Java version: 15.0.2, vendor: Oracle Corporation, runtime: /usr/java/openjdk-15
+Java version: 16, vendor: Oracle Corporation, runtime: /usr/java/openjdk-16
 Default locale: en, platform encoding: UTF-8
-OS name: "linux", version: "5.10.15-200.fc33.x86_64", arch: "amd64", family: "unix"
+OS name: "linux", version: "5.11.10-200.fc33.x86_64", arch: "amd64", family: "unix"
 ```
 
 ## Building the project
