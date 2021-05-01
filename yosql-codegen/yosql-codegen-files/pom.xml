@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-lifecyle</artifactId>
+            <artifactId>yosql-codegen-lifecycle</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
