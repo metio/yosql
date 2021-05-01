@@ -22,7 +22,7 @@ gradlePlugin {
         id = "wtf.metio.yosql"
         displayName = "YoSQL"
         description = "Code generator that translates SQL to Java"
-        implementationClass = "wtf.metio.yosql.tooling.gradle.YoSqlPlugin"
+        implementationClass = "${group}.YoSqlPlugin"
     }
 }
 
