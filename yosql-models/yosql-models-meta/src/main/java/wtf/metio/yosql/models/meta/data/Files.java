@@ -7,12 +7,14 @@
 
 package wtf.metio.yosql.models.meta.data;
 
+import com.squareup.javapoet.AnnotationSpec;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.List;
 
 public final class Files {
 
@@ -32,36 +34,38 @@ public final class Files {
     private static ConfigurationSetting inputBaseDirectory() {
         return ConfigurationSetting.builder()
                 .setName("inputBaseDirectory")
-                .setDescription("The input directory for the user written SQL files (default: <strong>src/main/yosql</strong>).")
+                .setDescription("The input directory for the user written SQL files.")
                 .setType(TypicalTypes.PATH)
                 .setCliType(TypicalTypes.STRING)
                 .setMavenType(TypicalTypes.STRING)
-                .setValue(Paths.get("."))
+                .setValue(Paths.get(".")) // TODO: remove?
                 .setCliValue(".")
-                .setGradleValue(Paths.get("src/main/yosql"))
+                .setGradleValue("src/main/yosql")
                 .setMavenValue("src/main/yosql")
+                .setGradleAnnotations(List.of(AnnotationSpec.builder(TypicalTypes.GRADLE_INPUT_DIRECTORY).build()))
                 .build();
     }
 
     private static ConfigurationSetting outputBaseDirectory() {
         return ConfigurationSetting.builder()
                 .setName("outputBaseDirectory")
-                .setDescription("The output directory for the generated classes (default: <strong>generated-sources/yosql</strong>).")
+                .setDescription("The output directory for the generated classes.")
                 .setType(TypicalTypes.PATH)
                 .setCliType(TypicalTypes.STRING)
                 .setGradleType(TypicalTypes.PATH)
                 .setMavenType(TypicalTypes.STRING)
-                .setValue(Paths.get("."))
+                .setValue(Paths.get(".")) // TODO: remove?
                 .setCliValue(".")
-                .setGradleValue(Paths.get("build/generated-sources/yosql"))
+                .setGradleValue("generated/sources/yosql")
                 .setMavenValue("target/generated-sources/yosql")
+                .setGradleAnnotations(List.of(AnnotationSpec.builder(TypicalTypes.GRADLE_OUTPUT_DIRECTORY).build()))
                 .build();
     }
 
     private static ConfigurationSetting sqlFilesSuffix() {
         return ConfigurationSetting.builder()
                 .setName("sqlFilesSuffix")
-                .setDescription("The file ending to use while searching for SQL files (default: <strong>.sql</strong>).")
+                .setDescription("The file ending to use while searching for SQL files.")
                 .setType(TypicalTypes.STRING)
                 .setValue(".sql")
                 .build();
@@ -70,7 +74,7 @@ public final class Files {
     private static ConfigurationSetting sqlFilesCharset() {
         return ConfigurationSetting.builder()
                 .setName("sqlFilesCharset")
-                .setDescription("The charset to use while reading .sql files (default: <strong>UTF-8</strong>).")
+                .setDescription("The charset to use while reading .sql files.")
                 .setType(TypicalTypes.CHARSET)
                 .setCliType(TypicalTypes.STRING)
                 .setMavenType(TypicalTypes.STRING)
@@ -83,7 +87,7 @@ public final class Files {
     private static ConfigurationSetting sqlStatementSeparator() {
         return ConfigurationSetting.builder()
                 .setName("sqlStatementSeparator")
-                .setDescription("The separator to split SQL statements inside a single .sql file (default: <strong>\";\"</strong>).")
+                .setDescription("The separator to split SQL statements inside a single .sql file.")
                 .setType(TypicalTypes.STRING)
                 .setValue(";")
                 .build();
@@ -92,7 +96,7 @@ public final class Files {
     private static ConfigurationSetting skipLines() {
         return ConfigurationSetting.builder()
                 .setName("skipLines")
-                .setDescription("The number of lines to skip in each file (e.g. a copyright header) (default: <strong>0</strong>).")
+                .setDescription("The number of lines to skip in each file (e.g. a copyright header).")
                 .setType(TypicalTypes.INTEGER)
                 .setValue(0)
                 .build();

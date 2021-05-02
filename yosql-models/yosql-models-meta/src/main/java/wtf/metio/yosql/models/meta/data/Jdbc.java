@@ -19,6 +19,7 @@ import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
+import java.util.Optional;
 
 public final class Jdbc {
 
@@ -250,6 +251,7 @@ public final class Jdbc {
                 .setType(TypeName.get(ResultRowConverter.class))
                 .setCliType(TypicalTypes.STRING)
                 .setMavenType(TypicalTypes.STRING)
+                .setGradleType(ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.DefaultResultRowConverter"))
                 .setCliValue("")
                 .setMavenValue("")
                 .build();
@@ -262,6 +264,7 @@ public final class Jdbc {
                 .setType(TypicalTypes.listOf(ResultRowConverter.class))
                 .setCliType(TypicalTypes.listOf(TypicalTypes.STRING))
                 .setMavenType(TypicalTypes.listOf(TypicalTypes.STRING))
+                .setGradleType(TypicalTypes.gradleContainerOf(ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.UserResultRowConverter")))
                 .setMavenValue("")
                 .setValue(CodeBlock.builder()
                         .add("$T.of()", List.class)

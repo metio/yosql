@@ -14,19 +14,30 @@ public final class TypicalTypes {
 
     public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
     public static final ClassName STRING = ClassName.get("java.lang", "String");
+    public static final ClassName BOOLEAN = ClassName.get("java.lang", "Boolean");
 
-    private static final ClassName LIST = ClassName.get("java.util", "List");
-    private static final ClassName MAP = ClassName.get("java.util", "Map");
-    private static final ClassName SET = ClassName.get("java.util", "Set");
-    private static final ClassName OPTIONAL = ClassName.get("java.util", "Optional");
-    private static final ClassName STREAM = ClassName.get("java.util.stream", "Stream");
-    private static final ClassName CONSUMER = ClassName.get("java.util.function", "Consumer");
+    public static final ClassName LIST = ClassName.get("java.util", "List");
+    public static final ClassName MAP = ClassName.get("java.util", "Map");
+    public static final ClassName SET = ClassName.get("java.util", "Set");
+    public static final ClassName OPTIONAL = ClassName.get("java.util", "Optional");
+    public static final ClassName STREAM = ClassName.get("java.util.stream", "Stream");
+    public static final ClassName CONSUMER = ClassName.get("java.util.function", "Consumer");
 
     public static final ClassName PATH = ClassName.get("java.nio.file", "Path");
     public static final ClassName CHARSET = ClassName.get("java.nio.charset", "Charset");
     public static final ClassName INTEGER = ClassName.get("java.lang", "Integer");
 
     public static final ClassName FLOWABLE = ClassName.get("io.reactivex", "Flowable");
+
+    public static final ClassName GRADLE_PROPERTY = ClassName.bestGuess("org.gradle.api.provider.Property");
+    public static final ClassName GRADLE_LIST_PROPERTY = ClassName.bestGuess("org.gradle.api.provider.ListProperty");
+    public static final ClassName GRADLE_INPUT = ClassName.bestGuess("org.gradle.api.tasks.Input");
+    public static final ClassName GRADLE_INPUT_DIRECTORY = ClassName.bestGuess("org.gradle.api.tasks.InputDirectory");
+    public static final ClassName GRADLE_OUTPUT_DIRECTORY = ClassName.bestGuess("org.gradle.api.tasks.OutputDirectory");
+    public static final ClassName GRADLE_CONTAINERS = ClassName.bestGuess("org.gradle.api.NamedDomainObjectContainer");
+    public static final ClassName GRADLE_DIRECTORY = ClassName.bestGuess("org.gradle.api.file.DirectoryProperty");
+    public static final ClassName GRADLE_LAYOUT = ClassName.bestGuess("org.gradle.api.file.ProjectLayout");
+    public static final ClassName GRADLE_OBJECTS = ClassName.bestGuess("org.gradle.api.model.ObjectFactory");
 
     public static final TypeName ARRAY_OF_INTS = ArrayTypeName.of(int.class);
 
@@ -63,6 +74,18 @@ public final class TypicalTypes {
 
     public static ParameterizedTypeName consumerOf(final TypeName type) {
         return ParameterizedTypeName.get(CONSUMER, WildcardTypeName.supertypeOf(type));
+    }
+
+    public static ParameterizedTypeName gradlePropertyOf(final TypeName type) {
+        return ParameterizedTypeName.get(GRADLE_PROPERTY, type);
+    }
+
+    public static ParameterizedTypeName gradleListPropertyOf(final TypeName type) {
+        return ParameterizedTypeName.get(GRADLE_LIST_PROPERTY, type);
+    }
+
+    public static ParameterizedTypeName gradleContainerOf(final TypeName type) {
+        return ParameterizedTypeName.get(GRADLE_CONTAINERS, type);
     }
 
     private TypicalTypes() {

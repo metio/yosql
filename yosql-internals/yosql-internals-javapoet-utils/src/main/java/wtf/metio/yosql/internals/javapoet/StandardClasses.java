@@ -22,6 +22,10 @@ public final class StandardClasses {
         return TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC);
     }
 
+    public static TypeSpec.Builder abstractClass(final ClassName name) {
+        return TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
+    }
+
     public static TypeSpec.Builder closedClass(final ClassName name) {
         return TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC).addModifiers(Modifier.FINAL);
     }

@@ -9,6 +9,7 @@ plugins {
     id("java-gradle-plugin")
     id("maven-publish")
     id("com.gradle.plugin-publish") version "0.12.0"
+    id("wtf.metio.yosql.models.gradle")
 }
 
 java {

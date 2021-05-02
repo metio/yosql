@@ -11,8 +11,10 @@ import com.squareup.javapoet.*;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +60,26 @@ public interface Generator extends Function<ConfigurationGroup, TypeSpec> {
             System.out.println("typeName: " + type.toString());
         }
         return builder.build();
+    }
+
+    default boolean resultRowConverter(final ConfigurationSetting setting) {
+        return usesResultRowConverter(setting) || usesResultRowConverters(setting);
+    }
+
+    default boolean usesCharset(final ConfigurationSetting setting) {
+        return TypicalTypes.CHARSET.equals(setting.type());
+    }
+
+    default boolean usesNioPath(final ConfigurationSetting setting) {
+        return setting.type().equals(TypeName.get(Path.class));
+    }
+
+    default boolean usesResultRowConverter(final ConfigurationSetting setting) {
+        return setting.type().equals(TypeName.get(ResultRowConverter.class));
+    }
+
+    default boolean usesResultRowConverters(final ConfigurationSetting setting) {
+        return setting.type().equals(TypicalTypes.listOf(ResultRowConverter.class));
     }
 
 }

@@ -105,26 +105,6 @@ public abstract class AbstractFieldsGenerator implements Generator {
                 .orElse(Collections.emptyList());
     }
 
-    private boolean resultRowConverter(final ConfigurationSetting setting) {
-        return usesResultRowConverter(setting) || usesResultRowConverters(setting);
-    }
-
-    private boolean usesCharset(final ConfigurationSetting setting) {
-        return TypicalTypes.CHARSET.equals(setting.type());
-    }
-
-    private boolean usesNioPath(final ConfigurationSetting setting) {
-        return setting.type().equals(TypeName.get(Path.class));
-    }
-
-    private boolean usesResultRowConverter(final ConfigurationSetting setting) {
-        return setting.type().equals(TypeName.get(ResultRowConverter.class));
-    }
-
-    private boolean usesResultRowConverters(final ConfigurationSetting setting) {
-        return setting.type().equals(TypicalTypes.listOf(ResultRowConverter.class));
-    }
-
     private MethodSpec createRowConverters(final Modifier... modifiers) {
         return MethodSpec.methodBuilder("createRowConverters")
                 .addModifiers(modifiers)

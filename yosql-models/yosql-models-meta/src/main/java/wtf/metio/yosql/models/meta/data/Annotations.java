@@ -7,12 +7,17 @@
 
 package wtf.metio.yosql.models.meta.data;
 
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.constants.configuration.AnnotationClass;
 import wtf.metio.yosql.models.constants.configuration.AnnotationMembers;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
+
+import java.util.List;
 
 public final class Annotations {
 
@@ -155,7 +160,7 @@ public final class Annotations {
         return ConfigurationSetting.builder()
                 .setName("generatorName")
                 .setDescription("The name of the code generator")
-                .setType(TypeName.get(String.class))
+                .setType(TypicalTypes.STRING)
                 .setValue("YoSQL")
                 .build();
     }

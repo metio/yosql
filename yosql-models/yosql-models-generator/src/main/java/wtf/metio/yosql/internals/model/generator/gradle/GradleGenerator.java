@@ -9,15 +9,24 @@ package wtf.metio.yosql.internals.model.generator.gradle;
 
 import com.squareup.javapoet.*;
 import wtf.metio.yosql.internals.javapoet.StandardClasses;
-import wtf.metio.yosql.internals.model.generator.api.AbstractFieldsGenerator;
+import wtf.metio.yosql.internals.javapoet.TypicalTypes;
+import wtf.metio.yosql.internals.jdk.Strings;
+import wtf.metio.yosql.internals.model.generator.api.AbstractMethodsGenerator;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.lang.model.element.Modifier;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public final class GradleGenerator extends AbstractFieldsGenerator {
+public final class GradleGenerator extends AbstractMethodsGenerator {
 
     private final String immutablesBasePackage;
 
@@ -27,100 +36,187 @@ public final class GradleGenerator extends AbstractFieldsGenerator {
 
     @Override
     public TypeSpec apply(final ConfigurationGroup group) {
-        return StandardClasses.openClass(ClassName.bestGuess(group.name()))
-                .addAnnotations(annotationsFor(group))
+        return StandardClasses.abstractClass(ClassName.bestGuess(group.name()))
                 .addJavadoc(group.description())
-                .addModifiers(Modifier.PUBLIC)
-                .addFields(defaultFields(group, Modifier.PRIVATE))
-                .addMethod(asConfiguration(group))
-                .addMethods(defaultConverters(group))
+                .addAnnotations(annotationsFor(group))
+                .addMethods(properties(group))
+                .addMethods(methodsFor(group))
+                .addMethods(userConverters(group))
+                .addMethod(configureConventions(group))
+                .addMethod(asConfiguration(group, immutablesBasePackage))
                 .build();
     }
 
-    private MethodSpec asConfiguration(final ConfigurationGroup group) {
-        if ("Converters".equals(group.name())) {
-            return converters(group);
-        }
-        return asConfiguration(group, immutablesBasePackage);
+    private List<MethodSpec> properties(final ConfigurationGroup group) {
+        return group.settings().stream()
+                .map(this::defaultMethod)
+                .collect(Collectors.toList());
     }
 
-    private MethodSpec converters(final ConfigurationGroup group) {
-        return MethodSpec.methodBuilder("asConfiguration")
-
-                .build();
+    private List<MethodSpec> userConverters(final ConfigurationGroup group) {
+        return group.settings().stream()
+                .filter(this::resultRowConverter)
+                .findFirst()
+                .map(setting -> List.of(createRowConverters(), createDefaultConverter(setting)))
+                .orElse(Collections.emptyList());
     }
 
-    /*
-     public ConverterConfiguration asConfiguration() {
-        final var toResultRow = ResultRowConverter.builder()
-                .setAlias(defaultRowConverter)
-                .setResultType("com.example.persistence.util.ResultRow")
-                .setConverterType("com.example.persistence.converter.ToResultRowConverter")
-                .setMethodName("asUserType")
-                .build();
-        final var converters = resultRowConverters.stream()
-                .map(c -> ResultRowConverter.builder()
-                        .setAlias(c.alias == null ? "" : c.alias)
-                        .setResultType(c.resultType == null ? "" : c.resultType)
-                        .setConverterType(c.converterType == null ? "" : c.converterType)
-                        .setMethodName(c.methodName == null ? "": c.methodName)
+    private MethodSpec createRowConverters() {
+        return MethodSpec.methodBuilder("createRowConverters")
+                .addModifiers(Modifier.PRIVATE)
+                .returns(TypicalTypes.listOf(ResultRowConverter.class))
+                .addStatement(CodeBlock.builder()
+                        .add("return getUserTypes().stream()\n", Stream.class)
+                        .add("\t.map($T::asResultRowConverter)\n", ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.UserResultRowConverter"))
+                        .add("\t.collect($T.toList())", Collectors.class)
                         .build())
-                .collect(toSet());
-        final Set<ResultRowConverter> combined = Stream.of(converters, Set.of(toResultRow))
-                .flatMap(Set::stream)
-                .collect(toSet());
-        return ConverterConfiguration.builder()
-                .setBasePackageName("com.example.persistence.converter")
-                .setDefaultConverter(toResultRow)
-                .setConverters(combined)
                 .build();
     }
-     */
+
+    private MethodSpec createDefaultConverter(final ConfigurationSetting setting) {
+        final var type = setting.gradleType().orElse(setting.type());
+        return MethodSpec.methodBuilder("createDefaultConverter")
+                .addModifiers(Modifier.PRIVATE)
+                .addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_OBJECTS, "objects", Modifier.FINAL).build())
+                .returns(type)
+                .addStatement("final var defaultConverter = objects.newInstance($T.class)", type)
+                .addStatement("defaultConverter.getAlias().set($S)", "resultRow")
+                .addStatement("defaultConverter.getConverterType().set($S)", "ToResultRowConverter")
+                .addStatement("defaultConverter.getMethodName().set($S)", "asUserType")
+                .addStatement("defaultConverter.getResultType().set($S)", "ResultRow")
+                .addStatement("return defaultConverter")
+                .build();
+    }
+
+    private MethodSpec configureConventions(final ConfigurationGroup group) {
+        final var builder = MethodSpec.methodBuilder("configureConventions");
+        group.settings().stream()
+                .filter(this::usesNioPath)
+                .findAny()
+                .ifPresent(s -> builder.addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_LAYOUT, "layout").build()));
+        group.settings().stream()
+                .filter(this::resultRowConverter)
+                .findAny()
+                .ifPresent(s -> builder.addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_OBJECTS, "objects").build()));
+        group.settings().stream()
+                .filter(setting -> valueOf(setting).isPresent())
+                .filter(setting -> !"userTypes".equals(setting.name()))
+                .forEach(setting -> builder.addStatement(conventionValue(setting)));
+        group.settings().stream()
+                .filter(setting -> "defaultConverter".equals(setting.name()))
+                .forEach(setting -> builder.addStatement(CodeBlock.of("getDefaultConverter().convention(createDefaultConverter(objects))")));
+        return builder.build();
+    }
+
+    private CodeBlock conventionValue(final ConfigurationSetting setting) {
+        final var type = typeOf(setting);
+        if (TypicalTypes.PATH.equals(type)) {
+            if ("inputBaseDirectory".equals(setting.name())) {
+                return CodeBlock.of("$L().convention($N.getProjectDirectory().dir($S))", propertyName(setting), "layout", valueOf(setting).orElseThrow());
+            }
+            if ("outputBaseDirectory".equals(setting.name())) {
+                return CodeBlock.of("$L().convention($N.getBuildDirectory().dir($S))", propertyName(setting), "layout", valueOf(setting).orElseThrow());
+            }
+        }
+        return CodeBlock.of("$L().convention($L)", propertyName(setting), defaultValue(valueOf(setting).orElseThrow(), typeOf(setting)));
+    }
 
     @Override
     public TypeName typeOf(final ConfigurationSetting setting) {
-        return setting.mavenType().orElse(setting.type());
+        return setting.gradleType().orElse(setting.type());
     }
 
     @Override
     public Optional<Object> valueOf(final ConfigurationSetting setting) {
-        return setting.mavenValue().or(setting::value);
+        return setting.gradleValue().or(setting::value);
     }
 
     @Override
     public List<AnnotationSpec> annotationsFor(final ConfigurationGroup group) {
-        return group.mavenAnnotations();
+        return group.gradleAnnotations();
     }
 
     @Override
     public List<AnnotationSpec> annotationsFor(final ConfigurationSetting setting) {
-        return List.of(mavenParameter(setting));
+        return Stream.concat(
+                inputAnnotation(setting),
+                setting.gradleAnnotations().stream())
+                .toList();
     }
 
-    private AnnotationSpec mavenParameter(final ConfigurationSetting setting) {
-        final var builder = AnnotationSpec.builder(
-                ClassName.bestGuess("org.apache.maven.plugins.annotations.Parameter"));
-        valueOf(setting).ifPresent(value -> setMembers(value, setting, builder));
-        return builder.build();
-    }
-
-    private void setMembers(final Object value, final ConfigurationSetting setting, final AnnotationSpec.Builder builder) {
-        builder.addMember("required", "true");
+    private Stream<AnnotationSpec> inputAnnotation(final ConfigurationSetting setting) {
         final var type = typeOf(setting);
-        if (value instanceof String) {
-            builder.addMember("defaultValue", "$S", value);
-        } else if (type.isPrimitive() || type.isBoxedPrimitive()) {
-            builder.addMember("defaultValue", "$S", value);
-        } else if (value.getClass().isEnum()) {
-            builder.addMember("defaultValue", "$S", value);
-        } else {
-            builder.addMember("defaultValue", "$L", defaultValue(value, type));
+        if (TypicalTypes.PATH.equals(type)) {
+            return Stream.of();
         }
+        return Stream.of(AnnotationSpec.builder(TypicalTypes.GRADLE_INPUT).build());
     }
 
     @Override
     public List<MethodSpec> methodsFor(final ConfigurationGroup group) {
-        return group.mavenMethods();
+        return group.gradleMethods();
     }
 
+    @Override
+    protected MethodSpec defaultMethod(final ConfigurationSetting setting) {
+        return MethodSpec.methodBuilder(propertyName(setting))
+                .addJavadoc("@return " + setting.description())
+                .addAnnotations(annotationsFor(setting))
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(gradleReturnType(setting))
+                .build();
+    }
+
+    private String propertyName(final ConfigurationSetting setting) {
+        return "get" + Strings.upperCase(setting.name());
+    }
+
+    private TypeName gradleReturnType(final ConfigurationSetting setting) {
+        final var type = typeOf(setting);
+        if (type.isPrimitive()) {
+            return TypicalTypes.gradlePropertyOf(type.box());
+        }
+        if (type.toString().startsWith(TypicalTypes.GRADLE_CONTAINERS.canonicalName())) {
+            return type;
+        }
+        if (type.toString().startsWith(TypicalTypes.LIST.canonicalName())) {
+            return TypicalTypes.gradleListPropertyOf(TypicalTypes.STRING);
+        }
+        if (TypicalTypes.PATH.equals(type)) {
+            return TypicalTypes.GRADLE_DIRECTORY;
+        }
+        return TypicalTypes.gradlePropertyOf(type);
+    }
+
+    protected MethodSpec asConfiguration(final ConfigurationGroup group, final String immutablesBasePackage) {
+        final var returnType = ClassName.get(immutablesBasePackage, group.configurationName());
+        final var builder = MethodSpec.methodBuilder("asConfiguration")
+                .returns(returnType);
+        final var configBuilder = CodeBlock.builder()
+                .add("return $T.builder()\n", returnType);
+        group.settings().stream()
+                .map(this::fieldConfiguration)
+                .forEach(configBuilder::add);
+        configBuilder.add(".build()");
+        return builder.addStatement(configBuilder.build()).build();
+    }
+
+    private CodeBlock fieldConfiguration(final ConfigurationSetting setting) {
+        if (usesResultRowConverter(setting)) {
+            return CodeBlock.builder()
+                    .add(".set$L($L().get().asResultRowConverter(getUtilityPackageName().get()))\n", Strings.upperCase(setting.name()), propertyName(setting))
+                    .build();
+        }
+        if (usesResultRowConverters(setting)) {
+            return CodeBlock.builder()
+                    .add(".set$L($L())\n", Strings.upperCase(setting.name()), "createRowConverters")
+                    .build();
+        }
+        if (usesNioPath(setting)) {
+            return CodeBlock.builder()
+                    .add(".set$L($L().get().getAsFile().toPath())\n", Strings.upperCase(setting.name()), propertyName(setting))
+                    .build();
+        }
+        return CodeBlock.of(".set$L($L().get())\n", Strings.upperCase(setting.name()), propertyName(setting));
+    }
 }

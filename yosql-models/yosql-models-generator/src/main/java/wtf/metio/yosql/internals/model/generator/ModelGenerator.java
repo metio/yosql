@@ -10,12 +10,8 @@ package wtf.metio.yosql.internals.model.generator;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import wtf.metio.yosql.internals.model.generator.cli.CliGenerator;
+import wtf.metio.yosql.internals.model.generator.gradle.GradleGenerator;
 import wtf.metio.yosql.internals.model.generator.immutables.ImmutablesGenerator;
 import wtf.metio.yosql.internals.model.generator.maven.MavenGenerator;
 import wtf.metio.yosql.internals.model.generator.website.MarkdownGenerator;
@@ -25,69 +21,63 @@ import wtf.metio.yosql.models.meta.data.Runtime;
 import wtf.metio.yosql.models.meta.data.Sql;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true, executionStrategy = "always")
-public class ModelGenerator extends AbstractMojo {
+public final class ModelGenerator {
 
-    @Parameter(defaultValue = "immutables")
-    String type;
+    private final Path outputDirectory;
+    private final String immutablesBasePackage;
+    private final String basePackage;
 
-    @Parameter(defaultValue = "wtf.metio.yosql.models.immutables")
-    String immutablesBasePackage;
-
-    @Parameter(defaultValue = "wtf.metio.yosql.tooling.maven")
-    String mavenBasePackage;
-
-    @Parameter(defaultValue = "wtf.metio.yosql.models.cli")
-    String cliBasePackage;
-
-    @Parameter(defaultValue = "wtf.metio.yosql.models.ant")
-    String antBasePackage;
-
-    @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    MavenProject project;
-
-    @Override
-    public void execute() {
-        final var baseOutputDirectory = Paths.get(project.getBuild().getDirectory())
-                .resolve("generated-sources");
-        final var outputDirectory = baseOutputDirectory.resolve("yosql");
-
-        if ("immutables".equalsIgnoreCase(type)) {
-            final var generator = new ImmutablesGenerator(immutablesBasePackage);
-            final var writer = typeWriter(immutablesBasePackage, outputDirectory);
-            forAllConfigurations(generator, writer);
-            writer.accept(generator.apply(Runtime.configurationGroup(immutablesBasePackage)));
-            writer.accept(generator.apply(Sql.configurationGroup()));
-        } else if ("maven".equalsIgnoreCase(type)) {
-            final var generator = new MavenGenerator(immutablesBasePackage);
-            final var writer = typeWriter(mavenBasePackage, outputDirectory);
-            forAllConfigurations(generator, writer);
-        } else if ("cli".equalsIgnoreCase(type)) {
-            final var generator = new CliGenerator(immutablesBasePackage);
-            final var writer = typeWriter(cliBasePackage, outputDirectory);
-            forAllConfigurations(generator, writer);
-        } else if ("ant".equalsIgnoreCase(type)) {
-            // CliGenerator.writeCliModels(typeWriter(antBasePackage, outputDirectory));
-        } else if ("website".equalsIgnoreCase(type)) {
-            final var factory = new DefaultMustacheFactory();
-            final var generator = new MarkdownGenerator(factory, project.getVersion());
-            AllConfigurations.allConfigurationGroups().forEach(group ->
-                    writeMarkdownFiles(outputDirectory, generator, group));
-        }
+    public ModelGenerator(
+            final Path outputDirectory,
+            final String immutablesBasePackage,
+            final String basePackage) {
+        this.outputDirectory = outputDirectory;
+        this.immutablesBasePackage = immutablesBasePackage;
+        this.basePackage = basePackage;
     }
 
-    private void writeMarkdownFiles(final Path outputDirectory, final MarkdownGenerator generator, final ConfigurationGroup group) {
+    public void createImmutableModel() {
+        final var generator = new ImmutablesGenerator(immutablesBasePackage);
+        final var writer = typeWriter(immutablesBasePackage);
+        forAllConfigurations(generator, writer);
+        writer.accept(generator.apply(Runtime.configurationGroup(immutablesBasePackage)));
+        writer.accept(generator.apply(Sql.configurationGroup()));
+    }
+
+    public void createMavenModel() {
+        final var generator = new MavenGenerator(immutablesBasePackage);
+        final var writer = typeWriter(basePackage);
+        forAllConfigurations(generator, writer);
+    }
+
+    public void createCliModel() {
+        final var generator = new CliGenerator(immutablesBasePackage);
+        final var writer = typeWriter(basePackage);
+        forAllConfigurations(generator, writer);
+    }
+
+    public void createGradleModel() {
+        final var generator = new GradleGenerator(immutablesBasePackage);
+        final var writer = typeWriter(basePackage);
+        forAllConfigurations(generator, writer);
+    }
+
+    public void createMarkdownDocumentation(final String version) {
+        final var factory = new DefaultMustacheFactory();
+        final var generator = new MarkdownGenerator(factory, version);
+        AllConfigurations.allConfigurationGroups().forEach(group ->
+                writeMarkdownFiles(generator, group));
+    }
+
+    private void writeMarkdownFiles(final MarkdownGenerator generator, final ConfigurationGroup group) {
         try {
             final var groupDirectory = outputDirectory.resolve(group.name().toLowerCase(Locale.ROOT));
             Files.createDirectories(groupDirectory);
@@ -112,12 +102,12 @@ public class ModelGenerator extends AbstractMojo {
                 .stream().map(generator).forEach(writer);
     }
 
-    private static Consumer<TypeSpec> typeWriter(final String targetPackageName, final Path targetDirectory) {
+    private Consumer<TypeSpec> typeWriter(final String targetPackageName) {
         return typeSpec -> {
             try {
                 JavaFile.builder(targetPackageName, typeSpec)
                         .build()
-                        .writeTo(targetDirectory);
+                        .writeTo(outputDirectory);
             } catch (final IOException exception) {
                 throw new RuntimeException(exception);
             }
