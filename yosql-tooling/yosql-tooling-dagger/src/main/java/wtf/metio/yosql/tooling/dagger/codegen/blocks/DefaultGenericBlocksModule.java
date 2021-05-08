@@ -24,7 +24,7 @@ public class DefaultGenericBlocksModule {
 
     @Provides
     public AnnotationGenerator provideAnnotationGenerator(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultAnnotationGenerator(runtimeConfiguration.annotations());
+        return new DefaultAnnotationGenerator(runtimeConfiguration.annotations(), runtimeConfiguration.api());
     }
 
     @Provides

@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.testing.configs;
 
+import wtf.metio.yosql.models.constants.api.AnnotationApis;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.ApiConfiguration;
@@ -30,6 +31,11 @@ public final class Apis {
     public static ApiConfiguration jul() {
         return ApiConfiguration.copyOf(defaults())
                 .withLoggingApi(LoggingApis.JUL);
+    }
+
+    public static ApiConfiguration annotationApi() {
+        return ApiConfiguration.copyOf(defaults())
+                .withAnnotationApi(AnnotationApis.ANNOTATION_API);
     }
 
     private Apis() {

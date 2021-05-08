@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.testing.configs;
 
-import wtf.metio.yosql.models.constants.configuration.AnnotationClass;
 import wtf.metio.yosql.models.immutables.AnnotationsConfiguration;
 
 public final class Annotations {
@@ -17,28 +16,6 @@ public final class Annotations {
                 .setAnnotateClasses(true)
                 .setAnnotateFields(true)
                 .setAnnotateMethods(true)
-                .build();
-    }
-
-    public static AnnotationsConfiguration processingApi() {
-        return AnnotationsConfiguration.usingDefaults()
-                .setAnnotateClasses(true)
-                .setAnnotateFields(true)
-                .setAnnotateMethods(true)
-                .setClassAnnotation(AnnotationClass.PROCESSING_API)
-                .setFieldAnnotation(AnnotationClass.PROCESSING_API)
-                .setMethodAnnotation(AnnotationClass.PROCESSING_API)
-                .build();
-    }
-
-    public static AnnotationsConfiguration annotationApi() {
-        return AnnotationsConfiguration.usingDefaults()
-                .setAnnotateClasses(true)
-                .setAnnotateFields(true)
-                .setAnnotateMethods(true)
-                .setClassAnnotation(AnnotationClass.ANNOTATION_API)
-                .setFieldAnnotation(AnnotationClass.ANNOTATION_API)
-                .setMethodAnnotation(AnnotationClass.ANNOTATION_API)
                 .build();
     }
 

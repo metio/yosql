@@ -9,9 +9,10 @@ package wtf.metio.yosql.codegen.blocks;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import wtf.metio.yosql.codegen.api.AnnotationGenerator;
-import wtf.metio.yosql.models.constants.configuration.AnnotationClass;
+import wtf.metio.yosql.models.constants.api.AnnotationApis;
 import wtf.metio.yosql.models.constants.configuration.AnnotationMembers;
 import wtf.metio.yosql.models.immutables.AnnotationsConfiguration;
+import wtf.metio.yosql.models.immutables.ApiConfiguration;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -34,16 +35,18 @@ public final class DefaultAnnotationGenerator implements AnnotationGenerator {
             AnnotationMembers.WITHOUT_DATE);
 
     private final AnnotationsConfiguration configuration;
+    private final ApiConfiguration api;
 
-    public DefaultAnnotationGenerator(final AnnotationsConfiguration configuration) {
+    public DefaultAnnotationGenerator(final AnnotationsConfiguration configuration, final ApiConfiguration api) {
         this.configuration = configuration;
+        this.api = api;
     }
 
     @Override
     public Iterable<AnnotationSpec> generatedClass() {
         return getAnnotationSpecs(
                 configuration.annotateClasses(),
-                configuration.classAnnotation(),
+                api.annotationApi(),
                 configuration.classMembers(),
                 configuration.classComment());
     }
@@ -52,7 +55,7 @@ public final class DefaultAnnotationGenerator implements AnnotationGenerator {
     public Iterable<AnnotationSpec> generatedField() {
         return getAnnotationSpecs(
                 configuration.annotateFields(),
-                configuration.fieldAnnotation(),
+                api.annotationApi(),
                 configuration.fieldMembers(),
                 configuration.fieldComment());
     }
@@ -61,18 +64,18 @@ public final class DefaultAnnotationGenerator implements AnnotationGenerator {
     public Iterable<AnnotationSpec> generatedMethod() {
         return getAnnotationSpecs(
                 configuration.annotateMethods(),
-                configuration.methodAnnotation(),
+                api.annotationApi(),
                 configuration.methodMembers(),
                 configuration.methodComment());
     }
 
     private Iterable<AnnotationSpec> getAnnotationSpecs(
             final boolean shouldAnnotate,
-            final AnnotationClass classOption,
+            final AnnotationApis annotationApi,
             final AnnotationMembers memberOption,
             final String comment) {
         if (shouldAnnotate) {
-            final var annotationClass = ClassName.bestGuess(classOption.annotationClass);
+            final var annotationClass = ClassName.bestGuess(annotationApi.annotationClass);
             final var builder = AnnotationSpec.builder(annotationClass);
             if (OPTIONS_WITH_VALUE.contains(memberOption)) {
                 builder.addMember("value", "$S", configuration.generatorName());

@@ -4,27 +4,31 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-
-package wtf.metio.yosql.models.constants.configuration;
+package wtf.metio.yosql.models.constants.api;
 
 /**
- * Options for the "@Generated" annotation class.
+ * Options for the logging API used in the generated code.
  */
-public enum AnnotationClass {
+public enum AnnotationApis {
 
     /**
-     * Uses the "javax.annotation.Generated" annotation
+     * Automatically select an appropriate implementation based on project metadata.
+     */
+    AUTO("please.report.this.bug"),
+
+    /**
+     * Uses the javax.annotation API.
      */
     ANNOTATION_API("javax.annotation.Generated"),
 
     /**
-     * Uses the "javax.annotation.processing.Generated" annotation
+     * Uses the javax.annotation.processing API.
      */
     PROCESSING_API("javax.annotation.processing.Generated");
 
     public final String annotationClass;
 
-    AnnotationClass(String annotationClass) {
+    AnnotationApis(String annotationClass) {
         this.annotationClass = annotationClass;
     }
 

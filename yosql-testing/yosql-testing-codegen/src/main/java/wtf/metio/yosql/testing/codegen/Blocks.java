@@ -13,6 +13,7 @@ import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.testing.configs.Annotations;
+import wtf.metio.yosql.testing.configs.Apis;
 import wtf.metio.yosql.testing.configs.Files;
 import wtf.metio.yosql.testing.configs.Java;
 
@@ -80,7 +81,7 @@ public final class Blocks {
     }
 
     public static AnnotationGenerator annotationGenerator() {
-        return new DefaultAnnotationGenerator(Annotations.defaults());
+        return new DefaultAnnotationGenerator(Annotations.defaults(), Apis.defaults());
     }
 
     public static Javadoc javadoc() {

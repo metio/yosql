@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.testing.configs.Annotations;
+import wtf.metio.yosql.testing.configs.Apis;
 
 @DisplayName("DefaultAnnotationGenerator")
 class DefaultAnnotationGeneratorTest {
@@ -24,7 +25,7 @@ class DefaultAnnotationGeneratorTest {
         @DisplayName("can annotate classes")
         void shouldAnnotateClasses() {
             // given
-            final var generator = new DefaultAnnotationGenerator(Annotations.defaults());
+            final var generator = new DefaultAnnotationGenerator(Annotations.defaults(), Apis.defaults());
 
             // when
             final var annotations = generator.generatedClass();
@@ -39,7 +40,7 @@ class DefaultAnnotationGeneratorTest {
         @DisplayName("can annotate fields")
         void shouldAnnotateFields() {
             // given
-            final var generator = new DefaultAnnotationGenerator(Annotations.defaults());
+            final var generator = new DefaultAnnotationGenerator(Annotations.defaults(), Apis.defaults());
 
             // when
             final var annotations = generator.generatedField();
@@ -54,7 +55,7 @@ class DefaultAnnotationGeneratorTest {
         @DisplayName("can annotate methods")
         void shouldAnnotateMethods() {
             // given
-            final var generator = new DefaultAnnotationGenerator(Annotations.defaults());
+            final var generator = new DefaultAnnotationGenerator(Annotations.defaults(), Apis.defaults());
 
             // when
             final var annotations = generator.generatedMethod();
@@ -75,7 +76,7 @@ class DefaultAnnotationGeneratorTest {
         @DisplayName("can use javax.annotation.processing.Generated")
         void shouldUseProcessingApi() {
             // given
-            final var generator = new DefaultAnnotationGenerator(Annotations.processingApi());
+            final var generator = new DefaultAnnotationGenerator(Annotations.defaults(), Apis.defaults());
 
             // when
             final var annotations = generator.generatedClass();
@@ -90,7 +91,7 @@ class DefaultAnnotationGeneratorTest {
         @DisplayName("can use javax.annotation.Generated")
         void shouldUseAnnotationApi() {
             // given
-            final var generator = new DefaultAnnotationGenerator(Annotations.annotationApi());
+            final var generator = new DefaultAnnotationGenerator(Annotations.defaults(), Apis.annotationApi());
 
             // when
             final var annotations = generator.generatedClass();

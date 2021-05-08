@@ -15,6 +15,7 @@ import wtf.metio.yosql.internals.model.generator.gradle.GradleGenerator;
 import wtf.metio.yosql.internals.model.generator.immutables.ImmutablesGenerator;
 import wtf.metio.yosql.internals.model.generator.maven.MavenGenerator;
 import wtf.metio.yosql.internals.model.generator.website.MarkdownGenerator;
+import wtf.metio.yosql.internals.model.generator.website.RawTextMustacheFactory;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.data.AllConfigurations;
 import wtf.metio.yosql.models.meta.data.Runtime;
@@ -71,7 +72,7 @@ public final class ModelGenerator {
     }
 
     public void createMarkdownDocumentation(final String version) {
-        final var factory = new DefaultMustacheFactory();
+        final var factory = new RawTextMustacheFactory();
         final var generator = new MarkdownGenerator(factory, version);
         AllConfigurations.allConfigurationGroups().forEach(group ->
                 writeMarkdownFiles(generator, group));

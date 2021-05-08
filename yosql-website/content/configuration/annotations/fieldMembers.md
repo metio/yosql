@@ -145,7 +145,6 @@ public class SomeRepository {
 ## Related Options
 
 - [annotateFields](../annotatefields/): Controls whether the `@Generated` annotation should be added at all.
-- [fieldAnnotation](../fieldannotation/): Controls which `@Generated` annotation should be used.
 - [fieldComment](../fieldcomment/): Controls the comment used in the `@Generated` annotation.
 - [generatorName](../generatorname/): Controls the value used in the `@Generated` annotation.
 
