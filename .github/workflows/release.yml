@@ -22,7 +22,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0 # required in order to get all tags
       - id: commits
@@ -93,7 +93,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
         if: needs.prepare.outputs.commit_count > 0
       - id: java
         name: Setup Java
@@ -147,7 +147,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
         if: needs.prepare.outputs.commit_count > 0
       - id: java
         name: Setup Java
@@ -185,7 +185,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.4.0
         if: needs.prepare.outputs.commit_count > 0
       - id: java
         name: Setup Java
