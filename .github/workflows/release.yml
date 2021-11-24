@@ -109,7 +109,7 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         if: needs.prepare.outputs.commit_count > 0
         with:
           path: ~/.m2/repository
@@ -160,7 +160,7 @@ jobs:
           distribution: ${{ env.JAVA_DISTRO }}
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         if: needs.prepare.outputs.commit_count > 0
         with:
           path: ~/.m2/repository
@@ -198,7 +198,7 @@ jobs:
           distribution: ${{ env.JAVA_DISTRO }}
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         if: needs.prepare.outputs.commit_count > 0
         with:
           path: ~/.m2/repository
