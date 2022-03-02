@@ -34,7 +34,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - id: java
         name: Setup Java
         uses: actions/setup-java@v2
@@ -67,7 +67,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - id: java
         name: Setup Java
         uses: actions/setup-java@v2
