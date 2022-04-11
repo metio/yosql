@@ -173,7 +173,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: upload-benchmark
         name: Upload Benchmark Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: needs.prepare.outputs.commit_count > 0
         with:
           name: benchmark-${{ matrix.benchmark }}
