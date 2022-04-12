@@ -97,7 +97,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: java
         name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         if: needs.prepare.outputs.commit_count > 0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -151,7 +151,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: java
         name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         if: needs.prepare.outputs.commit_count > 0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -173,7 +173,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: upload-benchmark
         name: Upload Benchmark Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: needs.prepare.outputs.commit_count > 0
         with:
           name: benchmark-${{ matrix.benchmark }}
@@ -189,7 +189,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: java
         name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         if: needs.prepare.outputs.commit_count > 0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -207,7 +207,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: download
         name: Download Benchmarks Results
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         if: needs.prepare.outputs.commit_count > 0
       - name: Set release version
         run: mvn --batch-mode versions:set -DnewVersion=${{ needs.prepare.outputs.release_version }} -DgenerateBackupPoms=false
