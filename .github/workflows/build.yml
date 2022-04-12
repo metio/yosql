@@ -3,27 +3,27 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "yosql-codegen/**"
-      - "yosql-converters/**"
-      - "yosql-dao/**"
-      - "yosql-internals/**"
-      - "yosql-logging/**"
-      - "yosql-models/**"
-      - "yosql-testing/**"
-      - "yosql-tooling/**"
+      - yosql-codegen/**
+      - yosql-converters/**
+      - yosql-dao/**
+      - yosql-internals/**
+      - yosql-logging/**
+      - yosql-models/**
+      - yosql-testing/**
+      - yosql-tooling/**
   pull_request:
     branches: [ main ]
     paths:
-      - "yosql-codegen/**"
-      - "yosql-converters/**"
-      - "yosql-dao/**"
-      - "yosql-internals/**"
-      - "yosql-logging/**"
-      - "yosql-models/**"
-      - "yosql-testing/**"
-      - "yosql-tooling/**"
+      - yosql-codegen/**
+      - yosql-converters/**
+      - yosql-dao/**
+      - yosql-internals/**
+      - yosql-logging/**
+      - yosql-models/**
+      - yosql-testing/**
+      - yosql-tooling/**
 env:
-  JAVA_VERSION: 16
+  JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
   JAVA_DISTRO: adopt

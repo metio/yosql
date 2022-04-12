@@ -1,9 +1,9 @@
 name: Update Parent
 on:
   schedule:
-    - cron:  "0 1 3 * *"
+    - cron:  0 1 3 * *
 env:
-  JAVA_VERSION: 16
+  JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
   JAVA_DISTRO: adopt
