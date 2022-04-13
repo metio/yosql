@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: Maven Tooling
-        run: mvn --batch-mode install
+        run: mvn --batch-mode install --define enforcer.skip
       - id: gradle
         name: Gradle Tooling
         run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build
