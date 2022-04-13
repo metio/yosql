@@ -1,0 +1,13 @@
+name: Update Gradle Wrapper
+on:
+  schedule:
+    - cron: 0 2 3 * *
+jobs:
+  update-gradle-wrapper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update Gradle Wrapper
+        uses: gradle-update/update-gradle-wrapper-action@v1
+        with:
+          paths: yosql-tooling/yosql-tooling-gradle/**
