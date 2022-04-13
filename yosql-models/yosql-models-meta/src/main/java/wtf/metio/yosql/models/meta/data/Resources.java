@@ -8,6 +8,7 @@
 package wtf.metio.yosql.models.meta.data;
 
 import com.squareup.javapoet.TypeName;
+import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
@@ -24,10 +25,19 @@ public final class Resources {
     private static ConfigurationSetting maxThreads() {
         return ConfigurationSetting.builder()
                 .setName("maxThreads")
-                .setDescription("Controls how many threads are used during code generation. The maximum number will be capped to the number of available CPU cores of your system.")
+                .setDescription("Controls how many threads are used during code generation.")
+                .setExplanation("The maximum number will be capped to the number of available CPU cores of your system.")
                 .setType(TypeName.get(int.class))
                 .setValue(1)
                 .addTags(Tags.THREADS)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("1")
+                        .setDescription("The default value of the `maxThreads` configuration option is `1` which uses one thread to generate code.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("123")
+                        .setDescription("Changing the `maxThreads` configuration option to `123` will use the available number of CPU cores in your system or 123 threads, depending on which is lower.")
+                        .build())
                 .build();
     }
 

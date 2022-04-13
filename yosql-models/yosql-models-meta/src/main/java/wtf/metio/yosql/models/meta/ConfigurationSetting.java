@@ -39,6 +39,8 @@ public interface ConfigurationSetting {
 
     TypeName type();
 
+    Optional<String> explanation();
+
     Optional<TypeName> cliType();
 
     Optional<TypeName> gradleType();
@@ -57,6 +59,11 @@ public interface ConfigurationSetting {
      * @return The optional list of tags associated with this configuration setting.
      */
     List<String> tags();
+
+    /**
+     * @return The optional list of examples for this configuration setting.
+     */
+    List<ConfigurationExample> examples();
 
     //region defaults
 

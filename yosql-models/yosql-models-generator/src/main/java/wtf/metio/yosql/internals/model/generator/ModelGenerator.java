@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.internals.model.generator;
 
-import com.github.mustachejava.DefaultMustacheFactory;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import wtf.metio.yosql.internals.model.generator.cli.CliGenerator;
@@ -26,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 

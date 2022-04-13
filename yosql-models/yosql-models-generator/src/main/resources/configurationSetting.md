@@ -15,16 +15,24 @@ tags:
 
 {{setting.description}}
 
+{{#hasExplanation}}
+{{setting.explanation}}
+
+{{/hasExplanation}}
 ## Configuration Options
 
-### Option: 'call, execute, evaluate, eval'
+{{#setting.examples}}
+### Option: '{{value}}'
 
-The default value of the `{{setting.name}}` configuration option is `false` which disables the validation of names according to your configured prefixes.
+{{description}}
 
-### Option: 'do'
+{{#result}}
+```java
+{{{.}}}
+```
 
-Changing the `{{setting.name}}` configuration option to `do` only allows names with the prefix `do` to call stored procedures.
-
+{{/result}}
+{{/setting.examples}}
 {{#hasRelatedSettings}}
 ## Related Options
 
@@ -47,13 +55,13 @@ In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look
 
 In order to use `YoSQL` on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
-```shell
+```console
 $ yosql --{{#lower}}{{group.name}}{{/lower}}-{{#kebab}}{{setting.name}}{{/kebab}}=configValue
 ```
 
 As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
 
-```shell
+```console
 $ yosql --{{#kebab}}{{setting.name}}{{/kebab}}=configValue
 ```
 
@@ -94,18 +102,18 @@ yosql {
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/). The `{{setting.name}}` setting can be configured using Maven like this:
 
 ```xml
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <version>{{yosqlVersion}}</version>
-        <configuration>
-          <{{#lower}}{{group.name}}{{/lower}}>
-            <{{setting.name}}>configValue</{{setting.name}}>
-          </{{#lower}}{{group.name}}{{/lower}}>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+<build>
+  <plugins>
+    <plugin>
+      <groupId>wtf.metio.yosql</groupId>
+      <artifactId>yosql-tooling-maven</artifactId>
+      <version>{{yosqlVersion}}</version>
+      <configuration>
+        <{{#lower}}{{group.name}}{{/lower}}>
+          <{{setting.name}}>configValue</{{setting.name}}>
+        </{{#lower}}{{group.name}}{{/lower}}>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
 ```

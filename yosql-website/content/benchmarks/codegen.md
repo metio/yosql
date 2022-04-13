@@ -18,7 +18,7 @@ tags:
   - JDBC with slf4j: Enables the use of the `slf4j` API in generated code.
   - JDBC with tinylog: Enables the use of the `tinylog` API in generated code.
 
-```shell
+```console
 # run code generation benchmark
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-codegen --also-make --activate-profiles benchmarks verify
 ```

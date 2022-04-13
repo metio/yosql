@@ -29,26 +29,67 @@ public final class Api {
 
     private static ConfigurationSetting daoApi() {
         return ConfigurationSetting.builder()
-                .setName("daoApi")
-                .setDescription("The DAO API to use (default: <strong>JDBC</strong>).")
+                .setName("daoApi") // TODO: rename to persistenceApi
+                .setDescription("The persistence API to use.")
+                .setExplanation("`YoSQL` supports multiple persistence APIs to interact with a database. We recommend that you pick the one that is already available in your project. In case you are starting fresh, `YoSQL` will default to the JDBC implementation because it requires no external dependencies and thus your project should be able to compile the generated code just fine. Some `YoSQL` tooling like the Maven plugin might auto-detect certain settings in your project to make your life easier, however you are always in full control and can change very aspect of the generated code.")
                 .setType(TypeName.get(PersistenceApis.class))
                 .setValue(PersistenceApis.JDBC)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(PersistenceApis.JDBC.name())
+                        .setDescription("The `javax.sql` based implementation of `YoSQL` to access your database. It does not require any dependencies outside from standard JDK classes exposed by the [JDBC](https://en.wikipedia.org/wiki/Java_Database_Connectivity) API.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(PersistenceApis.R2DBC.name())
+                        .setDescription("The `R2DBC` based implementation.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(PersistenceApis.SPRING_JDBC.name())
+                        .setDescription("The `spring-jdbc` based implementation. It uses the `JdbcTemplate` or `NamedParameterJdbcTemplate` class to execute SQL statements and map result to your domain objects.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(PersistenceApis.JOOQ.name())
+                        .setDescription("The `jOOQ` based implementation. It uses the `DSLContext` class to execute SQL statements and map results to your domain objects.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(PersistenceApis.JPA.name())
+                        .setDescription("The `JPA` based implementation. It uses the `EntityManager` class to execute SQL statements and map results to your domain objects.")
+                        .build())
                 .build();
     }
 
     private static ConfigurationSetting loggingApi() {
         return ConfigurationSetting.builder()
                 .setName("loggingApi")
-                .setDescription("The logging API to use (default: <strong>NONE</strong>).")
+                .setDescription("The logging API to use.")
                 .setType(TypeName.get(LoggingApis.class))
                 .setValue(LoggingApis.NONE)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(LoggingApis.NONE.name())
+                        .setDescription("The default `no-op` implementation for a logging generator. It won't generate any logging statements in your generated code.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(LoggingApis.JUL.name())
+                        .setDescription("The `java.util.logging` based implementation for a logging generator. The generated code does not require any external non-JDK classes. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(LoggingApis.LOG4J.name())
+                        .setDescription("The [log4j](https://logging.apache.org/log4j/2.x/) based implementation for a logging generator. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(LoggingApis.SLF4J.name())
+                        .setDescription("The [slf4j](http://www.slf4j.org/) based implementation for a logging generator. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(LoggingApis.TINYLOG.name())
+                        .setDescription("The [Tinylog](https://tinylog.org/v2/) based implementation for a logging generator.")
+                        .build())
                 .build();
     }
 
     private static ConfigurationSetting annotationApi() {
         return ConfigurationSetting.builder()
                 .setName("annotationApi")
-                .setDescription("The annotation API to use (default: <strong>PROCESSING_API</strong>).")
+                .setDescription("The annotation API to use.")
                 .setType(TypeName.get(AnnotationApis.class))
                 .setValue(AnnotationApis.PROCESSING_API)
                 .addExamples(ConfigurationExample.builder()
@@ -84,8 +125,7 @@ public final class Api {
 
                                     // ... rest of generated code
 
-                                }
-                                """)
+                                }""")
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("ANNOTATION_API")
@@ -120,8 +160,7 @@ public final class Api {
 
                                     // ... rest of generated code (same as above)
 
-                                }
-                                """)
+                                }""")
                         .build())
                 .build();
     }

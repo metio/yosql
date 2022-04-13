@@ -29,13 +29,13 @@ In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look
 
 In order to use `YoSQL` on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
-```shell
+```console
 $ yosql --{{#lower}}{{group.name}}{{/lower}}-config-option=configValue
 ```
 
 As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
 
-```shell
+```console
 $ yosql --config-option=configValue
 ```
 
@@ -76,18 +76,18 @@ yosql {
 In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/). The {{group.name}} group can be configured using Maven like this:
 
 ```xml
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>wtf.metio.yosql</groupId>
-        <artifactId>yosql-tooling-maven</artifactId>
-        <version>{{yosqlVersion}}</version>
-        <configuration>
-          <{{#lower}}{{group.name}}{{/lower}}>
-            <configSetting>configValue</configSetting>
-          </{{#lower}}{{group.name}}{{/lower}}>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+<build>
+  <plugins>
+    <plugin>
+      <groupId>wtf.metio.yosql</groupId>
+      <artifactId>yosql-tooling-maven</artifactId>
+      <version>{{yosqlVersion}}</version>
+      <configuration>
+        <{{#lower}}{{group.name}}{{/lower}}>
+          <configSetting>configValue</configSetting>
+        </{{#lower}}{{group.name}}{{/lower}}>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
 ```

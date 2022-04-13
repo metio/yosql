@@ -61,7 +61,8 @@ public final class MarkdownGenerator {
                 "upper", UPPER_CASE,
                 "kebab", KEBAB_CASE,
                 "relatedSettings", relatedSettings,
-                "hasRelatedSettings", !relatedSettings.isEmpty()
+                "hasRelatedSettings", !relatedSettings.isEmpty(),
+                "hasExplanation", setting.explanation().isPresent()
         ));
     }
 
