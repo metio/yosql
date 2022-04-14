@@ -9,7 +9,7 @@ menu:
 scope: 
 
 1) all existing database access APIs
-2) java/jvm only
+2) jvm only
 3) all existing build tools
 
 out-of-scope:
