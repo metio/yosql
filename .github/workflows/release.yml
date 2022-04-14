@@ -210,7 +210,7 @@ jobs:
         uses: actions/download-artifact@v3
         if: needs.prepare.outputs.commit_count > 0
       - name: Set release version
-        run: mvn --batch-mode versions:set -DnewVersion=${{ needs.prepare.outputs.release_version }} -DgenerateBackupPoms=false
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
         if: needs.prepare.outputs.commit_count > 0
       - id: create-documentation
         name: Create Documentation
