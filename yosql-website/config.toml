@@ -1,7 +1,7 @@
 baseURL = "https://yosql.projects.metio.wtf/"
 languageCode = "en"
 theme = "metio"
-title = "YoSQL - write more SQL"
+title = "YoSQL"
 
 pygmentsUseClasses = true
 sectionPagesMenu = "main"
