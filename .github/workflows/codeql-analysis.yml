@@ -3,14 +3,17 @@ on:
   push:
     branches: [ main ]
     paths:
+      - yosql-benchmarks/**
       - yosql-codegen/**
       - yosql-converters/**
       - yosql-dao/**
+      - yosql-examples/**
       - yosql-internals/**
       - yosql-logging/**
       - yosql-models/**
       - yosql-testing/**
       - yosql-tooling/**
+      - yosql-verification/**
   pull_request:
     branches: [ main ]
   schedule:

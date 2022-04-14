@@ -214,7 +214,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: create-documentation
         name: Create Documentation
-        run: mvn --batch-mode --projects yosql-website --also-make install -DskipTests
+        run: mvn --batch-mode --projects yosql-website --also-make install --define skipTests
         if: needs.prepare.outputs.commit_count > 0
       - id: copy-codegen-results
         name: Copy Codegen Results
@@ -234,7 +234,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: push
         name: Push Changes
-        uses: stefanzweifel/git-auto-commit-action@v4.14.1
+        uses: stefanzweifel/git-auto-commit-action@v4
         if: needs.prepare.outputs.commit_count > 0
         with:
           commit_message: Update website data for ${{ needs.prepare.outputs.release_version }}
@@ -246,7 +246,7 @@ jobs:
     steps:
       - id: email
         name: Send Mail
-        uses: dawidd6/action-send-mail@v3.6.1
+        uses: dawidd6/action-send-mail@v3
         if: needs.prepare.outputs.commit_count > 0
         with:
           server_address: ${{ secrets.MAIL_SERVER }}

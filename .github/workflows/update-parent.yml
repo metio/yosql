@@ -26,7 +26,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Update parent
-        run: mvn --batch-mode versions:update-parent -DgenerateBackupPoms=false
+        run: mvn --batch-mode versions:update-parent --define generateBackupPoms=false
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
