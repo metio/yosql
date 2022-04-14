@@ -30,6 +30,11 @@ jobs:
         run: hugo --minify --printI18nWarnings --printPathWarnings --printUnusedTemplates --source yosql-website
         env:
           YOSQL_RELEASE: ${{ steps.previous.outputs.version }}
+      - id: htmltest
+        name: Run htmltest
+        uses: wjdp/htmltest-action@master
+        with:
+          config: ./yosql-website/htmltest.yml
       - id: deploy
         name: Deploy Website
         uses: peaceiris/actions-gh-pages@v3

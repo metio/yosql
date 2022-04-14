@@ -1,0 +1,5 @@
+DirectoryPath: yosql-website/public
+IgnoreDirectoryMissingTrailingSlash: true
+EnforceHTML5: true
+EnforceHTTPS: true
+IgnoreExternalBrokenLinks: true

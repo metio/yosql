@@ -22,3 +22,6 @@ github = "metio/yosql"
 work = "yosql.projects.metio.wtf"
 calendar = "https://metio.groups.io/g/yosql/calendar"
 description = "Write more SQL"
+
+[security.funcs]
+getenv = ['^HUGO_', '^YOSQL_']
