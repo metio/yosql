@@ -1,0 +1,4 @@
+shell
+--no-interactive
+docker.io/wjdp/htmltest:latest
+--conf yosql-website/htmltest.yml

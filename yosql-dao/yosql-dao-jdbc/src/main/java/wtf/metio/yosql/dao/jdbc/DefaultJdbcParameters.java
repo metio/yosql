@@ -63,7 +63,7 @@ public final class DefaultJdbcParameters implements JdbcParameters {
 
     @Override
     public ParameterSpec index() {
-        return parameters.parameter(TypeName.INT, names.index());
+        return parameters.parameter(TypeName.INT, names.indexVariable());
     }
 
     @Override

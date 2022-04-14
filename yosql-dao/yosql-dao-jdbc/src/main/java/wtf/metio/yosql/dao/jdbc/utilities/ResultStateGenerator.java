@@ -123,7 +123,8 @@ public class ResultStateGenerator {
                 .returns(String.class)
                 .addParameter(jdbcParameters.index())
                 .addException(SQLException.class)
-                .addStatement("return $N.getColumnName($N)", runtimeConfiguration.jdbc().metaData(), runtimeConfiguration.jdbc().index())
+                .addStatement("return $N.getColumnName($N)", runtimeConfiguration.jdbc().metaData(),
+                        runtimeConfiguration.jdbc().indexVariable())
                 .build();
     }
 

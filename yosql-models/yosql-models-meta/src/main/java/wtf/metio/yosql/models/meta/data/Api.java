@@ -77,7 +77,7 @@ public final class Api {
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue(LoggingApis.SLF4J.name())
-                        .setDescription("The [slf4j](http://www.slf4j.org/) based implementation for a logging generator. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.")
+                        .setDescription("The [slf4j](https://www.slf4j.org/) based implementation for a logging generator. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue(LoggingApis.TINYLOG.name())

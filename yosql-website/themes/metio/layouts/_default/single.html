@@ -1,28 +1,28 @@
 {{ define "title" }}
-    {{ .Site.Title }} &ndash; {{ .Title }}
+{{ .Site.Title }} &ndash; {{ .Title }}
 {{ end }}
 {{ define "main" }}
 <h1 class="post-titel">
-        <a href="{{ .Permalink }}">
-            {{ .Title }}
-        </a>
-        <a href="https://github.com/metio/yosql/commits/main/yosql-website/content/{{ .File }}">
-            <img src="{{ "/images/history.svg" | absURL }}" height="16" width="14" class="icon svgimg">
-        </a>
-        <a href="https://github.com/metio/yosql/edit/main/yosql-website/content/{{ .File }}">
-            <img src="{{ "/images/pencil.svg" | absURL }}" height="16" width="14" class="icon svgimg">
-        </a>
-    </h1>
-    {{ with .Params.tags }}
-        <div class="subtitle">
-            Talks about:
-            {{ $sort := sort . }}
-            {{ $links := apply $sort "partial" "body/post-tag-link" "." }}
-            {{ $clean := apply $links "chomp" "." }}
-            {{ delimit $clean ", " ", and " }}
-        </div>
-    {{ end }}
-    <div id="post-content">
-        {{ .Content }}
-    </div>
+    <a href="{{ .Permalink }}">
+        {{ .Title }}
+    </a>
+    <a href="https://github.com/metio/yosql/commits/main/yosql-website/content/{{ .File }}">
+        <img src="{{ "/images/history.svg" | absURL }}" height="16" width="14" class="icon svgimg" alt="see history">
+    </a>
+    <a href="https://github.com/metio/yosql/edit/main/yosql-website/content/{{ .File }}">
+        <img src="{{ "/images/pencil.svg" | absURL }}" height="16" width="14" class="icon svgimg" alt="edit this page">
+    </a>
+</h1>
+{{ with .Params.tags }}
+<div class="subtitle">
+    Talks about:
+    {{ $sort := sort . }}
+    {{ $links := apply $sort "partial" "body/post-tag-link" "." }}
+    {{ $clean := apply $links "chomp" "." }}
+    {{ delimit $clean ", " ", and " }}
+</div>
+{{ end }}
+<div id="post-content">
+    {{ .Content }}
+</div>
 {{ end }}

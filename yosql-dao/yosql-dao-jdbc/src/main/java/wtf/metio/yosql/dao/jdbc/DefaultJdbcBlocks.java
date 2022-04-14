@@ -191,7 +191,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             }
             builder.addStatement("$T $N = null", String.class, names.query())
                     .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
-                            config.index())
+                            config.indexVariable())
                     .beginControlFlow("switch ($N)", names.databaseProductName());
             sqlStatements.stream()
                     .map(SqlStatement::getConfiguration)
@@ -232,7 +232,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             if (Buckets.hasEntries(config.parameters())) {
                 final var indexFieldName = jdbcFields.constantSqlStatementParameterIndexFieldName(config);
                 builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
-                        this.config.index(), indexFieldName)
+                        this.config.indexVariable(), indexFieldName)
                         .add(logging.indexPicked(indexFieldName));
             }
         }
@@ -246,7 +246,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         }
         if (Buckets.hasEntries(config.parameters())) {
             final var indexName = jdbcFields.constantSqlStatementParameterIndexFieldName(config);
-            builder.addStatement("$N = $N", this.config.index(), indexName)
+            builder.addStatement("$N = $N", this.config.indexVariable(), indexName)
                     .add(logging.vendorIndexPicked(indexName));
         }
         builder.addStatement("break$<");
@@ -411,8 +411,8 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         if (parameters != null && !parameters.isEmpty()) {
             for (final var parameter : config.parameters()) {
                 builder.beginControlFlow("for (final int $N : $N.get($S))",
-                        this.config.jdbcIndex(),
-                        this.config.index(), parameter.name())
+                        this.config.jdbcIndexVariable(),
+                        this.config.indexVariable(), parameter.name())
                         .add(CodeBlock.builder().addStatement(codeStatement,
                                 parameterSetter.apply(parameter.name())).build())
                         .endControlFlow();
@@ -427,7 +427,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         return parameterAssignment(config, "$N.setObject($N, $N)",
                 parameterName -> new String[]{
                         this.config.statement(),
-                        this.config.jdbcIndex(),
+                        this.config.jdbcIndexVariable(),
                         parameterName});
     }
 
@@ -436,7 +436,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         return parameterAssignment(config, "$N.setObject($N, $N[$N])",
                 parameterName -> new String[]{
                         this.config.statement(),
-                        this.config.jdbcIndex(),
+                        this.config.jdbcIndexVariable(),
                         parameterName,
                         this.config.batch()});
     }

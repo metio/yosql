@@ -71,16 +71,16 @@ public final class ToResultRowConverterGenerator {
                         runtimeConfiguration.jdbc().resultRowClass(),
                         names.result())
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",
-                        runtimeConfiguration.jdbc().index(),
-                        runtimeConfiguration.jdbc().index(),
+                        runtimeConfiguration.jdbc().indexVariable(),
+                        runtimeConfiguration.jdbc().indexVariable(),
                         names.result(),
-                        runtimeConfiguration.jdbc().index())
+                        runtimeConfiguration.jdbc().indexVariable())
                 .addStatement("$N.setColumnValue($N.getColumnName($N), $N.getResultSet().getObject($N))",
                         runtimeConfiguration.jdbc().row(),
                         names.result(),
-                        runtimeConfiguration.jdbc().index(),
+                        runtimeConfiguration.jdbc().indexVariable(),
                         names.result(),
-                        runtimeConfiguration.jdbc().index())
+                        runtimeConfiguration.jdbc().indexVariable())
                 .endControlFlow()
                 .addStatement("return $N", runtimeConfiguration.jdbc().row())
                 .build();

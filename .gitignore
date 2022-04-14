@@ -3,8 +3,7 @@ target/
 .ansible-git-*
 /bin/
 /yosql-website/public
-/yosql-website/content/configuration/
-!/yosql-website/content/configuration/_index.md
+/yosql-website/.hugo_build.lock
 .idea/
 build/
 .gradle/

@@ -19,7 +19,6 @@ import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
-import java.util.Optional;
 
 public final class Jdbc {
 
@@ -38,8 +37,8 @@ public final class Jdbc {
                 .addSettings(columnLabel())
                 .addSettings(batch())
                 .addSettings(list())
-                .addSettings(jdbcIndex())
-                .addSettings(index())
+                .addSettings(jdbcIndexVariable())
+                .addSettings(indexVariable())
                 .addSettings(row())
                 .addSettings(utilityPackageName())
                 .addSettings(resultStateClassName())
@@ -150,18 +149,18 @@ public final class Jdbc {
                 .build();
     }
 
-    private static ConfigurationSetting jdbcIndex() {
+    private static ConfigurationSetting jdbcIndexVariable() {
         return ConfigurationSetting.builder()
-                .setName("jdbcIndex")
+                .setName("jdbcIndexVariable")
                 .setType(TypicalTypes.STRING)
                 .setValue("jdbcIndex")
                 .setDescription("The name for a JDBC index variable.")
                 .build();
     }
 
-    private static ConfigurationSetting index() {
+    private static ConfigurationSetting indexVariable() {
         return ConfigurationSetting.builder()
-                .setName("index")
+                .setName("indexVariable")
                 .setType(TypicalTypes.STRING)
                 .setValue("index")
                 .setDescription("The name for a index variable.")
