@@ -53,10 +53,6 @@ watch: ##@hacking Watch for changes and build everything
 test: ##@hacking Test everything
 	mvn verify
 
-.PHONY: sign-waiver
-sign-waiver: ##@contributing Sign the WAIVER
-	echo 'use minisign'
-
 .PHONY: benchmarks
 benchmarks: ##@benchmarks Run all benchmarks
 	mvn verify --activate-profiles benchmarks
