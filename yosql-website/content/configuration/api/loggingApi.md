@@ -30,6 +30,10 @@ The [log4j](https://logging.apache.org/log4j/2.x/) based implementation for a lo
 
 The [slf4j](https://www.slf4j.org/) based implementation for a logging generator. All loggers use the [basePackageName](/configuration/repositories/basepackagename/) as their base name.
 
+### Option: 'SYSTEM'
+
+The [System.Logger](https://docs.oracle.com/javase/9/docs/api/java/lang/System.Logger.html) based implementation for a logging generator.
+
 ### Option: 'TINYLOG'
 
 The [Tinylog](https://tinylog.org/v2/) based implementation for a logging generator.
