@@ -18,9 +18,10 @@ public interface JdbcMethods {
 
     JdbcConnectionMethods connection();
 
-    JdbcResultSetMethods resultSet();
+    JdbcDatabaseMetaDataMethods databaseMetaData();
 
-    JdbcMetaDataMethods metaData();
+    JdbcResultSetMethods resultSet();
+    JdbcResultSetMetaDataMethods resultSetMetaData();
 
     JdbcStatementMethods statement();
 
@@ -42,6 +43,12 @@ public interface JdbcMethods {
         CodeBlock prepareStatement();
 
         CodeBlock prepareCallable();
+
+        CodeBlock getMetaData();
+    }
+
+    interface JdbcDatabaseMetaDataMethods {
+        CodeBlock getDatabaseProductName();
     }
 
     /**
@@ -58,7 +65,7 @@ public interface JdbcMethods {
      *
      * @see java.sql.ResultSetMetaData
      */
-    interface JdbcMetaDataMethods {
+    interface JdbcResultSetMetaDataMethods {
         CodeBlock getColumnCount();
     }
 

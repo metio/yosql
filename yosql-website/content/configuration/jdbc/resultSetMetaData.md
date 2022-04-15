@@ -1,5 +1,5 @@
 ---
-title: defaultConverter
+title: resultSetMetaData
 date: 2022-04-15
 menu:
   main:
@@ -10,7 +10,7 @@ tags:
   - jdbc
 ---
 
-The default converter to use, if no other is specified on a query itself.
+The name for a ResultSetMetaData variable.
 
 ## Configuration Options
 
@@ -22,6 +22,7 @@ The default converter to use, if no other is specified on a query itself.
 - [connection](../connection/): The name for a Connection variable.
 - [dataSource](../datasource/): The name for a DataSource variable.
 - [databaseMetaData](../databasemetadata/): The name for a DatabaseMetaData variable.
+- [defaultConverter](../defaultconverter/): The default converter to use, if no other is specified on a query itself.
 - [flowStateClassName](../flowstateclassname/): The class name of the flow-state class
 - [indexSuffix](../indexsuffix/): The name suffix to add for index lookup tables.
 - [indexVariable](../indexvariable/): The name for a index variable.
@@ -30,7 +31,6 @@ The default converter to use, if no other is specified on a query itself.
 - [rawSuffix](../rawsuffix/): The name suffix to add for raw SQL statements.
 - [resultRowClassName](../resultrowclassname/): The class name of the result-row class
 - [resultSet](../resultset/): The name for a ResultSet variable.
-- [resultSetMetaData](../resultsetmetadata/): The name for a ResultSetMetaData variable.
 - [resultStateClassName](../resultstateclassname/): The class name of the result-state class
 - [row](../row/): The name for a row variable.
 - [statement](../statement/): The name for a Statement variable.
@@ -52,18 +52,18 @@ In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look
 In order to use `YoSQL` on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
 ```console
-$ yosql --jdbc-default-converter=configValue
+$ yosql --jdbc-result-set-meta-data=configValue
 ```
 
 As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
 
 ```console
-$ yosql --default-converter=configValue
+$ yosql --result-set-meta-data=configValue
 ```
 
 ### Gradle
 
-In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/). The `defaultConverter` setting can be configured using Gradle in Kotlin syntax like this:
+In order to use `YoSQL` together with [Gradle](https://gradle.org/), take a look at the tooling [documentation for Gradle](/tooling/gradle/). The `resultSetMetaData` setting can be configured using Gradle in Kotlin syntax like this:
 
 ```kotlin
 plugins {
@@ -73,7 +73,7 @@ plugins {
 
 yosql {
   jdbc {
-    defaultConverter.set(configValue)
+    resultSetMetaData.set(configValue)
   }
 }
 ```
@@ -88,14 +88,14 @@ plugins {
 
 yosql {
   jdbc {
-    defaultConverter = configValue
+    resultSetMetaData = configValue
   }
 }
 ```
 
 ### Maven
 
-In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/). The `defaultConverter` setting can be configured using Maven like this:
+In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation for Maven](/tooling/maven/). The `resultSetMetaData` setting can be configured using Maven like this:
 
 ```xml
 <build>
@@ -106,7 +106,7 @@ In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a
       <version>0.0.0-SNAPSHOT</version>
       <configuration>
         <jdbc>
-          <defaultConverter>configValue</defaultConverter>
+          <resultSetMetaData>configValue</resultSetMetaData>
         </jdbc>
       </configuration>
     </plugin>

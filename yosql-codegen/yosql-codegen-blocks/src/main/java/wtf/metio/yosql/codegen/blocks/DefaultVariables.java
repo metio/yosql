@@ -12,7 +12,9 @@ import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.codegen.api.Variables;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
+import java.util.Arrays;
 import java.util.StringJoiner;
+import java.util.stream.Stream;
 
 /**
  * Default implementation of the {@link Variables} interface. Uses {@link JavaConfiguration} to determine whether to
@@ -67,12 +69,21 @@ public final class DefaultVariables implements Variables {
             final Class<?> variableClass,
             final String initializer,
             final Object... initializerArgs) {
+        return variable(name, TypeName.get(variableClass), initializer, initializerArgs);
+    }
+
+    @Override
+    public CodeBlock variable(
+            final String name,
+            final TypeName variableClass,
+            final String initializer,
+            final Object... initializerArgs) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = " + initializer);
         if (javaConfiguration.useVar()) {
-            builder.add(code.toString(), name, initializerArgs);
+            builder.add(code.toString(), Stream.concat(Stream.of(name), Arrays.stream(initializerArgs)).toArray());
         } else {
-            builder.add(code.toString(), variableClass, name, initializerArgs);
+            builder.add(code.toString(), Stream.concat(Stream.of(variableClass, name), Arrays.stream(initializerArgs)).toArray());
         }
         return builder.build();
     }

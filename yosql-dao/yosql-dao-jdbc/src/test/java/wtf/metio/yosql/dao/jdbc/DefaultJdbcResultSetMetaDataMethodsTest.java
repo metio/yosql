@@ -13,19 +13,19 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.testing.configs.Jdbc;
 
 @DisplayName("DefaultJdbcMetaDataMethods")
-class DefaultJdbcMetaDataMethodsTest {
+class DefaultJdbcResultSetMetaDataMethodsTest {
 
     @Test
     void getColumnCount() {
         // given
-        final var generator = new DefaultJdbcMetaDataMethods(Jdbc.defaults());
+        final var generator = new DefaultJdbcResultSetMetaDataMethods(Jdbc.defaults());
 
         // when
         final var columnCount = generator.getColumnCount();
 
         // then
         Assertions.assertEquals("""
-                metaData.getColumnCount()""", columnCount.toString());
+                resultSetMetaData.getColumnCount()""", columnCount.toString());
     }
 
 }

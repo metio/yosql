@@ -26,8 +26,9 @@ class DefaultJdbcMethodsTest {
         generator = new DefaultJdbcMethods(
                 new DefaultJdbcDataSourceMethods(config),
                 new DefaultJdbcConnectionMethods(Blocks.names(), config),
+                new DefaultJdbcDatabaseMetaDataMethods(config),
                 new DefaultJdbcResultSetMethods(config),
-                new DefaultJdbcMetaDataMethods(config),
+                new DefaultJdbcResultSetMetaDataMethods(config),
                 new DefaultJdbcStatementMethods(config));
     }
 
@@ -43,7 +44,7 @@ class DefaultJdbcMethodsTest {
 
     @Test
     void metaData() {
-        assertNotNull(generator.metaData());
+        assertNotNull(generator.resultSetMetaData());
     }
 
     @Test

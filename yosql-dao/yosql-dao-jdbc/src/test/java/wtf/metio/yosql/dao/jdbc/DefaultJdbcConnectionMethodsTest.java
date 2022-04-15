@@ -38,4 +38,10 @@ class DefaultJdbcConnectionMethodsTest {
                 connection.prepareCall(query)""", generator.prepareCallable().toString());
     }
 
+    @Test
+    void getMetaData() {
+        Assertions.assertEquals("""
+                connection.getMetaData()""", generator.getMetaData().toString());
+    }
+
 }

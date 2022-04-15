@@ -57,8 +57,8 @@ public class DefaultJdbcBlocksModule {
     }
 
     @Provides
-    public JdbcMethods.JdbcMetaDataMethods provideMetaData(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcMetaDataMethods(runtimeConfiguration.jdbc());
+    public JdbcMethods.JdbcResultSetMetaDataMethods provideMetaData(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcResultSetMetaDataMethods(runtimeConfiguration.jdbc());
     }
 
     @Provides
@@ -67,13 +67,19 @@ public class DefaultJdbcBlocksModule {
     }
 
     @Provides
+    public JdbcMethods.JdbcDatabaseMetaDataMethods provideDatabaseMetaData(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcDatabaseMetaDataMethods(runtimeConfiguration.jdbc());
+    }
+
+    @Provides
     public JdbcMethods provideJdbcMethods(
             final JdbcMethods.JdbcDataSourceMethods dataSource,
             final JdbcMethods.JdbcConnectionMethods connection,
+            final JdbcMethods.JdbcDatabaseMetaDataMethods databaseMetaData,
             final JdbcMethods.JdbcResultSetMethods resultSet,
-            final JdbcMethods.JdbcMetaDataMethods metaData,
+            final JdbcMethods.JdbcResultSetMetaDataMethods resultSetMetaData,
             final JdbcMethods.JdbcStatementMethods statement) {
-        return new DefaultJdbcMethods(dataSource, connection, resultSet, metaData, statement);
+        return new DefaultJdbcMethods(dataSource, connection, databaseMetaData, resultSet, resultSetMetaData, statement);
     }
 
     @Provides

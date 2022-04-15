@@ -102,7 +102,7 @@ public class FlowStateGenerator {
                 .addParameter(jdbcParameters.columnCount())
                 .addStatement("super($N, $N, $N)",
                         runtimeConfiguration.jdbc().resultSet(),
-                        runtimeConfiguration.jdbc().metaData(),
+                        runtimeConfiguration.jdbc().resultSetMetaData(),
                         runtimeConfiguration.jdbc().columnCount())
                 .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().connection()))
                 .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().statement()))

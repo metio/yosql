@@ -15,7 +15,6 @@ import wtf.metio.yosql.codegen.api.Variables;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
-import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
 import wtf.metio.yosql.models.immutables.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
@@ -81,14 +80,14 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock readMetaData() {
-        return variables.variableStatement(config.metaData(), ResultSetMetaData.class,
+        return variables.variableStatement(config.resultSetMetaData(), ResultSetMetaData.class,
                 jdbcMethods.resultSet().getMetaData());
     }
 
     @Override
     public CodeBlock readColumnCount() {
         return variables.variableStatement(config.columnCount(), int.class,
-                jdbcMethods.metaData().getColumnCount());
+                jdbcMethods.resultSetMetaData().getColumnCount());
     }
 
     @Override
@@ -175,16 +174,17 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 CodeBlock.builder()
                         .add(setBatchParameters(config))
                         .addStatement(jdbcMethods.statement().addBatch())
-                        .build()
-        );
+                        .build());
     }
 
     @Override
     public CodeBlock pickVendorQuery(final List<SqlStatement> sqlStatements) {
         final var builder = CodeBlock.builder();
         if (sqlStatements.size() > 1) {
-            builder.addStatement("final $T $N = $N.getMetaData().getDatabaseProductName()",
-                    String.class, names.databaseProductName(), config.connection())
+            builder.addStatement(variables.variable(config.databaseMetaData(), DatabaseMetaData.class,
+                    jdbcMethods.connection().getMetaData()));
+            builder.addStatement(variables.variable(names.databaseProductName(), String.class,
+                            jdbcMethods.databaseMetaData().getDatabaseProductName()))
                     .add(logging.vendorDetected());
             if (logging.isEnabled()) {
                 builder.addStatement("$T $N = null", String.class, names.rawQuery());
@@ -223,16 +223,16 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         } else {
             final var config = sqlStatements.get(0).getConfiguration();
             final var query = jdbcFields.constantSqlStatementFieldName(config);
-            builder.addStatement("final $T $N = $N", String.class, names.query(), query)
+            builder.addStatement(variables.variable(names.query(), String.class, "$N", query))
                     .add(logging.queryPicked(query));
             if (logging.isEnabled()) {
                 final var rawQuery = jdbcFields.constantRawSqlStatementFieldName(config);
-                builder.addStatement("final $T $N = $N", String.class, names.rawQuery(), rawQuery);
+                builder.addStatement(variables.variable(names.rawQuery(), String.class, "$N", rawQuery));
             }
             if (Buckets.hasEntries(config.parameters())) {
                 final var indexFieldName = jdbcFields.constantSqlStatementParameterIndexFieldName(config);
-                builder.addStatement("final $T $N = $N", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
-                        this.config.indexVariable(), indexFieldName)
+                builder.addStatement(variables.variable(this.config.indexVariable(),
+                                TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, "$N", indexFieldName))
                         .add(logging.indexPicked(indexFieldName));
             }
         }
@@ -257,7 +257,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         final var builder = CodeBlock.builder();
         if (LoggingApis.NONE != runtimeConfiguration.api().loggingApi()) {
             builder.beginControlFlow("if ($L)", logging.shouldLog());
-            builder.add("final $T $N = $N", String.class, names.executedQuery(), names.rawQuery());
+            builder.add(variables.variable(names.executedQuery(), String.class, "$N", names.rawQuery()));
             Stream.ofNullable(sqlConfiguration.parameters())
                     .flatMap(Collection::stream)
                     .forEach(parameter -> {
@@ -284,7 +284,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         final var builder = CodeBlock.builder();
         if (LoggingApis.NONE != runtimeConfiguration.api().loggingApi()) {
             builder.beginControlFlow("if ($L)", logging.shouldLog());
-            builder.add("final $T $N = $N", String.class, names.executedQuery(), names.rawQuery());
+            builder.add(variables.variable(names.executedQuery(), String.class, "$N", names.rawQuery()));
             Stream.ofNullable(sqlConfiguration.parameters())
                     .flatMap(Collection::stream)
                     .forEach(parameter -> {
@@ -374,7 +374,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 code("new $T($N, $N, $N)",
                         config.resultStateClass(),
                         config.resultSet(),
-                        config.metaData(),
+                        config.resultSetMetaData(),
                         config.columnCount()));
     }
 
@@ -385,7 +385,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                         config.connection(),
                         config.statement(),
                         config.resultSet(),
-                        config.metaData(),
+                        config.resultSetMetaData(),
                         config.columnCount())
                 .build();
     }
@@ -410,12 +410,14 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
         if (parameters != null && !parameters.isEmpty()) {
             for (final var parameter : config.parameters()) {
-                builder.beginControlFlow("for (final int $N : $N.get($S))",
-                        this.config.jdbcIndexVariable(),
-                        this.config.indexVariable(), parameter.name())
-                        .add(CodeBlock.builder().addStatement(codeStatement,
-                                parameterSetter.apply(parameter.name())).build())
-                        .endControlFlow();
+                builder.add(controlFlows.forLoop(
+                        code("final int $N : $N.get($S)",
+                                this.config.jdbcIndexVariable(),
+                                this.config.indexVariable(),
+                                parameter.name()),
+                        CodeBlock.builder()
+                                .addStatement(codeStatement, parameterSetter.apply(parameter.name()))
+                                .build()));
             }
         }
 

@@ -35,4 +35,11 @@ public final class DefaultJdbcConnectionMethods implements JdbcMethods.JdbcConne
                 .build();
     }
 
+    @Override
+    public CodeBlock getMetaData() {
+        return CodeBlock.builder()
+                .add("$N.getMetaData()", jdbcNames.connection())
+                .build();
+    }
+
 }

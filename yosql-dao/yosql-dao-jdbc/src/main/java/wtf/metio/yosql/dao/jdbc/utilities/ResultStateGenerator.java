@@ -78,7 +78,7 @@ public class ResultStateGenerator {
     }
 
     private FieldSpec metaDataField() {
-        return FieldSpec.builder(ResultSetMetaData.class, runtimeConfiguration.jdbc().metaData())
+        return FieldSpec.builder(ResultSetMetaData.class, runtimeConfiguration.jdbc().resultSetMetaData())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }
@@ -105,7 +105,7 @@ public class ResultStateGenerator {
                 .addParameter(jdbcParameters.metaData())
                 .addParameter(jdbcParameters.columnCount())
                 .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().resultSet()))
-                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().metaData()))
+                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().resultSetMetaData()))
                 .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().columnCount()))
                 .build();
     }
@@ -123,7 +123,7 @@ public class ResultStateGenerator {
                 .returns(String.class)
                 .addParameter(jdbcParameters.index())
                 .addException(SQLException.class)
-                .addStatement("return $N.getColumnName($N)", runtimeConfiguration.jdbc().metaData(),
+                .addStatement("return $N.getColumnName($N)", runtimeConfiguration.jdbc().resultSetMetaData(),
                         runtimeConfiguration.jdbc().indexVariable())
                 .build();
     }

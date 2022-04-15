@@ -10,18 +10,18 @@ package wtf.metio.yosql.dao.jdbc;
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 
-public final class DefaultJdbcMetaDataMethods implements JdbcMethods.JdbcMetaDataMethods {
+public class DefaultJdbcDatabaseMetaDataMethods implements JdbcMethods.JdbcDatabaseMetaDataMethods {
 
     private final JdbcConfiguration jdbcNames;
 
-    public DefaultJdbcMetaDataMethods(final JdbcConfiguration jdbcNames) {
+    public DefaultJdbcDatabaseMetaDataMethods(final JdbcConfiguration jdbcNames) {
         this.jdbcNames = jdbcNames;
     }
 
     @Override
-    public CodeBlock getColumnCount() {
+    public CodeBlock getDatabaseProductName() {
         return CodeBlock.builder()
-                .add("$N.getColumnCount()", jdbcNames.metaData())
+                .add("$N.getDatabaseProductName()", jdbcNames.databaseMetaData())
                 .build();
     }
 

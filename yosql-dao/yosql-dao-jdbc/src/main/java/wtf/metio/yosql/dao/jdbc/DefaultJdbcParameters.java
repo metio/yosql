@@ -53,7 +53,7 @@ public final class DefaultJdbcParameters implements JdbcParameters {
 
     @Override
     public ParameterSpec metaData() {
-        return parameters.parameter(ResultSetMetaData.class, names.metaData());
+        return parameters.parameter(ResultSetMetaData.class, names.resultSetMetaData());
     }
 
     @Override

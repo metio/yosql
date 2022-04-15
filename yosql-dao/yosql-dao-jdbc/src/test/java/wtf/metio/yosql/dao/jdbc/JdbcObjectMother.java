@@ -24,8 +24,9 @@ public final class JdbcObjectMother {
         return new DefaultJdbcMethods(
                 new DefaultJdbcDataSourceMethods(config),
                 new DefaultJdbcConnectionMethods(Blocks.names(), config),
+                new DefaultJdbcDatabaseMetaDataMethods(config),
                 new DefaultJdbcResultSetMethods(config),
-                new DefaultJdbcMetaDataMethods(config),
+                new DefaultJdbcResultSetMetaDataMethods(config),
                 new DefaultJdbcStatementMethods(config));
     }
 

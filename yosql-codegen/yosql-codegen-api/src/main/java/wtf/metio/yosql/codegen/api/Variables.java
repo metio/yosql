@@ -66,5 +66,6 @@ public interface Variables {
 
     // TODO: obsolete?
     CodeBlock variable(String name, Class<?> variableClass, String initializer, Object... initializerArgs);
+    CodeBlock variable(String name, TypeName variableClass, String initializer, Object... initializerArgs);
 
 }

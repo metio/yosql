@@ -48,10 +48,10 @@ class JdbcBatchMethodGeneratorTest {
                     public final int[] queryDataBatch(final java.lang.Object[] test, final int[] id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryDataBatch");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (int batch = 0; batch < test.length; batch++) {
@@ -64,7 +64,7 @@ class JdbcBatchMethodGeneratorTest {
                             statement.addBatch();
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
                               .replace(":id", java.util.Arrays.toString(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -438,10 +438,10 @@ class JdbcBatchMethodGeneratorTest {
                     public final int[] queryDataBatch(final java.lang.Object[] test, final int[] id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryDataBatch");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (int batch = 0; batch < test.length; batch++) {
@@ -454,7 +454,7 @@ class JdbcBatchMethodGeneratorTest {
                             statement.addBatch();
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
                               .replace(":id", java.util.Arrays.toString(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -503,10 +503,10 @@ class JdbcBatchMethodGeneratorTest {
                     public final int[] queryDataBatch(final java.lang.Object[] test, final int[] id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryDataBatch");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (int batch = 0; batch < test.length; batch++) {
@@ -519,7 +519,7 @@ class JdbcBatchMethodGeneratorTest {
                             statement.addBatch();
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
                               .replace(":id", java.util.Arrays.toString(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -568,10 +568,10 @@ class JdbcBatchMethodGeneratorTest {
                     public final int[] queryDataBatch(final java.lang.Object[] test, final int[] id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryDataBatch");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (int batch = 0; batch < test.length; batch++) {
@@ -584,7 +584,7 @@ class JdbcBatchMethodGeneratorTest {
                             statement.addBatch();
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
                               .replace(":id", java.util.Arrays.toString(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));

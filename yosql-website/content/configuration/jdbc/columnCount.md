@@ -20,16 +20,17 @@ The name for a ColumnCount variable.
 - [columnLabel](../columnlabel/): The name for a ColumnLabel variable.
 - [connection](../connection/): The name for a Connection variable.
 - [dataSource](../datasource/): The name for a DataSource variable.
+- [databaseMetaData](../databasemetadata/): The name for a DatabaseMetaData variable.
 - [defaultConverter](../defaultconverter/): The default converter to use, if no other is specified on a query itself.
 - [flowStateClassName](../flowstateclassname/): The class name of the flow-state class
 - [indexSuffix](../indexsuffix/): The name suffix to add for index lookup tables.
 - [indexVariable](../indexvariable/): The name for a index variable.
 - [jdbcIndexVariable](../jdbcindexvariable/): The name for a JDBC index variable.
 - [list](../list/): The name for a List variable.
-- [metaData](../metadata/): The name for a MetaData variable.
 - [rawSuffix](../rawsuffix/): The name suffix to add for raw SQL statements.
 - [resultRowClassName](../resultrowclassname/): The class name of the result-row class
 - [resultSet](../resultset/): The name for a ResultSet variable.
+- [resultSetMetaData](../resultsetmetadata/): The name for a ResultSetMetaData variable.
 - [resultStateClassName](../resultstateclassname/): The class name of the result-state class
 - [row](../row/): The name for a row variable.
 - [statement](../statement/): The name for a Statement variable.

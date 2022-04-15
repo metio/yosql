@@ -14,20 +14,23 @@ public final class DefaultJdbcMethods implements JdbcMethods {
 
     private final JdbcDataSourceMethods dataSource;
     private final JdbcConnectionMethods connection;
+    private final JdbcDatabaseMetaDataMethods databaseMetaData;
     private final JdbcResultSetMethods resultSet;
-    private final JdbcMetaDataMethods metaData;
+    private final JdbcResultSetMetaDataMethods resultSetMetaData;
     private final JdbcStatementMethods statement;
 
     public DefaultJdbcMethods(
             final JdbcDataSourceMethods dataSource,
             final JdbcConnectionMethods connection,
+            final JdbcDatabaseMetaDataMethods databaseMetaData,
             final JdbcResultSetMethods resultSet,
-            final JdbcMetaDataMethods metaData,
+            final JdbcResultSetMetaDataMethods resultSetMetaData,
             final JdbcStatementMethods statement) {
         this.dataSource = dataSource;
         this.connection = connection;
+        this.databaseMetaData = databaseMetaData;
         this.resultSet = resultSet;
-        this.metaData = metaData;
+        this.resultSetMetaData = resultSetMetaData;
         this.statement = statement;
     }
 
@@ -42,13 +45,18 @@ public final class DefaultJdbcMethods implements JdbcMethods {
     }
 
     @Override
+    public JdbcDatabaseMetaDataMethods databaseMetaData() {
+        return databaseMetaData;
+    }
+
+    @Override
     public JdbcResultSetMethods resultSet() {
         return resultSet;
     }
 
     @Override
-    public JdbcMetaDataMethods metaData() {
-        return metaData;
+    public JdbcResultSetMetaDataMethods resultSetMetaData() {
+        return resultSetMetaData;
     }
 
     @Override

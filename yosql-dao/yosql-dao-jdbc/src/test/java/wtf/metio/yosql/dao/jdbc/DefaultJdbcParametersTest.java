@@ -53,7 +53,7 @@ class DefaultJdbcParametersTest {
     @Test
     void metaData() {
         Assertions.assertEquals("""
-                final java.sql.ResultSetMetaData metaData""", generator.metaData().toString());
+                final java.sql.ResultSetMetaData resultSetMetaData""", generator.metaData().toString());
     }
 
     @Test

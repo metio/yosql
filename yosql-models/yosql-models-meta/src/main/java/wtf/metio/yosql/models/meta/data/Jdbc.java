@@ -31,7 +31,8 @@ public final class Jdbc {
                 .addSettings(dataSource())
                 .addSettings(connection())
                 .addSettings(statement())
-                .addSettings(metaData())
+                .addSettings(databaseMetaData())
+                .addSettings(resultSetMetaData())
                 .addSettings(resultSet())
                 .addSettings(columnCount())
                 .addSettings(columnLabel())
@@ -95,12 +96,21 @@ public final class Jdbc {
                 .build();
     }
 
-    private static ConfigurationSetting metaData() {
+    private static ConfigurationSetting resultSetMetaData() {
         return ConfigurationSetting.builder()
-                .setName("metaData")
+                .setName("resultSetMetaData")
                 .setType(TypicalTypes.STRING)
-                .setValue("metaData")
-                .setDescription("The name for a MetaData variable.")
+                .setValue("resultSetMetaData")
+                .setDescription("The name for a ResultSetMetaData variable.")
+                .build();
+    }
+
+    private static ConfigurationSetting databaseMetaData() {
+        return ConfigurationSetting.builder()
+                .setName("databaseMetaData")
+                .setType(TypicalTypes.STRING)
+                .setValue("databaseMetaData")
+                .setDescription("The name for a DatabaseMetaData variable.")
                 .build();
     }
 

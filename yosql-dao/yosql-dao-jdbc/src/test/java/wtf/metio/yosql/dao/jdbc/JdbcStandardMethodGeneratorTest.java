@@ -52,10 +52,10 @@ class JdbcStandardMethodGeneratorTest {
                         final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -65,15 +65,15 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final var resultSet = statement.executeQuery()) {
-                            final var metaData = resultSet.getMetaData();
-                            final var columnCount = metaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final var resultSetMetaData = resultSet.getMetaData();
+                            final var columnCount = resultSetMetaData.getColumnCount();
+                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -112,10 +112,10 @@ class JdbcStandardMethodGeneratorTest {
                     public final int queryData(final java.lang.Object test, final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -125,7 +125,7 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -164,10 +164,10 @@ class JdbcStandardMethodGeneratorTest {
                         final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -177,15 +177,15 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final var resultSet = statement.executeQuery()) {
-                            final var metaData = resultSet.getMetaData();
-                            final var columnCount = metaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final var resultSetMetaData = resultSet.getMetaData();
+                            final var columnCount = resultSetMetaData.getColumnCount();
+                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -257,9 +257,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -369,9 +369,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -443,9 +443,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -555,9 +555,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -629,9 +629,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -741,9 +741,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -815,9 +815,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -927,9 +927,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -1001,9 +1001,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -1113,9 +1113,9 @@ class JdbcStandardMethodGeneratorTest {
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
-                            final java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
-                            final int columnCount = metaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                            final int columnCount = resultSetMetaData.getColumnCount();
+                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -1168,10 +1168,10 @@ class JdbcStandardMethodGeneratorTest {
                         final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1181,15 +1181,15 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final var resultSet = statement.executeQuery()) {
-                            final var metaData = resultSet.getMetaData();
-                            final var columnCount = metaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final var resultSetMetaData = resultSet.getMetaData();
+                            final var columnCount = resultSetMetaData.getColumnCount();
+                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -1228,10 +1228,10 @@ class JdbcStandardMethodGeneratorTest {
                     public final int queryData(final java.lang.Object test, final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1241,7 +1241,7 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -1280,10 +1280,10 @@ class JdbcStandardMethodGeneratorTest {
                         final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1293,15 +1293,15 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final var resultSet = statement.executeQuery()) {
-                            final var metaData = resultSet.getMetaData();
-                            final var columnCount = metaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final var resultSetMetaData = resultSet.getMetaData();
+                            final var columnCount = resultSetMetaData.getColumnCount();
+                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -1354,10 +1354,10 @@ class JdbcStandardMethodGeneratorTest {
                         final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1367,15 +1367,15 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final var resultSet = statement.executeQuery()) {
-                            final var metaData = resultSet.getMetaData();
-                            final var columnCount = metaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final var resultSetMetaData = resultSet.getMetaData();
+                            final var columnCount = resultSetMetaData.getColumnCount();
+                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -1414,10 +1414,10 @@ class JdbcStandardMethodGeneratorTest {
                     public final int queryData(final java.lang.Object test, final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1427,7 +1427,7 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -1466,10 +1466,10 @@ class JdbcStandardMethodGeneratorTest {
                         final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1479,15 +1479,15 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final var resultSet = statement.executeQuery()) {
-                            final var metaData = resultSet.getMetaData();
-                            final var columnCount = metaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final var resultSetMetaData = resultSet.getMetaData();
+                            final var columnCount = resultSetMetaData.getColumnCount();
+                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -1540,10 +1540,10 @@ class JdbcStandardMethodGeneratorTest {
                         final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1553,15 +1553,15 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final var resultSet = statement.executeQuery()) {
-                            final var metaData = resultSet.getMetaData();
-                            final var columnCount = metaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final var resultSetMetaData = resultSet.getMetaData();
+                            final var columnCount = resultSetMetaData.getColumnCount();
+                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));
@@ -1600,10 +1600,10 @@ class JdbcStandardMethodGeneratorTest {
                     public final int queryData(final java.lang.Object test, final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1613,7 +1613,7 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -1652,10 +1652,10 @@ class JdbcStandardMethodGeneratorTest {
                         final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
-                        final java.lang.String query = QUERY_DATA;
+                        final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                        final java.lang.String rawQuery = QUERY_DATA_RAW;
-                        final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                        final var rawQuery = QUERY_DATA_RAW;
+                        final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
@@ -1665,15 +1665,15 @@ class JdbcStandardMethodGeneratorTest {
                             statement.setObject(jdbcIndex, id);
                           }
                           if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                            final java.lang.String executedQuery = rawQuery
+                            final var executedQuery = rawQuery
                               .replace(":test", test == null ? "null" : test.toString())
                               .replace(":id", java.lang.String.valueOf(id));
                             LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                           }
                           try (final var resultSet = statement.executeQuery()) {
-                            final var metaData = resultSet.getMetaData();
-                            final var columnCount = metaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                            final var resultSetMetaData = resultSet.getMetaData();
+                            final var columnCount = resultSetMetaData.getColumnCount();
+                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.asUserType(state));

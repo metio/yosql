@@ -49,7 +49,7 @@ class DefaultJdbcBlocksTest {
     @Test
     void readMetaData() {
         Assertions.assertEquals("""
-                        final var metaData = resultSet.getMetaData();
+                        final var resultSetMetaData = resultSet.getMetaData();
                         """,
                 generator.readMetaData().toString());
     }
@@ -57,7 +57,7 @@ class DefaultJdbcBlocksTest {
     @Test
     void readColumnCount() {
         Assertions.assertEquals("""
-                        final var columnCount = metaData.getColumnCount();
+                        final var columnCount = resultSetMetaData.getColumnCount();
                         """,
                 generator.readColumnCount().toString());
     }
@@ -157,10 +157,10 @@ class DefaultJdbcBlocksTest {
     @Test
     void pickVendorQuery() {
         Assertions.assertEquals("""
-                final java.lang.String query = QUERY_DATA;
+                final var query = QUERY_DATA;
                 LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
-                final java.lang.String rawQuery = QUERY_DATA_RAW;
-                final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                final var rawQuery = QUERY_DATA_RAW;
+                final var index = QUERY_DATA_INDEX;
                 LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                 """, generator.pickVendorQuery(Sql.sqlStatements()).toString());
     }
@@ -169,7 +169,7 @@ class DefaultJdbcBlocksTest {
     void logExecutedQuery() {
         Assertions.assertEquals("""
                 if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                  final java.lang.String executedQuery = rawQuery
+                  final var executedQuery = rawQuery
                     .replace(":test", test == null ? "null" : test.toString())
                     .replace(":id", java.lang.String.valueOf(id));
                   LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -181,7 +181,7 @@ class DefaultJdbcBlocksTest {
     void logExecutedBatchQuery() {
         Assertions.assertEquals("""
                 if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                  final java.lang.String executedQuery = rawQuery
+                  final var executedQuery = rawQuery
                     .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
                     .replace(":id", java.util.Arrays.toString(id));
                   LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
@@ -214,7 +214,7 @@ class DefaultJdbcBlocksTest {
     @Test
     void createResultState() {
         Assertions.assertEquals("""
-                        final var state = new com.example.persistence.util.ResultState(resultSet, metaData, columnCount);
+                        final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                         """,
                 generator.createResultState().toString());
     }
@@ -222,7 +222,7 @@ class DefaultJdbcBlocksTest {
     @Test
     void returnNewFlowState() {
         Assertions.assertEquals("""
-                return new com.example.persistence.util.FlowState(connection, statement, resultSet, metaData, columnCount);
+                return new com.example.persistence.util.FlowState(connection, statement, resultSet, resultSetMetaData, columnCount);
                 """, generator.returnNewFlowState().toString());
     }
 
