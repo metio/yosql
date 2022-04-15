@@ -46,21 +46,23 @@ public final class JulLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", names.logger(), "Picked query [%s]", fieldName)
+                .addStatement("$N.finer(() -> $T.format($S, $S))", names.logger(), String.class,
+                        "Picked query [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock indexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", names.logger(), "Picked index [%s]", fieldName)
+                .addStatement("$N.finer(() -> $T.format($S, $S))", names.logger(), String.class,
+                        "Picked index [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock vendorQueryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", names.logger(),
+                .addStatement("$N.finer(() -> $T.format($S, $S))", names.logger(), String.class,
                         "Picked query [%s]", fieldName)
                 .build();
     }
@@ -68,7 +70,7 @@ public final class JulLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorIndexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.finer(() -> String.format($S, $S))", names.logger(),
+                .addStatement("$N.finer(() -> $T.format($S, $S))", names.logger(), String.class,
                         "Picked index [%s]", fieldName)
                 .build();
     }

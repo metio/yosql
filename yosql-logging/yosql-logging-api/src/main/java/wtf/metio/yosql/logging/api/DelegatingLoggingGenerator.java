@@ -16,6 +16,9 @@ import wtf.metio.yosql.models.immutables.ApiConfiguration;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Delegates logging statement generation to a set of {@link LoggingGenerator}s.
+ */
 public final class DelegatingLoggingGenerator implements LoggingGenerator {
 
     private final ApiConfiguration apiConfiguration;

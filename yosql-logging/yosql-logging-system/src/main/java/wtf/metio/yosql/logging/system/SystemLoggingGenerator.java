@@ -9,6 +9,8 @@ package wtf.metio.yosql.logging.system;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
+import wtf.metio.yosql.codegen.api.Fields;
+import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
 
@@ -19,59 +21,90 @@ import java.util.Optional;
  */
 public final class SystemLoggingGenerator implements LoggingGenerator {
 
+    private final Names names;
+    private final Fields fields;
+
+    public SystemLoggingGenerator(final Names names, final Fields fields) {
+        this.names = names;
+        this.fields = fields;
+    }
+
     @Override
     public Optional<FieldSpec> logger(final TypeName repoClass) {
-        return Optional.empty();
+        return Optional.of(fields.prepareConstant(System.Logger.class, names.logger())
+                .initializer("$T.getLogger($S)", System.Logger.class, repoClass.toString())
+                .build());
     }
 
     @Override
     public boolean supports(final LoggingApis api) {
-        return LoggingApis.NONE.equals(api);
+        return LoggingApis.SYSTEM.equals(api);
     }
 
     @Override
     public CodeBlock queryPicked(final String fieldName) {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("$N.log($T.DEBUG, $T.format($S, $S))", names.logger(), System.Logger.Level.class,
+                        String.class, "Picked query [%s]", fieldName)
+                .build();
     }
 
     @Override
     public CodeBlock indexPicked(final String fieldName) {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("$N.log($T.DEBUG, $T.format($S, $S))", names.logger(), System.Logger.Level.class,
+                        String.class, "Picked index [%s]", fieldName)
+                .build();
     }
 
     @Override
     public CodeBlock vendorQueryPicked(final String fieldName) {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("$N.log($T.DEBUG, $T.format($S, $S))", names.logger(), System.Logger.Level.class,
+                        String.class, "Picked query [%s]", fieldName)
+                .build();
     }
 
     @Override
     public CodeBlock vendorIndexPicked(final String fieldName) {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("$N.log($T.DEBUG, $T.format($S, $S))", names.logger(), System.Logger.Level.class,
+                        String.class, "Picked index [%s]", fieldName)
+                .build();
     }
 
     @Override
     public CodeBlock vendorDetected() {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("$N.log($T.INFO, $T.format($S, $S))", names.logger(), System.Logger.Level.class,
+                        String.class, "Detected database vendor [%s]", names.databaseProductName())
+                .build();
     }
 
     @Override
     public CodeBlock executingQuery() {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("$N.log($T.INFO, $T.format($S, $N))", names.logger(), System.Logger.Level.class,
+                        String.class, "Executing query [%s]", names.executedQuery())
+                .build();
     }
 
     @Override
     public CodeBlock shouldLog() {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder().add("$N.isLoggable($T.INFO)", names.logger(), System.Logger.Level.class).build();
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     @Override
     public CodeBlock entering(final String repository, final String method) {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("$N.log($T.DEBUG, $T.format($S, $S, $S))", names.logger(), System.Logger.Level.class,
+                        String.class, "Entering [%s#%s]", repository, method)
+                .build();
     }
 
 }

@@ -40,28 +40,28 @@ final class Log4jLoggingGeneratorTest {
     @Test
     void queryPicked() {
         Assertions.assertEquals("""
-                LOG.debug(() -> String.format("Picked query [%s]", "test"));
+                LOG.debug(() -> java.lang.String.format("Picked query [%s]", "test"));
                 """, generator.queryPicked("test").toString());
     }
 
     @Test
     void indexPicked() {
         Assertions.assertEquals("""
-                LOG.debug(() -> String.format("Picked index [%s]", "test"));
+                LOG.debug(() -> java.lang.String.format("Picked index [%s]", "test"));
                 """, generator.indexPicked("test").toString());
     }
 
     @Test
     void vendorQueryPicked() {
         Assertions.assertEquals("""
-                LOG.debug(() -> String.format("Picked query [%s]", "test"));
+                LOG.debug(() -> java.lang.String.format("Picked query [%s]", "test"));
                 """, generator.vendorQueryPicked("test").toString());
     }
 
     @Test
     void vendorIndexPicked() {
         Assertions.assertEquals("""
-                LOG.debug(() -> String.format("Picked index [%s]", "test"));
+                LOG.debug(() -> java.lang.String.format("Picked index [%s]", "test"));
                 """, generator.vendorIndexPicked("test").toString());
     }
 

@@ -47,14 +47,15 @@ public final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock queryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(), "Picked query [%s]", fieldName)
+                .addStatement("$N.debug(() -> $T.format($S, $S))", names.logger(), String.class,
+                        "Picked query [%s]", fieldName)
                 .build();
     }
 
     @Override
     public CodeBlock indexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(),
+                .addStatement("$N.debug(() -> $T.format($S, $S))", names.logger(), String.class,
                         "Picked index [%s]", fieldName)
                 .build();
     }
@@ -62,7 +63,7 @@ public final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorQueryPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(),
+                .addStatement("$N.debug(() -> $T.format($S, $S))", names.logger(), String.class,
                         "Picked query [%s]", fieldName)
                 .build();
     }
@@ -70,7 +71,7 @@ public final class Log4jLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorIndexPicked(final String fieldName) {
         return CodeBlock.builder()
-                .addStatement("$N.debug(() -> String.format($S, $S))", names.logger(),
+                .addStatement("$N.debug(() -> $T.format($S, $S))", names.logger(), String.class,
                         "Picked index [%s]", fieldName)
                 .build();
     }

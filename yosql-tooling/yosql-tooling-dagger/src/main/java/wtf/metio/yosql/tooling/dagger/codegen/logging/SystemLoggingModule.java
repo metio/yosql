@@ -9,6 +9,8 @@ package wtf.metio.yosql.tooling.dagger.codegen.logging;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
+import wtf.metio.yosql.codegen.api.Fields;
+import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.system.SystemLoggingGenerator;
 
@@ -20,8 +22,10 @@ public class SystemLoggingModule {
 
     @IntoSet
     @Provides
-    public LoggingGenerator provideNoOpLoggingGenerator() {
-        return new SystemLoggingGenerator();
+    public LoggingGenerator provideNoOpLoggingGenerator(
+            final Names names,
+            final Fields fields) {
+        return new SystemLoggingGenerator(names, fields);
     }
 
 }

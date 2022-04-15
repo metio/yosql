@@ -27,7 +27,7 @@ public final class Loggers {
         generators.add(new JulLoggingGenerator(Blocks.names(), Blocks.fields()));
         generators.add(new Log4jLoggingGenerator(Blocks.names(), Blocks.fields()));
         generators.add(new Slf4jLoggingGenerator(Blocks.names(), Blocks.fields()));
-        generators.add(new SystemLoggingGenerator());
+        generators.add(new SystemLoggingGenerator(Blocks.names(), Blocks.fields()));
         generators.add(new ThatsInteresingLoggingGenerator());
         generators.add(new NoOpLoggingGenerator());
         return new DelegatingLoggingGenerator(Apis.jul(), generators);

@@ -158,10 +158,10 @@ class DefaultJdbcBlocksTest {
     void pickVendorQuery() {
         Assertions.assertEquals("""
                 final java.lang.String query = QUERY_DATA;
-                LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                 final java.lang.String rawQuery = QUERY_DATA_RAW;
                 final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                 """, generator.pickVendorQuery(Sql.sqlStatements()).toString());
     }
 

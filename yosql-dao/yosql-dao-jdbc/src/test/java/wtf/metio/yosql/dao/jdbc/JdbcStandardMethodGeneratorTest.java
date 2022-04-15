@@ -53,10 +53,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -113,10 +113,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -165,10 +165,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -239,10 +239,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -299,10 +299,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -351,10 +351,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.CallableStatement statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -425,10 +425,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -485,10 +485,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -537,10 +537,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.CallableStatement statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -611,10 +611,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -671,10 +671,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -723,10 +723,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.CallableStatement statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -797,10 +797,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -857,10 +857,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -909,10 +909,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.CallableStatement statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -983,10 +983,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1043,10 +1043,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1095,10 +1095,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final java.sql.Connection connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final java.sql.CallableStatement statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1169,10 +1169,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1229,10 +1229,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1281,10 +1281,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1355,10 +1355,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1415,10 +1415,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1467,10 +1467,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1541,10 +1541,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1601,10 +1601,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareStatement(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);
@@ -1653,10 +1653,10 @@ class JdbcStandardMethodGeneratorTest {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
                       try (final var connection = dataSource.getConnection()) {
                         final java.lang.String query = QUERY_DATA;
-                        LOG.finer(() -> String.format("Picked query [%s]", "QUERY_DATA"));
+                        LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final java.lang.String rawQuery = QUERY_DATA_RAW;
                         final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
-                        LOG.finer(() -> String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                        LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
                         try (final var statement = connection.prepareCall(query)) {
                           for (final int jdbcIndex : index.get("test")) {
                             statement.setObject(jdbcIndex, test);

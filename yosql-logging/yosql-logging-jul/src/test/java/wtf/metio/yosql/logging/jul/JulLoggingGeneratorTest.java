@@ -40,28 +40,28 @@ class JulLoggingGeneratorTest {
     @Test
     void queryPicked() {
         Assertions.assertEquals("""
-                LOG.finer(() -> String.format("Picked query [%s]", "test"));
+                LOG.finer(() -> java.lang.String.format("Picked query [%s]", "test"));
                 """, generator.queryPicked("test").toString());
     }
 
     @Test
     void indexPicked() {
         Assertions.assertEquals("""
-                LOG.finer(() -> String.format("Picked index [%s]", "test"));
+                LOG.finer(() -> java.lang.String.format("Picked index [%s]", "test"));
                 """, generator.indexPicked("test").toString());
     }
 
     @Test
     void vendorQueryPicked() {
         Assertions.assertEquals("""
-                LOG.finer(() -> String.format("Picked query [%s]", "test"));
+                LOG.finer(() -> java.lang.String.format("Picked query [%s]", "test"));
                 """, generator.vendorQueryPicked("test").toString());
     }
 
     @Test
     void vendorIndexPicked() {
         Assertions.assertEquals("""
-                LOG.finer(() -> String.format("Picked index [%s]", "test"));
+                LOG.finer(() -> java.lang.String.format("Picked index [%s]", "test"));
                 """, generator.vendorIndexPicked("test").toString());
     }
 
