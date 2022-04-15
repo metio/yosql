@@ -10,20 +10,61 @@ package wtf.metio.yosql.codegen.api;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.TypeName;
 
+/**
+ * Controls the generation of variables. Handles the usage of keywords like 'final' or 'var'.
+ */
 public interface Variables {
 
+    /**
+     * Generates an inline variable without an initializer.
+     *
+     * @param name The name of the variable.
+     * @param variableClass The class of the variable.
+     * @return The corresponding code block for the new variable.
+     */
     CodeBlock variable(String name, Class<?> variableClass);
 
-    CodeBlock exception(String name, Class<?> variableClass);
-
-    CodeBlock variable(String name, TypeName variableClass, CodeBlock initializer);
-
+    /**
+     * Generates an inline variable with an initializer.
+     *
+     * @param name The name of the variable.
+     * @param variableClass The class of the variable.
+     * @param initializer The initializer to use.
+     * @return The corresponding code block for the new variable.
+     */
     CodeBlock variable(String name, Class<?> variableClass, CodeBlock initializer);
 
+    /**
+     * Generates an inline variable with an initializer.
+     *
+     * @param name The name of the variable.
+     * @param variableClass The class of the variable.
+     * @param initializer The initializer to use.
+     * @return The corresponding code block for the new variable.
+     */
+    CodeBlock variable(String name, TypeName variableClass, CodeBlock initializer);
+
+    /**
+     * Generates a variable statement with an initializer.
+     *
+     * @param name The name of the variable.
+     * @param variableClass The class of the variable.
+     * @param initializer The initializer to use.
+     * @return The corresponding code block for the new variable.
+     */
     CodeBlock variableStatement(String name, Class<?> variableClass, CodeBlock initializer);
 
+    /**
+     * Generates a variable statement with an initializer.
+     *
+     * @param name The name of the variable.
+     * @param variableClass The class of the variable.
+     * @param initializer The initializer to use.
+     * @return The corresponding code block for the new variable.
+     */
     CodeBlock variableStatement(String name, TypeName variableClass, CodeBlock initializer);
 
+    // TODO: obsolete?
     CodeBlock variable(String name, Class<?> variableClass, String initializer, Object... initializerArgs);
 
 }

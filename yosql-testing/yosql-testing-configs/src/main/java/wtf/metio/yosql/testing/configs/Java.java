@@ -67,6 +67,9 @@ public final class Java {
                 .withUseFinal(true);
     }
 
+    /**
+     * @return Preset for Java 9.
+     */
     public static JavaConfiguration java9() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(9)
@@ -80,6 +83,9 @@ public final class Java {
                 .withUseFinal(true);
     }
 
+    /**
+     * @return Preset for Java 11.
+     */
     public static JavaConfiguration java11() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(11)

@@ -14,6 +14,10 @@ import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 import java.util.StringJoiner;
 
+/**
+ * Default implementation of the {@link Variables} interface. Uses {@link JavaConfiguration} to determine whether to
+ * use keywords like 'final' or 'var'.
+ */
 public final class DefaultVariables implements Variables {
 
     private final JavaConfiguration javaConfiguration;
@@ -24,20 +28,6 @@ public final class DefaultVariables implements Variables {
 
     @Override
     public CodeBlock variable(final String name, final Class<?> variableClass) {
-        if (javaConfiguration.useFinal()) {
-            if (javaConfiguration.useVar()) {
-                return CodeBlock.builder().add("final var $N", name).build();
-            }
-            return CodeBlock.builder().add("final $T $N", variableClass, name).build();
-        }
-        if (javaConfiguration.useVar()) {
-            return CodeBlock.builder().add("var $N", name).build();
-        }
-        return CodeBlock.builder().add("$T $N", variableClass, name).build();
-    }
-
-    @Override
-    public CodeBlock exception(final String name, final Class<?> variableClass) {
         if (javaConfiguration.useFinal()) {
             return CodeBlock.builder().add("final $T $N", variableClass, name).build();
         }
@@ -68,14 +58,7 @@ public final class DefaultVariables implements Variables {
 
     @Override
     public CodeBlock variableStatement(final String name, final TypeName variableClass, final CodeBlock initializer) {
-        final var builder = CodeBlock.builder();
-        final var code = leftHandSide("$N = $L");
-        if (javaConfiguration.useVar()) {
-            builder.addStatement(code.toString(), name, initializer);
-        } else {
-            builder.addStatement(code.toString(), variableClass, name, initializer);
-        }
-        return builder.build();
+        return CodeBlock.builder().addStatement(variable(name, variableClass, initializer)).build();
     }
 
     @Override
