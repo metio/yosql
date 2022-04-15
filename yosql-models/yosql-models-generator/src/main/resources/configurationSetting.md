@@ -11,6 +11,7 @@ tags:
 {{#setting.tags}}
   - {{.}}
 {{/setting.tags}}
+generated: true
 ---
 
 {{setting.description}}

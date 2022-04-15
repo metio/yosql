@@ -209,13 +209,6 @@ jobs:
         name: Download Benchmarks Results
         uses: actions/download-artifact@v3
         if: needs.prepare.outputs.commit_count > 0
-      - name: Set release version
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
-        if: needs.prepare.outputs.commit_count > 0
-      - id: create-documentation
-        name: Create Documentation
-        run: mvn --batch-mode --projects yosql-website --also-make install --define skipTests
-        if: needs.prepare.outputs.commit_count > 0
       - id: copy-codegen-results
         name: Copy Codegen Results
         run: cp --force ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-${{ needs.prepare.outputs.release_version }}.json
@@ -238,7 +231,7 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
         with:
           commit_message: Update website data for ${{ needs.prepare.outputs.release_version }}
-          file_pattern: yosql-website/*.json yosql-website/*.md
+          file_pattern: yosql-website/*.json
   announce:
     name: Send Announcements
     needs: [prepare, website]

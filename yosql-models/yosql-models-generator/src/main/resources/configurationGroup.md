@@ -11,6 +11,7 @@ tags:
 {{#group.tags}}
   - {{.}}
 {{/group.tags}}
+generated: true
 ---
 
 {{group.description}}
