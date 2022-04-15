@@ -4,6 +4,7 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/website.yml
       - yosql-website/**
 env:
   PROJECT_URL: yosql.projects.metio.wtf
