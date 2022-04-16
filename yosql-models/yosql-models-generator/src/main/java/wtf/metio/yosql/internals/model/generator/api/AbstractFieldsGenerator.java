@@ -16,7 +16,6 @@ import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.lang.model.element.Modifier;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
@@ -76,7 +75,8 @@ public abstract class AbstractFieldsGenerator implements Generator {
     private CodeBlock fieldConfiguration(final ConfigurationSetting setting) {
         if (usesResultRowConverter(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($T.ofNullable($L($L)))\n", Strings.upperCase(setting.name()), Optional.class, "createRowConverter", setting.name())
+                    .add(".set$L($T.of($L($L)))\n", Strings.upperCase(setting.name()),
+                            Optional.class, "createRowConverter", setting.name())
                     .build();
         }
         if (usesResultRowConverters(setting)) {
@@ -86,7 +86,8 @@ public abstract class AbstractFieldsGenerator implements Generator {
         }
         if (usesNioPath(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($T.get($L, $L))\n", Strings.upperCase(setting.name()), Paths.class, "projectBaseDirectory", setting.name())
+                    .add(".set$L($T.get($L, $L))\n", Strings.upperCase(setting.name()), Paths.class,
+                            "projectBaseDirectory", setting.name())
                     .build();
         }
         if (usesCharset(setting)) {
@@ -97,7 +98,7 @@ public abstract class AbstractFieldsGenerator implements Generator {
         return CodeBlock.of(".set$L($L)\n", Strings.upperCase(setting.name()), setting.name());
     }
 
-    protected final List<MethodSpec> defaultConverters(final ConfigurationGroup group) {
+    protected final List<MethodSpec> resultRowConverters(final ConfigurationGroup group) {
         return group.settings().stream()
                 .filter(this::resultRowConverter)
                 .findFirst()
@@ -110,11 +111,13 @@ public abstract class AbstractFieldsGenerator implements Generator {
                 .addModifiers(modifiers)
                 .returns(TypicalTypes.listOf(ResultRowConverter.class))
                 .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable(userTypes)\n", Stream.class)
-                        .add("\t\t.flatMap($T::stream)\n", List.class)
-                        .add("\t\t.map(this::createRowConverter)\n")
-                        .add("\t\t.filter($T::nonNull)\n", Objects.class)
-                        .add("\t\t.collect($T.toList())", Collectors.class)
+                        .add("return $T.ofNullable(userTypes)", Stream.class)
+                        .add("$>$>\n.flatMap($T::stream)", List.class)
+                        .add("\n.map($T::strip)", String.class)
+                        .add("\n.filter($T.not($T::isBlank))", Predicate.class, Strings.class)
+                        .add("\n.map(this::createRowConverter)")
+                        .add("\n.filter($T::nonNull)", Objects.class)
+                        .add("\n.collect($T.toList())", Collectors.class)
                         .build())
                 .build();
     }
@@ -125,22 +128,22 @@ public abstract class AbstractFieldsGenerator implements Generator {
                 .returns(ResultRowConverter.class)
                 .addParameter(String.class, "converterDefinition", Modifier.FINAL)
                 .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable(converterDefinition)\n", Optional.class)
-                        .add("\t\t.map($T::strip)\n", String.class)
-                        .add("\t\t.filter($T.not($T::isBlank))\n", Predicate.class, Strings.class)
-                        .add("\t\t.map(value -> value.split($S))\n", ":")
-                        .add("\t\t.map(values -> $T.builder()\n", ResultRowConverter.class)
-                        .add("\t\t\t.setAlias(values[0])\n")
-                        .add("\t\t\t.setConverterType(values[1])\n")
-                        .add("\t\t\t.setMethodName(values[2])\n")
-                        .add("\t\t\t.setResultType(values[3])\n")
-                        .add("\t\t\t.build())\n")
-                        .add("\t\t.orElse(ResultRowConverter.builder()\n")
-                        .add("\t\t\t.setAlias($S)\n", "resultRow")
-                        .add("\t\t\t.setConverterType(utilityPackageName + $S)\n", ".ToResultRowConverter")
-                        .add("\t\t\t.setMethodName($S)\n", "asUserType")
-                        .add("\t\t\t.setResultType(utilityPackageName + $S + resultRowClassName)\n", ".")
-                        .add("\t\t\t.build())")
+                        .add("return $T.ofNullable(converterDefinition)", Optional.class)
+                        .add("$>$>\n.map($T::strip)", String.class)
+                        .add("\n.filter($T.not($T::isBlank))", Predicate.class, Strings.class)
+                        .add("\n.map(value -> value.split($S))", ":")
+                        .add("\n.map(values -> $T.builder()", ResultRowConverter.class)
+                        .add("$>\n.setAlias(values[0])")
+                        .add("\n.setConverterType(values[1])")
+                        .add("\n.setMethodName(values[2])")
+                        .add("\n.setResultType(values[3])$<")
+                        .add("\n.build())")
+                        .add("\n.orElse(ResultRowConverter.builder()")
+                        .add("$>\n.setAlias($S)", "resultRow")
+                        .add("\n.setConverterType(utilityPackageName + $S)", ".ToResultRowConverter")
+                        .add("\n.setMethodName($S)", "apply")
+                        .add("\n.setResultType(utilityPackageName + $S + resultRowClassName)", ".")
+                        .add("\n.build())")
                         .build())
                 .build();
     }

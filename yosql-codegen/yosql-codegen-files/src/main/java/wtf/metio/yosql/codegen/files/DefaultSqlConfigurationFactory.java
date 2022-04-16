@@ -494,6 +494,13 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 ResultRowConverter::resultType);
     }
 
+    private String getDefaultMethodName(final ResultRowConverter resultConverter) {
+        return getConverterFieldOrEmptyString(
+                converter -> aliasMatches(resultConverter, converter)
+                        || converterTypeMatches(resultConverter, converter),
+                ResultRowConverter::methodName);
+    }
+
     private static boolean aliasMatches(
             final ResultRowConverter resultConverter,
             final ResultRowConverter converter) {
@@ -550,12 +557,6 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private static boolean startsWith(final String fileName, final List<String> prefixes) {
         return prefixes != null && prefixes.stream().anyMatch(fileName::startsWith);
-    }
-
-    private String getDefaultMethodName(final ResultRowConverter resultConverter) {
-        return getConverterFieldOrEmptyString(
-                converter -> methodNamesMatch(resultConverter, converter),
-                ResultRowConverter::alias);
     }
 
     private boolean parametersAreValid(

@@ -82,7 +82,7 @@ public final class GradleGenerator extends AbstractMethodsGenerator {
                 .addStatement("final var defaultConverter = objects.newInstance($T.class)", type)
                 .addStatement("defaultConverter.getAlias().set($S)", "resultRow")
                 .addStatement("defaultConverter.getConverterType().set($S)", "ToResultRowConverter")
-                .addStatement("defaultConverter.getMethodName().set($S)", "asUserType")
+                .addStatement("defaultConverter.getMethodName().set($S)", "apply")
                 .addStatement("defaultConverter.getResultType().set($S)", "ResultRow")
                 .addStatement("return defaultConverter")
                 .build();

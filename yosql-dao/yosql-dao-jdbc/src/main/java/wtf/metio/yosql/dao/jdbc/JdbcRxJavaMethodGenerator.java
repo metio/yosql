@@ -111,8 +111,8 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                         .addException(Exception.class)
                         .addCode(controlFlows.startTryBlock())
                         .addCode(controlFlows.ifHasNext())
-                        .addStatement("$N.onNext($N.asUserType($N))", names.emitter(), converter.alias(),
-                                names.state())
+                        .addStatement("$N.onNext($N.$N($N))", names.emitter(), converter.alias(),
+                                converter.methodName(), names.state())
                         .addCode(controlFlows.nextElse())
                         .addStatement("$N.onComplete()", names.emitter())
                         .addCode(controlFlows.endIf())

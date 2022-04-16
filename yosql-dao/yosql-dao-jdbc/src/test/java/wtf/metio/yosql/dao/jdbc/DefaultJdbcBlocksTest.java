@@ -194,7 +194,7 @@ class DefaultJdbcBlocksTest {
         Assertions.assertEquals("""
                 final var list = new java.util.ArrayList<java.lang.Object>();
                 while (state.next()) {
-                  list.add(converter.asUserType(state));
+                  list.add(converter.apply(state));
                 }
                 return list;
                 """, generator.returnAsList(TypicalTypes.listOf(TypeName.OBJECT), "converter").toString());
@@ -205,7 +205,7 @@ class DefaultJdbcBlocksTest {
         Assertions.assertEquals("""
                 final var list = new java.util.ArrayList<java.lang.Object>();
                 while (state.next()) {
-                  list.add(converter.asUserType(state));
+                  list.add(converter.apply(state));
                 }
                 return list.stream();
                 """, generator.returnAsStream(TypicalTypes.listOf(TypeName.OBJECT), "converter").toString());

@@ -36,7 +36,7 @@ public final class CliGenerator extends AbstractFieldsGenerator {
                 .addFields(defaultFields(group))
                 .addFields(optionalFields(group))
                 .addMethod(asConfiguration(group))
-                .addMethods(defaultConverters(group))
+                .addMethods(resultRowConverters(group))
                 .build();
     }
 

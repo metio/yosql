@@ -126,7 +126,8 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
                         .returns(boolean.class)
                         .addCode(controlFlow.startTryBlock())
                         .addCode(controlFlow.ifHasNext())
-                        .addStatement("$N.accept($N.asUserType($N))", names.action(), converter.alias(), names.state())
+                        .addStatement("$N.accept($N.$N($N))", names.action(), converter.alias(), converter.methodName(),
+                                names.state())
                         .addCode(blocks.returnTrue())
                         .addCode(controlFlow.endIf())
                         .addCode(blocks.returnFalse())

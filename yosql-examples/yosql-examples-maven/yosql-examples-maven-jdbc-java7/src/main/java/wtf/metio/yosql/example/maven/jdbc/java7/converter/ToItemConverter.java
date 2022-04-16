@@ -14,7 +14,7 @@ import java.sql.SQLException;
 
 public final class ToItemConverter {
 
-    public final Item asUserType(final ResultState result) throws SQLException {
+    public Item asUserType(final ResultState result) throws SQLException {
         final ResultSet resultSet = result.getResultSet();
         final Item pojo = new Item();
         pojo.setId(resultSet.getInt("id"));

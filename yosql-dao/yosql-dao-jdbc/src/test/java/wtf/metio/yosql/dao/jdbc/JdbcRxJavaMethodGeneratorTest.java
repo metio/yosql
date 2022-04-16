@@ -92,7 +92,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }
@@ -193,7 +193,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }
@@ -294,7 +294,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }
@@ -395,7 +395,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }
@@ -496,7 +496,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }
@@ -597,7 +597,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }
@@ -698,7 +698,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }
@@ -799,7 +799,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }
@@ -900,7 +900,7 @@ class JdbcRxJavaMethodGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }

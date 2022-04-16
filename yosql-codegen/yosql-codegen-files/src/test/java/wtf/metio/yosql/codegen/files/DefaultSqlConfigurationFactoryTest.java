@@ -14,7 +14,9 @@ import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.errors.ExecutionErrors;
 import wtf.metio.yosql.models.constants.sql.ReturningMode;
 import wtf.metio.yosql.models.constants.sql.SqlType;
+import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -133,6 +135,90 @@ class DefaultSqlConfigurationFactoryTest {
                 () -> assertEquals("dropPersons", configuration.name(), "name"),
                 () -> assertEquals(SqlType.WRITING, configuration.type(), "type"),
                 () -> assertEquals(ReturningMode.NONE, configuration.returningMode(), "returningMode"));
+    }
+
+    @Test
+    void shouldProduceExpectedReadConfigurationWithCustomRowConverter() {
+        // given
+        final var source = Paths.get("Item/findItem.sql");
+        final var yaml = """
+                name: findItemByName
+                parameters:
+                  - name: name
+                    type: java.lang.String
+                resultRowConverter:
+                  alias: itemConverter""";
+        final Map<String, List<Integer>> indices = Map.of();
+        final var statementInFile = 1;
+        final var config = RuntimeConfiguration.usingDefaults()
+                .setJdbc(JdbcConfiguration.usingDefaults()
+                        .setUserTypes(List.of(ResultRowConverter.builder()
+                                        .setAlias("itemConverter")
+                                        .setConverterType("com.example.ItemConverter")
+                                        .setResultType("com.example.Item")
+                                        .setMethodName("asUserType")
+                                .build()))
+                        .build())
+                .build();
+
+        // when
+        final var configuration = factory(config).createConfiguration(source, yaml, indices, statementInFile);
+
+        // then
+        assertAll("Configuration",
+                () -> assertEquals("findItemByName", configuration.name(), "name"),
+                () -> assertEquals(SqlType.READING, configuration.type(), "type"),
+                () -> assertEquals(ReturningMode.LIST, configuration.returningMode(), "returningMode"),
+                () -> assertTrue(configuration.resultRowConverter().isPresent(), "resultRowConverter"),
+                () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias(), "alias"),
+                () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName(), "methodName"),
+                () -> assertEquals("com.example.ItemConverter", configuration.resultRowConverter().get().converterType(), "converterType"),
+                () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType(), "resultType"));
+    }
+
+    @Test
+    void shouldProduceExpectedReadConfigurationWithDefaultAndCustomRowConverter() {
+        // given
+        final var source = Paths.get("Item/findItem.sql");
+        final var yaml = """
+                name: findItemByName
+                parameters:
+                  - name: name
+                    type: java.lang.String
+                resultRowConverter:
+                  alias: itemConverter""";
+        final Map<String, List<Integer>> indices = Map.of();
+        final var statementInFile = 1;
+        final var config = RuntimeConfiguration.usingDefaults()
+                .setJdbc(JdbcConfiguration.usingDefaults()
+                        .setDefaultConverter(ResultRowConverter.builder()
+                                .setAlias("resultRow")
+                                .setConverterType("com.example.ResultRowConverter")
+                                .setResultType("com.example.ResultRow")
+                                .setMethodName("apply")
+                                .build())
+                        .setUserTypes(List.of(ResultRowConverter.builder()
+                                .setAlias("itemConverter")
+                                .setConverterType("com.example.ItemConverter")
+                                .setResultType("com.example.Item")
+                                .setMethodName("asUserType")
+                                .build()))
+                        .build())
+                .build();
+
+        // when
+        final var configuration = factory(config).createConfiguration(source, yaml, indices, statementInFile);
+
+        // then
+        assertAll("Configuration",
+                () -> assertEquals("findItemByName", configuration.name(), "name"),
+                () -> assertEquals(SqlType.READING, configuration.type(), "type"),
+                () -> assertEquals(ReturningMode.LIST, configuration.returningMode(), "returningMode"),
+                () -> assertTrue(configuration.resultRowConverter().isPresent(), "resultRowConverter"),
+                () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias(), "alias"),
+                () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName(), "methodName"),
+                () -> assertEquals("com.example.ItemConverter", configuration.resultRowConverter().get().converterType(), "converterType"),
+                () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType(), "resultType"));
     }
 
     private DefaultSqlConfigurationFactory factory() {

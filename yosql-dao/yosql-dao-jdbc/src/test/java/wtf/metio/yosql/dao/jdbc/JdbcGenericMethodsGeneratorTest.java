@@ -87,7 +87,7 @@ class JdbcGenericMethodsGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -199,7 +199,7 @@ class JdbcGenericMethodsGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -314,7 +314,7 @@ class JdbcGenericMethodsGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list.stream();
                           }
@@ -384,7 +384,7 @@ class JdbcGenericMethodsGeneratorTest {
                               final java.util.function.Consumer<? super com.example.util.ResultRow> action) {
                             try {
                               if (state.next()) {
-                                action.accept(resultRow.asUserType(state));
+                                action.accept(resultRow.apply(state));
                                 return true;
                               }
                               return false;
@@ -482,7 +482,7 @@ class JdbcGenericMethodsGeneratorTest {
                             final io.reactivex.Emitter<com.example.util.ResultRow> emitter) throws java.lang.Exception {
                           try {
                             if (state.next()) {
-                              emitter.onNext(resultRow.asUserType(state));
+                              emitter.onNext(resultRow.apply(state));
                             } else {
                               emitter.onComplete();
                             }

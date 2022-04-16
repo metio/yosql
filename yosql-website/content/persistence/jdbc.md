@@ -95,7 +95,7 @@ import my.own.persistence.util.ResultState;
 
 public class UserConverter {
 
-    public final User asUserType(final ResultState result) throws SQLException {
+    public final User apply(final ResultState result) throws SQLException {
         final ResultSet resultSet = result.getResultSet();
         final User pojo = new User();
         pojo.setId(resultSet.getInt("id"));

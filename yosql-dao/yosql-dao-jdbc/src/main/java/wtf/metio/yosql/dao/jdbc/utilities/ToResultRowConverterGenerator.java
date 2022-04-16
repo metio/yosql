@@ -53,7 +53,7 @@ public final class ToResultRowConverterGenerator {
                 runtimeConfiguration.jdbc().utilityPackageName(),
                 TO_RESULT_ROW_CONVERTER_CLASS_NAME);
         final var type = classes.publicClass(resultRowConverterClass)
-                .addMethod(asUserType())
+                .addMethod(apply())
                 .addAnnotations(annotations.generatedClass())
                 .build();
         logger.debug(CodegenLifecycle.TYPE_GENERATED, resultRowConverterClass.packageName(),
@@ -61,8 +61,8 @@ public final class ToResultRowConverterGenerator {
         return PackagedTypeSpec.of(type, resultRowConverterClass.packageName());
     }
 
-    private MethodSpec asUserType() {
-        return methods.publicMethod("asUserType")
+    private MethodSpec apply() {
+        return methods.publicMethod("apply")
                 .addParameters(parameters.resultState(runtimeConfiguration.jdbc().resultStateClass()))
                 .addException(SQLException.class)
                 .returns(runtimeConfiguration.jdbc().resultRowClass())

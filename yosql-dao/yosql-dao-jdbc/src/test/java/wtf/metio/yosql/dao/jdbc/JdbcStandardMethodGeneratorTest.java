@@ -76,7 +76,7 @@ class JdbcStandardMethodGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -188,7 +188,7 @@ class JdbcStandardMethodGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -262,7 +262,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -374,7 +374,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -448,7 +448,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -560,7 +560,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -634,7 +634,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -746,7 +746,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -820,7 +820,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -932,7 +932,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -1006,7 +1006,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -1118,7 +1118,7 @@ class JdbcStandardMethodGeneratorTest {
                             final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -1192,7 +1192,7 @@ class JdbcStandardMethodGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -1304,7 +1304,7 @@ class JdbcStandardMethodGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -1378,7 +1378,7 @@ class JdbcStandardMethodGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -1490,7 +1490,7 @@ class JdbcStandardMethodGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -1564,7 +1564,7 @@ class JdbcStandardMethodGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }
@@ -1676,7 +1676,7 @@ class JdbcStandardMethodGeneratorTest {
                             final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
-                              list.add(resultRow.asUserType(state));
+                              list.add(resultRow.apply(state));
                             }
                             return list;
                           }

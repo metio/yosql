@@ -33,7 +33,7 @@ public final class MavenGenerator extends AbstractFieldsGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addFields(defaultFields(group, Modifier.PRIVATE))
                 .addMethod(asConfiguration(group))
-                .addMethods(defaultConverters(group))
+                .addMethods(resultRowConverters(group))
                 .build();
     }
 
@@ -46,7 +46,6 @@ public final class MavenGenerator extends AbstractFieldsGenerator {
 
     private MethodSpec converters(final ConfigurationGroup group) {
         return MethodSpec.methodBuilder("asConfiguration")
-
                 .build();
     }
 
@@ -56,7 +55,7 @@ public final class MavenGenerator extends AbstractFieldsGenerator {
                 .setAlias(defaultRowConverter)
                 .setResultType("com.example.persistence.util.ResultRow")
                 .setConverterType("com.example.persistence.converter.ToResultRowConverter")
-                .setMethodName("asUserType")
+                .setMethodName("apply")
                 .build();
         final var converters = resultRowConverters.stream()
                 .map(c -> ResultRowConverter.builder()

@@ -21,7 +21,7 @@ public final class Jdbc {
                 .withDefaultConverter(ResultRowConverter.builder()
                         .setAlias("resultRow")
                         .setConverterType("com.example.persistence.util.ToResultRowConverter")
-                        .setMethodName("asUserType")
+                        .setMethodName("apply")
                         .setResultType("com.example.persistence.util.ResultRow")
                         .build());
     }

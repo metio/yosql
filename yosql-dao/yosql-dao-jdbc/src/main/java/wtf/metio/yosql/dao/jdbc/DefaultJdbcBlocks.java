@@ -18,6 +18,7 @@ import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
 import wtf.metio.yosql.models.immutables.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.sql.*;
 import java.util.*;
@@ -320,11 +321,21 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         return CodeBlock.builder()
                 .addStatement(variables.variable(config.list(), listOfResults, template))
                 .add(controlFlows.whileHasNext())
-                .addStatement("$N.add($N.asUserType($N))",
+                .addStatement("$N.add($N.$N($N))",
                         config.list(),
                         converterAlias,
+                        converterMethod(converterAlias),
                         names.state())
                 .endControlFlow();
+    }
+
+    private String converterMethod(final String converterAlias) {
+        return config.userTypes().stream()
+                .filter(converter -> converterAlias.equalsIgnoreCase(converter.alias()))
+                .findFirst()
+                .or(config::defaultConverter)
+                .map(ResultRowConverter::methodName)
+                .orElse("apply");
     }
 
     @Override

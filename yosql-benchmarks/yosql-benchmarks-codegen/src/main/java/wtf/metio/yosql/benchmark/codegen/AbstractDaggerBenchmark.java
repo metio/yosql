@@ -49,7 +49,7 @@ abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
                 .setJdbc(jdbcDefaults.withDefaultConverter(ResultRowConverter.builder()
                         .setAlias("resultRow")
                         .setConverterType(jdbcDefaults.utilityPackageName() + ".ToResultRowConverter")
-                        .setMethodName("asUserType")
+                        .setMethodName("apply")
                         .setResultType(jdbcDefaults.utilityPackageName() + "." + jdbcDefaults.resultRowClassName())
                         .build()))
                 .build();
