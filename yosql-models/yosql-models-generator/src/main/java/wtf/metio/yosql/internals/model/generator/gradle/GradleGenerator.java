@@ -38,7 +38,7 @@ public final class GradleGenerator extends AbstractMethodsGenerator {
                 .addAnnotations(annotationsFor(group))
                 .addMethods(properties(group))
                 .addMethods(methodsFor(group))
-                .addMethods(userConverters(group))
+                .addMethods(rowConverters(group))
                 .addMethod(configureConventions(group))
                 .addMethod(asConfiguration(group, immutablesBasePackage))
                 .build();
@@ -50,7 +50,7 @@ public final class GradleGenerator extends AbstractMethodsGenerator {
                 .collect(Collectors.toList());
     }
 
-    private List<MethodSpec> userConverters(final ConfigurationGroup group) {
+    private List<MethodSpec> rowConverters(final ConfigurationGroup group) {
         return group.settings().stream()
                 .filter(this::resultRowConverter)
                 .findFirst()
@@ -63,7 +63,7 @@ public final class GradleGenerator extends AbstractMethodsGenerator {
                 .addModifiers(Modifier.PRIVATE)
                 .returns(TypicalTypes.listOf(ResultRowConverter.class))
                 .addStatement(CodeBlock.builder()
-                        .add("return getUserTypes().stream()\n", Stream.class)
+                        .add("return getRowConverters().stream()\n", Stream.class)
                         .add("\t.map($T::asResultRowConverter)\n", ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.UserResultRowConverter"))
                         .add("\t.collect($T.toList())", Collectors.class)
                         .build())
