@@ -185,7 +185,7 @@ public final class GradleGenerator extends AbstractMethodsGenerator {
         return TypicalTypes.gradlePropertyOf(type);
     }
 
-    protected MethodSpec asConfiguration(final ConfigurationGroup group, final String immutablesBasePackage) {
+    private MethodSpec asConfiguration(final ConfigurationGroup group, final String immutablesBasePackage) {
         final var returnType = ClassName.get(immutablesBasePackage, group.configurationName());
         final var builder = MethodSpec.methodBuilder("asConfiguration")
                 .returns(returnType);
