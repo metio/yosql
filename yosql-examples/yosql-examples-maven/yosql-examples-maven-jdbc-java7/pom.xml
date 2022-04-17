@@ -46,7 +46,6 @@
                     <java>
                         <apiVersion>7</apiVersion>
                         <useStreamAPI>false</useStreamAPI>
-                        <useProcessingApi>false</useProcessingApi>
                         <useVar>false</useVar>
                         <useTextBlocks>false</useTextBlocks>
                         <useRecords>false</useRecords>

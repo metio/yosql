@@ -45,7 +45,6 @@
                     </files>
                     <java>
                         <apiVersion>8</apiVersion>
-                        <useProcessingApi>false</useProcessingApi>
                         <useVar>false</useVar>
                         <useTextBlocks>false</useTextBlocks>
                         <useRecords>false</useRecords>

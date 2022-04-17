@@ -22,7 +22,6 @@ public final class Java {
                 .addSettings(useDiamondOperator())
                 .addSettings(useFinal())
                 .addSettings(useGenerics())
-                .addSettings(useProcessingApi()) // TODO: remove this in favor of Api#annotationApi?
                 .addSettings(useRecords())
                 .addSettings(useStreamAPI())
                 .addSettings(useTextBlocks())
@@ -94,23 +93,6 @@ public final class Java {
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
                         .setDescription("Changing the `useGenerics` configuration option to `false` disables the use of generics in generated code.")
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting useProcessingApi() {
-        return ConfigurationSetting.builder()
-                .setName("useProcessingApi")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .setDescription("Controls the usage of the processing API in generated code.")
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
-                        .setDescription("The default value of the `useProcessingApi` configuration option is `true` which enables using 'javax.annotation.processing.Generated' in generated code.")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
-                        .setDescription("Changing the `useProcessingApi` configuration option to `false` uses 'javax.annotation.Generated' in generated code.")
                         .build())
                 .build();
     }

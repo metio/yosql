@@ -48,7 +48,6 @@
                         <useGenerics>false</useGenerics>
                         <useDiamondOperator>false</useDiamondOperator>
                         <useStreamAPI>false</useStreamAPI>
-                        <useProcessingApi>false</useProcessingApi>
                         <useVar>false</useVar>
                         <useTextBlocks>false</useTextBlocks>
                         <useRecords>false</useRecords>

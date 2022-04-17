@@ -24,7 +24,6 @@ public final class Java {
                 .withUseVar(false)
                 .withUseTextBlocks(false)
                 .withUseStreamAPI(false)
-                .withUseProcessingApi(false)
                 .withUseFinal(true);
     }
 
@@ -37,7 +36,6 @@ public final class Java {
                 .withUseVar(false)
                 .withUseTextBlocks(false)
                 .withUseStreamAPI(false)
-                .withUseProcessingApi(false)
                 .withUseFinal(true);
     }
 
@@ -50,7 +48,6 @@ public final class Java {
                 .withUseVar(false)
                 .withUseTextBlocks(false)
                 .withUseStreamAPI(false)
-                .withUseProcessingApi(false)
                 .withUseFinal(true);
     }
 
@@ -63,7 +60,6 @@ public final class Java {
                 .withUseVar(false)
                 .withUseTextBlocks(false)
                 .withUseStreamAPI(true)
-                .withUseProcessingApi(false)
                 .withUseFinal(true);
     }
 
@@ -79,7 +75,6 @@ public final class Java {
                 .withUseVar(false)
                 .withUseTextBlocks(false)
                 .withUseStreamAPI(true)
-                .withUseProcessingApi(true)
                 .withUseFinal(true);
     }
 
@@ -95,7 +90,6 @@ public final class Java {
                 .withUseVar(true)
                 .withUseTextBlocks(false)
                 .withUseStreamAPI(true)
-                .withUseProcessingApi(true)
                 .withUseFinal(true);
     }
 
@@ -108,7 +102,6 @@ public final class Java {
                 .withUseVar(true)
                 .withUseTextBlocks(true)
                 .withUseStreamAPI(true)
-                .withUseProcessingApi(true)
                 .withUseFinal(true);
     }
 
@@ -121,7 +114,6 @@ public final class Java {
                 .withUseVar(true)
                 .withUseTextBlocks(true)
                 .withUseStreamAPI(true)
-                .withUseProcessingApi(true)
                 .withUseFinal(true);
     }
 
