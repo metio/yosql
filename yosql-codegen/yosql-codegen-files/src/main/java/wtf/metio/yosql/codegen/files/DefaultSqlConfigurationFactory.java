@@ -84,8 +84,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 this::lazyName,
                 this::eagerName,
                 this::type,
-                this::returningMode
-        ));
+                this::returningMode));
         validateNames(source, baseConfiguration);
         return apply(baseConfiguration, List.of(
                 configuration -> name(configuration, source, statementInFile),
@@ -97,8 +96,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 this::catchAndRethrow,
                 configuration -> repository(source, configuration),
                 configuration -> parameters(source, parameterIndices, configuration),
-                this::resultConverter  // TODO: Configure parameter converters
-        ));
+                this::resultConverter));
     }
 
     private SqlConfiguration apply(

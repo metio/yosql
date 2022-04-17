@@ -5,4 +5,3 @@
  * in the LICENSE file.
  */
 package wtf.metio.yosql.codegen.blocks;
-// TODO: move api interfaces into this package

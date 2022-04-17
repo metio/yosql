@@ -39,7 +39,7 @@ public final class Files {
                 .setType(TypicalTypes.PATH)
                 .setCliType(TypicalTypes.STRING)
                 .setMavenType(TypicalTypes.STRING)
-                .setValue(Paths.get(".")) // TODO: remove?
+                .setValue(Paths.get("."))
                 .setCliValue(".")
                 .setGradleValue("src/main/yosql")
                 .setMavenValue("src/main/yosql")
@@ -67,7 +67,7 @@ public final class Files {
                 .setCliType(TypicalTypes.STRING)
                 .setGradleType(TypicalTypes.PATH)
                 .setMavenType(TypicalTypes.STRING)
-                .setValue(Paths.get(".")) // TODO: remove?
+                .setValue(Paths.get("."))
                 .setCliValue(".")
                 .setGradleValue("generated/sources/yosql")
                 .setMavenValue("target/generated-sources/yosql")
