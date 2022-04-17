@@ -45,7 +45,7 @@ public final class DelegatingRepositoryGenerator implements RepositoryGenerator 
 
     private RepositoryGenerator dao() {
         return generators.stream()
-                .filter(generator -> generator.supports(apis.daoApi()))
+                .filter(generator -> generator.supports(apis.persistenceApi()))
                 .findFirst()
                 .orElseThrow();
     }

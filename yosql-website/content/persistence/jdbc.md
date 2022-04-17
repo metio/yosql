@@ -14,7 +14,7 @@ The `javax.sql` based implementation of `YoSQL` to access your database. It does
 
 ## Tooling
 
-In order to use the JDBC API in generated code, set the `daoApi` option to `JDBC`. Further configuration can be performed using the dedicated `jdbc` section.
+In order to use the JDBC API in generated code, set the `persistenceApi` option to `JDBC`. Further configuration can be performed using the dedicated `jdbc` section.
 
 ### Maven
 
@@ -34,7 +34,7 @@ plugins {
 
 yosql {
   apis {
-    daoApi = JDBC
+    persistenceApi = JDBC
   }
   jdbc {
     ... jdbc configuration

@@ -30,11 +30,11 @@ public final class ConfigurationSteps {
     }
 
     @Given("{} persistence is used")
-    public void configureDaoApi(final PersistenceApis api) {
+    public void configurePersistenceApi(final PersistenceApis api) {
         configurationState.setRuntimeConfiguration(
                 RuntimeConfiguration.copyOf(configurationState.getRuntimeConfiguration())
                         .withApi(ApiConfiguration.copyOf(configurationState.getRuntimeConfiguration().api())
-                                .withDaoApi(api)));
+                                .withPersistenceApi(api)));
     }
 
 }

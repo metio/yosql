@@ -49,7 +49,7 @@ plugins {
 
 yosql {
   apis {
-    daoApi = configValue
+    persistenceApi = configValue
   }
 }
 ```

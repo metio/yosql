@@ -20,7 +20,7 @@ public final class Apis {
 
     public static ApiConfiguration jdbc() {
         return ApiConfiguration.copyOf(defaults())
-                .withDaoApi(PersistenceApis.JDBC);
+                .withPersistenceApi(PersistenceApis.JDBC);
     }
 
     public static ApiConfiguration slf4j() {
