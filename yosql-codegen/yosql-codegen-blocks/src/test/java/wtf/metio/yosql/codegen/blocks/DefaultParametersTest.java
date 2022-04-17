@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.testing.configs.Java;
+import wtf.metio.yosql.testing.configs.Names;
 
 @DisplayName("DefaultParameters")
 class DefaultParametersTest {
@@ -20,7 +21,7 @@ class DefaultParametersTest {
     @DisplayName("generates parameter")
     void shouldGenerateParameter() {
         // given
-        final var generator = new DefaultParameters(new DefaultNames(), Java.defaults());
+        final var generator = new DefaultParameters(Names.defaults(), Java.defaults());
 
         // when
         final var parameter = generator.parameter(String.class, "test");
@@ -34,7 +35,7 @@ class DefaultParametersTest {
     @DisplayName("generates parameter with TypeName")
     void shouldGenerateParameterWithTypeName() {
         // given
-        final var generator = new DefaultParameters(new DefaultNames(), Java.defaults());
+        final var generator = new DefaultParameters(Names.defaults(), Java.defaults());
 
         // when
         final var parameter = generator.parameter(TypeName.BOOLEAN, "test");

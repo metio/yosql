@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.testing.codegen.Blocks;
+import wtf.metio.yosql.testing.configs.Names;
 
 @DisplayName("Slf4jLoggingGenerator")
 final class Slf4jLoggingGeneratorTest {
@@ -21,7 +22,7 @@ final class Slf4jLoggingGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        generator = new Slf4jLoggingGenerator(Blocks.names(), Blocks.fields());
+        generator = new Slf4jLoggingGenerator(Names.defaults(), Blocks.fields());
     }
 
     @Test

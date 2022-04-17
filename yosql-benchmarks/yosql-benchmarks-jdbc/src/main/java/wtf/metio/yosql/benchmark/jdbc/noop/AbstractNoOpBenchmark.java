@@ -11,11 +11,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
 import wtf.metio.yosql.benchmark.jdbc.AbstractBenchmark;
-import wtf.metio.yosql.benchmark.jdbc.noop.persistence.CompanyRepository;
-import wtf.metio.yosql.benchmark.jdbc.noop.persistence.DepartmentRepository;
-import wtf.metio.yosql.benchmark.jdbc.noop.persistence.EmployeeRepository;
-import wtf.metio.yosql.benchmark.jdbc.noop.persistence.ProjectRepository;
-import wtf.metio.yosql.benchmark.jdbc.noop.persistence.MaintenanceRepository;
+import wtf.metio.yosql.benchmark.jdbc.noop.persistence.*;
 
 /**
  * Abstract benchmark class for all benchmarks that use no logging statements.

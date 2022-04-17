@@ -11,11 +11,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
 import wtf.metio.yosql.benchmark.jdbc.AbstractBenchmark;
-import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.CompanyRepository;
-import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.DepartmentRepository;
-import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.EmployeeRepository;
-import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.ProjectRepository;
-import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.MaintenanceRepository;
+import wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.*;
 
 /**
  * Abstract benchmark class for all benchmarks that use the slf4j API.

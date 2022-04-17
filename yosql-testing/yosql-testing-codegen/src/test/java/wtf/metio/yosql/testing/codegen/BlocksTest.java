@@ -9,8 +9,6 @@ package wtf.metio.yosql.testing.codegen;
 
 import org.junit.jupiter.api.DisplayName;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DisplayName("Blocks")
 final class BlocksTest {
 

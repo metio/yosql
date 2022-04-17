@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
-import wtf.metio.yosql.testing.configs.Jdbc;
+import wtf.metio.yosql.testing.configs.Names;
 
 @DisplayName("DefaultJdbcFields")
 class DefaultJdbcFieldsTest {
@@ -21,7 +21,7 @@ class DefaultJdbcFieldsTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcFields(Jdbc.defaults());
+        generator = new DefaultJdbcFields(Names.defaults());
     }
 
     @Test

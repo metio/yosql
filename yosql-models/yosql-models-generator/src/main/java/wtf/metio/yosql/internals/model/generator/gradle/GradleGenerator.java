@@ -17,11 +17,8 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.lang.model.element.Modifier;
-import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

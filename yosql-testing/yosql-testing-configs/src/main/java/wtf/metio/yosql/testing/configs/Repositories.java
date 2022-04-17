@@ -7,7 +7,7 @@
 
 package wtf.metio.yosql.testing.configs;
 
-import wtf.metio.yosql.models.immutables.*;
+import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 
 public final class Repositories {
 

@@ -12,9 +12,9 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.codegen.api.Parameters;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.sql.SqlParameter;
 
 import javax.lang.model.element.Modifier;
@@ -27,11 +27,11 @@ import java.util.stream.Collectors;
 
 public final class DefaultParameters implements Parameters {
 
-    private final Names names;
+    private final NamesConfiguration names;
     private final JavaConfiguration runtimeConfiguration;
     private final ConcurrentHashMap<TypeName, Integer> args = new ConcurrentHashMap<>();
 
-    public DefaultParameters(final Names names, final JavaConfiguration runtimeConfiguration) {
+    public DefaultParameters(final NamesConfiguration names, final JavaConfiguration runtimeConfiguration) {
         this.names = names;
         this.runtimeConfiguration = runtimeConfiguration;
     }

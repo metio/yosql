@@ -19,6 +19,7 @@ import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.sql.SqlType;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
@@ -38,6 +39,7 @@ import static java.util.function.Predicate.not;
 public final class JdbcFieldsGenerator implements FieldsGenerator {
 
     private final JdbcConfiguration config;
+    private final NamesConfiguration names;
     private final LoggingGenerator logging;
     private final Javadoc javadoc;
     private final Fields fields;
@@ -45,11 +47,13 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
 
     public JdbcFieldsGenerator(
             final JdbcConfiguration config,
+            final NamesConfiguration names,
             final LoggingGenerator logging,
             final Javadoc javadoc,
             final Fields fields,
             final JdbcFields jdbcFields) {
         this.config = config;
+        this.names = names;
         this.logging = logging;
         this.javadoc = javadoc;
         this.fields = fields;
@@ -149,7 +153,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     }
 
     private FieldSpec asDataSourceField() {
-        return fields.field(DataSource.class, config.dataSource());
+        return fields.field(DataSource.class, names.dataSource());
     }
 
     private FieldSpec asConverterField(final ResultRowConverter converter) {

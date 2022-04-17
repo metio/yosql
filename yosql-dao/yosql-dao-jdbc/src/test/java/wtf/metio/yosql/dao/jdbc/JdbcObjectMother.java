@@ -20,14 +20,14 @@ import wtf.metio.yosql.testing.logging.Loggers;
 public final class JdbcObjectMother {
 
     public static JdbcMethods jdbcMethods() {
-        final var config = jdbcConfig();
+        final var names = Names.defaults();
         return new DefaultJdbcMethods(
-                new DefaultJdbcDataSourceMethods(config),
-                new DefaultJdbcConnectionMethods(Blocks.names(), config),
-                new DefaultJdbcDatabaseMetaDataMethods(config),
-                new DefaultJdbcResultSetMethods(config),
-                new DefaultJdbcResultSetMetaDataMethods(config),
-                new DefaultJdbcStatementMethods(config));
+                new DefaultJdbcDataSourceMethods(names),
+                new DefaultJdbcConnectionMethods(names),
+                new DefaultJdbcDatabaseMetaDataMethods(names),
+                new DefaultJdbcResultSetMethods(names),
+                new DefaultJdbcResultSetMetaDataMethods(names),
+                new DefaultJdbcStatementMethods(names));
     }
 
     public static FieldsGenerator fieldsGenerator() {
@@ -37,6 +37,7 @@ public final class JdbcObjectMother {
     public static FieldsGenerator fieldsGenerator(final JavaConfiguration java) {
         return new JdbcFieldsGenerator(
                 jdbcConfig(),
+                Names.defaults(),
                 Loggers.loggingGenerator(),
                 Blocks.javadoc(),
                 Blocks.fields(java),
@@ -44,20 +45,20 @@ public final class JdbcObjectMother {
     }
 
     public static DefaultJdbcFields jdbcFields() {
-        return new DefaultJdbcFields(jdbcConfig());
+        return new DefaultJdbcFields(Names.defaults());
     }
 
     public static ConstructorGenerator constructorGenerator(final JavaConfiguration java) {
         return new JdbcConstructorGenerator(
                 Blocks.genericBlocks(),
                 Blocks.methods(java),
-                jdbcConfig(),
+                Names.defaults(),
                 jdbcParameter(),
                 Repositories.defaults());
     }
 
     private static DefaultJdbcParameters jdbcParameter() {
-        return new DefaultJdbcParameters(Blocks.parameters(), jdbcConfig());
+        return new DefaultJdbcParameters(Blocks.parameters(), Names.defaults());
     }
 
     public static JdbcBlocks jdbcBlocks() {
@@ -69,7 +70,7 @@ public final class JdbcObjectMother {
                 runtimeConfig(),
                 Blocks.genericBlocks(),
                 Blocks.controlFlows(java),
-                Blocks.names(),
+                Names.defaults(),
                 Blocks.variables(java),
                 jdbcConfig(),
                 jdbcFields(),
@@ -115,7 +116,7 @@ public final class JdbcObjectMother {
                 jdbcConfig(),
                 Blocks.genericBlocks(),
                 Blocks.controlFlows(java),
-                Blocks.names(),
+                Names.defaults(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 Loggers.loggingGenerator(),
@@ -127,7 +128,7 @@ public final class JdbcObjectMother {
         return new JdbcRxJavaMethodGenerator(
                 jdbcConfig(),
                 Blocks.controlFlows(java),
-                Blocks.names(),
+                Names.defaults(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 Loggers.loggingGenerator(),

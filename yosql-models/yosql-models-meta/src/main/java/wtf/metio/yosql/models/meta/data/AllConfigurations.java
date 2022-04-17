@@ -24,6 +24,7 @@ public final class AllConfigurations {
                 Repositories.configurationGroup(),
                 Java.configurationGroup(),
                 Jdbc.configurationGroup(),
+                Names.configurationGroup(),
                 Resources.configurationGroup());
     }
 

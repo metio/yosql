@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.codegen.Blocks;
-import wtf.metio.yosql.testing.configs.Jdbc;
+import wtf.metio.yosql.testing.configs.Names;
 
 @DisplayName("DefaultJdbcConnectionMethods")
 class DefaultJdbcConnectionMethodsTest {
@@ -21,9 +20,7 @@ class DefaultJdbcConnectionMethodsTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcConnectionMethods(
-                Blocks.names(),
-                Jdbc.defaults());
+        generator = new DefaultJdbcConnectionMethods(Names.defaults());
     }
 
     @Test

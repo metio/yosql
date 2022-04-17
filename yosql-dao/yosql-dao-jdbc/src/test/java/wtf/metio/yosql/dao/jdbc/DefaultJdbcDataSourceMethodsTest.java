@@ -10,7 +10,7 @@ package wtf.metio.yosql.dao.jdbc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.Jdbc;
+import wtf.metio.yosql.testing.configs.Names;
 
 @DisplayName("DefaultJdbcDataSourceMethods")
 class DefaultJdbcDataSourceMethodsTest {
@@ -18,7 +18,7 @@ class DefaultJdbcDataSourceMethodsTest {
     @Test
     void getConnection() {
         // given
-        final var generator = new DefaultJdbcDataSourceMethods(Jdbc.defaults());
+        final var generator = new DefaultJdbcDataSourceMethods(Names.defaults());
 
         // when
         final var connection = generator.getConnection();

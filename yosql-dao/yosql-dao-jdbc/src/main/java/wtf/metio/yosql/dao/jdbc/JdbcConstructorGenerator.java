@@ -13,7 +13,7 @@ import wtf.metio.yosql.codegen.api.ConstructorGenerator;
 import wtf.metio.yosql.codegen.api.Methods;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.models.constants.sql.SqlType;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
@@ -29,19 +29,19 @@ public final class JdbcConstructorGenerator implements ConstructorGenerator {
 
     private final GenericBlocks blocks;
     private final Methods methods;
-    private final JdbcConfiguration jdbcNames;
+    private final NamesConfiguration names;
     private final JdbcParameters jdbcParameters;
     private final RepositoriesConfiguration repositories;
 
     public JdbcConstructorGenerator(
             final GenericBlocks blocks,
             final Methods methods,
-            final JdbcConfiguration jdbcNames,
+            final NamesConfiguration names,
             final JdbcParameters jdbcParameters, 
             final RepositoriesConfiguration repositories) {
         this.blocks = blocks;
         this.methods = methods;
-        this.jdbcNames = jdbcNames;
+        this.names = names;
         this.jdbcParameters = jdbcParameters;
         this.repositories = repositories;
     }
@@ -56,14 +56,14 @@ public final class JdbcConstructorGenerator implements ConstructorGenerator {
                 builder.add(blocks.initializeFieldToSelf(converter.alias()));
             });
             return constructor
-                    .addCode(blocks.initializeFieldToSelf(jdbcNames.dataSource()))
+                    .addCode(blocks.initializeFieldToSelf(names.dataSource()))
                     .addCode(builder.build())
                     .build();
         }
         resultConverters(statements).forEach(converter -> builder.add(blocks.initializeConverter(converter)));
         return methods.constructor()
                 .addParameter(jdbcParameters.dataSource())
-                .addCode(blocks.initializeFieldToSelf(jdbcNames.dataSource()))
+                .addCode(blocks.initializeFieldToSelf(names.dataSource()))
                 .addCode(builder.build())
                 .build();
     }

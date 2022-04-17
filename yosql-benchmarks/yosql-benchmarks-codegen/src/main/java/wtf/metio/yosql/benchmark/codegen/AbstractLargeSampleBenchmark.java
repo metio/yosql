@@ -8,8 +8,6 @@ package wtf.metio.yosql.benchmark.codegen;
 
 import org.openjdk.jmh.annotations.Setup;
 
-import java.io.IOException;
-
 /**
  * JMH based micro benchmark for YoSQL with a large sample size.
  */

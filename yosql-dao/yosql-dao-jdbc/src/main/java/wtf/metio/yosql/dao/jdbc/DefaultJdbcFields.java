@@ -8,7 +8,7 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import wtf.metio.yosql.internals.jdk.Strings;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 public final class DefaultJdbcFields implements JdbcFields {
@@ -16,10 +16,10 @@ public final class DefaultJdbcFields implements JdbcFields {
     private static final String NAME_REGEX = "([a-z])([A-Z])";
     private static final String NAME_REPLACEMENT = "$1_$2";
 
-    private final JdbcConfiguration jdbc;
+    private final NamesConfiguration names;
 
-    public DefaultJdbcFields(final JdbcConfiguration jdbc) {
-        this.jdbc = jdbc;
+    public DefaultJdbcFields(final NamesConfiguration names) {
+        this.names = names;
     }
 
     @Override
@@ -32,12 +32,12 @@ public final class DefaultJdbcFields implements JdbcFields {
 
     @Override
     public String constantRawSqlStatementFieldName(final SqlConfiguration configuration) {
-        return constantSqlStatementFieldName(configuration) + jdbc.rawSuffix();
+        return constantSqlStatementFieldName(configuration) + names.rawSuffix();
     }
 
     @Override
     public String constantSqlStatementParameterIndexFieldName(final SqlConfiguration configuration) {
-        return constantSqlStatementFieldName(configuration) + jdbc.indexSuffix();
+        return constantSqlStatementFieldName(configuration) + names.indexSuffix();
     }
 
     private static String getVendor(final SqlConfiguration configuration) {

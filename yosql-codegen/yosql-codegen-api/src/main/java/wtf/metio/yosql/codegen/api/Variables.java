@@ -15,6 +15,8 @@ import com.squareup.javapoet.TypeName;
  */
 public interface Variables {
 
+    // TODO: change method signatures so that types are first, then variable names, followed by initializers
+
     /**
      * Generates an inline variable without an initializer.
      *
@@ -64,7 +66,6 @@ public interface Variables {
      */
     CodeBlock variableStatement(String name, TypeName variableClass, CodeBlock initializer);
 
-    // TODO: obsolete?
     CodeBlock variable(String name, Class<?> variableClass, String initializer, Object... initializerArgs);
     CodeBlock variable(String name, TypeName variableClass, String initializer, Object... initializerArgs);
 

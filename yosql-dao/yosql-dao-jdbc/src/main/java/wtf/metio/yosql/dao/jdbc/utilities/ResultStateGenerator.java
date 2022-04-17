@@ -16,21 +16,21 @@ import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
 import wtf.metio.yosql.codegen.logging.Utilities;
 import wtf.metio.yosql.dao.jdbc.JdbcParameters;
+import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
-import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ResultStateGenerator {
 
     private final LocLogger logger;
-    private final RuntimeConfiguration runtimeConfiguration;
+    private final JdbcConfiguration jdbcConfiguration;
+    private final NamesConfiguration names;
     private final AnnotationGenerator annotations;
     private final GenericBlocks blocks;
     private final Classes classes;
@@ -40,14 +40,16 @@ public class ResultStateGenerator {
     @Inject
     public ResultStateGenerator(
             final @Utilities LocLogger logger,
-            final RuntimeConfiguration runtimeConfiguration,
+            final JdbcConfiguration jdbcConfiguration,
+            final NamesConfiguration names,
             final AnnotationGenerator annotations,
             final GenericBlocks blocks,
             final Classes classes,
             final Methods methods,
             final JdbcParameters jdbcParameters) {
+        this.names = names;
         this.annotations = annotations;
-        this.runtimeConfiguration = runtimeConfiguration;
+        this.jdbcConfiguration = jdbcConfiguration;
         this.logger = logger;
         this.blocks = blocks;
         this.classes = classes;
@@ -56,10 +58,16 @@ public class ResultStateGenerator {
     }
 
     PackagedTypeSpec generateResultStateClass() {
-        final var resultStateClass = runtimeConfiguration.jdbc().resultStateClass();
+        final var resultStateClass = jdbcConfiguration.resultStateClass();
         final var type = classes.openClass(resultStateClass)
-                .addFields(fields())
-                .addMethods(methods())
+                .addField(resultSetField())
+                .addField(metaDataField())
+                .addField(columnCountField())
+                .addMethod(constructor())
+                .addMethod(next())
+                .addMethod(getColumnName())
+                .addMethod(getResultSet())
+                .addMethod(getColumnCount())
                 .addAnnotations(annotations.generatedClass())
                 .build();
         logger.debug(CodegenLifecycle.TYPE_GENERATED, resultStateClass.packageName(),
@@ -67,36 +75,22 @@ public class ResultStateGenerator {
         return PackagedTypeSpec.of(type, resultStateClass.packageName());
     }
 
-    private Iterable<FieldSpec> fields() {
-        return List.of(resultSetField(), metaDataField(), columnCountField());
-    }
-
     private FieldSpec resultSetField() {
-        return FieldSpec.builder(ResultSet.class, runtimeConfiguration.jdbc().resultSet())
+        return FieldSpec.builder(ResultSet.class, names.resultSet())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }
 
     private FieldSpec metaDataField() {
-        return FieldSpec.builder(ResultSetMetaData.class, runtimeConfiguration.jdbc().resultSetMetaData())
+        return FieldSpec.builder(ResultSetMetaData.class, names.resultSetMetaData())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
     }
 
     private FieldSpec columnCountField() {
-        return FieldSpec.builder(int.class, runtimeConfiguration.jdbc().columnCount())
+        return FieldSpec.builder(int.class, names.columnCount())
                 .addModifiers(Modifier.PROTECTED, Modifier.FINAL)
                 .build();
-    }
-
-    private Iterable<MethodSpec> methods() {
-        final var methods = new ArrayList<MethodSpec>();
-        methods.add(constructor());
-        methods.add(next());
-        methods.add(getColumnName());
-        methods.add(getResultSet());
-        methods.add(getColumnCount());
-        return methods;
     }
 
     private MethodSpec constructor() {
@@ -104,9 +98,9 @@ public class ResultStateGenerator {
                 .addParameter(jdbcParameters.resultSet())
                 .addParameter(jdbcParameters.metaData())
                 .addParameter(jdbcParameters.columnCount())
-                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().resultSet()))
-                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().resultSetMetaData()))
-                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().columnCount()))
+                .addCode(blocks.initializeFieldToSelf(names.resultSet()))
+                .addCode(blocks.initializeFieldToSelf(names.resultSetMetaData()))
+                .addCode(blocks.initializeFieldToSelf(names.columnCount()))
                 .build();
     }
 
@@ -114,7 +108,7 @@ public class ResultStateGenerator {
         return methods.publicMethod("next")
                 .returns(boolean.class)
                 .addException(SQLException.class)
-                .addStatement("return $N.next()", runtimeConfiguration.jdbc().resultSet())
+                .addStatement("return $N.next()", names.resultSet())
                 .build();
     }
 
@@ -123,22 +117,21 @@ public class ResultStateGenerator {
                 .returns(String.class)
                 .addParameter(jdbcParameters.index())
                 .addException(SQLException.class)
-                .addStatement("return $N.getColumnName($N)", runtimeConfiguration.jdbc().resultSetMetaData(),
-                        runtimeConfiguration.jdbc().indexVariable())
+                .addStatement("return $N.getColumnName($N)", names.resultSetMetaData(), names.indexVariable())
                 .build();
     }
 
     private MethodSpec getResultSet() {
         return methods.publicMethod("getResultSet")
                 .returns(ResultSet.class)
-                .addStatement("return $N", runtimeConfiguration.jdbc().resultSet())
+                .addStatement("return $N", names.resultSet())
                 .build();
     }
 
     private MethodSpec getColumnCount() {
         return methods.publicMethod("getColumnCount")
                 .returns(int.class)
-                .addStatement("return $N", runtimeConfiguration.jdbc().columnCount())
+                .addStatement("return $N", names.columnCount())
                 .build();
     }
 

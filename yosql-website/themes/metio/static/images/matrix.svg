@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  - This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+  - directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+  - including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+  - in the LICENSE file.
+  -->
+
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.1"
-   width="340.80899"
-   height="340.80899"
-   style="stroke:#ffffff;stroke-width:4;stroke-linejoin:round;stroke-opacity:0.5;paint-order:stroke"
-   id="Layer_1"
-   sodipodi:docname="matrix-icon.svg"
-   inkscape:version="0.92.1 r15371">
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:cc="http://creativecommons.org/ns#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        version="1.1"
+        width="340.80899"
+        height="340.80899"
+        style="stroke:#ffffff;stroke-width:4;stroke-linejoin:round;stroke-opacity:0.5;paint-order:stroke"
+        id="Layer_1"
+        sodipodi:docname="matrix-icon.svg"
+        inkscape:version="0.92.1 r15371">
   <metadata
      id="metadata23">
     <rdf:RDF>

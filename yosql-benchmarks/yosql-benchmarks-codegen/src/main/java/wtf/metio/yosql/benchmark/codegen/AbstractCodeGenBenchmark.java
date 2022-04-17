@@ -7,8 +7,6 @@
 package wtf.metio.yosql.benchmark.codegen;
 
 import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
 import wtf.metio.yosql.codegen.api.YoSQL;
 
 /**

@@ -19,6 +19,7 @@ import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.jdbi.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
@@ -97,7 +98,7 @@ public class JdbiDaoModule {
     Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
-            final Names names,
+            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
@@ -115,7 +116,7 @@ public class JdbiDaoModule {
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
             final RuntimeConfiguration configuration,
             final ControlFlows controlFlows,
-            final Names names,
+            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {

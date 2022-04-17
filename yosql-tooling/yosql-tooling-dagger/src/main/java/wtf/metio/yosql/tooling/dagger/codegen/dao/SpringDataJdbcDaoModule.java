@@ -12,11 +12,14 @@ import dagger.multibindings.IntoSet;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
-import wtf.metio.yosql.codegen.blocks.*;
-import wtf.metio.yosql.dao.spring.data.jdbc.*;
+import wtf.metio.yosql.codegen.blocks.GenericBlocks;
+import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
+import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
+import wtf.metio.yosql.dao.spring.data.jdbc.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
@@ -95,7 +98,7 @@ public class SpringDataJdbcDaoModule {
     Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
-            final Names names,
+            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
@@ -113,7 +116,7 @@ public class SpringDataJdbcDaoModule {
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
             final RuntimeConfiguration configuration,
             final ControlFlows controlFlows,
-            final Names names,
+            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {

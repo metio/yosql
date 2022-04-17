@@ -10,9 +10,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
 import wtf.metio.yosql.codegen.api.Fields;
-import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.system.SystemLoggingGenerator;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 /**
  * Dagger module for {@link System.Logger} logging generators.
@@ -23,7 +23,7 @@ public class SystemLoggingModule {
     @IntoSet
     @Provides
     public LoggingGenerator provideNoOpLoggingGenerator(
-            final Names names,
+            final NamesConfiguration names,
             final Fields fields) {
         return new SystemLoggingGenerator(names, fields);
     }

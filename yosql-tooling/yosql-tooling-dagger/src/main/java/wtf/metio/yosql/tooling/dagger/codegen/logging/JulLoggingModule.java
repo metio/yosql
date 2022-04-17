@@ -10,9 +10,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
 import wtf.metio.yosql.codegen.api.Fields;
-import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.jul.JulLoggingGenerator;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 /**
  * Dagger module for java.util.logging based logging generators.
@@ -23,7 +23,7 @@ public class JulLoggingModule {
     @IntoSet
     @Provides
     public LoggingGenerator provideJdkLoggingGenerator(
-            final Names names,
+            final NamesConfiguration names,
             final Fields fields) {
         return new JulLoggingGenerator(names, fields);
     }

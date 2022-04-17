@@ -16,20 +16,21 @@ import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
 import wtf.metio.yosql.codegen.logging.Utilities;
 import wtf.metio.yosql.dao.jdbc.JdbcParameters;
+import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
-import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class FlowStateGenerator {
 
     private final LocLogger logger;
-    private final RuntimeConfiguration runtimeConfiguration;
+    private final JdbcConfiguration jdbcConfiguration;
+    private final NamesConfiguration names;
     private final GenericBlocks blocks;
     private final AnnotationGenerator annotations;
     private final Classes classes;
@@ -39,14 +40,16 @@ public class FlowStateGenerator {
     @Inject
     public FlowStateGenerator(
             final @Utilities LocLogger logger,
-            final RuntimeConfiguration runtimeConfiguration, // TODO: use JdbcConfig
+            final JdbcConfiguration jdbcConfiguration,
+            final NamesConfiguration names,
             final GenericBlocks blocks,
             final AnnotationGenerator annotations,
             final Classes classes,
             final Methods methods,
             final JdbcParameters jdbcParameters) {
         this.logger = logger;
-        this.runtimeConfiguration = runtimeConfiguration;
+        this.jdbcConfiguration = jdbcConfiguration;
+        this.names = names;
         this.blocks = blocks;
         this.annotations = annotations;
         this.classes = classes;
@@ -55,11 +58,13 @@ public class FlowStateGenerator {
     }
 
     PackagedTypeSpec generateFlowStateClass() {
-        final var flowStateClass = runtimeConfiguration.jdbc().flowStateClass();
+        final var flowStateClass = jdbcConfiguration.flowStateClass();
         final var type = classes.publicClass(flowStateClass)
-                .superclass(runtimeConfiguration.jdbc().resultStateClass())
-                .addFields(fields())
-                .addMethods(methods())
+                .superclass(jdbcConfiguration.resultStateClass())
+                .addField(connectionField())
+                .addField(preparedStatementField())
+                .addMethod(constructor())
+                .addMethod(close())
                 .addAnnotations(annotations.generatedClass())
                 .build();
         logger.debug(CodegenLifecycle.TYPE_GENERATED, flowStateClass.packageName(),
@@ -67,30 +72,16 @@ public class FlowStateGenerator {
         return PackagedTypeSpec.of(type, flowStateClass.packageName());
     }
 
-    private Iterable<FieldSpec> fields() {
-        final var fields = new ArrayList<FieldSpec>();
-        fields.add(connectionField());
-        fields.add(preparedStatementField());
-        return fields;
-    }
-
     private FieldSpec connectionField() {
-        return FieldSpec.builder(Connection.class, runtimeConfiguration.jdbc().connection())
+        return FieldSpec.builder(Connection.class, names.connection())
                 .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
     }
 
     private FieldSpec preparedStatementField() {
-        return FieldSpec.builder(PreparedStatement.class, runtimeConfiguration.jdbc().statement())
+        return FieldSpec.builder(PreparedStatement.class, names.statement())
                 .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
-    }
-
-    private Iterable<MethodSpec> methods() {
-        final var fields = new ArrayList<MethodSpec>();
-        fields.add(constructor());
-        fields.add(close());
-        return fields;
     }
 
     private MethodSpec constructor() {
@@ -101,11 +92,11 @@ public class FlowStateGenerator {
                 .addParameter(jdbcParameters.metaData())
                 .addParameter(jdbcParameters.columnCount())
                 .addStatement("super($N, $N, $N)",
-                        runtimeConfiguration.jdbc().resultSet(),
-                        runtimeConfiguration.jdbc().resultSetMetaData(),
-                        runtimeConfiguration.jdbc().columnCount())
-                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().connection()))
-                .addCode(blocks.initializeFieldToSelf(runtimeConfiguration.jdbc().statement()))
+                        names.resultSet(),
+                        names.resultSetMetaData(),
+                        names.columnCount())
+                .addCode(blocks.initializeFieldToSelf(names.connection()))
+                .addCode(blocks.initializeFieldToSelf(names.statement()))
                 .build();
     }
 
@@ -113,9 +104,9 @@ public class FlowStateGenerator {
         return methods.publicMethod("close")
                 .returns(void.class)
                 .addException(SQLException.class)
-                .addStatement("$N.close()", runtimeConfiguration.jdbc().resultSet())
-                .addStatement("$N.close()", runtimeConfiguration.jdbc().statement())
-                .addStatement("$N.close()", runtimeConfiguration.jdbc().connection())
+                .addStatement("$N.close()", names.resultSet())
+                .addStatement("$N.close()", names.statement())
+                .addStatement("$N.close()", names.connection())
                 .build();
     }
 

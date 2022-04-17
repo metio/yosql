@@ -10,9 +10,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
 import wtf.metio.yosql.codegen.api.Fields;
-import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.slf4j.Slf4jLoggingGenerator;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 /**
  * Dagger module for slf4j based logging generators.
@@ -23,7 +23,7 @@ public class Slf4jLoggingModule {
     @IntoSet
     @Provides
     public LoggingGenerator provideSlf4jLoggingGenerator(
-            final Names names,
+            final NamesConfiguration names,
             final Fields fields) {
         return new Slf4jLoggingGenerator(names, fields);
     }

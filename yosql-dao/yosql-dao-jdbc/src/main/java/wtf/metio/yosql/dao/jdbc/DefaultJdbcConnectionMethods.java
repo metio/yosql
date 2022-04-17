@@ -8,37 +8,34 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import com.squareup.javapoet.CodeBlock;
-import wtf.metio.yosql.codegen.api.Names;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 public final class DefaultJdbcConnectionMethods implements JdbcMethods.JdbcConnectionMethods {
 
-    private final Names names;
-    private final JdbcConfiguration jdbcNames;
+    private final NamesConfiguration names;
 
-    public DefaultJdbcConnectionMethods(final Names names, final JdbcConfiguration jdbcNames) {
+    public DefaultJdbcConnectionMethods(final NamesConfiguration names) {
         this.names = names;
-        this.jdbcNames = jdbcNames;
     }
 
     @Override
     public CodeBlock prepareStatement() {
         return CodeBlock.builder()
-                .add("$N.prepareStatement($N)", jdbcNames.connection(), names.query())
+                .add("$N.prepareStatement($N)", names.connection(), names.query())
                 .build();
     }
 
     @Override
     public CodeBlock prepareCallable() {
         return CodeBlock.builder()
-                .add("$N.prepareCall($N)", jdbcNames.connection(), names.query())
+                .add("$N.prepareCall($N)", names.connection(), names.query())
                 .build();
     }
 
     @Override
     public CodeBlock getMetaData() {
         return CodeBlock.builder()
-                .add("$N.getMetaData()", jdbcNames.connection())
+                .add("$N.getMetaData()", names.connection())
                 .build();
     }
 

@@ -8,20 +8,20 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import com.squareup.javapoet.CodeBlock;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 public class DefaultJdbcDatabaseMetaDataMethods implements JdbcMethods.JdbcDatabaseMetaDataMethods {
 
-    private final JdbcConfiguration jdbcNames;
+    private final NamesConfiguration names;
 
-    public DefaultJdbcDatabaseMetaDataMethods(final JdbcConfiguration jdbcNames) {
-        this.jdbcNames = jdbcNames;
+    public DefaultJdbcDatabaseMetaDataMethods(final NamesConfiguration names) {
+        this.names = names;
     }
 
     @Override
     public CodeBlock getDatabaseProductName() {
         return CodeBlock.builder()
-                .add("$N.getDatabaseProductName()", jdbcNames.databaseMetaData())
+                .add("$N.getDatabaseProductName()", names.databaseMetaData())
                 .build();
     }
 

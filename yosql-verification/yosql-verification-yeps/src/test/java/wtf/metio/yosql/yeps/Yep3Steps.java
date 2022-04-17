@@ -6,10 +6,6 @@
  */
 package wtf.metio.yosql.yeps;
 
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-
 /**
  * Defines steps for YEP-3.
  */

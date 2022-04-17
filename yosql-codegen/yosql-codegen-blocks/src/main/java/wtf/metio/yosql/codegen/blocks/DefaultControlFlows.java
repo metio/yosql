@@ -9,8 +9,8 @@ package wtf.metio.yosql.codegen.blocks;
 
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.yosql.codegen.api.ControlFlows;
-import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.codegen.api.Variables;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.sql.SQLException;
@@ -21,11 +21,11 @@ import static wtf.metio.yosql.codegen.blocks.CodeBlocks.code;
 public final class DefaultControlFlows implements ControlFlows {
 
     private final Variables variables;
-    private final Names names;
+    private final NamesConfiguration names;
 
     public DefaultControlFlows(
             final Variables variables,
-            final Names names) {
+            final NamesConfiguration names) {
         this.variables = variables;
         this.names = names;
     }

@@ -10,10 +10,9 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 import org.tinylog.Logger;
-import wtf.metio.yosql.codegen.api.Fields;
-import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 import java.util.Optional;
 
@@ -22,9 +21,9 @@ import java.util.Optional;
  */
 public final class TinylogLoggingGenerator implements LoggingGenerator {
 
-    private final Names names;
+    private final NamesConfiguration names;
 
-    public TinylogLoggingGenerator(final Names names) {
+    public TinylogLoggingGenerator(final NamesConfiguration names) {
         this.names = names;
     }
 

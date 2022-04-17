@@ -14,8 +14,9 @@ import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
 import wtf.metio.yosql.codegen.logging.Utilities;
 import wtf.metio.yosql.dao.jdbc.JdbcParameters;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
+import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
-import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
@@ -23,8 +24,8 @@ import java.util.LinkedHashMap;
 public class ResultRowGenerator {
 
     private final LocLogger logger;
-    private final RuntimeConfiguration runtimeConfiguration;
-    private final Names names;
+    private final JdbcConfiguration jdbcConfiguration;
+    private final NamesConfiguration names;
     private final AnnotationGenerator annotations;
     private final Classes classes;
     private final Fields fields;
@@ -35,8 +36,8 @@ public class ResultRowGenerator {
     @Inject
     public ResultRowGenerator(
             final @Utilities LocLogger logger,
-            final RuntimeConfiguration runtimeConfiguration,
-            final Names names,
+            final JdbcConfiguration jdbcConfiguration,
+            final NamesConfiguration names,
             final AnnotationGenerator annotations,
             final Classes classes,
             final Fields fields,
@@ -45,7 +46,7 @@ public class ResultRowGenerator {
             final JdbcParameters jdbcParameters) {
         this.names = names;
         this.annotations = annotations;
-        this.runtimeConfiguration = runtimeConfiguration;
+        this.jdbcConfiguration = jdbcConfiguration;
         this.logger = logger;
         this.classes = classes;
         this.fields = fields;
@@ -55,7 +56,7 @@ public class ResultRowGenerator {
     }
 
     PackagedTypeSpec generateResultRowClass() {
-        final var resultRowClass = runtimeConfiguration.jdbc().resultRowClass();
+        final var resultRowClass = jdbcConfiguration.resultRowClass();
         final var type = classes.publicClass(resultRowClass)
                 .addField(row())
                 .addMethod(constructor())
@@ -70,16 +71,16 @@ public class ResultRowGenerator {
     }
 
     private FieldSpec row() {
-        return fields.field(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, runtimeConfiguration.jdbc().row());
+        return fields.field(TypicalTypes.MAP_OF_STRING_AND_OBJECTS, names.row());
     }
 
     private MethodSpec constructor() {
         return methods.constructor()
                 .addParameter(jdbcParameters.columnCount())
                 .addStatement("$N = new $T<>($N)",
-                        runtimeConfiguration.jdbc().row(),
+                        names.row(),
                         LinkedHashMap.class,
-                        runtimeConfiguration.jdbc().columnCount())
+                        names.columnCount())
                 .build();
     }
 
@@ -89,7 +90,7 @@ public class ResultRowGenerator {
                 .addParameter(parameters.parameter(Object.class, names.value()))
                 .returns(void.class)
                 .addStatement("$N.put($N, $N)",
-                        runtimeConfiguration.jdbc().row(),
+                        names.row(),
                         names.name(),
                         names.value())
                 .build();
@@ -100,7 +101,7 @@ public class ResultRowGenerator {
                 .addParameter(parameters.parameter(String.class, names.name()))
                 .returns(Object.class)
                 .addStatement("return $N.get($N)",
-                        runtimeConfiguration.jdbc().row(),
+                        names.row(),
                         names.name())
                 .build();
     }
@@ -108,7 +109,7 @@ public class ResultRowGenerator {
     private MethodSpec toStringMethod() {
         return methods.implementation("toString")
                 .returns(String.class)
-                .addStatement("return $N.toString()", runtimeConfiguration.jdbc().row())
+                .addStatement("return $N.toString()", names.row())
                 .build();
     }
 

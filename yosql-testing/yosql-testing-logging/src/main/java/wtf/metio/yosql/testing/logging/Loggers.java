@@ -17,6 +17,7 @@ import wtf.metio.yosql.logging.system.SystemLoggingGenerator;
 import wtf.metio.yosql.logging.ti.ThatsInteresingLoggingGenerator;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.Apis;
+import wtf.metio.yosql.testing.configs.Names;
 
 import java.util.LinkedHashSet;
 
@@ -24,10 +25,12 @@ public final class Loggers {
 
     public static LoggingGenerator loggingGenerator() {
         final var generators = new LinkedHashSet<LoggingGenerator>();
-        generators.add(new JulLoggingGenerator(Blocks.names(), Blocks.fields()));
-        generators.add(new Log4jLoggingGenerator(Blocks.names(), Blocks.fields()));
-        generators.add(new Slf4jLoggingGenerator(Blocks.names(), Blocks.fields()));
-        generators.add(new SystemLoggingGenerator(Blocks.names(), Blocks.fields()));
+        final var names = Names.defaults();
+        final var fields = Blocks.fields();
+        generators.add(new JulLoggingGenerator(names, fields));
+        generators.add(new Log4jLoggingGenerator(names, fields));
+        generators.add(new Slf4jLoggingGenerator(names, fields));
+        generators.add(new SystemLoggingGenerator(names, fields));
         generators.add(new ThatsInteresingLoggingGenerator());
         generators.add(new NoOpLoggingGenerator());
         return new DelegatingLoggingGenerator(Apis.jul(), generators);

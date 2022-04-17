@@ -11,8 +11,6 @@ import org.openjdk.jmh.annotations.Benchmark;
 import wtf.metio.yosql.benchmarks.common.Write;
 
 import java.time.Instant;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 /**
  * The JDBI implementation of the {@link Write} benchmarks using no logging statements.

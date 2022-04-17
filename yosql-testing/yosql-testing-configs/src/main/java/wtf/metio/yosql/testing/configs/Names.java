@@ -5,32 +5,18 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.codegen.api;
+package wtf.metio.yosql.testing.configs;
 
-public interface Names {
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
-    String logger();
+public final class Names {
 
-    String query();
+    public static NamesConfiguration defaults() {
+        return NamesConfiguration.usingDefaults().build();
+    }
 
-    String rawQuery();
-
-    String executedQuery();
-
-    String databaseProductName();
-
-    String action();
-
-    String result();
-
-    String value();
-
-    String emitter();
-
-    String name();
-
-    String state();
-
-    String exception();
+    private Names() {
+        // factory class
+    }
 
 }

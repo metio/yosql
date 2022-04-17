@@ -10,9 +10,9 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.codegen.api.Fields;
-import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 import java.util.Optional;
 
@@ -21,10 +21,10 @@ import java.util.Optional;
  */
 public final class SystemLoggingGenerator implements LoggingGenerator {
 
-    private final Names names;
+    private final NamesConfiguration names;
     private final Fields fields;
 
-    public SystemLoggingGenerator(final Names names, final Fields fields) {
+    public SystemLoggingGenerator(final NamesConfiguration names, final Fields fields) {
         this.names = names;
         this.fields = fields;
     }

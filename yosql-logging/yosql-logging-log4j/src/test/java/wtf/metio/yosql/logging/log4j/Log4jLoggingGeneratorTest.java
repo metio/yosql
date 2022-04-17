@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.testing.codegen.Blocks;
+import wtf.metio.yosql.testing.configs.Names;
 
 @DisplayName("Log4jLoggingGenerator")
 final class Log4jLoggingGeneratorTest {
@@ -21,7 +22,7 @@ final class Log4jLoggingGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        generator = new Log4jLoggingGenerator(Blocks.names(), Blocks.fields());
+        generator = new Log4jLoggingGenerator(Names.defaults(), Blocks.fields());
     }
 
     @Test

@@ -8,55 +8,55 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import com.squareup.javapoet.CodeBlock;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 public final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatementMethods {
 
-    private final JdbcConfiguration jdbcNames;
+    private final NamesConfiguration names;
 
-    public DefaultJdbcStatementMethods(final JdbcConfiguration jdbcNames) {
-        this.jdbcNames = jdbcNames;
+    public DefaultJdbcStatementMethods(final NamesConfiguration names) {
+        this.names = names;
     }
 
     @Override
     public CodeBlock executeQuery() {
         return CodeBlock.builder()
-                .add("$N.executeQuery()", jdbcNames.statement())
+                .add("$N.executeQuery()", names.statement())
                 .build();
     }
 
     @Override
     public CodeBlock executeUpdate() {
         return CodeBlock.builder()
-                .add("$N.executeUpdate()", jdbcNames.statement())
+                .add("$N.executeUpdate()", names.statement())
                 .build();
     }
 
     @Override
     public CodeBlock executeBatch() {
         return CodeBlock.builder()
-                .add("$N.executeBatch()", jdbcNames.statement())
+                .add("$N.executeBatch()", names.statement())
                 .build();
     }
 
     @Override
     public CodeBlock addBatch() {
         return CodeBlock.builder()
-                .add("$N.addBatch()", jdbcNames.statement())
+                .add("$N.addBatch()", names.statement())
                 .build();
     }
 
     @Override
     public CodeBlock getResultSet() {
         return CodeBlock.builder()
-                .add("$N.getResultSet()", jdbcNames.statement())
+                .add("$N.getResultSet()", names.statement())
                 .build();
     }
 
     @Override
     public CodeBlock execute() {
         return CodeBlock.builder()
-                .add("$N.execute()", jdbcNames.statement())
+                .add("$N.execute()", names.statement())
                 .build();
     }
 

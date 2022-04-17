@@ -7,14 +7,14 @@
 
 package wtf.metio.yosql.dao.jdbc;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.codegen.api.FieldsGenerator;
 import wtf.metio.yosql.codegen.tck.FieldsGeneratorTCK;
-import wtf.metio.yosql.internals.junit5.TestIterables;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.Java;
 import wtf.metio.yosql.testing.configs.Jdbc;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.Names;
 import wtf.metio.yosql.testing.logging.Loggers;
 
 @DisplayName("JdbcFieldsGenerator")
@@ -26,9 +26,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(),
+                    new DefaultJdbcFields(names));
         }
 
         @Override
@@ -109,9 +114,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(Java.java4()),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(Java.java4()),
+                    new DefaultJdbcFields(names));
         }
 
         @Override
@@ -183,9 +193,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(Java.java5()),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(Java.java5()),
+                    new DefaultJdbcFields(names));
         }
 
         @Override
@@ -257,9 +272,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(Java.java7()),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(Java.java7()),
+                    new DefaultJdbcFields(names));
         }
 
         @Override
@@ -331,9 +351,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(Java.java8()),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(Java.java8()),
+                    new DefaultJdbcFields(names));
         }
 
         @Override
@@ -405,9 +430,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(Java.java9()),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(Java.java9()),
+                    new DefaultJdbcFields(names));
         }
 
         @Override
@@ -479,9 +509,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(Java.java11()),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(Java.java11()),
+                    new DefaultJdbcFields(names));
         }
 
         @Override
@@ -553,9 +588,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(Java.java14()),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(Java.java14()),
+                    new DefaultJdbcFields(names));
         }
 
         @Override
@@ -629,9 +669,14 @@ final class JdbcFieldsGeneratorTest {
 
         @Override
         public FieldsGenerator generator() {
+            final var names = Names.defaults();
             return new JdbcFieldsGenerator(
-                    Jdbc.defaults(), Loggers.loggingGenerator(), Blocks.javadoc(), Blocks.fields(Java.java16()),
-                    new DefaultJdbcFields(Jdbc.defaults()));
+                    Jdbc.defaults(),
+                    names,
+                    Loggers.loggingGenerator(),
+                    Blocks.javadoc(),
+                    Blocks.fields(Java.java16()),
+                    new DefaultJdbcFields(names));
         }
 
         @Override

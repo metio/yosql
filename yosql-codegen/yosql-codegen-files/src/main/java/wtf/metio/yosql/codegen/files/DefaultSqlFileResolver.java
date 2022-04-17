@@ -7,10 +7,10 @@
 package wtf.metio.yosql.codegen.files;
 
 import org.slf4j.cal10n.LocLogger;
-import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.codegen.errors.ExecutionErrors;
 import wtf.metio.yosql.codegen.lifecycle.ApplicationErrors;
 import wtf.metio.yosql.codegen.lifecycle.FileLifecycle;
+import wtf.metio.yosql.models.immutables.FilesConfiguration;
 
 import java.io.IOException;
 import java.nio.file.FileVisitOption;

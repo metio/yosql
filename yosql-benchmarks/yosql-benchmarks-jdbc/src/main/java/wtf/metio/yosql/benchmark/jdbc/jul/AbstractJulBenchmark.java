@@ -11,11 +11,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
 import wtf.metio.yosql.benchmark.jdbc.AbstractBenchmark;
-import wtf.metio.yosql.benchmark.jdbc.jul.persistence.CompanyRepository;
-import wtf.metio.yosql.benchmark.jdbc.jul.persistence.DepartmentRepository;
-import wtf.metio.yosql.benchmark.jdbc.jul.persistence.EmployeeRepository;
-import wtf.metio.yosql.benchmark.jdbc.jul.persistence.ProjectRepository;
-import wtf.metio.yosql.benchmark.jdbc.jul.persistence.MaintenanceRepository;
+import wtf.metio.yosql.benchmark.jdbc.jul.persistence.*;
 
 import java.io.IOException;
 import java.util.logging.LogManager;

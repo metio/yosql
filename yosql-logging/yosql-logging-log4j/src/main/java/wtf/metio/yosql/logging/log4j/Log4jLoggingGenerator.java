@@ -13,9 +13,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import wtf.metio.yosql.codegen.api.Fields;
-import wtf.metio.yosql.codegen.api.Names;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 import java.util.Optional;
 
@@ -24,10 +24,10 @@ import java.util.Optional;
  */
 public final class Log4jLoggingGenerator implements LoggingGenerator {
 
-    private final Names names;
+    private final NamesConfiguration names;
     private final Fields fields;
 
-    public Log4jLoggingGenerator(final Names names, final Fields fields) {
+    public Log4jLoggingGenerator(final NamesConfiguration names, final Fields fields) {
         this.names = names;
         this.fields = fields;
     }

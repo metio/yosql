@@ -8,8 +8,6 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import org.junit.jupiter.api.*;
-import wtf.metio.yosql.codegen.api.ConstructorGenerator;
-import wtf.metio.yosql.codegen.api.Java8StreamMethodGenerator;
 import wtf.metio.yosql.codegen.api.RxJavaMethodGenerator;
 import wtf.metio.yosql.testing.configs.Java;
 import wtf.metio.yosql.testing.configs.Sql;

@@ -10,8 +10,7 @@ package wtf.metio.yosql.dao.jdbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.codegen.Blocks;
-import wtf.metio.yosql.testing.configs.Jdbc;
+import wtf.metio.yosql.testing.configs.Names;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -22,14 +21,14 @@ class DefaultJdbcMethodsTest {
 
     @BeforeEach
     void setUp() {
-        final var config = Jdbc.defaults();
+        final var names = Names.defaults();
         generator = new DefaultJdbcMethods(
-                new DefaultJdbcDataSourceMethods(config),
-                new DefaultJdbcConnectionMethods(Blocks.names(), config),
-                new DefaultJdbcDatabaseMetaDataMethods(config),
-                new DefaultJdbcResultSetMethods(config),
-                new DefaultJdbcResultSetMetaDataMethods(config),
-                new DefaultJdbcStatementMethods(config));
+                new DefaultJdbcDataSourceMethods(names),
+                new DefaultJdbcConnectionMethods(names),
+                new DefaultJdbcDatabaseMetaDataMethods(names),
+                new DefaultJdbcResultSetMethods(names),
+                new DefaultJdbcResultSetMetaDataMethods(names),
+                new DefaultJdbcStatementMethods(names));
     }
 
     @Test

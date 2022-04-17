@@ -12,10 +12,16 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import io.reactivex.Emitter;
-import wtf.metio.yosql.codegen.api.*;
+import wtf.metio.yosql.codegen.api.ControlFlows;
+import wtf.metio.yosql.codegen.api.Methods;
+import wtf.metio.yosql.codegen.api.Parameters;
+import wtf.metio.yosql.codegen.api.RxJavaMethodGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
-import wtf.metio.yosql.models.immutables.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
+import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
+import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.util.List;
@@ -27,7 +33,7 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
 
     private final JdbcConfiguration config;
     private final ControlFlows controlFlows;
-    private final Names names;
+    private final NamesConfiguration names;
     private final Methods methods;
     private final Parameters parameters;
     private final LoggingGenerator logging;
@@ -36,7 +42,7 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     public JdbcRxJavaMethodGenerator(
             final JdbcConfiguration config,
             final ControlFlows controlFlows,
-            final Names names,
+            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             final LoggingGenerator logging,

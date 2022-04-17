@@ -9,8 +9,6 @@ package wtf.metio.yosql.example.maven.jdbc.java16;
 import com.zaxxer.hikari.HikariDataSource;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.CompanyRepository;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.PersonRepository;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.CompanyRepository;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.PersonRepository;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.SchemaRepository;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.util.ToResultRowConverter;
 
