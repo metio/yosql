@@ -27,7 +27,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.defaults());
 
             // when
-            final var variable = variables.variable("test", String.class);
+            final var variable = variables.variable(String.class, "test");
 
             // then
             Assertions.assertEquals("""
@@ -41,7 +41,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.defaults());
 
             // when
-            final var variable = variables.variable("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variable(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -55,7 +55,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.defaults());
 
             // when
-            final var variable = variables.variableStatement("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variableStatement(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -76,7 +76,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java4());
 
             // when
-            final var variable = variables.variable("test", String.class);
+            final var variable = variables.variable(String.class, "test");
 
             // then
             Assertions.assertEquals("""
@@ -90,7 +90,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java4());
 
             // when
-            final var variable = variables.variable("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variable(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -104,7 +104,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java4());
 
             // when
-            final var variable = variables.variableStatement("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variableStatement(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -125,7 +125,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java5());
 
             // when
-            final var variable = variables.variable("test", String.class);
+            final var variable = variables.variable(String.class, "test");
 
             // then
             Assertions.assertEquals("""
@@ -139,7 +139,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java5());
 
             // when
-            final var variable = variables.variable("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variable(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -153,7 +153,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java5());
 
             // when
-            final var variable = variables.variableStatement("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variableStatement(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -174,7 +174,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java8());
 
             // when
-            final var variable = variables.variable("test", String.class);
+            final var variable = variables.variable(String.class, "test");
 
             // then
             Assertions.assertEquals("""
@@ -188,7 +188,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java8());
 
             // when
-            final var variable = variables.variable("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variable(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -202,7 +202,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java8());
 
             // when
-            final var variable = variables.variableStatement("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variableStatement(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -223,7 +223,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java9());
 
             // when
-            final var variable = variables.variable("test", String.class);
+            final var variable = variables.variable(String.class, "test");
 
             // then
             Assertions.assertEquals("""
@@ -237,7 +237,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java9());
 
             // when
-            final var variable = variables.variable("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variable(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -251,7 +251,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java9());
 
             // when
-            final var variable = variables.variableStatement("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variableStatement(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -272,7 +272,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java11());
 
             // when
-            final var variable = variables.variable("test", String.class);
+            final var variable = variables.variable(String.class, "test");
 
             // then
             Assertions.assertEquals("""
@@ -286,7 +286,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java11());
 
             // when
-            final var variable = variables.variable("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variable(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -300,7 +300,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java11());
 
             // when
-            final var variable = variables.variableStatement("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variableStatement(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -321,7 +321,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java14());
 
             // when
-            final var variable = variables.variable("test", String.class);
+            final var variable = variables.variable(String.class, "test");
 
             // then
             Assertions.assertEquals("""
@@ -335,7 +335,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java14());
 
             // when
-            final var variable = variables.variable("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variable(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -349,7 +349,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java14());
 
             // when
-            final var variable = variables.variableStatement("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variableStatement(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -370,7 +370,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java16());
 
             // when
-            final var variable = variables.variable("test", String.class);
+            final var variable = variables.variable(String.class, "test");
 
             // then
             Assertions.assertEquals("""
@@ -384,7 +384,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java16());
 
             // when
-            final var variable = variables.variable("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variable(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""
@@ -398,7 +398,7 @@ class DefaultVariablesTest {
             final var variables = new DefaultVariables(Java.java16());
 
             // when
-            final var variable = variables.variableStatement("test", String.class, CodeBlocks.code("$S", "hello world"));
+            final var variable = variables.variableStatement(String.class, "test", CodeBlocks.code("$S", "hello world"));
 
             // then
             Assertions.assertEquals("""

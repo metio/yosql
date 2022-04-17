@@ -29,7 +29,7 @@ public final class DefaultVariables implements Variables {
     }
 
     @Override
-    public CodeBlock variable(final String name, final Class<?> variableClass) {
+    public CodeBlock variable(final Class<?> variableClass, final String name) {
         if (javaConfiguration.useFinal()) {
             return CodeBlock.builder().add("final $T $N", variableClass, name).build();
         }
@@ -37,45 +37,45 @@ public final class DefaultVariables implements Variables {
     }
 
     @Override
-    public CodeBlock variable(final String name, final Class<?> variableClass, final CodeBlock initializer) {
-        return variable(name, TypeName.get(variableClass), initializer);
+    public CodeBlock variable(final Class<?> variableClass, final String name, final CodeBlock initializer) {
+        return variable(TypeName.get(variableClass), name, initializer);
     }
 
     @Override
-    public CodeBlock variable(final String name, final TypeName variableClass, final CodeBlock initializer) {
+    public CodeBlock variable(final TypeName variableType, final String name, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
         if (javaConfiguration.useVar()) {
             builder.add(code.toString(), name, initializer);
         } else {
-            builder.add(code.toString(), variableClass, name, initializer);
+            builder.add(code.toString(), variableType, name, initializer);
         }
         return builder.build();
     }
 
     @Override
-    public CodeBlock variableStatement(final String name, final Class<?> variableClass, final CodeBlock initializer) {
-        return variableStatement(name, TypeName.get(variableClass), initializer);
+    public CodeBlock variableStatement(final Class<?> variableClass, final String name, final CodeBlock initializer) {
+        return variableStatement(TypeName.get(variableClass), name, initializer);
     }
 
     @Override
-    public CodeBlock variableStatement(final String name, final TypeName variableClass, final CodeBlock initializer) {
-        return CodeBlock.builder().addStatement(variable(name, variableClass, initializer)).build();
+    public CodeBlock variableStatement(final TypeName variableType, final String name, final CodeBlock initializer) {
+        return CodeBlock.builder().addStatement(variable(variableType, name, initializer)).build();
     }
 
     @Override
     public CodeBlock variable(
-            final String name,
             final Class<?> variableClass,
+            final String name,
             final String initializer,
             final Object... initializerArgs) {
-        return variable(name, TypeName.get(variableClass), initializer, initializerArgs);
+        return variable(TypeName.get(variableClass), name, initializer, initializerArgs);
     }
 
     @Override
     public CodeBlock variable(
+            final TypeName variableType,
             final String name,
-            final TypeName variableClass,
             final String initializer,
             final Object... initializerArgs) {
         final var builder = CodeBlock.builder();
@@ -83,7 +83,7 @@ public final class DefaultVariables implements Variables {
         if (javaConfiguration.useVar()) {
             builder.add(code.toString(), Stream.concat(Stream.of(name), Arrays.stream(initializerArgs)).toArray());
         } else {
-            builder.add(code.toString(), Stream.concat(Stream.of(variableClass, name), Arrays.stream(initializerArgs)).toArray());
+            builder.add(code.toString(), Stream.concat(Stream.of(variableType, name), Arrays.stream(initializerArgs)).toArray());
         }
         return builder.build();
     }

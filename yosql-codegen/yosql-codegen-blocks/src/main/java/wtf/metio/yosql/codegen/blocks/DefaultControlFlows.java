@@ -39,7 +39,7 @@ public final class DefaultControlFlows implements ControlFlows {
 
     @Override
     public CodeBlock catchAndDo(final CodeBlock statement) {
-        final var catchDeclaration = variables.variable(names.exception(), SQLException.class);
+        final var catchDeclaration = variables.variable(SQLException.class, names.exception());
         return CodeBlock.builder()
                 .beginControlFlow("catch ($L)", catchDeclaration)
                 .addStatement(statement)

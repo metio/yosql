@@ -15,58 +15,75 @@ import com.squareup.javapoet.TypeName;
  */
 public interface Variables {
 
-    // TODO: change method signatures so that types are first, then variable names, followed by initializers
-
     /**
      * Generates an inline variable without an initializer.
      *
-     * @param name The name of the variable.
      * @param variableClass The class of the variable.
+     * @param name          The name of the variable.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variable(String name, Class<?> variableClass);
+    CodeBlock variable(Class<?> variableClass, String name);
 
     /**
      * Generates an inline variable with an initializer.
      *
-     * @param name The name of the variable.
      * @param variableClass The class of the variable.
-     * @param initializer The initializer to use.
+     * @param name          The name of the variable.
+     * @param initializer   The initializer to use.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variable(String name, Class<?> variableClass, CodeBlock initializer);
+    CodeBlock variable(Class<?> variableClass, String name, CodeBlock initializer);
 
     /**
      * Generates an inline variable with an initializer.
      *
-     * @param name The name of the variable.
-     * @param variableClass The class of the variable.
-     * @param initializer The initializer to use.
+     * @param variableType The type of the variable.
+     * @param name         The name of the variable.
+     * @param initializer  The initializer to use.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variable(String name, TypeName variableClass, CodeBlock initializer);
+    CodeBlock variable(TypeName variableType, String name, CodeBlock initializer);
 
     /**
      * Generates a variable statement with an initializer.
      *
-     * @param name The name of the variable.
      * @param variableClass The class of the variable.
-     * @param initializer The initializer to use.
+     * @param name          The name of the variable.
+     * @param initializer   The initializer to use.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variableStatement(String name, Class<?> variableClass, CodeBlock initializer);
+    CodeBlock variableStatement(Class<?> variableClass, String name, CodeBlock initializer);
 
     /**
      * Generates a variable statement with an initializer.
      *
-     * @param name The name of the variable.
-     * @param variableClass The class of the variable.
-     * @param initializer The initializer to use.
+     * @param variableType The type of the variable.
+     * @param name         The name of the variable.
+     * @param initializer  The initializer to use.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variableStatement(String name, TypeName variableClass, CodeBlock initializer);
+    CodeBlock variableStatement(TypeName variableType, String name, CodeBlock initializer);
 
-    CodeBlock variable(String name, Class<?> variableClass, String initializer, Object... initializerArgs);
-    CodeBlock variable(String name, TypeName variableClass, String initializer, Object... initializerArgs);
+    /**
+     * Generates a variable statement with an initializer.
+     *
+     * @param variableClass   The class of the variable.
+     * @param name            The name of the variable.
+     * @param initializer     The initializer to use.
+     * @param initializerArgs The initializer arguments to use.
+     * @return The corresponding code block for the new variable.
+     */
+    CodeBlock variable(Class<?> variableClass, String name, String initializer, Object... initializerArgs);
+
+    /**
+     * Generates a variable statement with an initializer.
+     *
+     * @param variableType    The type of the variable.
+     * @param name            The name of the variable.
+     * @param initializer     The initializer to use.
+     * @param initializerArgs The initializer arguments to use.
+     * @return The corresponding code block for the new variable.
+     */
+    CodeBlock variable(TypeName variableType, String name, String initializer, Object... initializerArgs);
 
 }
