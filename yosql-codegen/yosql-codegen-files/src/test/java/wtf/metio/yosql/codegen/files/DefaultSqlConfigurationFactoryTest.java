@@ -152,7 +152,7 @@ class DefaultSqlConfigurationFactoryTest {
         final var statementInFile = 1;
         final var config = RuntimeConfiguration.usingDefaults()
                 .setJdbc(JdbcConfiguration.usingDefaults()
-                        .setUserTypes(List.of(ResultRowConverter.builder()
+                        .setRowConverters(List.of(ResultRowConverter.builder()
                                 .setAlias("itemConverter")
                                 .setConverterType("com.example.ItemConverter")
                                 .setMethodName("asUserType")
@@ -197,7 +197,7 @@ class DefaultSqlConfigurationFactoryTest {
                                 .setMethodName("apply")
                                 .setResultType("com.example.ResultRow")
                                 .build())
-                        .setUserTypes(List.of(ResultRowConverter.builder()
+                        .setRowConverters(List.of(ResultRowConverter.builder()
                                 .setAlias("itemConverter")
                                 .setConverterType("com.example.ItemConverter")
                                 .setMethodName("asUserType")

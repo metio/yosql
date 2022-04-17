@@ -327,7 +327,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     private String converterMethod(final String converterAlias) {
-        return config.userTypes().stream()
+        return config.rowConverters().stream()
                 .filter(converter -> converterAlias.equalsIgnoreCase(converter.alias()))
                 .findFirst()
                 .or(config::defaultConverter)

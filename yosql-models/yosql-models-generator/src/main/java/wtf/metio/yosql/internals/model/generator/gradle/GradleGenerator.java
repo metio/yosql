@@ -97,7 +97,7 @@ public final class GradleGenerator extends AbstractMethodsGenerator {
                 .ifPresent(s -> builder.addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_OBJECTS, "objects").build()));
         group.settings().stream()
                 .filter(setting -> valueOf(setting).isPresent())
-                .filter(setting -> !"userTypes".equals(setting.name()))
+                .filter(setting -> !"rowConverters".equals(setting.name()))
                 .forEach(setting -> builder.addStatement(conventionValue(setting)));
         group.settings().stream()
                 .filter(setting -> "defaultConverter".equals(setting.name()))

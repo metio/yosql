@@ -31,7 +31,7 @@ public final class Jdbc {
                 .addSettings(resultRowClassName())
                 .addSettings(flowStateClassName())
                 .addSettings(defaultConverter())
-                .addSettings(userTypes())
+                .addSettings(rowConverters())
                 .setImmutableMethods(derivedMethods())
                 .build();
     }
@@ -116,9 +116,9 @@ public final class Jdbc {
                 .build();
     }
 
-    private static ConfigurationSetting userTypes() {
+    private static ConfigurationSetting rowConverters() {
         return ConfigurationSetting.builder()
-                .setName("userTypes")
+                .setName("rowConverters")
                 .setDescription("The converters configured by the user.")
                 .setType(TypicalTypes.listOf(ResultRowConverter.class))
                 .setCliType(TypicalTypes.listOf(TypicalTypes.STRING))

@@ -157,7 +157,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     }
 
     private FieldSpec asConverterField(final ResultRowConverter converter) {
-        return config.userTypes().stream()
+        return config.rowConverters().stream()
                 .filter(rowConverter -> rowConverter.alias().equals(converter.alias()))
                 .map(rowConverter -> TypeGuesser.guessTypeName(rowConverter.converterType()))
                 .map(typeName -> fields.field(

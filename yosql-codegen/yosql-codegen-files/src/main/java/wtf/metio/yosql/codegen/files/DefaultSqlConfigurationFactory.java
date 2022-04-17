@@ -535,7 +535,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private Optional<ResultRowConverter> getDefaultRowConverter() {
         final var resultRowConverter = runtimeConfiguration.jdbc().defaultConverter();
-        return runtimeConfiguration.jdbc().userTypes().stream()
+        return runtimeConfiguration.jdbc().rowConverters().stream()
                 .filter(converter -> resultRowConverter.isEmpty() || resultRowConverter.get().equals(converter))
                 .findFirst()
                 .or(() -> resultRowConverter);
@@ -544,7 +544,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     private String getConverterFieldOrEmptyString(
             final Predicate<ResultRowConverter> predicate,
             final Function<ResultRowConverter, String> mapper) {
-        return runtimeConfiguration.jdbc().userTypes().stream()
+        return runtimeConfiguration.jdbc().rowConverters().stream()
                 .filter(predicate)
                 .map(mapper)
                 .findFirst()

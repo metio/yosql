@@ -114,7 +114,7 @@ public abstract class AbstractFieldsGenerator implements Generator {
                 .addModifiers(modifiers)
                 .returns(TypicalTypes.listOf(ResultRowConverter.class))
                 .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable(userTypes)", Stream.class)
+                        .add("return $T.ofNullable(rowConverters)", Stream.class)
                         .add("$>$>\n.flatMap($T::stream)", List.class)
                         .add("\n.map($T::strip)", String.class)
                         .add("\n.filter($T.not($T::isBlank))", Predicate.class, Strings.class)
