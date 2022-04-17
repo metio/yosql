@@ -21,6 +21,6 @@ public interface ResultRowConverter {
 
     String methodName();
 
-    String resultType();     // TODO: resultType should be resultRowType b/c then rxjava/reactor/stream/list are just converters that can be plugged in
+    String resultType();
 
 }
