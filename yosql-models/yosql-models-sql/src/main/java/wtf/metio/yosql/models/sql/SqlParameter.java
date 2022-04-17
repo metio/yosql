@@ -16,7 +16,7 @@ import java.util.Optional;
 @Value.Immutable
 public interface SqlParameter {
 
-    static ImmutableSqlParameter.Builder builder() {
+    static ImmutableSqlParameter.NameBuildStage builder() {
         return ImmutableSqlParameter.builder();
     }
 

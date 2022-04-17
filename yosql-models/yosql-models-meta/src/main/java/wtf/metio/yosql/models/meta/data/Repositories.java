@@ -56,9 +56,9 @@ public final class Repositories {
     private static ConfigurationSetting basePackageName() {
         return ConfigurationSetting.builder()
                 .setName("basePackageName")
+                .setDescription("The base package name for all repositories")
                 .setType(TypicalTypes.STRING)
                 .setValue("com.example.persistence")
-                .setDescription("The base package name for all repositories")
                 .addExamples(ConfigurationExample.builder()
                         .setValue("com.example.persistence")
                         .setDescription("The default value of the `basePackageName` configuration option is `com.example.persistence`. Setting the option to `com.example.persistence` therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:")
@@ -89,9 +89,9 @@ public final class Repositories {
     private static ConfigurationSetting repositoryNameSuffix() {
         return ConfigurationSetting.builder()
                 .setName("repositoryNameSuffix")
+                .setDescription("The repository name suffix to use.")
                 .setType(TypicalTypes.STRING)
                 .setValue("Repository")
-                .setDescription("The repository name suffix to use.")
                 .setExplanation("In case the repository name already contains the configured suffix, it will not be added twice.")
                 .addExamples(ConfigurationExample.builder()
                         .setValue("Repository")
@@ -123,72 +123,72 @@ public final class Repositories {
     private static ConfigurationSetting generateInterface() {
         return ConfigurationSetting.builder()
                 .setName("generateInterfaces")
+                .setDescription("Generate interfaces for all repositories")
                 .setType(TypeName.get(boolean.class))
                 .setValue(false)
-                .setDescription("Generate interfaces for all repositories")
                 .build();
     }
 
     private static ConfigurationSetting generateStandardApi() {
         return ConfigurationSetting.builder()
                 .setName("generateStandardApi")
+                .setDescription("Generate standard methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
-                .setDescription("Generate standard methods")
                 .build();
     }
 
     private static ConfigurationSetting generateBatchApi() {
         return ConfigurationSetting.builder()
                 .setName("generateBatchApi")
+                .setDescription("Generate batch methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
-                .setDescription("Generate batch methods")
                 .build();
     }
 
     private static ConfigurationSetting generateStreamEagerApi() {
         return ConfigurationSetting.builder()
                 .setName("generateStreamEagerApi")
+                .setDescription("Generate batch methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
-                .setDescription("Generate batch methods")
                 .build();
     }
 
     private static ConfigurationSetting generateStreamLazyApi() {
         return ConfigurationSetting.builder()
                 .setName("generateStreamLazyApi")
+                .setDescription("Generate batch methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
-                .setDescription("Generate batch methods")
                 .build();
     }
 
     private static ConfigurationSetting generateRxJavaApi() {
         return ConfigurationSetting.builder()
                 .setName("generateRxJavaApi")
+                .setDescription("Generate batch methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
-                .setDescription("Generate batch methods")
                 .build();
     }
 
     private static ConfigurationSetting catchAndRethrow() {
         return ConfigurationSetting.builder()
                 .setName("catchAndRethrow")
+                .setDescription("Catch exceptions during SQL execution and re-throw them as RuntimeExceptions")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
-                .setDescription("Catch exceptions during SQL execution and re-throw them as RuntimeExceptions")
                 .build();
     }
 
     private static ConfigurationSetting injectConverters() {
         return ConfigurationSetting.builder()
                 .setName("injectConverters")
+                .setDescription("Toggles whether converters should be injected as constructor parameters.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(false)
-                .setDescription("Toggles whether converters should be injected as constructor parameters.")
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
                         .setDescription("The default value of the `injectConverters` configuration option is `false`. It produces code similar to this:")
@@ -238,72 +238,72 @@ public final class Repositories {
     private static ConfigurationSetting batchPrefix() {
         return ConfigurationSetting.builder()
                 .setName("batchPrefix")
+                .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
-                .setDescription("")
                 .build();
     }
 
     private static ConfigurationSetting batchSuffix() {
         return ConfigurationSetting.builder()
                 .setName("batchSuffix")
+                .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("Batch")
-                .setDescription("")
                 .build();
     }
 
     private static ConfigurationSetting streamPrefix() {
         return ConfigurationSetting.builder()
                 .setName("streamPrefix")
+                .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
-                .setDescription("")
                 .build();
     }
 
     private static ConfigurationSetting streamSuffix() {
         return ConfigurationSetting.builder()
                 .setName("streamSuffix")
+                .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("Stream")
-                .setDescription("")
                 .build();
     }
 
     private static ConfigurationSetting rxjava2Prefix() {
         return ConfigurationSetting.builder()
                 .setName("rxjava2Prefix")
+                .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
-                .setDescription("")
                 .build();
     }
 
     private static ConfigurationSetting rxjava2Suffix() {
         return ConfigurationSetting.builder()
                 .setName("rxjava2Suffix")
+                .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("Flow")
-                .setDescription("")
                 .build();
     }
 
     private static ConfigurationSetting lazyName() {
         return ConfigurationSetting.builder()
                 .setName("lazyName")
+                .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("Lazy")
-                .setDescription("")
                 .build();
     }
 
     private static ConfigurationSetting eagerName() {
         return ConfigurationSetting.builder()
                 .setName("eagerName")
+                .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("Eager")
-                .setDescription("")
                 .build();
     }
 
@@ -315,9 +315,9 @@ public final class Repositories {
         defaultPrefixes.forEach(prefixesInDocs::add);
         return ConfigurationSetting.builder()
                 .setName("allowedWritePrefixes")
+                .setDescription("Configures which name prefixes are allowed for statements that are writing data to your database.")
                 .setType(TypicalTypes.listOf(TypicalTypes.STRING))
                 .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
-                .setDescription("Configures which name prefixes are allowed for statements that are writing data to your database.")
                 .setCliValue(prefixesInDocs.toString())
                 .setMavenValue(prefixesInDocs.toString())
                 .addExamples(ConfigurationExample.builder()
@@ -339,9 +339,9 @@ public final class Repositories {
         defaultPrefixes.forEach(prefixesInDocs::add);
         return ConfigurationSetting.builder()
                 .setName("allowedReadPrefixes")
+                .setDescription("Configures which name prefixes are allowed for statements that are reading data from your database.")
                 .setType(TypicalTypes.listOf(TypicalTypes.STRING))
                 .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
-                .setDescription("Configures which name prefixes are allowed for statements that are reading data from your database.")
                 .setCliValue(prefixesInDocs.toString())
                 .setMavenValue(prefixesInDocs.toString())
                 .addExamples(ConfigurationExample.builder()
@@ -363,9 +363,9 @@ public final class Repositories {
         defaultPrefixes.forEach(prefixesInDocs::add);
         return ConfigurationSetting.builder()
                 .setName("allowedCallPrefixes")
+                .setDescription("Configures which name prefixes are allowed for statements that are calling stored procedures.")
                 .setType(TypicalTypes.listOf(TypicalTypes.STRING))
                 .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
-                .setDescription("Configures which name prefixes are allowed for statements that are calling stored procedures.")
                 .setCliValue(prefixesInDocs.toString())
                 .setMavenValue(prefixesInDocs.toString())
                 .addExamples(ConfigurationExample.builder()
@@ -382,9 +382,9 @@ public final class Repositories {
     private static ConfigurationSetting validateMethodNamePrefixes() {
         return ConfigurationSetting.builder()
                 .setName("validateMethodNamePrefixes")
+                .setDescription("Validate user given names against list of allowed prefixes per type.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(false)
-                .setDescription("Validate user given names against list of allowed prefixes per type.")
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
                         .setDescription("The default value of the `validateMethodNamePrefixes` configuration option is `false` which disables the validation of names according to your configured prefixes.")

@@ -22,10 +22,10 @@ public final class SqlParameterDeserializer extends JsonDeserializer<SqlParamete
             final DeserializationContext context) throws IOException {
         final var parameter = jsonParser.readValueAs(Parameter.class);
         return SqlParameter.builder()
-                .setConverter(parameter.converter == null ? "" : parameter.converter)
                 .setName(parameter.name == null ? "" : parameter.name)
                 .setType(parameter.type == null ? "" : parameter.type)
                 .setIndices(parameter.indices == null ? new int[0] : parameter.indices)
+                .setConverter(parameter.converter == null ? "" : parameter.converter)
                 .build();
     }
 

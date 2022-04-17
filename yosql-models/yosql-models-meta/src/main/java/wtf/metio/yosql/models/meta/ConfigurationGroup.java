@@ -22,7 +22,7 @@ public interface ConfigurationGroup {
 
     //region builders
 
-    static ImmutableConfigurationGroup.Builder builder() {
+    static ImmutableConfigurationGroup.NameBuildStage builder() {
         return ImmutableConfigurationGroup.builder();
     }
 

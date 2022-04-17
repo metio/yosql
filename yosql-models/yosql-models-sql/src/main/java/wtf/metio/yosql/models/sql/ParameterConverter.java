@@ -11,7 +11,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface ParameterConverter {
 
-    static ImmutableParameterConverter.Builder builder() {
+    static ImmutableParameterConverter.AliasBuildStage builder() {
         return ImmutableParameterConverter.builder();
     }
 

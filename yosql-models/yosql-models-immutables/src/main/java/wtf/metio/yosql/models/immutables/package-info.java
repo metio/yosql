@@ -10,8 +10,8 @@
 @Value.Style(
         init = "set*",
         strictBuilder = true,
-        jdkOnly = true
-        // stagedBuilder = true // TODO: enable staged builder
+        jdkOnly = true,
+        stagedBuilder = true
 )
 package wtf.metio.yosql.models.immutables;
 

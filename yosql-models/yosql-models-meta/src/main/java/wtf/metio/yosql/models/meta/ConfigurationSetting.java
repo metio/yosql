@@ -23,7 +23,7 @@ public interface ConfigurationSetting {
 
     //region builders
 
-    static ImmutableConfigurationSetting.Builder builder() {
+    static ImmutableConfigurationSetting.NameBuildStage builder() {
         return ImmutableConfigurationSetting.builder();
     }
 

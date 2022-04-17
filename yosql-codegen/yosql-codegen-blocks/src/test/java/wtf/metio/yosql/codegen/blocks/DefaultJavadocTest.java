@@ -59,9 +59,9 @@ class DefaultJavadocTest {
         void shouldGenerateClassCommentWithStatement() {
             // given
             final List<SqlStatement> statements = List.of(SqlStatement.builder()
+                    .setSourcePath(Paths.get("test"))
                     .setConfiguration(Sql.sqlConfiguration())
                     .setRawStatement("SELECT 1")
-                    .setSourcePath(Paths.get("test"))
                     .build());
 
             // when
@@ -81,9 +81,9 @@ class DefaultJavadocTest {
         void shouldGenerateMethodCommentWithStatement() {
             // given
             final List<SqlStatement> statements = List.of(SqlStatement.builder()
+                    .setSourcePath(Paths.get("test"))
                     .setConfiguration(Sql.sqlConfiguration())
                     .setRawStatement("SELECT 1")
-                    .setSourcePath(Paths.get("test"))
                     .build());
 
             // when
@@ -139,9 +139,9 @@ class DefaultJavadocTest {
         void shouldGenerateClassCommentWithStatement() {
             // given
             final List<SqlStatement> statements = List.of(SqlStatement.builder()
+                    .setSourcePath(Paths.get("test"))
                     .setConfiguration(Sql.sqlConfiguration())
                     .setRawStatement("SELECT 1")
-                    .setSourcePath(Paths.get("test"))
                     .build());
 
             // when
@@ -161,9 +161,9 @@ class DefaultJavadocTest {
         void shouldGenerateMethodCommentWithStatement() {
             // given
             final List<SqlStatement> statements = List.of(SqlStatement.builder()
+                    .setSourcePath(Paths.get("test"))
                     .setConfiguration(Sql.sqlConfiguration())
                     .setRawStatement("SELECT 1")
-                    .setSourcePath(Paths.get("test"))
                     .build());
 
             // when

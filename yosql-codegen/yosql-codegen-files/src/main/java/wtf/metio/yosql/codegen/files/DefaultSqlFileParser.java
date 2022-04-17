@@ -100,9 +100,9 @@ public final class DefaultSqlFileParser implements SqlFileParser {
                 parameterIndices, statementInFile);
         logger.debug(ParseLifecycle.STATEMENT_PARSING_FINISHED, source, configuration.name());
         return SqlStatement.builder()
+                .setSourcePath(source)
                 .setConfiguration(configuration)
                 .setRawStatement(rawSqlStatement)
-                .setSourcePath(source)
                 .build();
     }
 

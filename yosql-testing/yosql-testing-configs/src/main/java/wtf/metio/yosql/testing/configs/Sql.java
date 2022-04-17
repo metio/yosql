@@ -21,8 +21,8 @@ public final class Sql {
     public static List<SqlStatement> sqlStatements() {
         return List.of(SqlStatement.builder()
                 .setSourcePath(Paths.get("src/main/yosql/data/queryData.sql"))
-                .setRawStatement("SELECT raw FROM table WHERE test = ? AND id = ?;")
                 .setConfiguration(sqlConfiguration())
+                .setRawStatement("SELECT raw FROM table WHERE test = ? AND id = ?;")
                 .build());
     }
 
@@ -33,17 +33,17 @@ public final class Sql {
         config.setParameters(List.of(SqlParameter.builder()
                 .setName("test")
                 .setType(Object.class.getName())
-                .setIndices(0)
+                .setIndices(new int[]{0})
                 .build(), SqlParameter.builder()
                 .setName("id")
                 .setType(int.class.getName())
-                .setIndices(1)
+                .setIndices(new int[]{1})
                 .build()));
         config.setResultRowConverter(ResultRowConverter.builder()
                 .setAlias("resultRow")
                 .setConverterType("com.example.ToResultRowConverter")
-                .setResultType("com.example.util.ResultRow")
                 .setMethodName("apply")
+                .setResultType("com.example.util.ResultRow")
                 .build());
         config.setRepository("com.example.persistence.DataRepository");
         return config.build();

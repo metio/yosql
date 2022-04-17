@@ -24,7 +24,7 @@ public interface SqlStatement {
 
     //region builders
 
-    static ImmutableSqlStatement.Builder builder() {
+    static ImmutableSqlStatement.SourcePathBuildStage builder() {
         return ImmutableSqlStatement.builder();
     }
 

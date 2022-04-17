@@ -399,8 +399,8 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         return parameters.stream()
                 .map(parameter -> SqlParameter.builder()
                         .setName(parameter.name())
-                        .setIndices(asIntArray(indices.get(parameter.name())))
                         .setType(parameter.type())
+                        .setIndices(asIntArray(indices.get(parameter.name())))
                         .setConverter(parameter.converter())
                         .build())
                 .collect(Collectors.toList());
@@ -467,8 +467,8 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             if (isMissingParameter(all, parameterName)) {
                 all.add(SqlParameter.builder()
                         .setName(parameterName)
-                        .setIndices(asIntArray(entry.getValue()))
                         .setType("java.lang.Object")
+                        .setIndices(asIntArray(entry.getValue()))
                         .build());
             }
         }
@@ -517,10 +517,10 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                         getDefaultAlias(currentConverter) : currentConverter.alias())
                 .setConverterType(Strings.isBlank(currentConverter.converterType()) ?
                         getDefaultConverterType(currentConverter) : currentConverter.converterType())
-                .setResultType(Strings.isBlank(currentConverter.resultType()) ?
-                        getDefaultResultType(currentConverter) : currentConverter.resultType())
                 .setMethodName(Strings.isBlank(currentConverter.methodName()) ?
                         getDefaultMethodName(currentConverter) : currentConverter.methodName())
+                .setResultType(Strings.isBlank(currentConverter.resultType()) ?
+                        getDefaultResultType(currentConverter) : currentConverter.resultType())
                 .build();
 
         return SqlConfiguration.copyOf(configuration)

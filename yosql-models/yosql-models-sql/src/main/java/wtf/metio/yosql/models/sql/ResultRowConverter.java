@@ -11,7 +11,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface ResultRowConverter {
 
-    static ImmutableResultRowConverter.Builder builder() {
+    static ImmutableResultRowConverter.AliasBuildStage builder() {
         return ImmutableResultRowConverter.builder();
     }
 

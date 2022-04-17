@@ -19,7 +19,7 @@ public interface ConfigurationExample {
 
     //region builders
 
-    static ImmutableConfigurationExample.Builder builder() {
+    static ImmutableConfigurationExample.ValueBuildStage builder() {
         return ImmutableConfigurationExample.builder();
     }
 

@@ -22,10 +22,10 @@ public final class ResultRowConverterDeserializer extends JsonDeserializer<Resul
             final DeserializationContext context) throws IOException {
         final var converter = jsonParser.readValueAs(Converter.class);
         return ResultRowConverter.builder()
+                .setAlias(converter.alias == null ? "" : converter.alias)
+                .setConverterType(converter.converterType == null ? "" : converter.converterType)
                 .setMethodName(converter.methodName == null ? "" : converter.methodName)
                 .setResultType(converter.resultType == null ? "" : converter.resultType)
-                .setConverterType(converter.converterType == null ? "" : converter.converterType)
-                .setAlias(converter.alias == null ? "" : converter.alias)
                 .build();
     }
 
