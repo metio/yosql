@@ -10,15 +10,10 @@ tags:
   - jOOQ
 ---
 
+**WORK IN PROGRESS**
+
 The `jOOQ` based implementation. It uses the `DSLContext` class to execute SQL statements and map results to your domain objects.
 
 | Read | Write | Call | Batch Write | Rxjava | Stream Eager | Stream Lazy |
 |------|-------|------|-------------|--------|--------------|-------------|
 | ✘    | ✘     | ✘    | ✘           | ✘      | ✘            | ✘           |
-
-### Maven
-
-In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a look at the tooling [documentation
-for Maven](/tooling/maven/).
-
-{{< maven/persistence/jooq/index >}}
