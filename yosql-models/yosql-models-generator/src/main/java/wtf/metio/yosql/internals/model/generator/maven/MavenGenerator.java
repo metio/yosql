@@ -38,43 +38,8 @@ public final class MavenGenerator extends AbstractFieldsGenerator {
     }
 
     private MethodSpec asConfiguration(final ConfigurationGroup group) {
-        if ("Converters".equals(group.name())) {
-            return converters(group);
-        }
         return asConfiguration(group, immutablesBasePackage);
     }
-
-    private MethodSpec converters(final ConfigurationGroup group) {
-        return MethodSpec.methodBuilder("asConfiguration")
-                .build();
-    }
-
-    /*
-     public ConverterConfiguration asConfiguration() {
-        final var toResultRow = ResultRowConverter.builder()
-                .setAlias(defaultRowConverter)
-                .setResultType("com.example.persistence.util.ResultRow")
-                .setConverterType("com.example.persistence.converter.ToResultRowConverter")
-                .setMethodName("apply")
-                .build();
-        final var converters = resultRowConverters.stream()
-                .map(c -> ResultRowConverter.builder()
-                        .setAlias(c.alias == null ? "" : c.alias)
-                        .setResultType(c.resultType == null ? "" : c.resultType)
-                        .setConverterType(c.converterType == null ? "" : c.converterType)
-                        .setMethodName(c.methodName == null ? "": c.methodName)
-                        .build())
-                .collect(toSet());
-        final Set<ResultRowConverter> combined = Stream.of(converters, Set.of(toResultRow))
-                .flatMap(Set::stream)
-                .collect(toSet());
-        return ConverterConfiguration.builder()
-                .setBasePackageName("com.example.persistence.converter")
-                .setDefaultConverter(toResultRow)
-                .setConverters(combined)
-                .build();
-    }
-     */
 
     @Override
     public TypeName typeOf(final ConfigurationSetting setting) {
