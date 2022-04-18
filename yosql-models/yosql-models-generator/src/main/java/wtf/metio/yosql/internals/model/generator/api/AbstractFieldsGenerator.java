@@ -109,7 +109,7 @@ public abstract class AbstractFieldsGenerator implements Generator {
                 .orElse(Collections.emptyList());
     }
 
-    private MethodSpec createRowConverters(final Modifier... modifiers) {
+    protected MethodSpec createRowConverters(final Modifier... modifiers) {
         return MethodSpec.methodBuilder("createRowConverters")
                 .addModifiers(modifiers)
                 .returns(TypicalTypes.listOf(ResultRowConverter.class))
@@ -120,12 +120,12 @@ public abstract class AbstractFieldsGenerator implements Generator {
                         .add("\n.filter($T.not($T::isBlank))", Predicate.class, Strings.class)
                         .add("\n.map(this::createRowConverter)")
                         .add("\n.filter($T::nonNull)", Objects.class)
-                        .add("\n.collect($T.toList())", Collectors.class)
+                        .add("\n.collect($T.toList())$<$<", Collectors.class)
                         .build())
                 .build();
     }
 
-    private MethodSpec createRowConverter(final Modifier... modifiers) {
+    protected MethodSpec createRowConverter(final Modifier... modifiers) {
         return MethodSpec.methodBuilder("createRowConverter")
                 .addModifiers(modifiers)
                 .returns(ResultRowConverter.class)
@@ -146,7 +146,7 @@ public abstract class AbstractFieldsGenerator implements Generator {
                         .add("\n.setConverterType(utilityPackageName + $S)", ".ToResultRowConverter")
                         .add("\n.setMethodName($S)", "apply")
                         .add("\n.setResultType(utilityPackageName + $S + resultRowClassName)", ".")
-                        .add("\n.build())")
+                        .add("\n.build())$<$<$<")
                         .build())
                 .build();
     }

@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public final class ModelGenerator {
 
@@ -47,8 +48,8 @@ public final class ModelGenerator {
         final var generator = new ImmutablesGenerator(immutablesBasePackage);
         final var writer = typeWriter(immutablesBasePackage);
         forAllConfigurations(generator, writer);
-        writer.accept(generator.apply(Runtime.configurationGroup(immutablesBasePackage)));
-        writer.accept(generator.apply(Sql.configurationGroup()));
+        generator.apply(Runtime.configurationGroup(immutablesBasePackage)).forEach(writer);
+        generator.apply(Sql.configurationGroup()).forEach(writer);
     }
 
     public void createMavenModel() {
@@ -96,9 +97,8 @@ public final class ModelGenerator {
         }
     }
 
-    private static void forAllConfigurations(final Function<ConfigurationGroup, TypeSpec> generator, final Consumer<TypeSpec> writer) {
-        AllConfigurations.allConfigurationGroups()
-                .stream().map(generator).forEach(writer);
+    private static void forAllConfigurations(final Function<ConfigurationGroup, Stream<TypeSpec>> generator, final Consumer<TypeSpec> writer) {
+        AllConfigurations.allConfigurationGroups().flatMap(generator).forEach(writer);
     }
 
     private Consumer<TypeSpec> typeWriter(final String targetPackageName) {

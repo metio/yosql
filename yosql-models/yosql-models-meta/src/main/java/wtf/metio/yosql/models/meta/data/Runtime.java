@@ -27,7 +27,7 @@ public final class Runtime {
     }
 
     private static List<ConfigurationSetting> all(final String immutablesBasePackage) {
-        return AllConfigurations.allConfigurationGroups().stream()
+        return AllConfigurations.allConfigurationGroups()
                 .map(group -> single(group, immutablesBasePackage))
                 .collect(Collectors.toList());
     }

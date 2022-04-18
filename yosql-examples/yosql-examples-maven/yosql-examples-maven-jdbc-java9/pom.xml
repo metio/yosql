@@ -55,7 +55,12 @@
                     <jdbc>
                         <utilityPackageName>wtf.metio.yosql.example.maven.jdbc.java9.persistence.util</utilityPackageName>
                         <rowConverters>
-                            <rowConverter>itemConverter:wtf.metio.yosql.example.maven.jdbc.java9.converter.ToItemConverter:asUserType:wtf.metio.yosql.example.maven.jdbc.java9.model.Item</rowConverter>
+                            <rowConverter>
+                                <alias>itemConverter</alias>
+                                <converterType>wtf.metio.yosql.example.maven.jdbc.java9.converter.ToItemConverter</converterType>
+                                <methodName>asUserType</methodName>
+                                <resultType>wtf.metio.yosql.example.maven.jdbc.java9.model.Item</resultType>
+                            </rowConverter>
                         </rowConverters>
                     </jdbc>
                 </configuration>

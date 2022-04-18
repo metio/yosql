@@ -18,6 +18,7 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public final class CliGenerator extends AbstractFieldsGenerator {
 
@@ -28,8 +29,8 @@ public final class CliGenerator extends AbstractFieldsGenerator {
     }
 
     @Override
-    public TypeSpec apply(final ConfigurationGroup group) {
-        return StandardClasses.openClass(ClassName.bestGuess(group.name()))
+    public Stream<TypeSpec> apply(final ConfigurationGroup group) {
+        return Stream.of(StandardClasses.openClass(ClassName.bestGuess(group.name()))
                 .addAnnotations(annotationsFor(group))
                 .addJavadoc(group.description())
                 .addModifiers(Modifier.PUBLIC)
@@ -37,14 +38,14 @@ public final class CliGenerator extends AbstractFieldsGenerator {
                 .addFields(optionalFields(group))
                 .addMethod(asConfiguration(group))
                 .addMethods(resultRowConverters(group))
-                .build();
+                .build());
     }
 
     private MethodSpec asConfiguration(final ConfigurationGroup group) {
         return asConfiguration(group, immutablesBasePackage);
     }
 
-    protected Iterable<AnnotationSpec> annotations(final ConfigurationGroup group, final ConfigurationSetting setting) {
+    private Iterable<AnnotationSpec> annotations(final ConfigurationGroup group, final ConfigurationSetting setting) {
         final var builder = AnnotationSpec.builder(CommandLine.Option.class)
                 .addMember("names", "\"--$L-$L\"", Strings.lowerCase(group.name()), Strings.kebabCase(setting.name()))
                 .addMember("description", "$S", setting.description());

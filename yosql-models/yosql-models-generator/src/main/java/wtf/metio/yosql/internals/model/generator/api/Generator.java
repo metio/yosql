@@ -21,8 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
-public interface Generator extends Function<ConfigurationGroup, TypeSpec> {
+public interface Generator extends Function<ConfigurationGroup, Stream<TypeSpec>> {
 
     TypeName typeOf(ConfigurationSetting setting);
 

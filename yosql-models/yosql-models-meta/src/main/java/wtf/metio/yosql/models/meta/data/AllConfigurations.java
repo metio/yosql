@@ -9,15 +9,15 @@ package wtf.metio.yosql.models.meta.data;
 
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Exposes all configuration groups/settings for convenient access.
  */
 public final class AllConfigurations {
 
-    public static List<ConfigurationGroup> allConfigurationGroups() {
-        return List.of(
+    public static Stream<ConfigurationGroup> allConfigurationGroups() {
+        return Stream.of(
                 Annotations.configurationGroup(),
                 Api.configurationGroup(),
                 Files.configurationGroup(),

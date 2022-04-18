@@ -16,6 +16,7 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public final class ImmutablesGenerator extends AbstractMethodsGenerator {
 
@@ -26,8 +27,8 @@ public final class ImmutablesGenerator extends AbstractMethodsGenerator {
     }
 
     @Override
-    public TypeSpec apply(final ConfigurationGroup group) {
-        return TypeSpec.interfaceBuilder(group.configurationName())
+    public Stream<TypeSpec> apply(final ConfigurationGroup group) {
+        return Stream.of(TypeSpec.interfaceBuilder(group.configurationName())
                 .addJavadoc(group.description())
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Value.Immutable.class)
@@ -36,7 +37,7 @@ public final class ImmutablesGenerator extends AbstractMethodsGenerator {
                 .addMethods(defaultMethods(group))
                 .addMethods(optionalMethods(group))
                 .addMethods(methodsFor(group))
-                .build();
+                .build());
     }
 
     private Iterable<MethodSpec> staticMethods(final ConfigurationGroup group) {

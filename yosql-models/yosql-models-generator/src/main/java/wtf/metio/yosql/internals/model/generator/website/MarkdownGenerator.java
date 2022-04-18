@@ -20,6 +20,9 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Generates markdown documentation for {@link ConfigurationGroup}s.
+ */
 public final class MarkdownGenerator {
 
     private static final Function<String, String> LOWER_CASE = Strings::lowerCase;
