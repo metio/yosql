@@ -304,7 +304,7 @@ public final class Sql {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L(), $L())", "streamPrefix", "name", "streamSuffix", "lazyName")
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "streamLazyPrefix", "name", "streamLazySuffix")
                 .build();
     }
 
@@ -313,7 +313,7 @@ public final class Sql {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L(), $L())", "streamPrefix", "name", "streamSuffix", "eagerName")
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "streamEagerPrefix", "name", "streamEagerSuffix")
                 .build();
     }
 

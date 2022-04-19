@@ -77,12 +77,14 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 this::generateBatchApi,
                 this::batchNamePrefix,
                 this::batchNameSuffix,
-                this::streamNamePrefix,
-                this::streamNameSuffix,
+                this::blockingNamePrefix,
+                this::blockingNameSuffix,
+                this::streamLazyPrefix,
+                this::streamLazySuffix,
+                this::streamEagerPrefix,
+                this::streamEagerSuffix,
                 this::rxJavaNamePrefix,
                 this::rxJavaNameSuffix,
-                this::lazyName,
-                this::eagerName,
                 this::type,
                 this::returningMode));
         validateNames(source, baseConfiguration);
@@ -178,18 +180,49 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         return configuration;
     }
 
-    private SqlConfiguration streamNamePrefix(final SqlConfiguration configuration) {
-        if (nullOrEmpty(configuration.streamPrefix())) {
+    private SqlConfiguration blockingNamePrefix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.blockingPrefix())) {
             return SqlConfiguration.copyOf(configuration)
-                    .withStreamPrefix(runtimeConfiguration.repositories().streamPrefix());
+                    .withBlockingPrefix(runtimeConfiguration.repositories().blockingPrefix());
         }
         return configuration;
     }
 
-    private SqlConfiguration streamNameSuffix(final SqlConfiguration configuration) {
-        if (nullOrEmpty(configuration.streamSuffix())) {
+    private SqlConfiguration blockingNameSuffix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.blockingSuffix())) {
             return SqlConfiguration.copyOf(configuration)
-                    .withStreamSuffix(runtimeConfiguration.repositories().streamSuffix());
+                    .withBlockingSuffix(runtimeConfiguration.repositories().blockingSuffix());
+        }
+        return configuration;
+    }
+
+    private SqlConfiguration streamLazyPrefix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.streamLazyPrefix())) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withStreamLazyPrefix(runtimeConfiguration.repositories().streamLazyPrefix());
+        }
+        return configuration;
+    }
+
+    private SqlConfiguration streamLazySuffix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.streamLazySuffix())) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withStreamLazySuffix(runtimeConfiguration.repositories().streamLazySuffix());
+        }
+        return configuration;
+    }
+    private SqlConfiguration streamEagerPrefix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.streamEagerPrefix())) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withStreamEagerPrefix(runtimeConfiguration.repositories().streamEagerPrefix());
+        }
+        return configuration;
+    }
+
+    private SqlConfiguration streamEagerSuffix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.streamEagerSuffix())) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withStreamEagerSuffix(runtimeConfiguration.repositories().streamEagerSuffix());
         }
         return configuration;
     }
@@ -206,22 +239,6 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         if (nullOrEmpty(configuration.rxjavaSuffix())) {
             return SqlConfiguration.copyOf(configuration)
                     .withRxjavaSuffix(runtimeConfiguration.repositories().rxjavaSuffix());
-        }
-        return configuration;
-    }
-
-    private SqlConfiguration lazyName(final SqlConfiguration configuration) {
-        if (nullOrEmpty(configuration.lazyName())) {
-            return SqlConfiguration.copyOf(configuration)
-                    .withLazyName(runtimeConfiguration.repositories().lazyName());
-        }
-        return configuration;
-    }
-
-    private SqlConfiguration eagerName(final SqlConfiguration configuration) {
-        if (nullOrEmpty(configuration.eagerName())) {
-            return SqlConfiguration.copyOf(configuration)
-                    .withEagerName(runtimeConfiguration.repositories().eagerName());
         }
         return configuration;
     }

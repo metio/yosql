@@ -17,6 +17,9 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import java.util.List;
 import java.util.StringJoiner;
 
+/**
+ * Configures how repositories are generated.
+ */
 public final class Repositories {
 
     public static ConfigurationGroup configurationGroup() {
@@ -52,10 +55,10 @@ public final class Repositories {
                 batchSuffix(),
                 rxjavaPrefix(),
                 rxjavaSuffix(),
-                streamPrefix(), // TODO: rename to streamLazyPrefix
-                streamSuffix(), // TODO: rename to streamLazySuffix
-                lazyName(), // TODO: rename to streamLazySuffix
-                eagerName()); // TODO: rename to streamEagerSuffix
+                streamLazyPrefix(),
+                streamLazySuffix(),
+                streamEagerPrefix(),
+                streamEagerSuffix());
     }
 
     private static ConfigurationSetting basePackageName() {
@@ -276,21 +279,39 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting streamPrefix() {
+    private static ConfigurationSetting streamLazyPrefix() {
         return ConfigurationSetting.builder()
-                .setName("streamPrefix")
+                .setName("streamLazyPrefix")
                 .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
                 .build();
     }
 
-    private static ConfigurationSetting streamSuffix() {
+    private static ConfigurationSetting streamLazySuffix() {
         return ConfigurationSetting.builder()
-                .setName("streamSuffix")
+                .setName("streamLazySuffix")
                 .setDescription("")
                 .setType(TypicalTypes.STRING)
-                .setValue("Stream")
+                .setValue("StreamLazy")
+                .build();
+    }
+
+    private static ConfigurationSetting streamEagerPrefix() {
+        return ConfigurationSetting.builder()
+                .setName("streamEagerPrefix")
+                .setDescription("")
+                .setType(TypicalTypes.STRING)
+                .setValue("")
+                .build();
+    }
+
+    private static ConfigurationSetting streamEagerSuffix() {
+        return ConfigurationSetting.builder()
+                .setName("streamEagerSuffix")
+                .setDescription("")
+                .setType(TypicalTypes.STRING)
+                .setValue("StreamEager")
                 .build();
     }
 
