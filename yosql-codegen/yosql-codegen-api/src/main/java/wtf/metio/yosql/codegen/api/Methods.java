@@ -62,7 +62,7 @@ public interface Methods {
     MethodSpec.Builder streamLazyMethod(String name, List<SqlStatement> statements);
 
     /**
-     * Prepare {@link MethodSpec} with Javadoc for rxjava methods.
+     * Prepare {@link MethodSpec} with Javadoc for RxJava methods.
      *
      * @param name       The name of the generated method.
      * @param statements The SQL statements used for Javadocs
@@ -71,7 +71,7 @@ public interface Methods {
     MethodSpec.Builder rxJavaMethod(String name, List<SqlStatement> statements);
 
     /**
-     * Prepare {@link MethodSpec} with Javadoc for reactor methods.
+     * Prepare {@link MethodSpec} with Javadoc for Reactor methods.
      *
      * @param name       The name of the generated method.
      * @param statements The SQL statements used for Javadocs

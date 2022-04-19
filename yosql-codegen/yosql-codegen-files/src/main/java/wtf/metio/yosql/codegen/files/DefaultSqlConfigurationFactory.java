@@ -79,12 +79,16 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 this::batchNameSuffix,
                 this::blockingNamePrefix,
                 this::blockingNameSuffix,
-                this::streamLazyPrefix,
-                this::streamLazySuffix,
-                this::streamEagerPrefix,
-                this::streamEagerSuffix,
+                this::mutinyNamePrefix,
+                this::mutinyNameSuffix,
+                this::reactorNamePrefix,
+                this::reactorNameSuffix,
                 this::rxJavaNamePrefix,
                 this::rxJavaNameSuffix,
+                this::streamLazyNamePrefix,
+                this::streamLazyNameSuffix,
+                this::streamEagerNamePrefix,
+                this::streamEagerNameSuffix,
                 this::type,
                 this::returningMode));
         validateNames(source, baseConfiguration);
@@ -92,10 +96,12 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
                 configuration -> name(configuration, source, statementInFile),
                 this::blocking,
                 this::batch,
+                this::catchAndRethrow,
+                this::mutiny,
+                this::reactor,
+                this::rxJava,
                 this::streamEager,
                 this::streamLazy,
-                this::rxJava,
-                this::catchAndRethrow,
                 configuration -> repository(source, configuration),
                 configuration -> parameters(source, parameterIndices, configuration),
                 this::resultConverter));
@@ -196,7 +202,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         return configuration;
     }
 
-    private SqlConfiguration streamLazyPrefix(final SqlConfiguration configuration) {
+    private SqlConfiguration streamLazyNamePrefix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.streamLazyPrefix())) {
             return SqlConfiguration.copyOf(configuration)
                     .withStreamLazyPrefix(runtimeConfiguration.repositories().streamLazyPrefix());
@@ -204,14 +210,14 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         return configuration;
     }
 
-    private SqlConfiguration streamLazySuffix(final SqlConfiguration configuration) {
+    private SqlConfiguration streamLazyNameSuffix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.streamLazySuffix())) {
             return SqlConfiguration.copyOf(configuration)
                     .withStreamLazySuffix(runtimeConfiguration.repositories().streamLazySuffix());
         }
         return configuration;
     }
-    private SqlConfiguration streamEagerPrefix(final SqlConfiguration configuration) {
+    private SqlConfiguration streamEagerNamePrefix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.streamEagerPrefix())) {
             return SqlConfiguration.copyOf(configuration)
                     .withStreamEagerPrefix(runtimeConfiguration.repositories().streamEagerPrefix());
@@ -219,10 +225,42 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         return configuration;
     }
 
-    private SqlConfiguration streamEagerSuffix(final SqlConfiguration configuration) {
+    private SqlConfiguration streamEagerNameSuffix(final SqlConfiguration configuration) {
         if (nullOrEmpty(configuration.streamEagerSuffix())) {
             return SqlConfiguration.copyOf(configuration)
                     .withStreamEagerSuffix(runtimeConfiguration.repositories().streamEagerSuffix());
+        }
+        return configuration;
+    }
+
+    private SqlConfiguration mutinyNamePrefix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.mutinyPrefix())) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withMutinyPrefix(runtimeConfiguration.repositories().mutinyPrefix());
+        }
+        return configuration;
+    }
+
+    private SqlConfiguration mutinyNameSuffix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.mutinySuffix())) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withMutinySuffix(runtimeConfiguration.repositories().mutinySuffix());
+        }
+        return configuration;
+    }
+
+    private SqlConfiguration reactorNamePrefix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.reactorPrefix())) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withReactorPrefix(runtimeConfiguration.repositories().reactorPrefix());
+        }
+        return configuration;
+    }
+
+    private SqlConfiguration reactorNameSuffix(final SqlConfiguration configuration) {
+        if (nullOrEmpty(configuration.reactorSuffix())) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withReactorSuffix(runtimeConfiguration.repositories().reactorSuffix());
         }
         return configuration;
     }
@@ -341,6 +379,26 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         }
         return SqlConfiguration.copyOf(configuration)
                 .withGenerateStreamLazyApi(runtimeConfiguration.repositories().generateStreamLazyApi());
+    }
+
+    private SqlConfiguration mutiny(final SqlConfiguration configuration) {
+        if (WRITING == configuration.type()) {
+            // TODO: allow Mutiny insert/update statements
+            return SqlConfiguration.copyOf(configuration)
+                    .withGenerateMutinyApi(false);
+        }
+        return SqlConfiguration.copyOf(configuration)
+                .withGenerateMutinyApi(runtimeConfiguration.repositories().generateMutinyApi());
+    }
+
+    private SqlConfiguration reactor(final SqlConfiguration configuration) {
+        if (WRITING == configuration.type()) {
+            // TODO: allow Reactor insert/update statements
+            return SqlConfiguration.copyOf(configuration)
+                    .withGenerateReactorApi(false);
+        }
+        return SqlConfiguration.copyOf(configuration)
+                .withGenerateReactorApi(runtimeConfiguration.repositories().generateReactorApi());
     }
 
     private SqlConfiguration rxJava(final SqlConfiguration configuration) {

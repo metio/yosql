@@ -44,15 +44,21 @@ public final class Repositories {
         return List.of(
                 generateBlockingApi(),
                 generateBatchApi(),
+                generateMutinyApi(),
+                generateReactorApi(),
+                generateRxJavaApi(),
                 generateStreamEagerApi(),
                 generateStreamLazyApi(),
-                generateRxJavaApi(),
                 catchAndRethrow(),
                 injectConverters(),
                 blockingPrefix(),
                 blockingSuffix(),
                 batchPrefix(),
                 batchSuffix(),
+                mutinyPrefix(),
+                mutinySuffix(),
+                reactorPrefix(),
+                reactorSuffix(),
                 rxjavaPrefix(),
                 rxjavaSuffix(),
                 streamLazyPrefix(),
@@ -176,7 +182,25 @@ public final class Repositories {
     private static ConfigurationSetting generateRxJavaApi() {
         return ConfigurationSetting.builder()
                 .setName("generateRxJavaApi")
-                .setDescription("Generate batch methods")
+                .setDescription("Generate RxJava based methods")
+                .setType(TypeName.get(boolean.class))
+                .setValue(true)
+                .build();
+    }
+
+    private static ConfigurationSetting generateReactorApi() {
+        return ConfigurationSetting.builder()
+                .setName("generateReactorApi")
+                .setDescription("Generate Reactor based methods")
+                .setType(TypeName.get(boolean.class))
+                .setValue(true)
+                .build();
+    }
+
+    private static ConfigurationSetting generateMutinyApi() {
+        return ConfigurationSetting.builder()
+                .setName("generateMutinyApi")
+                .setDescription("Generate Mutiny based methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .build();
@@ -312,6 +336,42 @@ public final class Repositories {
                 .setDescription("")
                 .setType(TypicalTypes.STRING)
                 .setValue("StreamEager")
+                .build();
+    }
+
+    private static ConfigurationSetting mutinyPrefix() {
+        return ConfigurationSetting.builder()
+                .setName("mutinyPrefix")
+                .setDescription("The method prefix to use for generated methods that use the Mutiny API.")
+                .setType(TypicalTypes.STRING)
+                .setValue("")
+                .build();
+    }
+
+    private static ConfigurationSetting mutinySuffix() {
+        return ConfigurationSetting.builder()
+                .setName("mutinySuffix")
+                .setDescription("The method suffix to use for generated methods that use the Mutiny API.")
+                .setType(TypicalTypes.STRING)
+                .setValue("Multi")
+                .build();
+    }
+
+    private static ConfigurationSetting reactorPrefix() {
+        return ConfigurationSetting.builder()
+                .setName("reactorPrefix")
+                .setDescription("The method prefix to use for generated methods that use the Reactor API.")
+                .setType(TypicalTypes.STRING)
+                .setValue("")
+                .build();
+    }
+
+    private static ConfigurationSetting reactorSuffix() {
+        return ConfigurationSetting.builder()
+                .setName("reactorSuffix")
+                .setDescription("The method suffix to use for generated methods that use the Reactor API.")
+                .setType(TypicalTypes.STRING)
+                .setValue("Flux")
                 .build();
     }
 
