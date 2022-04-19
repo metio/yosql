@@ -179,7 +179,7 @@ WHERE   id = :userId
 
 ## generateRxJavaApi
 
-The `generateRxJavaApi` field can be used to overwrite the globally configured `generateRxJavaApi` option. Use `generateRxJavaApi` in case you want to enable/disable generating rxjava2 based methods.
+The `generateRxJavaApi` field can be used to overwrite the globally configured `generateRxJavaApi` option. Use `generateRxJavaApi` in case you want to enable/disable generating RxJava based methods.
 
 ```sql
 -- generateRxJavaApi: false

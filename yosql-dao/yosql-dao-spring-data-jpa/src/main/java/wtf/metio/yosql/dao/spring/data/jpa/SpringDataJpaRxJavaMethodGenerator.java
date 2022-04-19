@@ -45,7 +45,7 @@ public final class SpringDataJpaRxJavaMethodGenerator implements RxJavaMethodGen
     }
 
     @Override
-    public MethodSpec rxJava2ReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec rxJavaReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 }

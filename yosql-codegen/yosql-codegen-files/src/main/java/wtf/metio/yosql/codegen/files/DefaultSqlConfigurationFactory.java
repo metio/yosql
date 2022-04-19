@@ -117,10 +117,10 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         logger.debug("parameters:       {}", configuration.parameters().size());
         logger.debug("blockingApi:      {}", configuration.generateBlockingApi());
         logger.debug("batchApi:         {}", configuration.generateBatchApi());
-        logger.debug("rxJava2Api:       {}", configuration.generateRxJavaApi());
+        logger.debug("rxJavaApi:        {}", configuration.generateRxJavaApi());
         logger.debug("eagerStreamApi:   {}", configuration.generateStreamEagerApi());
         logger.debug("lazyStreamApi:    {}", configuration.generateStreamLazyApi());
-        logger.debug("rxJava2Api:       {}", configuration.generateRxJavaApi());
+        logger.debug("rxJavaApi:        {}", configuration.generateRxJavaApi());
         logger.debug("type:             {}", configuration.type());
         logger.debug("returningMode:    {}", configuration.returningMode());
         logger.debug("vendor:           {}", configuration.vendor());
@@ -195,17 +195,17 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     }
 
     private SqlConfiguration rxJavaNamePrefix(final SqlConfiguration configuration) {
-        if (nullOrEmpty(configuration.rxjava2Prefix())) {
+        if (nullOrEmpty(configuration.rxjavaPrefix())) {
             return SqlConfiguration.copyOf(configuration)
-                    .withRxjava2Prefix(runtimeConfiguration.repositories().rxjava2Prefix());
+                    .withRxjavaPrefix(runtimeConfiguration.repositories().rxjavaPrefix());
         }
         return configuration;
     }
 
     private SqlConfiguration rxJavaNameSuffix(final SqlConfiguration configuration) {
-        if (nullOrEmpty(configuration.rxjava2Suffix())) {
+        if (nullOrEmpty(configuration.rxjavaSuffix())) {
             return SqlConfiguration.copyOf(configuration)
-                    .withRxjava2Suffix(runtimeConfiguration.repositories().rxjava2Suffix());
+                    .withRxjavaSuffix(runtimeConfiguration.repositories().rxjavaSuffix());
         }
         return configuration;
     }
@@ -328,7 +328,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private SqlConfiguration rxJava(final SqlConfiguration configuration) {
         if (WRITING == configuration.type()) {
-            // TODO: allow rxjava2 insert/update statements
+            // TODO: allow RxJava insert/update statements
             return SqlConfiguration.copyOf(configuration)
                     .withGenerateRxJavaApi(false);
         }

@@ -27,7 +27,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -111,7 +111,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -128,7 +128,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -212,7 +212,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -229,7 +229,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -313,7 +313,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -330,7 +330,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -414,7 +414,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -431,7 +431,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -515,7 +515,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -532,7 +532,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -616,7 +616,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -633,7 +633,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -717,7 +717,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -734,7 +734,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -818,7 +818,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -835,7 +835,7 @@ class JdbcRxJavaMethodGeneratorTest {
         }
 
         @Test
-        void shouldGenerateRxJava2ReadMethod() {
+        void shouldGenerateRxJavaReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -919,7 +919,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJava2ReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }

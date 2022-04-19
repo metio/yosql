@@ -13,17 +13,17 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 import java.util.List;
 
 /**
- * Generates RxJava2 based methods.
+ * Generates RxJava based methods.
  */
 public interface RxJavaMethodGenerator {
 
     /**
-     * Creates a RxJava2 based method for reading data out of a database.
+     * Creates a RxJava based method for reading data out of a database.
      *
      * @param configuration    The configuration to use.
      * @param vendorStatements The vendor statements to use.
-     * @return A RxJava2 based read method.
+     * @return A RxJava based read method.
      */
-    MethodSpec rxJava2ReadMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
+    MethodSpec rxJavaReadMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
 
 }

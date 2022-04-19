@@ -50,8 +50,8 @@ public final class Repositories {
                 blockingSuffix(),
                 batchPrefix(),
                 batchSuffix(),
-                rxjava2Prefix(),
-                rxjava2Suffix(),
+                rxjavaPrefix(),
+                rxjavaSuffix(),
                 streamPrefix(), // TODO: rename to streamLazyPrefix
                 streamSuffix(), // TODO: rename to streamLazySuffix
                 lazyName(), // TODO: rename to streamLazySuffix
@@ -294,19 +294,19 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting rxjava2Prefix() {
+    private static ConfigurationSetting rxjavaPrefix() {
         return ConfigurationSetting.builder()
-                .setName("rxjava2Prefix")
-                .setDescription("")
+                .setName("rxjavaPrefix")
+                .setDescription("The method prefix to use for generated methods that use the RxJava API.")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
                 .build();
     }
 
-    private static ConfigurationSetting rxjava2Suffix() {
+    private static ConfigurationSetting rxjavaSuffix() {
         return ConfigurationSetting.builder()
-                .setName("rxjava2Suffix")
-                .setDescription("")
+                .setName("rxjavaSuffix")
+                .setDescription("The method suffix to use for generated methods that use the RxJava API.")
                 .setType(TypicalTypes.STRING)
                 .setValue("Flow")
                 .build();

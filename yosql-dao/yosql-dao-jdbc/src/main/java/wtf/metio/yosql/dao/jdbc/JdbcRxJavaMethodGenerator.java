@@ -57,7 +57,7 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     }
 
     @Override
-    public MethodSpec rxJava2ReadMethod(
+    public MethodSpec rxJavaReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());

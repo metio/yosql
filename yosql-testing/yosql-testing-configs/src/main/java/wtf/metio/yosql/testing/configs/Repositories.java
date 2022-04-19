@@ -15,7 +15,7 @@ public final class Repositories {
         return RepositoriesConfiguration.usingDefaults().build();
     }
 
-    public static RepositoriesConfiguration rxjava2() {
+    public static RepositoriesConfiguration rxjava() {
         return RepositoriesConfiguration.copyOf(defaults())
                 .withGenerateBlockingApi(false)
                 .withGenerateBatchApi(false)

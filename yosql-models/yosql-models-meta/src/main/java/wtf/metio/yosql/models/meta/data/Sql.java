@@ -295,7 +295,7 @@ public final class Sql {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "rxjava2Prefix", "name", "rxjava2Suffix")
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "rxjavaPrefix", "name", "rxjavaSuffix")
                 .build();
     }
 

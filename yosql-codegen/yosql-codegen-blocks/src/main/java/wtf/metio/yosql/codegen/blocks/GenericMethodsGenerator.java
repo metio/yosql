@@ -95,7 +95,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     public MethodSpec rxJavaReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return rxjavaMethods.rxJava2ReadMethod(configuration, statements);
+        return rxjavaMethods.rxJavaReadMethod(configuration, statements);
     }
 
 }
