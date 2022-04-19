@@ -92,12 +92,11 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
             final T resultType,
             final BiFunction<T, String, CodeBlock> returner) {
         final var converter = converter(configuration);
-        final var methodName = configuration.name();
-        return methods.blockingMethod(methodName, statements)
+        return methods.blockingMethod(configuration.blockingName(), statements)
                 .returns(resultType)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
-                .addCode(logging.entering(configuration.repository(), methodName))
+                .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -164,12 +163,11 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
             final ResultRowConverter converter,
             final T resultType,
             final BiFunction<T, String, CodeBlock> returner) {
-        final var methodName = configuration.name();
-        return methods.blockingMethod(methodName, statements)
+        return methods.blockingMethod(configuration.blockingName(), statements)
                 .returns(resultType)
                 .addExceptions(jdbcTransformer.sqlException(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository(), methodName))
+                .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -213,12 +211,11 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
         final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
-        final var methodName = configuration.name();
-        return methods.blockingMethod(methodName, statements)
+        return methods.blockingMethod(configuration.blockingName(), statements)
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
-                .addCode(logging.entering(configuration.repository(), methodName))
+                .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.tryPrepareCallable())

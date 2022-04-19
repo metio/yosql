@@ -33,7 +33,10 @@ public final class Repositories {
                 .addAllSettings(methods())
                 .build();
     }
-    
+
+    /**
+     * @return Configuration settings that can be set on repository or method level.
+     */
     public static List<ConfigurationSetting> methods() {
         return List.of(
                 generateBlockingApi(),

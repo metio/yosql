@@ -156,8 +156,9 @@ public final class Sql {
                 fromStatements(),
                 merge(),
                 mergeParameters(),
-                flowableName(),
                 batchName(),
+                blockingName(),
+                flowableName(),
                 streamLazyName(),
                 streamEagerName(),
                 joinMethodNameParts());
@@ -271,21 +272,30 @@ public final class Sql {
                 .build();
     }
 
-    private static MethodSpec flowableName() {
-        return MethodSpec.methodBuilder("flowableName")
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(String.class)
-                .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "rxjava2Prefix", "name", "rxjava2Suffix")
-                .build();
-    }
-
     private static MethodSpec batchName() {
         return MethodSpec.methodBuilder("batchName")
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
                 .addStatement("return joinMethodNameParts($L(), $L(), $L())", "batchPrefix", "name", "batchSuffix")
+                .build();
+    }
+
+    private static MethodSpec blockingName() {
+        return MethodSpec.methodBuilder("blockingName")
+                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
+                .returns(String.class)
+                .addAnnotation(Value.Lazy.class)
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "blockingPrefix", "name", "blockingSuffix")
+                .build();
+    }
+
+    private static MethodSpec flowableName() {
+        return MethodSpec.methodBuilder("flowableName")
+                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
+                .returns(String.class)
+                .addAnnotation(Value.Lazy.class)
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "rxjava2Prefix", "name", "rxjava2Suffix")
                 .build();
     }
 
