@@ -22,7 +22,7 @@ public interface Variables {
      * @param name          The name of the variable.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variable(Class<?> variableClass, String name);
+    CodeBlock inline(Class<?> variableClass, String name);
 
     /**
      * Generates an inline variable with an initializer.
@@ -32,7 +32,7 @@ public interface Variables {
      * @param initializer   The initializer to use.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variable(Class<?> variableClass, String name, CodeBlock initializer);
+    CodeBlock inline(Class<?> variableClass, String name, CodeBlock initializer);
 
     /**
      * Generates an inline variable with an initializer.
@@ -42,30 +42,10 @@ public interface Variables {
      * @param initializer  The initializer to use.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variable(TypeName variableType, String name, CodeBlock initializer);
+    CodeBlock inline(TypeName variableType, String name, CodeBlock initializer);
 
     /**
-     * Generates a variable statement with an initializer.
-     *
-     * @param variableClass The class of the variable.
-     * @param name          The name of the variable.
-     * @param initializer   The initializer to use.
-     * @return The corresponding code block for the new variable.
-     */
-    CodeBlock variableStatement(Class<?> variableClass, String name, CodeBlock initializer);
-
-    /**
-     * Generates a variable statement with an initializer.
-     *
-     * @param variableType The type of the variable.
-     * @param name         The name of the variable.
-     * @param initializer  The initializer to use.
-     * @return The corresponding code block for the new variable.
-     */
-    CodeBlock variableStatement(TypeName variableType, String name, CodeBlock initializer);
-
-    /**
-     * Generates a variable statement with an initializer.
+     * Generates an inline variable with an initializer.
      *
      * @param variableClass   The class of the variable.
      * @param name            The name of the variable.
@@ -73,10 +53,10 @@ public interface Variables {
      * @param initializerArgs The initializer arguments to use.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variable(Class<?> variableClass, String name, String initializer, Object... initializerArgs);
+    CodeBlock inline(Class<?> variableClass, String name, String initializer, Object... initializerArgs);
 
     /**
-     * Generates a variable statement with an initializer.
+     * Generates an inline variable with an initializer.
      *
      * @param variableType    The type of the variable.
      * @param name            The name of the variable.
@@ -84,6 +64,26 @@ public interface Variables {
      * @param initializerArgs The initializer arguments to use.
      * @return The corresponding code block for the new variable.
      */
-    CodeBlock variable(TypeName variableType, String name, String initializer, Object... initializerArgs);
+    CodeBlock inline(TypeName variableType, String name, String initializer, Object... initializerArgs);
+
+    /**
+     * Generates a variable statement with an initializer.
+     *
+     * @param variableClass The class of the variable.
+     * @param name          The name of the variable.
+     * @param initializer   The initializer to use.
+     * @return The corresponding code block for the new variable.
+     */
+    CodeBlock statement(Class<?> variableClass, String name, CodeBlock initializer);
+
+    /**
+     * Generates a variable statement with an initializer.
+     *
+     * @param variableType The type of the variable.
+     * @param name         The name of the variable.
+     * @param initializer  The initializer to use.
+     * @return The corresponding code block for the new variable.
+     */
+    CodeBlock statement(TypeName variableType, String name, CodeBlock initializer);
 
 }

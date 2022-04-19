@@ -29,7 +29,7 @@ public final class DefaultVariables implements Variables {
     }
 
     @Override
-    public CodeBlock variable(final Class<?> variableClass, final String name) {
+    public CodeBlock inline(final Class<?> variableClass, final String name) {
         if (javaConfiguration.useFinal()) {
             return CodeBlock.builder().add("final $T $N", variableClass, name).build();
         }
@@ -37,12 +37,12 @@ public final class DefaultVariables implements Variables {
     }
 
     @Override
-    public CodeBlock variable(final Class<?> variableClass, final String name, final CodeBlock initializer) {
-        return variable(TypeName.get(variableClass), name, initializer);
+    public CodeBlock inline(final Class<?> variableClass, final String name, final CodeBlock initializer) {
+        return inline(TypeName.get(variableClass), name, initializer);
     }
 
     @Override
-    public CodeBlock variable(final TypeName variableType, final String name, final CodeBlock initializer) {
+    public CodeBlock inline(final TypeName variableType, final String name, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
         if (javaConfiguration.useVar()) {
@@ -54,26 +54,26 @@ public final class DefaultVariables implements Variables {
     }
 
     @Override
-    public CodeBlock variableStatement(final Class<?> variableClass, final String name, final CodeBlock initializer) {
-        return variableStatement(TypeName.get(variableClass), name, initializer);
+    public CodeBlock statement(final Class<?> variableClass, final String name, final CodeBlock initializer) {
+        return statement(TypeName.get(variableClass), name, initializer);
     }
 
     @Override
-    public CodeBlock variableStatement(final TypeName variableType, final String name, final CodeBlock initializer) {
-        return CodeBlock.builder().addStatement(variable(variableType, name, initializer)).build();
+    public CodeBlock statement(final TypeName variableType, final String name, final CodeBlock initializer) {
+        return CodeBlock.builder().addStatement(inline(variableType, name, initializer)).build();
     }
 
     @Override
-    public CodeBlock variable(
+    public CodeBlock inline(
             final Class<?> variableClass,
             final String name,
             final String initializer,
             final Object... initializerArgs) {
-        return variable(TypeName.get(variableClass), name, initializer, initializerArgs);
+        return inline(TypeName.get(variableClass), name, initializer, initializerArgs);
     }
 
     @Override
-    public CodeBlock variable(
+    public CodeBlock inline(
             final TypeName variableType,
             final String name,
             final String initializer,
