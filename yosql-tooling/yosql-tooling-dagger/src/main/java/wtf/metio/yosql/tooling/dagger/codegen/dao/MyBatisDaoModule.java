@@ -53,7 +53,7 @@ public class MyBatisDaoModule {
             final @MyBatis BatchMethodGenerator batchMethods,
             final @MyBatis Java8StreamMethodGenerator streamMethods,
             final @MyBatis RxJavaMethodGenerator rxjavaMethods,
-            final @MyBatis StandardMethodGenerator standardMethods,
+            final @MyBatis BlockingMethodGenerator standardMethods,
             final @MyBatis ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class MyBatisDaoModule {
 
     @MyBatis
     @Provides
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new MyBatisStandardMethodGenerator(
+        return new MyBatisBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

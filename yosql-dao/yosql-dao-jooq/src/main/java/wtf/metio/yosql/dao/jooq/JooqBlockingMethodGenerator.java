@@ -5,27 +5,27 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.dao.ebean;
+package wtf.metio.yosql.dao.jooq;
 
 import com.squareup.javapoet.MethodSpec;
+import wtf.metio.yosql.codegen.api.BlockingMethodGenerator;
 import wtf.metio.yosql.codegen.api.ControlFlows;
 import wtf.metio.yosql.codegen.api.Methods;
 import wtf.metio.yosql.codegen.api.Parameters;
-import wtf.metio.yosql.codegen.api.StandardMethodGenerator;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
 
-public final class EBeanStandardMethodGenerator implements StandardMethodGenerator {
+public final class JooqBlockingMethodGenerator implements BlockingMethodGenerator {
 
     private final ControlFlows controlFlows;
     private final Methods methods;
     private final Parameters parameters;
     private final LoggingGenerator logging;
 
-    public EBeanStandardMethodGenerator(
+    public JooqBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
@@ -37,17 +37,17 @@ public final class EBeanStandardMethodGenerator implements StandardMethodGenerat
     }
 
     @Override
-    public MethodSpec standardReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec blockingReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 
     @Override
-    public MethodSpec standardWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec blockingWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 
     @Override
-    public MethodSpec standardCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec blockingCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 

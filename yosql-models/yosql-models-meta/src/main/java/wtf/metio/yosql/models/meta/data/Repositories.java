@@ -36,21 +36,23 @@ public final class Repositories {
     
     public static List<ConfigurationSetting> methods() {
         return List.of(
-                generateStandardApi(),
+                generateBlockingApi(),
                 generateBatchApi(),
                 generateStreamEagerApi(),
                 generateStreamLazyApi(),
                 generateRxJavaApi(),
                 catchAndRethrow(),
                 injectConverters(),
+                blockingPrefix(),
+                blockingSuffix(),
                 batchPrefix(),
                 batchSuffix(),
-                streamPrefix(),
-                streamSuffix(),
                 rxjava2Prefix(),
                 rxjava2Suffix(),
-                lazyName(),
-                eagerName());
+                streamPrefix(), // TODO: rename to streamLazyPrefix
+                streamSuffix(), // TODO: rename to streamLazySuffix
+                lazyName(), // TODO: rename to streamLazySuffix
+                eagerName()); // TODO: rename to streamEagerSuffix
     }
 
     private static ConfigurationSetting basePackageName() {
@@ -129,10 +131,10 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting generateStandardApi() {
+    private static ConfigurationSetting generateBlockingApi() {
         return ConfigurationSetting.builder()
-                .setName("generateStandardApi")
-                .setDescription("Generate standard methods")
+                .setName("generateBlockingApi")
+                .setDescription("Generate blocking methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .build();
@@ -232,6 +234,24 @@ public final class Repositories {
                                 }
                                 """)
                         .build())
+                .build();
+    }
+
+    private static ConfigurationSetting blockingPrefix() {
+        return ConfigurationSetting.builder()
+                .setName("blockingPrefix")
+                .setDescription("The method prefix to use for generated blocking methods.")
+                .setType(TypicalTypes.STRING)
+                .setValue("")
+                .build();
+    }
+
+    private static ConfigurationSetting blockingSuffix() {
+        return ConfigurationSetting.builder()
+                .setName("blockingSuffix")
+                .setDescription("The method suffix to use for generated blocking methods.")
+                .setType(TypicalTypes.STRING)
+                .setValue("")
                 .build();
     }
 

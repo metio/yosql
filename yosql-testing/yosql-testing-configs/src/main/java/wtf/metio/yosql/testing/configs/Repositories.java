@@ -17,7 +17,7 @@ public final class Repositories {
 
     public static RepositoriesConfiguration rxjava2() {
         return RepositoriesConfiguration.copyOf(defaults())
-                .withGenerateStandardApi(false)
+                .withGenerateBlockingApi(false)
                 .withGenerateBatchApi(false)
                 .withGenerateStreamEagerApi(false)
                 .withGenerateStreamLazyApi(false)

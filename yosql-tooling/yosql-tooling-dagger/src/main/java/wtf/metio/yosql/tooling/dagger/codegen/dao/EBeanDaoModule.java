@@ -53,7 +53,7 @@ public class EBeanDaoModule {
             final @EBean BatchMethodGenerator batchMethods,
             final @EBean Java8StreamMethodGenerator streamMethods,
             final @EBean RxJavaMethodGenerator rxjavaMethods,
-            final @EBean StandardMethodGenerator standardMethods,
+            final @EBean BlockingMethodGenerator standardMethods,
             final @EBean ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class EBeanDaoModule {
 
     @EBean
     @Provides
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new EBeanStandardMethodGenerator(
+        return new EBeanBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

@@ -19,7 +19,7 @@ import java.util.List;
 public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
 
     private final ConstructorGenerator constructor;
-    private final StandardMethodGenerator standardMethods;
+    private final BlockingMethodGenerator standardMethods;
     private final BatchMethodGenerator batchMethods;
     private final Java8StreamMethodGenerator streamMethods;
     private final RxJavaMethodGenerator rxjavaMethods;
@@ -33,7 +33,7 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
      */
     public GenericMethodsGenerator(
             final ConstructorGenerator constructor,
-            final StandardMethodGenerator standardMethods,
+            final BlockingMethodGenerator standardMethods,
             final BatchMethodGenerator batchMethods,
             final Java8StreamMethodGenerator streamMethods,
             final RxJavaMethodGenerator rxjavaMethods) {
@@ -50,24 +50,24 @@ public final class GenericMethodsGenerator extends AbstractMethodsGenerator {
     }
 
     @Override
-    public MethodSpec standardReadMethod(
+    public MethodSpec blockingReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return standardMethods.standardReadMethod(configuration, statements);
+        return standardMethods.blockingReadMethod(configuration, statements);
     }
 
     @Override
-    public MethodSpec standardWriteMethod(
+    public MethodSpec blockingWriteMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return standardMethods.standardWriteMethod(configuration, statements);
+        return standardMethods.blockingWriteMethod(configuration, statements);
     }
 
     @Override
-    public MethodSpec standardCallMethod(
+    public MethodSpec blockingCallMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return standardMethods.standardCallMethod(configuration, statements);
+        return standardMethods.blockingCallMethod(configuration, statements);
     }
 
     @Override

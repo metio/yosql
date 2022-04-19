@@ -53,7 +53,7 @@ public class SpringDataR2dbcDaoModule {
             final @SpringDataR2DBC BatchMethodGenerator batchMethods,
             final @SpringDataR2DBC Java8StreamMethodGenerator streamMethods,
             final @SpringDataR2DBC RxJavaMethodGenerator rxjavaMethods,
-            final @SpringDataR2DBC StandardMethodGenerator standardMethods,
+            final @SpringDataR2DBC BlockingMethodGenerator standardMethods,
             final @SpringDataR2DBC ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class SpringDataR2dbcDaoModule {
 
     @Provides
     @SpringDataR2DBC
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new SpringDataR2dbcStandardMethodGenerator(
+        return new SpringDataR2DbcBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

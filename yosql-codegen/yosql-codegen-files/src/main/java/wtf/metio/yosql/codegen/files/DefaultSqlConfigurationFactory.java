@@ -88,7 +88,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         validateNames(source, baseConfiguration);
         return apply(baseConfiguration, List.of(
                 configuration -> name(configuration, source, statementInFile),
-                this::standard,
+                this::blocking,
                 this::batch,
                 this::streamEager,
                 this::streamLazy,
@@ -115,7 +115,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         logger.debug("name:             {}", configuration.name());
         logger.debug("repository:       {}", configuration.repository());
         logger.debug("parameters:       {}", configuration.parameters().size());
-        logger.debug("standardApi:      {}", configuration.generateStandardApi());
+        logger.debug("blockingApi:      {}", configuration.generateBlockingApi());
         logger.debug("batchApi:         {}", configuration.generateBatchApi());
         logger.debug("rxJava2Api:       {}", configuration.generateRxJavaApi());
         logger.debug("eagerStreamApi:   {}", configuration.generateStreamEagerApi());
@@ -291,9 +291,9 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         errors.illegalArgument(messages.getMessage(ValidationErrors.INVALID_PREFIX, source, sqlType, name));
     }
 
-    private SqlConfiguration standard(final SqlConfiguration configuration) {
+    private SqlConfiguration blocking(final SqlConfiguration configuration) {
         return SqlConfiguration.copyOf(configuration)
-                .withGenerateStandardApi(runtimeConfiguration.repositories().generateStandardApi());
+                .withGenerateBlockingApi(runtimeConfiguration.repositories().generateBlockingApi());
     }
 
     private SqlConfiguration batch(final SqlConfiguration configuration) {

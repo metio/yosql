@@ -53,7 +53,7 @@ public class JooqDaoModule {
             final @Jooq BatchMethodGenerator batchMethods,
             final @Jooq Java8StreamMethodGenerator streamMethods,
             final @Jooq RxJavaMethodGenerator rxjavaMethods,
-            final @Jooq StandardMethodGenerator standardMethods,
+            final @Jooq BlockingMethodGenerator standardMethods,
             final @Jooq ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class JooqDaoModule {
 
     @Jooq
     @Provides
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new JooqStandardMethodGenerator(
+        return new JooqBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

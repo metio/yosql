@@ -86,8 +86,8 @@ public final class JdbcObjectMother {
                 .build();
     }
 
-    public static StandardMethodGenerator standardMethodGenerator(final JavaConfiguration java) {
-        return new JdbcStandardMethodGenerator(
+    public static BlockingMethodGenerator blockingMethodGenerator(final JavaConfiguration java) {
+        return new JdbcBlockingMethodGenerator(
                 Blocks.controlFlows(java),
                 Blocks.methods(java),
                 Blocks.parameters(java),
@@ -150,7 +150,7 @@ public final class JdbcObjectMother {
     public static GenericMethodsGenerator genericMethodsGenerator(final JavaConfiguration java) {
         return new GenericMethodsGenerator(
                 constructorGenerator(java),
-                standardMethodGenerator(java),
+                blockingMethodGenerator(java),
                 batchMethodGenerator(java),
                 java8StreamMethodGenerator(java),
                 rxJavaMethodGenerator(java));

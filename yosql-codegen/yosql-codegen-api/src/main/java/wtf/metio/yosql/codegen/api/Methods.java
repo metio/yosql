@@ -26,13 +26,13 @@ public interface Methods {
     MethodSpec.Builder publicMethod(String name);
 
     /**
-     * Prepare {@link MethodSpec} with Javadoc for standard methods.
+     * Prepare {@link MethodSpec} with Javadoc for blocking methods.
      *
      * @param name       The name of the generated method.
      * @param statements The SQL statements used for Javadocs
      * @return The resulting builder for the MethodSpec.
      */
-    MethodSpec.Builder standardMethod(String name, List<SqlStatement> statements);
+    MethodSpec.Builder blockingMethod(String name, List<SqlStatement> statements);
 
     /**
      * Prepare {@link MethodSpec} with Javadoc for batch methods.

@@ -39,8 +39,8 @@ public final class DefaultMethods implements Methods {
                 .addAnnotations(annotations.generatedMethod());
     }
 
-    public MethodSpec.Builder standardMethod(final String name, final List<SqlStatement> statements) {
-        return publicMethod(name, statements, "generateStandardApi");
+    public MethodSpec.Builder blockingMethod(final String name, final List<SqlStatement> statements) {
+        return publicMethod(name, statements, "generateBlockingApi");
     }
 
     public MethodSpec.Builder batchMethod(final String name, final List<SqlStatement> statements) {

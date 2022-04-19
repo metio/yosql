@@ -71,18 +71,18 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
-    default boolean shouldGenerateStandardReadAPI() {
-        return getConfiguration().generateStandardApi() && isReading();
+    default boolean shouldGenerateBlockingReadAPI() {
+        return getConfiguration().generateBlockingApi() && isReading();
     }
 
     @Value.Lazy
-    default boolean shouldGenerateStandardCallAPI() {
-        return getConfiguration().generateStandardApi() && isCalling();
+    default boolean shouldGenerateBlockingCallAPI() {
+        return getConfiguration().generateBlockingApi() && isCalling();
     }
 
     @Value.Lazy
-    default boolean shouldGenerateStandardWriteAPI() {
-        return getConfiguration().generateStandardApi() && isWriting();
+    default boolean shouldGenerateBlockingWriteAPI() {
+        return getConfiguration().generateBlockingApi() && isWriting();
     }
 
     @Value.Lazy

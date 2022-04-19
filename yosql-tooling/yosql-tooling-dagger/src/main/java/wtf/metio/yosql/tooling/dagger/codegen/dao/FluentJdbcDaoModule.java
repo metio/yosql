@@ -53,7 +53,7 @@ public class FluentJdbcDaoModule {
             final @FluentJDBC BatchMethodGenerator batchMethods,
             final @FluentJDBC Java8StreamMethodGenerator streamMethods,
             final @FluentJDBC RxJavaMethodGenerator rxjavaMethods,
-            final @FluentJDBC StandardMethodGenerator standardMethods,
+            final @FluentJDBC BlockingMethodGenerator standardMethods,
             final @FluentJDBC ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class FluentJdbcDaoModule {
 
     @FluentJDBC
     @Provides
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new FluentJdbcStandardMethodGenerator(
+        return new FluentJdbcBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

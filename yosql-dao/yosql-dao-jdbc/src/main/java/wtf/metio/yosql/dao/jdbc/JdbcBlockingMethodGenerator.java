@@ -10,10 +10,10 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
+import wtf.metio.yosql.codegen.api.BlockingMethodGenerator;
 import wtf.metio.yosql.codegen.api.ControlFlows;
 import wtf.metio.yosql.codegen.api.Methods;
 import wtf.metio.yosql.codegen.api.Parameters;
-import wtf.metio.yosql.codegen.api.StandardMethodGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
@@ -24,7 +24,7 @@ import wtf.metio.yosql.models.sql.ResultRowConverter;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public final class JdbcStandardMethodGenerator implements StandardMethodGenerator {
+public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerator {
 
     private final ControlFlows controlFlows;
     private final Methods methods;
@@ -34,7 +34,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
     private final JdbcTransformer jdbcTransformer;
     private final JdbcConfiguration config;
 
-    public JdbcStandardMethodGenerator(
+    public JdbcBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
@@ -52,7 +52,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
     }
 
     @Override
-    public MethodSpec standardReadMethod(
+    public MethodSpec blockingReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = converter(configuration);
@@ -93,7 +93,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
             final BiFunction<T, String, CodeBlock> returner) {
         final var converter = converter(configuration);
         final var methodName = configuration.name();
-        return methods.standardMethod(methodName, statements)
+        return methods.blockingMethod(methodName, statements)
                 .returns(resultType)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))
@@ -114,7 +114,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
     }
 
     @Override
-    public MethodSpec standardWriteMethod(
+    public MethodSpec blockingWriteMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = converter(configuration);
@@ -165,7 +165,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
             final T resultType,
             final BiFunction<T, String, CodeBlock> returner) {
         final var methodName = configuration.name();
-        return methods.standardMethod(methodName, statements)
+        return methods.blockingMethod(methodName, statements)
                 .returns(resultType)
                 .addExceptions(jdbcTransformer.sqlException(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
@@ -190,7 +190,7 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var methodName = configuration.name();
-        return methods.standardMethod(methodName, statements)
+        return methods.blockingMethod(methodName, statements)
                 .returns(int.class)
                 .addExceptions(jdbcTransformer.sqlException(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
@@ -207,14 +207,14 @@ public final class JdbcStandardMethodGenerator implements StandardMethodGenerato
     }
 
     @Override
-    public MethodSpec standardCallMethod(
+    public MethodSpec blockingCallMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var methodName = configuration.name();
-        return methods.standardMethod(methodName, statements)
+        return methods.blockingMethod(methodName, statements)
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(jdbcTransformer.sqlException(configuration))

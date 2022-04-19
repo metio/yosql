@@ -13,46 +13,46 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 import java.util.List;
 
 /**
- * Generates 'generic' methods - implementation decides whatever that means.
+ * Generates 'blocking' methods as opposed to reactive methods.
  */
-public interface StandardMethodGenerator {
+public interface BlockingMethodGenerator {
 
     /**
-     * Generates code the execute a "generic" read against the database using the most common way the configured API
-     * executes reads. The <code>javax.sql</code> package for example calls
+     * Generates code that executes a blocking read against the database using the configured API.
+     * The <code>javax.sql</code> package for example calls
      * {@link java.sql.PreparedStatement#executeQuery()}.
      *
      * @param configuration    The configuration for the generated method.
      * @param vendorStatements The vendor statements for the generated method.
      * @return A method specification for a generic reading method.
      */
-    MethodSpec standardReadMethod(
+    MethodSpec blockingReadMethod(
             SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 
     /**
-     * Generates code the execute a "generic" write against the database using the most common way the configured API
-     * executes writes. The <code>javax.sql</code> package for example calls
+     * Generates code that execute a blocking write against the database using the configured API.
+     * The <code>javax.sql</code> package for example calls
      * {@link java.sql.PreparedStatement#executeUpdate()}.
      *
      * @param configuration    The configuration for the generated method.
      * @param vendorStatements The vendor statements for the generated method.
      * @return A method specification for a generic writing method.
      */
-    MethodSpec standardWriteMethod(
+    MethodSpec blockingWriteMethod(
             SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 
     /**
-     * Generates code the execute a "generic" call against the database using the most common way the configured API
-     * executes calls database functions. The <code>javax.sql</code> package for example calls
+     * Generates code that execute a blocking call against the database using the configured API.
+     * The <code>javax.sql</code> package for example calls
      * {@link java.sql.CallableStatement#executeQuery()}.
      *
      * @param configuration    The configuration for the generated method.
      * @param vendorStatements The vendor statements for the generated method.
      * @return A method specification for a generic calling method.
      */
-    MethodSpec standardCallMethod(
+    MethodSpec blockingCallMethod(
             SqlConfiguration configuration,
             List<SqlStatement> vendorStatements);
 

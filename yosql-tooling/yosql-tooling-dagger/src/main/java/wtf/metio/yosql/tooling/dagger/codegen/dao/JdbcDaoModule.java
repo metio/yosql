@@ -55,7 +55,7 @@ public class JdbcDaoModule {
             final @JDBC BatchMethodGenerator batchMethods,
             final @JDBC Java8StreamMethodGenerator streamMethods,
             final @JDBC RxJavaMethodGenerator rxjavaMethods,
-            final @JDBC StandardMethodGenerator standardMethods,
+            final @JDBC BlockingMethodGenerator standardMethods,
             final @JDBC ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor,
@@ -164,7 +164,7 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public StandardMethodGenerator provideStandardMethodGenerator(
+    public BlockingMethodGenerator provideBlockingMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
             final Methods methods,
@@ -172,7 +172,7 @@ public class JdbcDaoModule {
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final JdbcTransformer jdbcTransformer) {
-        return new JdbcStandardMethodGenerator(
+        return new JdbcBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

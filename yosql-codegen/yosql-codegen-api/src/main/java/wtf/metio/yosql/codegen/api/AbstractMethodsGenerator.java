@@ -24,20 +24,20 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
 
         methods.add(constructor(statements));
         statements.stream()
-                .filter(SqlStatement::shouldGenerateStandardReadAPI)
+                .filter(SqlStatement::shouldGenerateBlockingReadAPI)
                 .collect(SqlStatement.groupByName())
                 .forEach((methodName, statementsInRepository) -> methods
-                        .add(standardReadMethod(SqlConfiguration.fromStatements(statementsInRepository), statementsInRepository)));
+                        .add(blockingReadMethod(SqlConfiguration.fromStatements(statementsInRepository), statementsInRepository)));
         statements.stream()
-                .filter(SqlStatement::shouldGenerateStandardWriteAPI)
+                .filter(SqlStatement::shouldGenerateBlockingWriteAPI)
                 .collect(SqlStatement.groupByName())
                 .forEach((methodName, statementsInRepository) -> methods
-                        .add(standardWriteMethod(SqlConfiguration.fromStatements(statementsInRepository), statementsInRepository)));
+                        .add(blockingWriteMethod(SqlConfiguration.fromStatements(statementsInRepository), statementsInRepository)));
         statements.stream()
-                .filter(SqlStatement::shouldGenerateStandardCallAPI)
+                .filter(SqlStatement::shouldGenerateBlockingCallAPI)
                 .collect(SqlStatement.groupByName())
                 .forEach((methodName, statementsInRepository) -> methods
-                        .add(standardCallMethod(SqlConfiguration.fromStatements(statementsInRepository), statementsInRepository)));
+                        .add(blockingCallMethod(SqlConfiguration.fromStatements(statementsInRepository), statementsInRepository)));
         statements.stream()
                 .filter(SqlStatement::shouldGenerateBatchAPI)
                 .collect(SqlStatement.groupByName())
@@ -64,15 +64,15 @@ public abstract class AbstractMethodsGenerator implements MethodsGenerator {
 
     public abstract MethodSpec constructor(List<SqlStatement> sqlStatementsInRepository);
 
-    public abstract MethodSpec standardReadMethod(
+    public abstract MethodSpec blockingReadMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 
-    public abstract MethodSpec standardWriteMethod(
+    public abstract MethodSpec blockingWriteMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 
-    public abstract MethodSpec standardCallMethod(
+    public abstract MethodSpec blockingCallMethod(
             SqlConfiguration configuration,
             List<SqlStatement> statements);
 

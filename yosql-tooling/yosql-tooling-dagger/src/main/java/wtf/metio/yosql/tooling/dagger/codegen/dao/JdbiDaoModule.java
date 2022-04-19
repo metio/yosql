@@ -53,7 +53,7 @@ public class JdbiDaoModule {
             final @JDBI BatchMethodGenerator batchMethods,
             final @JDBI Java8StreamMethodGenerator streamMethods,
             final @JDBI RxJavaMethodGenerator rxjavaMethods,
-            final @JDBI StandardMethodGenerator standardMethods,
+            final @JDBI BlockingMethodGenerator standardMethods,
             final @JDBI ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class JdbiDaoModule {
 
     @JDBI
     @Provides
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new JdbiStandardMethodGenerator(
+        return new JdbiBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

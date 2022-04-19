@@ -40,7 +40,7 @@ class JdbcGenericMethodsGeneratorTest {
         }
 
         @Test
-        void standardReadMethod() {
+        void blockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -51,7 +51,7 @@ class JdbcGenericMethodsGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -97,11 +97,11 @@ class JdbcGenericMethodsGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void standardWriteMethod() {
+        void blockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -112,7 +112,7 @@ class JdbcGenericMethodsGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -148,11 +148,11 @@ class JdbcGenericMethodsGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void standardCallMethod() {
+        void blockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -163,7 +163,7 @@ class JdbcGenericMethodsGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -209,7 +209,7 @@ class JdbcGenericMethodsGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test

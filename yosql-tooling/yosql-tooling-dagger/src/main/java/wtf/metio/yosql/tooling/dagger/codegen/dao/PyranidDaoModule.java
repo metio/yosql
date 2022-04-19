@@ -53,7 +53,7 @@ public class PyranidDaoModule {
             final @Pyranid BatchMethodGenerator batchMethods,
             final @Pyranid Java8StreamMethodGenerator streamMethods,
             final @Pyranid RxJavaMethodGenerator rxjavaMethods,
-            final @Pyranid StandardMethodGenerator standardMethods,
+            final @Pyranid BlockingMethodGenerator standardMethods,
             final @Pyranid ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class PyranidDaoModule {
 
     @Pyranid
     @Provides
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new PyranidStandardMethodGenerator(
+        return new PyranidBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

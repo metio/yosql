@@ -53,7 +53,7 @@ public class R2dbcDaoModule {
             final @R2DBC BatchMethodGenerator batchMethods,
             final @R2DBC Java8StreamMethodGenerator streamMethods,
             final @R2DBC RxJavaMethodGenerator rxjavaMethods,
-            final @R2DBC StandardMethodGenerator standardMethods,
+            final @R2DBC BlockingMethodGenerator standardMethods,
             final @R2DBC ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class R2dbcDaoModule {
 
     @R2DBC
     @Provides
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new R2dbcStandardMethodGenerator(
+        return new R2DbcBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,

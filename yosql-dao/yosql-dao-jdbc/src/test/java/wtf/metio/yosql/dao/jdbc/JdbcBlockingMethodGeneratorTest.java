@@ -8,26 +8,26 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import org.junit.jupiter.api.*;
-import wtf.metio.yosql.codegen.api.StandardMethodGenerator;
+import wtf.metio.yosql.codegen.api.BlockingMethodGenerator;
 import wtf.metio.yosql.testing.configs.Java;
 import wtf.metio.yosql.testing.configs.Sql;
 
-@DisplayName("JdbcStandardMethodGenerator")
-class JdbcStandardMethodGeneratorTest {
+@DisplayName("JdbcBlockingMethodGenerator")
+class JdbcBlockingMethodGeneratorTest {
 
     @Nested
     @DisplayName("using default configuration")
     class Defaults {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.defaults());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.defaults());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -38,7 +38,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -84,11 +84,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -99,7 +99,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -135,11 +135,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -150,7 +150,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -196,7 +196,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -205,15 +205,15 @@ class JdbcStandardMethodGeneratorTest {
     @DisplayName("using java 4 configuration")
     class Java4 {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.java4());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.java4());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -224,7 +224,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -270,11 +270,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -285,7 +285,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -321,11 +321,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -336,7 +336,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -382,7 +382,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -391,15 +391,15 @@ class JdbcStandardMethodGeneratorTest {
     @DisplayName("using java 5 configuration")
     class Java5 {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.java5());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.java5());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -410,7 +410,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -456,11 +456,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -471,7 +471,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -507,11 +507,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -522,7 +522,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -568,7 +568,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -577,15 +577,15 @@ class JdbcStandardMethodGeneratorTest {
     @DisplayName("using java 7 configuration")
     class Java7 {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.java7());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.java7());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -596,7 +596,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -642,11 +642,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -657,7 +657,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -693,11 +693,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -708,7 +708,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -754,7 +754,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -763,15 +763,15 @@ class JdbcStandardMethodGeneratorTest {
     @DisplayName("using java 8 configuration")
     class Java8 {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.java8());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.java8());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -782,7 +782,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -828,11 +828,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -843,7 +843,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -879,11 +879,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -894,7 +894,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -940,7 +940,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -949,15 +949,15 @@ class JdbcStandardMethodGeneratorTest {
     @DisplayName("using java 9 configuration")
     class Java9 {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.java9());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.java9());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -968,7 +968,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1014,11 +1014,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1029,7 +1029,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1065,11 +1065,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1080,7 +1080,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1126,7 +1126,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -1135,15 +1135,15 @@ class JdbcStandardMethodGeneratorTest {
     @DisplayName("using java 11 configuration")
     class Java11 {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.java11());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.java11());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1154,7 +1154,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1200,11 +1200,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1215,7 +1215,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1251,11 +1251,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1266,7 +1266,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1312,7 +1312,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -1321,15 +1321,15 @@ class JdbcStandardMethodGeneratorTest {
     @DisplayName("using java 14 configuration")
     class Java14 {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.java14());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.java14());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1340,7 +1340,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1386,11 +1386,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1401,7 +1401,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1437,11 +1437,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1452,7 +1452,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1498,7 +1498,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }
@@ -1507,15 +1507,15 @@ class JdbcStandardMethodGeneratorTest {
     @DisplayName("using java 16 configuration")
     class Java16 {
 
-        private StandardMethodGenerator generator;
+        private BlockingMethodGenerator generator;
 
         @BeforeEach
         void setup() {
-            generator = JdbcObjectMother.standardMethodGenerator(Java.java16());
+            generator = JdbcObjectMother.blockingMethodGenerator(Java.java16());
         }
 
         @Test
-        void shouldGenerateStandardReadMethod() {
+        void shouldGenerateBlockingReadMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1526,7 +1526,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1572,11 +1572,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardWriteMethod() {
+        void shouldGenerateBlockingWriteMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1587,7 +1587,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1623,11 +1623,11 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
         @Test
-        void shouldGenerateStandardCallMethod() {
+        void shouldGenerateBlockingCallMethod() {
             Assertions.assertEquals("""
                     /**
                      * <p>Executes the following statement:</p>
@@ -1638,7 +1638,7 @@ class JdbcStandardMethodGeneratorTest {
                      * <ul>
                      * <li>data/queryData.sql</li>
                      * </ul>
-                     * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
+                     * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
                      *
                      * @see com.example.util.ResultRow
                      */
@@ -1684,7 +1684,7 @@ class JdbcStandardMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.standardCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
         }
 
     }

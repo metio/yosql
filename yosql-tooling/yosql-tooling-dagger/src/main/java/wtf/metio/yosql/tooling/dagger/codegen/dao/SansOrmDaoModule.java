@@ -53,7 +53,7 @@ public class SansOrmDaoModule {
             final @SansOrm BatchMethodGenerator batchMethods,
             final @SansOrm Java8StreamMethodGenerator streamMethods,
             final @SansOrm RxJavaMethodGenerator rxjavaMethods,
-            final @SansOrm StandardMethodGenerator standardMethods,
+            final @SansOrm BlockingMethodGenerator standardMethods,
             final @SansOrm ConstructorGenerator constructor) {
         return new GenericMethodsGenerator(
                 constructor, standardMethods, batchMethods,
@@ -131,12 +131,12 @@ public class SansOrmDaoModule {
 
     @SansOrm
     @Provides
-    StandardMethodGenerator provideStandardMethodGenerator(
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
-        return new SansOrmStandardMethodGenerator(
+        return new SansOrmBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,
