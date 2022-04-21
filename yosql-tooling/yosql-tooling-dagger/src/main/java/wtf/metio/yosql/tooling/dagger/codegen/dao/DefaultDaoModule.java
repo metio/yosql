@@ -34,7 +34,7 @@ import java.util.Set;
         SpringDataR2dbcDaoModule.class,
         SpringJdbcDaoModule.class
 })
-public class DefaultDaoModule { // TODO: rename to DefaultPersistenceModule
+public class DefaultDaoModule {
 
     @Provides
     @Delegating

@@ -11,7 +11,6 @@ import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
-import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.*;
 import wtf.metio.yosql.testing.logging.Loggers;
@@ -82,12 +81,11 @@ public final class JdbcObjectMother {
                 Loggers.loggingGenerator());
     }
 
-    public static ImmutableRuntimeConfiguration runtimeConfig() { // TODO: obsolete? testconfigs should create this?
-        return RuntimeConfiguration.usingDefaults()
-                .setApi(Apis.jul())
-                .setFiles(Files.maven())
-                .setJdbc(jdbcConfig())
-                .build();
+    public static ImmutableRuntimeConfiguration runtimeConfig() {
+        return ImmutableRuntimeConfiguration.copyOf(Configs.runtime())
+                .withApi(Apis.jul())
+                .withFiles(Files.maven())
+                .withJdbc(jdbcConfig());
     }
 
     public static BlockingMethodGenerator blockingMethodGenerator(final JavaConfiguration java) {
