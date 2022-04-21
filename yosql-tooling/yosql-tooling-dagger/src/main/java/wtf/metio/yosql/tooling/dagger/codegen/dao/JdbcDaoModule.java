@@ -19,7 +19,6 @@ import wtf.metio.yosql.dao.jdbc.*;
 import wtf.metio.yosql.dao.jdbc.utilities.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.codegen.blocks.DefaultJdbcBlocksModule;
 
@@ -90,11 +89,10 @@ public class JdbcDaoModule {
             @Delegating final LoggingGenerator logging,
             final JdbcFields jdbcFields,
             final Javadoc javadoc,
-            final RuntimeConfiguration runtimeConfiguration,
-            final NamesConfiguration names) {
+            final RuntimeConfiguration runtimeConfiguration) {
         return new JdbcFieldsGenerator(
                 runtimeConfiguration.jdbc(),
-                names,
+                runtimeConfiguration.names(),
                 logging,
                 javadoc,
                 fields,
@@ -125,7 +123,6 @@ public class JdbcDaoModule {
             final RuntimeConfiguration runtimeConfiguration,
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
-            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
@@ -135,7 +132,7 @@ public class JdbcDaoModule {
                 runtimeConfiguration.jdbc(),
                 blocks,
                 controlFlow,
-                names,
+                runtimeConfiguration.names(),
                 methods,
                 parameters,
                 logging,
@@ -149,7 +146,6 @@ public class JdbcDaoModule {
     public RxJavaMethodGenerator provideRxJavaMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
-            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
@@ -157,7 +153,7 @@ public class JdbcDaoModule {
         return new JdbcRxJavaMethodGenerator(
                 runtimeConfiguration.jdbc(),
                 controlFlows,
-                names,
+                runtimeConfiguration.names(),
                 methods,
                 parameters,
                 logging,
@@ -166,8 +162,22 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public MutinyMethodGenerator provideMutinyMethodGenerator() {
-        return new JdbcMutinyMethodGenerator();
+    public MutinyMethodGenerator provideMutinyMethodGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
+            final ControlFlows controlFlows,
+            final Methods methods,
+            final Parameters parameters,
+            @Delegating final LoggingGenerator logging,
+            final JdbcBlocks jdbcBlocks,
+            final JdbcTransformer transformer) {
+        return new JdbcMutinyMethodGenerator(
+                runtimeConfiguration.jdbc(),
+                methods,
+                parameters,
+                transformer,
+                controlFlows,
+                logging,
+                jdbcBlocks);
     }
 
     @JDBC

@@ -158,7 +158,9 @@ public final class Sql {
                 mergeParameters(),
                 batchName(),
                 blockingName(),
-                flowableName(),
+                mutinyName(),
+                reactorName(),
+                rxJavaName(),
                 streamLazyName(),
                 streamEagerName(),
                 joinMethodNameParts());
@@ -290,12 +292,30 @@ public final class Sql {
                 .build();
     }
 
-    private static MethodSpec flowableName() {
-        return MethodSpec.methodBuilder("flowableName")
+    private static MethodSpec rxJavaName() {
+        return MethodSpec.methodBuilder("rxJavaName")
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
                 .addStatement("return joinMethodNameParts($L(), $L(), $L())", "rxjavaPrefix", "name", "rxjavaSuffix")
+                .build();
+    }
+
+    private static MethodSpec reactorName() {
+        return MethodSpec.methodBuilder("reactorName")
+                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
+                .returns(String.class)
+                .addAnnotation(Value.Lazy.class)
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "reactorPrefix", "name", "reactorSuffix")
+                .build();
+    }
+
+    private static MethodSpec mutinyName() {
+        return MethodSpec.methodBuilder("mutinyName")
+                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
+                .returns(String.class)
+                .addAnnotation(Value.Lazy.class)
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "mutinyPrefix", "name", "mutinySuffix")
                 .build();
     }
 

@@ -143,8 +143,15 @@ public final class JdbcObjectMother {
         return new JdbcReactorMethodGenerator();
     }
 
-    public static MutinyMethodGenerator mutinyMethodGenerator() {
-        return new JdbcMutinyMethodGenerator();
+    public static MutinyMethodGenerator mutinyMethodGenerator(final JavaConfiguration java) {
+        return new JdbcMutinyMethodGenerator(
+                jdbcConfig(),
+                Blocks.methods(java),
+                Blocks.parameters(java),
+                jdbcTransformer(),
+                Blocks.controlFlows(java),
+                Loggers.loggingGenerator(),
+                jdbcBlocks(java));
     }
 
     public static JdbcConfiguration jdbcConfig() {
@@ -167,7 +174,7 @@ public final class JdbcObjectMother {
                 java8StreamMethodGenerator(java),
                 rxJavaMethodGenerator(java),
                 reactorMethodGenerator(),
-                mutinyMethodGenerator());
+                mutinyMethodGenerator(java));
     }
 
     private JdbcObjectMother() {
