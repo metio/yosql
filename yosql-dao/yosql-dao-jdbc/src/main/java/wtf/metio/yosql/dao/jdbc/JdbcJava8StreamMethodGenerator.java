@@ -62,7 +62,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
     }
 
     @Override
-    public MethodSpec streamEagerMethod(
+    public MethodSpec streamEagerReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());
@@ -90,7 +90,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
     }
 
     @Override
-    public MethodSpec streamLazyMethod(
+    public MethodSpec streamLazyReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());

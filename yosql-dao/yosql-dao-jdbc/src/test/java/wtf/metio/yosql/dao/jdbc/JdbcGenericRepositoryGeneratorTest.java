@@ -8,12 +8,13 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import ch.qos.cal10n.MessageConveyor;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
+import wtf.metio.yosql.codegen.tck.RepositoryGeneratorTCK;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.testing.codegen.Blocks;
-import wtf.metio.yosql.testing.configs.Sql;
 
 import java.util.Locale;
 
@@ -22,25 +23,23 @@ class JdbcGenericRepositoryGeneratorTest {
 
     @Nested
     @DisplayName("using default configuration")
-    class Defaults {
+    class Defaults implements RepositoryGeneratorTCK {
 
-        private GenericRepositoryGenerator generator;
-
-        @BeforeEach
-        void setUp() {
-            generator = new GenericRepositoryGenerator(
+        @Override
+        public GenericRepositoryGenerator generator() {
+            return new GenericRepositoryGenerator(
                     new LocLoggerFactory(new MessageConveyor(Locale.ENGLISH)).getLocLogger("yosql.test"),
                     Blocks.annotationGenerator(),
                     Blocks.classes(),
                     Blocks.javadoc(),
                     JdbcObjectMother.fieldsGenerator(),
-                    JdbcObjectMother.genericMethodsGenerator(),
+                    JdbcObjectMother.delegatingMethodsGenerator(),
                     PersistenceApis.JDBC);
         }
 
-        @Test
-        void generateRepository() {
-            Assertions.assertEquals("""
+        @Override
+        public String repositoryExpectation() {
+            return """
                     /**
                      * Generated based on the following file(s):
                      * <ul>
@@ -398,7 +397,7 @@ class JdbcGenericRepositoryGeneratorTest {
                         });
                       }
                     }
-                    """, generator.generateRepository("Test", Sql.sqlStatements()).getType().toString());
+                    """;
         }
 
     }

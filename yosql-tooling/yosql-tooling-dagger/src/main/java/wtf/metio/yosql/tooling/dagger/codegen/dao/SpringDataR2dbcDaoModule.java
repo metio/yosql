@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.spring.data.r2dbc.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the Spring-Data-JDBC based DAO implementation.
+ * Dagger module for the Spring-Data-R2DBC based DAO implementation.
  */
 @Module
 public class SpringDataR2dbcDaoModule {
@@ -50,16 +49,21 @@ public class SpringDataR2dbcDaoModule {
     @Provides
     @SpringDataR2DBC
     MethodsGenerator provideMethodsGenerator(
+            final @SpringDataR2DBC ConstructorGenerator constructor,
+            final @SpringDataR2DBC BlockingMethodGenerator blockingMethods,
             final @SpringDataR2DBC BatchMethodGenerator batchMethods,
             final @SpringDataR2DBC Java8StreamMethodGenerator streamMethods,
             final @SpringDataR2DBC RxJavaMethodGenerator rxjavaMethods,
-            final @SpringDataR2DBC BlockingMethodGenerator standardMethods,
-            final @SpringDataR2DBC ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @SpringDataR2DBC ReactorMethodGenerator reactorMethods,
+            final @SpringDataR2DBC MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @Provides
@@ -127,6 +131,18 @@ public class SpringDataR2dbcDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @Provides
+    @SpringDataR2DBC
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new SpringDataR2dbcMutinyMethodGenerator();
+    }
+
+    @Provides
+    @SpringDataR2DBC
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new SpringDataR2dbcReactorMethodGenerator();
     }
 
     @Provides

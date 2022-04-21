@@ -7,28 +7,27 @@
 
 package wtf.metio.yosql.dao.jdbc;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.codegen.api.RxJavaMethodGenerator;
+import wtf.metio.yosql.codegen.tck.RxJavaMethodGeneratorTCK;
 import wtf.metio.yosql.testing.configs.Java;
-import wtf.metio.yosql.testing.configs.Sql;
 
 @DisplayName("JdbcRxJavaMethodGenerator")
 class JdbcRxJavaMethodGeneratorTest {
 
     @Nested
     @DisplayName("using default configuration")
-    class Defaults {
+    class Defaults implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.defaults());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.defaults());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -111,25 +110,23 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 4 configuration")
-    class Java4 {
+    @DisplayName("using Java 4 configuration")
+    class Java4 implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.java4());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.java4());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -212,25 +209,23 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 5 configuration")
-    class Java5 {
+    @DisplayName("using Java 5 configuration")
+    class Java5 implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.java5());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.java5());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -313,25 +308,23 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 7 configuration")
-    class Java7 {
+    @DisplayName("using Java 7 configuration")
+    class Java7 implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.java7());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.java7());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -414,25 +407,23 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 8 configuration")
-    class Java8 {
+    @DisplayName("using Java 8 configuration")
+    class Java8 implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.java8());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.java8());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -515,25 +506,23 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 9 configuration")
-    class Java9 {
+    @DisplayName("using Java 9 configuration")
+    class Java9 implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.java9());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.java9());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -616,25 +605,23 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 11 configuration")
-    class Java11 {
+    @DisplayName("using Java 11 configuration")
+    class Java11 implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.java11());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.java11());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -717,25 +704,23 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 14 configuration")
-    class Java14 {
+    @DisplayName("using Java 14 configuration")
+    class Java14 implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.java14());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.java14());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -818,25 +803,23 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 16 configuration")
-    class Java16 {
+    @DisplayName("using Java 16 configuration")
+    class Java16 implements RxJavaMethodGeneratorTCK {
 
-        private RxJavaMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.rxJavaMethodGenerator(Java.java16());
+        @Override
+        public RxJavaMethodGenerator generator() {
+            return JdbcObjectMother.rxJavaMethodGenerator(Java.java16());
         }
 
-        @Test
-        void shouldGenerateRxJavaReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String rxJavaReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -919,7 +902,7 @@ class JdbcRxJavaMethodGeneratorTest {
                         }
                       });
                     }
-                    """, generator.rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }

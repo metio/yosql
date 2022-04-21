@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.r2dbc.*;
@@ -50,16 +49,21 @@ public class R2dbcDaoModule {
     @R2DBC
     @Provides
     MethodsGenerator provideMethodsGenerator(
+            final @R2DBC ConstructorGenerator constructor,
+            final @R2DBC BlockingMethodGenerator blockingMethods,
             final @R2DBC BatchMethodGenerator batchMethods,
             final @R2DBC Java8StreamMethodGenerator streamMethods,
             final @R2DBC RxJavaMethodGenerator rxjavaMethods,
-            final @R2DBC BlockingMethodGenerator standardMethods,
-            final @R2DBC ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @R2DBC ReactorMethodGenerator reactorMethods,
+            final @R2DBC MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @R2DBC
@@ -127,6 +131,18 @@ public class R2dbcDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @R2DBC
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new R2dbcMutinyMethodGenerator();
+    }
+
+    @R2DBC
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new R2dbcReactorMethodGenerator();
     }
 
     @R2DBC

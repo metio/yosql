@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.spring.jdbc.*;
@@ -50,18 +49,21 @@ public class SpringJdbcDaoModule {
     @Provides
     @SpringJDBC
     MethodsGenerator provideMethodsGenerator(
+            final @SpringJDBC ConstructorGenerator constructor,
+            final @SpringJDBC BlockingMethodGenerator blockingMethods,
             final @SpringJDBC BatchMethodGenerator batchMethods,
             final @SpringJDBC Java8StreamMethodGenerator streamMethods,
             final @SpringJDBC RxJavaMethodGenerator rxjavaMethods,
-            final @SpringJDBC BlockingMethodGenerator standardMethods,
-            final @SpringJDBC ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
+            final @SpringJDBC ReactorMethodGenerator reactorMethods,
+            final @SpringJDBC MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
                 constructor,
-                standardMethods,
+                blockingMethods,
                 batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @Provides
@@ -129,6 +131,18 @@ public class SpringJdbcDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @Provides
+    @SpringJDBC
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new SpringJdbcMutinyMethodGenerator();
+    }
+
+    @Provides
+    @SpringJDBC
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new SpringJdbcReactorMethodGenerator();
     }
 
     @Provides

@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.spring.data.jdbc.*;
@@ -50,16 +49,21 @@ public class SpringDataJdbcDaoModule {
     @Provides
     @SpringDataJDBC
     MethodsGenerator provideMethodsGenerator(
+            final @SpringDataJDBC ConstructorGenerator constructor,
+            final @SpringDataJDBC BlockingMethodGenerator blockingMethods,
             final @SpringDataJDBC BatchMethodGenerator batchMethods,
             final @SpringDataJDBC Java8StreamMethodGenerator streamMethods,
             final @SpringDataJDBC RxJavaMethodGenerator rxjavaMethods,
-            final @SpringDataJDBC BlockingMethodGenerator standardMethods,
-            final @SpringDataJDBC ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @SpringDataJDBC ReactorMethodGenerator reactorMethods,
+            final @SpringDataJDBC MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @Provides
@@ -127,6 +131,18 @@ public class SpringDataJdbcDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @Provides
+    @SpringDataJDBC
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new SpringDataJdbcMutinyMethodGenerator();
+    }
+
+    @Provides
+    @SpringDataJDBC
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new SpringDataJdbcReactorMethodGenerator();
     }
 
     @Provides

@@ -10,6 +10,9 @@ package wtf.metio.yosql.codegen.blocks;
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
+/**
+ * Generic re-usable {@link CodeBlock}s that are not specific for a single persistence API.
+ */
 public interface GenericBlocks {
 
     CodeBlock returnTrue();

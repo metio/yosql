@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.fluentjdbc.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the JPA based DAO implementation.
+ * Dagger module for the FluentJDBC based DAO implementation.
  */
 @Module
 public class FluentJdbcDaoModule {
@@ -50,16 +49,21 @@ public class FluentJdbcDaoModule {
     @FluentJDBC
     @Provides
     MethodsGenerator provideMethodsGenerator(
+            final @FluentJDBC ConstructorGenerator constructor,
+            final @FluentJDBC BlockingMethodGenerator blockingMethods,
             final @FluentJDBC BatchMethodGenerator batchMethods,
             final @FluentJDBC Java8StreamMethodGenerator streamMethods,
             final @FluentJDBC RxJavaMethodGenerator rxjavaMethods,
-            final @FluentJDBC BlockingMethodGenerator standardMethods,
-            final @FluentJDBC ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @FluentJDBC ReactorMethodGenerator reactorMethods,
+            final @FluentJDBC MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @FluentJDBC
@@ -127,6 +131,18 @@ public class FluentJdbcDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @FluentJDBC
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new FluentJdbcMutinyMethodGenerator();
+    }
+
+    @FluentJDBC
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new FluentJdbcReactorMethodGenerator();
     }
 
     @FluentJDBC

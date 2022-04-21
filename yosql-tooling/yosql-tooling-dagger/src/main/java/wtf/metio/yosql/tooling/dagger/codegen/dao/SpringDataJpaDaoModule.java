@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.spring.data.jpa.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the Spring-Data-JDBC based DAO implementation.
+ * Dagger module for the Spring-Data-JPA based DAO implementation.
  */
 @Module
 public class SpringDataJpaDaoModule {
@@ -50,16 +49,21 @@ public class SpringDataJpaDaoModule {
     @Provides
     @SpringDataJPA
     MethodsGenerator provideMethodsGenerator(
+            final @SpringDataJPA ConstructorGenerator constructor,
+            final @SpringDataJPA BlockingMethodGenerator blockingMethods,
             final @SpringDataJPA BatchMethodGenerator batchMethods,
             final @SpringDataJPA Java8StreamMethodGenerator streamMethods,
             final @SpringDataJPA RxJavaMethodGenerator rxjavaMethods,
-            final @SpringDataJPA BlockingMethodGenerator standardMethods,
-            final @SpringDataJPA ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @SpringDataJPA ReactorMethodGenerator reactorMethods,
+            final @SpringDataJPA MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @Provides
@@ -127,6 +131,18 @@ public class SpringDataJpaDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @Provides
+    @SpringDataJPA
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new SpringDataJpaMutinyMethodGenerator();
+    }
+
+    @Provides
+    @SpringDataJPA
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new SpringDataJpaReactorMethodGenerator();
     }
 
     @Provides

@@ -8,7 +8,6 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import wtf.metio.yosql.codegen.api.*;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
@@ -17,6 +16,11 @@ import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.*;
 import wtf.metio.yosql.testing.logging.Loggers;
 
+/**
+ * Object mother for JDBC related classes.
+ *
+ * @see <a href="https://martinfowler.com/bliki/ObjectMother.html">Martin Fowler's article on ObjectMothers</a>
+ */
 public final class JdbcObjectMother {
 
     public static JdbcMethods jdbcMethods() {
@@ -78,7 +82,7 @@ public final class JdbcObjectMother {
                 Loggers.loggingGenerator());
     }
 
-    public static ImmutableRuntimeConfiguration runtimeConfig() {
+    public static ImmutableRuntimeConfiguration runtimeConfig() { // TODO: obsolete? testconfigs should create this?
         return RuntimeConfiguration.usingDefaults()
                 .setApi(Apis.jul())
                 .setFiles(Files.maven())
@@ -135,6 +139,14 @@ public final class JdbcObjectMother {
                 jdbcBlocks(java));
     }
 
+    public static ReactorMethodGenerator reactorMethodGenerator() {
+        return new JdbcReactorMethodGenerator();
+    }
+
+    public static MutinyMethodGenerator mutinyMethodGenerator() {
+        return new JdbcMutinyMethodGenerator();
+    }
+
     public static JdbcConfiguration jdbcConfig() {
         return Jdbc.withResultRowConverter();
     }
@@ -143,17 +155,19 @@ public final class JdbcObjectMother {
         return new DefaultJdbcTransformer();
     }
 
-    public static GenericMethodsGenerator genericMethodsGenerator() {
-        return genericMethodsGenerator(Java.defaults());
+    public static DelegatingMethodsGenerator delegatingMethodsGenerator() {
+        return delegatingMethodsGenerator(Java.defaults());
     }
 
-    public static GenericMethodsGenerator genericMethodsGenerator(final JavaConfiguration java) {
-        return new GenericMethodsGenerator(
+    public static DelegatingMethodsGenerator delegatingMethodsGenerator(final JavaConfiguration java) {
+        return new DelegatingMethodsGenerator(
                 constructorGenerator(java),
                 blockingMethodGenerator(java),
                 batchMethodGenerator(java),
                 java8StreamMethodGenerator(java),
-                rxJavaMethodGenerator(java));
+                rxJavaMethodGenerator(java),
+                reactorMethodGenerator(),
+                mutinyMethodGenerator());
     }
 
     private JdbcObjectMother() {

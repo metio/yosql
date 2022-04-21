@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.jooq.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the JPA based DAO implementation.
+ * Dagger module for the jOOQ based DAO implementation.
  */
 @Module
 public class JooqDaoModule {
@@ -50,16 +49,21 @@ public class JooqDaoModule {
     @Jooq
     @Provides
     MethodsGenerator provideMethodsGenerator(
+            final @Jooq ConstructorGenerator constructor,
+            final @Jooq BlockingMethodGenerator blockingMethods,
             final @Jooq BatchMethodGenerator batchMethods,
             final @Jooq Java8StreamMethodGenerator streamMethods,
             final @Jooq RxJavaMethodGenerator rxjavaMethods,
-            final @Jooq BlockingMethodGenerator standardMethods,
-            final @Jooq ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @Jooq ReactorMethodGenerator reactorMethods,
+            final @Jooq MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @Jooq
@@ -127,6 +131,18 @@ public class JooqDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @Jooq
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new JooqMutinyMethodGenerator();
+    }
+
+    @Jooq
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new JooqReactorMethodGenerator();
     }
 
     @Jooq

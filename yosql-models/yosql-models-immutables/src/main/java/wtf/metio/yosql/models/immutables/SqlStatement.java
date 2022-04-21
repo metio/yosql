@@ -66,11 +66,6 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
-    default boolean shouldGenerateRxJavaAPI() {
-        return getConfiguration().generateRxJavaApi() && isReading();
-    }
-
-    @Value.Lazy
     default boolean shouldGenerateBlockingReadAPI() {
         return getConfiguration().generateBlockingApi() && isReading();
     }
@@ -86,17 +81,32 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
-    default boolean shouldGenerateStreamEagerAPI() {
+    default boolean shouldGenerateStreamEagerReadAPI() {
         return getConfiguration().generateStreamEagerApi() && isReading();
     }
 
     @Value.Lazy
-    default boolean shouldGenerateStreamLazyAPI() {
+    default boolean shouldGenerateStreamLazyReadAPI() {
         return getConfiguration().generateStreamLazyApi() && isReading();
     }
 
     @Value.Lazy
-    default boolean shouldGenerateBatchAPI() {
+    default boolean shouldGenerateRxJavaReadAPI() {
+        return getConfiguration().generateRxJavaApi() && isReading();
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateReactorReadAPI() {
+        return getConfiguration().generateReactorApi() && isReading();
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateMutinyReadAPI() {
+        return getConfiguration().generateMutinyApi() && isReading();
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateBatchWriteAPI() {
         return getConfiguration().generateBatchApi() && Buckets.hasEntries(getConfiguration().parameters()) && isWriting();
     }
 

@@ -13,6 +13,9 @@ import wtf.metio.yosql.codegen.api.FieldsGenerator;
 import wtf.metio.yosql.internals.junit5.TestIterables;
 import wtf.metio.yosql.testing.configs.Sql;
 
+/**
+ * Verifies that {@link FieldsGenerator}s work correctly.
+ */
 public interface FieldsGeneratorTCK {
 
     FieldsGenerator generator();

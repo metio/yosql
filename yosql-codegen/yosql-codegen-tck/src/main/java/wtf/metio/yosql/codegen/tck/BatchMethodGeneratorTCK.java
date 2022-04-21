@@ -12,10 +12,19 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.BatchMethodGenerator;
 import wtf.metio.yosql.testing.configs.Sql;
 
+/**
+ * Verifies that {@link BatchMethodGenerator}s work correctly.
+ */
 public interface BatchMethodGeneratorTCK {
 
+    /**
+     * @return A new {@link BatchMethodGenerator}.
+     */
     BatchMethodGenerator generator();
 
+    /**
+     * @return The expected generated code for a batch write method.
+     */
     String batchWriteMethodExpectation();
 
     @Test

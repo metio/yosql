@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.jdbi.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the JPA based DAO implementation.
+ * Dagger module for the JDBI based DAO implementation.
  */
 @Module
 public class JdbiDaoModule {
@@ -50,16 +49,21 @@ public class JdbiDaoModule {
     @JDBI
     @Provides
     MethodsGenerator provideMethodsGenerator(
+            final @JDBI ConstructorGenerator constructor,
+            final @JDBI BlockingMethodGenerator blockingMethods,
             final @JDBI BatchMethodGenerator batchMethods,
             final @JDBI Java8StreamMethodGenerator streamMethods,
             final @JDBI RxJavaMethodGenerator rxjavaMethods,
-            final @JDBI BlockingMethodGenerator standardMethods,
-            final @JDBI ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @JDBI ReactorMethodGenerator reactorMethods,
+            final @JDBI MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @JDBI
@@ -127,6 +131,18 @@ public class JdbiDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @JDBI
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new JdbiMutinyMethodGenerator();
+    }
+
+    @JDBI
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new JdbiReactorMethodGenerator();
     }
 
     @JDBI

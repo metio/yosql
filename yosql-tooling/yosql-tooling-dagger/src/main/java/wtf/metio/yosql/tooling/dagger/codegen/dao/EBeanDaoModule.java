@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.ebean.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the JPA based DAO implementation.
+ * Dagger module for the EBean based DAO implementation.
  */
 @Module
 public class EBeanDaoModule {
@@ -50,16 +49,21 @@ public class EBeanDaoModule {
     @EBean
     @Provides
     MethodsGenerator provideMethodsGenerator(
+            final @EBean ConstructorGenerator constructor,
+            final @EBean BlockingMethodGenerator blockingMethods,
             final @EBean BatchMethodGenerator batchMethods,
             final @EBean Java8StreamMethodGenerator streamMethods,
             final @EBean RxJavaMethodGenerator rxjavaMethods,
-            final @EBean BlockingMethodGenerator standardMethods,
-            final @EBean ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @EBean ReactorMethodGenerator reactorMethods,
+            final @EBean MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @EBean
@@ -127,6 +131,18 @@ public class EBeanDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @EBean
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new EBeanMutinyMethodGenerator();
+    }
+
+    @EBean
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new EBeanReactorMethodGenerator();
     }
 
     @EBean

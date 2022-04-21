@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Generic implementation of a {@link RepositoryGenerator}. Delegates most of its work to its injected members.
+ * Generic implementation of a {@link RepositoryGenerator} that delegates most of its work to injected classes.
  */
 public final class GenericRepositoryGenerator implements RepositoryGenerator {
 

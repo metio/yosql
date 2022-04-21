@@ -45,12 +45,12 @@ public final class SansOrmJava8StreamMethodGenerator implements Java8StreamMetho
     }
 
     @Override
-    public MethodSpec streamEagerMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec streamEagerReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 
     @Override
-    public MethodSpec streamLazyMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec streamLazyReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 

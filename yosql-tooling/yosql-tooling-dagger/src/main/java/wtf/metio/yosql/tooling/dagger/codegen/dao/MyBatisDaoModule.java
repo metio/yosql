@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.mybatis.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the JPA based DAO implementation.
+ * Dagger module for the MyBatis based DAO implementation.
  */
 @Module
 public class MyBatisDaoModule {
@@ -50,16 +49,21 @@ public class MyBatisDaoModule {
     @MyBatis
     @Provides
     MethodsGenerator provideMethodsGenerator(
+            final @MyBatis ConstructorGenerator constructor,
+            final @MyBatis BlockingMethodGenerator blockingMethods,
             final @MyBatis BatchMethodGenerator batchMethods,
             final @MyBatis Java8StreamMethodGenerator streamMethods,
             final @MyBatis RxJavaMethodGenerator rxjavaMethods,
-            final @MyBatis BlockingMethodGenerator standardMethods,
-            final @MyBatis ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @MyBatis ReactorMethodGenerator reactorMethods,
+            final @MyBatis MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @MyBatis
@@ -127,6 +131,18 @@ public class MyBatisDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @MyBatis
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new MyBatisMutinyMethodGenerator();
+    }
+
+    @MyBatis
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new MyBatisReactorMethodGenerator();
     }
 
     @MyBatis

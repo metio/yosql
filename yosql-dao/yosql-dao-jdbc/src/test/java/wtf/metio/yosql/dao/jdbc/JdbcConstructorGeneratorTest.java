@@ -42,7 +42,7 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using java 4 configuration")
+    @DisplayName("using Java 4 configuration")
     class Java4 implements ConstructorTCK {
 
         @Override
@@ -67,7 +67,7 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using java 5 configuration")
+    @DisplayName("using Java 5 configuration")
     class Java5 implements ConstructorTCK {
 
         @Override
@@ -92,7 +92,7 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using java 7 configuration")
+    @DisplayName("using Java 7 configuration")
     class Java7 implements ConstructorTCK {
 
         @Override
@@ -117,7 +117,7 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using java 8 configuration")
+    @DisplayName("using Java 8 configuration")
     class Java8 implements ConstructorTCK {
 
         @Override
@@ -142,7 +142,7 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using java 9 configuration")
+    @DisplayName("using Java 9 configuration")
     class Java9 implements ConstructorTCK {
 
         @Override
@@ -167,7 +167,7 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using java 11 configuration")
+    @DisplayName("using Java 11 configuration")
     class Java11 implements ConstructorTCK {
 
         @Override
@@ -192,7 +192,7 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using java 14 configuration")
+    @DisplayName("using Java 14 configuration")
     class Java14 implements ConstructorTCK {
 
         @Override
@@ -217,7 +217,7 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using java 16 configuration")
+    @DisplayName("using Java 16 configuration")
     class Java16 implements ConstructorTCK {
 
         @Override

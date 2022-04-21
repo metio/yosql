@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.sansorm.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the JPA based DAO implementation.
+ * Dagger module for the SansOrm based DAO implementation.
  */
 @Module
 public class SansOrmDaoModule {
@@ -50,16 +49,21 @@ public class SansOrmDaoModule {
     @SansOrm
     @Provides
     MethodsGenerator provideMethodsGenerator(
+            final @SansOrm ConstructorGenerator constructor,
+            final @SansOrm BlockingMethodGenerator blockingMethods,
             final @SansOrm BatchMethodGenerator batchMethods,
             final @SansOrm Java8StreamMethodGenerator streamMethods,
             final @SansOrm RxJavaMethodGenerator rxjavaMethods,
-            final @SansOrm BlockingMethodGenerator standardMethods,
-            final @SansOrm ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @SansOrm ReactorMethodGenerator reactorMethods,
+            final @SansOrm MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @SansOrm
@@ -127,6 +131,18 @@ public class SansOrmDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @SansOrm
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new SansOrmMutinyMethodGenerator();
+    }
+
+    @SansOrm
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new SansOrmReactorMethodGenerator();
     }
 
     @SansOrm

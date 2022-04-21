@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.jdbc.*;
@@ -52,18 +51,21 @@ public class JdbcDaoModule {
     @JDBC
     @Provides
     public MethodsGenerator provideMethodsGenerator(
+            final @JDBC ConstructorGenerator constructor,
+            final @JDBC BlockingMethodGenerator blockingMethods,
             final @JDBC BatchMethodGenerator batchMethods,
             final @JDBC Java8StreamMethodGenerator streamMethods,
             final @JDBC RxJavaMethodGenerator rxjavaMethods,
-            final @JDBC BlockingMethodGenerator standardMethods,
-            final @JDBC ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
+            final @JDBC ReactorMethodGenerator reactorMethods,
+            final @JDBC MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
                 constructor,
-                standardMethods,
+                blockingMethods,
                 batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @JDBC
@@ -160,6 +162,18 @@ public class JdbcDaoModule {
                 parameters,
                 logging,
                 jdbcBlocks);
+    }
+
+    @JDBC
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new JdbcMutinyMethodGenerator();
+    }
+
+    @JDBC
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new JdbcReactorMethodGenerator();
     }
 
     @JDBC

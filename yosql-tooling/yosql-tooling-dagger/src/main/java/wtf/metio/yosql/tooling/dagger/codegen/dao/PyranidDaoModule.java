@@ -13,7 +13,6 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.codegen.blocks.GenericMethodsGenerator;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.pyranid.*;
@@ -23,7 +22,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
- * Dagger module for the JPA based DAO implementation.
+ * Dagger module for the Pyranid based DAO implementation.
  */
 @Module
 public class PyranidDaoModule {
@@ -50,16 +49,21 @@ public class PyranidDaoModule {
     @Pyranid
     @Provides
     MethodsGenerator provideMethodsGenerator(
+            final @Pyranid ConstructorGenerator constructor,
+            final @Pyranid BlockingMethodGenerator blockingMethods,
             final @Pyranid BatchMethodGenerator batchMethods,
             final @Pyranid Java8StreamMethodGenerator streamMethods,
             final @Pyranid RxJavaMethodGenerator rxjavaMethods,
-            final @Pyranid BlockingMethodGenerator standardMethods,
-            final @Pyranid ConstructorGenerator constructor) {
-        return new GenericMethodsGenerator(
-                constructor, standardMethods, batchMethods,
+            final @Pyranid ReactorMethodGenerator reactorMethods,
+            final @Pyranid MutinyMethodGenerator mutinyMethods) {
+        return new DelegatingMethodsGenerator(
+                constructor,
+                blockingMethods,
+                batchMethods,
                 streamMethods,
-                rxjavaMethods
-        );
+                rxjavaMethods,
+                reactorMethods,
+                mutinyMethods);
     }
 
     @Pyranid
@@ -127,6 +131,18 @@ public class PyranidDaoModule {
                 methods,
                 parameters,
                 logging);
+    }
+
+    @Pyranid
+    @Provides
+    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+        return new PyranidMutinyMethodGenerator();
+    }
+
+    @Pyranid
+    @Provides
+    public ReactorMethodGenerator provideReactorMethodGenerator() {
+        return new PyranidReactorMethodGenerator();
     }
 
     @Pyranid

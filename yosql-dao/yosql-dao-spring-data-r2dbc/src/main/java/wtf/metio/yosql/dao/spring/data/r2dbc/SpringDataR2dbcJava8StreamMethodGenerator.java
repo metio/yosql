@@ -45,12 +45,12 @@ public final class SpringDataR2dbcJava8StreamMethodGenerator implements Java8Str
     }
 
     @Override
-    public MethodSpec streamEagerMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec streamEagerReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 
     @Override
-    public MethodSpec streamLazyMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec streamLazyReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 }

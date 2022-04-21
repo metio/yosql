@@ -7,28 +7,27 @@
 
 package wtf.metio.yosql.dao.jdbc;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.codegen.api.BlockingMethodGenerator;
+import wtf.metio.yosql.codegen.tck.BlockingMethodGeneratorTCK;
 import wtf.metio.yosql.testing.configs.Java;
-import wtf.metio.yosql.testing.configs.Sql;
 
 @DisplayName("JdbcBlockingMethodGenerator")
 class JdbcBlockingMethodGeneratorTest {
 
     @Nested
     @DisplayName("using default configuration")
-    class Defaults {
+    class Defaults implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.defaults());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.defaults());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -84,12 +83,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -135,12 +134,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -196,25 +195,23 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 4 configuration")
-    class Java4 {
+    @DisplayName("using Java 4 configuration")
+    class Java4 implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.java4());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.java4());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -270,12 +267,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -321,12 +318,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -382,25 +379,23 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 5 configuration")
-    class Java5 {
+    @DisplayName("using Java 5 configuration")
+    class Java5 implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.java5());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.java5());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -456,12 +451,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -507,12 +502,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -568,25 +563,23 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 7 configuration")
-    class Java7 {
+    @DisplayName("using Java 7 configuration")
+    class Java7 implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.java7());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.java7());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -642,12 +635,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -693,12 +686,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -754,25 +747,23 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 8 configuration")
-    class Java8 {
+    @DisplayName("using Java 8 configuration")
+    class Java8 implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.java8());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.java8());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -828,12 +819,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -879,12 +870,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -940,25 +931,23 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 9 configuration")
-    class Java9 {
+    @DisplayName("using Java 9 configuration")
+    class Java9 implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.java9());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.java9());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1014,12 +1003,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1065,12 +1054,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1126,25 +1115,23 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 11 configuration")
-    class Java11 {
+    @DisplayName("using Java 11 configuration")
+    class Java11 implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.java11());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.java11());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1200,12 +1187,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1251,12 +1238,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1312,25 +1299,23 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 14 configuration")
-    class Java14 {
+    @DisplayName("using Java 14 configuration")
+    class Java14 implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.java14());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.java14());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1386,12 +1371,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1437,12 +1422,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1498,25 +1483,23 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }
 
     @Nested
-    @DisplayName("using java 16 configuration")
-    class Java16 {
+    @DisplayName("using Java 16 configuration")
+    class Java16 implements BlockingMethodGeneratorTCK {
 
-        private BlockingMethodGenerator generator;
-
-        @BeforeEach
-        void setup() {
-            generator = JdbcObjectMother.blockingMethodGenerator(Java.java16());
+        @Override
+        public BlockingMethodGenerator generator() {
+            return JdbcObjectMother.blockingMethodGenerator(Java.java16());
         }
 
-        @Test
-        void shouldGenerateBlockingReadMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingReadMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1572,12 +1555,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingWriteMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingWriteMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1623,12 +1606,12 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
-        @Test
-        void shouldGenerateBlockingCallMethod() {
-            Assertions.assertEquals("""
+        @Override
+        public String blockingCallMethodExpectation() {
+            return """
                     /**
                      * <p>Executes the following statement:</p>
                      * <pre>
@@ -1684,7 +1667,7 @@ class JdbcBlockingMethodGeneratorTest {
                         throw new java.lang.RuntimeException(exception);
                       }
                     }
-                    """, generator.blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString());
+                    """;
         }
 
     }

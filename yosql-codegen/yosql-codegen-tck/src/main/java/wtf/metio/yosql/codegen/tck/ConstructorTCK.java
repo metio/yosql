@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.ConstructorGenerator;
 import wtf.metio.yosql.testing.configs.Sql;
 
+/**
+ * Verifies that {@link ConstructorGenerator}s work correctly.
+ */
 public interface ConstructorTCK {
 
     ConstructorGenerator generator();
