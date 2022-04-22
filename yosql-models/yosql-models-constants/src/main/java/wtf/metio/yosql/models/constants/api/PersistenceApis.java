@@ -93,8 +93,8 @@ public enum PersistenceApis {
     SQL2O,
 
     /**
-     * Uses Vert.x Postgres Client in generated code.
+     * Uses Vert.x SQL Client in generated code.
      */
-    VERTX_PG_CLIENT
+    VERTX_SQL_CLIENT
 
 }

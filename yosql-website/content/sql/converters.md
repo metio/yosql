@@ -30,4 +30,4 @@ Depending on the used [persistence](/persistence/) API, you might have to do a l
 | [Spring-Data JPA](/persistence/spring-data-jpa/)   | ✔         | ✔      |
 | [Spring JDBC](/persistence/spring-jdbc/)           | ✘         | ✔      |
 | [Sql2o](/persistence/sql2o/)                       | ✘         | ✔      |
-| [Vert.x PG Client](/persistence/vertx-pg-client)   | ✘         | ✔      |
+| [Vert.x SQL Client](/persistence/vertx-sql-client) | ✘         | ✔      |

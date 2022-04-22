@@ -37,7 +37,7 @@ final class PersistenceApisTest implements EnumTCK<PersistenceApis> {
                 "SPRING_DATA_R2DBC",
                 "SPRING_JDBC",
                 "SQL2O",
-                "VERTX_PG_CLIENT"
+                "VERTX_SQL_CLIENT"
         );
     }
 
