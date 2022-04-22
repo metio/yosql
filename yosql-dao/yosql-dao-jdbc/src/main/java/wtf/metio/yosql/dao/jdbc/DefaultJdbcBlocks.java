@@ -10,6 +10,7 @@ import com.squareup.javapoet.*;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import io.reactivex.Flowable;
 import io.smallrye.mutiny.Multi;
+import reactor.core.publisher.Flux;
 import wtf.metio.yosql.codegen.api.ControlFlows;
 import wtf.metio.yosql.codegen.api.Variables;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
@@ -371,6 +372,13 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     public CodeBlock returnAsMulti(final ParameterizedTypeName listOfResults, final String converterAlias) {
         return prepareReturnList(listOfResults, converterAlias)
                 .addStatement("return $T.createFrom().iterable($N)", Multi.class, names.list())
+                .build();
+    }
+
+    @Override
+    public CodeBlock returnAsFlux(final ParameterizedTypeName listOfResults, final String converterAlias) {
+        return prepareReturnList(listOfResults, converterAlias)
+                .addStatement("return $T.fromIterable($N)", Flux.class, names.list())
                 .build();
     }
 

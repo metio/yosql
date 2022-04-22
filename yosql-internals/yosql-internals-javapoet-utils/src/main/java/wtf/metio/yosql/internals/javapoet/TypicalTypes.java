@@ -28,8 +28,8 @@ public final class TypicalTypes {
     public static final ClassName INTEGER = ClassName.get("java.lang", "Integer");
 
     public static final ClassName FLOWABLE = ClassName.get("io.reactivex", "Flowable");
-
     public static final ClassName MULTI = ClassName.get("io.smallrye.mutiny", "Multi");
+    public static final ClassName FLUX = ClassName.get("reactor.core.publisher", "Flux");
 
     public static final ClassName GRADLE_PROPERTY = ClassName.bestGuess("org.gradle.api.provider.Property");
     public static final ClassName GRADLE_LIST_PROPERTY = ClassName.bestGuess("org.gradle.api.provider.ListProperty");
@@ -76,6 +76,10 @@ public final class TypicalTypes {
 
     public static ParameterizedTypeName multiOf(final TypeName type) {
         return ParameterizedTypeName.get(MULTI, type);
+    }
+
+    public static ParameterizedTypeName fluxOf(final TypeName type) {
+        return ParameterizedTypeName.get(FLUX, type);
     }
 
     public static ParameterizedTypeName consumerOf(final TypeName type) {

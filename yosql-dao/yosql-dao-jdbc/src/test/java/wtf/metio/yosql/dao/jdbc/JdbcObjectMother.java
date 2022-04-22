@@ -39,10 +39,6 @@ public final class JdbcObjectMother {
                 new DefaultJdbcStatementMethods(names));
     }
 
-    public static FieldsGenerator fieldsGenerator() {
-        return fieldsGenerator(Java.defaults());
-    }
-
     public static FieldsGenerator fieldsGenerator(final JavaConfiguration java) {
         return new JdbcFieldsGenerator(
                 jdbcConfig(),
@@ -105,10 +101,6 @@ public final class JdbcObjectMother {
                 jdbcConfig());
     }
 
-    public static BatchMethodGenerator batchMethodGenerator() {
-        return batchMethodGenerator(Java.defaults());
-    }
-
     public static BatchMethodGenerator batchMethodGenerator(final JavaConfiguration java) {
         return new JdbcBatchMethodGenerator(
                 Blocks.controlFlows(java),
@@ -143,8 +135,15 @@ public final class JdbcObjectMother {
                 jdbcBlocks(java));
     }
 
-    public static ReactorMethodGenerator reactorMethodGenerator() {
-        return new JdbcReactorMethodGenerator();
+    public static ReactorMethodGenerator reactorMethodGenerator(final JavaConfiguration java) {
+        return new JdbcReactorMethodGenerator(
+                jdbcConfig(),
+                Blocks.methods(java),
+                Blocks.parameters(java),
+                jdbcTransformer(),
+                Blocks.controlFlows(java),
+                Loggers.loggingGenerator(),
+                jdbcBlocks(java));
     }
 
     public static MutinyMethodGenerator mutinyMethodGenerator(final JavaConfiguration java) {
@@ -166,10 +165,6 @@ public final class JdbcObjectMother {
         return new DefaultJdbcTransformer();
     }
 
-    public static DelegatingMethodsGenerator delegatingMethodsGenerator() {
-        return delegatingMethodsGenerator(Java.defaults());
-    }
-
     public static DelegatingMethodsGenerator delegatingMethodsGenerator(final JavaConfiguration java) {
         return new DelegatingMethodsGenerator(
                 constructorGenerator(java),
@@ -177,12 +172,8 @@ public final class JdbcObjectMother {
                 batchMethodGenerator(java),
                 java8StreamMethodGenerator(java),
                 rxJavaMethodGenerator(java),
-                reactorMethodGenerator(),
+                reactorMethodGenerator(java),
                 mutinyMethodGenerator(java));
-    }
-
-    public static GenericRepositoryGenerator genericRepositoryGenerator() {
-        return genericRepositoryGenerator(Java.defaults());
     }
 
     public static GenericRepositoryGenerator genericRepositoryGenerator(final JavaConfiguration java) {

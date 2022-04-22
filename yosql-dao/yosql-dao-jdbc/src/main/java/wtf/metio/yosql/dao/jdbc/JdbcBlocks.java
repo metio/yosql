@@ -76,6 +76,8 @@ public interface JdbcBlocks {
 
     CodeBlock returnAsMulti(ParameterizedTypeName listOfResults, String converterAlias);
 
+    CodeBlock returnAsFlux(ParameterizedTypeName listOfResults, String converterAlias);
+
     CodeBlock streamStateful(TypeSpec spliterator, TypeSpec closer);
 
     CodeBlock createResultState();

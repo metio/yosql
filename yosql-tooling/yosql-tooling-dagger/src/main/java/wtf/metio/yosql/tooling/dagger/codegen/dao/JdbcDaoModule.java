@@ -182,8 +182,22 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public ReactorMethodGenerator provideReactorMethodGenerator() {
-        return new JdbcReactorMethodGenerator();
+    public ReactorMethodGenerator provideReactorMethodGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
+            final ControlFlows controlFlows,
+            final Methods methods,
+            final Parameters parameters,
+            @Delegating final LoggingGenerator logging,
+            final JdbcBlocks jdbcBlocks,
+            final JdbcTransformer transformer) {
+        return new JdbcReactorMethodGenerator(
+                runtimeConfiguration.jdbc(),
+                methods,
+                parameters,
+                transformer,
+                controlFlows,
+                logging,
+                jdbcBlocks);
     }
 
     @JDBC
