@@ -2,7 +2,9 @@
 hikari = "com.zaxxer:HikariCP:latest.release"
 h2 = "com.h2database:h2:latest.release"
 rxjava = "io.reactivex.rxjava2:rxjava:latest.release"
+mutiny = "io.smallrye.reactive:mutiny:latest.release"
+reactor = "io.projectreactor:reactor-core:latest.release"
 
 [bundles]
 database = ["hikari", "h2"]
-reactive = ["rxjava"]
+reactive = ["rxjava", "mutiny", "reactor"]
