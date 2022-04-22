@@ -45,7 +45,7 @@
         <module>yosql-converters-list</module>
         <module>yosql-converters-mutiny</module>
         <module>yosql-converters-reactor</module>
-        <module>yosql-converters-rxjava2</module>
+        <module>yosql-converters-rxjava</module>
         <module>yosql-converters-stream</module>
         <module>yosql-converters-user-type</module>
     </modules>

@@ -26,12 +26,12 @@
     <!--                               COORDINATES                               -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Maven_Coordinates -->
-    <artifactId>yosql-converters-rxjava2</artifactId>
+    <artifactId>yosql-converters-rxjava</artifactId>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!--                               INFORMATIONS                              -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
-    <name>YoSQL :: Converters :: RxJava2</name>
+    <name>YoSQL :: Converters :: RxJava</name>
 
 </project>
