@@ -7,13 +7,19 @@
 
 package wtf.metio.yosql.dao.jdbc;
 
+import ch.qos.cal10n.MessageConveyor;
+import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.api.*;
+import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
+import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.*;
 import wtf.metio.yosql.testing.logging.Loggers;
+
+import java.util.Locale;
 
 /**
  * Object mother for JDBC related classes.
@@ -173,6 +179,21 @@ public final class JdbcObjectMother {
                 rxJavaMethodGenerator(java),
                 reactorMethodGenerator(),
                 mutinyMethodGenerator(java));
+    }
+
+    public static GenericRepositoryGenerator genericRepositoryGenerator() {
+        return genericRepositoryGenerator(Java.defaults());
+    }
+
+    public static GenericRepositoryGenerator genericRepositoryGenerator(final JavaConfiguration java) {
+        return new GenericRepositoryGenerator(
+                new LocLoggerFactory(new MessageConveyor(Locale.ENGLISH)).getLocLogger("yosql.test"),
+                Blocks.annotationGenerator(),
+                Blocks.classes(java),
+                Blocks.javadoc(),
+                JdbcObjectMother.fieldsGenerator(java),
+                JdbcObjectMother.delegatingMethodsGenerator(java),
+                PersistenceApis.JDBC);
     }
 
     private JdbcObjectMother() {
