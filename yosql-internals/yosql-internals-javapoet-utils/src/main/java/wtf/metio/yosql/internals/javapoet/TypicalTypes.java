@@ -78,6 +78,10 @@ public final class TypicalTypes {
         return ParameterizedTypeName.get(MULTI, type);
     }
 
+    public static ParameterizedTypeName flowableOf(final TypeName type) {
+        return ParameterizedTypeName.get(FLOWABLE, type);
+    }
+
     public static ParameterizedTypeName fluxOf(final TypeName type) {
         return ParameterizedTypeName.get(FLUX, type);
     }

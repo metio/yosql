@@ -376,6 +376,13 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
+    public CodeBlock returnAsFlowable(final ParameterizedTypeName listOfResults, final String converterAlias) {
+        return prepareReturnList(listOfResults, converterAlias)
+                .addStatement("return $T.fromIterable($N)", Flowable.class, names.list())
+                .build();
+    }
+
+    @Override
     public CodeBlock returnAsFlux(final ParameterizedTypeName listOfResults, final String converterAlias) {
         return prepareReturnList(listOfResults, converterAlias)
                 .addStatement("return $T.fromIterable($N)", Flux.class, names.list())

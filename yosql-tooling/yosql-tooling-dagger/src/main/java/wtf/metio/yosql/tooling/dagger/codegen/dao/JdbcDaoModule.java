@@ -149,13 +149,14 @@ public class JdbcDaoModule {
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
-            final JdbcBlocks jdbcBlocks) {
+            final JdbcBlocks jdbcBlocks,
+            final JdbcTransformer transformer) {
         return new JdbcRxJavaMethodGenerator(
                 runtimeConfiguration.jdbc(),
-                controlFlows,
-                runtimeConfiguration.names(),
                 methods,
                 parameters,
+                transformer,
+                controlFlows,
                 logging,
                 jdbcBlocks);
     }

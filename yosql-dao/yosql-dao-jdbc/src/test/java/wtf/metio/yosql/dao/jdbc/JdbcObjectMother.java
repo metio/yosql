@@ -127,10 +127,10 @@ public final class JdbcObjectMother {
     public static RxJavaMethodGenerator rxJavaMethodGenerator(final JavaConfiguration java) {
         return new JdbcRxJavaMethodGenerator(
                 jdbcConfig(),
-                Blocks.controlFlows(java),
-                Names.defaults(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
+                jdbcTransformer(),
+                Blocks.controlFlows(java),
                 Loggers.loggingGenerator(),
                 jdbcBlocks(java));
     }

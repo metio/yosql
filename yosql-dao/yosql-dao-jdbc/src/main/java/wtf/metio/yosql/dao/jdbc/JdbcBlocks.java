@@ -76,14 +76,18 @@ public interface JdbcBlocks {
 
     CodeBlock returnAsMulti(ParameterizedTypeName listOfResults, String converterAlias);
 
+    CodeBlock returnAsFlowable(ParameterizedTypeName listOfResults, String converterAlias);
+
     CodeBlock returnAsFlux(ParameterizedTypeName listOfResults, String converterAlias);
 
     CodeBlock streamStateful(TypeSpec spliterator, TypeSpec closer);
 
     CodeBlock createResultState();
 
+    @Deprecated(forRemoval = true)
     CodeBlock returnNewFlowState();
 
+    @Deprecated(forRemoval = true)
     CodeBlock newFlowable(TypeSpec initialState, TypeSpec generator, TypeSpec disposer);
 
     CodeBlock setParameters(SqlConfiguration configuration);
