@@ -10,7 +10,7 @@ package wtf.metio.yosql.codegen.tck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.RxJavaMethodGenerator;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link RxJavaMethodGenerator}s work correctly.
@@ -31,7 +31,7 @@ public interface RxJavaMethodGeneratorTCK {
     default void rxJavaReadMethod() {
         Assertions.assertEquals(
                 rxJavaReadMethodExpectation(),
-                generator().rxJavaReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
+                generator().rxJavaReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
                 "The generated RxJava read method did not match expectation");
     }
 

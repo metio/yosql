@@ -18,7 +18,10 @@ import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.LoggingApis;
-import wtf.metio.yosql.models.immutables.*;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
+import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.sql.*;
@@ -36,7 +39,6 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     private final ControlFlows controlFlows;
     private final NamesConfiguration names;
     private final Variables variables;
-    private final JdbcConfiguration config;
     private final JdbcFields jdbcFields;
     private final JdbcMethods jdbcMethods;
     private final LoggingGenerator logging;
@@ -45,18 +47,15 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             final RuntimeConfiguration runtimeConfiguration,
             final GenericBlocks blocks,
             final ControlFlows controlFlows,
-            final NamesConfiguration names,
             final Variables variables,
-            final JdbcConfiguration config,
             final JdbcFields jdbcFields,
             final JdbcMethods jdbcMethods,
             final LoggingGenerator logging) {
         this.runtimeConfiguration = runtimeConfiguration;
         this.blocks = blocks;
-        this.names = names;
+        this.names = runtimeConfiguration.names();
         this.variables = variables;
         this.controlFlows = controlFlows;
-        this.config = config;
         this.jdbcFields = jdbcFields;
         this.jdbcMethods = jdbcMethods;
         this.logging = logging;
@@ -329,10 +328,10 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     private String converterMethod(final String converterAlias) {
-        return config.rowConverters().stream()
+        return runtimeConfiguration.converter().rowConverters().stream()
                 .filter(converter -> converterAlias.equalsIgnoreCase(converter.alias()))
                 .findFirst()
-                .or(config::defaultConverter)
+                .or(runtimeConfiguration.converter()::defaultConverter)
                 .map(ResultRowConverter::methodName)
                 .orElse("apply");
     }
@@ -401,9 +400,9 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock createResultState() {
-        return variables.statement(config.resultStateClass(), names.state(),
+        return variables.statement(runtimeConfiguration.converter().resultStateClass(), names.state(),
                 code("new $T($N, $N, $N)",
-                        config.resultStateClass(),
+                        runtimeConfiguration.converter().resultStateClass(),
                         names.resultSet(),
                         names.resultSetMetaData(),
                         names.columnCount()));
@@ -412,7 +411,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     @Override
     public CodeBlock returnNewFlowState() {
         return CodeBlock.builder()
-                .addStatement("return new $T($N, $N, $N, $N, $N)", config.flowStateClass(),
+                .addStatement("return new $T($N, $N, $N, $N, $N)", runtimeConfiguration.converter().flowStateClass(),
                         names.connection(),
                         names.statement(),
                         names.resultSet(),

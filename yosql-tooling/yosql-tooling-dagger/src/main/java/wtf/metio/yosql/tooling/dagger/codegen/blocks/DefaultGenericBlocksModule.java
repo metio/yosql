@@ -12,7 +12,6 @@ import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.*;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 @Module
@@ -36,8 +35,8 @@ public class DefaultGenericBlocksModule {
     @Provides
     public ControlFlows provideControlFlows(
             final Variables variables,
-            final NamesConfiguration names) {
-        return new DefaultControlFlows(variables, names);
+            final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultControlFlows(variables, runtimeConfiguration.names());
     }
 
     @Provides
@@ -51,18 +50,16 @@ public class DefaultGenericBlocksModule {
     }
 
     @Provides
-    public Methods provideMethods(final AnnotationGenerator annotations, final Javadoc javadoc, final RuntimeConfiguration runtimeConfiguration) {
+    public Methods provideMethods(
+            final AnnotationGenerator annotations,
+            final Javadoc javadoc,
+            final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultMethods(annotations, javadoc, runtimeConfiguration.java());
     }
 
     @Provides
-    public NamesConfiguration provideNames() {
-        return NamesConfiguration.usingDefaults().build();
-    }
-
-    @Provides
-    public Parameters provideParameters(final NamesConfiguration names, final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultParameters(names, runtimeConfiguration.java());
+    public Parameters provideParameters(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultParameters(runtimeConfiguration.names(), runtimeConfiguration.java());
     }
 
     @Provides

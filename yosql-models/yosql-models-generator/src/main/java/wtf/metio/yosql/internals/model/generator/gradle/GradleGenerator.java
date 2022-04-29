@@ -11,7 +11,7 @@ import com.squareup.javapoet.*;
 import wtf.metio.yosql.internals.javapoet.StandardClasses;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Strings;
-import wtf.metio.yosql.internals.model.generator.api.AbstractMethodsGenerator;
+import wtf.metio.yosql.internals.model.generator.api.AbstractMethodsBasedGenerator;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class GradleGenerator extends AbstractMethodsGenerator {
+public final class GradleGenerator extends AbstractMethodsBasedGenerator {
 
     private final String immutablesBasePackage;
 

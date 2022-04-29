@@ -18,7 +18,6 @@ import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.spring.data.jdbc.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
@@ -102,14 +101,14 @@ public class SpringDataJdbcDaoModule {
     Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
-            final NamesConfiguration names,
+            final RuntimeConfiguration runtimeConfiguration,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
         return new SpringDataJdbcJava8StreamMethodGenerator(
                 blocks,
                 controlFlow,
-                names,
+                runtimeConfiguration.names(),
                 methods,
                 parameters,
                 logging);
@@ -118,16 +117,15 @@ public class SpringDataJdbcDaoModule {
     @Provides
     @SpringDataJDBC
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
-            final RuntimeConfiguration configuration,
+            final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
-            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
         return new SpringDataJdbcRxJavaMethodGenerator(
-                configuration,
+                runtimeConfiguration,
                 controlFlows,
-                names,
+                runtimeConfiguration.names(),
                 methods,
                 parameters,
                 logging);

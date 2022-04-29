@@ -29,6 +29,7 @@ public final class SpringJdbcConstructorGenerator implements ConstructorGenerato
 
     @Override
     public MethodSpec forRepository(final List<SqlStatement> statements) {
-        return null;
+        return methods.constructor().build();
     }
+
 }

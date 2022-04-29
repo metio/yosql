@@ -9,13 +9,13 @@ package wtf.metio.yosql.codegen.blocks;
 
 import ch.qos.cal10n.MessageConveyor;
 import org.junit.jupiter.api.*;
+import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.SqlStatement;
-import wtf.metio.yosql.testing.configs.Files;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.FilesConfigurations;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Locale;
 
 @DisplayName("DefaultJavadoc")
 class DefaultJavadocTest {
@@ -28,7 +28,7 @@ class DefaultJavadocTest {
 
         @BeforeEach
         void setUp() {
-            generator = new DefaultJavadoc(Files.defaults(), new MessageConveyor(Locale.ENGLISH));
+            generator = new DefaultJavadoc(FilesConfigurations.defaults(), new MessageConveyor(SupportedLocales.ENGLISH));
         }
 
         @Test
@@ -60,7 +60,7 @@ class DefaultJavadocTest {
             // given
             final List<SqlStatement> statements = List.of(SqlStatement.builder()
                     .setSourcePath(Paths.get("test"))
-                    .setConfiguration(Sql.sqlConfiguration())
+                    .setConfiguration(SqlConfigurations.sqlConfiguration())
                     .setRawStatement("SELECT 1")
                     .build());
 
@@ -82,7 +82,7 @@ class DefaultJavadocTest {
             // given
             final List<SqlStatement> statements = List.of(SqlStatement.builder()
                     .setSourcePath(Paths.get("test"))
-                    .setConfiguration(Sql.sqlConfiguration())
+                    .setConfiguration(SqlConfigurations.sqlConfiguration())
                     .setRawStatement("SELECT 1")
                     .build());
 
@@ -108,7 +108,7 @@ class DefaultJavadocTest {
 
         @BeforeEach
         void setUp() {
-            generator = new DefaultJavadoc(Files.defaults(), new MessageConveyor(Locale.GERMAN));
+            generator = new DefaultJavadoc(FilesConfigurations.defaults(), new MessageConveyor(SupportedLocales.GERMAN));
         }
 
         @Test
@@ -140,7 +140,7 @@ class DefaultJavadocTest {
             // given
             final List<SqlStatement> statements = List.of(SqlStatement.builder()
                     .setSourcePath(Paths.get("test"))
-                    .setConfiguration(Sql.sqlConfiguration())
+                    .setConfiguration(SqlConfigurations.sqlConfiguration())
                     .setRawStatement("SELECT 1")
                     .build());
 
@@ -162,7 +162,7 @@ class DefaultJavadocTest {
             // given
             final List<SqlStatement> statements = List.of(SqlStatement.builder()
                     .setSourcePath(Paths.get("test"))
-                    .setConfiguration(Sql.sqlConfiguration())
+                    .setConfiguration(SqlConfigurations.sqlConfiguration())
                     .setRawStatement("SELECT 1")
                     .build());
 

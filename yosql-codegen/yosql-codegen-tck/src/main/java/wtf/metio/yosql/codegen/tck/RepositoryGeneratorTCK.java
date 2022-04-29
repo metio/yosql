@@ -10,7 +10,7 @@ package wtf.metio.yosql.codegen.tck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.RepositoryGenerator;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link RepositoryGenerator}s work correctly.
@@ -31,7 +31,7 @@ public interface RepositoryGeneratorTCK {
     default void generateRepository() {
         Assertions.assertEquals(
                 repositoryExpectation(),
-                generator().generateRepository("Test", Sql.sqlStatements()).getType().toString(),
+                generator().generateRepository("Test", SqlConfigurations.sqlStatements()).getType().toString(),
                 "The generated repository did not match expectation");
     }
 

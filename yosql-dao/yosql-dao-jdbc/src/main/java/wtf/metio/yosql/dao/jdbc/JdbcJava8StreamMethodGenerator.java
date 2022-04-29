@@ -18,7 +18,7 @@ import wtf.metio.yosql.codegen.api.Parameters;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -30,7 +30,7 @@ import java.util.Spliterators;
 
 public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGenerator {
 
-    private final JdbcConfiguration config;
+    private final ConverterConfiguration converters;
     private final GenericBlocks blocks;
     private final ControlFlows controlFlow;
     private final NamesConfiguration names;
@@ -41,7 +41,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
     private final JdbcTransformer transformer;
 
     public JdbcJava8StreamMethodGenerator(
-            final JdbcConfiguration config,
+            final ConverterConfiguration converters,
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
             final NamesConfiguration names,
@@ -50,7 +50,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final JdbcTransformer transformer) {
-        this.config = config;
+        this.converters = converters;
         this.names = names;
         this.logging = logging;
         this.blocks = blocks;
@@ -65,7 +65,8 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
     public MethodSpec streamEagerReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());
+        final var converter = configuration.resultRowConverter()
+                .or(converters::defaultConverter).orElseThrow();
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var streamOfResults = TypicalTypes.streamOf(resultType);
@@ -93,7 +94,8 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
     public MethodSpec streamLazyReadMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());
+        final var converter = configuration.resultRowConverter()
+                .or(converters::defaultConverter).orElseThrow();
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var streamOfResults = TypicalTypes.streamOf(resultType);
         return methods.streamLazyMethod(configuration.streamLazyName(), statements)

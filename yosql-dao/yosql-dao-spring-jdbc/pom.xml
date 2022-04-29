@@ -55,6 +55,24 @@
             <artifactId>yosql-logging-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.codegen</groupId>
+            <artifactId>yosql-codegen-tck</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.testing</groupId>
+            <artifactId>yosql-testing-codegen</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.testing</groupId>
+            <artifactId>yosql-testing-logging</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>javax.inject</groupId>

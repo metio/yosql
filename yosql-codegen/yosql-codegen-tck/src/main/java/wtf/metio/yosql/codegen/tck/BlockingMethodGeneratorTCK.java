@@ -10,7 +10,9 @@ package wtf.metio.yosql.codegen.tck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.BlockingMethodGenerator;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.models.constants.sql.ReturningMode;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link BlockingMethodGenerator}s work correctly.
@@ -23,9 +25,19 @@ public interface BlockingMethodGeneratorTCK {
     BlockingMethodGenerator generator();
 
     /**
-     * @return The expected generated code for a blocking read method.
+     * @return The expected generated code for a blocking read one method.
      */
-    String blockingReadMethodExpectation();
+    String blockingReadOneMethodExpectation();
+
+    /**
+     * @return The expected generated code for a blocking read first method.
+     */
+    String blockingReadFirstMethodExpectation();
+
+    /**
+     * @return The expected generated code for a blocking read list method.
+     */
+    String blockingReadListMethodExpectation();
 
     /**
      * @return The expected generated code for a blocking write method.
@@ -38,18 +50,37 @@ public interface BlockingMethodGeneratorTCK {
     String blockingCallMethodExpectation();
 
     @Test
-    default void blockingReadMethod() {
+    default void blockingReadOneMethod() {
         Assertions.assertEquals(
-                blockingReadMethodExpectation(),
-                generator().blockingReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
-                "The generated blocking read method did not match expectation");
+                blockingReadOneMethodExpectation(),
+                generator().blockingReadMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withReturningMode(ReturningMode.ONE), SqlConfigurations.sqlStatements()).toString(),
+                "The generated blocking read one method did not match expectation");
+    }
+
+    @Test
+    default void blockingReadFirstMethod() {
+        Assertions.assertEquals(
+                blockingReadFirstMethodExpectation(),
+                generator().blockingReadMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withReturningMode(ReturningMode.FIRST), SqlConfigurations.sqlStatements()).toString(),
+                "The generated blocking read first method did not match expectation");
+    }
+
+    @Test
+    default void blockingReadListMethod() {
+        Assertions.assertEquals(
+                blockingReadListMethodExpectation(),
+                generator().blockingReadMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withReturningMode(ReturningMode.LIST), SqlConfigurations.sqlStatements()).toString(),
+                "The generated blocking read list method did not match expectation");
     }
 
     @Test
     default void blockingWriteMethod() {
         Assertions.assertEquals(
                 blockingWriteMethodExpectation(),
-                generator().blockingWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
+                generator().blockingWriteMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
                 "The generated blocking write method did not match expectation");
     }
 
@@ -57,7 +88,7 @@ public interface BlockingMethodGeneratorTCK {
     default void blockingCallMethod() {
         Assertions.assertEquals(
                 blockingCallMethodExpectation(),
-                generator().blockingCallMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
+                generator().blockingCallMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
                 "The generated blocking call method did not match expectation");
     }
 

@@ -13,12 +13,12 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.api.Fields;
 import wtf.metio.yosql.codegen.api.FieldsGenerator;
 import wtf.metio.yosql.codegen.api.Javadoc;
-import wtf.metio.yosql.codegen.files.SqlFileParser;
+import wtf.metio.yosql.codegen.files.SqlStatementParser;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.sql.SqlType;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -38,7 +38,7 @@ import static java.util.function.Predicate.not;
  */
 public final class JdbcFieldsGenerator implements FieldsGenerator {
 
-    private final JdbcConfiguration config;
+    private final ConverterConfiguration converters;
     private final NamesConfiguration names;
     private final LoggingGenerator logging;
     private final Javadoc javadoc;
@@ -46,13 +46,13 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     private final JdbcFields jdbcFields;
 
     public JdbcFieldsGenerator(
-            final JdbcConfiguration config,
+            final ConverterConfiguration converters,
             final NamesConfiguration names,
             final LoggingGenerator logging,
             final Javadoc javadoc,
             final Fields fields,
             final JdbcFields jdbcFields) {
-        this.config = config;
+        this.converters = converters;
         this.names = names;
         this.logging = logging;
         this.javadoc = javadoc;
@@ -141,7 +141,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     }
 
     private static String replaceNamedParameters(final String rawSqlStatement) {
-        return rawSqlStatement.replaceAll(SqlFileParser.NAMED_PARAMETER_PATTERN.pattern(), "?");
+        return rawSqlStatement.replaceAll(SqlStatementParser.NAMED_PARAMETER_PATTERN.pattern(), "?");
     }
 
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
@@ -157,14 +157,14 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     }
 
     private FieldSpec asConverterField(final ResultRowConverter converter) {
-        return config.rowConverters().stream()
+        return converters.rowConverters().stream()
                 .filter(rowConverter -> rowConverter.alias().equals(converter.alias()))
                 .map(rowConverter -> TypeGuesser.guessTypeName(rowConverter.converterType()))
                 .map(typeName -> fields.field(
                         typeName,
                         converter.alias()))
                 .findFirst()
-                .or(() -> config.defaultConverter()
+                .or(() -> converters.defaultConverter()
                         .map(ResultRowConverter::converterType)
                         .map(String::strip)
                         .filter(not(String::isBlank))

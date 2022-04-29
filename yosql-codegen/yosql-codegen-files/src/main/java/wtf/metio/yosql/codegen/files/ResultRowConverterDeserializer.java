@@ -10,6 +10,7 @@ package wtf.metio.yosql.codegen.files;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.io.IOException;
@@ -22,10 +23,10 @@ public final class ResultRowConverterDeserializer extends JsonDeserializer<Resul
             final DeserializationContext context) throws IOException {
         final var converter = jsonParser.readValueAs(Converter.class);
         return ResultRowConverter.builder()
-                .setAlias(converter.alias == null ? "" : converter.alias)
-                .setConverterType(converter.converterType == null ? "" : converter.converterType)
-                .setMethodName(converter.methodName == null ? "" : converter.methodName)
-                .setResultType(converter.resultType == null ? "" : converter.resultType)
+                .setAlias(Strings.isBlank(converter.alias) ? "" : converter.alias)
+                .setConverterType(Strings.isBlank(converter.converterType) ? "" : converter.converterType)
+                .setMethodName(Strings.isBlank(converter.methodName) ? "" : converter.methodName)
+                .setResultType(Strings.isBlank(converter.resultType) ? "" : converter.resultType)
                 .build();
     }
 

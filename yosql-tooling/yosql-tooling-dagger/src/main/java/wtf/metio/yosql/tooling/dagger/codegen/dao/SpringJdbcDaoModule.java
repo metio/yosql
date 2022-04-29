@@ -18,13 +18,13 @@ import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.spring.jdbc.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+import wtf.metio.yosql.tooling.dagger.codegen.blocks.DefaultSpringJdbcBlocksModule;
 
 /**
  * Dagger module for the Spring-JDBC based DAO implementation.
  */
-@Module
+@Module(includes = DefaultSpringJdbcBlocksModule.class)
 public class SpringJdbcDaoModule {
 
     @IntoSet
@@ -102,14 +102,14 @@ public class SpringJdbcDaoModule {
     Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
-            final NamesConfiguration names,
+            final RuntimeConfiguration runtimeConfiguration,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
         return new SpringJdbcJava8StreamMethodGenerator(
                 blocks,
                 controlFlow,
-                names,
+                runtimeConfiguration.names(),
                 methods,
                 parameters,
                 logging);
@@ -118,16 +118,15 @@ public class SpringJdbcDaoModule {
     @Provides
     @SpringJDBC
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
-            final RuntimeConfiguration configuration,
+            final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
-            final NamesConfiguration names,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging) {
         return new SpringJdbcRxJavaMethodGenerator(
-                configuration,
+                runtimeConfiguration,
                 controlFlows,
-                names,
+                runtimeConfiguration.names(),
                 methods,
                 parameters,
                 logging);
@@ -151,12 +150,14 @@ public class SpringJdbcDaoModule {
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
-            @Delegating final LoggingGenerator logging) {
+            @Delegating final LoggingGenerator logging,
+            final SpringJdbcBlocks blocks) {
         return new SpringJdbcBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,
-                logging);
+                logging,
+                blocks);
     }
 
 }

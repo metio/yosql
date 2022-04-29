@@ -11,20 +11,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.Java;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultVariables")
 class DefaultVariablesTest {
 
     @Nested
-    @DisplayName("Java Defaults")
+    @DisplayName("JavaConfigurations Defaults")
     class JavaDefaultsTest {
 
         @Test
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(Java.defaults());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -38,7 +38,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(Java.defaults());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -52,7 +52,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(Java.defaults());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -66,14 +66,14 @@ class DefaultVariablesTest {
     }
 
     @Nested
-    @DisplayName("Java 4 Preset")
+    @DisplayName("JavaConfigurations 4 Preset")
     class Java4Test {
 
         @Test
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(Java.java4());
+            final var variables = new DefaultVariables(JavaConfigurations.java4());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -87,7 +87,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(Java.java4());
+            final var variables = new DefaultVariables(JavaConfigurations.java4());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -101,7 +101,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(Java.java4());
+            final var variables = new DefaultVariables(JavaConfigurations.java4());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -115,14 +115,14 @@ class DefaultVariablesTest {
     }
 
     @Nested
-    @DisplayName("Java 5 Preset")
+    @DisplayName("JavaConfigurations 5 Preset")
     class Java5Test {
 
         @Test
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(Java.java5());
+            final var variables = new DefaultVariables(JavaConfigurations.java5());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -136,7 +136,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(Java.java5());
+            final var variables = new DefaultVariables(JavaConfigurations.java5());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -150,7 +150,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(Java.java5());
+            final var variables = new DefaultVariables(JavaConfigurations.java5());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -164,14 +164,14 @@ class DefaultVariablesTest {
     }
 
     @Nested
-    @DisplayName("Java 8 Preset")
+    @DisplayName("JavaConfigurations 8 Preset")
     class Java8Test {
 
         @Test
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(Java.java8());
+            final var variables = new DefaultVariables(JavaConfigurations.java8());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -185,7 +185,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(Java.java8());
+            final var variables = new DefaultVariables(JavaConfigurations.java8());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -199,7 +199,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(Java.java8());
+            final var variables = new DefaultVariables(JavaConfigurations.java8());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -213,14 +213,14 @@ class DefaultVariablesTest {
     }
 
     @Nested
-    @DisplayName("Java 9 Preset")
+    @DisplayName("JavaConfigurations 9 Preset")
     class Java9Test {
 
         @Test
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(Java.java9());
+            final var variables = new DefaultVariables(JavaConfigurations.java9());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -234,7 +234,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(Java.java9());
+            final var variables = new DefaultVariables(JavaConfigurations.java9());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -248,7 +248,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(Java.java9());
+            final var variables = new DefaultVariables(JavaConfigurations.java9());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -262,14 +262,14 @@ class DefaultVariablesTest {
     }
 
     @Nested
-    @DisplayName("Java 11 Preset")
+    @DisplayName("JavaConfigurations 11 Preset")
     class Java11Test {
 
         @Test
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(Java.java11());
+            final var variables = new DefaultVariables(JavaConfigurations.java11());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -283,7 +283,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(Java.java11());
+            final var variables = new DefaultVariables(JavaConfigurations.java11());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -297,7 +297,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(Java.java11());
+            final var variables = new DefaultVariables(JavaConfigurations.java11());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -311,14 +311,14 @@ class DefaultVariablesTest {
     }
 
     @Nested
-    @DisplayName("Java 14 Preset")
+    @DisplayName("JavaConfigurations 14 Preset")
     class Java14Test {
 
         @Test
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(Java.java14());
+            final var variables = new DefaultVariables(JavaConfigurations.java14());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -332,7 +332,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(Java.java14());
+            final var variables = new DefaultVariables(JavaConfigurations.java14());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -346,7 +346,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(Java.java14());
+            final var variables = new DefaultVariables(JavaConfigurations.java14());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -360,14 +360,14 @@ class DefaultVariablesTest {
     }
 
     @Nested
-    @DisplayName("Java 16 Preset")
+    @DisplayName("JavaConfigurations 16 Preset")
     class Java16Test {
 
         @Test
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(Java.java16());
+            final var variables = new DefaultVariables(JavaConfigurations.java16());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -381,7 +381,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(Java.java16());
+            final var variables = new DefaultVariables(JavaConfigurations.java16());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -395,7 +395,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(Java.java16());
+            final var variables = new DefaultVariables(JavaConfigurations.java16());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));

@@ -10,8 +10,8 @@ package wtf.metio.yosql.dao.jdbc;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
-public interface JdbcTransformer {
+public interface JdbcTransformer { // TODO: rename to something exception related?
 
-    Iterable<TypeName> sqlException(SqlConfiguration configuration);
+    Iterable<? extends TypeName> sqlException(SqlConfiguration configuration);
 
 }

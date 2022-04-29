@@ -10,7 +10,7 @@ package wtf.metio.yosql.codegen.tck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.Java8StreamMethodGenerator;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link Java8StreamMethodGenerator}s work correctly.
@@ -36,7 +36,7 @@ public interface Java8StreamMethodGeneratorTCK {
     default void streamLazyReadMethod() {
         Assertions.assertEquals(
                 streamLazyReadMethodExpectation(),
-                generator().streamLazyReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
+                generator().streamLazyReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
                 "The generated stream lazy read method did not match expectation");
     }
 
@@ -44,7 +44,7 @@ public interface Java8StreamMethodGeneratorTCK {
     default void streamEagerReadMethod() {
         Assertions.assertEquals(
                 streamEagerReadMethodExpectation(),
-                generator().streamEagerReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
+                generator().streamEagerReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
                 "The generated stream eager read method did not match expectation");
     }
 

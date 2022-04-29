@@ -7,20 +7,19 @@
 
 package wtf.metio.yosql.codegen.files;
 
-import ch.qos.cal10n.MessageConveyor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.errors.ExecutionErrors;
 import wtf.metio.yosql.models.constants.sql.ReturningMode;
 import wtf.metio.yosql.models.constants.sql.SqlType;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
+import wtf.metio.yosql.testing.configs.RuntimeConfigurations;
+import wtf.metio.yosql.testing.logging.LoggingObjectMother;
 
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,28 +55,8 @@ class DefaultSqlConfigurationFactoryTest {
 
         // then
         assertAll("Configuration",
-                () -> assertFalse(configuration.generateBatchApi(), "generateBatchApi"),
-                () -> assertTrue(configuration.catchAndRethrow(), "catchAndRethrow"),
-                () -> assertTrue(configuration.generateRxJavaApi(), "generateRxJavaApi"),
-                () -> assertTrue(configuration.generateBlockingApi(), "generateBlockingApi"),
-                () -> assertTrue(configuration.generateStreamEagerApi(), "generateStreamEagerApi"),
-                () -> assertTrue(configuration.generateStreamLazyApi(), "generateStreamLazyApi"),
                 () -> assertEquals("read", configuration.name(), "name"),
-                () -> assertEquals("readBatch", configuration.batchName(), "batchName"),
-                () -> assertEquals("readFlow", configuration.rxJavaName(), "rxJavaName"),
-                () -> assertEquals("readStreamEager", configuration.streamEagerName(), "streamEagerName"),
-                () -> assertEquals("readStreamLazy", configuration.streamLazyName(), "streamLazyName"),
                 () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository(), "repository"),
-                () -> assertEquals("", configuration.blockingPrefix(), "blockingPrefix"),
-                () -> assertEquals("", configuration.blockingSuffix(), "blockingSuffix"),
-                () -> assertEquals("", configuration.batchPrefix(), "batchPrefix"),
-                () -> assertEquals("Batch", configuration.batchSuffix(), "batchSuffix"),
-                () -> assertEquals("", configuration.rxjavaPrefix(), "rxjavaPrefix"),
-                () -> assertEquals("Flow", configuration.rxjavaSuffix(), "rxjavaSuffix"),
-                () -> assertEquals("", configuration.streamLazyPrefix(), "streamLazyPrefix"),
-                () -> assertEquals("StreamLazy", configuration.streamLazySuffix(), "streamLazySuffix"),
-                () -> assertEquals("", configuration.streamEagerPrefix(), "streamEagerPrefix"),
-                () -> assertEquals("StreamEager", configuration.streamEagerSuffix(), "streamEagerSuffix"),
                 () -> assertEquals("", configuration.vendor(), "vendor"),
                 () -> assertEquals(SqlType.READING, configuration.type(), "type"),
                 () -> assertEquals(ReturningMode.LIST, configuration.returningMode(), "returningMode"));
@@ -96,28 +75,8 @@ class DefaultSqlConfigurationFactoryTest {
 
         // then
         assertAll("Configuration",
-                () -> assertTrue(configuration.generateBatchApi(), "generateBatchApi"),
-                () -> assertTrue(configuration.catchAndRethrow(), "catchAndRethrow"),
-                () -> assertFalse(configuration.generateRxJavaApi(), "generateRxJavaApi"),
-                () -> assertTrue(configuration.generateBlockingApi(), "generateBlockingApi"),
-                () -> assertFalse(configuration.generateStreamEagerApi(), "generateStreamEagerApi"),
-                () -> assertFalse(configuration.generateStreamLazyApi(), "generateStreamLazyApi"),
                 () -> assertEquals("insert", configuration.name(), "name"),
-                () -> assertEquals("insertBatch", configuration.batchName(), "batchName"),
-                () -> assertEquals("insertFlow", configuration.rxJavaName(), "rxJavaName"),
-                () -> assertEquals("insertStreamEager", configuration.streamEagerName(), "streamEagerName"),
-                () -> assertEquals("insertStreamLazy", configuration.streamLazyName(), "streamLazyName"),
                 () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository(), "repository"),
-                () -> assertEquals("", configuration.blockingPrefix(), "blockingPrefix"),
-                () -> assertEquals("", configuration.blockingSuffix(), "blockingSuffix"),
-                () -> assertEquals("", configuration.batchPrefix(), "batchPrefix"),
-                () -> assertEquals("Batch", configuration.batchSuffix(), "batchSuffix"),
-                () -> assertEquals("", configuration.rxjavaPrefix(), "rxjavaPrefix"),
-                () -> assertEquals("Flow", configuration.rxjavaSuffix(), "rxjavaSuffix"),
-                () -> assertEquals("", configuration.streamLazyPrefix(), "streamLazyPrefix"),
-                () -> assertEquals("StreamLazy", configuration.streamLazySuffix(), "streamLazySuffix"),
-                () -> assertEquals("", configuration.streamEagerPrefix(), "streamEagerPrefix"),
-                () -> assertEquals("StreamEager", configuration.streamEagerSuffix(), "streamEagerSuffix"),
                 () -> assertEquals("", configuration.vendor(), "vendor"),
                 () -> assertEquals(SqlType.WRITING, configuration.type(), "type"),
                 () -> assertEquals(ReturningMode.NONE, configuration.returningMode(), "returningMode"));
@@ -155,7 +114,7 @@ class DefaultSqlConfigurationFactoryTest {
         final Map<String, List<Integer>> indices = Map.of();
         final var statementInFile = 1;
         final var config = RuntimeConfiguration.usingDefaults()
-                .setJdbc(JdbcConfiguration.usingDefaults()
+                .setConverter(ConverterConfiguration.usingDefaults()
                         .setRowConverters(List.of(ResultRowConverter.builder()
                                 .setAlias("itemConverter")
                                 .setConverterType("com.example.ItemConverter")
@@ -194,7 +153,7 @@ class DefaultSqlConfigurationFactoryTest {
         final Map<String, List<Integer>> indices = Map.of();
         final var statementInFile = 1;
         final var config = RuntimeConfiguration.usingDefaults()
-                .setJdbc(JdbcConfiguration.usingDefaults()
+                .setConverter(ConverterConfiguration.usingDefaults()
                         .setDefaultConverter(ResultRowConverter.builder()
                                 .setAlias("resultRow")
                                 .setConverterType("com.example.ResultRowConverter")
@@ -226,15 +185,23 @@ class DefaultSqlConfigurationFactoryTest {
     }
 
     private DefaultSqlConfigurationFactory factory() {
-        return factory(RuntimeConfiguration.usingDefaults().build());
+        return factory(RuntimeConfigurations.defaults());
     }
 
     private DefaultSqlConfigurationFactory factory(final RuntimeConfiguration runtimeConfiguration) {
+        final var logger = LoggingObjectMother.logger();
+        final var errors = new ExecutionErrors();
+        final var messages = LoggingObjectMother.messages();
         return new DefaultSqlConfigurationFactory(
-                new LocLoggerFactory(new MessageConveyor(Locale.ENGLISH)).getLocLogger("yosql.test"),
-                runtimeConfiguration,
-                new ExecutionErrors(),
-                new MessageConveyor(Locale.ENGLISH));
+                logger,
+                new DefaultSqlConfigurationParser(),
+                new DefaultMethodSettingsConfigurer(runtimeConfiguration.repositories()),
+                new DefaultMethodNameConfigurer(logger, runtimeConfiguration.repositories()),
+                new DefaultMethodNameValidator(runtimeConfiguration.repositories(), errors, messages),
+                new DefaultMethodApiConfigurer(runtimeConfiguration.repositories()),
+                new DefaultMethodParameterConfigurer(logger, errors, messages),
+                new DefaultMethodConverterConfigurer(runtimeConfiguration.converter()),
+                new DefaultRepositoryNameConfigurer(logger, runtimeConfiguration.files(), runtimeConfiguration.repositories()));
     }
 
 }

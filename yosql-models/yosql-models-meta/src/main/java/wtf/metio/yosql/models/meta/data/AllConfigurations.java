@@ -20,10 +20,10 @@ public final class AllConfigurations {
         return Stream.of(
                 Annotations.configurationGroup(),
                 Api.configurationGroup(),
+                Converter.configurationGroup(),
                 Files.configurationGroup(),
                 Repositories.configurationGroup(),
                 Java.configurationGroup(),
-                Jdbc.configurationGroup(),
                 Names.configurationGroup(),
                 Resources.configurationGroup());
     }

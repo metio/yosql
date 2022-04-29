@@ -54,10 +54,10 @@ public final class DefaultControlFlows implements ControlFlows {
 
     @Override
     public CodeBlock maybeCatchAndRethrow(final SqlConfiguration configuration) {
-        if (configuration.catchAndRethrow()) {
-            return catchAndRethrow();
-        }
-        return CodeBlock.builder().build();
+        return configuration.catchAndRethrow()
+                .filter(Boolean.TRUE::equals)
+                .map(bool -> catchAndRethrow())
+                .orElse(CodeBlock.builder().build());
     }
 
     @Override
@@ -88,18 +88,18 @@ public final class DefaultControlFlows implements ControlFlows {
 
     @Override
     public CodeBlock maybeTry(final SqlConfiguration configuration) {
-        if (configuration.catchAndRethrow()) {
-            return startTryBlock();
-        }
-        return CodeBlock.builder().build();
+        return configuration.catchAndRethrow()
+                .filter(Boolean.TRUE::equals)
+                .map(bool -> startTryBlock())
+                .orElse(CodeBlock.builder().build());
     }
 
     @Override
     public CodeBlock endMaybeTry(final SqlConfiguration configuration) {
-        if (configuration.catchAndRethrow()) {
-            return endTryBlock();
-        }
-        return CodeBlock.builder().build();
+        return configuration.catchAndRethrow()
+                .filter(Boolean.TRUE::equals)
+                .map(bool -> endTryBlock())
+                .orElse(CodeBlock.builder().build());
     }
 
     @Override

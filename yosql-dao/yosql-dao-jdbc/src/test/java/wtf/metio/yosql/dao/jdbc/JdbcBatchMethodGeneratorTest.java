@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.codegen.api.BatchMethodGenerator;
 import wtf.metio.yosql.codegen.tck.BatchMethodGeneratorTCK;
-import wtf.metio.yosql.testing.configs.Java;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
 
 @DisplayName("JdbcBatchMethodGenerator")
 class JdbcBatchMethodGeneratorTest {
@@ -22,7 +22,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.defaults());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.defaults());
         }
 
         @Override
@@ -87,7 +87,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.java4());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.java4());
         }
 
         @Override
@@ -152,7 +152,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.java5());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.java5());
         }
 
         @Override
@@ -217,7 +217,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.java7());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.java7());
         }
 
         @Override
@@ -282,7 +282,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.java8());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.java8());
         }
 
         @Override
@@ -347,7 +347,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.java9());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.java9());
         }
 
         @Override
@@ -412,7 +412,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.java11());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.java11());
         }
 
         @Override
@@ -477,7 +477,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.java14());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.java14());
         }
 
         @Override
@@ -542,7 +542,7 @@ class JdbcBatchMethodGeneratorTest {
 
         @Override
         public BatchMethodGenerator generator() {
-            return JdbcObjectMother.batchMethodGenerator(Java.java16());
+            return JdbcObjectMother.batchMethodGenerator(JavaConfigurations.java16());
         }
 
         @Override

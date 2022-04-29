@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.codegen.api.Java8StreamMethodGenerator;
 import wtf.metio.yosql.codegen.tck.Java8StreamMethodGeneratorTCK;
-import wtf.metio.yosql.testing.configs.Java;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
 
 @DisplayName("JdbcJava8StreamMethodGenerator")
 class JdbcJava8StreamMethodGeneratorTest {
@@ -22,7 +22,7 @@ class JdbcJava8StreamMethodGeneratorTest {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.defaults());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.defaults());
         }
 
         @Override
@@ -71,7 +71,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final var resultSet = statement.executeQuery();
                         final var resultSetMetaData = resultSet.getMetaData();
                         final var columnCount = resultSetMetaData.getColumnCount();
-                        final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -161,7 +161,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final var resultSet = statement.executeQuery()) {
                             final var resultSetMetaData = resultSet.getMetaData();
                             final var columnCount = resultSetMetaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -180,12 +180,12 @@ class JdbcJava8StreamMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 4 configuration")
+    @DisplayName("using JavaConfigurations 4 configuration")
     class Java4 implements Java8StreamMethodGeneratorTCK {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.java4());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.java4());
         }
 
         @Override
@@ -234,7 +234,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final java.sql.ResultSet resultSet = statement.executeQuery();
                         final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                         final int columnCount = resultSetMetaData.getColumnCount();
-                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -324,7 +324,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -342,12 +342,12 @@ class JdbcJava8StreamMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 5 configuration")
+    @DisplayName("using JavaConfigurations 5 configuration")
     class Java5 implements Java8StreamMethodGeneratorTCK {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.java5());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.java5());
         }
 
         @Override
@@ -396,7 +396,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final java.sql.ResultSet resultSet = statement.executeQuery();
                         final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                         final int columnCount = resultSetMetaData.getColumnCount();
-                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -486,7 +486,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -505,12 +505,12 @@ class JdbcJava8StreamMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 7 configuration")
+    @DisplayName("using JavaConfigurations 7 configuration")
     class Java7 implements Java8StreamMethodGeneratorTCK {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.java7());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.java7());
         }
 
         @Override
@@ -559,7 +559,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final java.sql.ResultSet resultSet = statement.executeQuery();
                         final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                         final int columnCount = resultSetMetaData.getColumnCount();
-                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -649,7 +649,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -668,12 +668,12 @@ class JdbcJava8StreamMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 8 configuration")
+    @DisplayName("using JavaConfigurations 8 configuration")
     class Java8 implements Java8StreamMethodGeneratorTCK {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.java8());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.java8());
         }
 
         @Override
@@ -722,7 +722,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final java.sql.ResultSet resultSet = statement.executeQuery();
                         final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                         final int columnCount = resultSetMetaData.getColumnCount();
-                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -812,7 +812,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -830,12 +830,12 @@ class JdbcJava8StreamMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 9 configuration")
+    @DisplayName("using JavaConfigurations 9 configuration")
     class Java9 implements Java8StreamMethodGeneratorTCK {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.java9());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.java9());
         }
 
         @Override
@@ -884,7 +884,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final java.sql.ResultSet resultSet = statement.executeQuery();
                         final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                         final int columnCount = resultSetMetaData.getColumnCount();
-                        final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -974,7 +974,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -993,12 +993,12 @@ class JdbcJava8StreamMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 11 configuration")
+    @DisplayName("using JavaConfigurations 11 configuration")
     class Java11 implements Java8StreamMethodGeneratorTCK {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.java11());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.java11());
         }
 
         @Override
@@ -1047,7 +1047,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final var resultSet = statement.executeQuery();
                         final var resultSetMetaData = resultSet.getMetaData();
                         final var columnCount = resultSetMetaData.getColumnCount();
-                        final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -1137,7 +1137,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final var resultSet = statement.executeQuery()) {
                             final var resultSetMetaData = resultSet.getMetaData();
                             final var columnCount = resultSetMetaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -1156,12 +1156,12 @@ class JdbcJava8StreamMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 14 configuration")
+    @DisplayName("using JavaConfigurations 14 configuration")
     class Java14 implements Java8StreamMethodGeneratorTCK {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.java14());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.java14());
         }
 
         @Override
@@ -1210,7 +1210,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final var resultSet = statement.executeQuery();
                         final var resultSetMetaData = resultSet.getMetaData();
                         final var columnCount = resultSetMetaData.getColumnCount();
-                        final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -1300,7 +1300,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final var resultSet = statement.executeQuery()) {
                             final var resultSetMetaData = resultSet.getMetaData();
                             final var columnCount = resultSetMetaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -1319,12 +1319,12 @@ class JdbcJava8StreamMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 16 configuration")
+    @DisplayName("using JavaConfigurations 16 configuration")
     class Java16 implements Java8StreamMethodGeneratorTCK {
 
         @Override
         public Java8StreamMethodGenerator generator() {
-            return JdbcObjectMother.java8StreamMethodGenerator(Java.java16());
+            return JdbcObjectMother.java8StreamMethodGenerator(JavaConfigurations.java16());
         }
 
         @Override
@@ -1373,7 +1373,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                         final var resultSet = statement.executeQuery();
                         final var resultSetMetaData = resultSet.getMetaData();
                         final var columnCount = resultSetMetaData.getColumnCount();
-                        final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         return java.util.stream.StreamSupport.stream(new java.util.Spliterators.AbstractSpliterator<com.example.util.ResultRow>(java.lang.Long.MAX_VALUE, java.util.Spliterator.ORDERED) {
                           @java.lang.Override
                           @javax.annotation.processing.Generated(
@@ -1463,7 +1463,7 @@ class JdbcJava8StreamMethodGeneratorTest {
                           try (final var resultSet = statement.executeQuery()) {
                             final var resultSetMetaData = resultSet.getMetaData();
                             final var columnCount = resultSetMetaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));

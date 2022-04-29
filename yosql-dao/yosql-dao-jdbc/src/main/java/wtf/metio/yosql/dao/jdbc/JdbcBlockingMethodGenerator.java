@@ -16,7 +16,7 @@ import wtf.metio.yosql.codegen.api.Methods;
 import wtf.metio.yosql.codegen.api.Parameters;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
@@ -32,7 +32,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbc;
     private final JdbcTransformer jdbcTransformer;
-    private final JdbcConfiguration config;
+    private final ConverterConfiguration converters;
 
     public JdbcBlockingMethodGenerator(
             final ControlFlows controlFlows,
@@ -41,14 +41,14 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final JdbcTransformer jdbcTransformer,
-            final JdbcConfiguration config) {
+            final ConverterConfiguration converters) {
         this.logging = logging;
         this.jdbc = jdbc;
         this.jdbcTransformer = jdbcTransformer;
         this.controlFlows = controlFlows;
         this.methods = methods;
         this.parameters = parameters;
-        this.config = config;
+        this.converters = converters;
     }
 
     @Override
@@ -56,34 +56,14 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = converter(configuration);
+        // TODO: protect against blank resultType
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         return switch (configuration.returningMode()) {
-            case ONE: yield readAsOne(configuration, statements, resultType);
-            case FIRST: yield readAsFirst(configuration, statements, resultType);
-            default: yield readAsList(configuration, statements, resultType);
+            // TODO: support NONE as well? e.g. to just send a select to a database to verify connections?
+            case ONE -> read(configuration, statements, resultType, jdbc::returnAsOne);
+            case FIRST -> read(configuration, statements, resultType, jdbc::returnAsFirst);
+            default -> read(configuration, statements, TypicalTypes.listOf(resultType), jdbc::returnAsList);
         };
-    }
-
-    private MethodSpec readAsOne(
-            final SqlConfiguration configuration,
-            final List<SqlStatement> statements,
-            final TypeName resultType) {
-        return read(configuration, statements, resultType, jdbc::returnAsOne);
-    }
-
-    private MethodSpec readAsFirst(
-            final SqlConfiguration configuration,
-            final List<SqlStatement> statements,
-            final TypeName resultType) {
-        return read(configuration, statements, resultType, jdbc::returnAsFirst);
-    }
-
-    private MethodSpec readAsList(
-            final SqlConfiguration configuration,
-            final List<SqlStatement> statements,
-            final TypeName resultType) {
-        final var listOfResults = TypicalTypes.listOf(resultType);
-        return read(configuration, statements, listOfResults, jdbc::returnAsList);
     }
 
     private <T extends TypeName> MethodSpec read(
@@ -119,16 +99,17 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
         final var converter = converter(configuration);
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         return switch (configuration.returningMode()) {
-            case ONE: yield writeReturningOne(configuration, statements, converter, resultType);
-            case FIRST: yield writeReturningFirst(configuration, statements, converter, resultType);
-            case LIST: yield writeReturningList(configuration, statements, converter, resultType);
-            default: yield writeReturningNone(configuration, statements);
+            case ONE -> writeReturningOne(configuration, statements, converter, resultType);
+            case FIRST -> writeReturningFirst(configuration, statements, converter, resultType);
+            case LIST -> writeReturningList(configuration, statements, converter, resultType);
+            default -> writeReturningNone(configuration, statements);
         };
     }
 
+    // TODO: move method into SqlConfiguration
     private ResultRowConverter converter(final SqlConfiguration configuration) {
         return configuration.resultRowConverter()
-                .or(config::defaultConverter)
+                .or(converters::defaultConverter)
                 .orElseThrow();
     }
 
@@ -208,7 +189,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
     public MethodSpec blockingCallMethod(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());
+        final var converter = converter(configuration);
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         return methods.blockingMethod(configuration.blockingName(), statements)

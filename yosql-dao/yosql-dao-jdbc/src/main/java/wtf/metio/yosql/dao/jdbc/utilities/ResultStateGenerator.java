@@ -16,9 +16,10 @@ import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
 import wtf.metio.yosql.codegen.logging.Utilities;
 import wtf.metio.yosql.dao.jdbc.JdbcParameters;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -29,7 +30,7 @@ import java.sql.SQLException;
 public class ResultStateGenerator {
 
     private final LocLogger logger;
-    private final JdbcConfiguration jdbcConfiguration;
+    private final ConverterConfiguration converters;
     private final NamesConfiguration names;
     private final AnnotationGenerator annotations;
     private final GenericBlocks blocks;
@@ -40,16 +41,15 @@ public class ResultStateGenerator {
     @Inject
     public ResultStateGenerator(
             final @Utilities LocLogger logger,
-            final JdbcConfiguration jdbcConfiguration,
-            final NamesConfiguration names,
+            final RuntimeConfiguration runtimeConfiguration,
             final AnnotationGenerator annotations,
             final GenericBlocks blocks,
             final Classes classes,
             final Methods methods,
             final JdbcParameters jdbcParameters) {
-        this.names = names;
+        this.names = runtimeConfiguration.names();
+        this.converters = runtimeConfiguration.converter();
         this.annotations = annotations;
-        this.jdbcConfiguration = jdbcConfiguration;
         this.logger = logger;
         this.blocks = blocks;
         this.classes = classes;
@@ -58,7 +58,7 @@ public class ResultStateGenerator {
     }
 
     PackagedTypeSpec generateResultStateClass() {
-        final var resultStateClass = jdbcConfiguration.resultStateClass();
+        final var resultStateClass = converters.resultStateClass();
         final var type = classes.openClass(resultStateClass)
                 .addField(resultSetField())
                 .addField(metaDataField())

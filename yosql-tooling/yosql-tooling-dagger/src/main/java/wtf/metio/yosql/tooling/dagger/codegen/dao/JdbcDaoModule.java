@@ -91,7 +91,7 @@ public class JdbcDaoModule {
             final Javadoc javadoc,
             final RuntimeConfiguration runtimeConfiguration) {
         return new JdbcFieldsGenerator(
-                runtimeConfiguration.jdbc(),
+                runtimeConfiguration.converter(),
                 runtimeConfiguration.names(),
                 logging,
                 javadoc,
@@ -129,7 +129,7 @@ public class JdbcDaoModule {
             final JdbcBlocks jdbcBlocks,
             final JdbcTransformer jdbcTransformer) {
         return new JdbcJava8StreamMethodGenerator(
-                runtimeConfiguration.jdbc(),
+                runtimeConfiguration.converter(),
                 blocks,
                 controlFlow,
                 runtimeConfiguration.names(),
@@ -152,7 +152,7 @@ public class JdbcDaoModule {
             final JdbcBlocks jdbcBlocks,
             final JdbcTransformer transformer) {
         return new JdbcRxJavaMethodGenerator(
-                runtimeConfiguration.jdbc(),
+                runtimeConfiguration.converter(),
                 methods,
                 parameters,
                 transformer,
@@ -172,7 +172,7 @@ public class JdbcDaoModule {
             final JdbcBlocks jdbcBlocks,
             final JdbcTransformer transformer) {
         return new JdbcMutinyMethodGenerator(
-                runtimeConfiguration.jdbc(),
+                runtimeConfiguration.converter(),
                 methods,
                 parameters,
                 transformer,
@@ -192,7 +192,7 @@ public class JdbcDaoModule {
             final JdbcBlocks jdbcBlocks,
             final JdbcTransformer transformer) {
         return new JdbcReactorMethodGenerator(
-                runtimeConfiguration.jdbc(),
+                runtimeConfiguration.converter(),
                 methods,
                 parameters,
                 transformer,
@@ -218,7 +218,7 @@ public class JdbcDaoModule {
                 logging,
                 jdbc,
                 jdbcTransformer,
-                runtimeConfiguration.jdbc());
+                runtimeConfiguration.converter());
     }
 
     @Provides
@@ -233,7 +233,7 @@ public class JdbcDaoModule {
                 resultStateGenerator,
                 toResultRowConverterGenerator,
                 resultRowGenerator,
-                runtimeConfiguration.jdbc());
+                runtimeConfiguration.converter());
     }
 
 }

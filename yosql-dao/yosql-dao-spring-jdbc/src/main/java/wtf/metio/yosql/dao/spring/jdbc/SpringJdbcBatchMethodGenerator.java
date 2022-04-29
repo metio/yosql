@@ -40,4 +40,5 @@ public final class SpringJdbcBatchMethodGenerator implements BatchMethodGenerato
     public MethodSpec batchWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
+
 }

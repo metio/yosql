@@ -58,11 +58,12 @@ public interface Generator extends Function<ConfigurationGroup, Stream<TypeSpec>
         } else if (type.isPrimitive() || type.isBoxedPrimitive()) {
             builder.add("$L", value);
         } else {
-            System.out.println("typeName: " + type.toString());
+            System.out.println("typeName: " + type);
         }
         return builder.build();
     }
 
+    @Deprecated // TODO: remove usage in Gradle
     default boolean resultRowConverter(final ConfigurationSetting setting) {
         return usesResultRowConverter(setting) || usesResultRowConverters(setting);
     }

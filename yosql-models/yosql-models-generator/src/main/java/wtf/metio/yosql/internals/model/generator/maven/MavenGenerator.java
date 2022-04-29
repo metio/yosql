@@ -9,20 +9,17 @@ package wtf.metio.yosql.internals.model.generator.maven;
 
 import com.squareup.javapoet.*;
 import wtf.metio.yosql.internals.javapoet.StandardClasses;
-import wtf.metio.yosql.internals.javapoet.TypicalTypes;
-import wtf.metio.yosql.internals.model.generator.api.AbstractFieldsGenerator;
+import wtf.metio.yosql.internals.model.generator.api.AbstractFieldsBasedGenerator;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class MavenGenerator extends AbstractFieldsGenerator {
+public final class MavenGenerator extends AbstractFieldsBasedGenerator {
 
     private final String immutablesBasePackage;
 
@@ -32,7 +29,7 @@ public final class MavenGenerator extends AbstractFieldsGenerator {
 
     @Override
     public Stream<TypeSpec> apply(final ConfigurationGroup group) {
-        if ("Jdbc".equalsIgnoreCase(group.name())) {
+        if ("Converter".equalsIgnoreCase(group.name())) {
             return Stream.of(configGroupClass(group), rowConverterClass());
         }
         return Stream.of(configGroupClass(group));
@@ -45,7 +42,7 @@ public final class MavenGenerator extends AbstractFieldsGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addFields(defaultFields(group, Modifier.PRIVATE))
                 .addMethod(asConfiguration(group))
-                .addMethods(resultRowConverters(group))
+                .addMethods(methodsFor(group))
                 .build();
     }
 
@@ -81,43 +78,17 @@ public final class MavenGenerator extends AbstractFieldsGenerator {
                                 .build())
                         .initializer("$S", "")
                         .build())
-                .build();
-    }
-
-    protected MethodSpec createRowConverters(final Modifier... modifiers) {
-        return MethodSpec.methodBuilder("createRowConverters")
-                .addModifiers(modifiers)
-                .returns(TypicalTypes.listOf(ResultRowConverter.class))
-                .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable(rowConverters)", Stream.class)
-                        .add("$>$>\n.flatMap($T::stream)", List.class)
-                        .add("\n.map(this::createRowConverter)")
-                        .add("\n.filter($T::nonNull)", Objects.class)
-                        .add("\n.collect($T.toList())$<$<", Collectors.class)
-                        .build())
-                .build();
-    }
-
-    protected MethodSpec createRowConverter(final Modifier... modifiers) {
-        return MethodSpec.methodBuilder("createRowConverter")
-                .addModifiers(modifiers)
-                .returns(ResultRowConverter.class)
-                .addParameter(ClassName.bestGuess("wtf.metio.yosql.tooling.maven.RowConverter"),
-                        "converterDefinition", Modifier.FINAL)
-                .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable(converterDefinition)", Optional.class)
-                        .add("\n.map(value -> $T.builder()", ResultRowConverter.class)
-                        .add("$>\n.setAlias(value.alias)")
-                        .add("\n.setConverterType(value.converterType)")
-                        .add("\n.setMethodName(value.methodName)")
-                        .add("\n.setResultType(value.resultType)$<")
-                        .add("\n.build())")
-                        .add("\n.orElse(ResultRowConverter.builder()")
-                        .add("$>\n.setAlias($S)", "resultRow")
-                        .add("\n.setConverterType(utilityPackageName + $S)", ".ToResultRowConverter")
-                        .add("\n.setMethodName($S)", "apply")
-                        .add("\n.setResultType(utilityPackageName + $S + resultRowClassName)", ".")
-                        .add("\n.build())$<")
+                .addMethod(MethodSpec.methodBuilder("asRowConverter")
+                        .addModifiers(Modifier.FINAL)
+                        .returns(ResultRowConverter.class)
+                        .addStatement(CodeBlock.builder()
+                                .add("return $T.builder()", ResultRowConverter.class)
+                                .add("$>\n.setAlias(alias)")
+                                .add("\n.setConverterType(converterType)")
+                                .add("\n.setMethodName(methodName)")
+                                .add("\n.setResultType(resultType)")
+                                .add("\n.build()$<")
+                                .build())
                         .build())
                 .build();
     }

@@ -46,7 +46,7 @@ public final class DefaultParserPreconditions implements ParserPreconditions {
     }
 
     @Override
-    public void assertDirectoryIsReadable(final Path directory) {
+    public void directoryIsReadable(final Path directory) {
         if (Files.notExists(directory)) {
             errors.illegalState(messages.getMessage(FileErrors.NOT_EXISTS, directory));
         }

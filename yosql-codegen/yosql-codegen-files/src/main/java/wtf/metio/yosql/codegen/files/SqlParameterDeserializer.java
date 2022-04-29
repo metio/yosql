@@ -10,6 +10,7 @@ package wtf.metio.yosql.codegen.files;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.sql.SqlParameter;
 
 import java.io.IOException;
@@ -22,10 +23,10 @@ public final class SqlParameterDeserializer extends JsonDeserializer<SqlParamete
             final DeserializationContext context) throws IOException {
         final var parameter = jsonParser.readValueAs(Parameter.class);
         return SqlParameter.builder()
-                .setName(parameter.name == null ? "" : parameter.name)
-                .setType(parameter.type == null ? "" : parameter.type)
+                .setName(Strings.isBlank(parameter.name) ? "" : parameter.name)
+                .setType(Strings.isBlank(parameter.type) ? "" : parameter.type)
                 .setIndices(parameter.indices == null ? new int[0] : parameter.indices)
-                .setConverter(parameter.converter == null ? "" : parameter.converter)
+                .setConverter(Strings.isBlank(parameter.converter) ? "" : parameter.converter)
                 .build();
     }
 

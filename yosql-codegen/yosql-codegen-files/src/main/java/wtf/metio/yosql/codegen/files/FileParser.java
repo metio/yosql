@@ -14,9 +14,10 @@ import java.util.List;
 /**
  * High-level interface that handles parsing of SQL files.
  * 
- * @see SqlFileResolver
- * @see SqlFileParser
+ * @see FileResolver
+ * @see SqlStatementParser
  */
+@FunctionalInterface
 public interface FileParser {
 
     /**

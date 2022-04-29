@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.codegen.api.ConstructorGenerator;
 import wtf.metio.yosql.codegen.tck.ConstructorTCK;
-import wtf.metio.yosql.testing.configs.Java;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
 
 @DisplayName("JdbcConstructorGenerator")
 final class JdbcConstructorGeneratorTest {
@@ -22,7 +22,7 @@ final class JdbcConstructorGeneratorTest {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.defaults());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.defaults());
         }
 
         @Override
@@ -42,12 +42,12 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 4 configuration")
+    @DisplayName("using JavaConfigurations 4 configuration")
     class Java4 implements ConstructorTCK {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.java4());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.java4());
         }
 
         @Override
@@ -67,12 +67,12 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 5 configuration")
+    @DisplayName("using JavaConfigurations 5 configuration")
     class Java5 implements ConstructorTCK {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.java5());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.java5());
         }
 
         @Override
@@ -92,12 +92,12 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 7 configuration")
+    @DisplayName("using JavaConfigurations 7 configuration")
     class Java7 implements ConstructorTCK {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.java7());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.java7());
         }
 
         @Override
@@ -117,12 +117,12 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 8 configuration")
+    @DisplayName("using JavaConfigurations 8 configuration")
     class Java8 implements ConstructorTCK {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.java8());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.java8());
         }
 
         @Override
@@ -142,12 +142,12 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 9 configuration")
+    @DisplayName("using JavaConfigurations 9 configuration")
     class Java9 implements ConstructorTCK {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.java9());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.java9());
         }
 
         @Override
@@ -167,12 +167,12 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 11 configuration")
+    @DisplayName("using JavaConfigurations 11 configuration")
     class Java11 implements ConstructorTCK {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.java11());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.java11());
         }
 
         @Override
@@ -192,12 +192,12 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 14 configuration")
+    @DisplayName("using JavaConfigurations 14 configuration")
     class Java14 implements ConstructorTCK {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.java14());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.java14());
         }
 
         @Override
@@ -217,12 +217,12 @@ final class JdbcConstructorGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 16 configuration")
+    @DisplayName("using JavaConfigurations 16 configuration")
     class Java16 implements ConstructorTCK {
 
         @Override
         public ConstructorGenerator generator() {
-            return JdbcObjectMother.constructorGenerator(Java.java16());
+            return JdbcObjectMother.constructorGenerator(JavaConfigurations.java16());
         }
 
         @Override

@@ -33,14 +33,36 @@ public final class Repositories {
                 .addSettings(generateInterface())
                 .addSettings(repositoryNameSuffix())
                 .addSettings(validateMethodNamePrefixes())
-                .addAllSettings(methods())
+                .addAllSettings(stringMethods())
+                .addAllSettings(booleanMethods())
                 .build();
     }
 
     /**
-     * @return Configuration settings that can be set on repository or method level.
+     * @return String configuration settings that can be set on repository or method level.
      */
-    public static List<ConfigurationSetting> methods() {
+    public static List<ConfigurationSetting> stringMethods() {
+        return List.of(
+                blockingPrefix(),
+                blockingSuffix(),
+                batchPrefix(),
+                batchSuffix(),
+                mutinyPrefix(),
+                mutinySuffix(),
+                reactorPrefix(),
+                reactorSuffix(),
+                rxJavaPrefix(),
+                rxJavaSuffix(),
+                streamEagerPrefix(),
+                streamEagerSuffix(),
+                streamLazyPrefix(),
+                streamLazySuffix());
+    }
+
+    /**
+     * @return Boolean configuration settings that can be set on repository or method level.
+     */
+    public static List<ConfigurationSetting> booleanMethods() {
         return List.of(
                 generateBlockingApi(),
                 generateBatchApi(),
@@ -50,21 +72,7 @@ public final class Repositories {
                 generateStreamEagerApi(),
                 generateStreamLazyApi(),
                 catchAndRethrow(),
-                injectConverters(),
-                blockingPrefix(),
-                blockingSuffix(),
-                batchPrefix(),
-                batchSuffix(),
-                mutinyPrefix(),
-                mutinySuffix(),
-                reactorPrefix(),
-                reactorSuffix(),
-                rxjavaPrefix(),
-                rxjavaSuffix(),
-                streamLazyPrefix(),
-                streamLazySuffix(),
-                streamEagerPrefix(),
-                streamEagerSuffix());
+                injectConverters());
     }
 
     private static ConfigurationSetting basePackageName() {
@@ -375,18 +383,18 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting rxjavaPrefix() {
+    private static ConfigurationSetting rxJavaPrefix() {
         return ConfigurationSetting.builder()
-                .setName("rxjavaPrefix")
+                .setName("rxJavaPrefix")
                 .setDescription("The method prefix to use for generated methods that use the RxJava API.")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
                 .build();
     }
 
-    private static ConfigurationSetting rxjavaSuffix() {
+    private static ConfigurationSetting rxJavaSuffix() {
         return ConfigurationSetting.builder()
-                .setName("rxjavaSuffix")
+                .setName("rxJavaSuffix")
                 .setDescription("The method suffix to use for generated methods that use the RxJava API.")
                 .setType(TypicalTypes.STRING)
                 .setValue("Flow")
@@ -460,7 +468,7 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting allowedCallPrefixes() {
-        final var defaultPrefixes = List.of("call, execute, evaluate, eval");
+        final var defaultPrefixes = List.of("call", "execute", "evaluate", "eval");
         final var prefixesInCode = new StringJoiner("\", \"", "\"", "\"");
         final var prefixesInDocs = new StringJoiner(", ");
         defaultPrefixes.forEach(prefixesInCode::add);

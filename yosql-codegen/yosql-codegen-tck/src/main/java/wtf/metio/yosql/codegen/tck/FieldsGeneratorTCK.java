@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.FieldsGenerator;
 import wtf.metio.yosql.internals.junit5.TestIterables;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link FieldsGenerator}s work correctly.
@@ -28,13 +28,13 @@ public interface FieldsGeneratorTCK {
     default void staticInitializer() {
         Assertions.assertEquals(
                 staticInitializerExpectation(),
-                generator().staticInitializer(Sql.sqlStatements()).toString(),
+                generator().staticInitializer(SqlConfigurations.sqlStatements()).toString(),
                 "The generated static initializer did not match expectation");
     }
 
     @Test
     default void asFields() {
-        TestIterables.assertIterable(generator().asFields(Sql.sqlStatements()), asFieldsExpectations());
+        TestIterables.assertIterable(generator().asFields(SqlConfigurations.sqlStatements()), asFieldsExpectations());
     }
 
 }

@@ -34,11 +34,12 @@ public final class SpringJdbcFieldsGenerator implements FieldsGenerator {
 
     @Override
     public CodeBlock staticInitializer(final List<SqlStatement> statements) {
-        return null;
+        return CodeBlock.builder().build();
     }
 
     @Override
     public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
-        return null;
+        return List.of();
     }
+
 }

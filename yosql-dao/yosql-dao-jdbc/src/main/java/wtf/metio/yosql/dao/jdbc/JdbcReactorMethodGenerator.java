@@ -14,7 +14,7 @@ import wtf.metio.yosql.codegen.api.Parameters;
 import wtf.metio.yosql.codegen.api.ReactorMethodGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -22,7 +22,7 @@ import java.util.List;
 
 public final class JdbcReactorMethodGenerator implements ReactorMethodGenerator {
 
-    private final JdbcConfiguration config;
+    private final ConverterConfiguration converters;
     private final Methods methods;
     private final Parameters parameters;
     private final JdbcTransformer transformer;
@@ -31,14 +31,14 @@ public final class JdbcReactorMethodGenerator implements ReactorMethodGenerator 
     private final JdbcBlocks jdbc;
 
     public JdbcReactorMethodGenerator(
-            final JdbcConfiguration config,
+            final ConverterConfiguration converters,
             final Methods methods,
             final Parameters parameters,
             final JdbcTransformer transformer,
             final ControlFlows controlFlow,
             final LoggingGenerator logging,
             final JdbcBlocks jdbc) {
-        this.config = config;
+        this.converters = converters;
         this.methods = methods;
         this.parameters = parameters;
         this.transformer = transformer;
@@ -49,7 +49,8 @@ public final class JdbcReactorMethodGenerator implements ReactorMethodGenerator 
 
     @Override
     public MethodSpec reactorReadMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var converter = configuration.resultRowConverter().orElse(config.defaultConverter().orElseThrow());
+        final var converter = configuration.resultRowConverter()
+                .or(converters::defaultConverter).orElseThrow();
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         final var listOfResults = TypicalTypes.listOf(resultType);
         final var fluxOfResults = TypicalTypes.fluxOf(resultType);

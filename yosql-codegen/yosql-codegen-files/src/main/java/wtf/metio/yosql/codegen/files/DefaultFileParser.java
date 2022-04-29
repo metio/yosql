@@ -15,10 +15,10 @@ import static java.util.stream.Collectors.toList;
 
 public final class DefaultFileParser implements FileParser {
 
-    private final SqlFileResolver fileResolver;
-    private final SqlFileParser fileParser;
+    private final FileResolver fileResolver;
+    private final SqlStatementParser fileParser;
 
-    public DefaultFileParser(final SqlFileResolver fileResolver, final SqlFileParser fileParser) {
+    public DefaultFileParser(final FileResolver fileResolver, final SqlStatementParser fileParser) {
         this.fileResolver = fileResolver;
         this.fileParser = fileParser;
     }

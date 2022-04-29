@@ -48,4 +48,5 @@ public final class SpringJdbcRxJavaMethodGenerator implements RxJavaMethodGenera
     public MethodSpec rxJavaReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
+
 }

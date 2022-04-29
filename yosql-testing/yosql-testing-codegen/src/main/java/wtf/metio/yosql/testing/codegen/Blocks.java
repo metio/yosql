@@ -10,11 +10,10 @@ package wtf.metio.yosql.testing.codegen;
 import ch.qos.cal10n.MessageConveyor;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.*;
+import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.testing.configs.*;
-
-import java.util.Locale;
 
 /**
  * Object mother for types in the codegen package.
@@ -22,7 +21,7 @@ import java.util.Locale;
 public final class Blocks {
 
     public static Classes classes() {
-        return classes(Java.defaults());
+        return classes(JavaConfigurations.defaults());
     }
 
     public static Classes classes(final JavaConfiguration java) {
@@ -30,15 +29,15 @@ public final class Blocks {
     }
 
     public static Parameters parameters() {
-        return parameters(Java.defaults());
+        return parameters(JavaConfigurations.defaults());
     }
 
     public static Parameters parameters(final JavaConfiguration java) {
-        return new DefaultParameters(Names.defaults(), java);
+        return new DefaultParameters(NamesConfigurations.defaults(), java);
     }
 
     public static Methods methods() {
-        return methods(Java.defaults());
+        return methods(JavaConfigurations.defaults());
     }
 
     public static Methods methods(final JavaConfiguration java) {
@@ -46,7 +45,7 @@ public final class Blocks {
     }
 
     public static Fields fields() {
-        return fields(Java.defaults());
+        return fields(JavaConfigurations.defaults());
     }
 
     public static Fields fields(final JavaConfiguration java) {
@@ -54,7 +53,7 @@ public final class Blocks {
     }
 
     public static Variables variables() {
-        return variables(Java.defaults());
+        return variables(JavaConfigurations.defaults());
     }
 
     public static Variables variables(final JavaConfiguration java) {
@@ -66,23 +65,23 @@ public final class Blocks {
     }
 
     public static ControlFlows controlFlows() {
-        return controlFlows(Java.defaults());
+        return controlFlows(JavaConfigurations.defaults());
     }
 
     public static ControlFlows controlFlows(final JavaConfiguration java) {
-        return new DefaultControlFlows(variables(java), Names.defaults());
+        return new DefaultControlFlows(variables(java), NamesConfigurations.defaults());
     }
 
     public static AnnotationGenerator annotationGenerator() {
-        return new DefaultAnnotationGenerator(Annotations.defaults(), Apis.defaults());
+        return new DefaultAnnotationGenerator(AnnotationsConfigurations.defaults(), ApiConfigurations.defaults());
     }
 
     public static Javadoc javadoc() {
-        return javadoc(Files.maven());
+        return javadoc(FilesConfigurations.maven());
     }
 
     public static Javadoc javadoc(final FilesConfiguration files) {
-        return new DefaultJavadoc(files, new MessageConveyor(Locale.ENGLISH));
+        return new DefaultJavadoc(files, new MessageConveyor(SupportedLocales.ENGLISH));
     }
 
     private Blocks() {

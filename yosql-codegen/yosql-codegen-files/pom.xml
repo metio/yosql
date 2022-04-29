@@ -61,6 +61,16 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>wtf.metio.yosql.testing</groupId>
+            <artifactId>yosql-testing-configs</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.testing</groupId>
+            <artifactId>yosql-testing-logging</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.cal10n</groupId>
             <artifactId>cal10n-api</artifactId>
         </dependency>

@@ -16,16 +16,15 @@ import wtf.metio.yosql.codegen.api.Variables;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.dao.jdbc.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 @Module
 public class DefaultJdbcBlocksModule {
 
     @Provides
-    public JdbcConfiguration provideJdbcConfiguration(final RuntimeConfiguration runtimeConfiguration) {
-        return runtimeConfiguration.jdbc();
+    public ConverterConfiguration provideConverterConfiguration(final RuntimeConfiguration runtimeConfiguration) {
+        return runtimeConfiguration.converter();
     }
 
     @Provides
@@ -34,45 +33,45 @@ public class DefaultJdbcBlocksModule {
     }
 
     @Provides
-    public JdbcFields provideJdbcFields(final NamesConfiguration names) {
-        return new DefaultJdbcFields(names);
+    public JdbcFields provideJdbcFields(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcFields(runtimeConfiguration.names());
     }
 
     @Provides
     public JdbcParameters provideJdbcParameters(
-            final NamesConfiguration names,
+            final RuntimeConfiguration runtimeConfiguration,
             final Parameters parameters) {
-        return new DefaultJdbcParameters(parameters, names);
+        return new DefaultJdbcParameters(parameters, runtimeConfiguration.names());
     }
 
     @Provides
-    public JdbcMethods.JdbcDataSourceMethods provideDataSource(final NamesConfiguration names) {
-        return new DefaultJdbcDataSourceMethods(names);
+    public JdbcMethods.JdbcDataSourceMethods provideDataSource(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcDataSourceMethods(runtimeConfiguration.names());
     }
 
     @Provides
-    public JdbcMethods.JdbcConnectionMethods provideConnection(final NamesConfiguration names) {
-        return new DefaultJdbcConnectionMethods(names);
+    public JdbcMethods.JdbcConnectionMethods provideConnection(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcConnectionMethods(runtimeConfiguration.names());
     }
 
     @Provides
-    public JdbcMethods.JdbcResultSetMethods provideResultSet(final NamesConfiguration names) {
-        return new DefaultJdbcResultSetMethods(names);
+    public JdbcMethods.JdbcResultSetMethods provideResultSet(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcResultSetMethods(runtimeConfiguration.names());
     }
 
     @Provides
-    public JdbcMethods.JdbcResultSetMetaDataMethods provideMetaData(final NamesConfiguration names) {
-        return new DefaultJdbcResultSetMetaDataMethods(names);
+    public JdbcMethods.JdbcResultSetMetaDataMethods provideMetaData(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcResultSetMetaDataMethods(runtimeConfiguration.names());
     }
 
     @Provides
-    public JdbcMethods.JdbcStatementMethods provideStatement(final NamesConfiguration names) {
-        return new DefaultJdbcStatementMethods(names);
+    public JdbcMethods.JdbcStatementMethods provideStatement(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcStatementMethods(runtimeConfiguration.names());
     }
 
     @Provides
-    public JdbcMethods.JdbcDatabaseMetaDataMethods provideDatabaseMetaData(final NamesConfiguration names) {
-        return new DefaultJdbcDatabaseMetaDataMethods(names);
+    public JdbcMethods.JdbcDatabaseMetaDataMethods provideDatabaseMetaData(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcDatabaseMetaDataMethods(runtimeConfiguration.names());
     }
 
     @Provides
@@ -91,7 +90,6 @@ public class DefaultJdbcBlocksModule {
             final RuntimeConfiguration runtimeConfiguration,
             final GenericBlocks blocks,
             final ControlFlows controlFlows,
-            final NamesConfiguration names,
             final Variables variables,
             final JdbcFields jdbcFields,
             final JdbcMethods jdbcMethods,
@@ -100,9 +98,7 @@ public class DefaultJdbcBlocksModule {
                 runtimeConfiguration,
                 blocks,
                 controlFlows,
-                names,
                 variables,
-                runtimeConfiguration.jdbc(),
                 jdbcFields,
                 jdbcMethods,
                 logging);

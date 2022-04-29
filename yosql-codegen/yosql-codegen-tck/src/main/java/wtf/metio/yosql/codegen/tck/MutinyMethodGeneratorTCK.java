@@ -10,7 +10,7 @@ package wtf.metio.yosql.codegen.tck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.MutinyMethodGenerator;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link MutinyMethodGenerator}s work correctly.
@@ -31,7 +31,7 @@ public interface MutinyMethodGeneratorTCK {
     default void mutinyReadMethod() {
         Assertions.assertEquals(
                 mutinyReadMethodExpectation(),
-                generator().mutinyReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
+                generator().mutinyReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
                 "The generated Mutiny read method did not match expectation");
     }
 

@@ -52,8 +52,8 @@
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.java8.persistence</basePackageName>
                     </repositories>
-                    <jdbc>
-                        <utilityPackageName>wtf.metio.yosql.example.maven.jdbc.java8.persistence.util</utilityPackageName>
+                    <converter>
+                        <converterPackageName>wtf.metio.yosql.example.maven.jdbc.java8.persistence.converter</converterPackageName>
                         <rowConverters>
                             <rowConverter>
                                 <alias>itemConverter</alias>
@@ -62,7 +62,7 @@
                                 <resultType>wtf.metio.yosql.example.maven.jdbc.java8.model.Item</resultType>
                             </rowConverter>
                         </rowConverters>
-                    </jdbc>
+                    </converter>
                 </configuration>
             </plugin>
         </plugins>

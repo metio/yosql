@@ -53,4 +53,5 @@ public final class SpringJdbcJava8StreamMethodGenerator implements Java8StreamMe
     public MethodSpec streamLazyReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
+
 }

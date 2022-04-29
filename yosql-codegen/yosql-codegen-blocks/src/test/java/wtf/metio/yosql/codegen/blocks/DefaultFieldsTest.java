@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.Annotations;
-import wtf.metio.yosql.testing.configs.Apis;
-import wtf.metio.yosql.testing.configs.Java;
+import wtf.metio.yosql.testing.configs.AnnotationsConfigurations;
+import wtf.metio.yosql.testing.configs.ApiConfigurations;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultFields")
 class DefaultFieldsTest {
@@ -23,7 +23,7 @@ class DefaultFieldsTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultFields(new DefaultAnnotationGenerator(Annotations.defaults(), Apis.defaults()), Java.defaults());
+        generator = new DefaultFields(new DefaultAnnotationGenerator(AnnotationsConfigurations.defaults(), ApiConfigurations.defaults()), JavaConfigurations.defaults());
     }
 
     @Test

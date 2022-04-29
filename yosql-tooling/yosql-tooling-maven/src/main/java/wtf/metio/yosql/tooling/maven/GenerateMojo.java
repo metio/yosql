@@ -7,6 +7,7 @@
 package wtf.metio.yosql.tooling.maven;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -24,7 +25,7 @@ import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 import java.util.Arrays;
 
 /**
- * The generate goal generates Java code based on SQL files.
+ * The 'generate' goal generates Java code based on SQL files.
  */
 @Mojo(
         name = "generate",
@@ -55,19 +56,22 @@ public class GenerateMojo extends AbstractMojo {
     Resources resources;
 
     @Parameter(required = true, defaultValue = "${classObject}")
-    Jdbc jdbc;
+    Converter converter;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     MavenProject project;
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException {
         try {
             buildYoSQL().generateCode();
         } catch (final CodeGenerationException exception) {
             Arrays.stream(exception.getSuppressed())
                     .forEach(suppressed -> LOG.error(suppressed.getMessage(), suppressed));
             throw exception;
+        } catch (final Throwable throwable) {
+            LOG.error(throwable.getMessage(), throwable);
+            throw new MojoExecutionException("Failure to execute YoSQL plugin", throwable);
         }
     }
 
@@ -87,7 +91,7 @@ public class GenerateMojo extends AbstractMojo {
                 .setApi(api.asConfiguration())
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
-                .setJdbc(jdbc.asConfiguration())
+                .setConverter(converter.asConfiguration())
                 .build();
     }
 

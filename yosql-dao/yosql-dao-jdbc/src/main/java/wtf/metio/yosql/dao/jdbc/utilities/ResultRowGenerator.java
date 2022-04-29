@@ -14,9 +14,10 @@ import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
 import wtf.metio.yosql.codegen.logging.Utilities;
 import wtf.metio.yosql.dao.jdbc.JdbcParameters;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
@@ -24,7 +25,7 @@ import java.util.LinkedHashMap;
 public class ResultRowGenerator {
 
     private final LocLogger logger;
-    private final JdbcConfiguration jdbcConfiguration;
+    private final ConverterConfiguration converters;
     private final NamesConfiguration names;
     private final AnnotationGenerator annotations;
     private final Classes classes;
@@ -36,17 +37,16 @@ public class ResultRowGenerator {
     @Inject
     public ResultRowGenerator(
             final @Utilities LocLogger logger,
-            final JdbcConfiguration jdbcConfiguration,
-            final NamesConfiguration names,
+            final RuntimeConfiguration runtimeConfiguration,
             final AnnotationGenerator annotations,
             final Classes classes,
             final Fields fields,
             final Methods methods,
             final Parameters parameters,
             final JdbcParameters jdbcParameters) {
-        this.names = names;
+        this.names = runtimeConfiguration.names();
+        this.converters = runtimeConfiguration.converter();
         this.annotations = annotations;
-        this.jdbcConfiguration = jdbcConfiguration;
         this.logger = logger;
         this.classes = classes;
         this.fields = fields;
@@ -56,7 +56,7 @@ public class ResultRowGenerator {
     }
 
     PackagedTypeSpec generateResultRowClass() {
-        final var resultRowClass = jdbcConfiguration.resultRowClass();
+        final var resultRowClass = converters.resultRowClass();
         final var type = classes.publicClass(resultRowClass)
                 .addField(row())
                 .addMethod(constructor())

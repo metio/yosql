@@ -25,6 +25,7 @@ import javax.lang.model.element.Modifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -37,8 +38,20 @@ public final class Sql {
                 .setDescription("The configuration for a single SQL statement.")
                 .setImmutableAnnotations(extraTypeAnnotations())
                 .addAllSettings(settings())
-                .addAllSettings(withExtraAnnotations(Repositories.methods()))
-                .setImmutableMethods(derivedMethods())
+                .addAllSettings(withExtraAnnotations(Repositories.stringMethods())) // TODO: turn all repo settings into Optionals
+                .addAllSettings(withExtraAnnotations(booleanRepositorySettings()))
+                .setImmutableMethods(List.of(
+                        fromStatements(),
+                        merge(),
+                        mergeParameters(),
+                        batchName(),
+                        blockingName(),
+                        mutinyName(),
+                        reactorName(),
+                        rxJavaName(),
+                        streamLazyName(),
+                        streamEagerName(),
+                        joinMethodNameParts()))
                 .build();
     }
 
@@ -54,10 +67,19 @@ public final class Sql {
                 parameters());
     }
 
-    private static List<ConfigurationSetting> withExtraAnnotations(final List<ConfigurationSetting> settings) {
-        return settings.stream()
-                .map(s -> ConfigurationSetting.copyOf(s).withImmutableAnnotations(List.of(jsonProperty(s.name()))))
+    private static List<ConfigurationSetting> booleanRepositorySettings() {
+        return Repositories.booleanMethods().stream()
+                .map(setting -> ConfigurationSetting.copyOf(setting)
+                        .withType(TypicalTypes.BOOLEAN)
+                        .withValue(Optional.empty()))
                 .collect(Collectors.toList());
+    }
+
+    private static List<? extends ConfigurationSetting> withExtraAnnotations(final List<ConfigurationSetting> settings) {
+        return settings.stream()
+                .map(setting -> ConfigurationSetting.copyOf(setting)
+                        .withImmutableAnnotations(List.of(jsonProperty(setting.name()))))
+                .toList();
     }
 
     private static List<AnnotationSpec> extraTypeAnnotations() {
@@ -70,6 +92,10 @@ public final class Sql {
         return List.of(serialize, deserialize);
     }
 
+    private static AnnotationSpec jsonProperty(final String name) {
+        return AnnotationSpec.builder(JsonProperty.class).addMember("value", "$S", name).build();
+    }
+
     private static ConfigurationSetting repository() {
         return ConfigurationSetting.builder()
                 .setName("repository")
@@ -78,10 +104,6 @@ public final class Sql {
                 .setValue("Repository")
                 .setImmutableAnnotations(List.of(jsonProperty("repository")))
                 .build();
-    }
-
-    private static AnnotationSpec jsonProperty(final String name) {
-        return AnnotationSpec.builder(JsonProperty.class).addMember("value", "$S", name).build();
     }
 
     private static ConfigurationSetting name() {
@@ -151,21 +173,6 @@ public final class Sql {
                 .build();
     }
 
-    private static List<MethodSpec> derivedMethods() {
-        return List.of(
-                fromStatements(),
-                merge(),
-                mergeParameters(),
-                batchName(),
-                blockingName(),
-                mutinyName(),
-                reactorName(),
-                rxJavaName(),
-                streamLazyName(),
-                streamEagerName(),
-                joinMethodNameParts());
-    }
-
     private static MethodSpec fromStatements() {
         final var statements = TypicalTypes.listOf(immutableType("SqlStatement"));
         final var configuration = immutableType("SqlConfiguration");
@@ -191,8 +198,9 @@ public final class Sql {
                 .addParameter(ParameterSpec.builder(configuration, "first", Modifier.FINAL).build())
                 .addParameter(ParameterSpec.builder(configuration, "second", Modifier.FINAL).build())
                 .returns(configuration)
-                .addStatement("final var defaults = $T.copyOf($L)\n$L", configuration, "first", withAllSettings())
-                .addStatement("return defaults")
+                .addStatement("var merged = $T.copyOf($L)", configuration, "first")
+                .addCode(withAllSettings())
+                .addStatement("return merged")
                 .build();
     }
 
@@ -203,28 +211,33 @@ public final class Sql {
     private static CodeBlock withAllSettings() {
         final var builder = CodeBlock.builder();
         settings().forEach(setting -> addSetting(builder, setting));
-        Repositories.methods().forEach(setting -> addSetting(builder, setting));
+        Repositories.stringMethods().forEach(setting -> addSetting(builder, setting));
+        booleanRepositorySettings().forEach(setting -> addSetting(builder, setting));
         return builder.build();
     }
 
     private static void addSetting(final CodeBlock.Builder builder, final ConfigurationSetting setting) {
         if (setting.value().isPresent() && SqlType.class.equals(setting.value().get().getClass())) {
-            builder.add("\t.with$L($T.UNKNOWN == first.$L() ? second.$L() : first.$L())\n",
+            builder.addStatement("merged = merged.with$L($T.UNKNOWN == first.$L() ? second.$L() : first.$L())",
                     Strings.upperCase(setting.name()), SqlType.class, setting.name(), setting.name(), setting.name());
         } else if (setting.value().isPresent() && ReturningMode.class.equals(setting.value().get().getClass())) {
-            builder.add("\t.with$L($T.NONE == first.$L() ? second.$L() : first.$L())\n",
+            builder.addStatement("merged = merged.with$L($T.NONE == first.$L() ? second.$L() : first.$L())",
                     Strings.upperCase(setting.name()), ReturningMode.class, setting.name(), setting.name(), setting.name());
         } else if (TypicalTypes.STRING.equals(setting.type())) {
-            builder.add("\t.with$L($S.equals(first.$L()) ? second.$L() : first.$L())\n",
+            builder.addStatement("merged = merged.with$L($S.equals(first.$L()) ? second.$L() : first.$L())",
                     Strings.upperCase(setting.name()), setting.value().orElse(""), setting.name(), setting.name(), setting.name());
-        } else if (TypeName.get(boolean.class).equals(setting.type())) {
-            builder.add("\t.with$L(first.$L() || second.$L())\n",
+        } else if (TypeName.get(Boolean.class).equals(setting.type())) {
+            // first.generateBlockingApi().or(() -> second.generateBlockingApi()).ifPresent(defaults::withGenerateBlockingApi)
+            builder.beginControlFlow("if (first.$L().or(() -> second.$L()).isPresent())",
+                    setting.name(), setting.name());
+            builder.addStatement("merged = merged.with$L(first.$L().or(() -> second.$L()).get())",
                     Strings.upperCase(setting.name()), setting.name(), setting.name());
+            builder.endControlFlow();
         } else if (TypeName.get(ResultRowConverter.class).equals(setting.type())) {
-            builder.add("\t.with$L(first.$L().or(second::resultRowConverter))\n",
+            builder.addStatement("merged = merged.with$L(first.$L().or(second::resultRowConverter))",
                     Strings.upperCase(setting.name()), setting.name());
         } else if (TypicalTypes.listOf(TypeName.get(SqlParameter.class)).equals(setting.type())) {
-            builder.add("\t.with$L(mergeParameters(first.$L(), second.$L()))\n",
+            builder.addStatement("merged = merged.with$L(mergeParameters(first.$L(), second.$L()))",
                     Strings.upperCase(setting.name()), setting.name(), setting.name());
         }
     }
@@ -297,7 +310,7 @@ public final class Sql {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "rxjavaPrefix", "name", "rxjavaSuffix")
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "rxJavaPrefix", "name", "rxJavaSuffix")
                 .build();
     }
 

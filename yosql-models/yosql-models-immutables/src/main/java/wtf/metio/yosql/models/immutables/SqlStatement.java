@@ -67,47 +67,49 @@ public interface SqlStatement {
 
     @Value.Lazy
     default boolean shouldGenerateBlockingReadAPI() {
-        return getConfiguration().generateBlockingApi() && isReading();
+        return isReading() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean shouldGenerateBlockingCallAPI() {
-        return getConfiguration().generateBlockingApi() && isCalling();
+        return isCalling() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean shouldGenerateBlockingWriteAPI() {
-        return getConfiguration().generateBlockingApi() && isWriting();
+        return  isWriting() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean shouldGenerateStreamEagerReadAPI() {
-        return getConfiguration().generateStreamEagerApi() && isReading();
+        return isReading() && getConfiguration().generateStreamEagerApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean shouldGenerateStreamLazyReadAPI() {
-        return getConfiguration().generateStreamLazyApi() && isReading();
+        return isReading() && getConfiguration().generateStreamLazyApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean shouldGenerateRxJavaReadAPI() {
-        return getConfiguration().generateRxJavaApi() && isReading();
+        return isReading() && getConfiguration().generateRxJavaApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean shouldGenerateReactorReadAPI() {
-        return getConfiguration().generateReactorApi() && isReading();
+        return isReading() && getConfiguration().generateReactorApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean shouldGenerateMutinyReadAPI() {
-        return getConfiguration().generateMutinyApi() && isReading();
+        return isReading() && getConfiguration().generateMutinyApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean shouldGenerateBatchWriteAPI() {
-        return getConfiguration().generateBatchApi() && Buckets.hasEntries(getConfiguration().parameters()) && isWriting();
+        return isWriting() &&
+                getConfiguration().generateBatchApi().orElse(Boolean.FALSE) &&
+                Buckets.hasEntries(getConfiguration().parameters());
     }
 
 }

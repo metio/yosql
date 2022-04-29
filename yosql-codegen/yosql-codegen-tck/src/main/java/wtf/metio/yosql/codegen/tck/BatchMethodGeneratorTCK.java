@@ -10,7 +10,7 @@ package wtf.metio.yosql.codegen.tck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.BatchMethodGenerator;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link BatchMethodGenerator}s work correctly.
@@ -31,7 +31,7 @@ public interface BatchMethodGeneratorTCK {
     default void batchWriteMethod() {
         Assertions.assertEquals(
                 batchWriteMethodExpectation(),
-                generator().batchWriteMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
+                generator().batchWriteMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
                 "The generated batch write method did not match expectation");
     }
 

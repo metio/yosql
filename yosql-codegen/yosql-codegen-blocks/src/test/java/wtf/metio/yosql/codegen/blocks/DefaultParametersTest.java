@@ -11,8 +11,8 @@ import com.squareup.javapoet.TypeName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.Java;
-import wtf.metio.yosql.testing.configs.Names;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.testing.configs.NamesConfigurations;
 
 @DisplayName("DefaultParameters")
 class DefaultParametersTest {
@@ -21,7 +21,7 @@ class DefaultParametersTest {
     @DisplayName("generates parameter")
     void shouldGenerateParameter() {
         // given
-        final var generator = new DefaultParameters(Names.defaults(), Java.defaults());
+        final var generator = new DefaultParameters(NamesConfigurations.defaults(), JavaConfigurations.defaults());
 
         // when
         final var parameter = generator.parameter(String.class, "test");
@@ -35,7 +35,7 @@ class DefaultParametersTest {
     @DisplayName("generates parameter with TypeName")
     void shouldGenerateParameterWithTypeName() {
         // given
-        final var generator = new DefaultParameters(Names.defaults(), Java.defaults());
+        final var generator = new DefaultParameters(NamesConfigurations.defaults(), JavaConfigurations.defaults());
 
         // when
         final var parameter = generator.parameter(TypeName.BOOLEAN, "test");

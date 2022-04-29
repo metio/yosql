@@ -50,6 +50,7 @@
         <module>yosql-examples-maven-jdbc-java11</module>
         <module>yosql-examples-maven-jdbc-java15</module>
         <module>yosql-examples-maven-jdbc-java16</module>
+        <module>yosql-examples-maven-spring-jdbc-java16</module>
     </modules>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -101,7 +102,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>add-source</id>

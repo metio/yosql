@@ -11,7 +11,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoSet;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.tinylog.TinylogLoggingGenerator;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 /**
  * Dagger module for tinylog based logging generators.
@@ -21,8 +21,8 @@ public class TinylogLoggingModule {
 
     @IntoSet
     @Provides
-    public LoggingGenerator provideJdkLoggingGenerator(final NamesConfiguration names) {
-        return new TinylogLoggingGenerator(names);
+    public LoggingGenerator provideJdkLoggingGenerator(final RuntimeConfiguration runtimeConfiguration) {
+        return new TinylogLoggingGenerator(runtimeConfiguration.names());
     }
 
 }

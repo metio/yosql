@@ -8,10 +8,8 @@
 package wtf.metio.yosql.internals.model.generator.cli;
 
 import com.squareup.javapoet.*;
-import picocli.CommandLine;
 import wtf.metio.yosql.internals.javapoet.StandardClasses;
-import wtf.metio.yosql.internals.jdk.Strings;
-import wtf.metio.yosql.internals.model.generator.api.AbstractFieldsGenerator;
+import wtf.metio.yosql.internals.model.generator.api.AbstractFieldsBasedGenerator;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
@@ -20,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class CliGenerator extends AbstractFieldsGenerator {
+public final class CliGenerator extends AbstractFieldsBasedGenerator {
 
     private final String immutablesBasePackage;
 
@@ -37,21 +35,12 @@ public final class CliGenerator extends AbstractFieldsGenerator {
                 .addFields(defaultFields(group))
                 .addFields(optionalFields(group))
                 .addMethod(asConfiguration(group))
-                .addMethods(resultRowConverters(group))
+                .addMethods(methodsFor(group))
                 .build());
     }
 
     private MethodSpec asConfiguration(final ConfigurationGroup group) {
         return asConfiguration(group, immutablesBasePackage);
-    }
-
-    private Iterable<AnnotationSpec> annotations(final ConfigurationGroup group, final ConfigurationSetting setting) {
-        final var builder = AnnotationSpec.builder(CommandLine.Option.class)
-                .addMember("names", "\"--$L-$L\"", Strings.lowerCase(group.name()), Strings.kebabCase(setting.name()))
-                .addMember("description", "$S", setting.description());
-        valueOf(setting).ifPresent(value -> builder
-                .addMember("defaultValue", "$S", value));
-        return List.of(builder.build());
     }
 
     @Override

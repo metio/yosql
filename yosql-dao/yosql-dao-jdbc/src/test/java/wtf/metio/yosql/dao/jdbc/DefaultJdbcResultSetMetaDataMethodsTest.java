@@ -10,7 +10,7 @@ package wtf.metio.yosql.dao.jdbc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.Names;
+import wtf.metio.yosql.testing.configs.NamesConfigurations;
 
 @DisplayName("DefaultJdbcMetaDataMethods")
 class DefaultJdbcResultSetMetaDataMethodsTest {
@@ -18,7 +18,7 @@ class DefaultJdbcResultSetMetaDataMethodsTest {
     @Test
     void getColumnCount() {
         // given
-        final var generator = new DefaultJdbcResultSetMetaDataMethods(Names.defaults());
+        final var generator = new DefaultJdbcResultSetMetaDataMethods(NamesConfigurations.defaults());
 
         // when
         final var columnCount = generator.getColumnCount();

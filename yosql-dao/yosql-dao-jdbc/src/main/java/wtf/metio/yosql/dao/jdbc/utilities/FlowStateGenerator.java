@@ -16,9 +16,10 @@ import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
 import wtf.metio.yosql.codegen.logging.Utilities;
 import wtf.metio.yosql.dao.jdbc.JdbcParameters;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -29,7 +30,7 @@ import java.sql.SQLException;
 public class FlowStateGenerator {
 
     private final LocLogger logger;
-    private final JdbcConfiguration jdbcConfiguration;
+    private final ConverterConfiguration converters;
     private final NamesConfiguration names;
     private final GenericBlocks blocks;
     private final AnnotationGenerator annotations;
@@ -40,16 +41,15 @@ public class FlowStateGenerator {
     @Inject
     public FlowStateGenerator(
             final @Utilities LocLogger logger,
-            final JdbcConfiguration jdbcConfiguration,
-            final NamesConfiguration names,
+            final RuntimeConfiguration runtimeConfiguration,
             final GenericBlocks blocks,
             final AnnotationGenerator annotations,
             final Classes classes,
             final Methods methods,
             final JdbcParameters jdbcParameters) {
         this.logger = logger;
-        this.jdbcConfiguration = jdbcConfiguration;
-        this.names = names;
+        this.converters = runtimeConfiguration.converter();
+        this.names = runtimeConfiguration.names();
         this.blocks = blocks;
         this.annotations = annotations;
         this.classes = classes;
@@ -58,9 +58,9 @@ public class FlowStateGenerator {
     }
 
     PackagedTypeSpec generateFlowStateClass() {
-        final var flowStateClass = jdbcConfiguration.flowStateClass();
+        final var flowStateClass = converters.flowStateClass();
         final var type = classes.publicClass(flowStateClass)
-                .superclass(jdbcConfiguration.resultStateClass())
+                .superclass(converters.resultStateClass())
                 .addField(connectionField())
                 .addField(preparedStatementField())
                 .addMethod(constructor())

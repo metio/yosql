@@ -1,0 +1,30 @@
+/*
+ * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+ * directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+ * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+ * in the LICENSE file.
+ */
+
+package wtf.metio.yosql.codegen.files;
+
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
+
+import java.nio.file.Path;
+
+/**
+ * Handles the configuration of repository names.
+ *
+ * @see DefaultSqlConfigurationFactory
+ */
+public interface RepositoryNameConfigurer {
+
+    /**
+     * Configures the name of repositories.
+     *
+     * @param configuration The original configuration to adapt.
+     * @param source        The source file where the SQL statement originated from.
+     * @return An adapted version of the original.
+     */
+    SqlConfiguration configureName(SqlConfiguration configuration, Path source);
+
+}

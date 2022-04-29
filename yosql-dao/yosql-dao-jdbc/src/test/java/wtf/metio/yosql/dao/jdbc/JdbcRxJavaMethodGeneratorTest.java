@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.codegen.api.RxJavaMethodGenerator;
 import wtf.metio.yosql.codegen.tck.RxJavaMethodGeneratorTCK;
-import wtf.metio.yosql.testing.configs.Java;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
 
 @DisplayName("JdbcRxJavaMethodGenerator")
 class JdbcRxJavaMethodGeneratorTest {
@@ -22,7 +22,7 @@ class JdbcRxJavaMethodGeneratorTest {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.defaults());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.defaults());
         }
 
         @Override
@@ -70,7 +70,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final var resultSet = statement.executeQuery()) {
                             final var resultSetMetaData = resultSet.getMetaData();
                             final var columnCount = resultSetMetaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -89,12 +89,12 @@ class JdbcRxJavaMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 4 configuration")
+    @DisplayName("using JavaConfigurations 4 configuration")
     class Java4 implements RxJavaMethodGeneratorTCK {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.java4());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.java4());
         }
 
         @Override
@@ -142,7 +142,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -161,12 +161,12 @@ class JdbcRxJavaMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 5 configuration")
+    @DisplayName("using JavaConfigurations 5 configuration")
     class Java5 implements RxJavaMethodGeneratorTCK {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.java5());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.java5());
         }
 
         @Override
@@ -214,7 +214,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -233,12 +233,12 @@ class JdbcRxJavaMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 7 configuration")
+    @DisplayName("using JavaConfigurations 7 configuration")
     class Java7 implements RxJavaMethodGeneratorTCK {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.java7());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.java7());
         }
 
         @Override
@@ -286,7 +286,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -305,12 +305,12 @@ class JdbcRxJavaMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 8 configuration")
+    @DisplayName("using JavaConfigurations 8 configuration")
     class Java8 implements RxJavaMethodGeneratorTCK {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.java8());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.java8());
         }
 
         @Override
@@ -358,7 +358,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -377,12 +377,12 @@ class JdbcRxJavaMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 9 configuration")
+    @DisplayName("using JavaConfigurations 9 configuration")
     class Java9 implements RxJavaMethodGeneratorTCK {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.java9());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.java9());
         }
 
         @Override
@@ -430,7 +430,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
                             final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
                             final int columnCount = resultSetMetaData.getColumnCount();
-                            final com.example.persistence.util.ResultState state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final com.example.persistence.converter.ResultState state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final java.util.List<com.example.util.ResultRow> list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -449,12 +449,12 @@ class JdbcRxJavaMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 11 configuration")
+    @DisplayName("using JavaConfigurations 11 configuration")
     class Java11 implements RxJavaMethodGeneratorTCK {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.java11());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.java11());
         }
 
         @Override
@@ -502,7 +502,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final var resultSet = statement.executeQuery()) {
                             final var resultSetMetaData = resultSet.getMetaData();
                             final var columnCount = resultSetMetaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -521,12 +521,12 @@ class JdbcRxJavaMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 14 configuration")
+    @DisplayName("using JavaConfigurations 14 configuration")
     class Java14 implements RxJavaMethodGeneratorTCK {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.java14());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.java14());
         }
 
         @Override
@@ -574,7 +574,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final var resultSet = statement.executeQuery()) {
                             final var resultSetMetaData = resultSet.getMetaData();
                             final var columnCount = resultSetMetaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));
@@ -593,12 +593,12 @@ class JdbcRxJavaMethodGeneratorTest {
     }
 
     @Nested
-    @DisplayName("using Java 16 configuration")
+    @DisplayName("using JavaConfigurations 16 configuration")
     class Java16 implements RxJavaMethodGeneratorTCK {
 
         @Override
         public RxJavaMethodGenerator generator() {
-            return JdbcObjectMother.rxJavaMethodGenerator(Java.java16());
+            return JdbcObjectMother.rxJavaMethodGenerator(JavaConfigurations.java16());
         }
 
         @Override
@@ -646,7 +646,7 @@ class JdbcRxJavaMethodGeneratorTest {
                           try (final var resultSet = statement.executeQuery()) {
                             final var resultSetMetaData = resultSet.getMetaData();
                             final var columnCount = resultSetMetaData.getColumnCount();
-                            final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                            final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                             final var list = new java.util.ArrayList<com.example.util.ResultRow>();
                             while (state.next()) {
                               list.add(resultRow.apply(state));

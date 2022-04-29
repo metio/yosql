@@ -66,6 +66,14 @@ public final class TypicalTypes {
         return ParameterizedTypeName.get(LIST, type);
     }
 
+    public static ParameterizedTypeName produceListOf(final TypeName type) {
+        return ParameterizedTypeName.get(LIST, WildcardTypeName.subtypeOf(type));
+    }
+
+    public static ParameterizedTypeName consumeListOf(final TypeName type) {
+        return ParameterizedTypeName.get(LIST, WildcardTypeName.supertypeOf(type));
+    }
+
     public static ParameterizedTypeName setOf(final TypeName type) {
         return ParameterizedTypeName.get(SET, type);
     }

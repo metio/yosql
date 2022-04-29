@@ -9,7 +9,7 @@ package wtf.metio.yosql.internals.model.generator.immutables;
 
 import com.squareup.javapoet.*;
 import org.immutables.value.Value;
-import wtf.metio.yosql.internals.model.generator.api.AbstractMethodsGenerator;
+import wtf.metio.yosql.internals.model.generator.api.AbstractMethodsBasedGenerator;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class ImmutablesGenerator extends AbstractMethodsGenerator {
+public final class ImmutablesGenerator extends AbstractMethodsBasedGenerator {
 
     private final String basePackageName;
 

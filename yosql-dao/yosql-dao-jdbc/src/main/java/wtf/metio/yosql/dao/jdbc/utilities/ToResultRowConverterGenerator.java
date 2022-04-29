@@ -15,9 +15,10 @@ import wtf.metio.yosql.codegen.api.Methods;
 import wtf.metio.yosql.codegen.api.Parameters;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
 import wtf.metio.yosql.codegen.logging.Utilities;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Inject;
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ public final class ToResultRowConverterGenerator {
     public static final String TO_RESULT_ROW_CONVERTER_CLASS_NAME = "ToResultRowConverter";
 
     private final LocLogger logger;
-    private final JdbcConfiguration jdbcConfiguration;
+    private final ConverterConfiguration converters;
     private final NamesConfiguration names;
     private final AnnotationGenerator annotations;
     private final Classes classes;
@@ -37,15 +38,14 @@ public final class ToResultRowConverterGenerator {
     @Inject
     public ToResultRowConverterGenerator(
             final @Utilities LocLogger logger,
-            final JdbcConfiguration jdbcConfiguration,
-            final NamesConfiguration names,
+            final RuntimeConfiguration runtimeConfiguration,
             final AnnotationGenerator annotations,
             final Classes classes,
             final Methods methods,
             final Parameters parameters) {
         this.logger = logger;
-        this.jdbcConfiguration = jdbcConfiguration;
-        this.names = names;
+        this.converters = runtimeConfiguration.converter();
+        this.names = runtimeConfiguration.names();
         this.annotations = annotations;
         this.classes = classes;
         this.methods = methods;
@@ -54,7 +54,7 @@ public final class ToResultRowConverterGenerator {
 
     public PackagedTypeSpec generateToResultRowConverterClass() {
         final var resultRowConverterClass = ClassName.get(
-                jdbcConfiguration.utilityPackageName(),
+                converters.converterPackageName(),
                 TO_RESULT_ROW_CONVERTER_CLASS_NAME);
         // TODO: add 'implements Function<ResultRow, USER_TYPE>' when running in Java8+
         final var type = classes.publicClass(resultRowConverterClass)
@@ -68,13 +68,13 @@ public final class ToResultRowConverterGenerator {
 
     private MethodSpec apply() {
         return methods.publicMethod("apply")
-                .addParameters(parameters.resultState(jdbcConfiguration.resultStateClass()))
+                .addParameters(parameters.resultState(converters.resultStateClass()))
                 .addException(SQLException.class)
-                .returns(jdbcConfiguration.resultRowClass())
+                .returns(converters.resultRowClass())
                 // TODO: handle final/var usage here with Variables interface
-                .addStatement("final $T $N = new $T($N.getColumnCount())", jdbcConfiguration.resultRowClass(),
+                .addStatement("final $T $N = new $T($N.getColumnCount())", converters.resultRowClass(),
                         names.row(),
-                        jdbcConfiguration.resultRowClass(),
+                        converters.resultRowClass(),
                         names.result())
                 // TODO: use ControlFlows interface here
                 .beginControlFlow("for (int $N = 1; $N <= $N.getColumnCount(); $N++)",

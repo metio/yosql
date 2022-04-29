@@ -51,8 +51,7 @@ public final class Strings {
     public static String kebabCase(final String camelCase) {
         final var regex = "([a-z])([A-Z]+)";
         final var replacement = "$1-$2";
-        return camelCase.replaceAll(regex, replacement)
-                .toLowerCase();
+        return camelCase.replaceAll(regex, replacement).toLowerCase(Locale.ROOT);
     }
 
     private Strings() {

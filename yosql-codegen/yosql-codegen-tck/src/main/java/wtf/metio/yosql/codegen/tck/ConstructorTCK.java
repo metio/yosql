@@ -10,7 +10,7 @@ package wtf.metio.yosql.codegen.tck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.ConstructorGenerator;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link ConstructorGenerator}s work correctly.
@@ -25,7 +25,7 @@ public interface ConstructorTCK {
     default void forRepository() {
         Assertions.assertEquals(
                 forRepositoryExpectation(),
-                generator().forRepository(Sql.sqlStatements()).toString(),
+                generator().forRepository(SqlConfigurations.sqlStatements()).toString(),
                 "The generated constructor did not match expectation");
     }
 

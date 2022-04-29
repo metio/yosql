@@ -17,11 +17,11 @@ import java.util.Collections;
 public final class DefaultJdbcTransformer implements JdbcTransformer {
 
     @Override
-    public Iterable<TypeName> sqlException(final SqlConfiguration configuration) {
-        if (!configuration.catchAndRethrow()) {
-            return Collections.singletonList(ClassName.get(SQLException.class));
-        }
-        return Collections.emptyList();
+    public Iterable<? extends TypeName> sqlException(final SqlConfiguration configuration) {
+        return configuration.catchAndRethrow()
+                .filter(Boolean.TRUE::equals)
+                .map(bool -> Collections.<TypeName>emptyList())
+                .orElseGet(() -> Collections.singletonList(ClassName.get(SQLException.class)));
     }
 
 }

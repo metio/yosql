@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 @DisplayName("DefaultJdbcBlocks")
 class DefaultJdbcBlocksTest {
@@ -151,7 +151,7 @@ class DefaultJdbcBlocksTest {
                   }
                   statement.addBatch();
                 }
-                """, generator.prepareBatch(Sql.sqlConfiguration()).toString());
+                """, generator.prepareBatch(SqlConfigurations.sqlConfiguration()).toString());
     }
 
     @Test
@@ -162,7 +162,7 @@ class DefaultJdbcBlocksTest {
                 final var rawQuery = QUERY_DATA_RAW;
                 final var index = QUERY_DATA_INDEX;
                 LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
-                """, generator.pickVendorQuery(Sql.sqlStatements()).toString());
+                """, generator.pickVendorQuery(SqlConfigurations.sqlStatements()).toString());
     }
 
     @Test
@@ -174,7 +174,7 @@ class DefaultJdbcBlocksTest {
                     .replace(":id", java.lang.String.valueOf(id));
                   LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                 }
-                """, generator.logExecutedQuery(Sql.sqlConfiguration()).toString());
+                """, generator.logExecutedQuery(SqlConfigurations.sqlConfiguration()).toString());
     }
 
     @Test
@@ -186,7 +186,7 @@ class DefaultJdbcBlocksTest {
                     .replace(":id", java.util.Arrays.toString(id));
                   LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                 }
-                """, generator.logExecutedBatchQuery(Sql.sqlConfiguration()).toString());
+                """, generator.logExecutedBatchQuery(SqlConfigurations.sqlConfiguration()).toString());
     }
 
     @Test
@@ -214,7 +214,7 @@ class DefaultJdbcBlocksTest {
     @Test
     void createResultState() {
         Assertions.assertEquals("""
-                        final var state = new com.example.persistence.util.ResultState(resultSet, resultSetMetaData, columnCount);
+                        final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
                         """,
                 generator.createResultState().toString());
     }
@@ -222,7 +222,7 @@ class DefaultJdbcBlocksTest {
     @Test
     void returnNewFlowState() {
         Assertions.assertEquals("""
-                return new com.example.persistence.util.FlowState(connection, statement, resultSet, resultSetMetaData, columnCount);
+                return new com.example.persistence.converter.FlowState(connection, statement, resultSet, resultSetMetaData, columnCount);
                 """, generator.returnNewFlowState().toString());
     }
 
@@ -235,7 +235,7 @@ class DefaultJdbcBlocksTest {
                 for (final int jdbcIndex : index.get("id")) {
                   statement.setObject(jdbcIndex, id);
                 }
-                """, generator.setParameters(Sql.sqlConfiguration()).toString());
+                """, generator.setParameters(SqlConfigurations.sqlConfiguration()).toString());
     }
 
     @Test
@@ -247,7 +247,7 @@ class DefaultJdbcBlocksTest {
                 for (final int jdbcIndex : index.get("id")) {
                   statement.setObject(jdbcIndex, id[batch]);
                 }
-                """, generator.setBatchParameters(Sql.sqlConfiguration()).toString());
+                """, generator.setBatchParameters(SqlConfigurations.sqlConfiguration()).toString());
     }
 
 }

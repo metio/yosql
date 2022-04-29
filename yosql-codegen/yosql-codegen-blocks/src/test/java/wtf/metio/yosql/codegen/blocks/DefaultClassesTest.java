@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.Java;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultClasses")
 class DefaultClassesTest {
@@ -21,7 +21,7 @@ class DefaultClassesTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultClasses(Java.defaults());
+        generator = new DefaultClasses(JavaConfigurations.defaults());
     }
 
     @Test

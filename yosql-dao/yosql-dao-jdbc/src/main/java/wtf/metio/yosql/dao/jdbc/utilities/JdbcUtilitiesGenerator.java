@@ -7,7 +7,7 @@
 package wtf.metio.yosql.dao.jdbc.utilities;
 
 import wtf.metio.yosql.codegen.api.UtilitiesGenerator;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -20,19 +20,19 @@ public final class JdbcUtilitiesGenerator implements UtilitiesGenerator {
     private final ResultStateGenerator resultStateGenerator;
     private final ToResultRowConverterGenerator toResultRowConverterGenerator;
     private final ResultRowGenerator resultRowGenerator;
-    private final JdbcConfiguration jdbc;
+    private final ConverterConfiguration converters;
 
     public JdbcUtilitiesGenerator(
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
             final ToResultRowConverterGenerator toResultRowConverterGenerator,
             final ResultRowGenerator resultRowGenerator,
-            final JdbcConfiguration jdbc) {
+            final ConverterConfiguration converters) {
         this.flowStateGenerator = flowStateGenerator;
         this.resultStateGenerator = resultStateGenerator;
         this.toResultRowConverterGenerator = toResultRowConverterGenerator;
         this.resultRowGenerator = resultRowGenerator;
-        this.jdbc = jdbc;
+        this.converters = converters;
     }
 
     @Override
@@ -42,14 +42,15 @@ public final class JdbcUtilitiesGenerator implements UtilitiesGenerator {
         PackagedTypeSpec toResultRowConverterClass = null;
         PackagedTypeSpec resultRowClass = null;
 
-        for (final SqlStatement statement : allStatements) {
+        for (final var statement : allStatements) {
             if (resultStateClass == null) {
                 resultStateClass = resultStateGenerator.generateResultStateClass();
             }
             if (flowStateClass == null) {
                 flowStateClass = flowStateGenerator.generateFlowStateClass();
             }
-            if (statement.getConfiguration().resultRowConverter().orElse(jdbc.defaultConverter().orElseThrow()).converterType()
+            // TODO: comparing with the name of a class seems fishy and is not documented
+            if (statement.getConfiguration().resultRowConverter().or(converters::defaultConverter).orElseThrow().converterType()
                     .endsWith(ToResultRowConverterGenerator.TO_RESULT_ROW_CONVERTER_CLASS_NAME)) {
                 toResultRowConverterClass = toResultRowConverterGenerator.generateToResultRowConverterClass();
                 resultRowClass = resultRowGenerator.generateResultRowClass();

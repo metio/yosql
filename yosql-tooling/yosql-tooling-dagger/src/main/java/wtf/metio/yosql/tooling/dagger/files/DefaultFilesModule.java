@@ -24,36 +24,100 @@ import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 public class DefaultFilesModule {
 
     @Provides
-    public SqlConfigurationFactory provideSqlConfigurationFactory(
-            @Parser final LocLogger logger,
-            final RuntimeConfiguration runtimeConfiguration,
-            final ExecutionErrors errors,
-            final IMessageConveyor messages) {
-        return new DefaultSqlConfigurationFactory(logger, runtimeConfiguration, errors, messages);
+    public SqlConfigurationParser provideSqlConfigurationParser() {
+        return new DefaultSqlConfigurationParser();
     }
 
     @Provides
-    public SqlFileResolver provideSqlFileResolver(
+    public MethodSettingsConfigurer provideMethodSettingsConfigurer(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultMethodSettingsConfigurer(runtimeConfiguration.repositories());
+    }
+
+    @Provides
+    public MethodNameConfigurer provideMethodNameConfigurer(
+            @Parser final LocLogger logger,
+            final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultMethodNameConfigurer(logger, runtimeConfiguration.repositories());
+    }
+
+    @Provides
+    public MethodNameValidator provideMethodNameValidator(
+            final RuntimeConfiguration runtimeConfiguration,
+            final ExecutionErrors errors,
+            final IMessageConveyor messages) {
+        return new DefaultMethodNameValidator(runtimeConfiguration.repositories(), errors, messages);
+    }
+
+    @Provides
+    public MethodApiConfigurer provideMethodApiConfigurer(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultMethodApiConfigurer(runtimeConfiguration.repositories());
+    }
+
+    @Provides
+    public MethodParameterConfigurer provideMethodParameterConfigurer(
+            @Parser final LocLogger logger,
+            final ExecutionErrors errors,
+            final IMessageConveyor messages) {
+        return new DefaultMethodParameterConfigurer(logger, errors, messages);
+    }
+
+    @Provides
+    public MethodConverterConfigurer provideMethodConverterConfigurer(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultMethodConverterConfigurer(runtimeConfiguration.converter());
+    }
+
+    @Provides
+    public RepositoryNameConfigurer provideRepositoryNameConfigurer(
+            @Parser final LocLogger logger,
+            final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultRepositoryNameConfigurer(logger, runtimeConfiguration.files(), runtimeConfiguration.repositories());
+    }
+
+    @Provides
+    public SqlConfigurationFactory provideSqlConfigurationFactory(
+            @Parser final LocLogger logger,
+            final SqlConfigurationParser configParser,
+            final MethodSettingsConfigurer methodSettings,
+            final MethodNameConfigurer methodNames,
+            final MethodNameValidator methodNameValidator,
+            final MethodApiConfigurer methodApis,
+            final MethodParameterConfigurer methodParameters,
+            final MethodConverterConfigurer methodConverter,
+            final RepositoryNameConfigurer repositoryName) {
+        return new DefaultSqlConfigurationFactory(
+                logger,
+                configParser,
+                methodSettings,
+                methodNames,
+                methodNameValidator,
+                methodApis,
+                methodParameters,
+                methodConverter,
+                repositoryName);
+    }
+
+    @Provides
+    public FileResolver provideSqlFileResolver(
             @Reader final LocLogger logger,
             final ParserPreconditions preconditions,
             final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
-        return new DefaultSqlFileResolver(logger, preconditions, runtimeConfiguration.files(), errors);
+        return new DefaultFileResolver(logger, preconditions, runtimeConfiguration.files(), errors);
     }
 
     @Provides
-    public SqlFileParser provideSqlFileParser(
+    public SqlStatementParser provideSqlFileParser(
             @Parser final LocLogger logger,
             final SqlConfigurationFactory factory,
             final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
-        return new DefaultSqlFileParser(logger, factory, runtimeConfiguration.files(), errors);
+        return new DefaultSqlStatementParser(logger, factory, runtimeConfiguration.files(), errors);
     }
 
     @Provides
     public FileParser provideFileParser(
-            final SqlFileResolver fileResolver,
-            final SqlFileParser fileParser) {
+            final FileResolver fileResolver,
+            final SqlStatementParser fileParser) {
         return new DefaultFileParser(fileResolver, fileParser);
     }
 

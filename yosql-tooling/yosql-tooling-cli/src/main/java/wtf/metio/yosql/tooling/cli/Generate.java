@@ -8,17 +8,16 @@
 package wtf.metio.yosql.tooling.cli;
 
 import picocli.CommandLine;
+import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.cli.*;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command(
         name = "generate",
-        description = "Generate Java code using SQL files as sources",
+        description = "Generate JavaConfigurations code using SQL files as sources",
         versionProvider = VersionProvider.class,
         mixinStandardHelpOptions = true,
         showAtFileInUsageHelp = true,
@@ -26,8 +25,6 @@ import java.util.concurrent.Callable;
         showDefaultValues = true
 )
 public class Generate implements Callable<Integer> {
-
-    private static final List<Locale> SUPPORTED_LOCALES = List.of(Locale.ENGLISH, Locale.GERMAN);
 
     @CommandLine.Mixin
     public Files files;
@@ -51,7 +48,7 @@ public class Generate implements Callable<Integer> {
     public Integer call() {
         DaggerYoSQLComponent.builder()
                 .runtimeConfiguration(createConfiguration())
-                .locale(determineLocale())
+                .locale(SupportedLocales.defaultLocale())
                 .build()
                 .yosql()
                 .generateCode();
@@ -62,13 +59,6 @@ public class Generate implements Callable<Integer> {
         return RuntimeConfiguration.usingDefaults()
                 .setAnnotations(annotations.asConfiguration())
                 .build();
-    }
-
-    private Locale determineLocale() {
-        if (SUPPORTED_LOCALES.contains(Locale.getDefault())) {
-            return Locale.getDefault();
-        }
-        return Locale.ENGLISH;
     }
 
 }

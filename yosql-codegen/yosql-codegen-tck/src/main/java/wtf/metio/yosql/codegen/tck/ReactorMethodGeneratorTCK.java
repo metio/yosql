@@ -10,7 +10,7 @@ package wtf.metio.yosql.codegen.tck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.ReactorMethodGenerator;
-import wtf.metio.yosql.testing.configs.Sql;
+import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link ReactorMethodGenerator}s work correctly.
@@ -31,7 +31,7 @@ public interface ReactorMethodGeneratorTCK {
     default void reactorReadMethod() {
         Assertions.assertEquals(
                 reactorReadMethodExpectation(),
-                generator().reactorReadMethod(Sql.sqlConfiguration(), Sql.sqlStatements()).toString(),
+                generator().reactorReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
                 "The generated Reactor read method did not match expectation");
     }
 

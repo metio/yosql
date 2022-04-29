@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.Java;
-import wtf.metio.yosql.testing.configs.Names;
+import wtf.metio.yosql.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.testing.configs.NamesConfigurations;
 
 @DisplayName("DefaultControlFlows")
 class DefaultControlFlowsTest {
@@ -22,7 +22,7 @@ class DefaultControlFlowsTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultControlFlows(new DefaultVariables(Java.defaults()), Names.defaults());
+        generator = new DefaultControlFlows(new DefaultVariables(JavaConfigurations.defaults()), NamesConfigurations.defaults());
     }
 
     @Test

@@ -11,15 +11,13 @@ import ch.qos.cal10n.MessageConveyor;
 import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
+import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.*;
-import wtf.metio.yosql.testing.logging.Loggers;
-
-import java.util.Locale;
+import wtf.metio.yosql.testing.logging.LoggingObjectMother;
 
 /**
  * Object mother for JDBC related classes.
@@ -29,7 +27,7 @@ import java.util.Locale;
 public final class JdbcObjectMother {
 
     public static JdbcMethods jdbcMethods() {
-        final var names = Names.defaults();
+        final var names = NamesConfigurations.defaults();
         return new DefaultJdbcMethods(
                 new DefaultJdbcDataSourceMethods(names),
                 new DefaultJdbcConnectionMethods(names),
@@ -41,33 +39,33 @@ public final class JdbcObjectMother {
 
     public static FieldsGenerator fieldsGenerator(final JavaConfiguration java) {
         return new JdbcFieldsGenerator(
-                jdbcConfig(),
-                Names.defaults(),
-                Loggers.loggingGenerator(),
+                ConverterConfigurations.withResultRowConverter(),
+                NamesConfigurations.defaults(),
+                LoggingObjectMother.loggingGenerator(),
                 Blocks.javadoc(),
                 Blocks.fields(java),
                 jdbcFields());
     }
 
     public static DefaultJdbcFields jdbcFields() {
-        return new DefaultJdbcFields(Names.defaults());
+        return new DefaultJdbcFields(NamesConfigurations.defaults());
     }
 
     public static ConstructorGenerator constructorGenerator(final JavaConfiguration java) {
         return new JdbcConstructorGenerator(
                 Blocks.genericBlocks(),
                 Blocks.methods(java),
-                Names.defaults(),
+                NamesConfigurations.defaults(),
                 jdbcParameter(),
-                Repositories.defaults());
+                RepositoriesConfigurations.defaults());
     }
 
     private static DefaultJdbcParameters jdbcParameter() {
-        return new DefaultJdbcParameters(Blocks.parameters(), Names.defaults());
+        return new DefaultJdbcParameters(Blocks.parameters(), NamesConfigurations.defaults());
     }
 
     public static JdbcBlocks jdbcBlocks() {
-        return jdbcBlocks(Java.defaults());
+        return jdbcBlocks(JavaConfigurations.defaults());
     }
 
     public static JdbcBlocks jdbcBlocks(final JavaConfiguration java) {
@@ -75,19 +73,17 @@ public final class JdbcObjectMother {
                 runtimeConfig(),
                 Blocks.genericBlocks(),
                 Blocks.controlFlows(java),
-                Names.defaults(),
                 Blocks.variables(java),
-                jdbcConfig(),
                 jdbcFields(),
                 jdbcMethods(),
-                Loggers.loggingGenerator());
+                LoggingObjectMother.loggingGenerator());
     }
 
     public static ImmutableRuntimeConfiguration runtimeConfig() {
-        return ImmutableRuntimeConfiguration.copyOf(Configs.runtime())
-                .withApi(Apis.jul())
-                .withFiles(Files.maven())
-                .withJdbc(jdbcConfig());
+        return ImmutableRuntimeConfiguration.copyOf(RuntimeConfigurations.defaults())
+                .withApi(ApiConfigurations.jul())
+                .withFiles(FilesConfigurations.maven())
+                .withConverter(ConverterConfigurations.withResultRowConverter());
     }
 
     public static BlockingMethodGenerator blockingMethodGenerator(final JavaConfiguration java) {
@@ -95,10 +91,10 @@ public final class JdbcObjectMother {
                 Blocks.controlFlows(java),
                 Blocks.methods(java),
                 Blocks.parameters(java),
-                Loggers.loggingGenerator(),
+                LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java),
                 jdbcTransformer(),
-                jdbcConfig());
+                ConverterConfigurations.withResultRowConverter());
     }
 
     public static BatchMethodGenerator batchMethodGenerator(final JavaConfiguration java) {
@@ -106,59 +102,55 @@ public final class JdbcObjectMother {
                 Blocks.controlFlows(java),
                 Blocks.methods(java),
                 Blocks.parameters(java),
-                Loggers.loggingGenerator(),
+                LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java),
                 jdbcTransformer());
     }
 
     public static Java8StreamMethodGenerator java8StreamMethodGenerator(final JavaConfiguration java) {
         return new JdbcJava8StreamMethodGenerator(
-                jdbcConfig(),
+                ConverterConfigurations.withResultRowConverter(),
                 Blocks.genericBlocks(),
                 Blocks.controlFlows(java),
-                Names.defaults(),
+                NamesConfigurations.defaults(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
-                Loggers.loggingGenerator(),
+                LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java),
                 jdbcTransformer());
     }
 
     public static RxJavaMethodGenerator rxJavaMethodGenerator(final JavaConfiguration java) {
         return new JdbcRxJavaMethodGenerator(
-                jdbcConfig(),
+                ConverterConfigurations.withResultRowConverter(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 jdbcTransformer(),
                 Blocks.controlFlows(java),
-                Loggers.loggingGenerator(),
+                LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java));
     }
 
     public static ReactorMethodGenerator reactorMethodGenerator(final JavaConfiguration java) {
         return new JdbcReactorMethodGenerator(
-                jdbcConfig(),
+                ConverterConfigurations.withResultRowConverter(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 jdbcTransformer(),
                 Blocks.controlFlows(java),
-                Loggers.loggingGenerator(),
+                LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java));
     }
 
     public static MutinyMethodGenerator mutinyMethodGenerator(final JavaConfiguration java) {
         return new JdbcMutinyMethodGenerator(
-                jdbcConfig(),
+                ConverterConfigurations.withResultRowConverter(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 jdbcTransformer(),
                 Blocks.controlFlows(java),
-                Loggers.loggingGenerator(),
+                LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java));
-    }
-
-    public static JdbcConfiguration jdbcConfig() {
-        return Jdbc.withResultRowConverter();
     }
 
     public static DefaultJdbcTransformer jdbcTransformer() {
@@ -178,7 +170,7 @@ public final class JdbcObjectMother {
 
     public static GenericRepositoryGenerator genericRepositoryGenerator(final JavaConfiguration java) {
         return new GenericRepositoryGenerator(
-                new LocLoggerFactory(new MessageConveyor(Locale.ENGLISH)).getLocLogger("yosql.test"),
+                new LocLoggerFactory(new MessageConveyor(SupportedLocales.ENGLISH)).getLocLogger("yosql.test"),
                 Blocks.annotationGenerator(),
                 Blocks.classes(java),
                 Blocks.javadoc(),

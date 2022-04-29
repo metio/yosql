@@ -7,7 +7,7 @@
 package wtf.metio.yosql.example.maven.jdbc.java11.converter;
 
 import wtf.metio.yosql.example.maven.jdbc.java11.model.Item;
-import wtf.metio.yosql.example.maven.jdbc.java11.persistence.util.ResultState;
+import wtf.metio.yosql.example.maven.jdbc.java11.persistence.converter.ResultState;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
