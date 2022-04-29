@@ -4,10 +4,10 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.example.maven.jdbc.java16.converter;
+package wtf.metio.yosql.example.maven.springjdbc.java16.converter;
 
-import wtf.metio.yosql.example.maven.jdbc.java16.model.Item;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ResultState;
+import wtf.metio.yosql.example.maven.springjdbc.java16.model.Item;
+import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.converter.ResultState;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

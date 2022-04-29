@@ -4,13 +4,13 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.example.maven.jdbc.java16;
+package wtf.metio.yosql.example.maven.springjdbc.java16;
 
 import com.zaxxer.hikari.HikariDataSource;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.CompanyRepository;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.PersonRepository;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.SchemaRepository;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.util.ToResultRowConverter;
+import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.CompanyRepository;
+import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.PersonRepository;
+import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.SchemaRepository;
+import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.converter.ToResultRowConverter;
 
 import javax.sql.DataSource;
 import java.util.Arrays;

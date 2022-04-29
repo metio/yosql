@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.example.maven.jdbc.java16.model;
+package wtf.metio.yosql.example.maven.springjdbc.java16.model;
 
 public class Item {
 

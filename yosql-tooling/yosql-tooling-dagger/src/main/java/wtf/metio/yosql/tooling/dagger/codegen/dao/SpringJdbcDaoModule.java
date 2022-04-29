@@ -147,6 +147,7 @@ public class SpringJdbcDaoModule {
     @Provides
     @SpringJDBC
     BlockingMethodGenerator provideBlockingMethodGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
@@ -157,7 +158,8 @@ public class SpringJdbcDaoModule {
                 methods,
                 parameters,
                 logging,
-                blocks);
+                blocks,
+                runtimeConfiguration.converter());
     }
 
 }

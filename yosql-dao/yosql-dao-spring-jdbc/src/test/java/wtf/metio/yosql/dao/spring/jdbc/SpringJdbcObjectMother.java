@@ -10,6 +10,7 @@ package wtf.metio.yosql.dao.spring.jdbc;
 import wtf.metio.yosql.codegen.api.BlockingMethodGenerator;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.testing.codegen.Blocks;
+import wtf.metio.yosql.testing.configs.ConverterConfigurations;
 import wtf.metio.yosql.testing.logging.LoggingObjectMother;
 
 /**
@@ -29,7 +30,8 @@ public class SpringJdbcObjectMother {
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 LoggingObjectMother.loggingGenerator(),
-                springJdbcBlocks());
+                springJdbcBlocks(),
+                ConverterConfigurations.withResultRowConverter());
     }
 
     private SpringJdbcObjectMother() {
