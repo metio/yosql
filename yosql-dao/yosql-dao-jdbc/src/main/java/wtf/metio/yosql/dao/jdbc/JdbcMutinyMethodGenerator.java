@@ -74,4 +74,14 @@ public final class JdbcMutinyMethodGenerator implements MutinyMethodGenerator {
                 .build();
     }
 
+    @Override
+    public MethodSpec mutinyWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
+    public MethodSpec mutinyCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
 }

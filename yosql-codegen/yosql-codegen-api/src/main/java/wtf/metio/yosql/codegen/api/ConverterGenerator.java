@@ -13,17 +13,17 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Generates utility classes.
+ * Generates converter related classes.
  */
 @FunctionalInterface
-public interface UtilitiesGenerator {
+public interface ConverterGenerator {
 
     /**
-     * Creates utilities based on a number of {@link SqlStatement}s.
+     * Creates converter related classes based on a number of {@link SqlStatement}s.
      *
      * @param statements The statements to use.
-     * @return A stream of utility type specifications and their target package.
+     * @return A stream of type specifications and their target package.
      */
-    Stream<PackagedTypeSpec> generateUtilities(List<SqlStatement> statements);
+    Stream<PackagedTypeSpec> generateConverterClasses(List<SqlStatement> statements);
 
 }

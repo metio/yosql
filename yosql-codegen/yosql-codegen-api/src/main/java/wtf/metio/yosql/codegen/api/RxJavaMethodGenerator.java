@@ -18,6 +18,15 @@ import java.util.List;
 public interface RxJavaMethodGenerator {
 
     /**
+     * Creates a RxJava based method for calling a procedure in a database.
+     *
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
+     * @return A RxJava based call method.
+     */
+    MethodSpec rxJavaCallMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
+
+    /**
      * Creates a RxJava based method for reading data out of a database.
      *
      * @param configuration    The configuration to use.
@@ -25,5 +34,14 @@ public interface RxJavaMethodGenerator {
      * @return A RxJava based read method.
      */
     MethodSpec rxJavaReadMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
+
+    /**
+     * Creates a RxJava based method for writing data out of a database.
+     *
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
+     * @return A RxJava based write method.
+     */
+    MethodSpec rxJavaWriteMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
 
 }

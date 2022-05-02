@@ -8,6 +8,7 @@
 package wtf.metio.yosql.codegen.tck;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.api.FieldsGenerator;
 import wtf.metio.yosql.internals.junit5.TestIterables;
@@ -26,9 +27,10 @@ public interface FieldsGeneratorTCK {
 
     @Test
     default void staticInitializer() {
+        Assumptions.assumeTrue(generator().staticInitializer(SqlConfigurations.sqlStatements()).isPresent());
         Assertions.assertEquals(
                 staticInitializerExpectation(),
-                generator().staticInitializer(SqlConfigurations.sqlStatements()).toString(),
+                generator().staticInitializer(SqlConfigurations.sqlStatements()).get().toString(),
                 "The generated static initializer did not match expectation");
     }
 

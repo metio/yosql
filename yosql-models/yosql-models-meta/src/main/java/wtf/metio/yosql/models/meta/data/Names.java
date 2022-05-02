@@ -44,6 +44,7 @@ public final class Names {
                 .addSettings(jdbcIndexVariable())
                 .addSettings(indexVariable())
                 .addSettings(row())
+                .addSettings(jdbcTemplate())
                 .build();
     }
 
@@ -287,6 +288,15 @@ public final class Names {
                 .setDescription("The name for a row variable.")
                 .setType(TypicalTypes.STRING)
                 .setValue("row")
+                .build();
+    }
+
+    private static ConfigurationSetting jdbcTemplate() {
+        return ConfigurationSetting.builder()
+                .setName("jdbcTemplate")
+                .setDescription("The name for a JdbcTemplate or NamedParameterJdbcTemplate variable.")
+                .setType(TypicalTypes.STRING)
+                .setValue("jdbcTemplate")
                 .build();
     }
 

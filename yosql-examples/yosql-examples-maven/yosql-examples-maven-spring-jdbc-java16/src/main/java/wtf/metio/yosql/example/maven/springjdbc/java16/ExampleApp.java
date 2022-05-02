@@ -7,10 +7,10 @@
 package wtf.metio.yosql.example.maven.springjdbc.java16;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.CompanyRepository;
 import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.PersonRepository;
 import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.SchemaRepository;
-import wtf.metio.yosql.example.maven.springjdbc.java16.persistence.converter.ToResultRowConverter;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -42,10 +42,10 @@ public class ExampleApp {
     }
 
     private static void runTests(final String[] arguments, final DataSource dataSource) {
-        final var schemaRepository = new SchemaRepository(dataSource);
-        final var resultRow = new ToResultRowConverter();
-        final var companyRepository = new CompanyRepository(dataSource, resultRow);
-        final var personRepository = new PersonRepository(dataSource, resultRow);
+        final var template = new NamedParameterJdbcTemplate(dataSource);
+        final var schemaRepository = new SchemaRepository(template);
+        final var companyRepository = new CompanyRepository(template);
+        final var personRepository = new PersonRepository(template);
 
         if (match(arguments, "generic", "stream", "rxjava")) {
             initializeDatabase(schemaRepository, companyRepository, personRepository);

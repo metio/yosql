@@ -8,8 +8,8 @@
 package wtf.metio.yosql.codegen.blocks;
 
 import wtf.metio.yosql.codegen.api.CodeGenerator;
+import wtf.metio.yosql.codegen.api.ConverterGenerator;
 import wtf.metio.yosql.codegen.api.RepositoryGenerator;
-import wtf.metio.yosql.codegen.api.UtilitiesGenerator;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -22,18 +22,18 @@ import static java.util.stream.Collectors.groupingBy;
 public final class DefaultCodeGenerator implements CodeGenerator {
 
     private final RepositoryGenerator repositoryGenerator;
-    private final UtilitiesGenerator utilitiesGenerator;
+    private final ConverterGenerator converterGenerator;
 
     public DefaultCodeGenerator(
             final RepositoryGenerator repositoryGenerator,
-            final UtilitiesGenerator utilitiesGenerator) {
+            final ConverterGenerator converterGenerator) {
         this.repositoryGenerator = repositoryGenerator;
-        this.utilitiesGenerator = utilitiesGenerator;
+        this.converterGenerator = converterGenerator;
     }
 
     @Override
     public Stream<PackagedTypeSpec> generateCode(final List<SqlStatement> statements) {
-        return Stream.concat(generateRepositories(statements), utilitiesGenerator.generateUtilities(statements))
+        return Stream.concat(generateRepositories(statements), converterGenerator.generateConverterClasses(statements))
                 .filter(Objects::nonNull);
     }
 

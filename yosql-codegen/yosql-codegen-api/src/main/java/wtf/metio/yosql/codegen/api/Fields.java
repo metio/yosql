@@ -10,6 +10,7 @@ package wtf.metio.yosql.codegen.api;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.lang.reflect.Type;
 
@@ -24,5 +25,11 @@ public interface Fields {
     FieldSpec.Builder prepareConstant(TypeName type, String name);
 
     CodeBlock initialize(String statement);
+
+    String constantSqlStatementFieldName(SqlConfiguration configuration);
+
+    String constantRawSqlStatementFieldName(SqlConfiguration configuration);
+
+    String constantSqlStatementParameterIndexFieldName(SqlConfiguration configuration);
 
 }

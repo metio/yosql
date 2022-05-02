@@ -43,25 +43,22 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     private final LoggingGenerator logging;
     private final Javadoc javadoc;
     private final Fields fields;
-    private final JdbcFields jdbcFields;
 
     public JdbcFieldsGenerator(
             final ConverterConfiguration converters,
             final NamesConfiguration names,
             final LoggingGenerator logging,
             final Javadoc javadoc,
-            final Fields fields,
-            final JdbcFields jdbcFields) {
+            final Fields fields) {
         this.converters = converters;
         this.names = names;
         this.logging = logging;
         this.javadoc = javadoc;
         this.fields = fields;
-        this.jdbcFields = jdbcFields;
     }
 
     @Override
-    public CodeBlock staticInitializer(final List<SqlStatement> statements) {
+    public Optional<CodeBlock> staticInitializer(final List<SqlStatement> statements) {
         final var builder = CodeBlock.builder();
         statements.stream()
                 .map(SqlStatement::getConfiguration)
@@ -69,7 +66,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
                 .forEach(config -> config.parameters().stream()
                         .filter(SqlParameter::hasIndices)
                         .forEach(parameter -> addIndexArray(builder, parameter, config)));
-        return builder.build();
+        return Optional.of(builder.build());
     }
 
     private void addIndexArray(
@@ -77,7 +74,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
             final SqlParameter parameter,
             final SqlConfiguration config) {
         builder.addStatement("$N.put($S, $L)",
-                jdbcFields.constantSqlStatementParameterIndexFieldName(config),
+                fields.constantSqlStatementParameterIndexFieldName(config),
                 parameter.name(),
                 indexArray(parameter));
     }
@@ -122,8 +119,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
         final var configuration = sqlStatement.getConfiguration();
         final var rawStatement = sqlStatement.getRawStatement();
-        return fields.prepareConstant(String.class,
-                jdbcFields.constantRawSqlStatementFieldName(configuration))
+        return fields.prepareConstant(String.class, fields.constantRawSqlStatementFieldName(configuration))
                 .initializer(fields.initialize(rawStatement))
                 .addJavadoc(javadoc.fieldJavaDoc(sqlStatement))
                 .build();
@@ -133,8 +129,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
         final var configuration = sqlStatement.getConfiguration();
         final var rawStatement = sqlStatement.getRawStatement();
         final var statement = replaceNamedParameters(rawStatement);
-        return fields.prepareConstant(String.class,
-                jdbcFields.constantSqlStatementFieldName(configuration))
+        return fields.prepareConstant(String.class, fields.constantSqlStatementFieldName(configuration))
                 .initializer(fields.initialize(statement))
                 .addJavadoc(javadoc.fieldJavaDoc(sqlStatement))
                 .build();
@@ -147,7 +142,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {
         final var configuration = sqlStatement.getConfiguration();
         return fields.prepareConstant(TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
-                jdbcFields.constantSqlStatementParameterIndexFieldName(configuration))
+                        fields.constantSqlStatementParameterIndexFieldName(configuration))
                 .initializer("new $T<>($L)", HashMap.class, sqlStatement.getConfiguration().parameters().size())
                 .build();
     }

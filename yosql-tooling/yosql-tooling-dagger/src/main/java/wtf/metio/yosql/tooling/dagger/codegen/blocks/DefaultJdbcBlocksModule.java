@@ -11,6 +11,7 @@ import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.ControlFlows;
+import wtf.metio.yosql.codegen.api.Fields;
 import wtf.metio.yosql.codegen.api.Parameters;
 import wtf.metio.yosql.codegen.api.Variables;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
@@ -30,11 +31,6 @@ public class DefaultJdbcBlocksModule {
     @Provides
     public JdbcTransformer provideJdbcTransformer() {
         return new DefaultJdbcTransformer();
-    }
-
-    @Provides
-    public JdbcFields provideJdbcFields(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcFields(runtimeConfiguration.names());
     }
 
     @Provides
@@ -91,7 +87,7 @@ public class DefaultJdbcBlocksModule {
             final GenericBlocks blocks,
             final ControlFlows controlFlows,
             final Variables variables,
-            final JdbcFields jdbcFields,
+            final Fields fields,
             final JdbcMethods jdbcMethods,
             @Delegating final LoggingGenerator logging) {
         return new DefaultJdbcBlocks(
@@ -99,7 +95,7 @@ public class DefaultJdbcBlocksModule {
                 blocks,
                 controlFlows,
                 variables,
-                jdbcFields,
+                fields,
                 jdbcMethods,
                 logging);
     }

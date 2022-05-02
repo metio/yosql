@@ -16,6 +16,7 @@ import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
+import java.util.Optional;
 
 public final class PyranidFieldsGenerator implements FieldsGenerator {
 
@@ -33,8 +34,8 @@ public final class PyranidFieldsGenerator implements FieldsGenerator {
     }
 
     @Override
-    public CodeBlock staticInitializer(final List<SqlStatement> statements) {
-        return null;
+    public Optional<CodeBlock> staticInitializer(final List<SqlStatement> statements) {
+        return Optional.empty();
     }
 
     @Override

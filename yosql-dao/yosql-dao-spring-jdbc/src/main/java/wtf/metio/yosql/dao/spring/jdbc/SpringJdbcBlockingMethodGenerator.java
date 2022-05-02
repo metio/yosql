@@ -84,12 +84,16 @@ public final class SpringJdbcBlockingMethodGenerator implements BlockingMethodGe
 
     @Override
     public MethodSpec blockingWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        return methods.blockingMethod(configuration.blockingName(), statements).build();
+        return methods.blockingMethod(configuration.blockingName(), statements)
+                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .build();
     }
 
     @Override
     public MethodSpec blockingCallMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        return methods.blockingMethod(configuration.blockingName(), statements).build();
+        return methods.blockingMethod(configuration.blockingName(), statements)
+                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .build();
     }
 
 }

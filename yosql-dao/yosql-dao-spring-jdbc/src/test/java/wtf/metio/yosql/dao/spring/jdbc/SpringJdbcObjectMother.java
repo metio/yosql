@@ -8,9 +8,11 @@
 package wtf.metio.yosql.dao.spring.jdbc;
 
 import wtf.metio.yosql.codegen.api.BlockingMethodGenerator;
+import wtf.metio.yosql.codegen.api.FieldsGenerator;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.testing.codegen.Blocks;
 import wtf.metio.yosql.testing.configs.ConverterConfigurations;
+import wtf.metio.yosql.testing.configs.NamesConfigurations;
 import wtf.metio.yosql.testing.logging.LoggingObjectMother;
 
 /**
@@ -32,6 +34,14 @@ public class SpringJdbcObjectMother {
                 LoggingObjectMother.loggingGenerator(),
                 springJdbcBlocks(),
                 ConverterConfigurations.withResultRowConverter());
+    }
+
+    public static FieldsGenerator fieldsGenerator(final JavaConfiguration java) {
+        return new SpringJdbcFieldsGenerator(
+                Blocks.fields(java),
+                LoggingObjectMother.loggingGenerator(),Blocks.javadoc(),
+                ConverterConfigurations.withResultRowConverter(),
+                NamesConfigurations.defaults());
     }
 
     private SpringJdbcObjectMother() {

@@ -45,7 +45,17 @@ public final class SpringDataJdbcRxJavaMethodGenerator implements RxJavaMethodGe
     }
 
     @Override
+    public MethodSpec rxJavaCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
     public MethodSpec rxJavaReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
+    public MethodSpec rxJavaWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 }

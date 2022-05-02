@@ -87,7 +87,6 @@ public class JdbcDaoModule {
     public FieldsGenerator provideFieldsGenerator(
             final Fields fields,
             @Delegating final LoggingGenerator logging,
-            final JdbcFields jdbcFields,
             final Javadoc javadoc,
             final RuntimeConfiguration runtimeConfiguration) {
         return new JdbcFieldsGenerator(
@@ -95,8 +94,7 @@ public class JdbcDaoModule {
                 runtimeConfiguration.names(),
                 logging,
                 javadoc,
-                fields,
-                jdbcFields);
+                fields);
     }
 
     @JDBC
@@ -222,13 +220,13 @@ public class JdbcDaoModule {
     }
 
     @Provides
-    UtilitiesGenerator provideUtilitiesGenerator(
+    ConverterGenerator provideUtilitiesGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
             final ToResultRowConverterGenerator toResultRowConverterGenerator,
             final ResultRowGenerator resultRowGenerator) {
-        return new JdbcUtilitiesGenerator(
+        return new JdbcConverterGenerator(
                 flowStateGenerator,
                 resultStateGenerator,
                 toResultRowConverterGenerator,

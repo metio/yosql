@@ -16,7 +16,17 @@ import java.util.List;
 public final class SansOrmReactorMethodGenerator implements ReactorMethodGenerator {
 
     @Override
+    public MethodSpec reactorCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
     public MethodSpec reactorReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
+    public MethodSpec reactorWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 

@@ -66,6 +66,13 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
+    default boolean shouldGenerateBatchWriteAPI() {
+        return isWriting() &&
+                getConfiguration().generateBatchApi().orElse(Boolean.FALSE) &&
+                Buckets.hasEntries(getConfiguration().parameters());
+    }
+
+    @Value.Lazy
     default boolean shouldGenerateBlockingReadAPI() {
         return isReading() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
     }
@@ -81,23 +88,8 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
-    default boolean shouldGenerateStreamEagerReadAPI() {
-        return isReading() && getConfiguration().generateStreamEagerApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateStreamLazyReadAPI() {
-        return isReading() && getConfiguration().generateStreamLazyApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateRxJavaReadAPI() {
-        return isReading() && getConfiguration().generateRxJavaApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateReactorReadAPI() {
-        return isReading() && getConfiguration().generateReactorApi().orElse(Boolean.FALSE);
+    default boolean shouldGenerateMutinyCallAPI() {
+        return isCalling() && getConfiguration().generateMutinyApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
@@ -106,10 +98,48 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
-    default boolean shouldGenerateBatchWriteAPI() {
-        return isWriting() &&
-                getConfiguration().generateBatchApi().orElse(Boolean.FALSE) &&
-                Buckets.hasEntries(getConfiguration().parameters());
+    default boolean shouldGenerateMutinyWriteAPI() {
+        return isWriting() && getConfiguration().generateMutinyApi().orElse(Boolean.FALSE);
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateReactorCallAPI() {
+        return isCalling() && getConfiguration().generateReactorApi().orElse(Boolean.FALSE);
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateReactorReadAPI() {
+        return isReading() && getConfiguration().generateReactorApi().orElse(Boolean.FALSE);
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateReactorWriteAPI() {
+        return isWriting() && getConfiguration().generateReactorApi().orElse(Boolean.FALSE);
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateRxJavaCallAPI() {
+        return isCalling() && getConfiguration().generateRxJavaApi().orElse(Boolean.FALSE);
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateRxJavaReadAPI() {
+        return isReading() && getConfiguration().generateRxJavaApi().orElse(Boolean.FALSE);
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateRxJavaWriteAPI() {
+        return isWriting() && getConfiguration().generateRxJavaApi().orElse(Boolean.FALSE);
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateStreamEagerReadAPI() {
+        return isReading() && getConfiguration().generateStreamEagerApi().orElse(Boolean.FALSE);
+    }
+
+    @Value.Lazy
+    default boolean shouldGenerateStreamLazyReadAPI() {
+        return isReading() && getConfiguration().generateStreamLazyApi().orElse(Boolean.FALSE);
     }
 
 }

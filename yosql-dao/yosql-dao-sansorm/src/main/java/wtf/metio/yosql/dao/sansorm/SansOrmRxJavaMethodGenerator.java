@@ -45,7 +45,17 @@ public final class SansOrmRxJavaMethodGenerator implements RxJavaMethodGenerator
     }
 
     @Override
+    public MethodSpec rxJavaCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
     public MethodSpec rxJavaReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
+    public MethodSpec rxJavaWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 

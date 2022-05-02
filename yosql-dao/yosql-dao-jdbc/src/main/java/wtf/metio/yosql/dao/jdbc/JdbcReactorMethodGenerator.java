@@ -48,6 +48,11 @@ public final class JdbcReactorMethodGenerator implements ReactorMethodGenerator 
     }
 
     @Override
+    public MethodSpec reactorCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
     public MethodSpec reactorReadMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var converter = configuration.resultRowConverter()
                 .or(converters::defaultConverter).orElseThrow();
@@ -72,6 +77,11 @@ public final class JdbcReactorMethodGenerator implements ReactorMethodGenerator 
                 .addCode(controlFlow.endTryBlock(3))
                 .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();
+    }
+
+    @Override
+    public MethodSpec reactorWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
     }
 
 }

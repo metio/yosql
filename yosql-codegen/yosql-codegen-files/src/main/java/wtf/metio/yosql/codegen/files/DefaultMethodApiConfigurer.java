@@ -56,10 +56,6 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
 
     // visible for testing
     SqlConfiguration mutiny(final SqlConfiguration configuration) {
-        if (WRITING == configuration.type()) {
-            // TODO: allow Mutiny insert/update statements
-            return SqlConfiguration.copyOf(configuration).withGenerateMutinyApi(false);
-        }
         if (configuration.generateMutinyApi().isEmpty()) {
             return SqlConfiguration.copyOf(configuration).withGenerateMutinyApi(repositories.generateMutinyApi());
         }
@@ -68,10 +64,6 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
 
     // visible for testing
     SqlConfiguration reactor(final SqlConfiguration configuration) {
-        if (WRITING == configuration.type()) {
-            // TODO: allow Reactor insert/update statements
-            return SqlConfiguration.copyOf(configuration).withGenerateReactorApi(false);
-        }
         if (configuration.generateReactorApi().isEmpty()) {
             return SqlConfiguration.copyOf(configuration).withGenerateReactorApi(repositories.generateReactorApi());
         }
@@ -80,10 +72,6 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
 
     // visible for testing
     SqlConfiguration rxJava(final SqlConfiguration configuration) {
-        if (WRITING == configuration.type()) {
-            // TODO: allow RxJava insert/update statements
-            return SqlConfiguration.copyOf(configuration).withGenerateRxJavaApi(false);
-        }
         if (configuration.generateRxJavaApi().isEmpty()) {
             return SqlConfiguration.copyOf(configuration).withGenerateRxJavaApi(repositories.generateRxJavaApi());
         }

@@ -11,6 +11,7 @@ import com.squareup.javapoet.FieldSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Generates fields and static initializers for those.
@@ -23,7 +24,7 @@ public interface FieldsGenerator {
      * @param statements The statements to use.
      * @return The static initializer for the given statements.
      */
-    CodeBlock staticInitializer(List<SqlStatement> statements);
+    Optional<CodeBlock> staticInitializer(List<SqlStatement> statements);
 
     /**
      * Creates the field specifications for a class based on a number of {@link SqlStatement}s.

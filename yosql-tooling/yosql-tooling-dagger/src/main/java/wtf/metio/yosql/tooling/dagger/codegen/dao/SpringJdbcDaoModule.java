@@ -70,17 +70,30 @@ public class SpringJdbcDaoModule {
     @SpringJDBC
     ConstructorGenerator provideConstructorGenerator(
             final GenericBlocks blocks,
-            final Methods methods) {
-        return new SpringJdbcConstructorGenerator(blocks, methods);
+            final Methods methods,
+            final RuntimeConfiguration runtimeConfiguration,
+            final SpringJdbcParameters parameters) {
+        return new SpringJdbcConstructorGenerator(
+                blocks,
+                methods,
+                runtimeConfiguration.repositories(),
+                parameters,
+                runtimeConfiguration.names());
     }
 
     @Provides
     @SpringJDBC
     FieldsGenerator provideFieldsGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
             final Fields fields,
             @Delegating final LoggingGenerator logging,
             final Javadoc javadoc) {
-        return new SpringJdbcFieldsGenerator(fields, logging, javadoc);
+        return new SpringJdbcFieldsGenerator(
+                fields,
+                logging,
+                javadoc,
+                runtimeConfiguration.converter(),
+                runtimeConfiguration.names());
     }
 
     @Provides

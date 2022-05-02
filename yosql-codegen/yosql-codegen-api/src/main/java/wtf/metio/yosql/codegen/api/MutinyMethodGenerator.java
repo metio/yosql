@@ -18,6 +18,15 @@ import java.util.List;
 public interface MutinyMethodGenerator {
 
     /**
+     * Creates a Mutiny based method for calling a procedure in a database.
+     *
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
+     * @return A Mutiny based call method.
+     */
+    MethodSpec mutinyCallMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
+
+    /**
      * Creates a Mutiny based method for reading data out of a database.
      *
      * @param configuration    The configuration to use.
@@ -25,5 +34,14 @@ public interface MutinyMethodGenerator {
      * @return A Mutiny based read method.
      */
     MethodSpec mutinyReadMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
+
+    /**
+     * Creates a Mutiny based method for writing data out of a database.
+     *
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
+     * @return A Mutiny based write method.
+     */
+    MethodSpec mutinyWriteMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
 
 }

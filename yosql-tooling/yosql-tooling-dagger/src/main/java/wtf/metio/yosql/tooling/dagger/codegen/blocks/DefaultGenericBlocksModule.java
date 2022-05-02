@@ -41,7 +41,7 @@ public class DefaultGenericBlocksModule {
 
     @Provides
     public Fields provideFields(final AnnotationGenerator annotations, final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultFields(annotations, runtimeConfiguration.java());
+        return new DefaultFields(annotations, runtimeConfiguration.java(), runtimeConfiguration.names());
     }
 
     @Provides

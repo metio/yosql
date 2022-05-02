@@ -11,8 +11,8 @@ import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.annotations.Delegating;
 import wtf.metio.yosql.codegen.api.CodeGenerator;
+import wtf.metio.yosql.codegen.api.ConverterGenerator;
 import wtf.metio.yosql.codegen.api.RepositoryGenerator;
-import wtf.metio.yosql.codegen.api.UtilitiesGenerator;
 import wtf.metio.yosql.codegen.blocks.DefaultCodeGenerator;
 import wtf.metio.yosql.tooling.dagger.codegen.blocks.DefaultGenericBlocksModule;
 import wtf.metio.yosql.tooling.dagger.codegen.dao.DefaultDaoModule;
@@ -34,8 +34,8 @@ public class DefaultCodeGeneratorModule {
     @Singleton
     CodeGenerator provideCodeGenerator(
             final @Delegating RepositoryGenerator repositoryGenerator,
-            final UtilitiesGenerator utilitiesGenerator) {
-        return new DefaultCodeGenerator(repositoryGenerator, utilitiesGenerator);
+            final ConverterGenerator converterGenerator) {
+        return new DefaultCodeGenerator(repositoryGenerator, converterGenerator);
     }
 
 }

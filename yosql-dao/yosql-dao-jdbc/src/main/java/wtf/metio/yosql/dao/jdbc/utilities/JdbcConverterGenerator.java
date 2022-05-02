@@ -6,7 +6,7 @@
  */
 package wtf.metio.yosql.dao.jdbc.utilities;
 
-import wtf.metio.yosql.codegen.api.UtilitiesGenerator;
+import wtf.metio.yosql.codegen.api.ConverterGenerator;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -14,7 +14,7 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 import java.util.List;
 import java.util.stream.Stream;
 
-public final class JdbcUtilitiesGenerator implements UtilitiesGenerator {
+public final class JdbcConverterGenerator implements ConverterGenerator {
 
     private final FlowStateGenerator flowStateGenerator;
     private final ResultStateGenerator resultStateGenerator;
@@ -22,7 +22,7 @@ public final class JdbcUtilitiesGenerator implements UtilitiesGenerator {
     private final ResultRowGenerator resultRowGenerator;
     private final ConverterConfiguration converters;
 
-    public JdbcUtilitiesGenerator(
+    public JdbcConverterGenerator(
             final FlowStateGenerator flowStateGenerator,
             final ResultStateGenerator resultStateGenerator,
             final ToResultRowConverterGenerator toResultRowConverterGenerator,
@@ -36,7 +36,7 @@ public final class JdbcUtilitiesGenerator implements UtilitiesGenerator {
     }
 
     @Override
-    public Stream<PackagedTypeSpec> generateUtilities(final List<SqlStatement> allStatements) {
+    public Stream<PackagedTypeSpec> generateConverterClasses(final List<SqlStatement> allStatements) {
         PackagedTypeSpec resultStateClass = null;
         PackagedTypeSpec flowStateClass = null;
         PackagedTypeSpec toResultRowConverterClass = null;

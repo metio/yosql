@@ -128,9 +128,9 @@
                             <repositories>
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.jul.persistence</basePackageName>
                             </repositories>
-                            <jdbc>
-                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.jul.persistence.util</utilityPackageName>
-                            </jdbc>
+                            <converter>
+                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.jul.persistence.util</converterPackageName>
+                            </converter>
                         </configuration>
                     </execution>
                     <execution>
@@ -149,9 +149,9 @@
                             <repositories>
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.log4j.persistence</basePackageName>
                             </repositories>
-                            <jdbc>
-                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.log4j.persistence.util</utilityPackageName>
-                            </jdbc>
+                            <converter>
+                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.log4j.persistence.util</converterPackageName>
+                            </converter>
                         </configuration>
                     </execution>
                     <execution>
@@ -170,9 +170,9 @@
                             <repositories>
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.noop.persistence</basePackageName>
                             </repositories>
-                            <jdbc>
-                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.noop.persistence.util</utilityPackageName>
-                            </jdbc>
+                            <converter>
+                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.noop.persistence.util</converterPackageName>
+                            </converter>
                         </configuration>
                     </execution>
                     <execution>
@@ -191,9 +191,9 @@
                             <repositories>
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.slf4j.persistence</basePackageName>
                             </repositories>
-                            <jdbc>
-                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.util</utilityPackageName>
-                            </jdbc>
+                            <converter>
+                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.util</converterPackageName>
+                            </converter>
                         </configuration>
                     </execution>
                     <execution>
@@ -212,9 +212,9 @@
                             <repositories>
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.tinylog.persistence</basePackageName>
                             </repositories>
-                            <jdbc>
-                                <utilityPackageName>wtf.metio.yosql.benchmark.jdbc.tinylog.persistence.util</utilityPackageName>
-                            </jdbc>
+                            <converter>
+                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.tinylog.persistence.util</converterPackageName>
+                            </converter>
                         </configuration>
                     </execution>
                 </executions>

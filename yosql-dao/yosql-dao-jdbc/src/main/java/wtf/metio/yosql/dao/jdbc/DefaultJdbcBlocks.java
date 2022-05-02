@@ -12,6 +12,7 @@ import io.reactivex.Flowable;
 import io.smallrye.mutiny.Multi;
 import reactor.core.publisher.Flux;
 import wtf.metio.yosql.codegen.api.ControlFlows;
+import wtf.metio.yosql.codegen.api.Fields;
 import wtf.metio.yosql.codegen.api.Variables;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
@@ -39,7 +40,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     private final ControlFlows controlFlows;
     private final NamesConfiguration names;
     private final Variables variables;
-    private final JdbcFields jdbcFields;
+    private final Fields fields;
     private final JdbcMethods jdbcMethods;
     private final LoggingGenerator logging;
 
@@ -48,7 +49,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             final GenericBlocks blocks,
             final ControlFlows controlFlows,
             final Variables variables,
-            final JdbcFields jdbcFields,
+            final Fields fields,
             final JdbcMethods jdbcMethods,
             final LoggingGenerator logging) {
         this.runtimeConfiguration = runtimeConfiguration;
@@ -56,7 +57,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         this.names = runtimeConfiguration.names();
         this.variables = variables;
         this.controlFlows = controlFlows;
-        this.jdbcFields = jdbcFields;
+        this.fields = fields;
         this.jdbcMethods = jdbcMethods;
         this.logging = logging;
     }
@@ -196,7 +197,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .map(SqlStatement::getConfiguration)
                     .filter(config -> Objects.nonNull(config.vendor()))
                     .forEach(config -> {
-                        final var query = jdbcFields.constantSqlStatementFieldName(config);
+                        final var query = fields.constantSqlStatementFieldName(config);
                         builder.add("case $S:\n", config.vendor())
                                 .addStatement("$>$N = $N", names.query(), query)
                                 .add(logging.vendorQueryPicked(query));
@@ -208,7 +209,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .findFirst();
             if (firstConfigWithoutVendor.isPresent()) {
                 final var config = firstConfigWithoutVendor.get();
-                final var query = jdbcFields.constantSqlStatementFieldName(config);
+                final var query = fields.constantSqlStatementFieldName(config);
                 builder.add("default:\n")
                         .addStatement("$>$N = $N", names.query(), query)
                         .add(logging.vendorQueryPicked(query));
@@ -221,17 +222,17 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             builder.endControlFlow();
         } else {
             final var config = sqlStatements.get(0).getConfiguration();
-            final var query = jdbcFields.constantSqlStatementFieldName(config);
+            final var query = fields.constantSqlStatementFieldName(config);
             builder.addStatement(variables.inline(String.class, names.query(), "$N", query))
                     .add(logging.queryPicked(query));
             if (logging.isEnabled()) {
-                final var rawQuery = jdbcFields.constantRawSqlStatementFieldName(config);
+                final var rawQuery = fields.constantRawSqlStatementFieldName(config);
                 builder.addStatement(variables.inline(String.class, names.rawQuery(), "$N", rawQuery));
             }
             if (Buckets.hasEntries(config.parameters())) {
-                final var indexFieldName = jdbcFields.constantSqlStatementParameterIndexFieldName(config);
+                final var indexFieldName = fields.constantSqlStatementParameterIndexFieldName(config);
                 builder.addStatement(variables.inline(TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
-                                names.indexVariable(),"$N", indexFieldName))
+                                names.indexVariable(), "$N", indexFieldName))
                         .add(logging.indexPicked(indexFieldName));
             }
         }
@@ -240,11 +241,11 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     private void finalizeCase(final CodeBlock.Builder builder, final SqlConfiguration config) {
         if (logging.isEnabled()) {
-            final var rawQuery = jdbcFields.constantRawSqlStatementFieldName(config);
+            final var rawQuery = fields.constantRawSqlStatementFieldName(config);
             builder.addStatement("$N = $N", names.rawQuery(), rawQuery);
         }
         if (Buckets.hasEntries(config.parameters())) {
-            final var indexName = jdbcFields.constantSqlStatementParameterIndexFieldName(config);
+            final var indexName = fields.constantSqlStatementParameterIndexFieldName(config);
             builder.addStatement("$N = $N", names.indexVariable(), indexName)
                     .add(logging.vendorIndexPicked(indexName));
         }
@@ -261,14 +262,12 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .flatMap(Collection::stream)
                     .forEach(parameter -> {
                         if (TypeGuesser.guessTypeName(parameter.type()).isPrimitive()) {
-                            builder
-                                    .add("\n$>.replace($S, $T.valueOf($N))$<", ":" + parameter.name(),
-                                            String.class, parameter.name());
+                            builder.add("\n$>.replace($S, $T.valueOf($N))$<", ":" + parameter.name(),
+                                    String.class, parameter.name());
                         } else {
-                            builder
-                                    .add("\n$>.replace($S, $N == null ? $S : $N.toString())$<",
-                                            ":" + parameter.name(), parameter.name(), "null",
-                                            parameter.name());
+                            builder.add("\n$>.replace($S, $N == null ? $S : $N.toString())$<",
+                                    ":" + parameter.name(), parameter.name(), "null",
+                                    parameter.name());
                         }
                     });
             builder.add(";\n");
@@ -288,14 +287,12 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .flatMap(Collection::stream)
                     .forEach(parameter -> {
                         if (TypeGuesser.guessTypeName(parameter.type()).isPrimitive()) {
-                            builder
-                                    .add("\n$>.replace($S, $T.toString($N))$<", ":" + parameter.name(),
-                                            Arrays.class, parameter.name());
+                            builder.add("\n$>.replace($S, $T.toString($N))$<", ":" + parameter.name(),
+                                    Arrays.class, parameter.name());
                         } else {
-                            builder
-                                    .add("\n$>.replace($S, $N == null ? $S : $T.toString($N))$<",
-                                            ":" + parameter.name(), parameter.name(), "null",
-                                            Arrays.class, parameter.name());
+                            builder.add("\n$>.replace($S, $N == null ? $S : $T.toString($N))$<",
+                                    ":" + parameter.name(), parameter.name(), "null",
+                                    Arrays.class, parameter.name());
                         }
                     });
             builder.add(";\n");

@@ -11,21 +11,29 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
+import java.util.List;
+
 public class DefaultSpringJdbcBlocks implements SpringJdbcBlocks {
 
     @Override
     public CodeBlock returnAsList(final ParameterizedTypeName listOfResults, final String converterAlias) {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("return $T.of()", List.class)
+                .build();
     }
 
     @Override
     public CodeBlock returnAsFirst(final TypeName resultType, final String converterAlias) {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("return null")
+                .build();
     }
 
     @Override
     public CodeBlock returnAsOne(final TypeName resultType, final String converterAlias) {
-        return CodeBlock.builder().build();
+        return CodeBlock.builder()
+                .addStatement("return null")
+                .build();
     }
 
 }

@@ -18,6 +18,15 @@ import java.util.List;
 public interface ReactorMethodGenerator {
 
     /**
+     * Creates a Reactor based method for calling a procedure in a database.
+     *
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
+     * @return A Reactor based call method.
+     */
+    MethodSpec reactorCallMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
+
+    /**
      * Creates a Reactor based method for reading data out of a database.
      *
      * @param configuration    The configuration to use.
@@ -25,5 +34,14 @@ public interface ReactorMethodGenerator {
      * @return A Reactor based read method.
      */
     MethodSpec reactorReadMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
+
+    /**
+     * Creates a Reactor based method for writing data out of a database.
+     *
+     * @param configuration    The configuration to use.
+     * @param vendorStatements The vendor statements to use.
+     * @return A Reactor based write method.
+     */
+    MethodSpec reactorWriteMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
 
 }

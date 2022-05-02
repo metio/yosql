@@ -9,8 +9,12 @@ package wtf.metio.yosql.tooling.dagger.codegen.blocks;
 
 import dagger.Module;
 import dagger.Provides;
+import wtf.metio.yosql.codegen.api.Parameters;
 import wtf.metio.yosql.dao.spring.jdbc.DefaultSpringJdbcBlocks;
+import wtf.metio.yosql.dao.spring.jdbc.DefaultSpringJdbcParameters;
 import wtf.metio.yosql.dao.spring.jdbc.SpringJdbcBlocks;
+import wtf.metio.yosql.dao.spring.jdbc.SpringJdbcParameters;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 @Module
 public class DefaultSpringJdbcBlocksModule {
@@ -18,6 +22,13 @@ public class DefaultSpringJdbcBlocksModule {
     @Provides
     public SpringJdbcBlocks provideSpringJdbcBlocks() {
         return new DefaultSpringJdbcBlocks();
+    }
+
+    @Provides
+    public SpringJdbcParameters provideSpringJdbcParameters(
+            final RuntimeConfiguration runtimeConfiguration,
+            final Parameters parameters) {
+        return new DefaultSpringJdbcParameters(parameters, runtimeConfiguration.names());
     }
 
 }

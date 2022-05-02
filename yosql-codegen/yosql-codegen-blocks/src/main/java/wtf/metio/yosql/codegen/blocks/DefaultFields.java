@@ -12,19 +12,30 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.codegen.api.AnnotationGenerator;
 import wtf.metio.yosql.codegen.api.Fields;
+import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import javax.lang.model.element.Modifier;
 import java.lang.reflect.Type;
 
 public final class DefaultFields implements Fields {
 
+    private static final String NAME_REGEX = "([a-z])([A-Z])";
+    private static final String NAME_REPLACEMENT = "$1_$2";
+
     private final AnnotationGenerator annotations;
     private final JavaConfiguration java;
+    private final NamesConfiguration names;
 
-    public DefaultFields(final AnnotationGenerator annotations, final JavaConfiguration java) {
+    public DefaultFields(
+            final AnnotationGenerator annotations,
+            final JavaConfiguration java,
+            final NamesConfiguration names) {
         this.annotations = annotations;
         this.java = java;
+        this.names = names;
     }
 
     @Override
@@ -55,9 +66,9 @@ public final class DefaultFields implements Fields {
     public CodeBlock initialize(final String statement) {
         if (java.useTextBlocks()) {
             return CodeBlock.builder()
-                    .add("\"\"\"\n")
-                    .add("$L", statement)
                     .add("\"\"\"")
+                    .add("$>$>\n$L", statement)
+                    .add("\"\"\"$<$<")
                     .build();
         }
         return CodeBlock.builder()
@@ -68,6 +79,30 @@ public final class DefaultFields implements Fields {
     private FieldSpec.Builder builder(final TypeName type, final String name) {
         return FieldSpec.builder(type, name)
                 .addAnnotations(annotations.generatedField());
+    }
+
+    @Override
+    public String constantSqlStatementFieldName(final SqlConfiguration configuration) {
+        return configuration.name()
+                .replaceAll(NAME_REGEX, NAME_REPLACEMENT)
+                .toUpperCase()
+                + getVendor(configuration);
+    }
+
+    @Override
+    public String constantRawSqlStatementFieldName(final SqlConfiguration configuration) {
+        return constantSqlStatementFieldName(configuration) + names.rawSuffix();
+    }
+
+    @Override
+    public String constantSqlStatementParameterIndexFieldName(final SqlConfiguration configuration) {
+        return constantSqlStatementFieldName(configuration) + names.indexSuffix();
+    }
+
+    private static String getVendor(final SqlConfiguration configuration) {
+        return Strings.isBlank(configuration.vendor())
+                ? ""
+                : "_" + configuration.vendor().replace(" ", "_").toUpperCase();
     }
 
 }

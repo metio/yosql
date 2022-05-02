@@ -12,9 +12,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.testing.configs.AnnotationsConfigurations;
 import wtf.metio.yosql.testing.configs.ApiConfigurations;
 import wtf.metio.yosql.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.testing.configs.NamesConfigurations;
 
 @DisplayName("DefaultFields")
 class DefaultFieldsTest {
@@ -23,7 +25,10 @@ class DefaultFieldsTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultFields(new DefaultAnnotationGenerator(AnnotationsConfigurations.defaults(), ApiConfigurations.defaults()), JavaConfigurations.defaults());
+        generator = new DefaultFields(
+                new DefaultAnnotationGenerator(AnnotationsConfigurations.defaults(), ApiConfigurations.defaults()),
+                JavaConfigurations.defaults(),
+                NamesConfigurations.defaults());
     }
 
     @Test
@@ -48,6 +53,84 @@ class DefaultFieldsTest {
                 )
                 private final boolean test;
                 """, generator.field(TypeName.BOOLEAN, "test").toString());
+    }
+
+    @Test
+    void constantSqlStatementFieldName() {
+        // given
+        final var config = SqlConfiguration.usingDefaults().setName("test").build();
+
+        // when
+        final var constant = generator.constantSqlStatementFieldName(config);
+
+        // then
+        Assertions.assertEquals("""
+                TEST""", constant);
+    }
+
+    @Test
+    void constantSqlStatementFieldNameWithVendor() {
+        // given
+        final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
+
+        // when
+        final var constant = generator.constantSqlStatementFieldName(config);
+
+        // then
+        Assertions.assertEquals("""
+                TEST_MYDB""", constant);
+    }
+
+    @Test
+    void constantRawSqlStatementFieldName() {
+        // given
+        final var config = SqlConfiguration.usingDefaults().setName("test").build();
+
+        // when
+        final var constant = generator.constantRawSqlStatementFieldName(config);
+
+        // then
+        Assertions.assertEquals("""
+                TEST_RAW""", constant);
+    }
+
+    @Test
+    void constantRawSqlStatementFieldNameWithVendor() {
+        // given
+        final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
+
+        // when
+        final var constant = generator.constantRawSqlStatementFieldName(config);
+
+        // then
+        Assertions.assertEquals("""
+                TEST_MYDB_RAW""", constant);
+    }
+
+    @Test
+    void constantSqlStatementParameterIndexFieldName() {
+        // given
+        final var config = SqlConfiguration.usingDefaults().setName("test").build();
+
+        // when
+        final var constant = generator.constantSqlStatementParameterIndexFieldName(config);
+
+        // then
+        Assertions.assertEquals("""
+                TEST_INDEX""", constant);
+    }
+
+    @Test
+    void constantSqlStatementParameterIndexFieldNameWithVendor() {
+        // given
+        final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
+
+        // when
+        final var constant = generator.constantSqlStatementParameterIndexFieldName(config);
+
+        // then
+        Assertions.assertEquals("""
+                TEST_MYDB_INDEX""", constant);
     }
 
 }

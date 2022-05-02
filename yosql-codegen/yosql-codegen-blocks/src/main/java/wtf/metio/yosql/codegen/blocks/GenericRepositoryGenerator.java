@@ -67,13 +67,13 @@ public final class GenericRepositoryGenerator implements RepositoryGenerator {
             final String repositoryName,
             final List<SqlStatement> sqlStatements) {
         final var className = ClassName.bestGuess(repositoryName);
-        final var repository = classes.publicClass(className)
+        final var classBuilder = classes.publicClass(className)
                 .addJavadoc(javadoc.repositoryJavadoc(sqlStatements))
                 .addFields(fields.asFields(sqlStatements))
                 .addMethods(methods.asMethods(sqlStatements))
-                .addAnnotations(annotations.generatedClass())
-                .addStaticBlock(fields.staticInitializer(sqlStatements))
-                .build();
+                .addAnnotations(annotations.generatedClass());
+        fields.staticInitializer(sqlStatements).ifPresent(classBuilder::addStaticBlock);
+        final var repository = classBuilder.build();
         logger.debug(CodegenLifecycle.TYPE_GENERATED, className.packageName(), className.simpleName());
         return PackagedTypeSpec.of(repository, className.packageName());
     }

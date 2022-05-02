@@ -48,6 +48,11 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
     }
 
     @Override
+    public MethodSpec rxJavaCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
     public MethodSpec rxJavaReadMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var converter = configuration.resultRowConverter()
                 .or(converters::defaultConverter).orElseThrow();
@@ -72,6 +77,11 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                 .addCode(controlFlow.endTryBlock(3))
                 .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();
+    }
+
+    @Override
+    public MethodSpec rxJavaWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
     }
 
 }

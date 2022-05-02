@@ -43,12 +43,7 @@ public final class JdbcObjectMother {
                 NamesConfigurations.defaults(),
                 LoggingObjectMother.loggingGenerator(),
                 Blocks.javadoc(),
-                Blocks.fields(java),
-                jdbcFields());
-    }
-
-    public static DefaultJdbcFields jdbcFields() {
-        return new DefaultJdbcFields(NamesConfigurations.defaults());
+                Blocks.fields(java));
     }
 
     public static ConstructorGenerator constructorGenerator(final JavaConfiguration java) {
@@ -74,7 +69,7 @@ public final class JdbcObjectMother {
                 Blocks.genericBlocks(),
                 Blocks.controlFlows(java),
                 Blocks.variables(java),
-                jdbcFields(),
+                Blocks.fields(java),
                 jdbcMethods(),
                 LoggingObjectMother.loggingGenerator());
     }

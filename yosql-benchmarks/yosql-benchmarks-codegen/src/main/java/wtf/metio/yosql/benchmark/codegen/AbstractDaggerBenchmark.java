@@ -10,9 +10,8 @@ import org.openjdk.jmh.annotations.Setup;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.ApiConfiguration;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
-import wtf.metio.yosql.models.immutables.JdbcConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
-import wtf.metio.yosql.models.sql.ResultRowConverter;
+import wtf.metio.yosql.testing.configs.ConverterConfigurations;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
 /**
@@ -38,19 +37,13 @@ abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
      * @return Fully configured runtime configuration.
      */
     private RuntimeConfiguration config() {
-        final var jdbcDefaults = JdbcConfiguration.usingDefaults().build();
         return RuntimeConfiguration.usingDefaults()
                 .setFiles(FilesConfiguration.usingDefaults()
                         .setInputBaseDirectory(inputDirectory)
                         .setOutputBaseDirectory(outputDirectory)
                         .build())
                 .setApi(apiConfig())
-                .setJdbc(jdbcDefaults.withDefaultConverter(ResultRowConverter.builder()
-                        .setAlias("resultRow")
-                        .setConverterType(jdbcDefaults.utilityPackageName() + ".ToResultRowConverter")
-                        .setMethodName("apply")
-                        .setResultType(jdbcDefaults.utilityPackageName() + "." + jdbcDefaults.resultRowClassName())
-                        .build()))
+                .setConverter(ConverterConfigurations.withResultRowConverter())
                 .build();
     }
 

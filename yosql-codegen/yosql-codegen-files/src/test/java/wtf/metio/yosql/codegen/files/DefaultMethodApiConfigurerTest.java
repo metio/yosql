@@ -86,17 +86,6 @@ class DefaultMethodApiConfigurerTest {
     }
 
     @Test
-    void mutinyForcedDisabledForWrites() {
-        final var original = SqlConfiguration.usingDefaults()
-                .setGenerateMutinyApi(true)
-                .setType(SqlType.WRITING)
-                .build();
-        final var adapted = configurer.mutiny(original);
-        assertTrue(adapted.generateMutinyApi().isPresent());
-        assertFalse(adapted.generateMutinyApi().get());
-    }
-
-    @Test
     void mutinyChangedToRepositoryDefault() {
         final var original = SqlConfiguration.usingDefaults()
                 // .setGenerateMutinyApi(true) // value is NOT set
@@ -116,17 +105,6 @@ class DefaultMethodApiConfigurerTest {
     }
 
     @Test
-    void reactorForcedDisabledForWrites() {
-        final var original = SqlConfiguration.usingDefaults()
-                .setGenerateReactorApi(true)
-                .setType(SqlType.WRITING)
-                .build();
-        final var adapted = configurer.reactor(original);
-        assertTrue(adapted.generateReactorApi().isPresent());
-        assertFalse(adapted.generateReactorApi().get());
-    }
-
-    @Test
     void reactorChangedToRepositoryDefault() {
         final var original = SqlConfiguration.usingDefaults()
                 // .setGenerateReactorApi(true) // value is NOT set
@@ -143,17 +121,6 @@ class DefaultMethodApiConfigurerTest {
                 .build();
         final var adapted = configurer.rxJava(original);
         assertEquals(original.generateRxJavaApi(), adapted.generateRxJavaApi());
-    }
-
-    @Test
-    void rxJavaForcedDisabledForWrites() {
-        final var original = SqlConfiguration.usingDefaults()
-                .setGenerateRxJavaApi(true)
-                .setType(SqlType.WRITING)
-                .build();
-        final var adapted = configurer.rxJava(original);
-        assertTrue(adapted.generateRxJavaApi().isPresent());
-        assertFalse(adapted.generateRxJavaApi().get());
     }
 
     @Test

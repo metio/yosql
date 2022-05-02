@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -62,25 +61,30 @@ public final class DelegatingMethodsGenerator implements MethodsGenerator {
 
         methods.add(constructor.forRepository(statements));
 
-        addMethods(statements, SqlStatement::shouldGenerateBlockingReadAPI, blockingMethods::blockingReadMethod, methods::add);
-        addMethods(statements, SqlStatement::shouldGenerateBlockingWriteAPI, blockingMethods::blockingWriteMethod, methods::add);
-        addMethods(statements, SqlStatement::shouldGenerateBlockingCallAPI, blockingMethods::blockingCallMethod, methods::add);
-        addMethods(statements, SqlStatement::shouldGenerateBatchWriteAPI, batchMethods::batchWriteMethod, methods::add);
-        addMethods(statements, SqlStatement::shouldGenerateStreamEagerReadAPI, streamMethods::streamEagerReadMethod, methods::add);
-        addMethods(statements, SqlStatement::shouldGenerateStreamLazyReadAPI, streamMethods::streamLazyReadMethod, methods::add);
-        addMethods(statements, SqlStatement::shouldGenerateRxJavaReadAPI, rxjavaMethods::rxJavaReadMethod, methods::add);
-        addMethods(statements, SqlStatement::shouldGenerateReactorReadAPI, reactorMethods::reactorReadMethod, methods::add);
-        addMethods(statements, SqlStatement::shouldGenerateMutinyReadAPI, mutinyMethods::mutinyReadMethod, methods::add);
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBatchWriteAPI, batchMethods::batchWriteMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingCallAPI, blockingMethods::blockingCallMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingReadAPI, blockingMethods::blockingReadMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingWriteAPI, blockingMethods::blockingWriteMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateMutinyCallAPI, mutinyMethods::mutinyCallMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateMutinyReadAPI, mutinyMethods::mutinyReadMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateMutinyWriteAPI, mutinyMethods::mutinyWriteMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateRxJavaCallAPI, rxjavaMethods::rxJavaCallMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateRxJavaReadAPI, rxjavaMethods::rxJavaReadMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateRxJavaWriteAPI, rxjavaMethods::rxJavaWriteMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateReactorCallAPI, reactorMethods::reactorCallMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateReactorReadAPI, reactorMethods::reactorReadMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateReactorWriteAPI, reactorMethods::reactorWriteMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateStreamEagerReadAPI, streamMethods::streamEagerReadMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateStreamLazyReadAPI, streamMethods::streamLazyReadMethod));
 
         return methods;
     }
 
-    private static void addMethods(
+    private static List<MethodSpec> asMethods(
             final List<SqlStatement> statements,
             final Predicate<SqlStatement> filter,
-            final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> generator,
-            final Consumer<MethodSpec> aggregator) {
-        statements.stream()
+            final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> generator) {
+        return statements.stream()
                 .filter(filter)
                 .collect(SqlStatement.groupByName())
                 .values()
@@ -88,7 +92,7 @@ public final class DelegatingMethodsGenerator implements MethodsGenerator {
                 .map(statementsInRepository -> generator.apply(
                         SqlConfiguration.fromStatements(statementsInRepository), statementsInRepository))
                 .filter(Objects::nonNull)
-                .forEach(aggregator);
+                .toList();
     }
 
 }

@@ -20,4 +20,14 @@ public final class SpringDataJdbcMutinyMethodGenerator implements MutinyMethodGe
         return null;
     }
 
+    @Override
+    public MethodSpec mutinyWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
+    @Override
+    public MethodSpec mutinyCallMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+        return null;
+    }
+
 }

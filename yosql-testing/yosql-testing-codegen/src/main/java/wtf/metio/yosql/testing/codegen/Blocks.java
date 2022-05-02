@@ -49,7 +49,7 @@ public final class Blocks {
     }
 
     public static Fields fields(final JavaConfiguration java) {
-        return new DefaultFields(annotationGenerator(), java);
+        return new DefaultFields(annotationGenerator(), java, NamesConfigurations.defaults());
     }
 
     public static Variables variables() {
