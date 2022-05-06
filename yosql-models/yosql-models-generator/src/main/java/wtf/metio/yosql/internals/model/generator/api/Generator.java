@@ -63,8 +63,7 @@ public interface Generator extends Function<ConfigurationGroup, Stream<TypeSpec>
         return builder.build();
     }
 
-    @Deprecated // TODO: remove usage in Gradle
-    default boolean resultRowConverter(final ConfigurationSetting setting) {
+    default boolean usesRowConverters(final ConfigurationSetting setting) {
         return usesResultRowConverter(setting) || usesResultRowConverters(setting);
     }
 

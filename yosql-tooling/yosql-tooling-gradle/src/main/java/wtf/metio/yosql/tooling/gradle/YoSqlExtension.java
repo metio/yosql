@@ -1,6 +1,6 @@
 /*
  * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
- * directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+ * directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
@@ -34,10 +34,10 @@ public abstract class YoSqlExtension {
     public abstract Files getFiles();
 
     /**
-     * @return The JDBC configuration.
+     * @return The converter configuration.
      */
     @Nested
-    public abstract Jdbc getJdbc();
+    public abstract Converter getConverter();
 
     /**
      * @return The Java configuration.
@@ -79,10 +79,10 @@ public abstract class YoSqlExtension {
     }
 
     /**
-     * @param action The JDBC config to apply.
+     * @param action The converter config to apply.
      */
-    public void jdbc(Action<? super Jdbc> action) {
-        action.execute(getJdbc());
+    public void converter(Action<? super Converter> action) {
+        action.execute(getConverter());
     }
 
     /**

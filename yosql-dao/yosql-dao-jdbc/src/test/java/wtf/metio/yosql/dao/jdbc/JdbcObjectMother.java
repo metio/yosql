@@ -148,8 +148,8 @@ public final class JdbcObjectMother {
                 jdbcBlocks(java));
     }
 
-    public static DefaultJdbcTransformer jdbcTransformer() {
-        return new DefaultJdbcTransformer();
+    public static JdbcMethodExceptionHandler jdbcTransformer() {
+        return new JdbcMethodExceptionHandler();
     }
 
     public static DelegatingMethodsGenerator delegatingMethodsGenerator(final JavaConfiguration java) {

@@ -11,10 +11,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.codegen.api.ControlFlows;
-import wtf.metio.yosql.codegen.api.Java8StreamMethodGenerator;
-import wtf.metio.yosql.codegen.api.Methods;
-import wtf.metio.yosql.codegen.api.Parameters;
+import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
@@ -38,7 +35,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
     private final Parameters parameters;
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbc;
-    private final JdbcTransformer transformer;
+    private final MethodExceptionHandler exceptions;
 
     public JdbcJava8StreamMethodGenerator(
             final ConverterConfiguration converters,
@@ -49,13 +46,13 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
             final Parameters parameters,
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
-            final JdbcTransformer transformer) {
+            final MethodExceptionHandler exceptions) {
         this.converters = converters;
         this.names = names;
         this.logging = logging;
         this.blocks = blocks;
         this.jdbc = jdbc;
-        this.transformer = transformer;
+        this.exceptions = exceptions;
         this.controlFlow = controlFlow;
         this.methods = methods;
         this.parameters = parameters;
@@ -73,7 +70,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
         return methods.streamEagerMethod(configuration.streamEagerName(), statements)
                 .returns(streamOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addExceptions(transformer.sqlException(configuration))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository(), configuration.streamEagerName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
@@ -101,7 +98,7 @@ public final class JdbcJava8StreamMethodGenerator implements Java8StreamMethodGe
         return methods.streamLazyMethod(configuration.streamLazyName(), statements)
                 .returns(streamOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addExceptions(transformer.sqlException(configuration))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository(), configuration.streamLazyName()))
                 .addCode(controlFlow.maybeTry(configuration))
                 .addStatement(jdbc.connectionVariable())

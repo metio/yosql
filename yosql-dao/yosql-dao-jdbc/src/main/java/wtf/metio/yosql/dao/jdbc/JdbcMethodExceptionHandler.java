@@ -9,15 +9,16 @@ package wtf.metio.yosql.dao.jdbc;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
+import wtf.metio.yosql.codegen.api.MethodExceptionHandler;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.sql.SQLException;
 import java.util.Collections;
 
-public final class DefaultJdbcTransformer implements JdbcTransformer {
+public final class JdbcMethodExceptionHandler implements MethodExceptionHandler {
 
     @Override
-    public Iterable<? extends TypeName> sqlException(final SqlConfiguration configuration) {
+    public Iterable<? extends TypeName> thrownExceptions(final SqlConfiguration configuration) {
         return configuration.catchAndRethrow()
                 .filter(Boolean.TRUE::equals)
                 .map(bool -> Collections.<TypeName>emptyList())

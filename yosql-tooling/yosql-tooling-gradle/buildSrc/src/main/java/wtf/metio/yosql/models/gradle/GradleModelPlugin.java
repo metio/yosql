@@ -1,6 +1,6 @@
 /*
  * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
- * directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+ * directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
@@ -11,6 +11,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.JavaCompile;
 import wtf.metio.yosql.internals.model.generator.ModelGenerator;
@@ -42,16 +43,12 @@ public class GradleModelPlugin implements Plugin<Project> {
     }
 
     private void configureSourceSets(final Project project, final Path outputDirectory) {
-        project.getPlugins().withType(JavaPlugin.class, plugin -> addSourceSet(project, outputDirectory));
-    }
-
-    private void addSourceSet(final Project project, final Path outputDirectory) {
-        project.getConvention()
-                .getPlugin(JavaPluginConvention.class)
+        project.getPlugins().withType(JavaPlugin.class, plugin -> project.getExtensions()
+                .getByType(JavaPluginExtension.class)
                 .getSourceSets()
                 .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
                 .getJava()
-                .srcDir(outputDirectory);
+                .srcDir(outputDirectory));
     }
 
 }

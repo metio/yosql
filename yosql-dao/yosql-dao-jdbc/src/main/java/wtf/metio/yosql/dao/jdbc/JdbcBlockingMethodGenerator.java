@@ -10,10 +10,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.codegen.api.BlockingMethodGenerator;
-import wtf.metio.yosql.codegen.api.ControlFlows;
-import wtf.metio.yosql.codegen.api.Methods;
-import wtf.metio.yosql.codegen.api.Parameters;
+import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
@@ -31,7 +28,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
     private final Parameters parameters;
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbc;
-    private final JdbcTransformer jdbcTransformer;
+    private final MethodExceptionHandler exceptions;
     private final ConverterConfiguration converters;
 
     public JdbcBlockingMethodGenerator(
@@ -40,11 +37,11 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
             final Parameters parameters,
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
-            final JdbcTransformer jdbcTransformer,
+            final MethodExceptionHandler exceptions,
             final ConverterConfiguration converters) {
         this.logging = logging;
         this.jdbc = jdbc;
-        this.jdbcTransformer = jdbcTransformer;
+        this.exceptions = exceptions;
         this.controlFlows = controlFlows;
         this.methods = methods;
         this.parameters = parameters;
@@ -75,7 +72,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
         return methods.blockingMethod(configuration.blockingName(), statements)
                 .returns(resultType)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
@@ -146,7 +143,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
             final BiFunction<T, String, CodeBlock> returner) {
         return methods.blockingMethod(configuration.blockingName(), statements)
                 .returns(resultType)
-                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
@@ -171,7 +168,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
         final var methodName = configuration.name();
         return methods.blockingMethod(methodName, statements)
                 .returns(int.class)
-                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addCode(logging.entering(configuration.repository(), methodName))
                 .addCode(jdbc.openConnection())
@@ -195,7 +192,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
         return methods.blockingMethod(configuration.blockingName(), statements)
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addExceptions(jdbcTransformer.sqlException(configuration))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))

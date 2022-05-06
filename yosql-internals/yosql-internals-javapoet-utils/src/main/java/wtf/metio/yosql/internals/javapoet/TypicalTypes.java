@@ -23,6 +23,8 @@ public final class TypicalTypes {
     public static final ClassName STREAM = ClassName.get("java.util.stream", "Stream");
     public static final ClassName CONSUMER = ClassName.get("java.util.function", "Consumer");
 
+    public static final ClassName INJECT = ClassName.get("javax.inject", "Inject");
+
     public static final ClassName PATH = ClassName.get("java.nio.file", "Path");
     public static final ClassName CHARSET = ClassName.get("java.nio.charset", "Charset");
     public static final ClassName INTEGER = ClassName.get("java.lang", "Integer");
@@ -40,6 +42,7 @@ public final class TypicalTypes {
     public static final ClassName GRADLE_DIRECTORY = ClassName.bestGuess("org.gradle.api.file.DirectoryProperty");
     public static final ClassName GRADLE_LAYOUT = ClassName.bestGuess("org.gradle.api.file.ProjectLayout");
     public static final ClassName GRADLE_OBJECTS = ClassName.bestGuess("org.gradle.api.model.ObjectFactory");
+    public static final ClassName GRADLE_NAMED = ClassName.bestGuess("org.gradle.api.Named");
 
     public static final TypeName ARRAY_OF_INTS = ArrayTypeName.of(int.class);
 

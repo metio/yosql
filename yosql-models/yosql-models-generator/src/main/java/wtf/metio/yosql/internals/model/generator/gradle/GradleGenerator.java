@@ -17,7 +17,6 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.lang.model.element.Modifier;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,56 +32,81 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
 
     @Override
     public Stream<TypeSpec> apply(final ConfigurationGroup group) {
-        return Stream.of(StandardClasses.abstractClass(ClassName.bestGuess(group.name()))
+        if ("Converter".equalsIgnoreCase(group.name())) {
+            return Stream.of(configGroupClass(group),
+                    rowConverterClass(true), rowConverterClass(false));
+        }
+        return Stream.of(configGroupClass(group));
+    }
+
+    private TypeSpec configGroupClass(final ConfigurationGroup group) {
+        return StandardClasses.abstractClass(ClassName.bestGuess(group.name()))
                 .addJavadoc(group.description())
                 .addAnnotations(annotationsFor(group))
                 .addMethods(properties(group))
                 .addMethods(methodsFor(group))
-                .addMethods(rowConverters(group))
                 .addMethod(configureConventions(group))
                 .addMethod(asConfiguration(group, immutablesBasePackage))
-                .build());
+                .build();
+    }
+
+    private TypeSpec rowConverterClass(boolean defaultConverter) {
+        final var gradleStringProperty = TypicalTypes.gradlePropertyOf(TypicalTypes.STRING);
+        final var className = defaultConverter ? "DefaultRowConverter" : "RowConverter";
+        final var classBuilder = StandardClasses.abstractClass(ClassName.bestGuess(className))
+                .addJavadoc("Configures a single ResultRowConverter.")
+                .addMethod(MethodSpec.constructorBuilder()
+                        .addJavadoc("Required by Gradle")
+                        .addAnnotation(TypicalTypes.INJECT)
+                        .addModifiers(Modifier.PUBLIC)
+                        .build());
+        if (defaultConverter) {
+            classBuilder.addMethod(MethodSpec.methodBuilder("getAlias")
+                    .addJavadoc("@return The short alias for the converter.")
+                    .addAnnotation(TypicalTypes.GRADLE_INPUT)
+                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                    .returns(gradleStringProperty)
+                    .build());
+        } else {
+            classBuilder.addSuperinterface(TypicalTypes.GRADLE_NAMED);
+        }
+        return classBuilder
+                .addMethod(MethodSpec.methodBuilder("getConverterType")
+                        .addJavadoc("@return The fully-qualified name of the converter class.")
+                        .addAnnotation(TypicalTypes.GRADLE_INPUT)
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .returns(gradleStringProperty)
+                        .build())
+                .addMethod(MethodSpec.methodBuilder("getMethodName")
+                        .addJavadoc("@return The name of the method to call.")
+                        .addAnnotation(TypicalTypes.GRADLE_INPUT)
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .returns(gradleStringProperty)
+                        .build())
+                .addMethod(MethodSpec.methodBuilder("getResultType")
+                        .addJavadoc("@return The fully-qualified name of the converter class.")
+                        .addAnnotation(TypicalTypes.GRADLE_INPUT)
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .returns(gradleStringProperty)
+                        .build())
+                .addMethod(MethodSpec.methodBuilder("asRowConverter")
+                        .returns(ResultRowConverter.class)
+                        .addStatement(CodeBlock.builder()
+                                .add("return $T.builder()$>", ResultRowConverter.class)
+                                .add(defaultConverter ? "\n.setAlias(getAlias().get())" : "\n.setAlias(getName())")
+                                .add("\n.setConverterType(getConverterType().get())")
+                                .add("\n.setMethodName(getMethodName().get())")
+                                .add("\n.setResultType(getResultType().get())")
+                                .add("\n.build()$<")
+                                .build())
+                        .build())
+                .build();
     }
 
     private List<MethodSpec> properties(final ConfigurationGroup group) {
         return group.settings().stream()
                 .map(this::defaultMethod)
                 .collect(Collectors.toList());
-    }
-
-    private List<MethodSpec> rowConverters(final ConfigurationGroup group) {
-        return group.settings().stream()
-                .filter(this::resultRowConverter)
-                .findFirst()
-                .map(setting -> List.of(createRowConverters(), createDefaultConverter(setting)))
-                .orElse(Collections.emptyList());
-    }
-
-    private MethodSpec createRowConverters() {
-        return MethodSpec.methodBuilder("createRowConverters")
-                .addModifiers(Modifier.PRIVATE)
-                .returns(TypicalTypes.listOf(ResultRowConverter.class))
-                .addStatement(CodeBlock.builder()
-                        .add("return getRowConverters().stream()", Stream.class)
-                        .add("$>\n.map($T::asResultRowConverter)", ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.UserResultRowConverter"))
-                        .add("\n.collect($T.toList())$<", Collectors.class)
-                        .build())
-                .build();
-    }
-
-    private MethodSpec createDefaultConverter(final ConfigurationSetting setting) {
-        final var type = setting.gradleType().orElse(setting.type());
-        return MethodSpec.methodBuilder("createDefaultConverter")
-                .addModifiers(Modifier.PRIVATE)
-                .addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_OBJECTS, "objects", Modifier.FINAL).build())
-                .returns(type)
-                .addStatement("final var defaultConverter = objects.newInstance($T.class)", type)
-                .addStatement("defaultConverter.getAlias().set($S)", "resultRow")
-                .addStatement("defaultConverter.getConverterType().set($S)", "ToResultRowConverter")
-                .addStatement("defaultConverter.getMethodName().set($S)", "apply")
-                .addStatement("defaultConverter.getResultType().set($S)", "ResultRow")
-                .addStatement("return defaultConverter")
-                .build();
     }
 
     private MethodSpec configureConventions(final ConfigurationGroup group) {
@@ -92,7 +116,7 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
                 .findAny()
                 .ifPresent(s -> builder.addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_LAYOUT, "layout").build()));
         group.settings().stream()
-                .filter(this::resultRowConverter)
+                .filter(this::usesRowConverters)
                 .findAny()
                 .ifPresent(s -> builder.addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_OBJECTS, "objects").build()));
         group.settings().stream()
@@ -101,7 +125,7 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
                 .forEach(setting -> builder.addStatement(conventionValue(setting)));
         group.settings().stream()
                 .filter(setting -> "defaultConverter".equals(setting.name()))
-                .forEach(setting -> builder.addStatement(CodeBlock.of("getDefaultConverter().convention(createDefaultConverter(objects))")));
+                .forEach(setting -> builder.addStatement(CodeBlock.of("getDefaultConverter().convention(createRowConverter(objects))")));
         return builder.build();
     }
 
@@ -136,8 +160,8 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
     @Override
     public List<AnnotationSpec> annotationsFor(final ConfigurationSetting setting) {
         return Stream.concat(
-                inputAnnotation(setting),
-                setting.gradleAnnotations().stream())
+                        inputAnnotation(setting),
+                        setting.gradleAnnotations().stream())
                 .toList();
     }
 
@@ -192,16 +216,16 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
         final var configBuilder = CodeBlock.builder()
                 .add("return $T.builder()\n", returnType);
         group.settings().stream()
-                .map(this::fieldConfiguration)
+                .map(this::methodConfiguration)
                 .forEach(configBuilder::add);
         configBuilder.add(".build()");
         return builder.addStatement(configBuilder.build()).build();
     }
 
-    private CodeBlock fieldConfiguration(final ConfigurationSetting setting) {
+    private CodeBlock methodConfiguration(final ConfigurationSetting setting) {
         if (usesResultRowConverter(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($L().get().asResultRowConverter(getUtilityPackageName().get()))\n", Strings.upperCase(setting.name()), propertyName(setting))
+                    .add(".set$L($L().get().asRowConverter())\n", Strings.upperCase(setting.name()), propertyName(setting))
                     .build();
         }
         if (usesResultRowConverters(setting)) {

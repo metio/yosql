@@ -1,6 +1,6 @@
 /*
  * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
- * directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+ * directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
@@ -42,7 +42,7 @@ public abstract class GenerateTask extends DefaultTask {
      * @return The JDBC configuration to use.
      */
     @Input
-    public abstract Property<JdbcConfiguration> getJdbc();
+    public abstract Property<ConverterConfiguration> getConverter();
 
     /**
      * @return The Java configuration to use.
@@ -78,7 +78,7 @@ public abstract class GenerateTask extends DefaultTask {
     private RuntimeConfiguration createConfiguration() {
         return RuntimeConfiguration.builder()
                 .setFiles(getFiles().get())
-                .setJdbc(getJdbc().get())
+                .setConverter(getConverter().get())
                 .setJava(getJava().get())
                 .setRepositories(getRepositories().get())
                 .setApi(getApi().get())

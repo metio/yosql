@@ -296,7 +296,7 @@ public final class Repositories {
     private static ConfigurationSetting batchPrefix() {
         return ConfigurationSetting.builder()
                 .setName("batchPrefix")
-                .setDescription("")
+                .setDescription("The method prefix to use for generated batch methods.")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
                 .build();
@@ -305,7 +305,7 @@ public final class Repositories {
     private static ConfigurationSetting batchSuffix() {
         return ConfigurationSetting.builder()
                 .setName("batchSuffix")
-                .setDescription("")
+                .setDescription("The method suffix to use for generated batch methods.")
                 .setType(TypicalTypes.STRING)
                 .setValue("Batch")
                 .build();
@@ -314,7 +314,7 @@ public final class Repositories {
     private static ConfigurationSetting streamLazyPrefix() {
         return ConfigurationSetting.builder()
                 .setName("streamLazyPrefix")
-                .setDescription("")
+                .setDescription("The method prefix to use for generated lazy stream methods.")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
                 .build();
@@ -323,7 +323,7 @@ public final class Repositories {
     private static ConfigurationSetting streamLazySuffix() {
         return ConfigurationSetting.builder()
                 .setName("streamLazySuffix")
-                .setDescription("")
+                .setDescription("The method suffix to use for generated lazy stream methods.")
                 .setType(TypicalTypes.STRING)
                 .setValue("StreamLazy")
                 .build();
@@ -332,7 +332,7 @@ public final class Repositories {
     private static ConfigurationSetting streamEagerPrefix() {
         return ConfigurationSetting.builder()
                 .setName("streamEagerPrefix")
-                .setDescription("")
+                .setDescription("The method prefix to use for generated eager stream methods.")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
                 .build();
@@ -341,7 +341,7 @@ public final class Repositories {
     private static ConfigurationSetting streamEagerSuffix() {
         return ConfigurationSetting.builder()
                 .setName("streamEagerSuffix")
-                .setDescription("")
+                .setDescription("The method suffix to use for generated eager stream methods.")
                 .setType(TypicalTypes.STRING)
                 .setValue("StreamEager")
                 .build();
@@ -398,24 +398,6 @@ public final class Repositories {
                 .setDescription("The method suffix to use for generated methods that use the RxJava API.")
                 .setType(TypicalTypes.STRING)
                 .setValue("Flow")
-                .build();
-    }
-
-    private static ConfigurationSetting lazyName() {
-        return ConfigurationSetting.builder()
-                .setName("lazyName")
-                .setDescription("")
-                .setType(TypicalTypes.STRING)
-                .setValue("Lazy")
-                .build();
-    }
-
-    private static ConfigurationSetting eagerName() {
-        return ConfigurationSetting.builder()
-                .setName("eagerName")
-                .setDescription("")
-                .setType(TypicalTypes.STRING)
-                .setValue("Eager")
                 .build();
     }
 

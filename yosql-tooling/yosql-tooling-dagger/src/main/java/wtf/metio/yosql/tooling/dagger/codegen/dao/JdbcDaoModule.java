@@ -105,14 +105,14 @@ public class JdbcDaoModule {
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbc,
-            final JdbcTransformer transformer) {
+            final MethodExceptionHandler exceptions) {
         return new JdbcBatchMethodGenerator(
                 controlFlow,
                 methods,
                 parameters,
                 logging,
                 jdbc,
-                transformer);
+                exceptions);
     }
 
     @JDBC
@@ -125,7 +125,7 @@ public class JdbcDaoModule {
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final JdbcTransformer jdbcTransformer) {
+            final MethodExceptionHandler methodExceptionHandler) {
         return new JdbcJava8StreamMethodGenerator(
                 runtimeConfiguration.converter(),
                 blocks,
@@ -135,7 +135,7 @@ public class JdbcDaoModule {
                 parameters,
                 logging,
                 jdbcBlocks,
-                jdbcTransformer
+                methodExceptionHandler
         );
     }
 
@@ -148,12 +148,12 @@ public class JdbcDaoModule {
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final JdbcTransformer transformer) {
+            final MethodExceptionHandler exceptions) {
         return new JdbcRxJavaMethodGenerator(
                 runtimeConfiguration.converter(),
                 methods,
                 parameters,
-                transformer,
+                exceptions,
                 controlFlows,
                 logging,
                 jdbcBlocks);
@@ -168,12 +168,12 @@ public class JdbcDaoModule {
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final JdbcTransformer transformer) {
+            final MethodExceptionHandler exceptions) {
         return new JdbcMutinyMethodGenerator(
                 runtimeConfiguration.converter(),
                 methods,
                 parameters,
-                transformer,
+                exceptions,
                 controlFlows,
                 logging,
                 jdbcBlocks);
@@ -188,12 +188,12 @@ public class JdbcDaoModule {
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final JdbcTransformer transformer) {
+            final MethodExceptionHandler exceptions) {
         return new JdbcReactorMethodGenerator(
                 runtimeConfiguration.converter(),
                 methods,
                 parameters,
-                transformer,
+                exceptions,
                 controlFlows,
                 logging,
                 jdbcBlocks);
@@ -208,14 +208,14 @@ public class JdbcDaoModule {
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbc,
-            final JdbcTransformer jdbcTransformer) {
+            final MethodExceptionHandler methodExceptionHandler) {
         return new JdbcBlockingMethodGenerator(
                 controlFlows,
                 methods,
                 parameters,
                 logging,
                 jdbc,
-                jdbcTransformer,
+                methodExceptionHandler,
                 runtimeConfiguration.converter());
     }
 

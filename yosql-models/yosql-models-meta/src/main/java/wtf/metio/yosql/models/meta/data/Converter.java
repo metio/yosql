@@ -7,10 +7,7 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.*;
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Strings;
@@ -40,6 +37,7 @@ public final class Converter {
                 .addSettings(flowStateClassName())
                 .setCliMethods(List.of(createCliRowConverters(), createCliRowConverter(), createCliAsRowConverter()))
                 .setImmutableMethods(List.of(resultStateClass(), resultRowClass(), flowStateClass()))
+                .setGradleMethods(List.of(createGradleRowConverters(), createGradleRowConverter()))
                 .setMavenMethods(List.of(createMavenRowConverters(), createMavenRowConverter()))
                 .build();
     }
@@ -50,8 +48,8 @@ public final class Converter {
                 .setDescription("The default converter to use, if no other is specified on a query itself.")
                 .setType(TypeName.get(ResultRowConverter.class))
                 .setCliType(TypicalTypes.STRING)
+                .setGradleType(ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.DefaultRowConverter"))
                 .setMavenType(ClassName.bestGuess("wtf.metio.yosql.tooling.maven.RowConverter"))
-                .setGradleType(ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.DefaultResultRowConverter"))
                 .setCliValue("")
                 .setMavenValue("")
                 .build();
@@ -64,7 +62,7 @@ public final class Converter {
                 .setType(TypicalTypes.listOf(ResultRowConverter.class))
                 .setCliType(TypicalTypes.listOf(TypicalTypes.STRING))
                 .setMavenType(TypicalTypes.listOf(ClassName.bestGuess("wtf.metio.yosql.tooling.maven.RowConverter")))
-                .setGradleType(TypicalTypes.gradleContainerOf(ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.UserResultRowConverter")))
+                .setGradleType(TypicalTypes.gradleContainerOf(ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.RowConverter")))
                 .setMavenValue("")
                 .setValue(CodeBlock.builder()
                         .add("$T.of()", List.class)
@@ -187,6 +185,33 @@ public final class Converter {
                         .add("\n.build())")
                         .add("\n.orElse(null)$<$<")
                         .build())
+                .build();
+    }
+
+    private static MethodSpec createGradleRowConverters() {
+        return MethodSpec.methodBuilder("createRowConverters")
+                .addModifiers(Modifier.PRIVATE)
+                .returns(TypicalTypes.listOf(ResultRowConverter.class))
+                .addStatement(CodeBlock.builder()
+                        .add("return getRowConverters().stream()", Stream.class)
+                        .add("$>\n.map($T::asRowConverter)", ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.RowConverter"))
+                        .add("\n.collect($T.toList())$<", Collectors.class)
+                        .build())
+                .build();
+    }
+
+    private static MethodSpec createGradleRowConverter() {
+        final var defaultConverterType = ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.DefaultRowConverter");
+        return MethodSpec.methodBuilder("createRowConverter")
+                .addModifiers(Modifier.PRIVATE)
+                .addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_OBJECTS, "objects", Modifier.FINAL).build())
+                .returns(defaultConverterType)
+                .addStatement("final var defaultConverter = objects.newInstance($T.class)", defaultConverterType)
+                .addStatement("defaultConverter.getAlias().set($S)", "resultRow")
+                .addStatement("defaultConverter.getConverterType().set($S)", "com.example.persistence.converter.ToResultRowConverter")
+                .addStatement("defaultConverter.getMethodName().set($S)", "apply")
+                .addStatement("defaultConverter.getResultType().set($S)", "com.example.persistence.converter.ResultRow")
+                .addStatement("return defaultConverter")
                 .build();
     }
 

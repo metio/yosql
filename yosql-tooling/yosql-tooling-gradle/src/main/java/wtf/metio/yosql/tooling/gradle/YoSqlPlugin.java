@@ -1,6 +1,6 @@
 /*
  * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
- * directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+ * directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
@@ -12,7 +12,7 @@ import org.gradle.api.Project;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.JavaCompile;
 
@@ -35,7 +35,7 @@ public class YoSqlPlugin implements Plugin<Project> {
 
     private void configureConventions(final YoSqlExtension extension, final ProjectLayout layout, final ObjectFactory objects) {
         extension.getFiles().configureConventions(layout);
-        extension.getJdbc().configureConventions(objects);
+        extension.getConverter().configureConventions(objects);
         extension.getAnnotations().configureConventions();
         extension.getApi().configureConventions();
         extension.getJava().configureConventions();
@@ -54,23 +54,19 @@ public class YoSqlPlugin implements Plugin<Project> {
         task.getAnnotations().set(extension.getAnnotations().asConfiguration());
         task.getApi().set(extension.getApi().asConfiguration());
         task.getFiles().set(extension.getFiles().asConfiguration());
-        task.getJdbc().set(extension.getJdbc().asConfiguration());
+        task.getConverter().set(extension.getConverter().asConfiguration());
         task.getJava().set(extension.getJava().asConfiguration());
         task.getRepositories().set(extension.getRepositories().asConfiguration());
         task.getResources().set(extension.getResources().asConfiguration());
     }
 
     private void configureSourceSets(final Project project, final YoSqlExtension extension) {
-        project.getPlugins().withType(JavaPlugin.class, plugin -> addSourceSet(project, extension));
-    }
-
-    private void addSourceSet(final Project project, final YoSqlExtension extension) {
-        project.getConvention()
-                .getPlugin(JavaPluginConvention.class)
+        project.getPlugins().withType(JavaPlugin.class, plugin -> project.getExtensions()
+                .getByType(JavaPluginExtension.class)
                 .getSourceSets()
                 .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
                 .getJava()
-                .srcDir(extension.getFiles().getOutputBaseDirectory().get());
+                .srcDir(extension.getFiles().getOutputBaseDirectory().get()));
     }
 
 }

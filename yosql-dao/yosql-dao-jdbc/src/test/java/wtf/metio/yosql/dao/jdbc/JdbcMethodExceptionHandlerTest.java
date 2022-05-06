@@ -17,14 +17,14 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("DefaultJdbcTransformer")
-class DefaultJdbcTransformerTest {
+@DisplayName("JdbcMethodExceptionHandler")
+class JdbcMethodExceptionHandlerTest {
 
-    private DefaultJdbcTransformer generator;
+    private JdbcMethodExceptionHandler generator;
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcTransformer();
+        generator = new JdbcMethodExceptionHandler();
     }
 
     @Test
@@ -33,7 +33,7 @@ class DefaultJdbcTransformerTest {
         final var configuration = SqlConfiguration.usingDefaults().setCatchAndRethrow(false).build();
 
         // when
-        final var exception = generator.sqlException(configuration);
+        final var exception = generator.thrownExceptions(configuration);
 
         // then
         assertFalse(((Collection<?>) exception).isEmpty());
@@ -45,7 +45,7 @@ class DefaultJdbcTransformerTest {
         final var configuration = SqlConfiguration.usingDefaults().setCatchAndRethrow(true).build();
 
         // when
-        final var exception = generator.sqlException(configuration);
+        final var exception = generator.thrownExceptions(configuration);
 
         // then
         assertTrue(((Collection<?>) exception).isEmpty());

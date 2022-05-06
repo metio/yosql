@@ -7,10 +7,7 @@
 package wtf.metio.yosql.dao.jdbc;
 
 import com.squareup.javapoet.MethodSpec;
-import wtf.metio.yosql.codegen.api.BatchMethodGenerator;
-import wtf.metio.yosql.codegen.api.ControlFlows;
-import wtf.metio.yosql.codegen.api.Methods;
-import wtf.metio.yosql.codegen.api.Parameters;
+import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -25,7 +22,7 @@ public final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
     private final Parameters parameters;
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbc;
-    private final JdbcTransformer transformer;
+    private final MethodExceptionHandler exceptions;
 
     public JdbcBatchMethodGenerator(
             final ControlFlows controlFlow,
@@ -33,10 +30,10 @@ public final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
             final Parameters parameters,
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
-            final JdbcTransformer transformer) {
+            final MethodExceptionHandler exceptions) {
         this.logging = logging;
         this.jdbc = jdbc;
-        this.transformer = transformer;
+        this.exceptions = exceptions;
         this.controlFlow = controlFlow;
         this.methods = methods;
         this.parameters = parameters;
@@ -49,7 +46,7 @@ public final class JdbcBatchMethodGenerator implements BatchMethodGenerator {
         return methods.batchMethod(configuration.batchName(), statements)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecs(configuration.parameters()))
-                .addExceptions(transformer.sqlException(configuration))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository(), configuration.batchName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))

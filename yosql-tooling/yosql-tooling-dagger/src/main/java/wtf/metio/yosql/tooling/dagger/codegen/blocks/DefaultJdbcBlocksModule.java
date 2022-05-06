@@ -10,10 +10,7 @@ package wtf.metio.yosql.tooling.dagger.codegen.blocks;
 import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.annotations.Delegating;
-import wtf.metio.yosql.codegen.api.ControlFlows;
-import wtf.metio.yosql.codegen.api.Fields;
-import wtf.metio.yosql.codegen.api.Parameters;
-import wtf.metio.yosql.codegen.api.Variables;
+import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.dao.jdbc.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
@@ -29,8 +26,8 @@ public class DefaultJdbcBlocksModule {
     }
 
     @Provides
-    public JdbcTransformer provideJdbcTransformer() {
-        return new DefaultJdbcTransformer();
+    public MethodExceptionHandler provideJdbcMethodExceptionHandler() {
+        return new JdbcMethodExceptionHandler();
     }
 
     @Provides

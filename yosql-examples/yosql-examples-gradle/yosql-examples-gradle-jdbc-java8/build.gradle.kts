@@ -26,8 +26,8 @@ yosql {
     java {
         apiVersion.set(8)
     }
-    jdbc {
-        utilityPackageName.set("${group}.persistence.util")
+    converter {
+        converterPackageName.set("${group}.persistence.util")
         rowConverters {
             register("itemConverter") {
                 converterType.set("${group}.converter.ToItemConverter")

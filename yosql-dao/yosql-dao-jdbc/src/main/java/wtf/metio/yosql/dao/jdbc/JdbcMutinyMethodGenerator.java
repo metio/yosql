@@ -8,10 +8,7 @@ package wtf.metio.yosql.dao.jdbc;
 
 import com.squareup.javapoet.MethodSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.codegen.api.ControlFlows;
-import wtf.metio.yosql.codegen.api.Methods;
-import wtf.metio.yosql.codegen.api.MutinyMethodGenerator;
-import wtf.metio.yosql.codegen.api.Parameters;
+import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
@@ -25,7 +22,7 @@ public final class JdbcMutinyMethodGenerator implements MutinyMethodGenerator {
     private final ConverterConfiguration converters;
     private final Methods methods;
     private final Parameters parameters;
-    private final JdbcTransformer transformer;
+    private final MethodExceptionHandler exceptions;
     private final ControlFlows controlFlow;
     private final LoggingGenerator logging;
     private final JdbcBlocks jdbc;
@@ -34,14 +31,14 @@ public final class JdbcMutinyMethodGenerator implements MutinyMethodGenerator {
             final ConverterConfiguration converters,
             final Methods methods,
             final Parameters parameters,
-            final JdbcTransformer transformer,
+            final MethodExceptionHandler exceptions,
             final ControlFlows controlFlow,
             final LoggingGenerator logging,
             final JdbcBlocks jdbc) {
         this.converters = converters;
         this.methods = methods;
         this.parameters = parameters;
-        this.transformer = transformer;
+        this.exceptions = exceptions;
         this.controlFlow = controlFlow;
         this.logging = logging;
         this.jdbc = jdbc;
@@ -57,7 +54,7 @@ public final class JdbcMutinyMethodGenerator implements MutinyMethodGenerator {
         return methods.mutinyMethod(configuration.mutinyName(), statements)
                 .returns(multiOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addExceptions(transformer.sqlException(configuration))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository(), configuration.mutinyName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
