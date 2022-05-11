@@ -62,10 +62,7 @@ public final class JdbcMutinyMethodGenerator implements MutinyMethodGenerator {
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.readMetaData())
-                .addCode(jdbc.readColumnCount())
-                .addCode(jdbc.createResultState())
-                .addCode(jdbc.returnAsMulti(listOfResults, converter.alias()))
+                .addCode(jdbc.returnAsMulti(listOfResults, converter))
                 .addCode(controlFlow.endTryBlock(3))
                 .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();

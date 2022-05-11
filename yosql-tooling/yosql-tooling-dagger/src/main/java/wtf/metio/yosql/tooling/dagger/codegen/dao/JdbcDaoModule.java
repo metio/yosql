@@ -16,27 +16,28 @@ import wtf.metio.yosql.codegen.blocks.GenericBlocks;
 import wtf.metio.yosql.codegen.blocks.GenericRepositoryGenerator;
 import wtf.metio.yosql.codegen.logging.Generator;
 import wtf.metio.yosql.dao.jdbc.*;
-import wtf.metio.yosql.dao.jdbc.utilities.*;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
-import wtf.metio.yosql.tooling.dagger.codegen.blocks.DefaultJdbcBlocksModule;
+
+import javax.inject.Singleton;
 
 /**
  * Dagger module for the JDBC based DAO implementation.
  */
-@Module(includes = DefaultJdbcBlocksModule.class)
+@Module
 public class JdbcDaoModule {
 
     @IntoSet
     @Provides
-    public RepositoryGenerator provideRepositoryGenerator(
-            final @Generator LocLogger logger,
+    @Singleton
+    RepositoryGenerator provideRepositoryGenerator(
+            @Generator final LocLogger logger,
             final AnnotationGenerator annotations,
             final Classes classes,
             final Javadoc javadoc,
-            final @JDBC FieldsGenerator fields,
-            final @JDBC MethodsGenerator methods) {
+            @JDBC final FieldsGenerator fields,
+            @JDBC final MethodsGenerator methods) {
         return new GenericRepositoryGenerator(
                 logger,
                 annotations,
@@ -49,14 +50,15 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public MethodsGenerator provideMethodsGenerator(
-            final @JDBC ConstructorGenerator constructor,
-            final @JDBC BlockingMethodGenerator blockingMethods,
-            final @JDBC BatchMethodGenerator batchMethods,
-            final @JDBC Java8StreamMethodGenerator streamMethods,
-            final @JDBC RxJavaMethodGenerator rxjavaMethods,
-            final @JDBC ReactorMethodGenerator reactorMethods,
-            final @JDBC MutinyMethodGenerator mutinyMethods) {
+    @Singleton
+    MethodsGenerator provideMethodsGenerator(
+            @JDBC final ConstructorGenerator constructor,
+            @JDBC final BlockingMethodGenerator blockingMethods,
+            @JDBC final BatchMethodGenerator batchMethods,
+            @JDBC final Java8StreamMethodGenerator streamMethods,
+            @JDBC final RxJavaMethodGenerator rxjavaMethods,
+            @JDBC final ReactorMethodGenerator reactorMethods,
+            @JDBC final MutinyMethodGenerator mutinyMethods) {
         return new DelegatingMethodsGenerator(
                 constructor,
                 blockingMethods,
@@ -69,7 +71,8 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public ConstructorGenerator provideConstructorGenerator(
+    @Singleton
+    ConstructorGenerator provideConstructorGenerator(
             final GenericBlocks blocks,
             final Methods methods,
             final RuntimeConfiguration runtimeConfiguration,
@@ -79,12 +82,14 @@ public class JdbcDaoModule {
                 methods,
                 runtimeConfiguration.names(),
                 jdbcParameters,
-                runtimeConfiguration.repositories());
+                runtimeConfiguration.repositories(),
+                runtimeConfiguration.converter());
     }
 
     @JDBC
     @Provides
-    public FieldsGenerator provideFieldsGenerator(
+    @Singleton
+    FieldsGenerator provideFieldsGenerator(
             final Fields fields,
             @Delegating final LoggingGenerator logging,
             final Javadoc javadoc,
@@ -99,13 +104,14 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public BatchMethodGenerator provideBatchMethodGenerator(
+    @Singleton
+    BatchMethodGenerator provideBatchMethodGenerator(
             final ControlFlows controlFlow,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbc,
-            final MethodExceptionHandler exceptions) {
+            @JDBC final MethodExceptionHandler exceptions) {
         return new JdbcBatchMethodGenerator(
                 controlFlow,
                 methods,
@@ -117,20 +123,18 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
+    @Singleton
+    Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
-            final GenericBlocks blocks,
             final ControlFlows controlFlow,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final MethodExceptionHandler methodExceptionHandler) {
+            @JDBC final MethodExceptionHandler methodExceptionHandler) {
         return new JdbcJava8StreamMethodGenerator(
                 runtimeConfiguration.converter(),
-                blocks,
                 controlFlow,
-                runtimeConfiguration.names(),
                 methods,
                 parameters,
                 logging,
@@ -141,14 +145,15 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public RxJavaMethodGenerator provideRxJavaMethodGenerator(
+    @Singleton
+    RxJavaMethodGenerator provideRxJavaMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final MethodExceptionHandler exceptions) {
+            @JDBC final MethodExceptionHandler exceptions) {
         return new JdbcRxJavaMethodGenerator(
                 runtimeConfiguration.converter(),
                 methods,
@@ -161,14 +166,15 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public MutinyMethodGenerator provideMutinyMethodGenerator(
+    @Singleton
+    MutinyMethodGenerator provideMutinyMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final MethodExceptionHandler exceptions) {
+            @JDBC final MethodExceptionHandler exceptions) {
         return new JdbcMutinyMethodGenerator(
                 runtimeConfiguration.converter(),
                 methods,
@@ -181,14 +187,15 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public ReactorMethodGenerator provideReactorMethodGenerator(
+    @Singleton
+    ReactorMethodGenerator provideReactorMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
-            final MethodExceptionHandler exceptions) {
+            @JDBC final MethodExceptionHandler exceptions) {
         return new JdbcReactorMethodGenerator(
                 runtimeConfiguration.converter(),
                 methods,
@@ -201,14 +208,15 @@ public class JdbcDaoModule {
 
     @JDBC
     @Provides
-    public BlockingMethodGenerator provideBlockingMethodGenerator(
+    @Singleton
+    BlockingMethodGenerator provideBlockingMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
             final Methods methods,
             final Parameters parameters,
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbc,
-            final MethodExceptionHandler methodExceptionHandler) {
+            @JDBC final MethodExceptionHandler methodExceptionHandler) {
         return new JdbcBlockingMethodGenerator(
                 controlFlows,
                 methods,
@@ -219,19 +227,98 @@ public class JdbcDaoModule {
                 runtimeConfiguration.converter());
     }
 
+    @IntoSet
     @Provides
-    ConverterGenerator provideUtilitiesGenerator(
+    @Singleton
+    ConverterGenerator provideConverterGenerator(
             final RuntimeConfiguration runtimeConfiguration,
-            final FlowStateGenerator flowStateGenerator,
-            final ResultStateGenerator resultStateGenerator,
-            final ToResultRowConverterGenerator toResultRowConverterGenerator,
-            final ResultRowGenerator resultRowGenerator) {
+            final ToMapConverterGenerator mapConverterGenerator) {
         return new JdbcConverterGenerator(
-                flowStateGenerator,
-                resultStateGenerator,
-                toResultRowConverterGenerator,
-                resultRowGenerator,
-                runtimeConfiguration.converter());
+                runtimeConfiguration.converter(),
+                mapConverterGenerator);
+    }
+
+    @JDBC
+    @Provides
+    @Singleton
+    MethodExceptionHandler provideJdbcMethodExceptionHandler() {
+        return new JdbcMethodExceptionHandler();
+    }
+
+    @Provides
+    @Singleton
+    JdbcParameters provideJdbcParameters(
+            final RuntimeConfiguration runtimeConfiguration,
+            final Parameters parameters) {
+        return new DefaultJdbcParameters(parameters, runtimeConfiguration.names());
+    }
+
+    @Provides
+    @Singleton
+    JdbcMethods.JdbcDataSourceMethods provideDataSource(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcDataSourceMethods(runtimeConfiguration.names());
+    }
+
+    @Provides
+    @Singleton
+    JdbcMethods.JdbcConnectionMethods provideConnection(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcConnectionMethods(runtimeConfiguration.names());
+    }
+
+    @Provides
+    @Singleton
+    JdbcMethods.JdbcResultSetMethods provideResultSet(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcResultSetMethods(runtimeConfiguration.names());
+    }
+
+    @Provides
+    @Singleton
+    JdbcMethods.JdbcResultSetMetaDataMethods provideMetaData(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcResultSetMetaDataMethods(runtimeConfiguration.names());
+    }
+
+    @Provides
+    @Singleton
+    JdbcMethods.JdbcStatementMethods provideStatement(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcStatementMethods(runtimeConfiguration.names());
+    }
+
+    @Provides
+    @Singleton
+    JdbcMethods.JdbcDatabaseMetaDataMethods provideDatabaseMetaData(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultJdbcDatabaseMetaDataMethods(runtimeConfiguration.names());
+    }
+
+    @Provides
+    @Singleton
+    JdbcMethods provideJdbcMethods(
+            final JdbcMethods.JdbcDataSourceMethods dataSource,
+            final JdbcMethods.JdbcConnectionMethods connection,
+            final JdbcMethods.JdbcDatabaseMetaDataMethods databaseMetaData,
+            final JdbcMethods.JdbcResultSetMethods resultSet,
+            final JdbcMethods.JdbcResultSetMetaDataMethods resultSetMetaData,
+            final JdbcMethods.JdbcStatementMethods statement) {
+        return new DefaultJdbcMethods(dataSource, connection, databaseMetaData, resultSet, resultSetMetaData, statement);
+    }
+
+    @Provides
+    @Singleton
+    JdbcBlocks provideJdbcBlocks(
+            final RuntimeConfiguration runtimeConfiguration,
+            final GenericBlocks blocks,
+            final ControlFlows controlFlows,
+            final Variables variables,
+            final Fields fields,
+            final JdbcMethods jdbcMethods,
+            @Delegating final LoggingGenerator logging) {
+        return new DefaultJdbcBlocks(
+                runtimeConfiguration,
+                blocks,
+                controlFlows,
+                variables,
+                fields,
+                jdbcMethods,
+                logging);
     }
 
 }

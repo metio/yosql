@@ -94,7 +94,6 @@
         <module>yosql-models</module>
         <module>yosql-codegen</module>
         <module>yosql-logging</module>
-        <module>yosql-converters</module>
         <module>yosql-dao</module>
         <module>yosql-tooling</module>
         <module>yosql-testing</module>

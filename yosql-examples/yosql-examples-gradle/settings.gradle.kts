@@ -13,6 +13,9 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         mavenLocal()
+        maven {
+            url = uri(System.getProperty("user.home") + "/.cache/maven/repository")
+        }
     }
 }
 

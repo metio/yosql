@@ -6,6 +6,7 @@
  */
 package wtf.metio.yosql.codegen.api;
 
+import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -15,8 +16,15 @@ import java.util.stream.Stream;
 /**
  * Generates converter related classes.
  */
-@FunctionalInterface
 public interface ConverterGenerator {
+
+    /**
+     * Check whether this generator supports the given persistence API.
+     *
+     * @param api The API to check.
+     * @return true if this generator supports the given API, false otherwise.
+     */
+    boolean supports(PersistenceApis api);
 
     /**
      * Creates converter related classes based on a number of {@link SqlStatement}s.

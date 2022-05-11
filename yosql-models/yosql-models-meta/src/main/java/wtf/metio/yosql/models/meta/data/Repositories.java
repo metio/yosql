@@ -53,10 +53,8 @@ public final class Repositories {
                 reactorSuffix(),
                 rxJavaPrefix(),
                 rxJavaSuffix(),
-                streamEagerPrefix(),
-                streamEagerSuffix(),
-                streamLazyPrefix(),
-                streamLazySuffix());
+                streamPrefix(),
+                streamSuffix());
     }
 
     /**
@@ -69,8 +67,7 @@ public final class Repositories {
                 generateMutinyApi(),
                 generateReactorApi(),
                 generateRxJavaApi(),
-                generateStreamEagerApi(),
-                generateStreamLazyApi(),
+                generateStreamApi(),
                 catchAndRethrow(),
                 injectConverters());
     }
@@ -169,19 +166,10 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting generateStreamEagerApi() {
+    private static ConfigurationSetting generateStreamApi() {
         return ConfigurationSetting.builder()
-                .setName("generateStreamEagerApi")
-                .setDescription("Generate batch methods")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .build();
-    }
-
-    private static ConfigurationSetting generateStreamLazyApi() {
-        return ConfigurationSetting.builder()
-                .setName("generateStreamLazyApi")
-                .setDescription("Generate batch methods")
+                .setName("generateStreamApi")
+                .setDescription("Generate streaming methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .build();
@@ -311,39 +299,21 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting streamLazyPrefix() {
+    private static ConfigurationSetting streamPrefix() {
         return ConfigurationSetting.builder()
-                .setName("streamLazyPrefix")
-                .setDescription("The method prefix to use for generated lazy stream methods.")
+                .setName("streamPrefix")
+                .setDescription("The method prefix to use for generated stream methods.")
                 .setType(TypicalTypes.STRING)
                 .setValue("")
                 .build();
     }
 
-    private static ConfigurationSetting streamLazySuffix() {
+    private static ConfigurationSetting streamSuffix() {
         return ConfigurationSetting.builder()
-                .setName("streamLazySuffix")
-                .setDescription("The method suffix to use for generated lazy stream methods.")
+                .setName("streamSuffix")
+                .setDescription("The method suffix to use for generated stream methods.")
                 .setType(TypicalTypes.STRING)
-                .setValue("StreamLazy")
-                .build();
-    }
-
-    private static ConfigurationSetting streamEagerPrefix() {
-        return ConfigurationSetting.builder()
-                .setName("streamEagerPrefix")
-                .setDescription("The method prefix to use for generated eager stream methods.")
-                .setType(TypicalTypes.STRING)
-                .setValue("")
-                .build();
-    }
-
-    private static ConfigurationSetting streamEagerSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("streamEagerSuffix")
-                .setDescription("The method suffix to use for generated eager stream methods.")
-                .setType(TypicalTypes.STRING)
-                .setValue("StreamEager")
+                .setValue("Stream")
                 .build();
     }
 

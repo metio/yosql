@@ -13,6 +13,7 @@ import wtf.metio.yosql.logging.api.DelegatingLoggingGenerator;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
 import java.util.Set;
 
 /**
@@ -31,10 +32,11 @@ public class DefaultLoggingModule {
 
     @Provides
     @Delegating
-    public LoggingGenerator provideLoggingGenerator(
-            final RuntimeConfiguration runtime,
+    @Singleton
+    LoggingGenerator provideLoggingGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
             final Set<LoggingGenerator> loggingGenerators) {
-        return new DelegatingLoggingGenerator(runtime.api(), loggingGenerators);
+        return new DelegatingLoggingGenerator(runtimeConfiguration.api(), loggingGenerators);
     }
 
 }

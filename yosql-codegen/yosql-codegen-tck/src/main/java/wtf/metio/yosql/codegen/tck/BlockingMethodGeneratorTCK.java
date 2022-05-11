@@ -54,8 +54,8 @@ public interface BlockingMethodGeneratorTCK {
         Assertions.assertEquals(
                 blockingReadOneMethodExpectation(),
                 generator().blockingReadMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.ONE), SqlConfigurations.sqlStatements()).toString(),
-                "The generated blocking read one method did not match expectation");
+                        .withReturningMode(ReturningMode.ONE), SqlConfigurations.sqlStatement()).toString(),
+                "The generated blocking read one method does not match expectation");
     }
 
     @Test
@@ -63,8 +63,8 @@ public interface BlockingMethodGeneratorTCK {
         Assertions.assertEquals(
                 blockingReadFirstMethodExpectation(),
                 generator().blockingReadMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.FIRST), SqlConfigurations.sqlStatements()).toString(),
-                "The generated blocking read first method did not match expectation");
+                        .withReturningMode(ReturningMode.FIRST), SqlConfigurations.sqlStatement()).toString(),
+                "The generated blocking read first method does not match expectation");
     }
 
     @Test
@@ -72,24 +72,24 @@ public interface BlockingMethodGeneratorTCK {
         Assertions.assertEquals(
                 blockingReadListMethodExpectation(),
                 generator().blockingReadMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.LIST), SqlConfigurations.sqlStatements()).toString(),
-                "The generated blocking read list method did not match expectation");
+                        .withReturningMode(ReturningMode.LIST), SqlConfigurations.sqlStatement()).toString(),
+                "The generated blocking read list method does not match expectation");
     }
 
     @Test
     default void blockingWriteMethod() {
         Assertions.assertEquals(
                 blockingWriteMethodExpectation(),
-                generator().blockingWriteMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
-                "The generated blocking write method did not match expectation");
+                generator().blockingWriteMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatement()).toString(),
+                "The generated blocking write method does not match expectation");
     }
 
     @Test
     default void blockingCallMethod() {
         Assertions.assertEquals(
                 blockingCallMethodExpectation(),
-                generator().blockingCallMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
-                "The generated blocking call method did not match expectation");
+                generator().blockingCallMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatement()).toString(),
+                "The generated blocking call method does not match expectation");
     }
 
 }

@@ -67,10 +67,7 @@ public final class JdbcRxJavaMethodGenerator implements RxJavaMethodGenerator {
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.readMetaData())
-                .addCode(jdbc.readColumnCount())
-                .addCode(jdbc.createResultState())
-                .addCode(jdbc.returnAsFlowable(listOfResults, converter.alias()))
+                .addCode(jdbc.returnAsFlowable(listOfResults, converter))
                 .addCode(controlFlow.endTryBlock(3))
                 .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();

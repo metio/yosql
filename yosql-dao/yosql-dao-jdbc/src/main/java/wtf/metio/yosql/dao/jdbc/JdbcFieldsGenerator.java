@@ -17,7 +17,6 @@ import wtf.metio.yosql.codegen.files.SqlStatementParser;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
-import wtf.metio.yosql.models.constants.sql.SqlType;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -26,12 +25,12 @@ import wtf.metio.yosql.models.sql.ResultRowConverter;
 import wtf.metio.yosql.models.sql.SqlParameter;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import static java.util.function.Predicate.not;
 
 /**
  * JDBC implementation of the {@link FieldsGenerator} interface.
@@ -90,7 +89,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
     public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
         final var repositoryFields = new ArrayList<FieldSpec>(statements.size() * 2 + 2);
 
-        repositoryFields.add(asDataSourceField());
+        repositoryFields.add(fields.field(DataSource.class, names.dataSource()));
         if (logging.isEnabled() && !statements.isEmpty()) {
             // doesn't matter which statement we pick since they all end up in the same repository anyway
             final var firstStatement = statements.get(0);
@@ -105,7 +104,7 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
                 repositoryFields.add(asConstantSqlParameterIndexField(statement));
             }
         }
-        resultConverters(statements)
+        SqlStatement.resultConverters(statements, converters.defaultConverter().orElseThrow())
                 .map(this::asConverterField)
                 .forEach(repositoryFields::add);
 
@@ -147,37 +146,10 @@ public final class JdbcFieldsGenerator implements FieldsGenerator {
                 .build();
     }
 
-    private FieldSpec asDataSourceField() {
-        return fields.field(DataSource.class, names.dataSource());
-    }
-
     private FieldSpec asConverterField(final ResultRowConverter converter) {
-        return converters.rowConverters().stream()
-                .filter(rowConverter -> rowConverter.alias().equals(converter.alias()))
-                .map(rowConverter -> TypeGuesser.guessTypeName(rowConverter.converterType()))
-                .map(typeName -> fields.field(
-                        typeName,
-                        converter.alias()))
-                .findFirst()
-                .or(() -> converters.defaultConverter()
-                        .map(ResultRowConverter::converterType)
-                        .map(String::strip)
-                        .filter(not(String::isBlank))
-                        .map(type -> fields.field(
-                                TypeGuesser.guessTypeName(type),
-                                converter.alias())))
-                .orElseGet(() -> fields.field(
-                        TypeGuesser.guessTypeName("java.lang.Object"),
-                        converter.alias()));
-    }
-
-    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {
-        return statements.stream()
-                .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlType.READING == config.type() || SqlType.CALLING == config.type())
-                .flatMap(config -> config.resultRowConverter().stream())
-                .filter(Objects::nonNull)
-                .distinct();
+        return fields.field(
+                TypeGuesser.guessTypeName(converter.converterType()),
+                converter.alias());
     }
 
 }

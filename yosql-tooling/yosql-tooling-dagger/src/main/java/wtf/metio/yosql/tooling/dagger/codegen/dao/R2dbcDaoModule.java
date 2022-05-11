@@ -20,6 +20,8 @@ import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.models.constants.api.PersistenceApis;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
+
 /**
  * Dagger module for the R2DBC based DAO implementation.
  */
@@ -28,13 +30,14 @@ public class R2dbcDaoModule {
 
     @IntoSet
     @Provides
+    @Singleton
     RepositoryGenerator provideRepositoryGenerator(
-            final @Generator LocLogger logger,
+            @Generator final LocLogger logger,
             final AnnotationGenerator annotations,
             final Classes classes,
             final Javadoc javadoc,
-            final @R2DBC FieldsGenerator fields,
-            final @R2DBC MethodsGenerator methods) {
+            @R2DBC final FieldsGenerator fields,
+            @R2DBC final MethodsGenerator methods) {
         return new GenericRepositoryGenerator(
                 logger,
                 annotations,
@@ -47,14 +50,15 @@ public class R2dbcDaoModule {
 
     @R2DBC
     @Provides
+    @Singleton
     MethodsGenerator provideMethodsGenerator(
-            final @R2DBC ConstructorGenerator constructor,
-            final @R2DBC BlockingMethodGenerator blockingMethods,
-            final @R2DBC BatchMethodGenerator batchMethods,
-            final @R2DBC Java8StreamMethodGenerator streamMethods,
-            final @R2DBC RxJavaMethodGenerator rxjavaMethods,
-            final @R2DBC ReactorMethodGenerator reactorMethods,
-            final @R2DBC MutinyMethodGenerator mutinyMethods) {
+            @R2DBC final ConstructorGenerator constructor,
+            @R2DBC final BlockingMethodGenerator blockingMethods,
+            @R2DBC final BatchMethodGenerator batchMethods,
+            @R2DBC final Java8StreamMethodGenerator streamMethods,
+            @R2DBC final RxJavaMethodGenerator rxjavaMethods,
+            @R2DBC final ReactorMethodGenerator reactorMethods,
+            @R2DBC final MutinyMethodGenerator mutinyMethods) {
         return new DelegatingMethodsGenerator(
                 constructor,
                 blockingMethods,
@@ -67,6 +71,7 @@ public class R2dbcDaoModule {
 
     @R2DBC
     @Provides
+    @Singleton
     ConstructorGenerator provideConstructorGenerator(
             final GenericBlocks blocks,
             final Methods methods) {
@@ -75,6 +80,7 @@ public class R2dbcDaoModule {
 
     @R2DBC
     @Provides
+    @Singleton
     FieldsGenerator provideFieldsGenerator(
             final Fields fields,
             @Delegating final LoggingGenerator logging,
@@ -84,6 +90,7 @@ public class R2dbcDaoModule {
 
     @R2DBC
     @Provides
+    @Singleton
     BatchMethodGenerator provideBatchMethodGenerator(
             final ControlFlows controlFlow,
             final Methods methods,
@@ -98,6 +105,7 @@ public class R2dbcDaoModule {
 
     @R2DBC
     @Provides
+    @Singleton
     Java8StreamMethodGenerator provideJava8StreamMethodGenerator(
             final GenericBlocks blocks,
             final ControlFlows controlFlow,
@@ -116,6 +124,7 @@ public class R2dbcDaoModule {
 
     @R2DBC
     @Provides
+    @Singleton
     RxJavaMethodGenerator provideRxJavaMethodGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final ControlFlows controlFlows,
@@ -133,18 +142,21 @@ public class R2dbcDaoModule {
 
     @R2DBC
     @Provides
-    public MutinyMethodGenerator provideMutinyMethodGenerator() {
+    @Singleton
+    MutinyMethodGenerator provideMutinyMethodGenerator() {
         return new R2dbcMutinyMethodGenerator();
     }
 
     @R2DBC
     @Provides
-    public ReactorMethodGenerator provideReactorMethodGenerator() {
+    @Singleton
+    ReactorMethodGenerator provideReactorMethodGenerator() {
         return new R2dbcReactorMethodGenerator();
     }
 
     @R2DBC
     @Provides
+    @Singleton
     BlockingMethodGenerator provideBlockingMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,

@@ -27,7 +27,7 @@ yosql {
         apiVersion.set(15)
     }
     converter {
-        converterPackageName.set("${group}.persistence.util")
+        mapConverterClass.set("${group}.converter.ToMapConverter")
         rowConverters {
             register("itemConverter") {
                 converterType.set("${group}.converter.ToItemConverter")

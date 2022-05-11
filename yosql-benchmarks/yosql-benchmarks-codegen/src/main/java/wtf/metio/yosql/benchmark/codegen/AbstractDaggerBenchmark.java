@@ -43,7 +43,7 @@ abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
                         .setOutputBaseDirectory(outputDirectory)
                         .build())
                 .setApi(apiConfig())
-                .setConverter(ConverterConfigurations.withResultRowConverter())
+                .setConverter(ConverterConfigurations.withConverters())
                 .build();
     }
 

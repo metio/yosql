@@ -25,55 +25,55 @@ public class Cal10nModule {
 
     @Provides
     @Singleton
-    public IMessageConveyor provideIMessageConveyor(final Locale locale) {
+    IMessageConveyor provideIMessageConveyor(final Locale locale) {
         return new MessageConveyor(locale);
     }
 
     @Provides
     @Singleton
-    public LocLoggerFactory provideLocLoggerFactory(final IMessageConveyor messages) {
+    LocLoggerFactory provideLocLoggerFactory(final IMessageConveyor messages) {
         return new LocLoggerFactory(messages);
     }
 
     @Writer
     @Provides
     @Singleton
-    public LocLogger provideWriterLocLogger(final LocLoggerFactory factory) {
+    LocLogger provideWriterLocLogger(final LocLoggerFactory factory) {
         return factory.getLocLogger(Loggers.WRITER.loggerName);
     }
 
     @Parser
     @Provides
     @Singleton
-    public LocLogger provideParserLocLogger(final LocLoggerFactory factory) {
+    LocLogger provideParserLocLogger(final LocLoggerFactory factory) {
         return factory.getLocLogger(Loggers.PARSER.loggerName);
     }
 
     @Reader
     @Provides
     @Singleton
-    public LocLogger provideReaderLocLogger(final LocLoggerFactory factory) {
+    LocLogger provideReaderLocLogger(final LocLoggerFactory factory) {
         return factory.getLocLogger(Loggers.READER.loggerName);
     }
 
     @Generator
     @Provides
     @Singleton
-    public LocLogger provideGeneratorLocLogger(final LocLoggerFactory factory) {
+    LocLogger provideGeneratorLocLogger(final LocLoggerFactory factory) {
         return factory.getLocLogger(Loggers.GENERATOR.loggerName);
     }
 
     @TimeLogger
     @Provides
     @Singleton
-    public LocLogger provideTimerLocLogger(final LocLoggerFactory factory) {
+    LocLogger provideTimerLocLogger(final LocLoggerFactory factory) {
         return factory.getLocLogger(Loggers.TIMER.loggerName);
     }
 
-    @Utilities
+    @Converters
     @Provides
     @Singleton
-    public LocLogger provideUtilitiesLocLogger(final LocLoggerFactory factory) {
+    LocLogger provideUtilitiesLocLogger(final LocLoggerFactory factory) {
         return factory.getLocLogger(Loggers.UTILITIES.loggerName);
     }
 

@@ -17,6 +17,8 @@ import wtf.metio.yosql.codegen.logging.Parser;
 import wtf.metio.yosql.codegen.logging.Reader;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
+
 /**
  * Dagger module that provides all necessary classes to parse files.
  */
@@ -24,24 +26,28 @@ import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 public class DefaultFilesModule {
 
     @Provides
-    public SqlConfigurationParser provideSqlConfigurationParser() {
+    @Singleton
+    SqlConfigurationParser provideSqlConfigurationParser() {
         return new DefaultSqlConfigurationParser();
     }
 
     @Provides
-    public MethodSettingsConfigurer provideMethodSettingsConfigurer(final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    MethodSettingsConfigurer provideMethodSettingsConfigurer(final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultMethodSettingsConfigurer(runtimeConfiguration.repositories());
     }
 
     @Provides
-    public MethodNameConfigurer provideMethodNameConfigurer(
+    @Singleton
+    MethodNameConfigurer provideMethodNameConfigurer(
             @Parser final LocLogger logger,
             final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultMethodNameConfigurer(logger, runtimeConfiguration.repositories());
     }
 
     @Provides
-    public MethodNameValidator provideMethodNameValidator(
+    @Singleton
+    MethodNameValidator provideMethodNameValidator(
             final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors,
             final IMessageConveyor messages) {
@@ -49,12 +55,14 @@ public class DefaultFilesModule {
     }
 
     @Provides
-    public MethodApiConfigurer provideMethodApiConfigurer(final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    MethodApiConfigurer provideMethodApiConfigurer(final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultMethodApiConfigurer(runtimeConfiguration.repositories());
     }
 
     @Provides
-    public MethodParameterConfigurer provideMethodParameterConfigurer(
+    @Singleton
+    MethodParameterConfigurer provideMethodParameterConfigurer(
             @Parser final LocLogger logger,
             final ExecutionErrors errors,
             final IMessageConveyor messages) {
@@ -62,19 +70,22 @@ public class DefaultFilesModule {
     }
 
     @Provides
-    public MethodConverterConfigurer provideMethodConverterConfigurer(final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    MethodConverterConfigurer provideMethodConverterConfigurer(final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultMethodConverterConfigurer(runtimeConfiguration.converter());
     }
 
     @Provides
-    public RepositoryNameConfigurer provideRepositoryNameConfigurer(
+    @Singleton
+    RepositoryNameConfigurer provideRepositoryNameConfigurer(
             @Parser final LocLogger logger,
             final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultRepositoryNameConfigurer(logger, runtimeConfiguration.files(), runtimeConfiguration.repositories());
     }
 
     @Provides
-    public SqlConfigurationFactory provideSqlConfigurationFactory(
+    @Singleton
+    SqlConfigurationFactory provideSqlConfigurationFactory(
             @Parser final LocLogger logger,
             final SqlConfigurationParser configParser,
             final MethodSettingsConfigurer methodSettings,
@@ -97,7 +108,8 @@ public class DefaultFilesModule {
     }
 
     @Provides
-    public FileResolver provideSqlFileResolver(
+    @Singleton
+    FileResolver provideSqlFileResolver(
             @Reader final LocLogger logger,
             final ParserPreconditions preconditions,
             final RuntimeConfiguration runtimeConfiguration,
@@ -106,7 +118,8 @@ public class DefaultFilesModule {
     }
 
     @Provides
-    public SqlStatementParser provideSqlFileParser(
+    @Singleton
+    SqlStatementParser provideSqlFileParser(
             @Parser final LocLogger logger,
             final SqlConfigurationFactory factory,
             final RuntimeConfiguration runtimeConfiguration,
@@ -115,14 +128,16 @@ public class DefaultFilesModule {
     }
 
     @Provides
-    public FileParser provideFileParser(
+    @Singleton
+    FileParser provideFileParser(
             final FileResolver fileResolver,
             final SqlStatementParser fileParser) {
         return new DefaultFileParser(fileResolver, fileParser);
     }
 
     @Provides
-    public ParserPreconditions provideParserPreconditions(
+    @Singleton
+    ParserPreconditions provideParserPreconditions(
             final ExecutionErrors errors,
             final IMessageConveyor messages) {
         return new DefaultParserPreconditions(errors, messages);

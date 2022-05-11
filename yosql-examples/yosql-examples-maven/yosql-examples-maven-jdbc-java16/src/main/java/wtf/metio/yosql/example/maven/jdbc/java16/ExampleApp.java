@@ -10,7 +10,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.CompanyRepository;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.PersonRepository;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.SchemaRepository;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ToResultRowConverter;
+import wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ToMapConverter;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -43,9 +43,9 @@ public class ExampleApp {
 
     private static void runTests(final String[] arguments, final DataSource dataSource) {
         final var schemaRepository = new SchemaRepository(dataSource);
-        final var resultRow = new ToResultRowConverter();
-        final var companyRepository = new CompanyRepository(dataSource, resultRow);
-        final var personRepository = new PersonRepository(dataSource, resultRow);
+        final var toMapConverter = new ToMapConverter();
+        final var companyRepository = new CompanyRepository(dataSource, toMapConverter);
+        final var personRepository = new PersonRepository(dataSource, toMapConverter);
 
         if (match(arguments, "generic", "stream", "rxjava")) {
             initializeDatabase(schemaRepository, companyRepository, personRepository);

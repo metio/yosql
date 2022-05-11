@@ -12,6 +12,9 @@ package wtf.metio.yosql.models.constants.sql;
  */
 public enum ReturningMode {
 
+    // TODO: rename to MULTIPLE, SINGLE, NONE
+    // TODO: remove ONE
+
     /**
      * Statement returns no data.
      */

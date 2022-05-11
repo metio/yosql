@@ -129,7 +129,7 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.jul.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.jul.persistence.util</converterPackageName>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.jdbc.jul.persistence.converter.ToMapConverter</mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -150,7 +150,7 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.log4j.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.log4j.persistence.util</converterPackageName>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.jdbc.log4j.persistence.converter.ToMapConverter</mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -171,7 +171,7 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.noop.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.noop.persistence.util</converterPackageName>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.jdbc.noop.persistence.converter.ToMapConverter</mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -192,7 +192,7 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.slf4j.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.util</converterPackageName>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.jdbc.slf4j.persistence.converter.ToMapConverter</mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -213,7 +213,7 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.jdbc.tinylog.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <converterPackageName>wtf.metio.yosql.benchmark.jdbc.tinylog.persistence.util</converterPackageName>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.jdbc.tinylog.persistence.converter.ToMapConverter</mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>

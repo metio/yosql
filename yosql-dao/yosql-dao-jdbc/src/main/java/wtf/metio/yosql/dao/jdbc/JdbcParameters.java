@@ -20,7 +20,7 @@ public interface JdbcParameters {
 
     ParameterSpec resultSet();
 
-    ParameterSpec metaData();
+    ParameterSpec resultSetMetaData();
 
     ParameterSpec columnCount();
 
@@ -29,4 +29,7 @@ public interface JdbcParameters {
     ParameterSpec columnLabel();
 
     ParameterSpec converter(ResultRowConverter converter);
+
+    Iterable<ParameterSpec> toMapConverterParameterSpecs();
+
 }

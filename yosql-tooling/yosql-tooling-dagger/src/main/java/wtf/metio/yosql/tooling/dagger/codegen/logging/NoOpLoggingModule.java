@@ -12,6 +12,8 @@ import dagger.multibindings.IntoSet;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.noop.NoOpLoggingGenerator;
 
+import javax.inject.Singleton;
+
 /**
  * Dagger module for no-op logging generators.
  */
@@ -20,7 +22,8 @@ public class NoOpLoggingModule {
 
     @IntoSet
     @Provides
-    public LoggingGenerator provideNoOpLoggingGenerator() {
+    @Singleton
+    LoggingGenerator provideNoOpLoggingGenerator() {
         return new NoOpLoggingGenerator();
     }
 

@@ -172,59 +172,31 @@ class DefaultMethodNameConfigurerTest {
     }
 
     @Test
-    void streamLazyNamePrefixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setStreamLazyPrefix("prefix").build();
-        final var adapted = configurer.streamLazyNamePrefix(original);
-        assertEquals(original.streamLazyPrefix(), adapted.streamLazyPrefix());
-    }
-
-    @Test
-    void streamLazyNamePrefixChange() {
-        final var original = SqlConfiguration.usingDefaults().setStreamLazyPrefix(" ").build();
-        final var adapted = configurer.streamLazyNamePrefix(original);
-        assertEquals(repositories.streamLazyPrefix(), adapted.streamLazyPrefix());
-    }
-
-    @Test
-    void streamLazyNameSuffixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setStreamLazySuffix("suffix").build();
-        final var adapted = configurer.streamLazyNameSuffix(original);
-        assertEquals(original.streamLazySuffix(), adapted.streamLazySuffix());
-    }
-
-    @Test
-    void streamLazyNameSuffixChange() {
-        final var original = SqlConfiguration.usingDefaults().setStreamLazySuffix(" ").build();
-        final var adapted = configurer.streamLazyNameSuffix(original);
-        assertEquals(repositories.streamLazySuffix(), adapted.streamLazySuffix());
-    }
-
-    @Test
     void streamEagerNamePrefixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setStreamEagerPrefix("prefix").build();
+        final var original = SqlConfiguration.usingDefaults().setStreamPrefix("prefix").build();
         final var adapted = configurer.streamEagerNamePrefix(original);
-        assertEquals(original.streamEagerPrefix(), adapted.streamEagerPrefix());
+        assertEquals(original.streamPrefix(), adapted.streamPrefix());
     }
 
     @Test
     void streamEagerNamePrefixChange() {
-        final var original = SqlConfiguration.usingDefaults().setStreamEagerPrefix(" ").build();
+        final var original = SqlConfiguration.usingDefaults().setStreamPrefix(" ").build();
         final var adapted = configurer.streamEagerNamePrefix(original);
-        assertEquals(repositories.streamEagerPrefix(), adapted.streamEagerPrefix());
+        assertEquals(repositories.streamPrefix(), adapted.streamPrefix());
     }
 
     @Test
     void streamEagerNameSuffixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setStreamEagerSuffix("suffix").build();
+        final var original = SqlConfiguration.usingDefaults().setStreamSuffix("suffix").build();
         final var adapted = configurer.streamEagerNameSuffix(original);
-        assertEquals(original.streamEagerSuffix(), adapted.streamEagerSuffix());
+        assertEquals(original.streamSuffix(), adapted.streamSuffix());
     }
 
     @Test
     void streamEagerNameSuffixChange() {
-        final var original = SqlConfiguration.usingDefaults().setStreamEagerSuffix(" ").build();
+        final var original = SqlConfiguration.usingDefaults().setStreamSuffix(" ").build();
         final var adapted = configurer.streamEagerNameSuffix(original);
-        assertEquals(repositories.streamEagerSuffix(), adapted.streamEagerSuffix());
+        assertEquals(repositories.streamSuffix(), adapted.streamSuffix());
     }
 
     @Test
@@ -240,10 +212,8 @@ class DefaultMethodNameConfigurerTest {
                 .setReactorSuffix("suffix")
                 .setRxJavaPrefix("prefix")
                 .setRxJavaSuffix("suffix")
-                .setStreamLazyPrefix("prefix")
-                .setStreamLazySuffix("suffix")
-                .setStreamEagerPrefix("prefix")
-                .setStreamEagerSuffix("suffix")
+                .setStreamPrefix("prefix")
+                .setStreamSuffix("suffix")
                 .build();
         final var adapted = configurer.affixes(original);
         assertAll(
@@ -257,10 +227,8 @@ class DefaultMethodNameConfigurerTest {
                 () -> assertEquals(original.reactorSuffix(), adapted.reactorSuffix()),
                 () -> assertEquals(original.rxJavaPrefix(), adapted.rxJavaPrefix()),
                 () -> assertEquals(original.rxJavaSuffix(), adapted.rxJavaSuffix()),
-                () -> assertEquals(original.streamLazyPrefix(), adapted.streamLazyPrefix()),
-                () -> assertEquals(original.streamLazySuffix(), adapted.streamLazySuffix()),
-                () -> assertEquals(original.streamEagerPrefix(), adapted.streamEagerPrefix()),
-                () -> assertEquals(original.streamEagerSuffix(), adapted.streamEagerSuffix()));
+                () -> assertEquals(original.streamPrefix(), adapted.streamPrefix()),
+                () -> assertEquals(original.streamSuffix(), adapted.streamSuffix()));
     }
 
     @Test
@@ -276,10 +244,8 @@ class DefaultMethodNameConfigurerTest {
                 .setReactorSuffix(" ")
                 .setRxJavaPrefix(" ")
                 .setRxJavaSuffix(" ")
-                .setStreamLazyPrefix(" ")
-                .setStreamLazySuffix(" ")
-                .setStreamEagerPrefix(" ")
-                .setStreamEagerSuffix(" ")
+                .setStreamPrefix(" ")
+                .setStreamSuffix(" ")
                 .build();
         final var adapted = configurer.affixes(original);
         assertAll(
@@ -293,10 +259,8 @@ class DefaultMethodNameConfigurerTest {
                 () -> assertEquals(repositories.reactorSuffix(), adapted.reactorSuffix()),
                 () -> assertEquals(repositories.rxJavaPrefix(), adapted.rxJavaPrefix()),
                 () -> assertEquals(repositories.rxJavaSuffix(), adapted.rxJavaSuffix()),
-                () -> assertEquals(repositories.streamLazyPrefix(), adapted.streamLazyPrefix()),
-                () -> assertEquals(repositories.streamLazySuffix(), adapted.streamLazySuffix()),
-                () -> assertEquals(repositories.streamEagerPrefix(), adapted.streamEagerPrefix()),
-                () -> assertEquals(repositories.streamEagerSuffix(), adapted.streamEagerSuffix()));
+                () -> assertEquals(repositories.streamPrefix(), adapted.streamPrefix()),
+                () -> assertEquals(repositories.streamSuffix(), adapted.streamSuffix()));
     }
 
     @Test

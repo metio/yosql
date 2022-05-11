@@ -9,41 +9,40 @@ package wtf.metio.yosql.tooling.dagger.codegen.dao;
 import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.annotations.Delegating;
+import wtf.metio.yosql.codegen.api.ConverterGenerator;
+import wtf.metio.yosql.codegen.api.DelegatingConverterGenerator;
 import wtf.metio.yosql.codegen.api.DelegatingRepositoryGenerator;
 import wtf.metio.yosql.codegen.api.RepositoryGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
 import java.util.Set;
 
 /**
  * Dagger module for the DAO APIs.
  */
 @Module(includes = {
-        EBeanDaoModule.class,
-        FluentJdbcDaoModule.class,
         JdbcDaoModule.class,
-        JdbiDaoModule.class,
-        JooqDaoModule.class,
-        JpaDaoModule.class,
-        MyBatisDaoModule.class,
-        PyranidDaoModule.class,
-        R2dbcDaoModule.class,
-        SansOrmDaoModule.class,
-        SpringDataJdbcDaoModule.class,
-        SpringDataJpaDaoModule.class,
-        SpringDataR2dbcDaoModule.class,
-        SpringJdbcDaoModule.class
+        R2dbcDaoModule.class
 })
 public class DefaultDaoModule {
 
     @Provides
     @Delegating
-    public RepositoryGenerator provideRepositoryGenerator(
-            final RuntimeConfiguration runtime,
+    @Singleton
+    RepositoryGenerator provideRepositoryGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
             final Set<RepositoryGenerator> repositoryGenerators) {
-        return new DelegatingRepositoryGenerator(
-                runtime.api(),
-                repositoryGenerators);
+        return new DelegatingRepositoryGenerator(runtimeConfiguration.api(), repositoryGenerators);
+    }
+
+    @Provides
+    @Delegating
+    @Singleton
+    ConverterGenerator provideConverterGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
+            final Set<ConverterGenerator> converterGenerators) {
+        return new DelegatingConverterGenerator(runtimeConfiguration.api(), converterGenerators);
     }
 
 }

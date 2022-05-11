@@ -27,12 +27,31 @@ public interface MutinyMethodGeneratorTCK {
      */
     String mutinyReadMethodExpectation();
 
+    /**
+     * @return The expected generated code for a Mutiny read method using a custom converter.
+     */
+    String mutinyReadMethodUsingCustomConverterExpectation();
+
     @Test
     default void mutinyReadMethod() {
         Assertions.assertEquals(
                 mutinyReadMethodExpectation(),
-                generator().mutinyReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
-                "The generated Mutiny read method did not match expectation");
+                generator().mutinyReadMethod(
+                                SqlConfigurations.sqlConfiguration(),
+                                SqlConfigurations.sqlStatement())
+                        .toString(),
+                "The generated Mutiny read method does not match expectation");
+    }
+
+    @Test
+    default void mutinyReadMethodUsingCustomConverter() {
+        Assertions.assertEquals(
+                mutinyReadMethodUsingCustomConverterExpectation(),
+                generator().mutinyReadMethod(
+                                SqlConfigurations.withCustomConverter(),
+                                SqlConfigurations.sqlStatementWithCustomConverter())
+                        .toString(),
+                "The generated Mutiny read method using a custom converter does not match expectation");
     }
 
 }

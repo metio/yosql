@@ -9,12 +9,14 @@ package wtf.metio.yosql.models.immutables;
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.models.constants.sql.SqlType;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Encapsulates everything we know about a single SQL statement.
@@ -33,6 +35,17 @@ public interface SqlStatement {
     static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByName() {
         return Collectors.groupingBy(statement -> statement.getConfiguration().name());
     }
+
+    static Stream<ResultRowConverter> resultConverters(
+            final List<SqlStatement> statements,
+            final ResultRowConverter defaultConverter) {
+        return statements.stream()
+                .map(SqlStatement::getConfiguration)
+                .filter(config -> SqlType.READING == config.type() || SqlType.CALLING == config.type()) // TODO: allow write methods that return
+                .map(config -> config.resultRowConverter().orElse(defaultConverter))
+                .distinct();
+    }
+
 
     Path getSourcePath();
 
@@ -84,7 +97,7 @@ public interface SqlStatement {
 
     @Value.Lazy
     default boolean shouldGenerateBlockingWriteAPI() {
-        return  isWriting() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
+        return isWriting() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
@@ -133,13 +146,8 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
-    default boolean shouldGenerateStreamEagerReadAPI() {
-        return isReading() && getConfiguration().generateStreamEagerApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateStreamLazyReadAPI() {
-        return isReading() && getConfiguration().generateStreamLazyApi().orElse(Boolean.FALSE);
+    default boolean shouldGenerateStreamReadAPI() {
+        return isReading() && getConfiguration().generateStreamApi().orElse(Boolean.FALSE);
     }
 
 }

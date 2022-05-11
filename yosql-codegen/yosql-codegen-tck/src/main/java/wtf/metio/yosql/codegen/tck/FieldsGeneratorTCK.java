@@ -23,20 +23,59 @@ public interface FieldsGeneratorTCK {
 
     String staticInitializerExpectation();
 
-    String[] asFieldsExpectations();
+    Iterable<String> asFieldsExpectations();
+
+    Iterable<String> asFieldsWithCustomConverterExpectations();
+
+    Iterable<String> asFieldsWithMultipleStatementsExpectations();
+
+    Iterable<String> asFieldsWithMultipleStatementsAndCustomConverterExpectations();
+
+    Iterable<String> asFieldsWithMultipleStatementsAndMixedConverterExpectations();
 
     @Test
     default void staticInitializer() {
-        Assumptions.assumeTrue(generator().staticInitializer(SqlConfigurations.sqlStatements()).isPresent());
+        final var staticInitializer = generator().staticInitializer(SqlConfigurations.sqlStatement());
+        Assumptions.assumeTrue(staticInitializer.isPresent());
         Assertions.assertEquals(
                 staticInitializerExpectation(),
-                generator().staticInitializer(SqlConfigurations.sqlStatements()).get().toString(),
-                "The generated static initializer did not match expectation");
+                staticInitializer.get().toString(),
+                "The generated static initializer does not match expectation");
     }
 
     @Test
     default void asFields() {
-        TestIterables.assertIterable(generator().asFields(SqlConfigurations.sqlStatements()), asFieldsExpectations());
+        TestIterables.assertIterables(
+                asFieldsExpectations(),
+                generator().asFields(SqlConfigurations.sqlStatement()));
+    }
+
+    @Test
+    default void asFieldsWithCustomConverter() {
+        TestIterables.assertIterables(
+                asFieldsWithCustomConverterExpectations(),
+                generator().asFields(SqlConfigurations.sqlStatementWithCustomConverter()));
+    }
+
+    @Test
+    default void asFieldsWithMultipleStatements() {
+        TestIterables.assertIterables(
+                asFieldsWithMultipleStatementsExpectations(),
+                generator().asFields(SqlConfigurations.sqlStatements()));
+    }
+
+    @Test
+    default void asFieldsWithMultipleStatementsAndCustomConverter() {
+        TestIterables.assertIterables(
+                asFieldsWithMultipleStatementsAndCustomConverterExpectations(),
+                generator().asFields(SqlConfigurations.sqlStatementsWithCustomConverter()));
+    }
+
+    @Test
+    default void asFieldsWithMultipleStatementsAndMixedConverter() {
+        TestIterables.assertIterables(
+                asFieldsWithMultipleStatementsAndMixedConverterExpectations(),
+                generator().asFields(SqlConfigurations.sqlStatementsWithMixedConverter()));
     }
 
 }

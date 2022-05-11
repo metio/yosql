@@ -18,26 +18,46 @@ import java.util.List;
 
 public final class SqlConfigurations {
 
+    public static List<SqlStatement> sqlStatement() {
+        return List.of(sqlStatement(sqlConfiguration()));
+    }
+
     public static List<SqlStatement> sqlStatements() {
-        return List.of(SqlStatement.builder()
+        return List.of(sqlStatement(sqlConfiguration()), sqlStatement(sqlConfiguration()));
+    }
+
+    public static List<SqlStatement> sqlStatementWithCustomConverter() {
+        return List.of(sqlStatement(withCustomConverter()));
+    }
+
+    public static List<SqlStatement> sqlStatementsWithCustomConverter() {
+        return List.of(sqlStatement(withCustomConverter()), sqlStatement(withCustomConverter()));
+    }
+
+    public static List<SqlStatement> sqlStatementsWithMixedConverter() {
+        return List.of(sqlStatement(sqlConfiguration()), sqlStatement(withCustomConverter()));
+    }
+
+    private static SqlStatement sqlStatement(final SqlConfiguration configuration) {
+        return SqlStatement.builder()
                 .setSourcePath(Paths.get("src/main/yosql/data/queryData.sql"))
-                .setConfiguration(sqlConfiguration())
+                .setConfiguration(configuration)
                 .setRawStatement("SELECT raw FROM table WHERE test = ? AND id = ?;")
-                .build());
+                .build();
     }
 
     public static SqlConfiguration sqlConfiguration() {
         final var config = SqlConfiguration.builder();
         config.setName("queryData");
         config.setType(SqlType.READING);
+        config.setRepository("com.example.persistence.DataRepository");
         config.setCatchAndRethrow(true);
         config.setGenerateBatchApi(true);
         config.setGenerateBlockingApi(true);
         config.setGenerateMutinyApi(true);
         config.setGenerateReactorApi(true);
         config.setGenerateRxJavaApi(true);
-        config.setGenerateStreamEagerApi(true);
-        config.setGenerateStreamLazyApi(true);
+        config.setGenerateStreamApi(true);
         config.setParameters(List.of(SqlParameter.builder()
                 .setName("test")
                 .setType(Object.class.getName())
@@ -47,14 +67,17 @@ public final class SqlConfigurations {
                 .setType(int.class.getName())
                 .setIndices(new int[]{1})
                 .build()));
-        config.setResultRowConverter(ResultRowConverter.builder()
-                .setAlias("resultRow")
-                .setConverterType("com.example.ToResultRowConverter")
-                .setMethodName("apply")
-                .setResultType("com.example.util.ResultRow")
-                .build());
-        config.setRepository("com.example.persistence.DataRepository");
         return config.build();
+    }
+
+    public static SqlConfiguration withCustomConverter() {
+        return SqlConfiguration.copyOf(sqlConfiguration())
+                .withResultRowConverter(ResultRowConverter.builder()
+                        .setAlias("item")
+                        .setConverterType("com.example.ToItemConverter")
+                        .setMethodName("asItem")
+                        .setResultType("com.example.domain.Item")
+                        .build());
     }
 
     private SqlConfigurations() {

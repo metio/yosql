@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 @DisplayName("DefaultJdbcBlocks")
@@ -162,7 +163,7 @@ class DefaultJdbcBlocksTest {
                 final var rawQuery = QUERY_DATA_RAW;
                 final var index = QUERY_DATA_INDEX;
                 LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
-                """, generator.pickVendorQuery(SqlConfigurations.sqlStatements()).toString());
+                """, generator.pickVendorQuery(SqlConfigurations.sqlStatement()).toString());
     }
 
     @Test
@@ -191,39 +192,117 @@ class DefaultJdbcBlocksTest {
 
     @Test
     void returnAsList() {
+        final var converter = ResultRowConverter.builder()
+                .setAlias("converter")
+                .setConverterType("com.example.Converter")
+                .setMethodName("apply").setResultType("com.example.Domain")
+                .build();
         Assertions.assertEquals("""
                 final var list = new java.util.ArrayList<java.lang.Object>();
-                while (state.next()) {
-                  list.add(converter.apply(state));
+                while (resultSet.next()) {
+                  list.add(converter.apply(resultSet));
                 }
                 return list;
-                """, generator.returnAsList(TypicalTypes.listOf(TypeName.OBJECT), "converter").toString());
+                """, generator.returnAsList(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
     }
 
     @Test
     void returnAsStream() {
+        final var converter = ResultRowConverter.builder()
+                .setAlias("converter")
+                .setConverterType("com.example.Converter")
+                .setMethodName("apply").setResultType("com.example.Domain")
+                .build();
         Assertions.assertEquals("""
                 final var list = new java.util.ArrayList<java.lang.Object>();
-                while (state.next()) {
-                  list.add(converter.apply(state));
+                while (resultSet.next()) {
+                  list.add(converter.apply(resultSet));
                 }
                 return list.stream();
-                """, generator.returnAsStream(TypicalTypes.listOf(TypeName.OBJECT), "converter").toString());
+                """, generator.returnAsStream(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
     }
 
     @Test
-    void createResultState() {
+    void returnAsMulti() {
+        final var converter = ResultRowConverter.builder()
+                .setAlias("converter")
+                .setConverterType("com.example.Converter")
+                .setMethodName("apply").setResultType("com.example.Domain")
+                .build();
         Assertions.assertEquals("""
-                        final var state = new com.example.persistence.converter.ResultState(resultSet, resultSetMetaData, columnCount);
-                        """,
-                generator.createResultState().toString());
+                final var list = new java.util.ArrayList<java.lang.Object>();
+                while (resultSet.next()) {
+                  list.add(converter.apply(resultSet));
+                }
+                return io.smallrye.mutiny.Multi.createFrom().iterable(list);
+                """, generator.returnAsMulti(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
     }
 
     @Test
-    void returnNewFlowState() {
+    void returnAsFlowable() {
+        final var converter = ResultRowConverter.builder()
+                .setAlias("converter")
+                .setConverterType("com.example.Converter")
+                .setMethodName("apply").setResultType("com.example.Domain")
+                .build();
         Assertions.assertEquals("""
-                return new com.example.persistence.converter.FlowState(connection, statement, resultSet, resultSetMetaData, columnCount);
-                """, generator.returnNewFlowState().toString());
+                final var list = new java.util.ArrayList<java.lang.Object>();
+                while (resultSet.next()) {
+                  list.add(converter.apply(resultSet));
+                }
+                return io.reactivex.Flowable.fromIterable(list);
+                """, generator.returnAsFlowable(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
+    }
+
+    @Test
+    void returnAsFlux() {
+        final var converter = ResultRowConverter.builder()
+                .setAlias("converter")
+                .setConverterType("com.example.Converter")
+                .setMethodName("apply").setResultType("com.example.Domain")
+                .build();
+        Assertions.assertEquals("""
+                final var list = new java.util.ArrayList<java.lang.Object>();
+                while (resultSet.next()) {
+                  list.add(converter.apply(resultSet));
+                }
+                return reactor.core.publisher.Flux.fromIterable(list);
+                """, generator.returnAsFlux(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
+    }
+
+    @Test
+    void returnAsOne() {
+        final var converter = ResultRowConverter.builder()
+                .setAlias("converter")
+                .setConverterType("com.example.Converter")
+                .setMethodName("apply").setResultType("com.example.Domain")
+                .build();
+        Assertions.assertEquals("""
+                final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                while (resultSet.next()) {
+                  list.add(converter.apply(resultSet));
+                }
+                if (list.size() != 1) {
+                  throw new IllegalStateException();
+                }
+                return list.get(0);
+                """, generator.returnAsOne(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
+    }
+
+    @Test
+    void returnAsFirst() {
+        final var converter = ResultRowConverter.builder()
+                .setAlias("converter")
+                .setConverterType("com.example.Converter")
+                .setMethodName("apply").setResultType("com.example.Domain")
+                .build();
+        Assertions.assertEquals("""
+                final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                while (resultSet.next()) {
+                  list.add(converter.apply(resultSet));
+                }
+                return list.size() > 0 ? list.get(0) : null;
+                """, generator.returnAsFirst(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
     }
 
     @Test

@@ -50,7 +50,6 @@
         <module>yosql-examples-maven-jdbc-java11</module>
         <module>yosql-examples-maven-jdbc-java15</module>
         <module>yosql-examples-maven-jdbc-java16</module>
-        <module>yosql-examples-maven-spring-jdbc-java16</module>
     </modules>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->

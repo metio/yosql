@@ -13,6 +13,8 @@ import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.tinylog.TinylogLoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
+
 /**
  * Dagger module for tinylog based logging generators.
  */
@@ -21,7 +23,8 @@ public class TinylogLoggingModule {
 
     @IntoSet
     @Provides
-    public LoggingGenerator provideJdkLoggingGenerator(final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    LoggingGenerator provideJdkLoggingGenerator(final RuntimeConfiguration runtimeConfiguration) {
         return new TinylogLoggingGenerator(runtimeConfiguration.names());
     }
 

@@ -14,6 +14,8 @@ import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.log4j.Log4jLoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
+
 /**
  * Dagger module for log4j based logging generators.
  */
@@ -22,7 +24,8 @@ public class Log4jLoggingModule {
 
     @IntoSet
     @Provides
-    public LoggingGenerator provideLog4jLoggingGenerator(
+    @Singleton
+    LoggingGenerator provideLog4jLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Fields fields) {
         return new Log4jLoggingGenerator(runtimeConfiguration.names(), fields);

@@ -74,8 +74,7 @@ public final class DelegatingMethodsGenerator implements MethodsGenerator {
         methods.addAll(asMethods(statements, SqlStatement::shouldGenerateReactorCallAPI, reactorMethods::reactorCallMethod));
         methods.addAll(asMethods(statements, SqlStatement::shouldGenerateReactorReadAPI, reactorMethods::reactorReadMethod));
         methods.addAll(asMethods(statements, SqlStatement::shouldGenerateReactorWriteAPI, reactorMethods::reactorWriteMethod));
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateStreamEagerReadAPI, streamMethods::streamEagerReadMethod));
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateStreamLazyReadAPI, streamMethods::streamLazyReadMethod));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateStreamReadAPI, streamMethods::streamReadMethod));
 
         return methods;
     }

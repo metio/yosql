@@ -67,10 +67,7 @@ public final class JdbcReactorMethodGenerator implements ReactorMethodGenerator 
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.readMetaData())
-                .addCode(jdbc.readColumnCount())
-                .addCode(jdbc.createResultState())
-                .addCode(jdbc.returnAsFlux(listOfResults, converter.alias()))
+                .addCode(jdbc.returnAsFlux(listOfResults, converter))
                 .addCode(controlFlow.endTryBlock(3))
                 .addCode(controlFlow.maybeCatchAndRethrow(configuration))
                 .build();

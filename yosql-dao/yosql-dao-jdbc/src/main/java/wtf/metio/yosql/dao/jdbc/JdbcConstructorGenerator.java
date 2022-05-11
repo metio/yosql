@@ -12,14 +12,13 @@ import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.codegen.api.ConstructorGenerator;
 import wtf.metio.yosql.codegen.api.Methods;
 import wtf.metio.yosql.codegen.blocks.GenericBlocks;
-import wtf.metio.yosql.models.constants.sql.SqlType;
+import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -32,18 +31,21 @@ public final class JdbcConstructorGenerator implements ConstructorGenerator {
     private final NamesConfiguration names;
     private final JdbcParameters jdbcParameters;
     private final RepositoriesConfiguration repositories;
+    private final ConverterConfiguration converters;
 
     public JdbcConstructorGenerator(
             final GenericBlocks blocks,
             final Methods methods,
             final NamesConfiguration names,
-            final JdbcParameters jdbcParameters, 
-            final RepositoriesConfiguration repositories) {
+            final JdbcParameters jdbcParameters,
+            final RepositoriesConfiguration repositories,
+            final ConverterConfiguration converters) {
         this.blocks = blocks;
         this.methods = methods;
         this.names = names;
         this.jdbcParameters = jdbcParameters;
         this.repositories = repositories;
+        this.converters = converters;
     }
 
     @Override
@@ -68,13 +70,8 @@ public final class JdbcConstructorGenerator implements ConstructorGenerator {
                 .build();
     }
 
-    private static Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {
-        return statements.stream()
-                .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlType.READING == config.type() || SqlType.CALLING == config.type())
-                .flatMap(config -> config.resultRowConverter().stream())
-                .filter(Objects::nonNull)
-                .distinct();
+    private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {
+        return SqlStatement.resultConverters(statements, converters.defaultConverter().orElseThrow());
     }
 
 }

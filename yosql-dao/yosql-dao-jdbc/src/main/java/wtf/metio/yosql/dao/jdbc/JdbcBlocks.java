@@ -12,6 +12,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
+import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public interface JdbcBlocks {
 
     CodeBlock readMetaData();
 
+    @Deprecated
     CodeBlock readColumnCount();
 
     CodeBlock resultSetVariable();
@@ -66,29 +68,22 @@ public interface JdbcBlocks {
 
     CodeBlock logExecutedBatchQuery(SqlConfiguration sqlConfiguration);
 
-    CodeBlock returnAsList(ParameterizedTypeName listOfResults, String converterAlias);
+    CodeBlock returnAsList(ParameterizedTypeName listOfResults, ResultRowConverter converter);
 
-    CodeBlock returnAsFirst(TypeName resultType, String converterAlias);
+    CodeBlock returnAsFirst(TypeName resultType, ResultRowConverter converter);
 
-    CodeBlock returnAsOne(TypeName resultType, String converterAlias);
+    CodeBlock returnAsOne(TypeName resultType, ResultRowConverter converter);
 
-    CodeBlock returnAsStream(ParameterizedTypeName listOfResults, String converterAlias);
+    CodeBlock returnAsStream(ParameterizedTypeName listOfResults, ResultRowConverter converter);
 
-    CodeBlock returnAsMulti(ParameterizedTypeName listOfResults, String converterAlias);
+    CodeBlock returnAsMulti(ParameterizedTypeName listOfResults, ResultRowConverter converter);
 
-    CodeBlock returnAsFlowable(ParameterizedTypeName listOfResults, String converterAlias);
+    CodeBlock returnAsFlowable(ParameterizedTypeName listOfResults, ResultRowConverter converter);
 
-    CodeBlock returnAsFlux(ParameterizedTypeName listOfResults, String converterAlias);
+    CodeBlock returnAsFlux(ParameterizedTypeName listOfResults, ResultRowConverter converter);
 
+    @Deprecated
     CodeBlock streamStateful(TypeSpec spliterator, TypeSpec closer);
-
-    CodeBlock createResultState();
-
-    @Deprecated(forRemoval = true)
-    CodeBlock returnNewFlowState();
-
-    @Deprecated(forRemoval = true)
-    CodeBlock newFlowable(TypeSpec initialState, TypeSpec generator, TypeSpec disposer);
 
     CodeBlock setParameters(SqlConfiguration configuration);
 

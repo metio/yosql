@@ -31,8 +31,10 @@ public interface BatchMethodGeneratorTCK {
     default void batchWriteMethod() {
         Assertions.assertEquals(
                 batchWriteMethodExpectation(),
-                generator().batchWriteMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
-                "The generated batch write method did not match expectation");
+                generator().batchWriteMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatement()).toString(),
+                "The generated batch write method does not match expectation");
     }
+
+    // TODO: define test w/ returning write method
 
 }

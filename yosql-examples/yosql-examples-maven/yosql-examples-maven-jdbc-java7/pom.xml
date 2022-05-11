@@ -54,7 +54,7 @@
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.java7.persistence</basePackageName>
                     </repositories>
                     <converter>
-                        <converterPackageName>wtf.metio.yosql.example.maven.jdbc.java7.persistence.converter</converterPackageName>
+                        <mapConverterClass>wtf.metio.yosql.example.maven.jdbc.java7.persistence.converter.ToMapConverter</mapConverterClass>
                         <rowConverters>
                             <rowConverter>
                                 <alias>itemConverter</alias>

@@ -33,8 +33,8 @@ public class DefaultCodeGeneratorModule {
     @Provides
     @Singleton
     CodeGenerator provideCodeGenerator(
-            final @Delegating RepositoryGenerator repositoryGenerator,
-            final ConverterGenerator converterGenerator) {
+            @Delegating final RepositoryGenerator repositoryGenerator,
+            @Delegating final ConverterGenerator converterGenerator) {
         return new DefaultCodeGenerator(repositoryGenerator, converterGenerator);
     }
 

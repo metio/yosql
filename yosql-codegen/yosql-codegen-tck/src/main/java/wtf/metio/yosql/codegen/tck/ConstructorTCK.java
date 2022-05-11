@@ -20,13 +20,31 @@ public interface ConstructorTCK {
     ConstructorGenerator generator();
 
     String forRepositoryExpectation();
+    String forRepositoryWithCustomConverterExpectation();
+    String forRepositoryWithMultipleStatementsAndMixedConverterExpectation();
 
     @Test
     default void forRepository() {
         Assertions.assertEquals(
                 forRepositoryExpectation(),
-                generator().forRepository(SqlConfigurations.sqlStatements()).toString(),
-                "The generated constructor did not match expectation");
+                generator().forRepository(SqlConfigurations.sqlStatement()).toString(),
+                "The generated constructor does not match expectation");
+    }
+
+    @Test
+    default void forRepositoryWithCustomConverter() {
+        Assertions.assertEquals(
+                forRepositoryWithCustomConverterExpectation(),
+                generator().forRepository(SqlConfigurations.sqlStatementWithCustomConverter()).toString(),
+                "The generated constructor does not match expectation");
+    }
+
+    @Test
+    default void forRepositoryWithMultipleStatementsAndMixedConverter() {
+        Assertions.assertEquals(
+                forRepositoryWithMultipleStatementsAndMixedConverterExpectation(),
+                generator().forRepository(SqlConfigurations.sqlStatementsWithMixedConverter()).toString(),
+                "The generated constructor does not match expectation");
     }
 
 }

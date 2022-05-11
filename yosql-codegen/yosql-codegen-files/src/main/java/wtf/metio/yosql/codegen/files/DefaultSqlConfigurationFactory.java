@@ -89,18 +89,17 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
 
     private void logConfiguration(final SqlConfiguration configuration) {
         logger.debug("SQL CONFIGURATION:");
-        logger.debug("name:             {}", configuration.name());
-        logger.debug("repository:       {}", configuration.repository());
-        logger.debug("parameters:       {}", configuration.parameters().size());
-        logger.debug("blockingApi:      {}", configuration.generateBlockingApi());
-        logger.debug("batchApi:         {}", configuration.generateBatchApi());
-        logger.debug("rxJavaApi:        {}", configuration.generateRxJavaApi());
-        logger.debug("eagerStreamApi:   {}", configuration.generateStreamEagerApi());
-        logger.debug("lazyStreamApi:    {}", configuration.generateStreamLazyApi());
-        logger.debug("rxJavaApi:        {}", configuration.generateRxJavaApi());
-        logger.debug("type:             {}", configuration.type());
-        logger.debug("returningMode:    {}", configuration.returningMode());
-        logger.debug("vendor:           {}", configuration.vendor());
+        logger.debug("name:          {}", configuration.name());
+        logger.debug("repository:    {}", configuration.repository());
+        logger.debug("parameters:    {}", configuration.parameters().size());
+        logger.debug("blockingApi:   {}", configuration.generateBlockingApi());
+        logger.debug("batchApi:      {}", configuration.generateBatchApi());
+        logger.debug("rxJavaApi:     {}", configuration.generateRxJavaApi());
+        logger.debug("streamApi:     {}", configuration.generateStreamApi());
+        logger.debug("rxJavaApi:     {}", configuration.generateRxJavaApi());
+        logger.debug("type:          {}", configuration.type());
+        logger.debug("returningMode: {}", configuration.returningMode());
+        logger.debug("vendor:        {}", configuration.vendor());
     }
 
 }

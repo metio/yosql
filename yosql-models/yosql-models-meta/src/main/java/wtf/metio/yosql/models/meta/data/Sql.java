@@ -49,8 +49,7 @@ public final class Sql {
                         mutinyName(),
                         reactorName(),
                         rxJavaName(),
-                        streamLazyName(),
-                        streamEagerName(),
+                        streamName(),
                         joinMethodNameParts()))
                 .build();
     }
@@ -332,21 +331,12 @@ public final class Sql {
                 .build();
     }
 
-    private static MethodSpec streamLazyName() {
-        return MethodSpec.methodBuilder("streamLazyName")
+    private static MethodSpec streamName() {
+        return MethodSpec.methodBuilder("streamName")
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "streamLazyPrefix", "name", "streamLazySuffix")
-                .build();
-    }
-
-    private static MethodSpec streamEagerName() {
-        return MethodSpec.methodBuilder("streamEagerName")
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(String.class)
-                .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "streamEagerPrefix", "name", "streamEagerSuffix")
+                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "streamPrefix", "name", "streamSuffix")
                 .build();
     }
 

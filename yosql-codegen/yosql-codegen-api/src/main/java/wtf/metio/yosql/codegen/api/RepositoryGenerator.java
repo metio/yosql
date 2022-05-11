@@ -17,6 +17,12 @@ import java.util.List;
  */
 public interface RepositoryGenerator {
 
+    /**
+     * Check whether this generator supports the given persistence API.
+     *
+     * @param api The API to check.
+     * @return true if this generator supports the given API, false otherwise.
+     */
     boolean supports(PersistenceApis api);
 
     /**

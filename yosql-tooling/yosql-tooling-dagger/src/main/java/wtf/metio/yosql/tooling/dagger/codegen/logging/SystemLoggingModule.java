@@ -14,6 +14,8 @@ import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.system.SystemLoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
+
 /**
  * Dagger module for {@link System.Logger} logging generators.
  */
@@ -22,7 +24,8 @@ public class SystemLoggingModule {
 
     @IntoSet
     @Provides
-    public LoggingGenerator provideNoOpLoggingGenerator(
+    @Singleton
+    LoggingGenerator provideNoOpLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Fields fields) {
         return new SystemLoggingGenerator(runtimeConfiguration.names(), fields);

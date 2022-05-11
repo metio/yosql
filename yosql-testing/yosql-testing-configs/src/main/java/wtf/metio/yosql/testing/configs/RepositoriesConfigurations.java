@@ -27,8 +27,7 @@ public final class RepositoriesConfigurations {
                 .withGenerateMutinyApi(false)
                 .withGenerateReactorApi(false)
                 .withGenerateRxJavaApi(true)
-                .withGenerateStreamEagerApi(false)
-                .withGenerateStreamLazyApi(false);
+                .withGenerateStreamApi(false);
     }
 
     private RepositoriesConfigurations() {

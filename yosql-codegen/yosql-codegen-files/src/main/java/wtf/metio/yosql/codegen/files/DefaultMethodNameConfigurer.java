@@ -82,8 +82,6 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
         adapted = reactorNameSuffix(adapted);
         adapted = rxJavaNamePrefix(adapted);
         adapted = rxJavaNameSuffix(adapted);
-        adapted = streamLazyNamePrefix(adapted);
-        adapted = streamLazyNameSuffix(adapted);
         adapted = streamEagerNamePrefix(adapted);
         adapted = streamEagerNameSuffix(adapted);
         return adapted;
@@ -180,37 +178,19 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
     }
 
     // visible for testing
-    SqlConfiguration streamLazyNamePrefix(final SqlConfiguration configuration) {
-        if (Strings.isBlank(configuration.streamLazyPrefix())) {
-            logger.debug(SqlConfigurationLifecycle.STREAM_LAZY_PREFIX_NAME_CHANGED, repositories.streamLazyPrefix());
-            return SqlConfiguration.copyOf(configuration).withStreamLazyPrefix(repositories.streamLazyPrefix());
-        }
-        return configuration;
-    }
-
-    // visible for testing
-    SqlConfiguration streamLazyNameSuffix(final SqlConfiguration configuration) {
-        if (Strings.isBlank(configuration.streamLazySuffix())) {
-            logger.debug(SqlConfigurationLifecycle.STREAM_LAZY_SUFFIX_NAME_CHANGED, repositories.streamLazySuffix());
-            return SqlConfiguration.copyOf(configuration).withStreamLazySuffix(repositories.streamLazySuffix());
-        }
-        return configuration;
-    }
-
-    // visible for testing
     SqlConfiguration streamEagerNamePrefix(final SqlConfiguration configuration) {
-        if (Strings.isBlank(configuration.streamEagerPrefix())) {
-            logger.debug(SqlConfigurationLifecycle.STREAM_EAGER_PREFIX_NAME_CHANGED, repositories.streamEagerPrefix());
-            return SqlConfiguration.copyOf(configuration).withStreamEagerPrefix(repositories.streamEagerPrefix());
+        if (Strings.isBlank(configuration.streamPrefix())) {
+            logger.debug(SqlConfigurationLifecycle.STREAM_EAGER_PREFIX_NAME_CHANGED, repositories.streamPrefix());
+            return SqlConfiguration.copyOf(configuration).withStreamPrefix(repositories.streamPrefix());
         }
         return configuration;
     }
 
     // visible for testing
     SqlConfiguration streamEagerNameSuffix(final SqlConfiguration configuration) {
-        if (Strings.isBlank(configuration.streamEagerSuffix())) {
-            logger.debug(SqlConfigurationLifecycle.STREAM_EAGER_SUFFIX_NAME_CHANGED, repositories.streamEagerSuffix());
-            return SqlConfiguration.copyOf(configuration).withStreamEagerSuffix(repositories.streamEagerSuffix());
+        if (Strings.isBlank(configuration.streamSuffix())) {
+            logger.debug(SqlConfigurationLifecycle.STREAM_EAGER_SUFFIX_NAME_CHANGED, repositories.streamSuffix());
+            return SqlConfiguration.copyOf(configuration).withStreamSuffix(repositories.streamSuffix());
         }
         return configuration;
     }

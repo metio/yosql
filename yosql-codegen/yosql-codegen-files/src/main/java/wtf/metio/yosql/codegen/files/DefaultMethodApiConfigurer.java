@@ -30,7 +30,6 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
         adapted = reactor(adapted);
         adapted = rxJava(adapted);
         adapted = streamEager(adapted);
-        adapted = streamLazy(adapted);
         return adapted;
     }
 
@@ -82,24 +81,11 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
     SqlConfiguration streamEager(final SqlConfiguration configuration) {
         if (WRITING == configuration.type()) {
             // TODO: allow eagerly streamed insert/update statements
-            return SqlConfiguration.copyOf(configuration).withGenerateStreamEagerApi(false);
+            return SqlConfiguration.copyOf(configuration).withGenerateStreamApi(false);
         }
-        if (configuration.generateStreamEagerApi().isEmpty()) {
+        if (configuration.generateStreamApi().isEmpty()) {
             return SqlConfiguration.copyOf(configuration)
-                    .withGenerateStreamEagerApi(repositories.generateStreamEagerApi());
-        }
-        return configuration;
-    }
-
-    // visible for testing
-    SqlConfiguration streamLazy(final SqlConfiguration configuration) {
-        if (WRITING == configuration.type()) {
-            // TODO: allow lazily streamed insert/update statements
-            return SqlConfiguration.copyOf(configuration).withGenerateStreamLazyApi(false);
-        }
-        if (configuration.generateStreamLazyApi().isEmpty()) {
-            return SqlConfiguration.copyOf(configuration)
-                    .withGenerateStreamLazyApi(repositories.generateStreamLazyApi());
+                    .withGenerateStreamApi(repositories.generateStreamApi());
         }
         return configuration;
     }

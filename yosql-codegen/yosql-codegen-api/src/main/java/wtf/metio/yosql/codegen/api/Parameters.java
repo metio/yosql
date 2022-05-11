@@ -19,10 +19,10 @@ public interface Parameters {
 
     ParameterSpec parameter(TypeName type, String name);
 
-    Iterable<ParameterSpec> asParameterSpecs(List<SqlParameter> parameters);
+    Iterable<ParameterSpec> asParameterSpecs(List<SqlParameter> parameters); // TODO: is this JDBC specific?
 
-    Iterable<ParameterSpec> asBatchParameterSpecs(List<SqlParameter> parameters);
+    Iterable<ParameterSpec> asBatchParameterSpecs(List<SqlParameter> parameters); // TODO: is this JDBC specific?
 
-    Iterable<ParameterSpec> resultState(TypeName type);
+    Iterable<ParameterSpec> resultState(TypeName type); // TODO: remove?
 
 }

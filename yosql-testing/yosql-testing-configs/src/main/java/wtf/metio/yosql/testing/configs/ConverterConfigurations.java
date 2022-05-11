@@ -10,20 +10,28 @@ package wtf.metio.yosql.testing.configs;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.sql.ResultRowConverter;
 
+import java.util.List;
+
 public final class ConverterConfigurations {
 
-    public static ConverterConfiguration defaults() {
+    public static ConverterConfiguration withoutConverters() {
         return ConverterConfiguration.usingDefaults().build();
     }
 
-    public static ConverterConfiguration withResultRowConverter() {
-        return ConverterConfiguration.copyOf(defaults())
+    public static ConverterConfiguration withConverters() {
+        return ConverterConfiguration.copyOf(withoutConverters())
                 .withDefaultConverter(ResultRowConverter.builder()
-                        .setAlias("resultRow")
-                        .setConverterType("com.example.persistence.converter.ToResultRowConverter")
+                        .setAlias("toMap")
+                        .setConverterType("com.example.persistence.converter.ToMapConverter")
                         .setMethodName("apply")
-                        .setResultType("com.example.persistence.converter.ResultRow")
-                        .build());
+                        .setResultType("java.util.Map<String, Object>")
+                        .build())
+                .withRowConverters(List.of(ResultRowConverter.builder()
+                        .setAlias("item")
+                        .setConverterType("com.example.persistence.converter.ToItemConverter")
+                        .setMethodName("asItem")
+                        .setResultType("com.example.domain.Item")
+                        .build()));
     }
 
     private ConverterConfigurations() {

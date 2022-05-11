@@ -14,56 +14,69 @@ import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
+
 @Module
 public class DefaultGenericBlocksModule {
 
     @Provides
-    public Javadoc provideJavadoc(final RuntimeConfiguration runtimeConfiguration, final IMessageConveyor messages) {
+    @Singleton
+    Javadoc provideJavadoc(final RuntimeConfiguration runtimeConfiguration, final IMessageConveyor messages) {
         return new DefaultJavadoc(runtimeConfiguration.files(), messages);
     }
 
     @Provides
-    public AnnotationGenerator provideAnnotationGenerator(final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    AnnotationGenerator provideAnnotationGenerator(final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultAnnotationGenerator(runtimeConfiguration.annotations(), runtimeConfiguration.api());
     }
 
     @Provides
-    public Classes provideClasses(final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    Classes provideClasses(final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultClasses(runtimeConfiguration.java());
     }
 
     @Provides
-    public ControlFlows provideControlFlows(
-            final Variables variables,
-            final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    ControlFlows provideControlFlows(
+            final RuntimeConfiguration runtimeConfiguration,
+            final Variables variables) {
         return new DefaultControlFlows(variables, runtimeConfiguration.names());
     }
 
     @Provides
-    public Fields provideFields(final AnnotationGenerator annotations, final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    Fields provideFields(
+            final RuntimeConfiguration runtimeConfiguration,
+            final AnnotationGenerator annotations) {
         return new DefaultFields(annotations, runtimeConfiguration.java(), runtimeConfiguration.names());
     }
 
     @Provides
-    public GenericBlocks provideGenericBlocks() {
+    @Singleton
+    GenericBlocks provideGenericBlocks() {
         return new DefaultGenericBlocks();
     }
 
     @Provides
-    public Methods provideMethods(
+    @Singleton
+    Methods provideMethods(
+            final RuntimeConfiguration runtimeConfiguration,
             final AnnotationGenerator annotations,
-            final Javadoc javadoc,
-            final RuntimeConfiguration runtimeConfiguration) {
+            final Javadoc javadoc) {
         return new DefaultMethods(annotations, javadoc, runtimeConfiguration.java());
     }
 
     @Provides
-    public Parameters provideParameters(final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    Parameters provideParameters(final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultParameters(runtimeConfiguration.names(), runtimeConfiguration.java());
     }
 
     @Provides
-    public Variables provideVariables(final RuntimeConfiguration runtimeConfiguration) {
+    @Singleton
+    Variables provideVariables(final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultVariables(runtimeConfiguration.java());
     }
 

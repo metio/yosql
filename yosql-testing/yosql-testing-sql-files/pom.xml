@@ -50,9 +50,9 @@
                     <repositories>
                         <basePackageName>wtf.metio.yosql.testing.schema</basePackageName>
                     </repositories>
-                    <jdbc>
-                        <utilityPackageName>wtf.metio.yosql.testing.schema.util</utilityPackageName>
-                    </jdbc>
+                    <converter>
+                        <mapConverterClass>wtf.metio.yosql.testing.schema.converter.ToMapConverter</mapConverterClass>
+                    </converter>
                 </configuration>
                 <executions>
                     <execution>

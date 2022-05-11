@@ -39,7 +39,7 @@ public final class JdbcObjectMother {
 
     public static FieldsGenerator fieldsGenerator(final JavaConfiguration java) {
         return new JdbcFieldsGenerator(
-                ConverterConfigurations.withResultRowConverter(),
+                ConverterConfigurations.withConverters(),
                 NamesConfigurations.defaults(),
                 LoggingObjectMother.loggingGenerator(),
                 Blocks.javadoc(),
@@ -52,7 +52,8 @@ public final class JdbcObjectMother {
                 Blocks.methods(java),
                 NamesConfigurations.defaults(),
                 jdbcParameter(),
-                RepositoriesConfigurations.defaults());
+                RepositoriesConfigurations.defaults(),
+                ConverterConfigurations.withConverters());
     }
 
     private static DefaultJdbcParameters jdbcParameter() {
@@ -78,7 +79,7 @@ public final class JdbcObjectMother {
         return ImmutableRuntimeConfiguration.copyOf(RuntimeConfigurations.defaults())
                 .withApi(ApiConfigurations.jul())
                 .withFiles(FilesConfigurations.maven())
-                .withConverter(ConverterConfigurations.withResultRowConverter());
+                .withConverter(ConverterConfigurations.withConverters());
     }
 
     public static BlockingMethodGenerator blockingMethodGenerator(final JavaConfiguration java) {
@@ -89,7 +90,7 @@ public final class JdbcObjectMother {
                 LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java),
                 jdbcTransformer(),
-                ConverterConfigurations.withResultRowConverter());
+                ConverterConfigurations.withConverters());
     }
 
     public static BatchMethodGenerator batchMethodGenerator(final JavaConfiguration java) {
@@ -104,10 +105,8 @@ public final class JdbcObjectMother {
 
     public static Java8StreamMethodGenerator java8StreamMethodGenerator(final JavaConfiguration java) {
         return new JdbcJava8StreamMethodGenerator(
-                ConverterConfigurations.withResultRowConverter(),
-                Blocks.genericBlocks(),
+                ConverterConfigurations.withConverters(),
                 Blocks.controlFlows(java),
-                NamesConfigurations.defaults(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 LoggingObjectMother.loggingGenerator(),
@@ -117,7 +116,7 @@ public final class JdbcObjectMother {
 
     public static RxJavaMethodGenerator rxJavaMethodGenerator(final JavaConfiguration java) {
         return new JdbcRxJavaMethodGenerator(
-                ConverterConfigurations.withResultRowConverter(),
+                ConverterConfigurations.withConverters(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 jdbcTransformer(),
@@ -128,7 +127,7 @@ public final class JdbcObjectMother {
 
     public static ReactorMethodGenerator reactorMethodGenerator(final JavaConfiguration java) {
         return new JdbcReactorMethodGenerator(
-                ConverterConfigurations.withResultRowConverter(),
+                ConverterConfigurations.withConverters(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 jdbcTransformer(),
@@ -139,7 +138,7 @@ public final class JdbcObjectMother {
 
     public static MutinyMethodGenerator mutinyMethodGenerator(final JavaConfiguration java) {
         return new JdbcMutinyMethodGenerator(
-                ConverterConfigurations.withResultRowConverter(),
+                ConverterConfigurations.withConverters(),
                 Blocks.methods(java),
                 Blocks.parameters(java),
                 jdbcTransformer(),

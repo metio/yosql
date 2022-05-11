@@ -27,12 +27,31 @@ public interface ReactorMethodGeneratorTCK {
      */
     String reactorReadMethodExpectation();
 
+    /**
+     * @return The expected generated code for a Reactor read method using a custom converter.
+     */
+    String reactorReadMethodUsingCustomConverterExpectation();
+
     @Test
     default void reactorReadMethod() {
         Assertions.assertEquals(
                 reactorReadMethodExpectation(),
-                generator().reactorReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
-                "The generated Reactor read method did not match expectation");
+                generator().reactorReadMethod(
+                        SqlConfigurations.sqlConfiguration(),
+                        SqlConfigurations.sqlStatement())
+                        .toString(),
+                "The generated Reactor read method does not match expectation");
+    }
+
+    @Test
+    default void reactorReadMethodUsingCustomConverter() {
+        Assertions.assertEquals(
+                reactorReadMethodUsingCustomConverterExpectation(),
+                generator().reactorReadMethod(
+                        SqlConfigurations.withCustomConverter(),
+                        SqlConfigurations.sqlStatementWithCustomConverter())
+                        .toString(),
+                "The generated Reactor read method using a custom converter does not match expectation");
     }
 
 }

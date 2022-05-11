@@ -27,12 +27,31 @@ public interface RxJavaMethodGeneratorTCK {
      */
     String rxJavaReadMethodExpectation();
 
+    /**
+     * @return The expected generated code for a RxJava read method using a custom converter.
+     */
+    String rxJavaReadMethodUsingCustomConverterExpectation();
+
     @Test
     default void rxJavaReadMethod() {
         Assertions.assertEquals(
                 rxJavaReadMethodExpectation(),
-                generator().rxJavaReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
-                "The generated RxJava read method did not match expectation");
+                generator().rxJavaReadMethod(
+                                SqlConfigurations.sqlConfiguration(),
+                                SqlConfigurations.sqlStatement())
+                        .toString(),
+                "The generated RxJava read method does not match expectation");
+    }
+
+    @Test
+    default void rxJavaReadMethodUsingCustomConverter() {
+        Assertions.assertEquals(
+                rxJavaReadMethodUsingCustomConverterExpectation(),
+                generator().rxJavaReadMethod(
+                                SqlConfigurations.withCustomConverter(),
+                                SqlConfigurations.sqlStatementWithCustomConverter())
+                        .toString(),
+                "The generated RxJava read method using a custom converter does not match expectation");
     }
 
 }

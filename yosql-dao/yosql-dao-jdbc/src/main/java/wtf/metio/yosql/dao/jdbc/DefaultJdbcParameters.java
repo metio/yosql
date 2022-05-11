@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.List;
 
 public final class DefaultJdbcParameters implements JdbcParameters {
 
@@ -52,7 +53,7 @@ public final class DefaultJdbcParameters implements JdbcParameters {
     }
 
     @Override
-    public ParameterSpec metaData() {
+    public ParameterSpec resultSetMetaData() {
         return parameters.parameter(ResultSetMetaData.class, names.resultSetMetaData());
     }
 
@@ -74,6 +75,11 @@ public final class DefaultJdbcParameters implements JdbcParameters {
     @Override
     public ParameterSpec converter(final ResultRowConverter converter) {
         return parameters.parameter(ClassName.bestGuess(converter.converterType()), converter.alias());
+    }
+
+    @Override
+    public Iterable<ParameterSpec> toMapConverterParameterSpecs() {
+        return List.of(resultSet());
     }
 
 }

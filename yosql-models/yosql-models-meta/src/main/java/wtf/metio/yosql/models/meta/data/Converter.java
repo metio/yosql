@@ -8,7 +8,6 @@
 package wtf.metio.yosql.models.meta.data;
 
 import com.squareup.javapoet.*;
-import org.immutables.value.Value;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
@@ -31,12 +30,11 @@ public final class Converter {
                 .setDescription("Configures converter related settings.")
                 .addSettings(defaultConverter())
                 .addSettings(rowConverters())
-                .addSettings(converterPackageName())
-                .addSettings(resultStateClassName())
-                .addSettings(resultRowClassName())
-                .addSettings(flowStateClassName())
+                .addSettings(generateMapConverter())
+                .addSettings(mapConverterClass())
+                .addSettings(mapConverterMethod())
+                .addSettings(mapConverterAlias())
                 .setCliMethods(List.of(createCliRowConverters(), createCliRowConverter(), createCliAsRowConverter()))
-                .setImmutableMethods(List.of(resultStateClass(), resultRowClass(), flowStateClass()))
                 .setGradleMethods(List.of(createGradleRowConverters(), createGradleRowConverter()))
                 .setMavenMethods(List.of(createMavenRowConverters(), createMavenRowConverter()))
                 .build();
@@ -70,66 +68,39 @@ public final class Converter {
                 .build();
     }
 
-    private static ConfigurationSetting converterPackageName() {
+    private static ConfigurationSetting generateMapConverter() {
         return ConfigurationSetting.builder()
-                .setName("converterPackageName")
-                .setDescription("The package name for all converter related classes.")
-                .setType(TypicalTypes.STRING)
-                .setValue("com.example.persistence.converter")
+                .setName("generateMapConverter")
+                .setDescription("Whether the ToMap converter should be generated.")
+                .setType(TypicalTypes.BOOLEAN)
+                .setValue(true)
                 .build();
     }
 
-    private static ConfigurationSetting resultStateClassName() {
+    private static ConfigurationSetting mapConverterClass() {
         return ConfigurationSetting.builder()
-                .setName("resultStateClassName")
-                .setDescription("The class name of the result-state class")
+                .setName("mapConverterClass")
+                .setDescription("The fully-qualified class name of the ToMap converter.")
                 .setType(TypicalTypes.STRING)
-                .setValue("ResultState")
+                .setValue("com.example.persistence.converter.ToMapConverter")
                 .build();
     }
 
-    private static ConfigurationSetting resultRowClassName() {
+    private static ConfigurationSetting mapConverterMethod() {
         return ConfigurationSetting.builder()
-                .setName("resultRowClassName")
-                .setDescription("The class name of the result-row class")
+                .setName("mapConverterMethod")
+                .setDescription("The name of the method to generate/call in the ToMap converter.")
                 .setType(TypicalTypes.STRING)
-                .setValue("ResultRow")
+                .setValue("apply")
                 .build();
     }
 
-    private static ConfigurationSetting flowStateClassName() {
+    private static ConfigurationSetting mapConverterAlias() {
         return ConfigurationSetting.builder()
-                .setName("flowStateClassName")
-                .setDescription("The class name of the flow-state class")
+                .setName("mapConverterAlias")
+                .setDescription("The name of the alias referencing the ToMap converter.")
                 .setType(TypicalTypes.STRING)
-                .setValue("FlowState")
-                .build();
-    }
-
-    private static MethodSpec resultStateClass() {
-        return MethodSpec.methodBuilder("resultStateClass")
-                .addAnnotation(Value.Lazy.class)
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(ClassName.class)
-                .addStatement("return $T.get($L(), $L())", ClassName.class, "converterPackageName", "resultStateClassName")
-                .build();
-    }
-
-    private static MethodSpec resultRowClass() {
-        return MethodSpec.methodBuilder("resultRowClass")
-                .addAnnotation(Value.Lazy.class)
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(ClassName.class)
-                .addStatement("return $T.get($L(), $L())", ClassName.class, "converterPackageName", "resultRowClassName")
-                .build();
-    }
-
-    private static MethodSpec flowStateClass() {
-        return MethodSpec.methodBuilder("flowStateClass")
-                .addAnnotation(Value.Lazy.class)
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(ClassName.class)
-                .addStatement("return $T.get($L(), $L())", ClassName.class, "converterPackageName", "flowStateClassName")
+                .setValue("toMap")
                 .build();
     }
 
@@ -158,10 +129,10 @@ public final class Converter {
                         .add("\n.map(this::asRowConverter)")
                         .add("\n.filter($T::nonNull)", Objects.class)
                         .add("\n.orElse(ResultRowConverter.builder()")
-                        .add("$>\n.setAlias($S)", "resultRow")
-                        .add("\n.setConverterType(converterPackageName + $S)", ".ToResultRowConverter")
-                        .add("\n.setMethodName($S)", "apply")
-                        .add("\n.setResultType(converterPackageName + $S + resultRowClassName)", ".")
+                        .add("$>\n.setAlias(mapConverterAlias)")
+                        .add("\n.setConverterType(mapConverterClass)")
+                        .add("\n.setMethodName(mapConverterMethod)")
+                        .add("\n.setResultType($S)", "java.util.Map<String, Object>")
                         .add("\n.build())$<$<$<")
                         .build())
                 .build();
@@ -207,10 +178,10 @@ public final class Converter {
                 .addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_OBJECTS, "objects", Modifier.FINAL).build())
                 .returns(defaultConverterType)
                 .addStatement("final var defaultConverter = objects.newInstance($T.class)", defaultConverterType)
-                .addStatement("defaultConverter.getAlias().set($S)", "resultRow")
-                .addStatement("defaultConverter.getConverterType().set($S)", "com.example.persistence.converter.ToResultRowConverter")
-                .addStatement("defaultConverter.getMethodName().set($S)", "apply")
-                .addStatement("defaultConverter.getResultType().set($S)", "com.example.persistence.converter.ResultRow")
+                .addStatement("defaultConverter.getAlias().set(getMapConverterAlias())")
+                .addStatement("defaultConverter.getConverterType().set(getMapConverterClass())")
+                .addStatement("defaultConverter.getMethodName().set(getMapConverterMethod())")
+                .addStatement("defaultConverter.getResultType().set($S)", "java.util.Map<String, Object>")
                 .addStatement("return defaultConverter")
                 .build();
     }
@@ -237,10 +208,10 @@ public final class Converter {
                         .add("return $T.ofNullable(defaultConverter)", Optional.class)
                         .add("$>$>\n.map($T::asRowConverter)", ClassName.bestGuess("wtf.metio.yosql.tooling.maven.RowConverter"))
                         .add("\n.orElse(ResultRowConverter.builder()")
-                        .add("$>\n.setAlias($S)", "resultRow")
-                        .add("\n.setConverterType(converterPackageName + $S)", ".ToResultRowConverter")
-                        .add("\n.setMethodName($S)", "apply")
-                        .add("\n.setResultType(converterPackageName + $S + resultRowClassName)", ".")
+                        .add("$>\n.setAlias(mapConverterAlias)")
+                        .add("\n.setConverterType(mapConverterClass)")
+                        .add("\n.setMethodName(mapConverterMethod)")
+                        .add("\n.setResultType($S)", "java.util.Map<String, Object>")
                         .add("\n.build())$<$<$<")
                         .build())
                 .build();

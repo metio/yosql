@@ -23,29 +23,35 @@ public interface Java8StreamMethodGeneratorTCK {
     Java8StreamMethodGenerator generator();
 
     /**
-     * @return The expected generated code for a lazy stream read method.
+     * @return The expected generated code for a stream read method.
      */
-    String streamLazyReadMethodExpectation();
+    String streamReadMethodExpectation();
 
     /**
-     * @return The expected generated code for a eager stream read method.
+     * @return The expected generated code for a stream read method using a custom converter.
      */
-    String streamEagerReadMethodExpectation();
+    String streamReadMethodUsingCustomConverterExpectation();
 
     @Test
-    default void streamLazyReadMethod() {
+    default void streamReadMethod() {
         Assertions.assertEquals(
-                streamLazyReadMethodExpectation(),
-                generator().streamLazyReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
-                "The generated stream lazy read method did not match expectation");
+                streamReadMethodExpectation(),
+                generator().streamReadMethod(
+                                SqlConfigurations.sqlConfiguration(),
+                                SqlConfigurations.sqlStatement())
+                        .toString(),
+                "The generated stream read method does not match expectation");
     }
 
     @Test
-    default void streamEagerReadMethod() {
+    default void streamReadMethodUsingCustomConverter() {
         Assertions.assertEquals(
-                streamEagerReadMethodExpectation(),
-                generator().streamEagerReadMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatements()).toString(),
-                "The generated stream eager read method did not match expectation");
+                streamReadMethodUsingCustomConverterExpectation(),
+                generator().streamReadMethod(
+                                SqlConfigurations.withCustomConverter(),
+                                SqlConfigurations.sqlStatementWithCustomConverter())
+                        .toString(),
+                "The generated stream read method using a custom converter does not match expectation");
     }
 
 }

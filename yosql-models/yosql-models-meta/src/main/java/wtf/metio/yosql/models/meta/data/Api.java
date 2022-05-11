@@ -21,9 +21,9 @@ public final class Api {
         return ConfigurationGroup.builder()
                 .setName(Api.class.getSimpleName())
                 .setDescription("Configures which external APIs should be used.")
-                .addSettings(persistenceApi())
-                .addSettings(loggingApi())
-                .addSettings(annotationApi())
+                .addSettings(persistenceApi()) // TODO:
+                .addSettings(loggingApi()) // TODO: create Logging group w/ logging config?
+                .addSettings(annotationApi()) // TODO: move this to Annotations group
                 .build();
     }
 

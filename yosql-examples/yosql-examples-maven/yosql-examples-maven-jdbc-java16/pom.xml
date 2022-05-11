@@ -51,7 +51,7 @@
                         <injectConverters>true</injectConverters>
                     </repositories>
                     <converter>
-                        <converterPackageName>wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter</converterPackageName>
+                        <mapConverterClass>wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ToMapConverter</mapConverterClass>
                         <rowConverters>
                             <rowConverter>
                                 <alias>itemConverter</alias>

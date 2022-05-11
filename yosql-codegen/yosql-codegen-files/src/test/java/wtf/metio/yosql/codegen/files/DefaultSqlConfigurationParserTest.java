@@ -296,39 +296,21 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseGenerateStreamEagerApiEnabled() {
+    void shouldParseGenerateStreamApiEnabled() {
         final var yaml = """
-                generateStreamEagerApi: true
+                generateStreamApi: true
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.generateStreamEagerApi().get());
+        assertTrue(config.generateStreamApi().get());
     }
 
     @Test
-    void shouldParseGenerateStreamEagerApiDisabled() {
+    void shouldParseGenerateStreamApiDisabled() {
         final var yaml = """
-                generateStreamEagerApi: false
+                generateStreamApi: false
                 """;
         final var config = parser.parseConfig(yaml);
-        assertFalse(config.generateStreamEagerApi().get());
-    }
-
-    @Test
-    void shouldParseGenerateStreamLazyApiEnabled() {
-        final var yaml = """
-                generateStreamLazyApi: true
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.generateStreamLazyApi().get());
-    }
-
-    @Test
-    void shouldParseGenerateStreamLazyApiDisabled() {
-        final var yaml = """
-                generateStreamLazyApi: false
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertFalse(config.generateStreamLazyApi().get());
+        assertFalse(config.generateStreamApi().get());
     }
 
     @Test
@@ -458,39 +440,21 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseStreamEagerPrefix() {
+    void shouldParseStreamPrefix() {
         final var yaml = """
-                streamEagerPrefix: prefix
+                streamPrefix: prefix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("prefix", config.streamEagerPrefix());
+        assertEquals("prefix", config.streamPrefix());
     }
 
     @Test
-    void shouldParseStreamEagerSuffix() {
+    void shouldParseStreamSuffix() {
         final var yaml = """
-                streamEagerSuffix: suffix
+                streamSuffix: suffix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("suffix", config.streamEagerSuffix());
-    }
-
-    @Test
-    void shouldParseStreamLazyPrefix() {
-        final var yaml = """
-                streamLazyPrefix: prefix
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertEquals("prefix", config.streamLazyPrefix());
-    }
-
-    @Test
-    void shouldParseStreamLazySuffix() {
-        final var yaml = """
-                streamLazySuffix: suffix
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertEquals("suffix", config.streamLazySuffix());
+        assertEquals("suffix", config.streamSuffix());
     }
 
     @Test

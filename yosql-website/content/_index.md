@@ -7,7 +7,7 @@ date: 2020-04-13
 
 > write more SQL!
 
-`YoSQL` is a [yesql](https://github.com/krisajenkins/yesql) inspired persistence solution for [Java](https://www.java.com/). It converts [SQL](https://en.wikipedia.org/wiki/SQL) statements into type-safe Java code with lots of configuration options for fine-tuning and support for a wide variety of persistence APIs.
+`YoSQL` is a [yesql](https://github.com/krisajenkins/yesql) inspired persistence solution for [Java](https://www.java.com/). It converts [SQL](https://en.wikipedia.org/wiki/SQL) statements into type-safe Java code with lots of configuration options for fine-tuning.
 
 ## Features
 
@@ -18,10 +18,6 @@ date: 2020-04-13
 ### zero dependency
 
 `YoSQL` is a true zero dependency solution. Instead of adding a new dependency to your project, `YoSQL` is available as a build-tool that is only active during build-time. Once everything is generated, `YoSQL` is no longer required at run-time. Want to rely only on JDK classes without any external dependencies? - `YoSQL` got you covered as well.
-
-### call us, we won't call you
-
-`YoSQL` recognizes that most projects already have an existing persistence layer in place. Instead of forcing users to rewrite big parts of their software, `YoSQL` adapts to your project and supports a wide selection of persistence APIs and custom converters in order to re-use as much existing code as possible. `YoSQL` is small enough to be used for a single complex and unique challenge alone without causing any friction with existing code.
 
 ### developer friendly
 

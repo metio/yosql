@@ -22,12 +22,12 @@ public final class Names {
                 .addSettings(rawQuery())
                 .addSettings(executedQuery())
                 .addSettings(databaseProductName())
-                .addSettings(action())
-                .addSettings(result())
+                .addSettings(action()) // TODO: remove?
+                .addSettings(result()) // TODO: remove?
                 .addSettings(value())
-                .addSettings(emitter())
+                .addSettings(emitter()) // TODO: remove?
                 .addSettings(name())
-                .addSettings(state())
+                .addSettings(state()) // TODO: remove?
                 .addSettings(exception())
                 .addSettings(rawSuffix())
                 .addSettings(indexSuffix())
@@ -44,7 +44,6 @@ public final class Names {
                 .addSettings(jdbcIndexVariable())
                 .addSettings(indexVariable())
                 .addSettings(row())
-                .addSettings(jdbcTemplate())
                 .build();
     }
 
@@ -288,15 +287,6 @@ public final class Names {
                 .setDescription("The name for a row variable.")
                 .setType(TypicalTypes.STRING)
                 .setValue("row")
-                .build();
-    }
-
-    private static ConfigurationSetting jdbcTemplate() {
-        return ConfigurationSetting.builder()
-                .setName("jdbcTemplate")
-                .setDescription("The name for a JdbcTemplate or NamedParameterJdbcTemplate variable.")
-                .setType(TypicalTypes.STRING)
-                .setValue("jdbcTemplate")
                 .build();
     }
 

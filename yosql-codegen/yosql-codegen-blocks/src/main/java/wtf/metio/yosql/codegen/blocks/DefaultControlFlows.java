@@ -117,7 +117,7 @@ public final class DefaultControlFlows implements ControlFlows {
     @Override
     public CodeBlock whileHasNext() {
         return CodeBlock.builder()
-                .beginControlFlow("while ($N.next())", names.state())
+                .beginControlFlow("while ($N.next())", names.resultSet())
                 .build();
     }
 

@@ -67,7 +67,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
             final SqlConfiguration configuration,
             final List<SqlStatement> statements,
             final T resultType,
-            final BiFunction<T, String, CodeBlock> returner) {
+            final BiFunction<T, ResultRowConverter, CodeBlock> returner) {
         final var converter = converter(configuration);
         return methods.blockingMethod(configuration.blockingName(), statements)
                 .returns(resultType)
@@ -80,10 +80,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.readMetaData())
-                .addCode(jdbc.readColumnCount())
-                .addCode(jdbc.createResultState())
-                .addCode(returner.apply(resultType, converter.alias()))
+                .addCode(returner.apply(resultType, converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
@@ -140,7 +137,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
             final List<SqlStatement> statements,
             final ResultRowConverter converter,
             final T resultType,
-            final BiFunction<T, String, CodeBlock> returner) {
+            final BiFunction<T, ResultRowConverter, CodeBlock> returner) {
         return methods.blockingMethod(configuration.blockingName(), statements)
                 .returns(resultType)
                 .addExceptions(exceptions.thrownExceptions(configuration))
@@ -153,10 +150,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning())
                 .addCode(jdbc.getResultSet())
-                .addCode(jdbc.readMetaData())
-                .addCode(jdbc.readColumnCount())
-                .addCode(jdbc.createResultState())
-                .addCode(returner.apply(resultType, converter.alias()))
+                .addCode(returner.apply(resultType, converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
@@ -200,10 +194,7 @@ public final class JdbcBlockingMethodGenerator implements BlockingMethodGenerato
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.readMetaData())
-                .addCode(jdbc.readColumnCount())
-                .addCode(jdbc.createResultState())
-                .addCode(jdbc.returnAsList(listOfResults, converter.alias()))
+                .addCode(jdbc.returnAsList(listOfResults, converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

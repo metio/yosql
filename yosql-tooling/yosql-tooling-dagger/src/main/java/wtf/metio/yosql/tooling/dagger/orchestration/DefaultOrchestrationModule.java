@@ -29,7 +29,7 @@ public class DefaultOrchestrationModule {
 
     @Provides
     @Singleton
-    public YoSQL provideYoSql(
+    YoSQL provideYoSql(
             final Orchestrator orchestrator,
             final FileParser files,
             final CodeGenerator codeGenerator) {
@@ -38,13 +38,13 @@ public class DefaultOrchestrationModule {
 
     @Provides
     @Singleton
-    public Timer provideTimer(@TimeLogger final LocLogger logger) {
+    Timer provideTimer(@TimeLogger final LocLogger logger) {
         return new DefaultTimer(logger);
     }
 
     @Provides
     @Singleton
-    public TypeWriter provideTypeWriter(
+    TypeWriter provideTypeWriter(
             @Writer final LocLogger logger,
             final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
@@ -53,7 +53,7 @@ public class DefaultOrchestrationModule {
 
     @Provides
     @Singleton
-    public Orchestrator provideOrchestrator(
+    Orchestrator provideOrchestrator(
             final Executor pool,
             final Timer timer,
             final IMessageConveyor messages,
@@ -69,7 +69,7 @@ public class DefaultOrchestrationModule {
 
     @Provides
     @Singleton
-    public ForkJoinPool.ForkJoinWorkerThreadFactory provideForkJoinWorkerThreadFactory() {
+    ForkJoinPool.ForkJoinWorkerThreadFactory provideForkJoinWorkerThreadFactory() {
         return (pool) -> {
             final var threadFactory = ForkJoinPool.defaultForkJoinWorkerThreadFactory;
             final var worker = threadFactory.newThread(pool);
@@ -80,7 +80,7 @@ public class DefaultOrchestrationModule {
 
     @Provides
     @Singleton
-    public Executor provideExecutor(final RuntimeConfiguration runtimeConfiguration,
+    Executor provideExecutor(final RuntimeConfiguration runtimeConfiguration,
                              final ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory) {
         return new ForkJoinPool(calculateNumberOfThreadsToUse(runtimeConfiguration), threadFactory, null, false);
     }
@@ -93,7 +93,7 @@ public class DefaultOrchestrationModule {
 
     @Provides
     @Singleton
-    public ExecutionErrors provideExecutionErrors() {
+    ExecutionErrors provideExecutionErrors() {
         return new ExecutionErrors();
     }
 

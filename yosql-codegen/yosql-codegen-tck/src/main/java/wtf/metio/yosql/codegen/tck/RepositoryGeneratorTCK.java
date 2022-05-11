@@ -31,8 +31,8 @@ public interface RepositoryGeneratorTCK {
     default void generateRepository() {
         Assertions.assertEquals(
                 repositoryExpectation(),
-                generator().generateRepository("Test", SqlConfigurations.sqlStatements()).getType().toString(),
-                "The generated repository did not match expectation");
+                generator().generateRepository("Test", SqlConfigurations.sqlStatement()).getType().toString(),
+                "The generated repository does not match expectation");
     }
 
 }

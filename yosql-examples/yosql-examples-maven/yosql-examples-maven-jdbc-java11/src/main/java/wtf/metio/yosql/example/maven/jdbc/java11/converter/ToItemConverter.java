@@ -7,16 +7,14 @@
 package wtf.metio.yosql.example.maven.jdbc.java11.converter;
 
 import wtf.metio.yosql.example.maven.jdbc.java11.model.Item;
-import wtf.metio.yosql.example.maven.jdbc.java11.persistence.converter.ResultState;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public final class ToItemConverter {
 
-    public Item asUserType(final ResultState result) throws SQLException {
-        final ResultSet resultSet = result.getResultSet();
-        final Item pojo = new Item();
+    public Item asUserType(final ResultSet resultSet) throws SQLException {
+        final var pojo = new Item();
         pojo.setId(resultSet.getInt("id"));
         pojo.setName(resultSet.getString("name"));
         return pojo;

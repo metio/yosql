@@ -14,6 +14,8 @@ import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.jul.JulLoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import javax.inject.Singleton;
+
 /**
  * Dagger module for java.util.logging based logging generators.
  */
@@ -22,7 +24,8 @@ public class JulLoggingModule {
 
     @IntoSet
     @Provides
-    public LoggingGenerator provideJdkLoggingGenerator(
+    @Singleton
+    LoggingGenerator provideJdkLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Fields fields) {
         return new JulLoggingGenerator(runtimeConfiguration.names(), fields);

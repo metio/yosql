@@ -42,20 +42,8 @@
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
         <module>yosql-dao-api</module>
-        <module>yosql-dao-ebean</module>
-        <module>yosql-dao-fluent-jdbc</module>
         <module>yosql-dao-jdbc</module>
-        <module>yosql-dao-jdbi</module>
-        <module>yosql-dao-jooq</module>
-        <module>yosql-dao-jpa</module>
-        <module>yosql-dao-mybatis</module>
-        <module>yosql-dao-pyranid</module>
         <module>yosql-dao-r2dbc</module>
-        <module>yosql-dao-sansorm</module>
-        <module>yosql-dao-spring-data-jdbc</module>
-        <module>yosql-dao-spring-data-jpa</module>
-        <module>yosql-dao-spring-data-r2dbc</module>
-        <module>yosql-dao-spring-jdbc</module>
     </modules>
 
 </project>

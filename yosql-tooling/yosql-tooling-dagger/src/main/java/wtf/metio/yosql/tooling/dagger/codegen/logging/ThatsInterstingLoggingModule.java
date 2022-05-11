@@ -12,6 +12,8 @@ import dagger.multibindings.IntoSet;
 import wtf.metio.yosql.logging.api.LoggingGenerator;
 import wtf.metio.yosql.logging.ti.ThatsInteresingLoggingGenerator;
 
+import javax.inject.Singleton;
+
 /**
  * Dagger module for thats-interesting logging generators.
  */
@@ -20,7 +22,8 @@ public class ThatsInterstingLoggingModule {
 
     @IntoSet
     @Provides
-    public LoggingGenerator provideNoOpLoggingGenerator() {
+    @Singleton
+    LoggingGenerator provideNoOpLoggingGenerator() {
         return new ThatsInteresingLoggingGenerator();
     }
 

@@ -45,12 +45,7 @@ public final class R2dbcJava8StreamMethodGenerator implements Java8StreamMethodG
     }
 
     @Override
-    public MethodSpec streamEagerReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
-        return null;
-    }
-
-    @Override
-    public MethodSpec streamLazyReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
+    public MethodSpec streamReadMethod(final SqlConfiguration configuration, final List<SqlStatement> vendorStatements) {
         return null;
     }
 

@@ -134,63 +134,33 @@ class DefaultMethodApiConfigurerTest {
     }
 
     @Test
-    void streamEagerKeep() {
+    void streamKeep() {
         final var original = SqlConfiguration.usingDefaults()
-                .setGenerateStreamEagerApi(false)
+                .setGenerateStreamApi(false)
                 .build();
         final var adapted = configurer.streamEager(original);
-        assertEquals(original.generateStreamEagerApi(), adapted.generateStreamEagerApi());
+        assertEquals(original.generateStreamApi(), adapted.generateStreamApi());
     }
 
     @Test
-    void streamEagerForcedDisabledForWrites() {
+    void streamForcedDisabledForWrites() {
         final var original = SqlConfiguration.usingDefaults()
-                .setGenerateStreamEagerApi(true)
+                .setGenerateStreamApi(true)
                 .setType(SqlType.WRITING)
                 .build();
         final var adapted = configurer.streamEager(original);
-        assertTrue(adapted.generateStreamEagerApi().isPresent());
-        assertFalse(adapted.generateStreamEagerApi().get());
+        assertTrue(adapted.generateStreamApi().isPresent());
+        assertFalse(adapted.generateStreamApi().get());
     }
 
     @Test
-    void streamEagerChangedToRepositoryDefault() {
+    void streamChangedToRepositoryDefault() {
         final var original = SqlConfiguration.usingDefaults()
-                // .setGenerateStreamEagerApi(true) // value is NOT set
+                // .setGenerateStreamApi(true) // value is NOT set
                 .build();
         final var adapted = configurer.streamEager(original);
-        assertTrue(adapted.generateStreamEagerApi().isPresent());
-        assertEquals(repositories.generateStreamEagerApi(), adapted.generateStreamEagerApi().get());
-    }
-
-    @Test
-    void streamLazyKeep() {
-        final var original = SqlConfiguration.usingDefaults()
-                .setGenerateStreamLazyApi(false)
-                .build();
-        final var adapted = configurer.streamLazy(original);
-        assertEquals(original.generateStreamLazyApi(), adapted.generateStreamLazyApi());
-    }
-
-    @Test
-    void streamLazyForcedDisabledForWrites() {
-        final var original = SqlConfiguration.usingDefaults()
-                .setGenerateStreamLazyApi(true)
-                .setType(SqlType.WRITING)
-                .build();
-        final var adapted = configurer.streamLazy(original);
-        assertTrue(adapted.generateStreamLazyApi().isPresent());
-        assertFalse(adapted.generateStreamLazyApi().get());
-    }
-
-    @Test
-    void streamLazyChangedToRepositoryDefault() {
-        final var original = SqlConfiguration.usingDefaults()
-                // .setGenerateStreamLazyApi(true) // value is NOT set
-                .build();
-        final var adapted = configurer.streamLazy(original);
-        assertTrue(adapted.generateStreamLazyApi().isPresent());
-        assertEquals(repositories.generateStreamLazyApi(), adapted.generateStreamLazyApi().get());
+        assertTrue(adapted.generateStreamApi().isPresent());
+        assertEquals(repositories.generateStreamApi(), adapted.generateStreamApi().get());
     }
 
     @Test
@@ -201,8 +171,7 @@ class DefaultMethodApiConfigurerTest {
                 .setGenerateMutinyApi(false)
                 .setGenerateReactorApi(false)
                 .setGenerateRxJavaApi(false)
-                .setGenerateStreamEagerApi(false)
-                .setGenerateStreamLazyApi(false)
+                .setGenerateStreamApi(false)
                 .build();
         final var adapted = configurer.configureApis(original);
         assertAll(
@@ -211,8 +180,7 @@ class DefaultMethodApiConfigurerTest {
                 () -> assertEquals(original.generateMutinyApi(), adapted.generateMutinyApi()),
                 () -> assertEquals(original.generateReactorApi(), adapted.generateReactorApi()),
                 () -> assertEquals(original.generateRxJavaApi(), adapted.generateRxJavaApi()),
-                () -> assertEquals(original.generateStreamLazyApi(), adapted.generateStreamLazyApi()),
-                () -> assertEquals(original.generateStreamLazyApi(), adapted.generateStreamLazyApi()));
+                () -> assertEquals(original.generateStreamApi(), adapted.generateStreamApi()));
     }
 
     @Test
@@ -225,8 +193,7 @@ class DefaultMethodApiConfigurerTest {
                 () -> assertEquals(repositories.generateMutinyApi(), adapted.generateMutinyApi().get()),
                 () -> assertEquals(repositories.generateReactorApi(), adapted.generateReactorApi().get()),
                 () -> assertEquals(repositories.generateRxJavaApi(), adapted.generateRxJavaApi().get()),
-                () -> assertEquals(repositories.generateStreamLazyApi(), adapted.generateStreamLazyApi().get()),
-                () -> assertEquals(repositories.generateStreamLazyApi(), adapted.generateStreamLazyApi().get()));
+                () -> assertEquals(repositories.generateStreamApi(), adapted.generateStreamApi().get()));
     }
 
 }

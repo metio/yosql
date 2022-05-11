@@ -302,7 +302,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         return builder.build();
     }
 
-    private CodeBlock.Builder prepareReturnList(final ParameterizedTypeName listOfResults, final String converterAlias) {
+    private CodeBlock.Builder prepareReturnList(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
         final var java = runtimeConfiguration.java();
         CodeBlock template;
         if (!java.useGenerics()) {
@@ -318,38 +318,29 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 .add(controlFlows.whileHasNext())
                 .addStatement("$N.add($N.$N($N))",
                         names.list(),
-                        converterAlias,
-                        converterMethod(converterAlias),
-                        names.state())
+                        converter.alias(),
+                        converter.methodName(),
+                        names.resultSet())
                 .endControlFlow();
     }
 
-    private String converterMethod(final String converterAlias) {
-        return runtimeConfiguration.converter().rowConverters().stream()
-                .filter(converter -> converterAlias.equalsIgnoreCase(converter.alias()))
-                .findFirst()
-                .or(runtimeConfiguration.converter()::defaultConverter)
-                .map(ResultRowConverter::methodName)
-                .orElse("apply");
-    }
-
     @Override
-    public CodeBlock returnAsList(final ParameterizedTypeName listOfResults, final String converterAlias) {
-        return prepareReturnList(listOfResults, converterAlias)
+    public CodeBlock returnAsList(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
+        return prepareReturnList(listOfResults, converter)
                 .addStatement("return $N", names.list())
                 .build();
     }
 
     @Override
-    public CodeBlock returnAsFirst(final TypeName resultType, final String converterAlias) {
-        return prepareReturnList(TypicalTypes.listOf(resultType), converterAlias)
+    public CodeBlock returnAsFirst(final TypeName resultType, final ResultRowConverter converter) {
+        return prepareReturnList(TypicalTypes.listOf(resultType), converter)
                 .addStatement("return $N.size() > 0 ? $N.get(0) : null", names.list(), names.list())
                 .build();
     }
 
     @Override
-    public CodeBlock returnAsOne(final TypeName resultType, final String converterAlias) {
-        return prepareReturnList(TypicalTypes.listOf(resultType), converterAlias)
+    public CodeBlock returnAsOne(final TypeName resultType, final ResultRowConverter converter) {
+        return prepareReturnList(TypicalTypes.listOf(resultType), converter)
                 .beginControlFlow("if ($N.size() != 1)", names.list())
                 .addStatement("throw new IllegalStateException()")
                 .endControlFlow()
@@ -358,29 +349,29 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock returnAsStream(final ParameterizedTypeName listOfResults, final String converterAlias) {
-        return prepareReturnList(listOfResults, converterAlias)
+    public CodeBlock returnAsStream(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
+        return prepareReturnList(listOfResults, converter)
                 .addStatement("return $N.stream()", names.list())
                 .build();
     }
 
     @Override
-    public CodeBlock returnAsMulti(final ParameterizedTypeName listOfResults, final String converterAlias) {
-        return prepareReturnList(listOfResults, converterAlias)
+    public CodeBlock returnAsMulti(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
+        return prepareReturnList(listOfResults, converter)
                 .addStatement("return $T.createFrom().iterable($N)", Multi.class, names.list())
                 .build();
     }
 
     @Override
-    public CodeBlock returnAsFlowable(final ParameterizedTypeName listOfResults, final String converterAlias) {
-        return prepareReturnList(listOfResults, converterAlias)
+    public CodeBlock returnAsFlowable(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
+        return prepareReturnList(listOfResults, converter)
                 .addStatement("return $T.fromIterable($N)", Flowable.class, names.list())
                 .build();
     }
 
     @Override
-    public CodeBlock returnAsFlux(final ParameterizedTypeName listOfResults, final String converterAlias) {
-        return prepareReturnList(listOfResults, converterAlias)
+    public CodeBlock returnAsFlux(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
+        return prepareReturnList(listOfResults, converter)
                 .addStatement("return $T.fromIterable($N)", Flux.class, names.list())
                 .build();
     }
@@ -396,36 +387,22 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock createResultState() {
-        return variables.statement(runtimeConfiguration.converter().resultStateClass(), names.state(),
-                code("new $T($N, $N, $N)",
-                        runtimeConfiguration.converter().resultStateClass(),
-                        names.resultSet(),
-                        names.resultSetMetaData(),
-                        names.columnCount()));
-    }
-
-    @Override
-    public CodeBlock returnNewFlowState() {
-        return CodeBlock.builder()
-                .addStatement("return new $T($N, $N, $N, $N, $N)", runtimeConfiguration.converter().flowStateClass(),
-                        names.connection(),
+    public CodeBlock setParameters(final SqlConfiguration config) {
+        return parameterAssignment(config, "$N.setObject($N, $N)",
+                parameterName -> new String[]{
                         names.statement(),
-                        names.resultSet(),
-                        names.resultSetMetaData(),
-                        names.columnCount())
-                .build();
+                        names.jdbcIndexVariable(),
+                        parameterName});
     }
 
     @Override
-    public CodeBlock newFlowable(final TypeSpec initialState, final TypeSpec generator, final TypeSpec disposer) {
-        return CodeBlock.builder()
-                .addStatement("return $T.generate($L, $L, $L)",
-                        Flowable.class,
-                        initialState,
-                        generator,
-                        disposer)
-                .build();
+    public CodeBlock setBatchParameters(final SqlConfiguration config) {
+        return parameterAssignment(config, "$N.setObject($N, $N[$N])",
+                parameterName -> new String[]{
+                        names.statement(),
+                        names.jdbcIndexVariable(),
+                        parameterName,
+                        names.batch()});
     }
 
     private CodeBlock parameterAssignment(
@@ -449,25 +426,6 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         }
 
         return builder.build();
-    }
-
-    @Override
-    public CodeBlock setParameters(final SqlConfiguration config) {
-        return parameterAssignment(config, "$N.setObject($N, $N)",
-                parameterName -> new String[]{
-                        names.statement(),
-                        names.jdbcIndexVariable(),
-                        parameterName});
-    }
-
-    @Override
-    public CodeBlock setBatchParameters(final SqlConfiguration config) {
-        return parameterAssignment(config, "$N.setObject($N, $N[$N])",
-                parameterName -> new String[]{
-                        names.statement(),
-                        names.jdbcIndexVariable(),
-                        parameterName,
-                        names.batch()});
     }
 
 }

@@ -18,6 +18,7 @@ public final class TypicalTypes {
 
     public static final ClassName LIST = ClassName.get("java.util", "List");
     public static final ClassName MAP = ClassName.get("java.util", "Map");
+    public static final ClassName LINKED_MAP = ClassName.get("java.util", "LinkedHashMap");
     public static final ClassName SET = ClassName.get("java.util", "Set");
     public static final ClassName OPTIONAL = ClassName.get("java.util", "Optional");
     public static final ClassName STREAM = ClassName.get("java.util.stream", "Stream");
@@ -48,9 +49,14 @@ public final class TypicalTypes {
 
     public static final TypeName MAP_OF_STRING_AND_ARRAY_OF_INTS = mapOf(STRING, ARRAY_OF_INTS);
     public static final TypeName MAP_OF_STRING_AND_OBJECTS = mapOf(STRING, OBJECT);
+    public static final TypeName LINKED_MAP_OF_STRING_AND_OBJECTS = linkedMapOf(STRING, OBJECT);
 
     public static ParameterizedTypeName mapOf(final TypeName key, final TypeName value) {
         return ParameterizedTypeName.get(MAP, key, value);
+    }
+
+    public static ParameterizedTypeName linkedMapOf(final TypeName key, final TypeName value) {
+        return ParameterizedTypeName.get(LINKED_MAP, key, value);
     }
 
     public static ParameterizedTypeName optionalOf(final Type type) {

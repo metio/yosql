@@ -38,8 +38,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -103,8 +101,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -168,8 +164,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -233,8 +227,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -298,8 +290,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -363,8 +353,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -428,8 +416,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -493,8 +479,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -558,8 +542,6 @@ class JdbcBatchMethodGeneratorTest {
                      * <li>data/queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>generateBatchApi</strong> to <strong>false</strong></p>
-                     *
-                     * @see com.example.util.ResultRow
                      */
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
