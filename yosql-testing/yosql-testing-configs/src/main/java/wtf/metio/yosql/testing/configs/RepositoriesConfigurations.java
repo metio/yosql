@@ -9,6 +9,9 @@ package wtf.metio.yosql.testing.configs;
 
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 
+/**
+ * Object mother for {@link RepositoriesConfiguration}s.
+ */
 public final class RepositoriesConfigurations {
 
     public static RepositoriesConfiguration defaults() {
@@ -18,16 +21,6 @@ public final class RepositoriesConfigurations {
     public static RepositoriesConfiguration validatingMethodNames() {
         return RepositoriesConfiguration.copyOf(defaults())
                 .withValidateMethodNamePrefixes(true);
-    }
-
-    public static RepositoriesConfiguration rxJavaOnly() {
-        return RepositoriesConfiguration.copyOf(defaults())
-                .withGenerateBatchApi(false)
-                .withGenerateBlockingApi(false)
-                .withGenerateMutinyApi(false)
-                .withGenerateReactorApi(false)
-                .withGenerateRxJavaApi(true)
-                .withGenerateStreamApi(false);
     }
 
     private RepositoriesConfigurations() {

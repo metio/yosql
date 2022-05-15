@@ -219,11 +219,11 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: copy-jdbc-results
         name: Copy JDBC Results
-        run: cp --force ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-jdbc-${{ needs.prepare.outputs.release_version }}.json
+        run: cp --force ./benchmark-dao/yosql-benchmarks-dao.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-dao-${{ needs.prepare.outputs.release_version }}.json
         if: needs.prepare.outputs.commit_count > 0
       - id: replace-jdbc-results
         name: Replace CURRENT JDBC Results
-        run: cp --force ./benchmark-jdbc/yosql-benchmarks-jdbc.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-jdbc-CURRENT.json
+        run: cp --force ./benchmark-dao/yosql-benchmarks-dao.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-dao-CURRENT.json
         if: needs.prepare.outputs.commit_count > 0
       - id: push
         name: Push Changes

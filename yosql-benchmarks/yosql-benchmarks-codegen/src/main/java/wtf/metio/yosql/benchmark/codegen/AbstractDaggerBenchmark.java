@@ -8,10 +8,11 @@ package wtf.metio.yosql.benchmark.codegen;
 
 import org.openjdk.jmh.annotations.Setup;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
-import wtf.metio.yosql.models.immutables.ApiConfiguration;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
+import wtf.metio.yosql.models.immutables.LoggingConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.testing.configs.ConverterConfigurations;
+import wtf.metio.yosql.testing.configs.LoggingConfigurations;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
 /**
@@ -42,18 +43,18 @@ abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
                         .setInputBaseDirectory(inputDirectory)
                         .setOutputBaseDirectory(outputDirectory)
                         .build())
-                .setApi(apiConfig())
+                .setLogging(loggingConfig())
                 .setConverter(ConverterConfigurations.withConverters())
                 .build();
     }
 
     /**
-     * Subclasses are allowed to overwrite the APIs used during code generation.
+     * Subclasses are allowed to overwrite the logging configuration used during code generation.
      *
-     * @return The API configuration to use while generating code.
+     * @return The logging configuration to use while generating code.
      */
-    protected ApiConfiguration apiConfig() {
-        return ApiConfiguration.usingDefaults().build();
+    protected LoggingConfiguration loggingConfig() {
+        return LoggingConfigurations.defaults();
     }
 
 }

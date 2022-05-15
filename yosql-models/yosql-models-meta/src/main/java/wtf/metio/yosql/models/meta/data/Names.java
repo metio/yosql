@@ -7,7 +7,7 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import wtf.metio.yosql.internals.javapoet.TypicalTypes;
+import com.squareup.javapoet.ClassName;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
@@ -51,7 +51,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("logger")
                 .setDescription("The name of the logger instance.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("LOG")
                 .build();
     }
@@ -60,7 +60,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("query")
                 .setDescription("The name of selected SQL statement.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("query")
                 .build();
     }
@@ -69,7 +69,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("rawQuery")
                 .setDescription("The name of SQL statement before parameter replacement.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("rawQuery")
                 .build();
     }
@@ -78,7 +78,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("executedQuery")
                 .setDescription("The name of SQL statement after parameter replacement.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("executedQuery")
                 .build();
     }
@@ -87,7 +87,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("databaseProductName")
                 .setDescription("The name of the variable that holds the database product name.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("databaseProductName")
                 .build();
     }
@@ -96,7 +96,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("action")
                 .setDescription("The name of an action.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("action")
                 .build();
     }
@@ -105,7 +105,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("result")
                 .setDescription("The name of a result.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("result")
                 .build();
     }
@@ -114,7 +114,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("value")
                 .setDescription("The name of a value.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("value")
                 .build();
     }
@@ -123,7 +123,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("emitter")
                 .setDescription("The name of an emitter.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("emitter")
                 .build();
     }
@@ -132,7 +132,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("name")
                 .setDescription("The name of a name variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("name")
                 .build();
     }
@@ -141,7 +141,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("state")
                 .setDescription("The name of a state.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("state")
                 .build();
     }
@@ -150,7 +150,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("exception")
                 .setDescription("The name of an exception.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("exception")
                 .build();
     }
@@ -159,7 +159,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("rawSuffix")
                 .setDescription("The name suffix to add for raw SQL statements.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("_RAW")
                 .build();
     }
@@ -168,7 +168,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("indexSuffix")
                 .setDescription("The name suffix to add for index lookup tables.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("_INDEX")
                 .build();
     }
@@ -177,7 +177,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("dataSource")
                 .setDescription("The name for a DataSource variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("dataSource")
                 .build();
     }
@@ -186,7 +186,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("connection")
                 .setDescription("The name for a Connection variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("connection")
                 .build();
     }
@@ -195,7 +195,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("statement")
                 .setDescription("The name for a Statement variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("statement")
                 .build();
     }
@@ -204,7 +204,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("resultSetMetaData")
                 .setDescription("The name for a ResultSetMetaData variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("resultSetMetaData")
                 .build();
     }
@@ -213,7 +213,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("databaseMetaData")
                 .setDescription("The name for a DatabaseMetaData variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("databaseMetaData")
                 .build();
     }
@@ -222,7 +222,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("resultSet")
                 .setDescription("The name for a ResultSet variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("resultSet")
                 .build();
     }
@@ -231,7 +231,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("columnCount")
                 .setDescription("The name for a ColumnCount variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("columnCount")
                 .build();
     }
@@ -240,7 +240,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("columnLabel")
                 .setDescription("The name for a ColumnLabel variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("columnLabel")
                 .build();
     }
@@ -249,7 +249,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("batch")
                 .setDescription("The name for a Batch variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("batch")
                 .build();
     }
@@ -258,7 +258,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("list")
                 .setDescription("The name for a List variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("list")
                 .build();
     }
@@ -267,7 +267,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("jdbcIndexVariable")
                 .setDescription("The name for a JDBC index variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("jdbcIndex")
                 .build();
     }
@@ -276,7 +276,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("indexVariable")
                 .setDescription("The name for a index variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("index")
                 .build();
     }
@@ -285,7 +285,7 @@ public final class Names {
         return ConfigurationSetting.builder()
                 .setName("row")
                 .setDescription("The name for a row variable.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("row")
                 .build();
     }

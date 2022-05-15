@@ -45,148 +45,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>wtf.metio.yosql.internals</groupId>
-            <artifactId>yosql-internals-junit5-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-annotations</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-logging</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-blocks</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-files</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-orchestration</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-jul</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-log4j</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-noop</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-slf4j</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-system</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-ti</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.logging</groupId>
-            <artifactId>yosql-logging-tinylog</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-ebean</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-fluent-jdbc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-jdbc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-jdbi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-jooq</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-jpa</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-mybatis</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-pyranid</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-r2dbc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-sansorm</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-spring-data-jdbc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-spring-data-jpa</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-spring-data-r2dbc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.dao</groupId>
-            <artifactId>yosql-dao-spring-jdbc</artifactId>
+            <artifactId>yosql-codegen</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -221,6 +81,13 @@
         <dependency>
             <groupId>com.google.dagger</groupId>
             <artifactId>dagger-producers</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>wtf.metio.yosql.internals</groupId>
+            <artifactId>yosql-internals-junit5-utils</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

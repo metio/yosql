@@ -14,12 +14,12 @@ import com.squareup.javapoet.*;
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Strings;
-import wtf.metio.yosql.models.constants.sql.ReturningMode;
-import wtf.metio.yosql.models.constants.sql.SqlType;
+import wtf.metio.yosql.models.configuration.ResultRowConverter;
+import wtf.metio.yosql.models.configuration.ReturningMode;
+import wtf.metio.yosql.models.configuration.SqlParameter;
+import wtf.metio.yosql.models.configuration.SqlType;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
-import wtf.metio.yosql.models.sql.ResultRowConverter;
-import wtf.metio.yosql.models.sql.SqlParameter;
 
 import javax.lang.model.element.Modifier;
 import java.util.Arrays;
@@ -44,12 +44,9 @@ public final class Sql {
                         fromStatements(),
                         merge(),
                         mergeParameters(),
+                        converter(),
                         batchName(),
-                        blockingName(),
-                        mutinyName(),
-                        reactorName(),
-                        rxJavaName(),
-                        streamName(),
+                        blockingName(), // TODO: rename to standardName, e.g. non-batching
                         joinMethodNameParts()))
                 .build();
     }
@@ -69,7 +66,7 @@ public final class Sql {
     private static List<ConfigurationSetting> booleanRepositorySettings() {
         return Repositories.booleanMethods().stream()
                 .map(setting -> ConfigurationSetting.copyOf(setting)
-                        .withType(TypicalTypes.BOOLEAN)
+                        .withType(ClassName.get(Boolean.class))
                         .withValue(Optional.empty()))
                 .collect(Collectors.toList());
     }
@@ -99,7 +96,7 @@ public final class Sql {
         return ConfigurationSetting.builder()
                 .setName("repository")
                 .setDescription("The fully qualified name of the target repository.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("Repository")
                 .setImmutableAnnotations(List.of(jsonProperty("repository")))
                 .build();
@@ -109,7 +106,7 @@ public final class Sql {
         return ConfigurationSetting.builder()
                 .setName("name")
                 .setDescription("The name of the SQL statement")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("")
                 .setImmutableAnnotations(List.of(jsonProperty("name")))
                 .build();
@@ -119,7 +116,7 @@ public final class Sql {
         return ConfigurationSetting.builder()
                 .setName("description")
                 .setDescription("The description for the SQL statement")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("")
                 .setImmutableAnnotations(List.of(jsonProperty("description")))
                 .build();
@@ -129,7 +126,7 @@ public final class Sql {
         return ConfigurationSetting.builder()
                 .setName("vendor")
                 .setDescription("The vendor name of the database the SQL statement is intended for")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("")
                 .setImmutableAnnotations(List.of(jsonProperty("vendor")))
                 .build();
@@ -222,7 +219,7 @@ public final class Sql {
         } else if (setting.value().isPresent() && ReturningMode.class.equals(setting.value().get().getClass())) {
             builder.addStatement("merged = merged.with$L($T.NONE == first.$L() ? second.$L() : first.$L())",
                     Strings.upperCase(setting.name()), ReturningMode.class, setting.name(), setting.name(), setting.name());
-        } else if (TypicalTypes.STRING.equals(setting.type())) {
+        } else if (ClassName.get(String.class).equals(setting.type())) {
             builder.addStatement("merged = merged.with$L($S.equals(first.$L()) ? second.$L() : first.$L())",
                     Strings.upperCase(setting.name()), setting.value().orElse(""), setting.name(), setting.name(), setting.name());
         } else if (TypeName.get(Boolean.class).equals(setting.type())) {
@@ -266,6 +263,20 @@ public final class Sql {
                 .build();
     }
 
+    private static MethodSpec converter() {
+        final var parameterType = TypicalTypes.supplierOf(TypicalTypes.optionalOf(ResultRowConverter.class));
+        return MethodSpec.methodBuilder("converter")
+                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
+                .addParameter(ParameterSpec.builder(parameterType, "defaultConverter").build())
+                .returns(ResultRowConverter.class)
+                .addStatement(CodeBlock.builder()
+                        .add("return resultRowConverter()")
+                        .add("$>\n.or(defaultConverter)")
+                        .add("\n.orElseThrow()$<")
+                        .build())
+                .build();
+    }
+
     private static MethodSpec joinMethodNameParts() {
         return MethodSpec.methodBuilder("joinMethodNameParts")
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
@@ -301,42 +312,6 @@ public final class Sql {
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
                 .addStatement("return joinMethodNameParts($L(), $L(), $L())", "blockingPrefix", "name", "blockingSuffix")
-                .build();
-    }
-
-    private static MethodSpec rxJavaName() {
-        return MethodSpec.methodBuilder("rxJavaName")
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(String.class)
-                .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "rxJavaPrefix", "name", "rxJavaSuffix")
-                .build();
-    }
-
-    private static MethodSpec reactorName() {
-        return MethodSpec.methodBuilder("reactorName")
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(String.class)
-                .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "reactorPrefix", "name", "reactorSuffix")
-                .build();
-    }
-
-    private static MethodSpec mutinyName() {
-        return MethodSpec.methodBuilder("mutinyName")
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(String.class)
-                .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "mutinyPrefix", "name", "mutinySuffix")
-                .build();
-    }
-
-    private static MethodSpec streamName() {
-        return MethodSpec.methodBuilder("streamName")
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(String.class)
-                .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "streamPrefix", "name", "streamSuffix")
                 .build();
     }
 

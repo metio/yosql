@@ -42,7 +42,4 @@ dependencies {
     implementation(libs.bundles.database) {
         because("we need database access")
     }
-    implementation(libs.bundles.reactive) {
-        because("we want to show reactive features")
-    }
 }

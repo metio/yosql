@@ -41,14 +41,10 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
-        <module>yosql-models-constants</module>
-        <module>yosql-models-sql</module>
+        <module>yosql-models-configuration</module>
         <module>yosql-models-meta</module>
         <module>yosql-models-generator</module>
         <module>yosql-models-immutables</module>
-        <module>yosql-models-ant</module>
-        <module>yosql-models-cli</module>
-        <module>yosql-models-maven</module>
     </modules>
 
 </project>

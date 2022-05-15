@@ -7,11 +7,14 @@
 
 package wtf.metio.yosql.testing.configs;
 
+import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
-import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import java.util.List;
 
+/**
+ * Object mother for {@link ConverterConfiguration}s.
+ */
 public final class ConverterConfigurations {
 
     public static ConverterConfiguration withoutConverters() {

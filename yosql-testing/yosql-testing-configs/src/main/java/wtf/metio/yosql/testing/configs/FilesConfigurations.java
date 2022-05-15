@@ -11,6 +11,9 @@ import wtf.metio.yosql.models.immutables.FilesConfiguration;
 
 import java.nio.file.Paths;
 
+/**
+ * Object mother for {@link FilesConfiguration}s.
+ */
 public final class FilesConfigurations {
 
     public static FilesConfiguration defaults() {

@@ -6,8 +6,8 @@
  */
 package wtf.metio.yosql.benchmark.codegen;
 
-import wtf.metio.yosql.models.constants.api.LoggingApis;
-import wtf.metio.yosql.models.immutables.ApiConfiguration;
+import wtf.metio.yosql.models.immutables.LoggingConfiguration;
+import wtf.metio.yosql.testing.configs.LoggingConfigurations;
 
 /**
  * JMH based micro benchmark for YoSQL using the JDBC API and java.util.logging as logging implementation using a small
@@ -17,8 +17,8 @@ import wtf.metio.yosql.models.immutables.ApiConfiguration;
 public class SmallJdbcJulBenchmark extends AbstractSmallSampleBenchmark {
 
     @Override
-    protected ApiConfiguration apiConfig() {
-        return ApiConfiguration.usingDefaults().setLoggingApi(LoggingApis.JUL).build();
+    protected LoggingConfiguration loggingConfig() {
+        return LoggingConfigurations.jul();
     }
 
 }

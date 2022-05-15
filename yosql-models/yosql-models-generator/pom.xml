@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>wtf.metio.yosql.models</groupId>
-            <artifactId>yosql-models-sql</artifactId>
+            <artifactId>yosql-models-configuration</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

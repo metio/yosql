@@ -15,7 +15,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface PackagedTypeSpec {
 
-    static PackagedTypeSpec of(TypeSpec type, String packageName) {
+    static PackagedTypeSpec of(final TypeSpec type, final String packageName) {
         return ImmutablePackagedTypeSpec.builder()
                 .setType(type)
                 .setPackageName(packageName)

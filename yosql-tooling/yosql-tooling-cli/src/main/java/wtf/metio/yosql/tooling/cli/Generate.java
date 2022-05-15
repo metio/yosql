@@ -33,7 +33,7 @@ public class Generate implements Callable<Integer> {
     public Java java;
 
     @CommandLine.Mixin
-    public Api api;
+    public Logging logging;
 
     @CommandLine.Mixin
     public Annotations annotations;

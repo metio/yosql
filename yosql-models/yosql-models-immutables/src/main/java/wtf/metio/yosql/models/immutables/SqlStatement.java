@@ -8,8 +8,9 @@ package wtf.metio.yosql.models.immutables;
 
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.jdk.Buckets;
-import wtf.metio.yosql.models.constants.sql.SqlType;
-import wtf.metio.yosql.models.sql.ResultRowConverter;
+import wtf.metio.yosql.models.configuration.ResultRowConverter;
+import wtf.metio.yosql.models.configuration.ReturningMode;
+import wtf.metio.yosql.models.configuration.SqlType;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -41,9 +42,13 @@ public interface SqlStatement {
             final ResultRowConverter defaultConverter) {
         return statements.stream()
                 .map(SqlStatement::getConfiguration)
-                .filter(config -> SqlType.READING == config.type() || SqlType.CALLING == config.type()) // TODO: allow write methods that return
+                .filter(SqlStatement::requiresConverter)
                 .map(config -> config.resultRowConverter().orElse(defaultConverter))
                 .distinct();
+    }
+
+    private static boolean requiresConverter(final SqlConfiguration configuration) {
+        return ReturningMode.NONE != configuration.returningMode();
     }
 
 
@@ -98,56 +103,6 @@ public interface SqlStatement {
     @Value.Lazy
     default boolean shouldGenerateBlockingWriteAPI() {
         return isWriting() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateMutinyCallAPI() {
-        return isCalling() && getConfiguration().generateMutinyApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateMutinyReadAPI() {
-        return isReading() && getConfiguration().generateMutinyApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateMutinyWriteAPI() {
-        return isWriting() && getConfiguration().generateMutinyApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateReactorCallAPI() {
-        return isCalling() && getConfiguration().generateReactorApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateReactorReadAPI() {
-        return isReading() && getConfiguration().generateReactorApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateReactorWriteAPI() {
-        return isWriting() && getConfiguration().generateReactorApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateRxJavaCallAPI() {
-        return isCalling() && getConfiguration().generateRxJavaApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateRxJavaReadAPI() {
-        return isReading() && getConfiguration().generateRxJavaApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateRxJavaWriteAPI() {
-        return isWriting() && getConfiguration().generateRxJavaApi().orElse(Boolean.FALSE);
-    }
-
-    @Value.Lazy
-    default boolean shouldGenerateStreamReadAPI() {
-        return isReading() && getConfiguration().generateStreamApi().orElse(Boolean.FALSE);
     }
 
 }

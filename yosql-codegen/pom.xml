@@ -28,7 +28,6 @@
     <!-- https://maven.apache.org/pom.html#Maven_Coordinates -->
     <groupId>wtf.metio.yosql.codegen</groupId>
     <artifactId>yosql-codegen</artifactId>
-    <packaging>pom</packaging>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!--                               INFORMATIONS                              -->
@@ -36,21 +35,83 @@
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: Codegen</name>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!--                                  MODULES                                -->
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!-- https://maven.apache.org/pom.html#Aggregation -->
-    <modules>
-        <module>yosql-codegen-lifecycle</module>
-        <module>yosql-codegen-annotations</module>
-        <module>yosql-codegen-api</module>
-        <module>yosql-codegen-blocks</module>
-        <module>yosql-codegen-errors</module>
-        <module>yosql-codegen-exceptions</module>
-        <module>yosql-codegen-files</module>
-        <module>yosql-codegen-logging</module>
-        <module>yosql-codegen-orchestration</module>
-        <module>yosql-codegen-tck</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>wtf.metio.yosql.internals</groupId>
+            <artifactId>yosql-internals-jdk-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.internals</groupId>
+            <artifactId>yosql-internals-javapoet-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.models</groupId>
+            <artifactId>yosql-models-configuration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.models</groupId>
+            <artifactId>yosql-models-immutables</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.xn--ho-hia.javapoet</groupId>
+            <artifactId>javapoet-type-guesser</artifactId>
+            <version>2017.03.19-185842</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.platform</groupId>
+                    <artifactId>junit-platform-runner</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.cal10n</groupId>
+            <artifactId>cal10n-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-ext</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>wtf.metio.yosql.internals</groupId>
+            <artifactId>yosql-internals-junit5-utils</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.testing</groupId>
+            <artifactId>yosql-testing-configs</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

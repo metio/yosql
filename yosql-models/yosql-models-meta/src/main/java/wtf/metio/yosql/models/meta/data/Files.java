@@ -8,12 +8,15 @@
 package wtf.metio.yosql.models.meta.data;
 
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -36,9 +39,9 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("inputBaseDirectory")
                 .setDescription("The input directory for the user written SQL files.")
-                .setType(TypicalTypes.PATH)
-                .setCliType(TypicalTypes.STRING)
-                .setMavenType(TypicalTypes.STRING)
+                .setType(ClassName.get(Path.class))
+                .setCliType(ClassName.get(String.class))
+                .setMavenType(ClassName.get(String.class))
                 .setValue(Paths.get("."))
                 .setCliValue(".")
                 .setGradleValue("src/main/yosql")
@@ -63,10 +66,10 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("outputBaseDirectory")
                 .setDescription("The output directory for the generated classes.")
-                .setType(TypicalTypes.PATH)
-                .setCliType(TypicalTypes.STRING)
-                .setGradleType(TypicalTypes.PATH)
-                .setMavenType(TypicalTypes.STRING)
+                .setType(ClassName.get(Path.class))
+                .setCliType(ClassName.get(String.class))
+                .setGradleType(ClassName.get(Path.class))
+                .setMavenType(ClassName.get(String.class))
                 .setValue(Paths.get("."))
                 .setCliValue(".")
                 .setGradleValue("generated/sources/yosql")
@@ -91,7 +94,7 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("skipLines")
                 .setDescription("The number of lines to skip in each file (e.g. a copyright header).")
-                .setType(TypicalTypes.INTEGER)
+                .setType(ClassName.get(Integer.class))
                 .setValue(0)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("0")
@@ -108,9 +111,9 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("sqlFilesCharset")
                 .setDescription("The charset to use while reading .sql files.")
-                .setType(TypicalTypes.CHARSET)
-                .setCliType(TypicalTypes.STRING)
-                .setMavenType(TypicalTypes.STRING)
+                .setType(ClassName.get(Charset.class))
+                .setCliType(ClassName.get(String.class))
+                .setMavenType(ClassName.get(String.class))
                 .setValue(StandardCharsets.UTF_8)
                 .setCliValue(StandardCharsets.UTF_8.name())
                 .setMavenValue(StandardCharsets.UTF_8.name())
@@ -129,7 +132,7 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("sqlFilesSuffix")
                 .setDescription("The file ending to use while searching for SQL files.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue(".sql")
                 .addExamples(ConfigurationExample.builder()
                         .setValue(".sql")
@@ -146,7 +149,7 @@ public final class Files {
         return ConfigurationSetting.builder()
                 .setName("sqlStatementSeparator")
                 .setDescription("The separator to split SQL statements inside a single .sql file.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue(";")
                 .addExamples(ConfigurationExample.builder()
                         .setValue(";")

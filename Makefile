@@ -61,6 +61,6 @@ benchmarks: ##@benchmarks Run all benchmarks
 benchmarks-codegen: ##@benchmarks Run code generation benchmarks
 	mvn verify --projects yosql-benchmarks/yosql-benchmarks-codegen --also-make --activate-profiles benchmarks
 
-.PHONY: benchmarks-jdbc
-benchmarks-jdbc: ##@benchmarks Run JDBC benchmarks
-	mvn verify --projects yosql-benchmarks/yosql-benchmarks-jdbc --also-make --activate-profiles benchmarks
+.PHONY: benchmarks-dao
+benchmarks-dao: ##@benchmarks Run DAO benchmarks
+	mvn verify --projects yosql-benchmarks/yosql-benchmarks-dao --also-make --activate-profiles benchmarks

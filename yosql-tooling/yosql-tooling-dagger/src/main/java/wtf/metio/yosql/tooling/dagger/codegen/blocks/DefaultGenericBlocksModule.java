@@ -10,7 +10,6 @@ package wtf.metio.yosql.tooling.dagger.codegen.blocks;
 import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
-import wtf.metio.yosql.codegen.api.*;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
@@ -27,8 +26,8 @@ public class DefaultGenericBlocksModule {
 
     @Provides
     @Singleton
-    AnnotationGenerator provideAnnotationGenerator(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultAnnotationGenerator(runtimeConfiguration.annotations(), runtimeConfiguration.api());
+    Annotations provideAnnotationGenerator(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultAnnotations(runtimeConfiguration.annotations());
     }
 
     @Provides
@@ -49,21 +48,21 @@ public class DefaultGenericBlocksModule {
     @Singleton
     Fields provideFields(
             final RuntimeConfiguration runtimeConfiguration,
-            final AnnotationGenerator annotations) {
+            final Annotations annotations) {
         return new DefaultFields(annotations, runtimeConfiguration.java(), runtimeConfiguration.names());
     }
 
     @Provides
     @Singleton
-    GenericBlocks provideGenericBlocks() {
-        return new DefaultGenericBlocks();
+    CodeBlocks provideCodeBlocks() {
+        return new DefaultCodeBlocks();
     }
 
     @Provides
     @Singleton
     Methods provideMethods(
             final RuntimeConfiguration runtimeConfiguration,
-            final AnnotationGenerator annotations,
+            final Annotations annotations,
             final Javadoc javadoc) {
         return new DefaultMethods(annotations, javadoc, runtimeConfiguration.java());
     }
@@ -71,7 +70,7 @@ public class DefaultGenericBlocksModule {
     @Provides
     @Singleton
     Parameters provideParameters(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultParameters(runtimeConfiguration.names(), runtimeConfiguration.java());
+        return new DefaultParameters(runtimeConfiguration.java());
     }
 
     @Provides

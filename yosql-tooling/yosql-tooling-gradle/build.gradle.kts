@@ -30,7 +30,7 @@ gradlePlugin {
 pluginBundle {
     website = "https://yosql.projects.metio.wtf/"
     vcsUrl = "https://github.com/metio/yosql/"
-    tags = listOf("java", "sql", "code-generator", "javapoet", "jdbc", "r2dbc")
+    tags = listOf("java", "sql", "code-generator", "javapoet", "jdbc")
 }
 
 dependencies {

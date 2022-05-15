@@ -42,12 +42,7 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
-        <module>yosql-testing-codegen</module>
         <module>yosql-testing-configs</module>
-        <module>yosql-testing-converters</module>
-        <module>yosql-testing-dao</module>
-        <module>yosql-testing-logging</module>
-        <module>yosql-testing-sql-files</module>
     </modules>
 
 </project>

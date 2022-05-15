@@ -9,8 +9,8 @@ package wtf.metio.yosql.tooling.dagger.codegen.logging;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
-import wtf.metio.yosql.logging.api.LoggingGenerator;
-import wtf.metio.yosql.logging.tinylog.TinylogLoggingGenerator;
+import wtf.metio.yosql.codegen.logging.LoggingGenerator;
+import wtf.metio.yosql.codegen.logging.TinylogLoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Singleton;

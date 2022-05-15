@@ -11,14 +11,13 @@ import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
-import wtf.metio.yosql.codegen.api.CodeGenerator;
-import wtf.metio.yosql.codegen.api.YoSQL;
-import wtf.metio.yosql.codegen.errors.ExecutionErrors;
+import wtf.metio.yosql.codegen.dao.CodeGenerator;
 import wtf.metio.yosql.codegen.files.FileParser;
-import wtf.metio.yosql.codegen.logging.TimeLogger;
-import wtf.metio.yosql.codegen.logging.Writer;
+import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.orchestration.*;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+import wtf.metio.yosql.tooling.dagger.annotations.TimeLogger;
+import wtf.metio.yosql.tooling.dagger.annotations.Writer;
 
 import javax.inject.Singleton;
 import java.util.concurrent.Executor;

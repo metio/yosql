@@ -10,9 +10,9 @@ package wtf.metio.yosql.models.meta.data;
 import com.squareup.javapoet.*;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Strings;
+import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
-import wtf.metio.yosql.models.sql.ResultRowConverter;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
@@ -45,7 +45,7 @@ public final class Converter {
                 .setName("defaultConverter")
                 .setDescription("The default converter to use, if no other is specified on a query itself.")
                 .setType(TypeName.get(ResultRowConverter.class))
-                .setCliType(TypicalTypes.STRING)
+                .setCliType(ClassName.get(String.class))
                 .setGradleType(ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.DefaultRowConverter"))
                 .setMavenType(ClassName.bestGuess("wtf.metio.yosql.tooling.maven.RowConverter"))
                 .setCliValue("")
@@ -58,7 +58,7 @@ public final class Converter {
                 .setName("rowConverters")
                 .setDescription("The converters configured by the user.")
                 .setType(TypicalTypes.listOf(ResultRowConverter.class))
-                .setCliType(TypicalTypes.listOf(TypicalTypes.STRING))
+                .setCliType(TypicalTypes.listOf(ClassName.get(String.class)))
                 .setMavenType(TypicalTypes.listOf(ClassName.bestGuess("wtf.metio.yosql.tooling.maven.RowConverter")))
                 .setGradleType(TypicalTypes.gradleContainerOf(ClassName.bestGuess("wtf.metio.yosql.tooling.gradle.RowConverter")))
                 .setMavenValue("")
@@ -72,7 +72,7 @@ public final class Converter {
         return ConfigurationSetting.builder()
                 .setName("generateMapConverter")
                 .setDescription("Whether the ToMap converter should be generated.")
-                .setType(TypicalTypes.BOOLEAN)
+                .setType(ClassName.get(Boolean.class))
                 .setValue(true)
                 .build();
     }
@@ -81,7 +81,7 @@ public final class Converter {
         return ConfigurationSetting.builder()
                 .setName("mapConverterClass")
                 .setDescription("The fully-qualified class name of the ToMap converter.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("com.example.persistence.converter.ToMapConverter")
                 .build();
     }
@@ -90,7 +90,7 @@ public final class Converter {
         return ConfigurationSetting.builder()
                 .setName("mapConverterMethod")
                 .setDescription("The name of the method to generate/call in the ToMap converter.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("apply")
                 .build();
     }
@@ -99,7 +99,7 @@ public final class Converter {
         return ConfigurationSetting.builder()
                 .setName("mapConverterAlias")
                 .setDescription("The name of the alias referencing the ToMap converter.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("toMap")
                 .build();
     }

@@ -9,48 +9,21 @@ package wtf.metio.yosql.testing.configs;
 
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
+/**
+ * Presets for {@link JavaConfiguration}s.
+ */
 public final class JavaConfigurations {
 
+    /**
+     * @return Preset using the user visible defaults.
+     */
     public static JavaConfiguration defaults() {
         return JavaConfiguration.usingDefaults().build();
     }
 
-    public static JavaConfiguration java4() {
-        return JavaConfiguration.copyOf(defaults())
-                .withApiVersion(4)
-                .withUseDiamondOperator(false)
-                .withUseGenerics(false)
-                .withUseRecords(false)
-                .withUseVar(false)
-                .withUseTextBlocks(false)
-                .withUseStreamAPI(false)
-                .withUseFinal(true);
-    }
-
-    public static JavaConfiguration java5() {
-        return JavaConfiguration.copyOf(defaults())
-                .withApiVersion(5)
-                .withUseDiamondOperator(false)
-                .withUseGenerics(true)
-                .withUseRecords(false)
-                .withUseVar(false)
-                .withUseTextBlocks(false)
-                .withUseStreamAPI(false)
-                .withUseFinal(true);
-    }
-
-    public static JavaConfiguration java7() {
-        return JavaConfiguration.copyOf(defaults())
-                .withApiVersion(7)
-                .withUseDiamondOperator(true)
-                .withUseGenerics(true)
-                .withUseRecords(false)
-                .withUseVar(false)
-                .withUseTextBlocks(false)
-                .withUseStreamAPI(false)
-                .withUseFinal(true);
-    }
-
+    /**
+     * @return Preset for Java 8.
+     */
     public static JavaConfiguration java8() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(8)
@@ -64,7 +37,7 @@ public final class JavaConfigurations {
     }
 
     /**
-     * @return Preset for JavaConfigurations 9.
+     * @return Preset for Java 9.
      */
     public static JavaConfiguration java9() {
         return JavaConfiguration.copyOf(defaults())
@@ -79,7 +52,7 @@ public final class JavaConfigurations {
     }
 
     /**
-     * @return Preset for JavaConfigurations 11.
+     * @return Preset for Java 11.
      */
     public static JavaConfiguration java11() {
         return JavaConfiguration.copyOf(defaults())
@@ -93,6 +66,9 @@ public final class JavaConfigurations {
                 .withUseFinal(true);
     }
 
+    /**
+     * @return Preset for Java 14.
+     */
     public static JavaConfiguration java14() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(14)
@@ -105,6 +81,9 @@ public final class JavaConfigurations {
                 .withUseFinal(true);
     }
 
+    /**
+     * @return Preset for Java 16.
+     */
     public static JavaConfiguration java16() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(16)

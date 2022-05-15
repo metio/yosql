@@ -8,8 +8,6 @@ package wtf.metio.yosql.yeps;
 
 
 import io.cucumber.java.en.Given;
-import wtf.metio.yosql.models.constants.api.PersistenceApis;
-import wtf.metio.yosql.models.immutables.ApiConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.state.ConfigurationState;
 
@@ -27,14 +25,6 @@ public final class ConfigurationSteps {
     @Given("YoSQL uses its defaults configuration")
     public void createDefaultConfiguration() {
         configurationState.setRuntimeConfiguration(RuntimeConfiguration.usingDefaults().build());
-    }
-
-    @Given("{} persistence is used")
-    public void configurePersistenceApi(final PersistenceApis api) {
-        configurationState.setRuntimeConfiguration(
-                RuntimeConfiguration.copyOf(configurationState.getRuntimeConfiguration())
-                        .withApi(ApiConfiguration.copyOf(configurationState.getRuntimeConfiguration().api())
-                                .withPersistenceApi(api)));
     }
 
 }

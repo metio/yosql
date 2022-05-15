@@ -9,7 +9,7 @@ package wtf.metio.yosql.tooling.dagger;
 
 import dagger.BindsInstance;
 import dagger.Component;
-import wtf.metio.yosql.codegen.api.YoSQL;
+import wtf.metio.yosql.codegen.orchestration.YoSQL;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.codegen.DefaultCodeGeneratorModule;
 import wtf.metio.yosql.tooling.dagger.files.DefaultFilesModule;

@@ -36,24 +36,6 @@
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: Website</name>
 
-
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!--                               DEPENDENCIES                              -->
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!-- https://maven.apache.org/pom.html#Dependencies -->
-    <dependencies>
-        <dependency>
-            <groupId>wtf.metio.yosql.models</groupId>
-            <artifactId>yosql-models-sql</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.yosql.models</groupId>
-            <artifactId>yosql-models-immutables</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

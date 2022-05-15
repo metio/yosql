@@ -47,7 +47,7 @@ public class ExampleApp {
         final var companyRepository = new CompanyRepository(dataSource, toMapConverter);
         final var personRepository = new PersonRepository(dataSource, toMapConverter);
 
-        if (match(arguments, "generic", "stream", "rxjava")) {
+        if (match(arguments, "generic", "stream")) {
             initializeDatabase(schemaRepository, companyRepository, personRepository);
         }
         if (match(arguments, "generic")) {

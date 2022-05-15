@@ -19,7 +19,7 @@ public final class AllConfigurations {
     public static Stream<ConfigurationGroup> allConfigurationGroups() {
         return Stream.of(
                 Annotations.configurationGroup(),
-                Api.configurationGroup(),
+                Logging.configurationGroup(),
                 Converter.configurationGroup(),
                 Files.configurationGroup(),
                 Repositories.configurationGroup(),

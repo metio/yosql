@@ -23,11 +23,6 @@ Each SQL statement can have an optional front matter section written in YAML tha
 --     type: int
 -- type: READING
 -- returningMode: ONE
--- generateStandardApi: true
--- generateBatchApi: false
--- generateStreamEagerApi: false
--- generateStreamLazyApi: false
--- generateRxJavaApi: false
 -- catchAndRethrow: true
 SELECT  *
 FROM    users
@@ -128,72 +123,6 @@ The `returningMode` field can be used to change what the generated methods are r
 
 ```sql
 -- returningMode: ONE
-SELECT  *
-FROM    users
-WHERE   id = :userId
-```
-
-## generateStandardApi
-
-The `generateStandardApi` field can be used to overwrite the globally configured `generateStandardApi` option. Use `generateStandardApi` in case you want to enable/disable generating *standard* methods.
-
-```sql
--- generateStandardApi: true
-SELECT  *
-FROM    users
-WHERE   id = :userId
-```
-
-## generateBatchApi
-
-The `generateBatchApi` field can be used to overwrite the globally configured `generateBatchApi` option. Use `generateBatchApi` in case you want to enable/disable generating batch methods.
-
-```sql
--- generateBatchApi: false
-SELECT  *
-FROM    users
-WHERE   id = :userId
-```
-
-## generateStreamEagerApi
-
-The `generateStreamEagerApi` field can be used to overwrite the globally configured `generateStreamEagerApi` option. Use `generateStreamEagerApi` in case you want to enable/disable generating eager stream methods.
-
-```sql
--- generateStreamEagerApi: false
-SELECT  *
-FROM    users
-WHERE   id = :userId
-```
-
-## generateStreamLazyApi
-
-The `generateStreamLazyApi` field can be used to overwrite the globally configured `generateStreamLazyApi` option. Use `generateStreamLazyApi` in case you want to enable/disable generating lazy stream methods.
-
-```sql
--- generateStreamLazyApi: false
-SELECT  *
-FROM    users
-WHERE   id = :userId
-```
-
-## generateRxJavaApi
-
-The `generateRxJavaApi` field can be used to overwrite the globally configured `generateRxJavaApi` option. Use `generateRxJavaApi` in case you want to enable/disable generating RxJava based methods.
-
-```sql
--- generateRxJavaApi: false
-SELECT  *
-FROM    users
-WHERE   id = :userId
-```
-
-## catchAndRethrow
-
-The `catchAndRethrow` field can be used to overwrite the globally configured `catchAndRethrow` option. Use `catchAndRethrow` in case you want to enable/disable catching checked exceptions and rethrowing them as runtime exceptions.
-
-```sql
--- catchAndRethrow: true
 SELECT  *
 FROM    users
 WHERE   id = :userId

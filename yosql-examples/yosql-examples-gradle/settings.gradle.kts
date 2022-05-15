@@ -7,8 +7,6 @@
 
 rootProject.name = "yosql-examples-gradle"
 
-enableFeaturePreview("VERSION_CATALOGS")
-
 dependencyResolutionManagement {
     repositories {
         mavenCentral()

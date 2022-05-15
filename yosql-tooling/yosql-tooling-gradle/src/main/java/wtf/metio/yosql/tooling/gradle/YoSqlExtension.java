@@ -25,7 +25,7 @@ public abstract class YoSqlExtension {
      * @return The API configuration.
      */
     @Nested
-    public abstract Api getApi();
+    public abstract Logging getLogging();
 
     /**
      * @return The files configuration.
@@ -67,8 +67,8 @@ public abstract class YoSqlExtension {
     /**
      * @param action The API config to apply.
      */
-    public void api(Action<? super Api> action) {
-        action.execute(getApi());
+    public void api(Action<? super Logging> action) {
+        action.execute(getLogging());
     }
 
     /**

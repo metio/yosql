@@ -9,32 +9,17 @@ package wtf.metio.yosql.internals.javapoet;
 import com.squareup.javapoet.*;
 
 import java.lang.reflect.Type;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+// TODO: Use 'TypeName.BOOLEAN' from JavaPoet directly
 public final class TypicalTypes {
-
-    public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
-    public static final ClassName STRING = ClassName.get("java.lang", "String");
-    public static final ClassName BOOLEAN = ClassName.get("java.lang", "Boolean");
-
-    public static final ClassName LIST = ClassName.get("java.util", "List");
-    public static final ClassName MAP = ClassName.get("java.util", "Map");
-    public static final ClassName LINKED_MAP = ClassName.get("java.util", "LinkedHashMap");
-    public static final ClassName SET = ClassName.get("java.util", "Set");
-    public static final ClassName OPTIONAL = ClassName.get("java.util", "Optional");
-    public static final ClassName STREAM = ClassName.get("java.util.stream", "Stream");
-    public static final ClassName CONSUMER = ClassName.get("java.util.function", "Consumer");
 
     public static final ClassName INJECT = ClassName.get("javax.inject", "Inject");
 
-    public static final ClassName PATH = ClassName.get("java.nio.file", "Path");
-    public static final ClassName CHARSET = ClassName.get("java.nio.charset", "Charset");
-    public static final ClassName INTEGER = ClassName.get("java.lang", "Integer");
-
-    public static final ClassName FLOWABLE = ClassName.get("io.reactivex", "Flowable");
-    public static final ClassName MULTI = ClassName.get("io.smallrye.mutiny", "Multi");
-    public static final ClassName FLUX = ClassName.get("reactor.core.publisher", "Flux");
-
-    public static final ClassName GRADLE_PROPERTY = ClassName.bestGuess("org.gradle.api.provider.Property");
+    public static final ClassName GRADLE_PROPERTY = ClassName.get("org.gradle.api.provider", "Property");
     public static final ClassName GRADLE_LIST_PROPERTY = ClassName.bestGuess("org.gradle.api.provider.ListProperty");
     public static final ClassName GRADLE_INPUT = ClassName.bestGuess("org.gradle.api.tasks.Input");
     public static final ClassName GRADLE_INPUT_DIRECTORY = ClassName.bestGuess("org.gradle.api.tasks.InputDirectory");
@@ -47,16 +32,16 @@ public final class TypicalTypes {
 
     public static final TypeName ARRAY_OF_INTS = ArrayTypeName.of(int.class);
 
-    public static final TypeName MAP_OF_STRING_AND_ARRAY_OF_INTS = mapOf(STRING, ARRAY_OF_INTS);
-    public static final TypeName MAP_OF_STRING_AND_OBJECTS = mapOf(STRING, OBJECT);
-    public static final TypeName LINKED_MAP_OF_STRING_AND_OBJECTS = linkedMapOf(STRING, OBJECT);
+    public static final TypeName MAP_OF_STRING_AND_ARRAY_OF_INTS = mapOf(ClassName.get(String.class), ARRAY_OF_INTS);
+    public static final TypeName MAP_OF_STRING_AND_OBJECTS = mapOf(ClassName.get(String.class), TypeName.OBJECT);
+    public static final TypeName LINKED_MAP_OF_STRING_AND_OBJECTS = linkedMapOf(ClassName.get(String.class), TypeName.OBJECT);
 
     public static ParameterizedTypeName mapOf(final TypeName key, final TypeName value) {
-        return ParameterizedTypeName.get(MAP, key, value);
+        return ParameterizedTypeName.get(ClassName.get(Map.class), key, value);
     }
 
     public static ParameterizedTypeName linkedMapOf(final TypeName key, final TypeName value) {
-        return ParameterizedTypeName.get(LINKED_MAP, key, value);
+        return ParameterizedTypeName.get(ClassName.get(LinkedHashMap.class), key, value);
     }
 
     public static ParameterizedTypeName optionalOf(final Type type) {
@@ -64,7 +49,11 @@ public final class TypicalTypes {
     }
 
     public static ParameterizedTypeName optionalOf(final TypeName type) {
-        return ParameterizedTypeName.get(OPTIONAL, type);
+        return ParameterizedTypeName.get(ClassName.get(Optional.class), type);
+    }
+
+    public static ParameterizedTypeName supplierOf(final TypeName type) {
+        return ParameterizedTypeName.get(ClassName.get(Supplier.class), type);
     }
 
     public static ParameterizedTypeName listOf(final Type type) {
@@ -72,39 +61,27 @@ public final class TypicalTypes {
     }
 
     public static ParameterizedTypeName listOf(final TypeName type) {
-        return ParameterizedTypeName.get(LIST, type);
+        return ParameterizedTypeName.get(ClassName.get(List.class), type);
     }
 
     public static ParameterizedTypeName produceListOf(final TypeName type) {
-        return ParameterizedTypeName.get(LIST, WildcardTypeName.subtypeOf(type));
+        return ParameterizedTypeName.get(ClassName.get(List.class), WildcardTypeName.subtypeOf(type));
     }
 
     public static ParameterizedTypeName consumeListOf(final TypeName type) {
-        return ParameterizedTypeName.get(LIST, WildcardTypeName.supertypeOf(type));
+        return ParameterizedTypeName.get(ClassName.get(List.class), WildcardTypeName.supertypeOf(type));
     }
 
     public static ParameterizedTypeName setOf(final TypeName type) {
-        return ParameterizedTypeName.get(SET, type);
+        return ParameterizedTypeName.get(ClassName.get(Set.class), type);
     }
 
     public static ParameterizedTypeName streamOf(final TypeName type) {
-        return ParameterizedTypeName.get(STREAM, type);
-    }
-
-    public static ParameterizedTypeName multiOf(final TypeName type) {
-        return ParameterizedTypeName.get(MULTI, type);
-    }
-
-    public static ParameterizedTypeName flowableOf(final TypeName type) {
-        return ParameterizedTypeName.get(FLOWABLE, type);
-    }
-
-    public static ParameterizedTypeName fluxOf(final TypeName type) {
-        return ParameterizedTypeName.get(FLUX, type);
+        return ParameterizedTypeName.get(ClassName.get(Stream.class), type);
     }
 
     public static ParameterizedTypeName consumerOf(final TypeName type) {
-        return ParameterizedTypeName.get(CONSUMER, WildcardTypeName.supertypeOf(type));
+        return ParameterizedTypeName.get(ClassName.get(Consumer.class), WildcardTypeName.supertypeOf(type));
     }
 
     public static ParameterizedTypeName gradlePropertyOf(final TypeName type) {

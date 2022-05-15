@@ -43,9 +43,7 @@
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
         <module>yosql-benchmarks-codegen</module>
-        <module>yosql-benchmarks-jdbc</module>
-        <module>yosql-benchmarks-r2dbc</module>
-        <module>yosql-benchmarks-common-scenarios</module>
+        <module>yosql-benchmarks-dao</module>
         <module>yosql-benchmarks-vs-ebean</module>
         <module>yosql-benchmarks-vs-jdbi</module>
         <module>yosql-benchmarks-vs-jooq</module>

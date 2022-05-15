@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.models.meta.data;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
@@ -46,15 +47,7 @@ public final class Repositories {
                 blockingPrefix(),
                 blockingSuffix(),
                 batchPrefix(),
-                batchSuffix(),
-                mutinyPrefix(),
-                mutinySuffix(),
-                reactorPrefix(),
-                reactorSuffix(),
-                rxJavaPrefix(),
-                rxJavaSuffix(),
-                streamPrefix(),
-                streamSuffix());
+                batchSuffix());
     }
 
     /**
@@ -64,11 +57,8 @@ public final class Repositories {
         return List.of(
                 generateBlockingApi(),
                 generateBatchApi(),
-                generateMutinyApi(),
-                generateReactorApi(),
-                generateRxJavaApi(),
-                generateStreamApi(),
                 catchAndRethrow(),
+                throwOnMultipleResultsForSingle(),
                 injectConverters());
     }
 
@@ -76,7 +66,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("basePackageName")
                 .setDescription("The base package name for all repositories")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("com.example.persistence")
                 .addExamples(ConfigurationExample.builder()
                         .setValue("com.example.persistence")
@@ -109,7 +99,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("repositoryNameSuffix")
                 .setDescription("The repository name suffix to use.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("Repository")
                 .setExplanation("In case the repository name already contains the configured suffix, it will not be added twice.")
                 .addExamples(ConfigurationExample.builder()
@@ -166,48 +156,21 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting generateStreamApi() {
-        return ConfigurationSetting.builder()
-                .setName("generateStreamApi")
-                .setDescription("Generate streaming methods")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .build();
-    }
-
-    private static ConfigurationSetting generateRxJavaApi() {
-        return ConfigurationSetting.builder()
-                .setName("generateRxJavaApi")
-                .setDescription("Generate RxJava based methods")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .build();
-    }
-
-    private static ConfigurationSetting generateReactorApi() {
-        return ConfigurationSetting.builder()
-                .setName("generateReactorApi")
-                .setDescription("Generate Reactor based methods")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .build();
-    }
-
-    private static ConfigurationSetting generateMutinyApi() {
-        return ConfigurationSetting.builder()
-                .setName("generateMutinyApi")
-                .setDescription("Generate Mutiny based methods")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .build();
-    }
-
     private static ConfigurationSetting catchAndRethrow() {
         return ConfigurationSetting.builder()
                 .setName("catchAndRethrow")
                 .setDescription("Catch exceptions during SQL execution and re-throw them as RuntimeExceptions")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
+                .build();
+    }
+
+    private static ConfigurationSetting throwOnMultipleResultsForSingle() {
+        return ConfigurationSetting.builder()
+                .setName("throwOnMultipleResultsForSingle")
+                .setDescription("Throw an exception in case a statement using `ReturningMode.SINGLE` produces more than 1 result.")
+                .setType(TypeName.get(boolean.class))
+                .setValue(false)
                 .build();
     }
 
@@ -267,7 +230,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("blockingPrefix")
                 .setDescription("The method prefix to use for generated blocking methods.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("")
                 .build();
     }
@@ -276,7 +239,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("blockingSuffix")
                 .setDescription("The method suffix to use for generated blocking methods.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("")
                 .build();
     }
@@ -285,7 +248,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("batchPrefix")
                 .setDescription("The method prefix to use for generated batch methods.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("")
                 .build();
     }
@@ -294,80 +257,8 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("batchSuffix")
                 .setDescription("The method suffix to use for generated batch methods.")
-                .setType(TypicalTypes.STRING)
+                .setType(ClassName.get(String.class))
                 .setValue("Batch")
-                .build();
-    }
-
-    private static ConfigurationSetting streamPrefix() {
-        return ConfigurationSetting.builder()
-                .setName("streamPrefix")
-                .setDescription("The method prefix to use for generated stream methods.")
-                .setType(TypicalTypes.STRING)
-                .setValue("")
-                .build();
-    }
-
-    private static ConfigurationSetting streamSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("streamSuffix")
-                .setDescription("The method suffix to use for generated stream methods.")
-                .setType(TypicalTypes.STRING)
-                .setValue("Stream")
-                .build();
-    }
-
-    private static ConfigurationSetting mutinyPrefix() {
-        return ConfigurationSetting.builder()
-                .setName("mutinyPrefix")
-                .setDescription("The method prefix to use for generated methods that use the Mutiny API.")
-                .setType(TypicalTypes.STRING)
-                .setValue("")
-                .build();
-    }
-
-    private static ConfigurationSetting mutinySuffix() {
-        return ConfigurationSetting.builder()
-                .setName("mutinySuffix")
-                .setDescription("The method suffix to use for generated methods that use the Mutiny API.")
-                .setType(TypicalTypes.STRING)
-                .setValue("Multi")
-                .build();
-    }
-
-    private static ConfigurationSetting reactorPrefix() {
-        return ConfigurationSetting.builder()
-                .setName("reactorPrefix")
-                .setDescription("The method prefix to use for generated methods that use the Reactor API.")
-                .setType(TypicalTypes.STRING)
-                .setValue("")
-                .build();
-    }
-
-    private static ConfigurationSetting reactorSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("reactorSuffix")
-                .setDescription("The method suffix to use for generated methods that use the Reactor API.")
-                .setType(TypicalTypes.STRING)
-                .setValue("Flux")
-                .build();
-    }
-
-    private static ConfigurationSetting rxJavaPrefix() {
-        return ConfigurationSetting.builder()
-                .setName("rxJavaPrefix")
-                .setDescription("The method prefix to use for generated methods that use the RxJava API.")
-                .setType(TypicalTypes.STRING)
-                .setValue("")
-                .build();
-    }
-
-    private static ConfigurationSetting rxJavaSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("rxJavaSuffix")
-                .setDescription("The method suffix to use for generated methods that use the RxJava API.")
-                .setType(TypicalTypes.STRING)
-                .setValue("Flow")
                 .build();
     }
 
@@ -380,7 +271,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("allowedWritePrefixes")
                 .setDescription("Configures which name prefixes are allowed for statements that are writing data to your database.")
-                .setType(TypicalTypes.listOf(TypicalTypes.STRING))
+                .setType(TypicalTypes.listOf(ClassName.get(String.class)))
                 .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
                 .setCliValue(prefixesInDocs.toString())
                 .setMavenValue(prefixesInDocs.toString())
@@ -404,7 +295,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("allowedReadPrefixes")
                 .setDescription("Configures which name prefixes are allowed for statements that are reading data from your database.")
-                .setType(TypicalTypes.listOf(TypicalTypes.STRING))
+                .setType(TypicalTypes.listOf(ClassName.get(String.class)))
                 .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
                 .setCliValue(prefixesInDocs.toString())
                 .setMavenValue(prefixesInDocs.toString())
@@ -428,7 +319,7 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("allowedCallPrefixes")
                 .setDescription("Configures which name prefixes are allowed for statements that are calling stored procedures.")
-                .setType(TypicalTypes.listOf(TypicalTypes.STRING))
+                .setType(TypicalTypes.listOf(ClassName.get(String.class)))
                 .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
                 .setCliValue(prefixesInDocs.toString())
                 .setMavenValue(prefixesInDocs.toString())

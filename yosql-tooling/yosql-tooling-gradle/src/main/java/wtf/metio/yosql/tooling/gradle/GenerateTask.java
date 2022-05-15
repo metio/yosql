@@ -30,7 +30,7 @@ public abstract class GenerateTask extends DefaultTask {
      * @return The API configuration to use.
      */
     @Input
-    public abstract Property<ApiConfiguration> getApi();
+    public abstract Property<LoggingConfiguration> getLoggingConfig();
 
     /**
      * @return The file configuration to use.
@@ -81,7 +81,7 @@ public abstract class GenerateTask extends DefaultTask {
                 .setConverter(getConverter().get())
                 .setJava(getJava().get())
                 .setRepositories(getRepositories().get())
-                .setApi(getApi().get())
+                .setLogging(getLoggingConfig().get())
                 .setAnnotations(getAnnotations().get())
                 .setResources(getResources().get())
                 .build();

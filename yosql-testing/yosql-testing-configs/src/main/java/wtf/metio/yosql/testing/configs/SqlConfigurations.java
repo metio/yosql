@@ -7,15 +7,19 @@
 
 package wtf.metio.yosql.testing.configs;
 
-import wtf.metio.yosql.models.constants.sql.SqlType;
+import wtf.metio.yosql.models.configuration.ResultRowConverter;
+import wtf.metio.yosql.models.configuration.ReturningMode;
+import wtf.metio.yosql.models.configuration.SqlParameter;
+import wtf.metio.yosql.models.configuration.SqlType;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
-import wtf.metio.yosql.models.sql.ResultRowConverter;
-import wtf.metio.yosql.models.sql.SqlParameter;
 
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * Object mother for {@link SqlConfiguration}s and {@link SqlStatement}s.
+ */
 public final class SqlConfigurations {
 
     public static List<SqlStatement> sqlStatement() {
@@ -50,14 +54,11 @@ public final class SqlConfigurations {
         final var config = SqlConfiguration.builder();
         config.setName("queryData");
         config.setType(SqlType.READING);
+        config.setReturningMode(ReturningMode.MULTIPLE);
         config.setRepository("com.example.persistence.DataRepository");
         config.setCatchAndRethrow(true);
         config.setGenerateBatchApi(true);
         config.setGenerateBlockingApi(true);
-        config.setGenerateMutinyApi(true);
-        config.setGenerateReactorApi(true);
-        config.setGenerateRxJavaApi(true);
-        config.setGenerateStreamApi(true);
         config.setParameters(List.of(SqlParameter.builder()
                 .setName("test")
                 .setType(Object.class.getName())

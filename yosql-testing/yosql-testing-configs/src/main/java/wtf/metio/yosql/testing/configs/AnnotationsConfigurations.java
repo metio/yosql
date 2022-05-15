@@ -7,8 +7,12 @@
 
 package wtf.metio.yosql.testing.configs;
 
+import wtf.metio.yosql.models.configuration.AnnotationApis;
 import wtf.metio.yosql.models.immutables.AnnotationsConfiguration;
 
+/**
+ * Object mother for {@link AnnotationsConfiguration}s.
+ */
 public final class AnnotationsConfigurations {
 
     public static AnnotationsConfiguration defaults() {
@@ -17,6 +21,11 @@ public final class AnnotationsConfigurations {
                 .setAnnotateFields(true)
                 .setAnnotateMethods(true)
                 .build();
+    }
+
+    public static AnnotationsConfiguration generated() {
+        return AnnotationsConfiguration.copyOf(defaults())
+                .withAnnotationApi(AnnotationApis.ANNOTATION_API);
     }
 
     private AnnotationsConfigurations() {

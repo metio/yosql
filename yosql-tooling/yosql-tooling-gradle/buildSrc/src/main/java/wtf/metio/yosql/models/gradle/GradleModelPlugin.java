@@ -14,7 +14,7 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.JavaCompile;
-import wtf.metio.yosql.internals.model.generator.ModelGenerator;
+import wtf.metio.yosql.model.generator.ModelGenerator;
 
 import java.nio.file.Path;
 
@@ -39,7 +39,7 @@ public class GradleModelPlugin implements Plugin<Project> {
 
     private void registerTask(final Project project, final ModelGenerator generator) {
         project.getTasks().withType(JavaCompile.class, task -> task.doFirst("createGradleModel",
-                action -> generator.createGradleModel()));
+                new CreateGradleModel(generator)));
     }
 
     private void configureSourceSets(final Project project, final Path outputDirectory) {

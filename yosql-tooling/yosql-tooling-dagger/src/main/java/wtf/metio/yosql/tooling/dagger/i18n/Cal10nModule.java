@@ -12,7 +12,8 @@ import dagger.Module;
 import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.cal10n.LocLoggerFactory;
-import wtf.metio.yosql.codegen.logging.*;
+import wtf.metio.yosql.codegen.orchestration.Loggers;
+import wtf.metio.yosql.tooling.dagger.annotations.*;
 
 import javax.inject.Singleton;
 import java.util.Locale;
@@ -60,7 +61,7 @@ public class Cal10nModule {
     @Provides
     @Singleton
     LocLogger provideGeneratorLocLogger(final LocLoggerFactory factory) {
-        return factory.getLocLogger(Loggers.GENERATOR.loggerName);
+        return factory.getLocLogger(Loggers.REPOSITORIES.loggerName);
     }
 
     @TimeLogger
@@ -70,11 +71,11 @@ public class Cal10nModule {
         return factory.getLocLogger(Loggers.TIMER.loggerName);
     }
 
-    @Converters
+    @Converter
     @Provides
     @Singleton
     LocLogger provideUtilitiesLocLogger(final LocLoggerFactory factory) {
-        return factory.getLocLogger(Loggers.UTILITIES.loggerName);
+        return factory.getLocLogger(Loggers.CONVERTERS.loggerName);
     }
 
 }

@@ -41,7 +41,6 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
-        <module>yosql-internals-cal10n-utils</module>
         <module>yosql-internals-jdk-utils</module>
         <module>yosql-internals-javapoet-utils</module>
         <module>yosql-internals-junit5-utils</module>

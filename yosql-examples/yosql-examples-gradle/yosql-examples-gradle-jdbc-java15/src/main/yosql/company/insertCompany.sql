@@ -5,7 +5,6 @@
  * in the LICENSE file.
  */
 
--- returningMode: ONE
 -- parameters:
 --   - name: id
 --     type: int

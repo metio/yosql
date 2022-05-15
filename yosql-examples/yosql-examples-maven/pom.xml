@@ -42,9 +42,6 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
-        <module>yosql-examples-maven-jdbc-java4</module>
-        <module>yosql-examples-maven-jdbc-java5</module>
-        <module>yosql-examples-maven-jdbc-java7</module>
         <module>yosql-examples-maven-jdbc-java8</module>
         <module>yosql-examples-maven-jdbc-java9</module>
         <module>yosql-examples-maven-jdbc-java11</module>
@@ -64,18 +61,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.smallrye.reactive</groupId>
-            <artifactId>mutiny</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
         </dependency>
     </dependencies>
 

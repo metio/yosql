@@ -1,6 +1,6 @@
 /*
  * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
- * directory of this distribution and at http://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+ * directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
@@ -45,7 +45,7 @@ public class ExampleApp {
         final var companyRepository = new CompanyRepository(dataSource);
         final var personRepository = new PersonRepository(dataSource);
 
-        if (match(arguments, "generic", "stream", "rxjava")) {
+        if (match(arguments, "generic", "stream")) {
             initializeDatabase(schemaRepository, companyRepository, personRepository);
         }
         if (match(arguments, "generic")) {

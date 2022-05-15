@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+  ~ directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+  ~ in the LICENSE file.
+  -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ordering follows https://maven.apache.org/developers/conventions/code.html#POM_Code_Convention -->
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                 PARENT                                  -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Inheritance -->
+    <parent>
+        <groupId>wtf.metio.yosql.benchmarks</groupId>
+        <artifactId>yosql-benchmarks</artifactId>
+        <version>0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               COORDINATES                               -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Maven_Coordinates -->
+
+    <artifactId>yosql-benchmarks-dao</artifactId>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               INFORMATIONS                              -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#More_Project_Information -->
+    <name>YoSQL :: Benchmarks :: DAO</name>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               DEPENDENCIES                              -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-impl</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>wtf.metio.yosql.tooling</groupId>
+                <artifactId>yosql-tooling-maven</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <files>
+                        <skipLines>6</skipLines>
+                    </files>
+                    <java>
+                        <apiVersion>16</apiVersion>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jul</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <logging>
+                                <api>JUL</api>
+                            </logging>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/jul</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.dao.jul.persistence</basePackageName>
+                            </repositories>
+                            <converter>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.jul.persistence.converter.ToMapConverter</mapConverterClass>
+                            </converter>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>log4j</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <logging>
+                                <api>LOG4J</api>
+                            </logging>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/log4j</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.dao.log4j.persistence</basePackageName>
+                            </repositories>
+                            <converter>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.log4j.persistence.converter.ToMapConverter</mapConverterClass>
+                            </converter>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>noop</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <logging>
+                                <api>NONE</api>
+                            </logging>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/noop</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.dao.noop.persistence</basePackageName>
+                            </repositories>
+                            <converter>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.noop.persistence.converter.ToMapConverter</mapConverterClass>
+                            </converter>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>slf4j</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <logging>
+                                <api>SLF4J</api>
+                            </logging>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/slf4j</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.dao.slf4j.persistence</basePackageName>
+                            </repositories>
+                            <converter>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.slf4j.persistence.converter.ToMapConverter</mapConverterClass>
+                            </converter>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>system</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <logging>
+                                <api>SYSTEM</api>
+                            </logging>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/system</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.dao.system.persistence</basePackageName>
+                            </repositories>
+                            <converter>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.system.persistence.converter.ToMapConverter</mapConverterClass>
+                            </converter>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>tinylog</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <logging>
+                                <api>TINYLOG</api>
+                            </logging>
+                            <files>
+                                <outputBaseDirectory>target/generated-sources/tinylog</outputBaseDirectory>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.benchmark.dao.tinylog.persistence</basePackageName>
+                            </repositories>
+                            <converter>
+                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.tinylog.persistence.converter.ToMapConverter</mapConverterClass>
+                            </converter>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/jul</source>
+                                <source>${project.build.directory}/generated-sources/log4j</source>
+                                <source>${project.build.directory}/generated-sources/noop</source>
+                                <source>${project.build.directory}/generated-sources/slf4j</source>
+                                <source>${project.build.directory}/generated-sources/system</source>
+                                <source>${project.build.directory}/generated-sources/tinylog</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>benchmarks</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.baidu.maven</groupId>
+                        <artifactId>jmh-maven-plugin</artifactId>
+                        <version>1.0.3</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jmh</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <forks>1</forks>
+                            <warmupForks>1</warmupForks>
+                            <threads>1</threads>
+                            <mode>avgt</mode>
+                            <timeUnit>us</timeUnit>
+                            <measurementTime>1s</measurementTime>
+                            <warmupTime>1s</warmupTime>
+                            <resultFormat>json</resultFormat>
+                            <resultFile>yosql-benchmarks-dao.json</resultFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

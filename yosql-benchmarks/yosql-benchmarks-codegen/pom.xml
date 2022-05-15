@@ -42,7 +42,7 @@
     <dependencies>
         <dependency>
             <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-api</artifactId>
+            <artifactId>yosql-codegen</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -50,6 +50,12 @@
             <artifactId>yosql-tooling-dagger</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.testing</groupId>
+            <artifactId>yosql-testing-configs</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>

@@ -8,10 +8,10 @@ package wtf.metio.yosql.tooling.dagger.codegen.logging;
 
 import dagger.Module;
 import dagger.Provides;
-import wtf.metio.yosql.codegen.annotations.Delegating;
-import wtf.metio.yosql.logging.api.DelegatingLoggingGenerator;
-import wtf.metio.yosql.logging.api.LoggingGenerator;
+import wtf.metio.yosql.codegen.logging.DelegatingLoggingGenerator;
+import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+import wtf.metio.yosql.tooling.dagger.annotations.Delegating;
 
 import javax.inject.Singleton;
 import java.util.Set;
@@ -36,7 +36,7 @@ public class DefaultLoggingModule {
     LoggingGenerator provideLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Set<LoggingGenerator> loggingGenerators) {
-        return new DelegatingLoggingGenerator(runtimeConfiguration.api(), loggingGenerators);
+        return new DelegatingLoggingGenerator(runtimeConfiguration.logging(), loggingGenerators);
     }
 
 }

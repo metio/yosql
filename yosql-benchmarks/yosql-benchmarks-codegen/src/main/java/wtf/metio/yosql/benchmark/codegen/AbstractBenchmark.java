@@ -74,18 +74,20 @@ abstract class AbstractBenchmark {
             final int numberOfRepositories,
             final String fileName) {
         final InputStream updateData = getClass().getResourceAsStream("/sql-files/usecases/" + fileName);
-        try (final BufferedReader insertDataReader = new BufferedReader(
-                new InputStreamReader(updateData, StandardCharsets.UTF_8))) {
-            final String insertDataRaw = insertDataReader.lines().collect(Collectors.joining("\n"));
-            final Path insertDataSqlFile = tempDirectory.resolve(fileName);
-            Files.writeString(insertDataSqlFile, insertDataRaw);
-            for (int index = 1; index <= numberOfRepositories; index++) {
-                final Path repositoryDirectory = inputDirectory.resolve(repositoryName(index));
-                Files.createDirectories(repositoryDirectory);
-                Files.copy(insertDataSqlFile, repositoryDirectory.resolve(fileName));
+        if (updateData != null) {
+            try (final BufferedReader insertDataReader = new BufferedReader(
+                    new InputStreamReader(updateData, StandardCharsets.UTF_8))) {
+                final String insertDataRaw = insertDataReader.lines().collect(Collectors.joining("\n"));
+                final Path insertDataSqlFile = tempDirectory.resolve(fileName);
+                Files.writeString(insertDataSqlFile, insertDataRaw);
+                for (int index = 1; index <= numberOfRepositories; index++) {
+                    final Path repositoryDirectory = inputDirectory.resolve(repositoryName(index));
+                    Files.createDirectories(repositoryDirectory);
+                    Files.copy(insertDataSqlFile, repositoryDirectory.resolve(fileName));
+                }
+            } catch (final IOException exception) {
+                throw new IllegalStateException(exception);
             }
-        } catch (final IOException exception) {
-            throw new IllegalStateException(exception);
         }
     }
 

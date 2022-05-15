@@ -7,7 +7,7 @@
 package wtf.metio.yosql.benchmark.codegen;
 
 import org.openjdk.jmh.annotations.Benchmark;
-import wtf.metio.yosql.codegen.api.YoSQL;
+import wtf.metio.yosql.codegen.orchestration.YoSQL;
 
 /**
  * Performs a full code generation lifecycle, which contains file parsing, type generation, and file writing.

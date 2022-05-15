@@ -9,6 +9,9 @@ package wtf.metio.yosql.testing.configs;
 
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
+/**
+ * Object mother for {@link NamesConfiguration}s.
+ */
 public final class NamesConfigurations {
 
     public static NamesConfiguration defaults() {

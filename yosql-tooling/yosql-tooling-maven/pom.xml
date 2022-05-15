@@ -51,13 +51,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>wtf.metio.yosql.models</groupId>
-            <artifactId>yosql-models-maven</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>wtf.metio.yosql.codegen</groupId>
-            <artifactId>yosql-codegen-api</artifactId>
+            <artifactId>yosql-codegen</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -97,9 +92,44 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>wtf.metio.yosql.models</groupId>
+                <artifactId>yosql-models-generator</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <type>maven</type>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-yosql-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/yosql</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.4</version>
                 <executions>
                     <execution>
                         <goals>
@@ -111,7 +141,7 @@
                     <dependency>
                         <groupId>org.ow2.asm</groupId>
                         <artifactId>asm</artifactId>
-                        <version>9.1</version>
+                        <version>9.3</version>
                     </dependency>
                 </dependencies>
             </plugin>

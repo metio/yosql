@@ -6,8 +6,8 @@
  */
 package wtf.metio.yosql.benchmark.codegen;
 
-import wtf.metio.yosql.models.constants.api.LoggingApis;
-import wtf.metio.yosql.models.immutables.ApiConfiguration;
+import wtf.metio.yosql.models.immutables.LoggingConfiguration;
+import wtf.metio.yosql.testing.configs.LoggingConfigurations;
 
 /**
  * JMH based micro benchmark for YoSQL using the JDBC API and slf4j as logging implementation using a medium
@@ -17,8 +17,8 @@ import wtf.metio.yosql.models.immutables.ApiConfiguration;
 public class MediumJdbcSlf4jBenchmark extends AbstractMediumSampleBenchmark {
 
     @Override
-    protected ApiConfiguration apiConfig() {
-        return ApiConfiguration.usingDefaults().setLoggingApi(LoggingApis.SLF4J).build();
+    protected LoggingConfiguration loggingConfig() {
+        return LoggingConfigurations.slf4j();
     }
 
 }

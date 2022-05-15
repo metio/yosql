@@ -37,7 +37,7 @@ public class YoSqlPlugin implements Plugin<Project> {
         extension.getFiles().configureConventions(layout);
         extension.getConverter().configureConventions(objects);
         extension.getAnnotations().configureConventions();
-        extension.getApi().configureConventions();
+        extension.getLogging().configureConventions();
         extension.getJava().configureConventions();
         extension.getRepositories().configureConventions();
         extension.getResources().configureConventions();
@@ -45,19 +45,9 @@ public class YoSqlPlugin implements Plugin<Project> {
 
     private void registerTask(final Project project, final YoSqlExtension extension) {
         final var generate = project.getTasks().register("generateJavaCode",
-                GenerateTask.class, task -> configureTask(extension, task));
+                GenerateTask.class, new GenerateTaskConfiguration(extension));
         project.getTasks().withType(JavaCompile.class, task -> task.doFirst("yosql",
-                action -> generate.get().generateCode()));
-    }
-
-    private void configureTask(final YoSqlExtension extension, final GenerateTask task) {
-        task.getAnnotations().set(extension.getAnnotations().asConfiguration());
-        task.getApi().set(extension.getApi().asConfiguration());
-        task.getFiles().set(extension.getFiles().asConfiguration());
-        task.getConverter().set(extension.getConverter().asConfiguration());
-        task.getJava().set(extension.getJava().asConfiguration());
-        task.getRepositories().set(extension.getRepositories().asConfiguration());
-        task.getResources().set(extension.getResources().asConfiguration());
+                new GenerateCodeAction(generate)));
     }
 
     private void configureSourceSets(final Project project, final YoSqlExtension extension) {

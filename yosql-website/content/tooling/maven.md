@@ -87,7 +87,7 @@ the generated code of each other. The last execution will win. Share configurati
 
 #### Dev/Prod Split
 
-In case you want generate logging statements while developing, but not have any log statements in production code in order to optimize runtime performance, you can use the following setup:
+In case you want to generate logging statements while developing, but not have any log statements in production code in order to optimize runtime performance, you can use the following setup:
 
 {{< maven/tooling/split >}}
 
