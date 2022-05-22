@@ -63,7 +63,7 @@ jobs:
     needs: [build]
     strategy:
       matrix:
-        benchmark: [codegen, jdbc]
+        benchmark: [codegen, dao]
     steps:
       - id: checkout
         name: Clone Git Repository
