@@ -31,7 +31,10 @@ public final class Repositories {
                 .addSettings(allowedReadPrefixes())
                 .addSettings(allowedWritePrefixes())
                 .addSettings(basePackageName())
-                .addSettings(generateInterface())
+                .addSettings(generateInterfaces())
+                .addSettings(repositoryInterfacePrefix())
+                .addSettings(repositoryInterfaceSuffix())
+                .addSettings(repositoryNamePrefix())
                 .addSettings(repositoryNameSuffix())
                 .addSettings(validateMethodNamePrefixes())
                 .addAllSettings(stringMethods())
@@ -57,6 +60,7 @@ public final class Repositories {
         return List.of(
                 generateBlockingApi(),
                 generateBatchApi(),
+                usePreparedStatement(),
                 catchAndRethrow(),
                 throwOnMultipleResultsForSingle(),
                 injectConverters());
@@ -87,6 +91,58 @@ public final class Repositories {
                                 package your.own.domain;
 
                                 public class SomeRepository {
+
+                                    // ... rest of generated code (same as above)
+
+                                }""")
+                        .build())
+                .build();
+    }
+
+    private static ConfigurationSetting repositoryInterfacePrefix() {
+        return ConfigurationSetting.builder()
+                .setName("repositoryInterfacePrefix")
+                .setDescription("The repository interface name prefix to use.")
+                .setType(ClassName.get(String.class))
+                .setValue("")
+                .build();
+    }
+
+    private static ConfigurationSetting repositoryInterfaceSuffix() {
+        return ConfigurationSetting.builder()
+                .setName("repositoryInterfaceSuffix")
+                .setDescription("The repository interface name suffix to use.")
+                .setType(ClassName.get(String.class))
+                .setValue("")
+                .build();
+    }
+
+    private static ConfigurationSetting repositoryNamePrefix() {
+        return ConfigurationSetting.builder()
+                .setName("repositoryNamePrefix")
+                .setDescription("The repository name prefix to use.")
+                .setType(ClassName.get(String.class))
+                .setValue("")
+                .setExplanation("In case the repository name already contains the configured prefix, it will not be added twice.")
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("")
+                        .setDescription("The default value of the `repositoryNamePrefix` configuration option is the empty string. Setting the option to `` therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    // ... rest of generated code
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("Database")
+                        .setDescription("Changing the `repositoryNamePrefix` configuration option to `Database` generates the following code instead:")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class DatabaseSomeRepo {
 
                                     // ... rest of generated code (same as above)
 
@@ -129,7 +185,7 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting generateInterface() {
+    private static ConfigurationSetting generateInterfaces() {
         return ConfigurationSetting.builder()
                 .setName("generateInterfaces")
                 .setDescription("Generate interfaces for all repositories")
@@ -151,6 +207,15 @@ public final class Repositories {
         return ConfigurationSetting.builder()
                 .setName("generateBatchApi")
                 .setDescription("Generate batch methods")
+                .setType(TypeName.get(boolean.class))
+                .setValue(true)
+                .build();
+    }
+
+    private static ConfigurationSetting usePreparedStatement() {
+        return ConfigurationSetting.builder()
+                .setName("usePreparedStatement")
+                .setDescription("Should `PreparedStatement`s be used instead of `Statement`s")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .build();

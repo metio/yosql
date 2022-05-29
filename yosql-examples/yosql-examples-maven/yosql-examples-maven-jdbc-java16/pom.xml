@@ -49,6 +49,7 @@
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.java16.persistence</basePackageName>
                         <injectConverters>true</injectConverters>
+                        <generateInterfaces>true</generateInterfaces>
                     </repositories>
                     <converter>
                         <mapConverterClass>wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ToMapConverter</mapConverterClass>

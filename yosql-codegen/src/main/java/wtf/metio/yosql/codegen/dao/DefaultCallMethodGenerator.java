@@ -7,11 +7,9 @@
 package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.MethodSpec;
-import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.blocks.ControlFlows;
 import wtf.metio.yosql.codegen.blocks.Methods;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
-import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -27,6 +25,7 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     private final JdbcBlocks jdbc;
     private final MethodExceptionHandler exceptions;
     private final ConverterConfiguration converters;
+    private final ReturnTypes returnTypes;
 
     public DefaultCallMethodGenerator(
             final ControlFlows controlFlows,
@@ -35,7 +34,8 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final MethodExceptionHandler exceptions,
-            final ConverterConfiguration converters) {
+            final ConverterConfiguration converters,
+            final ReturnTypes returnTypes) {
         this.logging = logging;
         this.jdbc = jdbc;
         this.exceptions = exceptions;
@@ -43,25 +43,36 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
         this.methods = methods;
         this.parameters = parameters;
         this.converters = converters;
+        this.returnTypes = returnTypes;
+    }
+
+    @Override
+    public MethodSpec callMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        final var builder = methods.declaration(configuration.blockingName(), statements, "generateBlockingApi")
+                .returns(returnTypes.multiResultType(configuration))
+                .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
+                .addExceptions(exceptions.thrownExceptions(configuration));
+        // TODO: support different return types for calling methods
+//        returnTypes.resultType(configuration).ifPresent(builder::returns);
+        return builder.build();
     }
 
     @Override
     public MethodSpec callMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
-        final var listOfResults = TypicalTypes.listOf(resultType);
+        final var resultType = returnTypes.multiResultType(configuration);
         return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
-                .returns(listOfResults)
+                .returns(resultType)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
+                .addCode(logging.entering(configuration.repository().orElse(""), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.tryPrepareCallable())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.returnAsMultiple(listOfResults, converter))
+                .addCode(jdbc.returnAsMultiple(resultType, converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

@@ -9,38 +9,83 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.models.configuration.ReturningMode;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link WriteMethodGenerator}s work correctly.
  */
-public interface WriteMethodGeneratorTCK {
+public abstract class WriteMethodGeneratorTCK {
 
     /**
      * @return A new {@link WriteMethodGenerator}.
      */
-    WriteMethodGenerator generator();
+    abstract WriteMethodGenerator generator();
 
     /**
-     * @return The expected generated code for a standard write method.
+     * @return The expected generated code for a write method that returns no results.
      */
-    String writeMethodExpectation();
+    abstract String writeMethodReturningNoneExpectation();
+
+    /**
+     * @return The expected generated code for a write method that returns a single result.
+     */
+    abstract String writeMethodReturningSingleExpectation();
+
+    /**
+     * @return The expected generated code for a write method that returns multiple results.
+     */
+    abstract String writeMethodReturningMultipleExpectation();
+
+    /**
+     * @return The expected generated code for a write method that returns a cursor.
+     */
+    abstract String writeMethodReturningCursorExpectation();
 
     /**
      * @return The expected generated code for a batch write method.
      */
-    String batchWriteMethodExpectation();
+    abstract String batchWriteMethodExpectation();
 
     @Test
-    default void writeMethod() {
+    final void writeReturningNoneMethod() {
         Assertions.assertEquals(
-                writeMethodExpectation(),
-                generator().writeMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatement()).toString(),
+                writeMethodReturningNoneExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withReturningMode(ReturningMode.NONE), SqlConfigurations.sqlStatement()).toString(),
                 "The generated write method does not match expectation");
     }
 
     @Test
-    default void batchWriteMethod() {
+    final void writeReturningSingleMethod() {
+        Assertions.assertEquals(
+                writeMethodReturningSingleExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withReturningMode(ReturningMode.SINGLE), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void writeReturningMultipleMethod() {
+        Assertions.assertEquals(
+                writeMethodReturningMultipleExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withReturningMode(ReturningMode.MULTIPLE), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void writeReturningCursorMethod() {
+        Assertions.assertEquals(
+                writeMethodReturningCursorExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withReturningMode(ReturningMode.CURSOR), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void batchWriteMethod() {
         Assertions.assertEquals(
                 batchWriteMethodExpectation(),
                 generator().batchWriteMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatement()).toString(),

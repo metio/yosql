@@ -36,6 +36,16 @@ public interface Methods {
     MethodSpec.Builder publicMethod(String name, List<SqlStatement> statements, String configuration);
 
     /**
+     * Create a new builder for method declarations.
+     *
+     * @param name          The name of the method.
+     * @param statements    The name of the method.
+     * @param configuration The name of the method.
+     * @return A method builder preconfigured for public methods.
+     */
+    MethodSpec.Builder declaration(String name, List<SqlStatement> statements, String configuration);
+
+    /**
      * Create a new builder for implementing methods.
      *
      * @param name The name of the method.

@@ -44,7 +44,8 @@ class DefaultMethodSettingsConfigurerTest {
                 .setName(repositories.allowedReadPrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
-        assertEquals(SqlType.READING, adapted.type());
+        assertTrue(adapted.type().isPresent());
+        assertEquals(SqlType.READING, adapted.type().get());
     }
 
     @Test
@@ -54,7 +55,8 @@ class DefaultMethodSettingsConfigurerTest {
                 .setName(repositories.allowedWritePrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
-        assertEquals(SqlType.WRITING, adapted.type());
+        assertTrue(adapted.type().isPresent());
+        assertEquals(SqlType.WRITING, adapted.type().get());
     }
 
     @Test
@@ -64,7 +66,8 @@ class DefaultMethodSettingsConfigurerTest {
                 .setName(repositories.allowedCallPrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
-        assertEquals(SqlType.CALLING, adapted.type());
+        assertTrue(adapted.type().isPresent());
+        assertEquals(SqlType.CALLING, adapted.type().get());
     }
 
     @Test
@@ -74,7 +77,8 @@ class DefaultMethodSettingsConfigurerTest {
                 .setName("question" + "Something")
                 .build();
         final var adapted = configurer.type(original);
-        assertEquals(SqlType.UNKNOWN, adapted.type());
+        assertTrue(adapted.type().isPresent());
+        assertEquals(SqlType.UNKNOWN, adapted.type().get());
     }
 
     @Test
@@ -89,31 +93,31 @@ class DefaultMethodSettingsConfigurerTest {
     @Test
     void returningModeChangeReading() {
         final var original = SqlConfiguration.usingDefaults()
-                .setReturningMode(ReturningMode.NONE)
                 .setType(SqlType.READING)
                 .build();
         final var adapted = configurer.returningMode(original);
-        assertEquals(ReturningMode.MULTIPLE, adapted.returningMode());
+        assertTrue(adapted.returningMode().isPresent());
+        assertEquals(ReturningMode.MULTIPLE, adapted.returningMode().get());
     }
 
     @Test
     void returningModeChangeCalling() {
         final var original = SqlConfiguration.usingDefaults()
-                .setReturningMode(ReturningMode.NONE)
                 .setType(SqlType.CALLING)
                 .build();
         final var adapted = configurer.returningMode(original);
-        assertEquals(ReturningMode.SINGLE, adapted.returningMode());
+        assertTrue(adapted.returningMode().isPresent());
+        assertEquals(ReturningMode.SINGLE, adapted.returningMode().get());
     }
 
     @Test
     void returningModeChangeWriting() {
         final var original = SqlConfiguration.usingDefaults()
-                .setReturningMode(ReturningMode.NONE)
                 .setType(SqlType.WRITING)
                 .build();
         final var adapted = configurer.returningMode(original);
-        assertEquals(ReturningMode.NONE, adapted.returningMode());
+        assertTrue(adapted.returningMode().isPresent());
+        assertEquals(ReturningMode.NONE, adapted.returningMode().get());
     }
 
     @Test
@@ -123,7 +127,8 @@ class DefaultMethodSettingsConfigurerTest {
                 .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.returningMode(original);
-        assertEquals(ReturningMode.NONE, adapted.returningMode());
+        assertTrue(adapted.returningMode().isPresent());
+        assertEquals(ReturningMode.NONE, adapted.returningMode().get());
     }
 
     @Test
@@ -165,6 +170,44 @@ class DefaultMethodSettingsConfigurerTest {
     }
 
     @Test
+    void throwOnMultipleResultsForSingleKeep() {
+        final var original = SqlConfiguration.usingDefaults()
+                .setThrowOnMultipleResultsForSingle(true)
+                .build();
+        final var adapted = configurer.throwOnMultipleResultsForSingle(original);
+        assertEquals(original.throwOnMultipleResultsForSingle(), adapted.throwOnMultipleResultsForSingle());
+    }
+
+    @Test
+    void throwOnMultipleResultsForSingleChange() {
+        final var original = SqlConfiguration.usingDefaults()
+                // .setThrowOnMultipleResultsForSingle(true) // value is NOT set
+                .build();
+        final var adapted = configurer.throwOnMultipleResultsForSingle(original);
+        assertTrue(adapted.throwOnMultipleResultsForSingle().isPresent());
+        assertEquals(repositories.throwOnMultipleResultsForSingle(), adapted.throwOnMultipleResultsForSingle().get());
+    }
+
+    @Test
+    void usePreparedStatementKeep() {
+        final var original = SqlConfiguration.usingDefaults()
+                .setUsePreparedStatement(false)
+                .build();
+        final var adapted = configurer.usePreparedStatement(original);
+        assertEquals(original.usePreparedStatement(), adapted.usePreparedStatement());
+    }
+
+    @Test
+    void usePreparedStatementChange() {
+        final var original = SqlConfiguration.usingDefaults()
+                // .setUsePreparedStatement(false) // value is NOT set
+                .build();
+        final var adapted = configurer.usePreparedStatement(original);
+        assertTrue(adapted.usePreparedStatement().isPresent());
+        assertEquals(repositories.usePreparedStatement(), adapted.usePreparedStatement().get());
+    }
+
+    @Test
     void keepSettings() {
         final var original = SqlConfiguration.usingDefaults()
                 .setType(SqlType.CALLING)
@@ -185,16 +228,19 @@ class DefaultMethodSettingsConfigurerTest {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(repositories.allowedCallPrefixes().get(0) + "Something")
                 .setType(SqlType.UNKNOWN)
-                .setReturningMode(ReturningMode.NONE)
                 // .setCatchAndRethrow(false) // do NOT set value
                 // .setInjectConverters(true) // do NOT set value
+                // .setThrowOnMultipleResultsForSingle(true) // value is NOT set
+                // .setUsePreparedStatement(false) // value is NOT set
                 .build();
         final var adapted = configurer.configureSettings(original);
         assertAll(
-                () -> assertEquals(SqlType.CALLING, adapted.type()),
-                () -> assertEquals(ReturningMode.SINGLE, adapted.returningMode()),
+                () -> assertEquals(SqlType.CALLING, adapted.type().get()),
+                () -> assertEquals(ReturningMode.SINGLE, adapted.returningMode().get()),
                 () -> assertEquals(repositories.catchAndRethrow(), adapted.catchAndRethrow().get()),
-                () -> assertEquals(repositories.injectConverters(), adapted.injectConverters().get()));
+                () -> assertEquals(repositories.injectConverters(), adapted.injectConverters().get()),
+                () -> assertEquals(repositories.throwOnMultipleResultsForSingle(), adapted.throwOnMultipleResultsForSingle().get()),
+                () -> assertEquals(repositories.usePreparedStatement(), adapted.usePreparedStatement().get()));
     }
 
 }

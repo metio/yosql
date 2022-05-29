@@ -51,6 +51,17 @@ public final class DefaultMethods implements Methods {
     }
 
     @Override
+    public MethodSpec.Builder declaration(
+            final String name,
+            final List<SqlStatement> statements,
+            final String configuration) {
+        return MethodSpec.methodBuilder(name)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .addAnnotations(annotations.generatedMethod())
+                .addJavadoc(javadoc.methodJavadoc(statements, configuration));
+    }
+
+    @Override
     public MethodSpec.Builder implementation(final String name) {
         final var modifiers = java.useFinal()
                 ? List.of(Modifier.PUBLIC, Modifier.FINAL)

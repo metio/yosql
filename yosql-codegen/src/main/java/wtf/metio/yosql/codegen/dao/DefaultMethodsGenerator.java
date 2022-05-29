@@ -44,6 +44,22 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
     }
 
     @Override
+    public Iterable<MethodSpec> asMethodsDeclarations(final List<SqlStatement> statements) {
+        final var methods = new ArrayList<MethodSpec>(statements.size());
+
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingReadAPI,
+                readMethods::readMethodDeclaration));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingCallAPI,
+                callingMethods::callMethodDeclaration));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingWriteAPI,
+                writeMethods::writeMethodDeclaration));
+        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBatchWriteAPI,
+                writeMethods::batchWriteMethodDeclaration));
+
+        return methods;
+    }
+
+    @Override
     public Iterable<MethodSpec> asMethods(final List<SqlStatement> statements) {
         final var methods = new ArrayList<MethodSpec>(statements.size());
 

@@ -55,11 +55,10 @@ class DefaultSqlConfigurationFactoryTest {
 
         // then
         assertAll("Configuration",
-                () -> assertEquals("read", configuration.name(), "name"),
-                () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository(), "repository"),
-                () -> assertEquals("", configuration.vendor(), "vendor"),
-                () -> assertEquals(SqlType.READING, configuration.type(), "type"),
-                () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode(), "returningMode"));
+                () -> assertEquals("read", configuration.name().get(), "name"),
+                () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository().get(), "repository"),
+                () -> assertEquals(SqlType.READING, configuration.type().get(), "type"),
+                () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode().get(), "returningMode"));
     }
 
     @Test
@@ -75,11 +74,10 @@ class DefaultSqlConfigurationFactoryTest {
 
         // then
         assertAll("Configuration",
-                () -> assertEquals("insert", configuration.name(), "name"),
-                () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository(), "repository"),
-                () -> assertEquals("", configuration.vendor(), "vendor"),
-                () -> assertEquals(SqlType.WRITING, configuration.type(), "type"),
-                () -> assertEquals(ReturningMode.NONE, configuration.returningMode(), "returningMode"));
+                () -> assertEquals("insert", configuration.name().get(), "name"),
+                () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository().get(), "repository"),
+                () -> assertEquals(SqlType.WRITING, configuration.type().get(), "type"),
+                () -> assertEquals(ReturningMode.NONE, configuration.returningMode().get(), "returningMode"));
     }
 
     @Test
@@ -95,9 +93,9 @@ class DefaultSqlConfigurationFactoryTest {
 
         // then
         assertAll("Configuration",
-                () -> assertEquals("dropPersons", configuration.name(), "name"),
-                () -> assertEquals(SqlType.WRITING, configuration.type(), "type"),
-                () -> assertEquals(ReturningMode.NONE, configuration.returningMode(), "returningMode"));
+                () -> assertEquals("dropPersons", configuration.name().get(), "name"),
+                () -> assertEquals(SqlType.WRITING, configuration.type().get(), "type"),
+                () -> assertEquals(ReturningMode.NONE, configuration.returningMode().get(), "returningMode"));
     }
 
     @Test
@@ -129,9 +127,9 @@ class DefaultSqlConfigurationFactoryTest {
 
         // then
         assertAll("Configuration",
-                () -> assertEquals("findItemByName", configuration.name(), "name"),
-                () -> assertEquals(SqlType.READING, configuration.type(), "type"),
-                () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode(), "returningMode"),
+                () -> assertEquals("findItemByName", configuration.name().get(), "name"),
+                () -> assertEquals(SqlType.READING, configuration.type().get(), "type"),
+                () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode().get(), "returningMode"),
                 () -> assertTrue(configuration.resultRowConverter().isPresent(), "resultRowConverter"),
                 () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias(), "alias"),
                 () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName(), "methodName"),
@@ -174,9 +172,9 @@ class DefaultSqlConfigurationFactoryTest {
 
         // then
         assertAll("Configuration",
-                () -> assertEquals("findItemByName", configuration.name(), "name"),
-                () -> assertEquals(SqlType.READING, configuration.type(), "type"),
-                () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode(), "returningMode"),
+                () -> assertEquals("findItemByName", configuration.name().get(), "name"),
+                () -> assertEquals(SqlType.READING, configuration.type().get(), "type"),
+                () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode().get(), "returningMode"),
                 () -> assertTrue(configuration.resultRowConverter().isPresent(), "resultRowConverter"),
                 () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias(), "alias"),
                 () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName(), "methodName"),

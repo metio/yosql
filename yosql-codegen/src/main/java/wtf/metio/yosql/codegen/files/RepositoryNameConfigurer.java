@@ -25,6 +25,6 @@ public interface RepositoryNameConfigurer {
      * @param source        The source file where the SQL statement originated from.
      * @return An adapted version of the original.
      */
-    SqlConfiguration configureName(SqlConfiguration configuration, Path source);
+    SqlConfiguration configureNames(SqlConfiguration configuration, Path source);
 
 }

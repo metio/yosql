@@ -20,24 +20,24 @@ import java.util.stream.StreamSupport;
 /**
  * Verifies that {@link FieldsGenerator}s work correctly.
  */
-public interface FieldsGeneratorTCK {
+public abstract class FieldsGeneratorTCK {
 
-    FieldsGenerator generator();
+    abstract FieldsGenerator generator();
 
-    String staticInitializerExpectation();
+    abstract String staticInitializerExpectation();
 
-    String asFieldsExpectations();
+    abstract String asFieldsExpectations();
 
-    String asFieldsWithCustomConverterExpectations();
+    abstract String asFieldsWithCustomConverterExpectations();
 
-    String asFieldsWithMultipleStatementsExpectations();
+    abstract String asFieldsWithMultipleStatementsExpectations();
 
-    String asFieldsWithMultipleStatementsAndCustomConverterExpectations();
+    abstract String asFieldsWithMultipleStatementsAndCustomConverterExpectations();
 
-    String asFieldsWithMultipleStatementsAndMixedConverterExpectations();
+    abstract String asFieldsWithMultipleStatementsAndMixedConverterExpectations();
 
     @Test
-    default void staticInitializer() {
+    final void staticInitializer() {
         final var staticInitializer = generator().staticInitializer(SqlConfigurations.sqlStatement());
         Assumptions.assumeTrue(staticInitializer.isPresent());
         Assertions.assertEquals(
@@ -47,35 +47,35 @@ public interface FieldsGeneratorTCK {
     }
 
     @Test
-    default void asFields() {
+    final void asFields() {
         assertFields(
                 asFieldsExpectations(),
                 generator().asFields(SqlConfigurations.sqlStatement()));
     }
 
     @Test
-    default void asFieldsWithCustomConverter() {
+    final void asFieldsWithCustomConverter() {
         assertFields(
                 asFieldsWithCustomConverterExpectations(),
                 generator().asFields(SqlConfigurations.sqlStatementWithCustomConverter()));
     }
 
     @Test
-    default void asFieldsWithMultipleStatements() {
+    final void asFieldsWithMultipleStatements() {
         assertFields(
                 asFieldsWithMultipleStatementsExpectations(),
                 generator().asFields(SqlConfigurations.sqlStatements()));
     }
 
     @Test
-    default void asFieldsWithMultipleStatementsAndCustomConverter() {
+    final void asFieldsWithMultipleStatementsAndCustomConverter() {
         assertFields(
                 asFieldsWithMultipleStatementsAndCustomConverterExpectations(),
                 generator().asFields(SqlConfigurations.sqlStatementsWithCustomConverter()));
     }
 
     @Test
-    default void asFieldsWithMultipleStatementsAndMixedConverter() {
+    final void asFieldsWithMultipleStatementsAndMixedConverter() {
         assertFields(
                 asFieldsWithMultipleStatementsAndMixedConverterExpectations(),
                 generator().asFields(SqlConfigurations.sqlStatementsWithMixedConverter()));
@@ -88,7 +88,7 @@ public interface FieldsGeneratorTCK {
     }
 
     @Test
-    default void constantSqlStatementFieldName() {
+    final void constantSqlStatementFieldName() {
         // given
         final var config = SqlConfiguration.usingDefaults().setName("test").build();
 
@@ -101,7 +101,7 @@ public interface FieldsGeneratorTCK {
     }
 
     @Test
-    default void constantSqlStatementFieldNameWithVendor() {
+    final void constantSqlStatementFieldNameWithVendor() {
         // given
         final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
 
@@ -114,7 +114,7 @@ public interface FieldsGeneratorTCK {
     }
 
     @Test
-    default void constantRawSqlStatementFieldName() {
+    final void constantRawSqlStatementFieldName() {
         // given
         final var config = SqlConfiguration.usingDefaults().setName("test").build();
 
@@ -127,7 +127,7 @@ public interface FieldsGeneratorTCK {
     }
 
     @Test
-    default void constantRawSqlStatementFieldNameWithVendor() {
+    final void constantRawSqlStatementFieldNameWithVendor() {
         // given
         final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
 
@@ -140,7 +140,7 @@ public interface FieldsGeneratorTCK {
     }
 
     @Test
-    default void constantSqlStatementParameterIndexFieldName() {
+    final void constantSqlStatementParameterIndexFieldName() {
         // given
         final var config = SqlConfiguration.usingDefaults().setName("test").build();
 
@@ -153,7 +153,7 @@ public interface FieldsGeneratorTCK {
     }
 
     @Test
-    default void constantSqlStatementParameterIndexFieldNameWithVendor() {
+    final void constantSqlStatementParameterIndexFieldNameWithVendor() {
         // given
         final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
 

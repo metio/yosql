@@ -18,7 +18,18 @@ import java.util.List;
 public interface WriteMethodGenerator {
 
     /**
-     * Generates code that execute a write against the database.
+     * Method declaration for a method that executes a write against a database.
+     *
+     * @param configuration    The configuration for the generated method.
+     * @param vendorStatements The vendor statements for the generated method.
+     * @return A method declaration for a writing method.
+     */
+    MethodSpec writeMethodDeclaration(
+            SqlConfiguration configuration,
+            List<SqlStatement> vendorStatements);
+
+    /**
+     * Generates code that execute a write against a database.
      *
      * @param configuration    The configuration for the generated method.
      * @param vendorStatements The vendor statements for the generated method.
@@ -29,12 +40,25 @@ public interface WriteMethodGenerator {
             List<SqlStatement> vendorStatements);
 
     /**
+     * Method declaration for a method that executes a batched write against a database.
+     *
+     * @param configuration    The configuration for the generated method.
+     * @param vendorStatements The vendor statements for the generated method.
+     * @return A method declaration for a batch writing method.
+     */
+    MethodSpec batchWriteMethodDeclaration(
+            SqlConfiguration configuration,
+            List<SqlStatement> vendorStatements);
+
+    /**
      * Generates a batching write method.
      *
      * @param configuration    The configuration to use.
      * @param vendorStatements The vendor statements to use.
      * @return The batch method specification.
      */
-    MethodSpec batchWriteMethod(SqlConfiguration configuration, List<SqlStatement> vendorStatements);
+    MethodSpec batchWriteMethod(
+            SqlConfiguration configuration,
+            List<SqlStatement> vendorStatements);
 
 }

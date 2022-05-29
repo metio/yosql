@@ -31,7 +31,8 @@ class DefaultSqlConfigurationParserTest {
                 repository: com.example.MyRepository
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("com.example.MyRepository", config.repository());
+        assertTrue(config.repository().isPresent());
+        assertEquals("com.example.MyRepository", config.repository().get());
     }
 
     @Test
@@ -40,7 +41,8 @@ class DefaultSqlConfigurationParserTest {
                 name: findItemByName
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("findItemByName", config.name());
+        assertTrue(config.name().isPresent());
+        assertEquals("findItemByName", config.name().get());
     }
 
     @Test
@@ -49,7 +51,8 @@ class DefaultSqlConfigurationParserTest {
                 description: some descriptive message about this statement
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("some descriptive message about this statement", config.description());
+        assertTrue(config.description().isPresent());
+        assertEquals("some descriptive message about this statement", config.description().get());
     }
 
     @Test
@@ -58,7 +61,8 @@ class DefaultSqlConfigurationParserTest {
                 vendor: Postgres
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("Postgres", config.vendor());
+        assertTrue(config.vendor().isPresent());
+        assertEquals("Postgres", config.vendor().get());
     }
 
     @Test
@@ -67,7 +71,8 @@ class DefaultSqlConfigurationParserTest {
                 type: UNKNOWN
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(SqlType.UNKNOWN, config.type());
+        assertTrue(config.type().isPresent());
+        assertEquals(SqlType.UNKNOWN, config.type().get());
     }
 
     @Test
@@ -76,7 +81,8 @@ class DefaultSqlConfigurationParserTest {
                 type: READING
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(SqlType.READING, config.type());
+        assertTrue(config.type().isPresent());
+        assertEquals(SqlType.READING, config.type().get());
     }
 
     @Test
@@ -85,7 +91,8 @@ class DefaultSqlConfigurationParserTest {
                 type: WRITING
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(SqlType.WRITING, config.type());
+        assertTrue(config.type().isPresent());
+        assertEquals(SqlType.WRITING, config.type().get());
     }
 
     @Test
@@ -94,7 +101,8 @@ class DefaultSqlConfigurationParserTest {
                 type: CALLING
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(SqlType.CALLING, config.type());
+        assertTrue(config.type().isPresent());
+        assertEquals(SqlType.CALLING, config.type().get());
     }
 
     @Test
@@ -103,7 +111,8 @@ class DefaultSqlConfigurationParserTest {
                 type: unknown
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(SqlType.UNKNOWN, config.type());
+        assertTrue(config.type().isPresent());
+        assertEquals(SqlType.UNKNOWN, config.type().get());
     }
 
     @Test
@@ -112,7 +121,8 @@ class DefaultSqlConfigurationParserTest {
                 type: reading
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(SqlType.READING, config.type());
+        assertTrue(config.type().isPresent());
+        assertEquals(SqlType.READING, config.type().get());
     }
 
     @Test
@@ -121,7 +131,8 @@ class DefaultSqlConfigurationParserTest {
                 type: writing
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(SqlType.WRITING, config.type());
+        assertTrue(config.type().isPresent());
+        assertEquals(SqlType.WRITING, config.type().get());
     }
 
     @Test
@@ -130,7 +141,8 @@ class DefaultSqlConfigurationParserTest {
                 type: calling
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(SqlType.CALLING, config.type());
+        assertTrue(config.type().isPresent());
+        assertEquals(SqlType.CALLING, config.type().get());
     }
 
     @Test
@@ -139,7 +151,8 @@ class DefaultSqlConfigurationParserTest {
                 returningMode: NONE
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(ReturningMode.NONE, config.returningMode());
+        assertTrue(config.returningMode().isPresent());
+        assertEquals(ReturningMode.NONE, config.returningMode().get());
     }
 
     @Test
@@ -148,7 +161,8 @@ class DefaultSqlConfigurationParserTest {
                 returningMode: SINGLE
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(ReturningMode.SINGLE, config.returningMode());
+        assertTrue(config.returningMode().isPresent());
+        assertEquals(ReturningMode.SINGLE, config.returningMode().get());
     }
 
     @Test
@@ -157,7 +171,8 @@ class DefaultSqlConfigurationParserTest {
                 returningMode: MULTIPLE
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(ReturningMode.MULTIPLE, config.returningMode());
+        assertTrue(config.returningMode().isPresent());
+        assertEquals(ReturningMode.MULTIPLE, config.returningMode().get());
     }
 
     @Test
@@ -166,7 +181,8 @@ class DefaultSqlConfigurationParserTest {
                 returningMode: none
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(ReturningMode.NONE, config.returningMode());
+        assertTrue(config.returningMode().isPresent());
+        assertEquals(ReturningMode.NONE, config.returningMode().get());
     }
 
     @Test
@@ -175,7 +191,8 @@ class DefaultSqlConfigurationParserTest {
                 returningMode: single
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(ReturningMode.SINGLE, config.returningMode());
+        assertTrue(config.returningMode().isPresent());
+        assertEquals(ReturningMode.SINGLE, config.returningMode().get());
     }
 
     @Test
@@ -184,7 +201,8 @@ class DefaultSqlConfigurationParserTest {
                 returningMode: multiple
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals(ReturningMode.MULTIPLE, config.returningMode());
+        assertTrue(config.returningMode().isPresent());
+        assertEquals(ReturningMode.MULTIPLE, config.returningMode().get());
     }
 
     @Test
@@ -193,6 +211,7 @@ class DefaultSqlConfigurationParserTest {
                 generateBlockingApi: true
                 """;
         final var config = parser.parseConfig(yaml);
+        assertTrue(config.generateBlockingApi().isPresent());
         assertTrue(config.generateBlockingApi().get());
     }
 
@@ -202,6 +221,7 @@ class DefaultSqlConfigurationParserTest {
                 generateBlockingApi: false
                 """;
         final var config = parser.parseConfig(yaml);
+        assertTrue(config.generateBlockingApi().isPresent());
         assertFalse(config.generateBlockingApi().get());
     }
 
@@ -211,6 +231,7 @@ class DefaultSqlConfigurationParserTest {
                 generateBatchApi: true
                 """;
         final var config = parser.parseConfig(yaml);
+        assertTrue(config.generateBatchApi().isPresent());
         assertTrue(config.generateBatchApi().get());
     }
 
@@ -220,6 +241,7 @@ class DefaultSqlConfigurationParserTest {
                 generateBatchApi: false
                 """;
         final var config = parser.parseConfig(yaml);
+        assertTrue(config.generateBatchApi().isPresent());
         assertFalse(config.generateBatchApi().get());
     }
 
@@ -229,6 +251,7 @@ class DefaultSqlConfigurationParserTest {
                 catchAndRethrow: true
                 """;
         final var config = parser.parseConfig(yaml);
+        assertTrue(config.catchAndRethrow().isPresent());
         assertTrue(config.catchAndRethrow().get());
     }
 
@@ -238,6 +261,7 @@ class DefaultSqlConfigurationParserTest {
                 catchAndRethrow: false
                 """;
         final var config = parser.parseConfig(yaml);
+        assertTrue(config.catchAndRethrow().isPresent());
         assertFalse(config.catchAndRethrow().get());
     }
 
@@ -247,6 +271,7 @@ class DefaultSqlConfigurationParserTest {
                 injectConverters: true
                 """;
         final var config = parser.parseConfig(yaml);
+        assertTrue(config.injectConverters().isPresent());
         assertTrue(config.injectConverters().get());
     }
 
@@ -256,6 +281,7 @@ class DefaultSqlConfigurationParserTest {
                 injectConverters: false
                 """;
         final var config = parser.parseConfig(yaml);
+        assertTrue(config.injectConverters().isPresent());
         assertFalse(config.injectConverters().get());
     }
 
@@ -265,7 +291,8 @@ class DefaultSqlConfigurationParserTest {
                 blockingPrefix: prefix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("prefix", config.blockingPrefix());
+        assertTrue(config.blockingPrefix().isPresent());
+        assertEquals("prefix", config.blockingPrefix().get());
     }
 
     @Test
@@ -274,7 +301,8 @@ class DefaultSqlConfigurationParserTest {
                 blockingSuffix: suffix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("suffix", config.blockingSuffix());
+        assertTrue(config.blockingSuffix().isPresent());
+        assertEquals("suffix", config.blockingSuffix().get());
     }
 
     @Test
@@ -283,7 +311,8 @@ class DefaultSqlConfigurationParserTest {
                 batchPrefix: prefix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("prefix", config.batchPrefix());
+        assertTrue(config.batchPrefix().isPresent());
+        assertEquals("prefix", config.batchPrefix().get());
     }
 
     @Test
@@ -292,7 +321,8 @@ class DefaultSqlConfigurationParserTest {
                 batchSuffix: suffix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertEquals("suffix", config.batchSuffix());
+        assertTrue(config.batchSuffix().isPresent());
+        assertEquals("suffix", config.batchSuffix().get());
     }
 
     @Test

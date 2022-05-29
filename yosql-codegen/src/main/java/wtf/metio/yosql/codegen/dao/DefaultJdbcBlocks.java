@@ -8,9 +8,7 @@ package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.*;
 import de.xn__ho_hia.javapoet.TypeGuesser;
-import wtf.metio.yosql.codegen.blocks.CodeBlocks;
-import wtf.metio.yosql.codegen.blocks.ControlFlows;
-import wtf.metio.yosql.codegen.blocks.Variables;
+import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
@@ -39,6 +37,8 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     private final JdbcMethods jdbcMethods;
     private final LoggingGenerator logging;
     private final FieldsGenerator fields;
+    private final Parameters params;
+    private final Methods methods;
 
     public DefaultJdbcBlocks(
             final RuntimeConfiguration runtimeConfiguration,
@@ -47,7 +47,9 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             final Variables variables,
             final FieldsGenerator fields,
             final JdbcMethods jdbcMethods,
-            final LoggingGenerator logging) {
+            final LoggingGenerator logging,
+            final Parameters params,
+            final Methods methods) {
         this.runtimeConfiguration = runtimeConfiguration;
         this.blocks = blocks;
         this.names = runtimeConfiguration.names();
@@ -56,34 +58,42 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         this.fields = fields;
         this.jdbcMethods = jdbcMethods;
         this.logging = logging;
+        this.params = params;
+        this.methods = methods;
     }
 
     @Override
-    public CodeBlock connectionVariable() {
+    public CodeBlock getConnectionInline() {
         return variables.inline(Connection.class, names.connection(), jdbcMethods.dataSource().getConnection());
     }
 
     @Override
-    public CodeBlock statementVariable() {
+    public CodeBlock prepareStatementInline() {
         return variables.inline(PreparedStatement.class, names.statement(),
                 jdbcMethods.connection().prepareStatement());
     }
 
     @Override
-    public CodeBlock callableVariable() {
+    public CodeBlock prepareCallInline() {
         return variables.inline(CallableStatement.class, names.statement(),
                 jdbcMethods.connection().prepareCall());
     }
 
     @Override
-    public CodeBlock readMetaData() {
+    public CodeBlock getMetaDataStatement() {
         return variables.statement(ResultSetMetaData.class, names.resultSetMetaData(),
                 jdbcMethods.resultSet().getMetaData());
     }
 
     @Override
-    public CodeBlock resultSetVariable() {
+    public CodeBlock executeQueryInline() {
         return variables.inline(ResultSet.class, names.resultSet(),
+                jdbcMethods.statement().executeQuery());
+    }
+
+    @Override
+    public CodeBlock executeQueryStatement() {
+        return variables.statement(ResultSet.class, names.resultSet(),
                 jdbcMethods.statement().executeQuery());
     }
 
@@ -91,12 +101,6 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     public CodeBlock getResultSet() {
         return controlFlows.tryWithResource(variables.inline(ResultSet.class, names.resultSet(),
                 jdbcMethods.statement().getResultSet()));
-    }
-
-    @Override
-    public CodeBlock resultSetVariableStatement() {
-        return variables.statement(ResultSet.class, names.resultSet(),
-                jdbcMethods.statement().executeQuery());
     }
 
     @Override
@@ -136,22 +140,22 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock executeStatement() {
-        return controlFlows.tryWithResource(resultSetVariable());
+        return controlFlows.tryWithResource(executeQueryInline());
     }
 
     @Override
     public CodeBlock openConnection() {
-        return controlFlows.tryWithResource(connectionVariable());
+        return controlFlows.tryWithResource(getConnectionInline());
     }
 
     @Override
     public CodeBlock tryPrepareCallable() {
-        return controlFlows.tryWithResource(callableVariable());
+        return controlFlows.tryWithResource(prepareCallInline());
     }
 
     @Override
     public CodeBlock createStatement() {
-        return controlFlows.tryWithResource(statementVariable());
+        return controlFlows.tryWithResource(prepareStatementInline());
     }
 
     @Override
@@ -330,12 +334,52 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock streamStateful(final TypeSpec spliterator, final TypeSpec closer) {
+    public CodeBlock streamStateful(final ResultRowConverter converter) {
         return CodeBlock.builder()
                 .addStatement("return $T.stream($L, false).onClose($L)",
                         StreamSupport.class,
-                        spliterator,
-                        closer)
+                        lazyStreamSpliterator(converter),
+                        lazyStreamCloser())
+                .build();
+    }
+
+
+    private TypeSpec lazyStreamSpliterator(final ResultRowConverter converter) {
+        final var spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
+        final var superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
+        final var consumerType = TypicalTypes.consumerOf(resultType);
+        return TypeSpec
+                .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
+                .addSuperinterface(superinterface)
+                .addMethod(methods.implementation("tryAdvance")
+                        .addParameter(params.parameter(consumerType, names.action()))
+                        .returns(boolean.class)
+                        .addCode(controlFlows.startTryBlock())
+                        .addCode(controlFlows.ifHasNext())
+                        .addStatement("$N.accept($N.$N($N))", names.action(), converter.alias(), converter.methodName(),
+                                names.resultSet())
+                        .addCode(blocks.returnTrue())
+                        .addCode(controlFlows.endIf())
+                        .addCode(blocks.returnFalse())
+                        .addCode(controlFlows.endTryBlock())
+                        .addCode(controlFlows.catchAndRethrow())
+                        .build())
+                .build();
+    }
+
+    private TypeSpec lazyStreamCloser() {
+        return TypeSpec.anonymousClassBuilder("")
+                .addSuperinterface(Runnable.class)
+                .addMethod(methods.implementation("run")
+                        .returns(void.class)
+                        .addCode(controlFlows.startTryBlock())
+                        .addCode(closeResultSet())
+                        .addCode(closePrepareStatement())
+                        .addCode(closeConnection())
+                        .addCode(controlFlows.endTryBlock())
+                        .addCode(controlFlows.catchAndRethrow())
+                        .build())
                 .build();
     }
 

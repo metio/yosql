@@ -18,6 +18,17 @@ import java.util.List;
 public interface CallMethodGenerator {
 
     /**
+     * Method declaration for a method that executes a call against a database.
+     *
+     * @param configuration    The configuration for the generated method.
+     * @param vendorStatements The vendor statements for the generated method.
+     * @return A method declaration for a calling method.
+     */
+    MethodSpec callMethodDeclaration(
+            SqlConfiguration configuration,
+            List<SqlStatement> vendorStatements);
+
+    /**
      * Generates code that execute a call against the database.
      *
      * @param configuration    The configuration for the generated method.

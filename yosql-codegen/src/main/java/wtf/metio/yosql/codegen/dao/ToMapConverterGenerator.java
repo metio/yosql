@@ -78,7 +78,7 @@ public final class ToMapConverterGenerator {
                 .addParameters(jdbcParameters.toMapConverterParameterSpecs())
                 .addException(exceptions.thrownException())
                 .returns(TypicalTypes.MAP_OF_STRING_AND_OBJECTS)
-                .addCode(jdbcBlocks.readMetaData())
+                .addCode(jdbcBlocks.getMetaDataStatement())
                 .addStatement(variables.inline(
                         TypicalTypes.MAP_OF_STRING_AND_OBJECTS,
                         names.row(),

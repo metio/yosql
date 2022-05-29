@@ -31,16 +31,18 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
         adapted = returningMode(adapted);
         adapted = catchAndRethrow(adapted);
         adapted = injectConverters(adapted);
+        adapted = throwOnMultipleResultsForSingle(adapted);
+        adapted = usePreparedStatement(adapted);
         return adapted;
     }
 
     // visible for testing
     SqlConfiguration type(final SqlConfiguration configuration) {
-        if (configuration.type() == null || UNKNOWN.equals(configuration.type())) {
-            return SqlConfiguration.copyOf(configuration)
-                    .withType(mapNameToType(configuration.name()));
-        }
-        return configuration;
+        return configuration.type()
+                .filter(type -> UNKNOWN != type)
+                .map(type -> configuration)
+                .orElseGet(() -> SqlConfiguration.copyOf(configuration)
+                        .withType(mapNameToType(configuration.name().orElse(""))));
     }
 
     private SqlType mapNameToType(final String name) {
@@ -60,11 +62,10 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
 
     // visible for testing
     SqlConfiguration returningMode(final SqlConfiguration configuration) {
-        if (configuration.returningMode() == null || configuration.returningMode() == ReturningMode.NONE) {
-            return SqlConfiguration.copyOf(configuration)
-                    .withReturningMode(mapTypeReturningMode(configuration.type()));
-        }
-        return configuration;
+        return configuration.returningMode()
+                .map(mode -> configuration)
+                .orElseGet(() -> SqlConfiguration.copyOf(configuration)
+                        .withReturningMode(mapTypeReturningMode(configuration.type().orElse(UNKNOWN))));
     }
 
     private ReturningMode mapTypeReturningMode(final SqlType type) {
@@ -89,6 +90,24 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
         if (configuration.injectConverters().isEmpty()) {
             return SqlConfiguration.copyOf(configuration)
                     .withInjectConverters(repositories.injectConverters());
+        }
+        return configuration;
+    }
+
+    // visible for testing
+    SqlConfiguration throwOnMultipleResultsForSingle(final SqlConfiguration configuration) {
+        if (configuration.throwOnMultipleResultsForSingle().isEmpty()) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withThrowOnMultipleResultsForSingle(repositories.throwOnMultipleResultsForSingle());
+        }
+        return configuration;
+    }
+
+    // visible for testing
+    SqlConfiguration usePreparedStatement(final SqlConfiguration configuration) {
+        if (configuration.usePreparedStatement().isEmpty()) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withUsePreparedStatement(repositories.usePreparedStatement());
         }
         return configuration;
     }

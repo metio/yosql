@@ -37,12 +37,30 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     @Override
+    public Iterable<ParameterSpec> asParameterSpecsForInterfaces(final List<SqlParameter> parameters) {
+        return asParameterSpecs(parameters, this::ofSqlParameterForInterfaces);
+    }
+
+    private ParameterSpec ofSqlParameterForInterfaces(final SqlParameter parameter) {
+        return parameters.parameterForInterfaces(TypeGuesser.guessTypeName(parameter.type()), parameter.name());
+    }
+
+    @Override
     public Iterable<ParameterSpec> asBatchParameterSpecs(List<SqlParameter> parameters) {
         return asParameterSpecs(parameters, this::batchOfSqlParameter);
     }
 
-    public ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
+    private ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
         return parameters.parameter(ArrayTypeName.of(TypeGuesser.guessTypeName(parameter.type())), parameter.name());
+    }
+
+    @Override
+    public Iterable<ParameterSpec> asBatchParameterSpecsForInterfaces(final List<SqlParameter> parameters) {
+        return asParameterSpecs(parameters, this::batchOfSqlParameterForInterfaces);
+    }
+
+    private ParameterSpec batchOfSqlParameterForInterfaces(final SqlParameter parameter) {
+        return parameters.parameterForInterfaces(ArrayTypeName.of(TypeGuesser.guessTypeName(parameter.type())), parameter.name());
     }
 
     private static Iterable<ParameterSpec> asParameterSpecs(

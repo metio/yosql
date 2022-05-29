@@ -10,12 +10,17 @@ package wtf.metio.yosql.codegen.files;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.lifecycle.SqlConfigurationLifecycle;
 import wtf.metio.yosql.internals.jdk.Strings;
+import wtf.metio.yosql.models.configuration.SqlType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import javax.lang.model.SourceVersion;
 
+import static java.util.function.Predicate.not;
 
+/**
+ * Default implementation of a {@link MethodNameConfigurer}.
+ */
 public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
 
     private final LocLogger logger;
@@ -43,24 +48,25 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
 
     // visible for testing
     SqlConfiguration baseName(final SqlConfiguration configuration, final String fileName, final int statementInFile) {
-        if (Strings.isBlank(configuration.name())) {
-            final var validName = SourceVersion.isName(fileName) ? fileName : generateName(configuration);
-            return SqlConfiguration.copyOf(configuration)
-                    .withName(calculateName(validName, statementInFile));
-        }
-        if (SourceVersion.isName(configuration.name())) {
-            return configuration;
-        }
-        return SqlConfiguration.copyOf(configuration)
-                .withName(calculateName(generateName(configuration), statementInFile));
+        return configuration.name()
+                .filter(not(Strings::isBlank))
+                .filter(SourceVersion::isName)
+                .map(name -> configuration)
+                .orElseGet(() -> SqlConfiguration.copyOf(configuration)
+                        .withName(calculateName(validName(configuration.type().orElse(SqlType.UNKNOWN), fileName),
+                                statementInFile)));
+    }
+
+    private String validName(final SqlType type, final String fileName) {
+        return SourceVersion.isName(fileName) ? fileName : generateName(type);
     }
 
     private static String calculateName(final String name, final int statementInFile) {
         return statementInFile > 1 ? name + statementInFile : name;
     }
 
-    private String generateName(final SqlConfiguration configuration) {
-        final var typeLookup = switch (configuration.type()) {
+    private String generateName(final SqlType type) {
+        final var typeLookup = switch (type) {
             case READING -> repositories.allowedReadPrefixes().get(0);
             case WRITING -> repositories.allowedWritePrefixes().get(0);
             case CALLING -> repositories.allowedCallPrefixes().get(0);
@@ -81,38 +87,46 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
 
     // visible for testing
     SqlConfiguration batchNamePrefix(final SqlConfiguration configuration) {
-        if (Strings.isBlank(configuration.batchPrefix())) {
-            logger.debug(SqlConfigurationLifecycle.BATCH_PREFIX_NAME_CHANGED, repositories.batchPrefix());
-            return SqlConfiguration.copyOf(configuration).withBatchPrefix(repositories.batchPrefix());
-        }
-        return configuration;
+        return configuration.batchPrefix()
+                .filter(not(Strings::isBlank))
+                .map(prefix -> configuration)
+                .orElseGet(() -> {
+                    logger.debug(SqlConfigurationLifecycle.BATCH_PREFIX_NAME_CHANGED, repositories.batchPrefix());
+                    return SqlConfiguration.copyOf(configuration).withBatchPrefix(repositories.batchPrefix());
+                });
     }
 
     // visible for testing
     SqlConfiguration batchNameSuffix(final SqlConfiguration configuration) {
-        if (Strings.isBlank(configuration.batchSuffix())) {
-            logger.debug(SqlConfigurationLifecycle.BATCH_SUFFIX_NAME_CHANGED, repositories.batchSuffix());
-            return SqlConfiguration.copyOf(configuration).withBatchSuffix(repositories.batchSuffix());
-        }
-        return configuration;
+        return configuration.batchSuffix()
+                .filter(not(Strings::isBlank))
+                .map(suffix -> configuration)
+                .orElseGet(() -> {
+                    logger.debug(SqlConfigurationLifecycle.BATCH_SUFFIX_NAME_CHANGED, repositories.batchSuffix());
+                    return SqlConfiguration.copyOf(configuration).withBatchSuffix(repositories.batchSuffix());
+                });
     }
 
     // visible for testing
     SqlConfiguration blockingNamePrefix(final SqlConfiguration configuration) {
-        if (Strings.isBlank(configuration.blockingPrefix())) {
-            logger.debug(SqlConfigurationLifecycle.BLOCKING_PREFIX_NAME_CHANGED, repositories.blockingPrefix());
-            return SqlConfiguration.copyOf(configuration).withBlockingPrefix(repositories.blockingPrefix());
-        }
-        return configuration;
+        return configuration.blockingPrefix()
+                .filter(not(Strings::isBlank))
+                .map(prefix -> configuration)
+                .orElseGet(() -> {
+                    logger.debug(SqlConfigurationLifecycle.BLOCKING_PREFIX_NAME_CHANGED, repositories.blockingPrefix());
+                    return SqlConfiguration.copyOf(configuration).withBlockingPrefix(repositories.blockingPrefix());
+                });
     }
 
     // visible for testing
     SqlConfiguration blockingNameSuffix(final SqlConfiguration configuration) {
-        if (Strings.isBlank(configuration.blockingSuffix())) {
-            logger.debug(SqlConfigurationLifecycle.BLOCKING_SUFFIX_NAME_CHANGED, repositories.blockingPrefix());
-            return SqlConfiguration.copyOf(configuration).withBlockingSuffix(repositories.blockingSuffix());
-        }
-        return configuration;
+        return configuration.blockingSuffix()
+                .filter(not(Strings::isBlank))
+                .map(suffix -> configuration)
+                .orElseGet(() -> {
+                    logger.debug(SqlConfigurationLifecycle.BLOCKING_SUFFIX_NAME_CHANGED, repositories.blockingSuffix());
+                    return SqlConfiguration.copyOf(configuration).withBlockingSuffix(repositories.blockingSuffix());
+                });
     }
 
 }

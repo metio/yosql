@@ -47,14 +47,14 @@ class DefaultMethodApiConfigurerTest {
     }
 
     @Test
-    void batchForcedDisabledForReads() {
+    void batchAllowsReads() {
         final var original = SqlConfiguration.usingDefaults()
                 .setGenerateBatchApi(true)
                 .setType(SqlType.READING)
                 .build();
         final var adapted = configurer.batch(original);
         assertTrue(adapted.generateBatchApi().isPresent());
-        assertFalse(adapted.generateBatchApi().get());
+        assertTrue(adapted.generateBatchApi().get());
     }
 
     @Test

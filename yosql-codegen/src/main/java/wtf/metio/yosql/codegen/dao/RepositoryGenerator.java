@@ -17,12 +17,21 @@ import java.util.List;
 public interface RepositoryGenerator {
 
     /**
-     * Generates a single repository.
+     * Generates a single repository class.
      *
      * @param repositoryName The fully-qualified name of the repository to generate.
      * @param statements     The statements to include in the repository.
      * @return The repository type specification and its intended target package.
      */
-    PackagedTypeSpec generateRepository(String repositoryName, List<SqlStatement> statements);
+    PackagedTypeSpec generateRepositoryClass(String repositoryName, List<SqlStatement> statements);
+
+    /**
+     * Generates a single repository interface.
+     *
+     * @param repositoryName The fully-qualified name of the repository interface to generate.
+     * @param statements     The statements to include in the repository.
+     * @return The repository type specification and its intended target package.
+     */
+    PackagedTypeSpec generateRepositoryInterface(String repositoryName, List<SqlStatement> statements);
 
 }

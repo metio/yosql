@@ -16,15 +16,15 @@ final class DefaultFieldsGeneratorTest {
 
     @Nested
     @DisplayName("using default configuration")
-    class Defaults implements FieldsGeneratorTCK {
+    class Defaults extends FieldsGeneratorTCK {
 
         @Override
-        public FieldsGenerator generator() {
+        FieldsGenerator generator() {
             return DaoObjectMother.fieldsGenerator(JavaConfigurations.defaults());
         }
 
         @Override
-        public String staticInitializerExpectation() {
+        String staticInitializerExpectation() {
             return """
                     QUERY_DATA_INDEX.put("test", new int[] { 0 });
                     QUERY_DATA_INDEX.put("id", new int[] { 1 });
@@ -32,7 +32,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsExpectations() {
+        String asFieldsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -87,7 +87,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithCustomConverterExpectations() {
+        String asFieldsWithCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -142,7 +142,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsExpectations() {
+        String asFieldsWithMultipleStatementsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -229,7 +229,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -316,7 +316,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -412,15 +412,15 @@ final class DefaultFieldsGeneratorTest {
 
     @Nested
     @DisplayName("using Java 8 configuration")
-    class Java8 implements FieldsGeneratorTCK {
+    class Java8 extends FieldsGeneratorTCK {
 
         @Override
-        public FieldsGenerator generator() {
+        FieldsGenerator generator() {
             return DaoObjectMother.fieldsGenerator(JavaConfigurations.java8());
         }
 
         @Override
-        public String staticInitializerExpectation() {
+        String staticInitializerExpectation() {
             return """
                     QUERY_DATA_INDEX.put("test", new int[] { 0 });
                     QUERY_DATA_INDEX.put("id", new int[] { 1 });
@@ -428,7 +428,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsExpectations() {
+        String asFieldsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -481,7 +481,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithCustomConverterExpectations() {
+        String asFieldsWithCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -534,7 +534,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsExpectations() {
+        String asFieldsWithMultipleStatementsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -617,7 +617,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -700,7 +700,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -792,15 +792,15 @@ final class DefaultFieldsGeneratorTest {
 
     @Nested
     @DisplayName("using Java 9 configuration")
-    class Java9 implements FieldsGeneratorTCK {
+    class Java9 extends FieldsGeneratorTCK {
 
         @Override
-        public FieldsGenerator generator() {
+        FieldsGenerator generator() {
             return DaoObjectMother.fieldsGenerator(JavaConfigurations.java9());
         }
 
         @Override
-        public String staticInitializerExpectation() {
+        String staticInitializerExpectation() {
             return """
                     QUERY_DATA_INDEX.put("test", new int[] { 0 });
                     QUERY_DATA_INDEX.put("id", new int[] { 1 });
@@ -808,7 +808,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsExpectations() {
+        String asFieldsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -861,7 +861,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithCustomConverterExpectations() {
+        String asFieldsWithCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -914,7 +914,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsExpectations() {
+        String asFieldsWithMultipleStatementsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -997,7 +997,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1080,7 +1080,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1172,15 +1172,15 @@ final class DefaultFieldsGeneratorTest {
 
     @Nested
     @DisplayName("using Java 11 configuration")
-    class Java11 implements FieldsGeneratorTCK {
+    class Java11 extends FieldsGeneratorTCK {
 
         @Override
-        public FieldsGenerator generator() {
+        FieldsGenerator generator() {
             return DaoObjectMother.fieldsGenerator(JavaConfigurations.java11());
         }
 
         @Override
-        public String staticInitializerExpectation() {
+        String staticInitializerExpectation() {
             return """
                     QUERY_DATA_INDEX.put("test", new int[] { 0 });
                     QUERY_DATA_INDEX.put("id", new int[] { 1 });
@@ -1188,7 +1188,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsExpectations() {
+        String asFieldsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1241,7 +1241,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithCustomConverterExpectations() {
+        String asFieldsWithCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1294,7 +1294,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsExpectations() {
+        String asFieldsWithMultipleStatementsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1377,7 +1377,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1460,7 +1460,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1552,15 +1552,15 @@ final class DefaultFieldsGeneratorTest {
 
     @Nested
     @DisplayName("using Java 14 configuration")
-    class Java14 implements FieldsGeneratorTCK {
+    class Java14 extends FieldsGeneratorTCK {
 
         @Override
-        public FieldsGenerator generator() {
+        FieldsGenerator generator() {
             return DaoObjectMother.fieldsGenerator(JavaConfigurations.java14());
         }
 
         @Override
-        public String staticInitializerExpectation() {
+        String staticInitializerExpectation() {
             return """
                     QUERY_DATA_INDEX.put("test", new int[] { 0 });
                     QUERY_DATA_INDEX.put("id", new int[] { 1 });
@@ -1568,7 +1568,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsExpectations() {
+        String asFieldsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1623,7 +1623,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithCustomConverterExpectations() {
+        String asFieldsWithCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1678,7 +1678,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsExpectations() {
+        String asFieldsWithMultipleStatementsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1765,7 +1765,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1852,7 +1852,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -1948,15 +1948,15 @@ final class DefaultFieldsGeneratorTest {
 
     @Nested
     @DisplayName("using Java 16 configuration")
-    class Java16 implements FieldsGeneratorTCK {
+    class Java16 extends FieldsGeneratorTCK {
 
         @Override
-        public FieldsGenerator generator() {
+        FieldsGenerator generator() {
             return DaoObjectMother.fieldsGenerator(JavaConfigurations.java16());
         }
 
         @Override
-        public String staticInitializerExpectation() {
+        String staticInitializerExpectation() {
             return """
                     QUERY_DATA_INDEX.put("test", new int[] { 0 });
                     QUERY_DATA_INDEX.put("id", new int[] { 1 });
@@ -1964,7 +1964,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsExpectations() {
+        String asFieldsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -2019,7 +2019,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithCustomConverterExpectations() {
+        String asFieldsWithCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -2074,7 +2074,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsExpectations() {
+        String asFieldsWithMultipleStatementsExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -2161,7 +2161,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndCustomConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -2248,7 +2248,7 @@ final class DefaultFieldsGeneratorTest {
         }
 
         @Override
-        public String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
+        String asFieldsWithMultipleStatementsAndMixedConverterExpectations() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",

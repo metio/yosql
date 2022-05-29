@@ -10,8 +10,6 @@ package wtf.metio.yosql.codegen.files;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
-import static wtf.metio.yosql.models.configuration.SqlType.READING;
-
 public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
 
     private final RepositoriesConfiguration repositories;
@@ -30,10 +28,6 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
 
     // visible for testing
     SqlConfiguration batch(final SqlConfiguration configuration) {
-        if (READING == configuration.type()) {
-            // TODO: allow batched select statements
-            return SqlConfiguration.copyOf(configuration).withGenerateBatchApi(false);
-        }
         if (configuration.generateBatchApi().isEmpty()) {
             return SqlConfiguration.copyOf(configuration).withGenerateBatchApi(repositories.generateBatchApi());
         }

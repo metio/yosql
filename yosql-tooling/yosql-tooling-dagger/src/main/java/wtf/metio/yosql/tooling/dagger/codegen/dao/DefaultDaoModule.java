@@ -106,6 +106,12 @@ public class DefaultDaoModule {
 
     @Provides
     @Singleton
+    ReturnTypes provideReturnTypes(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultReturnTypes(runtimeConfiguration.converter());
+    }
+
+    @Provides
+    @Singleton
     ReadMethodGenerator provideReadMethodGenerator(
             final ControlFlows controlFlows,
             final Methods methods,
@@ -114,8 +120,7 @@ public class DefaultDaoModule {
             final JdbcBlocks jdbcBlocks,
             final MethodExceptionHandler exceptions,
             final RuntimeConfiguration runtimeConfiguration,
-            final CodeBlocks blocks,
-            final Parameters params) {
+            final ReturnTypes returnTypes) {
         return new DefaultReadMethodGenerator(
                 controlFlows,
                 methods,
@@ -124,9 +129,7 @@ public class DefaultDaoModule {
                 jdbcBlocks,
                 exceptions,
                 runtimeConfiguration.converter(),
-                blocks,
-                runtimeConfiguration.names(),
-                params);
+                returnTypes);
     }
 
     @Provides
@@ -138,7 +141,8 @@ public class DefaultDaoModule {
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
             final MethodExceptionHandler exceptions,
-            final RuntimeConfiguration runtimeConfiguration) {
+            final RuntimeConfiguration runtimeConfiguration,
+            final ReturnTypes returnTypes) {
         return new DefaultWriteMethodGenerator(
                 controlFlows,
                 methods,
@@ -146,7 +150,8 @@ public class DefaultDaoModule {
                 logging,
                 jdbcBlocks,
                 exceptions,
-                runtimeConfiguration.converter());
+                runtimeConfiguration.converter(),
+                returnTypes);
     }
 
     @Provides
@@ -158,7 +163,8 @@ public class DefaultDaoModule {
             @Delegating final LoggingGenerator logging,
             final JdbcBlocks jdbcBlocks,
             final MethodExceptionHandler exceptions,
-            final RuntimeConfiguration runtimeConfiguration) {
+            final RuntimeConfiguration runtimeConfiguration,
+            final ReturnTypes returnTypes) {
         return new DefaultCallMethodGenerator(
                 controlFlows,
                 methods,
@@ -166,7 +172,8 @@ public class DefaultDaoModule {
                 logging,
                 jdbcBlocks,
                 exceptions,
-                runtimeConfiguration.converter());
+                runtimeConfiguration.converter(),
+                returnTypes);
     }
 
     @Provides
@@ -266,7 +273,9 @@ public class DefaultDaoModule {
             final Variables variables,
             final FieldsGenerator fields,
             final JdbcMethods jdbcMethods,
-            @Delegating final LoggingGenerator logging) {
+            @Delegating final LoggingGenerator logging,
+            final Parameters params,
+            final Methods methods) {
         return new DefaultJdbcBlocks(
                 runtimeConfiguration,
                 blocks,
@@ -274,7 +283,9 @@ public class DefaultDaoModule {
                 variables,
                 fields,
                 jdbcMethods,
-                logging);
+                logging,
+                params,
+                methods);
     }
 
 }

@@ -16,15 +16,15 @@ class DefaultCallMethodGeneratorTest {
 
     @Nested
     @DisplayName("using default configuration")
-    class Defaults implements CallMethodGeneratorTCK {
+    class Defaults extends CallMethodGeneratorTCK {
 
         @Override
-        public CallMethodGenerator generator() {
+        CallMethodGenerator generator() {
             return DaoObjectMother.callMethodGenerator(JavaConfigurations.defaults());
         }
 
         @Override
-        public String callMethodExpectation() {
+        String callMethodExpectation() {
             return """
                     /**
                      * <p>Executes the following statement:</p>
@@ -83,15 +83,15 @@ class DefaultCallMethodGeneratorTest {
 
     @Nested
     @DisplayName("using Java 8 configuration")
-    class Java8 implements CallMethodGeneratorTCK {
+    class Java8 extends CallMethodGeneratorTCK {
 
         @Override
-        public CallMethodGenerator generator() {
+        CallMethodGenerator generator() {
             return DaoObjectMother.callMethodGenerator(JavaConfigurations.java8());
         }
 
         @Override
-        public String callMethodExpectation() {
+        String callMethodExpectation() {
             return """
                     /**
                      * <p>Executes the following statement:</p>
@@ -150,15 +150,15 @@ class DefaultCallMethodGeneratorTest {
 
     @Nested
     @DisplayName("using Java 9 configuration")
-    class Java9 implements CallMethodGeneratorTCK {
+    class Java9 extends CallMethodGeneratorTCK {
 
         @Override
-        public CallMethodGenerator generator() {
+        CallMethodGenerator generator() {
             return DaoObjectMother.callMethodGenerator(JavaConfigurations.java9());
         }
 
         @Override
-        public String callMethodExpectation() {
+        String callMethodExpectation() {
             return """
                     /**
                      * <p>Executes the following statement:</p>
@@ -217,15 +217,15 @@ class DefaultCallMethodGeneratorTest {
 
     @Nested
     @DisplayName("using Java 11 configuration")
-    class Java11 implements CallMethodGeneratorTCK {
+    class Java11 extends CallMethodGeneratorTCK {
 
         @Override
-        public CallMethodGenerator generator() {
+        CallMethodGenerator generator() {
             return DaoObjectMother.callMethodGenerator(JavaConfigurations.java11());
         }
 
         @Override
-        public String callMethodExpectation() {
+        String callMethodExpectation() {
             return """
                     /**
                      * <p>Executes the following statement:</p>
@@ -284,15 +284,15 @@ class DefaultCallMethodGeneratorTest {
 
     @Nested
     @DisplayName("using Java 14 configuration")
-    class Java14 implements CallMethodGeneratorTCK {
+    class Java14 extends CallMethodGeneratorTCK {
 
         @Override
-        public CallMethodGenerator generator() {
+        CallMethodGenerator generator() {
             return DaoObjectMother.callMethodGenerator(JavaConfigurations.java14());
         }
 
         @Override
-        public String callMethodExpectation() {
+        String callMethodExpectation() {
             return """
                     /**
                      * <p>Executes the following statement:</p>
@@ -351,15 +351,15 @@ class DefaultCallMethodGeneratorTest {
 
     @Nested
     @DisplayName("using Java 16 configuration")
-    class Java16 implements CallMethodGeneratorTCK {
+    class Java16 extends CallMethodGeneratorTCK {
 
         @Override
-        public CallMethodGenerator generator() {
+        CallMethodGenerator generator() {
             return DaoObjectMother.callMethodGenerator(JavaConfigurations.java16());
         }
 
         @Override
-        public String callMethodExpectation() {
+        String callMethodExpectation() {
             return """
                     /**
                      * <p>Executes the following statement:</p>

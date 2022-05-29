@@ -16,35 +16,35 @@ import wtf.metio.yosql.testing.configs.SqlConfigurations;
 /**
  * Verifies that {@link ReadMethodGenerator}s work correctly.
  */
-public interface ReadMethodGeneratorTCK {
+public abstract class ReadMethodGeneratorTCK {
 
     /**
      * @return A new {@link ReadMethodGenerator}.
      */
-    ReadMethodGenerator generator();
+    abstract ReadMethodGenerator generator();
 
     /**
      * @return The expected generated code for a read single method.
      */
-    String readSingleMethodExpectation();
+    abstract String readSingleMethodExpectation();
 
     /**
      * @return The expected generated code for a read multiple method.
      */
-    String readMultipleMethodExpectation();
+    abstract String readMultipleMethodExpectation();
 
     /**
      * @return The expected generated code for a read cursor method.
      */
-    String readCursorMethodExpectation();
+    abstract String readCursorMethodExpectation();
 
     /**
      * @return The expected generated code for a read none method.
      */
-    String readNoneMethodExpectation();
+    abstract String readNoneMethodExpectation();
 
     @Test
-    default void readSingleMethod() {
+    final void readSingleMethod() {
         Assertions.assertEquals(
                 readSingleMethodExpectation(),
                 generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
@@ -53,7 +53,7 @@ public interface ReadMethodGeneratorTCK {
     }
 
     @Test
-    default void readMultipleMethod() {
+    final void readMultipleMethod() {
         Assertions.assertEquals(
                 readMultipleMethodExpectation(),
                 generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
@@ -62,7 +62,7 @@ public interface ReadMethodGeneratorTCK {
     }
 
     @Test
-    default void readCursorMethod() {
+    final void readCursorMethod() {
         Assertions.assertEquals(
                 readCursorMethodExpectation(),
                 generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
@@ -71,7 +71,7 @@ public interface ReadMethodGeneratorTCK {
     }
 
     @Test
-    default void readNoneMethod() {
+    final void readNoneMethod() {
         Assertions.assertEquals(
                 readNoneMethodExpectation(),
                 generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())

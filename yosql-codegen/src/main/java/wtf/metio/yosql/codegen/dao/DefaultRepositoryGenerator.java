@@ -12,10 +12,12 @@ import wtf.metio.yosql.codegen.blocks.Annotations;
 import wtf.metio.yosql.codegen.blocks.Classes;
 import wtf.metio.yosql.codegen.blocks.Javadoc;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
+import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Generic implementation of a {@link RepositoryGenerator} that delegates most of its work to other interfaces/classes.
@@ -30,12 +32,12 @@ public final class DefaultRepositoryGenerator implements RepositoryGenerator {
     private final Classes classes;
 
     /**
-     * @param logger        The logger to use.
-     * @param annotations   The annotation generator to use.
-     * @param classes       The classes builder to use.
-     * @param javadoc       The javadoc generator to use.
-     * @param fields        The fields generator to use.
-     * @param methods       The methods generator to use.
+     * @param logger      The logger to use.
+     * @param annotations The annotation generator to use.
+     * @param classes     The classes builder to use.
+     * @param javadoc     The javadoc generator to use.
+     * @param fields      The fields generator to use.
+     * @param methods     The methods generator to use.
      */
     public DefaultRepositoryGenerator(
             final LocLogger logger,
@@ -53,19 +55,37 @@ public final class DefaultRepositoryGenerator implements RepositoryGenerator {
     }
 
     @Override
-    public PackagedTypeSpec generateRepository(
+    public PackagedTypeSpec generateRepositoryClass(
             final String repositoryName,
-            final List<SqlStatement> sqlStatements) {
+            final List<SqlStatement> statements) {
         final var className = ClassName.bestGuess(repositoryName);
         final var classBuilder = classes.publicClass(className)
-                .addJavadoc(javadoc.repositoryJavadoc(sqlStatements))
-                .addFields(fields.asFields(sqlStatements))
-                .addMethods(methods.asMethods(sqlStatements))
+                .addJavadoc(javadoc.repositoryJavadoc(statements))
+                .addFields(fields.asFields(statements))
+                .addMethods(methods.asMethods(statements))
                 .addAnnotations(annotations.generatedClass());
-        fields.staticInitializer(sqlStatements).ifPresent(classBuilder::addStaticBlock);
-        final var repository = classBuilder.build();
+        fields.staticInitializer(statements).ifPresent(classBuilder::addStaticBlock);
+        statements.stream()
+                .map(SqlStatement::getRepositoryInterface)
+                .filter(Predicate.not(Strings::isBlank))
+                .map(ClassName::bestGuess)
+                .findFirst()
+                .ifPresent(classBuilder::addSuperinterface);
         logger.debug(CodegenLifecycle.TYPE_GENERATED, className.packageName(), className.simpleName());
-        return PackagedTypeSpec.of(repository, className.packageName());
+        return PackagedTypeSpec.of(classBuilder.build(), className.packageName());
+    }
+
+    @Override
+    public PackagedTypeSpec generateRepositoryInterface(
+            final String repositoryName,
+            final List<SqlStatement> statements) {
+        final var interfaceName = ClassName.bestGuess(repositoryName);
+        final var interfaceBuilder = classes.publicInterface(interfaceName)
+                .addJavadoc(javadoc.repositoryJavadoc(statements))
+                .addMethods(methods.asMethodsDeclarations(statements))
+                .addAnnotations(annotations.generatedClass());
+        logger.debug(CodegenLifecycle.TYPE_GENERATED, interfaceName.packageName(), interfaceName.simpleName());
+        return PackagedTypeSpec.of(interfaceBuilder.build(), interfaceName.packageName());
     }
 
 }

@@ -16,15 +16,15 @@ final class DefaultConstructorGeneratorTest {
 
     @Nested
     @DisplayName("using default configuration")
-    class Defaults implements ConstructorTCK {
+    class Defaults extends ConstructorTCK {
 
         @Override
-        public ConstructorGenerator generator() {
+        ConstructorGenerator generator() {
             return DaoObjectMother.constructorGenerator(JavaConfigurations.defaults());
         }
 
         @Override
-        public String forRepositoryExpectation() {
+        String forRepositoryExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -38,7 +38,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithCustomConverterExpectation() {
+        String forRepositoryWithCustomConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -52,7 +52,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
+        String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -70,15 +70,15 @@ final class DefaultConstructorGeneratorTest {
 
     @Nested
     @DisplayName("using Java 8 configuration")
-    class Java8 implements ConstructorTCK {
+    class Java8 extends ConstructorTCK {
 
         @Override
-        public ConstructorGenerator generator() {
+        ConstructorGenerator generator() {
             return DaoObjectMother.constructorGenerator(JavaConfigurations.java8());
         }
 
         @Override
-        public String forRepositoryExpectation() {
+        String forRepositoryExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -92,7 +92,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithCustomConverterExpectation() {
+        String forRepositoryWithCustomConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -106,7 +106,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
+        String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -124,15 +124,15 @@ final class DefaultConstructorGeneratorTest {
 
     @Nested
     @DisplayName("using Java 9 configuration")
-    class Java9 implements ConstructorTCK {
+    class Java9 extends ConstructorTCK {
 
         @Override
-        public ConstructorGenerator generator() {
+        ConstructorGenerator generator() {
             return DaoObjectMother.constructorGenerator(JavaConfigurations.java9());
         }
 
         @Override
-        public String forRepositoryExpectation() {
+        String forRepositoryExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -146,7 +146,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithCustomConverterExpectation() {
+        String forRepositoryWithCustomConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -160,7 +160,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
+        String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -178,15 +178,15 @@ final class DefaultConstructorGeneratorTest {
 
     @Nested
     @DisplayName("using Java 11 configuration")
-    class Java11 implements ConstructorTCK {
+    class Java11 extends ConstructorTCK {
 
         @Override
-        public ConstructorGenerator generator() {
+        ConstructorGenerator generator() {
             return DaoObjectMother.constructorGenerator(JavaConfigurations.java11());
         }
 
         @Override
-        public String forRepositoryExpectation() {
+        String forRepositoryExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -200,7 +200,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithCustomConverterExpectation() {
+        String forRepositoryWithCustomConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -214,7 +214,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
+        String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -232,15 +232,15 @@ final class DefaultConstructorGeneratorTest {
 
     @Nested
     @DisplayName("using Java 14 configuration")
-    class Java14 implements ConstructorTCK {
+    class Java14 extends ConstructorTCK {
 
         @Override
-        public ConstructorGenerator generator() {
+        ConstructorGenerator generator() {
             return DaoObjectMother.constructorGenerator(JavaConfigurations.java14());
         }
 
         @Override
-        public String forRepositoryExpectation() {
+        String forRepositoryExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -254,7 +254,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithCustomConverterExpectation() {
+        String forRepositoryWithCustomConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -268,7 +268,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
+        String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -286,15 +286,15 @@ final class DefaultConstructorGeneratorTest {
 
     @Nested
     @DisplayName("using Java 16 configuration")
-    class Java16 implements ConstructorTCK {
+    class Java16 extends ConstructorTCK {
 
         @Override
-        public ConstructorGenerator generator() {
+        ConstructorGenerator generator() {
             return DaoObjectMother.constructorGenerator(JavaConfigurations.java16());
         }
 
         @Override
-        public String forRepositoryExpectation() {
+        String forRepositoryExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -308,7 +308,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithCustomConverterExpectation() {
+        String forRepositoryWithCustomConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",
@@ -322,7 +322,7 @@ final class DefaultConstructorGeneratorTest {
         }
 
         @Override
-        public String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
+        String forRepositoryWithMultipleStatementsAndMixedConverterExpectation() {
             return """
                     @javax.annotation.processing.Generated(
                         value = "YoSQL",

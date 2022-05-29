@@ -14,20 +14,20 @@ import wtf.metio.yosql.testing.configs.SqlConfigurations;
 /**
  * Verifies that {@link CallMethodGenerator}s work correctly.
  */
-public interface CallMethodGeneratorTCK {
+public abstract class CallMethodGeneratorTCK {
 
     /**
      * @return A new {@link CallMethodGenerator}.
      */
-    CallMethodGenerator generator();
+    abstract CallMethodGenerator generator();
 
     /**
      * @return The expected generated code for a blocking call method.
      */
-    String callMethodExpectation();
+    abstract String callMethodExpectation();
 
     @Test
-    default void callMethod() {
+    final void callMethod() {
         Assertions.assertEquals(
                 callMethodExpectation(),
                 generator().callMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatement()).toString(),

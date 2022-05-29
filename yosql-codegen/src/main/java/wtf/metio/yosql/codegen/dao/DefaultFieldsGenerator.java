@@ -25,12 +25,11 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.function.Predicate.not;
 
 /**
  * Default implementation of the {@link FieldsGenerator} interface.
@@ -115,7 +114,11 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     }
 
     private Optional<FieldSpec> loggerField(final SqlStatement sqlStatement) {
-        return logging.logger(ClassName.bestGuess(sqlStatement.getRepository()));
+//        return sqlStatement.getRepository()
+//                .map(ClassName::bestGuess)
+//                .flatMap(logging::logger);
+
+        return logging.logger(ClassName.bestGuess(sqlStatement.getRepositoryClass()));
     }
 
     private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
@@ -158,9 +161,10 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     @Override
     public String constantSqlStatementFieldName(final SqlConfiguration configuration) {
         return configuration.name()
-                .replaceAll(NAME_REGEX, NAME_REPLACEMENT)
-                .toUpperCase()
-                + getVendor(configuration);
+                .map(name -> name.replaceAll(NAME_REGEX, NAME_REPLACEMENT))
+                .map(name -> name.toUpperCase(Locale.ROOT))
+                .map(name -> name + vendorSuffix(configuration))
+                .orElseThrow();
     }
 
     @Override
@@ -173,10 +177,11 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
         return constantSqlStatementFieldName(configuration) + names.indexSuffix();
     }
 
-    private static String getVendor(final SqlConfiguration configuration) {
-        return Strings.isBlank(configuration.vendor())
-                ? ""
-                : "_" + configuration.vendor().replace(" ", "_").toUpperCase();
+    private static String vendorSuffix(final SqlConfiguration configuration) {
+        return configuration.vendor()
+                .filter(not(Strings::isBlank))
+                .map(vendor -> "_" + vendor.replace(" ", "_").toUpperCase(Locale.ROOT))
+                .orElse("");
     }
 
 }

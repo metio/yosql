@@ -37,26 +37,21 @@ public final class DefaultMethodNameValidator implements MethodNameValidator {
     @Override
     public void validateNames(final SqlConfiguration configuration, final Path source) {
         if (repositories.validateMethodNamePrefixes()) {
-            switch (configuration.type()) {
-                case READING:
-                    if (notStartsWith(configuration.name(), repositories.allowedReadPrefixes())) {
-                        invalidPrefix(source, READING, configuration.name());
-                    }
-                    break;
-                case WRITING:
-                    if (notStartsWith(configuration.name(), repositories.allowedWritePrefixes())) {
-                        invalidPrefix(source, WRITING, configuration.name());
-                    }
-                    break;
-                case CALLING:
-                    if (notStartsWith(configuration.name(), repositories.allowedCallPrefixes())) {
-                        invalidPrefix(source, CALLING, configuration.name());
-                    }
-                    break;
-                default:
-                    errors.illegalArgument(messages.getMessage(ValidationErrors.UNSUPPORTED_TYPE, source, configuration.type()));
-                    break;
-            }
+            configuration.type().ifPresent(type -> {
+                switch (type) {
+                    case READING -> configuration.name()
+                            .filter(name -> notStartsWith(name, repositories.allowedReadPrefixes()))
+                            .ifPresent(name -> invalidPrefix(source, READING, name));
+                    case WRITING -> configuration.name()
+                            .filter(name -> notStartsWith(name, repositories.allowedWritePrefixes()))
+                            .ifPresent(name -> invalidPrefix(source, WRITING, name));
+                    case CALLING -> configuration.name()
+                            .filter(name -> notStartsWith(name, repositories.allowedCallPrefixes()))
+                            .ifPresent(name -> invalidPrefix(source, CALLING, name));
+                    default -> errors.illegalArgument(
+                            messages.getMessage(ValidationErrors.UNSUPPORTED_TYPE, source, configuration.type()));
+                }
+            });
         }
     }
 

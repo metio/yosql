@@ -24,12 +24,12 @@ abstract class JdbcBlocksTCK {
      */
     abstract JdbcBlocks generator();
 
-    abstract String connectionVariableExpectation();
-    abstract String statementVariableExpectation();
-    abstract String callableVariableExpectation();
-    abstract String readMetaDataExpectation();
-    abstract String resultSetVariableExpectation();
-    abstract String executeUpdateExpectation();
+    abstract String getConnectionInlineExpectation();
+    abstract String prepareStatementInlineExpectation();
+    abstract String prepareCallInlineExpectation();
+    abstract String getMetaDataStatementExpectation();
+    abstract String executeQueryInlineExpectation();
+    abstract String returnExecuteUpdateExpectation();
     abstract String executeBatchExpectation();
     abstract String closeResultSetExpectation();
     abstract String closePrepareStatementExpectation();
@@ -49,44 +49,44 @@ abstract class JdbcBlocksTCK {
     abstract String setBatchParametersExpectation();
 
     @Test
-    final void connectionVariable() {
+    final void getConnectionInline() {
         Assertions.assertEquals(
-                connectionVariableExpectation(),
-                generator().connectionVariable().toString());
+                getConnectionInlineExpectation(),
+                generator().getConnectionInline().toString());
     }
 
     @Test
-    final void statementVariable() {
+    final void prepareStatementInline() {
         Assertions.assertEquals(
-                statementVariableExpectation(),
-                generator().statementVariable().toString());
+                prepareStatementInlineExpectation(),
+                generator().prepareStatementInline().toString());
     }
 
     @Test
-    final void callableVariable() {
+    final void prepareCallInline() {
         Assertions.assertEquals(
-                callableVariableExpectation(),
-                generator().callableVariable().toString());
+                prepareCallInlineExpectation(),
+                generator().prepareCallInline().toString());
     }
 
     @Test
-    final void readMetaData() {
+    final void getMetaDataStatement() {
         Assertions.assertEquals(
-                readMetaDataExpectation(),
-                generator().readMetaData().toString());
+                getMetaDataStatementExpectation(),
+                generator().getMetaDataStatement().toString());
     }
 
     @Test
-    final void resultSetVariable() {
+    final void executeQueryInline() {
         Assertions.assertEquals(
-                resultSetVariableExpectation(),
-                generator().resultSetVariable().toString());
+                executeQueryInlineExpectation(),
+                generator().executeQueryInline().toString());
     }
 
     @Test
-    final void executeUpdate() {
+    final void returnExecuteUpdate() {
         Assertions.assertEquals(
-                executeUpdateExpectation(),
+                returnExecuteUpdateExpectation(),
                 generator().returnExecuteUpdate().toString());
     }
 

@@ -38,7 +38,7 @@ public final class Sql {
                 .setDescription("The configuration for a single SQL statement.")
                 .setImmutableAnnotations(extraTypeAnnotations())
                 .addAllSettings(settings())
-                .addAllSettings(withExtraAnnotations(Repositories.stringMethods())) // TODO: turn all repo settings into Optionals
+                .addAllSettings(withExtraAnnotations(stringRepositorySettings()))
                 .addAllSettings(withExtraAnnotations(booleanRepositorySettings()))
                 .setImmutableMethods(List.of(
                         fromStatements(),
@@ -54,6 +54,7 @@ public final class Sql {
     private static List<ConfigurationSetting> settings() {
         return List.of(
                 repository(),
+                repositoryInterface(),
                 name(),
                 description(),
                 vendor(),
@@ -63,10 +64,18 @@ public final class Sql {
                 parameters());
     }
 
+    private static List<ConfigurationSetting> stringRepositorySettings() {
+        return Repositories.stringMethods().stream()
+                .map(setting -> ConfigurationSetting.copyOf(setting)
+                        .withType(TypeName.get(String.class))
+                        .withValue(Optional.empty()))
+                .collect(Collectors.toList());
+    }
+
     private static List<ConfigurationSetting> booleanRepositorySettings() {
         return Repositories.booleanMethods().stream()
                 .map(setting -> ConfigurationSetting.copyOf(setting)
-                        .withType(ClassName.get(Boolean.class))
+                        .withType(TypeName.get(Boolean.class))
                         .withValue(Optional.empty()))
                 .collect(Collectors.toList());
     }
@@ -95,10 +104,18 @@ public final class Sql {
     private static ConfigurationSetting repository() {
         return ConfigurationSetting.builder()
                 .setName("repository")
-                .setDescription("The fully qualified name of the target repository.")
-                .setType(ClassName.get(String.class))
-                .setValue("Repository")
+                .setDescription("The fully qualified name of the target repository class.")
+                .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("repository")))
+                .build();
+    }
+
+    private static ConfigurationSetting repositoryInterface() {
+        return ConfigurationSetting.builder()
+                .setName("repositoryInterface")
+                .setDescription("The fully qualified name of the target repository interface.")
+                .setType(TypeName.get(String.class))
+//                .setImmutableAnnotations(List.of(jsonProperty("repository")))
                 .build();
     }
 
@@ -106,8 +123,7 @@ public final class Sql {
         return ConfigurationSetting.builder()
                 .setName("name")
                 .setDescription("The name of the SQL statement")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+                .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("name")))
                 .build();
     }
@@ -116,8 +132,7 @@ public final class Sql {
         return ConfigurationSetting.builder()
                 .setName("description")
                 .setDescription("The description for the SQL statement")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+                .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("description")))
                 .build();
     }
@@ -126,8 +141,7 @@ public final class Sql {
         return ConfigurationSetting.builder()
                 .setName("vendor")
                 .setDescription("The vendor name of the database the SQL statement is intended for")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+                .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("vendor")))
                 .build();
     }
@@ -137,7 +151,6 @@ public final class Sql {
                 .setName("type")
                 .setDescription("The type of the SQL statement.")
                 .setType(TypeName.get(SqlType.class))
-                .setValue(SqlType.UNKNOWN)
                 .setImmutableAnnotations(List.of(jsonProperty("type")))
                 .build();
     }
@@ -147,7 +160,6 @@ public final class Sql {
                 .setName("returningMode")
                 .setDescription("The returning mode of the SQL statement.")
                 .setType(TypeName.get(ReturningMode.class))
-                .setValue(ReturningMode.NONE)
                 .setImmutableAnnotations(List.of(jsonProperty("returningMode")))
                 .build();
     }
@@ -207,23 +219,16 @@ public final class Sql {
     private static CodeBlock withAllSettings() {
         final var builder = CodeBlock.builder();
         settings().forEach(setting -> addSetting(builder, setting));
-        Repositories.stringMethods().forEach(setting -> addSetting(builder, setting));
+        stringRepositorySettings().forEach(setting -> addSetting(builder, setting));
         booleanRepositorySettings().forEach(setting -> addSetting(builder, setting));
         return builder.build();
     }
 
     private static void addSetting(final CodeBlock.Builder builder, final ConfigurationSetting setting) {
-        if (setting.value().isPresent() && SqlType.class.equals(setting.value().get().getClass())) {
-            builder.addStatement("merged = merged.with$L($T.UNKNOWN == first.$L() ? second.$L() : first.$L())",
-                    Strings.upperCase(setting.name()), SqlType.class, setting.name(), setting.name(), setting.name());
-        } else if (setting.value().isPresent() && ReturningMode.class.equals(setting.value().get().getClass())) {
-            builder.addStatement("merged = merged.with$L($T.NONE == first.$L() ? second.$L() : first.$L())",
-                    Strings.upperCase(setting.name()), ReturningMode.class, setting.name(), setting.name(), setting.name());
-        } else if (ClassName.get(String.class).equals(setting.type())) {
-            builder.addStatement("merged = merged.with$L($S.equals(first.$L()) ? second.$L() : first.$L())",
-                    Strings.upperCase(setting.name()), setting.value().orElse(""), setting.name(), setting.name(), setting.name());
-        } else if (TypeName.get(Boolean.class).equals(setting.type())) {
-            // first.generateBlockingApi().or(() -> second.generateBlockingApi()).ifPresent(defaults::withGenerateBlockingApi)
+        if (TypeName.get(Boolean.class).equals(setting.type())
+                || TypeName.get(String.class).equals(setting.type())
+                || TypeName.get(SqlType.class).equals(setting.type())
+                || TypeName.get(ReturningMode.class).equals(setting.type())) {
             builder.beginControlFlow("if (first.$L().or(() -> second.$L()).isPresent())",
                     setting.name(), setting.name());
             builder.addStatement("merged = merged.with$L(first.$L().or(() -> second.$L()).get())",
@@ -302,7 +307,8 @@ public final class Sql {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "batchPrefix", "name", "batchSuffix")
+                .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
+                        "batchPrefix", "", "name", "", "batchSuffix", "")
                 .build();
     }
 
@@ -311,7 +317,8 @@ public final class Sql {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L(), $L(), $L())", "blockingPrefix", "name", "blockingSuffix")
+                .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
+                        "blockingPrefix", "", "name", "", "blockingSuffix", "")
                 .build();
     }
 

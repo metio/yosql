@@ -7,18 +7,18 @@
 package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.blocks.ControlFlows;
 import wtf.metio.yosql.codegen.blocks.Methods;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
-import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
+
+import static wtf.metio.yosql.models.configuration.ReturningMode.NONE;
 
 public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
@@ -29,6 +29,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private final JdbcBlocks jdbc;
     private final MethodExceptionHandler exceptions;
     private final ConverterConfiguration converters;
+    private final ReturnTypes returnTypes;
 
     public DefaultWriteMethodGenerator(
             final ControlFlows controlFlows,
@@ -37,7 +38,8 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final LoggingGenerator logging,
             final JdbcBlocks jdbc,
             final MethodExceptionHandler exceptions,
-            final ConverterConfiguration converters) {
+            final ConverterConfiguration converters,
+            final ReturnTypes returnTypes) {
         this.logging = logging;
         this.jdbc = jdbc;
         this.exceptions = exceptions;
@@ -45,17 +47,25 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
         this.methods = methods;
         this.parameters = parameters;
         this.converters = converters;
+        this.returnTypes = returnTypes;
+    }
+
+    @Override
+    public MethodSpec writeMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        final var builder = methods.declaration(configuration.blockingName(), statements, "generateBlockingApi")
+                .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
+                .addExceptions(exceptions.thrownExceptions(configuration));
+        returnTypes.resultType(configuration).ifPresentOrElse(builder::returns, () -> builder.returns(int.class));
+        return builder.build();
     }
 
     @Override
     public MethodSpec writeMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
-        return switch (configuration.returningMode()) {
+        return switch (configuration.returningMode().orElse(NONE)) {
             case NONE -> writeReturningNone(configuration, statements);
-            case SINGLE -> writeReturningSingle(configuration, statements, converter, resultType);
-            case MULTIPLE -> writeReturningMultiple(configuration, statements, converter, resultType);
-            case CURSOR -> writeReturningMultiple(configuration, statements, converter, resultType);
+            case SINGLE -> writeReturningSingle(configuration, statements);
+            case MULTIPLE -> writeReturningMultiple(configuration, statements);
+            case CURSOR -> writeReturningCursor(configuration, statements);
         };
     }
 
@@ -66,7 +76,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .returns(int.class)
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
+                .addCode(logging.entering(configuration.repository().orElse(""), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -80,14 +90,14 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
     private MethodSpec writeReturningSingle(
             final SqlConfiguration configuration,
-            final List<SqlStatement> statements,
-            final ResultRowConverter converter,
-            final TypeName resultType) {
+            final List<SqlStatement> statements) {
+        final var converter = configuration.converter(converters::defaultConverter);
+        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
-                .returns(TypicalTypes.optionalOf(resultType))
+                .returns(returnTypes.singleResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
+                .addCode(logging.entering(configuration.repository().orElse(""), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -103,15 +113,14 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
     private MethodSpec writeReturningMultiple(
             final SqlConfiguration configuration,
-            final List<SqlStatement> statements,
-            final ResultRowConverter converter,
-            final TypeName resultType) {
-        final var listOfResults = TypicalTypes.listOf(resultType);
+            final List<SqlStatement> statements) {
+        final var converter = configuration.converter(converters::defaultConverter);
+        final var resultType = returnTypes.multiResultType(configuration);
         return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
-                .returns(listOfResults)
+                .returns(resultType)
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository(), configuration.blockingName()))
+                .addCode(logging.entering(configuration.repository().orElse(""), configuration.blockingName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -119,9 +128,41 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning())
                 .addCode(jdbc.getResultSet())
-                .addCode(jdbc.returnAsMultiple(listOfResults, converter))
+                .addCode(jdbc.returnAsMultiple(resultType, converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
+                .build();
+    }
+
+    private MethodSpec writeReturningCursor(
+            final SqlConfiguration configuration,
+            final List<SqlStatement> statements) {
+        final var converter = configuration.converter(converters::defaultConverter);
+        final var resultType = returnTypes.cursorResultType(configuration);
+        return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
+                .returns(resultType)
+                .addExceptions(exceptions.thrownExceptions(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addCode(logging.entering(configuration.repository().orElse(""), configuration.blockingName()))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.createStatement())
+                .addCode(jdbc.setParameters(configuration))
+                .addCode(jdbc.logExecutedQuery(configuration))
+                .addStatement(jdbc.executeForReturning())
+                .addCode(jdbc.executeQueryStatement())
+                .addCode(jdbc.streamStateful(converter))
+                .addCode(controlFlows.endMaybeTry(configuration))
+                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
+                .build();
+    }
+
+    @Override
+    public MethodSpec batchWriteMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        return methods.declaration(configuration.batchName(), statements, "generateBatchApi")
+                .returns(TypicalTypes.ARRAY_OF_INTS)
+                .addParameters(parameters.asBatchParameterSpecsForInterfaces(configuration.parameters()))
+                .addExceptions(exceptions.thrownExceptions(configuration))
                 .build();
     }
 
@@ -131,7 +172,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository(), configuration.batchName()))
+                .addCode(logging.entering(configuration.repository().orElse(""), configuration.batchName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())

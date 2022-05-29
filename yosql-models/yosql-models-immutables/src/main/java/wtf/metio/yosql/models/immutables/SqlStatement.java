@@ -34,7 +34,15 @@ public interface SqlStatement {
     //endregion
 
     static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByName() {
-        return Collectors.groupingBy(statement -> statement.getConfiguration().name());
+        return Collectors.groupingBy(SqlStatement::getName);
+    }
+
+    static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByRepositoryClass() {
+        return Collectors.groupingBy(SqlStatement::getRepositoryClass);
+    }
+
+    static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByRepositoryInterface() {
+        return Collectors.groupingBy(SqlStatement::getRepositoryInterface);
     }
 
     static Stream<ResultRowConverter> resultConverters(
@@ -48,7 +56,9 @@ public interface SqlStatement {
     }
 
     private static boolean requiresConverter(final SqlConfiguration configuration) {
-        return ReturningMode.NONE != configuration.returningMode();
+        return configuration.returningMode()
+                .map(mode -> ReturningMode.NONE != mode)
+                .orElse(Boolean.FALSE);
     }
 
 
@@ -60,27 +70,38 @@ public interface SqlStatement {
 
     @Value.Lazy
     default String getName() {
-        return getConfiguration().name();
+        return getConfiguration().name().orElse("");
     }
 
     @Value.Lazy
-    default String getRepository() {
-        return getConfiguration().repository();
+    default String getRepositoryClass() {
+        return getConfiguration().repository().orElse("");
+    }
+
+    @Value.Lazy
+    default String getRepositoryInterface() {
+        return getConfiguration().repositoryInterface().orElse("");
     }
 
     @Value.Lazy
     default boolean isReading() {
-        return SqlType.READING == getConfiguration().type();
+        return getConfiguration().type()
+                .map(type -> SqlType.READING == type)
+                .orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean isWriting() {
-        return SqlType.WRITING == getConfiguration().type();
+        return getConfiguration().type()
+                .map(type -> SqlType.WRITING == type)
+                .orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean isCalling() {
-        return SqlType.CALLING == getConfiguration().type();
+        return getConfiguration().type()
+                .map(type -> SqlType.CALLING == type)
+                .orElse(Boolean.FALSE);
     }
 
     @Value.Lazy

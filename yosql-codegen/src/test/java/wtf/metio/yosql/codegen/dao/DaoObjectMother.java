@@ -65,7 +65,9 @@ public final class DaoObjectMother {
                 BlocksObjectMother.variables(java),
                 fieldsGenerator(java),
                 jdbcMethods(),
-                LoggingObjectMother.loggingGenerator());
+                LoggingObjectMother.loggingGenerator(),
+                BlocksObjectMother.parameters(java),
+                BlocksObjectMother.methods(java));
     }
 
     public static ImmutableRuntimeConfiguration runtimeConfig() {
@@ -91,6 +93,10 @@ public final class DaoObjectMother {
         return new DefaultParameterGenerator(BlocksObjectMother.parameters(java));
     }
 
+    public static ReturnTypes returnTypes() {
+        return new DefaultReturnTypes(ConverterConfigurations.withConverters());
+    }
+
     public static ReadMethodGenerator readMethodGenerator(final JavaConfiguration java) {
         return new DefaultReadMethodGenerator(
                 BlocksObjectMother.controlFlows(java),
@@ -100,9 +106,7 @@ public final class DaoObjectMother {
                 jdbcBlocks(java),
                 jdbcMethodExceptionHandler(),
                 ConverterConfigurations.withConverters(),
-                BlocksObjectMother.codeBlocks(),
-                NamesConfigurations.defaults(),
-                BlocksObjectMother.parameters(java));
+                returnTypes());
     }
 
     public static WriteMethodGenerator writeMethodGenerator(final JavaConfiguration java) {
@@ -113,7 +117,8 @@ public final class DaoObjectMother {
                 LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java),
                 jdbcMethodExceptionHandler(),
-                ConverterConfigurations.withConverters());
+                ConverterConfigurations.withConverters(),
+                returnTypes());
     }
 
     public static CallMethodGenerator callMethodGenerator(final JavaConfiguration java) {
@@ -124,7 +129,8 @@ public final class DaoObjectMother {
                 LoggingObjectMother.loggingGenerator(),
                 jdbcBlocks(java),
                 jdbcMethodExceptionHandler(),
-                ConverterConfigurations.withConverters());
+                ConverterConfigurations.withConverters(),
+                returnTypes());
     }
 
     public static RepositoryGenerator defaultRepositoryGenerator(final JavaConfiguration java) {

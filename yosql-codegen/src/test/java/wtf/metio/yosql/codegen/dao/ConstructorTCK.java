@@ -14,16 +14,30 @@ import wtf.metio.yosql.testing.configs.SqlConfigurations;
 /**
  * Verifies that {@link ConstructorGenerator}s work correctly.
  */
-public interface ConstructorTCK {
+public abstract class ConstructorTCK {
 
-    ConstructorGenerator generator();
+    /**
+     * @return A new {@link ConstructorGenerator}.
+     */
+    abstract ConstructorGenerator generator();
 
-    String forRepositoryExpectation();
-    String forRepositoryWithCustomConverterExpectation();
-    String forRepositoryWithMultipleStatementsAndMixedConverterExpectation();
+    /**
+     * @return The expected generated code for a repository constructor.
+     */
+    abstract String forRepositoryExpectation();
+
+    /**
+     * @return The expected generated code for a repository constructor with a custom converter.
+     */
+    abstract String forRepositoryWithCustomConverterExpectation();
+
+    /**
+     * @return The expected generated code for a repository constructor with multiple statements and converters.
+     */
+    abstract String forRepositoryWithMultipleStatementsAndMixedConverterExpectation();
 
     @Test
-    default void forRepository() {
+    final void forRepository() {
         Assertions.assertEquals(
                 forRepositoryExpectation(),
                 generator().repository(SqlConfigurations.sqlStatement()).toString(),
@@ -31,7 +45,7 @@ public interface ConstructorTCK {
     }
 
     @Test
-    default void forRepositoryWithCustomConverter() {
+    final void forRepositoryWithCustomConverter() {
         Assertions.assertEquals(
                 forRepositoryWithCustomConverterExpectation(),
                 generator().repository(SqlConfigurations.sqlStatementWithCustomConverter()).toString(),
@@ -39,7 +53,7 @@ public interface ConstructorTCK {
     }
 
     @Test
-    default void forRepositoryWithMultipleStatementsAndMixedConverter() {
+    final void forRepositoryWithMultipleStatementsAndMixedConverter() {
         Assertions.assertEquals(
                 forRepositoryWithMultipleStatementsAndMixedConverterExpectation(),
                 generator().repository(SqlConfigurations.sqlStatementsWithMixedConverter()).toString(),

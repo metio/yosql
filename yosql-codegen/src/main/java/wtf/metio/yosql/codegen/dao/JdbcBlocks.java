@@ -9,7 +9,6 @@ package wtf.metio.yosql.codegen.dao;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -21,19 +20,19 @@ import java.util.List;
  */
 public interface JdbcBlocks {
 
-    CodeBlock connectionVariable();
+    CodeBlock getConnectionInline();
 
-    CodeBlock statementVariable();
+    CodeBlock prepareStatementInline();
 
-    CodeBlock callableVariable();
+    CodeBlock prepareCallInline();
 
-    CodeBlock readMetaData();
+    CodeBlock getMetaDataStatement();
 
-    CodeBlock resultSetVariable();
+    CodeBlock executeQueryInline();
 
     CodeBlock getResultSet();
 
-    CodeBlock resultSetVariableStatement();
+    CodeBlock executeQueryStatement();
 
     CodeBlock returnExecuteUpdate();
 
@@ -69,7 +68,7 @@ public interface JdbcBlocks {
 
     CodeBlock returnAsSingle(TypeName resultType, ResultRowConverter converter);
 
-    CodeBlock streamStateful(TypeSpec spliterator, TypeSpec closer);
+    CodeBlock streamStateful(ResultRowConverter converter);
 
     CodeBlock setParameters(SqlConfiguration configuration);
 

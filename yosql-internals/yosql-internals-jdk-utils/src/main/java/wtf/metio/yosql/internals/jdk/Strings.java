@@ -54,6 +54,27 @@ public final class Strings {
         return camelCase.replaceAll(regex, replacement).toLowerCase(Locale.ROOT);
     }
 
+    /**
+     * Replaces the last occurrence of a substring within a string with another string.
+     *
+     * @param original    The original string to work on.
+     * @param toReplace   The substring to replace.
+     * @param replacement The replacement for the substring.
+     * @return The changed string.
+     */
+    public static String replaceLast(
+            final String original,
+            final String toReplace,
+            final String replacement) {
+        int pos = original.lastIndexOf(toReplace);
+        if (pos > -1) {
+            return original.substring(0, pos)
+                    + replacement
+                    + original.substring(pos + toReplace.length());
+        }
+        return original;
+    }
+
     private Strings() {
         // utility class
     }

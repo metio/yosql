@@ -13,6 +13,7 @@ import wtf.metio.yosql.codegen.dao.CodeGenerator;
 import wtf.metio.yosql.codegen.dao.ConverterGenerator;
 import wtf.metio.yosql.codegen.dao.DefaultCodeGenerator;
 import wtf.metio.yosql.codegen.dao.RepositoryGenerator;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.codegen.blocks.DefaultGenericBlocksModule;
 import wtf.metio.yosql.tooling.dagger.codegen.dao.DefaultDaoModule;
 import wtf.metio.yosql.tooling.dagger.codegen.logging.DefaultLoggingModule;
@@ -33,8 +34,9 @@ public class DefaultCodeGeneratorModule {
     @Singleton
     CodeGenerator provideCodeGenerator(
             final RepositoryGenerator repositoryGenerator,
-            final ConverterGenerator converterGenerator) {
-        return new DefaultCodeGenerator(repositoryGenerator, converterGenerator);
+            final ConverterGenerator converterGenerator,
+            final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultCodeGenerator(repositoryGenerator, converterGenerator, runtimeConfiguration.repositories());
     }
 
 }

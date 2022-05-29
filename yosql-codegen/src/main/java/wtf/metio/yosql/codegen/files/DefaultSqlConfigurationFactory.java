@@ -79,7 +79,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         config = methodNames.configureNames(config, FileNames.withoutExtension(source), statementInFile);
         config = methodSettings.configureSettings(config);
         config = methodApis.configureApis(config);
-        config = repositoryName.configureName(config, source);
+        config = repositoryName.configureNames(config, source);
         config = methodParameters.configureParameters(config, source, parameterIndices);
         config = methodConverter.configureConverter(config);
         logConfiguration(config);

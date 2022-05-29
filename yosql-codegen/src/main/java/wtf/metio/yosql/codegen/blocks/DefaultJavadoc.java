@@ -13,7 +13,6 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
-import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
@@ -62,7 +61,7 @@ public final class DefaultJavadoc implements Javadoc {
         final var builder = CodeBlock.builder();
         statements.stream()
                 .map(SqlStatement::getConfiguration)
-                .map(SqlConfiguration::description)
+                .flatMap(config -> config.description().stream())
                 .filter(not(Strings::isBlank))
                 .forEach(description -> builder.add(messages.getMessage(Javadocs.DESCRIPTION), description));
         if (statements.size() > 1) {
@@ -71,13 +70,15 @@ public final class DefaultJavadoc implements Javadoc {
             builder.add(messages.getMessage(Javadocs.EXECUTED_STATEMENT));
         }
         for (final var statement : statements) {
-            if (Strings.isBlank(statement.getConfiguration().vendor())) {
-                if (statements.size() > 1) {
-                    builder.add(messages.getMessage(Javadocs.FALLBACK));
-                }
-            } else {
-                builder.add(messages.getMessage(Javadocs.VENDOR), statement.getConfiguration().vendor());
-            }
+            statement.getConfiguration().vendor()
+                    .filter(not(Strings::isBlank))
+                    .ifPresentOrElse(vendor ->
+                            builder.add(messages.getMessage(Javadocs.VENDOR), vendor),
+                            () -> {
+                                if (statements.size() > 1) {
+                                    builder.add(messages.getMessage(Javadocs.FALLBACK));
+                                }
+                            });
             builder.add(messages.getMessage(Javadocs.STATEMENT), statement.getRawStatement());
         }
         builder.add(messages.getMessage(Javadocs.USED_FILES_METHOD))

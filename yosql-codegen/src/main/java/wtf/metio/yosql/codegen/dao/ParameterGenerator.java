@@ -16,6 +16,10 @@ public interface ParameterGenerator {
 
     Iterable<ParameterSpec> asParameterSpecs(List<SqlParameter> parameters);
 
+    Iterable<ParameterSpec> asParameterSpecsForInterfaces(List<SqlParameter> parameters);
+
     Iterable<ParameterSpec> asBatchParameterSpecs(List<SqlParameter> parameters);
+
+    Iterable<ParameterSpec> asBatchParameterSpecsForInterfaces(List<SqlParameter> parameters);
 
 }

@@ -14,24 +14,37 @@ import wtf.metio.yosql.testing.configs.SqlConfigurations;
 /**
  * Verifies that {@link RepositoryGenerator}s work correctly.
  */
-public interface RepositoryGeneratorTCK {
+public abstract class RepositoryGeneratorTCK {
 
     /**
      * @return A new {@link RepositoryGenerator}.
      */
-    RepositoryGenerator generator();
+    abstract RepositoryGenerator generator();
 
     /**
      * @return The expected generated code for a generated repository class.
      */
-    String repositoryExpectation();
+    abstract String repositoryClassExpectation();
+
+    /**
+     * @return The expected generated code for a generated repository interface.
+     */
+    abstract String repositoryInterfaceExpectation();
 
     @Test
-    default void generateRepository() {
+    final void generateRepositoryClass() {
         Assertions.assertEquals(
-                repositoryExpectation(),
-                generator().generateRepository("Test", SqlConfigurations.sqlStatement()).getType().toString(),
-                "The generated repository does not match expectation");
+                repositoryClassExpectation(),
+                generator().generateRepositoryClass("Test", SqlConfigurations.sqlStatement()).getType().toString(),
+                "The generated repository class does not match expectation");
+    }
+
+    @Test
+    final void generateRepositoryInterface() {
+        Assertions.assertEquals(
+                repositoryInterfaceExpectation(),
+                generator().generateRepositoryInterface("Test", SqlConfigurations.sqlStatement()).getType().toString(),
+                "The generated repository interface does not match expectation");
     }
 
 }

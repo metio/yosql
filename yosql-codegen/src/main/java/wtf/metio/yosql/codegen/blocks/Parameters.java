@@ -16,4 +16,6 @@ public interface Parameters {
 
     ParameterSpec parameter(TypeName type, String name);
 
+    ParameterSpec parameterForInterfaces(TypeName type, String name);
+
 }

@@ -7,12 +7,10 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.testing.configs.JavaConfigurations;
 
-@Disabled
 @DisplayName("DefaultJdbcBlocks")
 class DefaultJdbcBlocksTest {
 
@@ -21,123 +19,201 @@ class DefaultJdbcBlocksTest {
     class Defaults extends JdbcBlocksTCK {
 
         @Override
-        public JdbcBlocks generator() {
+        JdbcBlocks generator() {
             return DaoObjectMother.jdbcBlocks(JavaConfigurations.defaults());
         }
 
         @Override
-        String connectionVariableExpectation() {
-            return "";
+        String getConnectionInlineExpectation() {
+            return "final var connection = dataSource.getConnection()";
         }
 
         @Override
-        String statementVariableExpectation() {
-            return "";
+        String prepareStatementInlineExpectation() {
+            return "final var statement = connection.prepareStatement(query)";
         }
 
         @Override
-        String callableVariableExpectation() {
-            return "";
+        String prepareCallInlineExpectation() {
+            return "final var statement = connection.prepareCall(query)";
         }
 
         @Override
-        String readMetaDataExpectation() {
-            return "";
+        String getMetaDataStatementExpectation() {
+            return """
+                    final var resultSetMetaData = resultSet.getMetaData();
+                    """;
         }
 
         @Override
-        String resultSetVariableExpectation() {
-            return "";
+        String executeQueryInlineExpectation() {
+            return "final var resultSet = statement.executeQuery()";
         }
 
         @Override
-        String executeUpdateExpectation() {
-            return "";
+        String returnExecuteUpdateExpectation() {
+            return """
+                    return statement.executeUpdate();
+                    """;
         }
 
         @Override
         String executeBatchExpectation() {
-            return "";
+            return """
+                    return statement.executeBatch();
+                    """;
         }
 
         @Override
         String closeResultSetExpectation() {
-            return "";
+            return """
+                    resultSet.close();
+                    """;
         }
 
         @Override
         String closePrepareStatementExpectation() {
-            return "";
+            return """
+                    statement.close();
+                    """;
         }
 
         @Override
         String closeConnectionExpectation() {
-            return "";
+            return """
+                    connection.close();
+                    """;
         }
 
         @Override
         String closeStateExpectation() {
-            return "";
+            return """
+                    state.close();
+                    """;
         }
 
         @Override
         String executeStatementExpectation() {
-            return "";
+            return """
+                    try (final var resultSet = statement.executeQuery()) {
+                    """;
         }
 
         @Override
         String openConnectionExpectation() {
-            return "";
+            return """
+                    try (final var connection = dataSource.getConnection()) {
+                    """;
         }
 
         @Override
         String tryPrepareCallableExpectation() {
-            return "";
+            return """
+                    try (final var statement = connection.prepareCall(query)) {
+                    """;
         }
 
         @Override
         String createStatementExpectation() {
-            return "";
+            return """
+                    try (final var statement = connection.prepareStatement(query)) {
+                    """;
         }
 
         @Override
         String prepareBatchExpectation() {
-            return "";
+            return """
+                    for (int batch = 0; batch < test.length; batch++) {
+                      for (final int jdbcIndex : index.get("test")) {
+                        statement.setObject(jdbcIndex, test[batch]);
+                      }
+                      for (final int jdbcIndex : index.get("id")) {
+                        statement.setObject(jdbcIndex, id[batch]);
+                      }
+                      statement.addBatch();
+                    }
+                    """;
         }
 
         @Override
         String pickVendorQueryExpectation() {
-            return "";
+            return """
+                    final var query = QUERY_DATA;
+                    LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
+                    final var rawQuery = QUERY_DATA_RAW;
+                    final var index = QUERY_DATA_INDEX;
+                    LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                    """;
         }
 
         @Override
         String logExecutedQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final var executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : test.toString())
+                        .replace(":id", java.lang.String.valueOf(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String logExecutedBatchQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final var executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
+                        .replace(":id", java.util.Arrays.toString(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String returnAsMultipleExpectation() {
-            return "";
+            return """
+                    final var list = new java.util.ArrayList<java.lang.Object>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list;
+                    """;
         }
 
         @Override
         String returnAsSingleExpectation() {
-            return "";
+            return """
+                    final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
         }
 
         @Override
         String setParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id);
+                    }
+                    """;
         }
 
         @Override
         String setBatchParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test[batch]);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id[batch]);
+                    }
+                    """;
         }
 
     }
@@ -147,123 +223,201 @@ class DefaultJdbcBlocksTest {
     class Java8 extends JdbcBlocksTCK {
 
         @Override
-        public JdbcBlocks generator() {
+        JdbcBlocks generator() {
             return DaoObjectMother.jdbcBlocks(JavaConfigurations.java8());
         }
 
         @Override
-        String connectionVariableExpectation() {
-            return "";
+        String getConnectionInlineExpectation() {
+            return "final java.sql.Connection connection = dataSource.getConnection()";
         }
 
         @Override
-        String statementVariableExpectation() {
-            return "";
+        String prepareStatementInlineExpectation() {
+            return "final java.sql.PreparedStatement statement = connection.prepareStatement(query)";
         }
 
         @Override
-        String callableVariableExpectation() {
-            return "";
+        String prepareCallInlineExpectation() {
+            return "final java.sql.CallableStatement statement = connection.prepareCall(query)";
         }
 
         @Override
-        String readMetaDataExpectation() {
-            return "";
+        String getMetaDataStatementExpectation() {
+            return """
+                    final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                    """;
         }
 
         @Override
-        String resultSetVariableExpectation() {
-            return "";
+        String executeQueryInlineExpectation() {
+            return "final java.sql.ResultSet resultSet = statement.executeQuery()";
         }
 
         @Override
-        String executeUpdateExpectation() {
-            return "";
+        String returnExecuteUpdateExpectation() {
+            return """
+                    return statement.executeUpdate();
+                    """;
         }
 
         @Override
         String executeBatchExpectation() {
-            return "";
+            return """
+                    return statement.executeBatch();
+                    """;
         }
 
         @Override
         String closeResultSetExpectation() {
-            return "";
+            return """
+                    resultSet.close();
+                    """;
         }
 
         @Override
         String closePrepareStatementExpectation() {
-            return "";
+            return """
+                    statement.close();
+                    """;
         }
 
         @Override
         String closeConnectionExpectation() {
-            return "";
+            return """
+                    connection.close();
+                    """;
         }
 
         @Override
         String closeStateExpectation() {
-            return "";
+            return """
+                    state.close();
+                    """;
         }
 
         @Override
         String executeStatementExpectation() {
-            return "";
+            return """
+                    try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
+                    """;
         }
 
         @Override
         String openConnectionExpectation() {
-            return "";
+            return """
+                    try (final java.sql.Connection connection = dataSource.getConnection()) {
+                    """;
         }
 
         @Override
         String tryPrepareCallableExpectation() {
-            return "";
+            return """
+                    try (final java.sql.CallableStatement statement = connection.prepareCall(query)) {
+                    """;
         }
 
         @Override
         String createStatementExpectation() {
-            return "";
+            return """
+                    try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
+                    """;
         }
 
         @Override
         String prepareBatchExpectation() {
-            return "";
+            return """
+                    for (int batch = 0; batch < test.length; batch++) {
+                      for (final int jdbcIndex : index.get("test")) {
+                        statement.setObject(jdbcIndex, test[batch]);
+                      }
+                      for (final int jdbcIndex : index.get("id")) {
+                        statement.setObject(jdbcIndex, id[batch]);
+                      }
+                      statement.addBatch();
+                    }
+                    """;
         }
 
         @Override
         String pickVendorQueryExpectation() {
-            return "";
+            return """
+                    final java.lang.String query = QUERY_DATA;
+                    LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
+                    final java.lang.String rawQuery = QUERY_DATA_RAW;
+                    final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                    LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                    """;
         }
 
         @Override
         String logExecutedQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final java.lang.String executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : test.toString())
+                        .replace(":id", java.lang.String.valueOf(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String logExecutedBatchQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final java.lang.String executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
+                        .replace(":id", java.util.Arrays.toString(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String returnAsMultipleExpectation() {
-            return "";
+            return """
+                    final java.util.List<java.lang.Object> list = new java.util.ArrayList<java.lang.Object>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list;
+                    """;
         }
 
         @Override
         String returnAsSingleExpectation() {
-            return "";
+            return """
+                    final java.util.List<java.util.List<java.lang.Object>> list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
         }
 
         @Override
         String setParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id);
+                    }
+                    """;
         }
 
         @Override
         String setBatchParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test[batch]);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id[batch]);
+                    }
+                    """;
         }
 
     }
@@ -273,123 +427,201 @@ class DefaultJdbcBlocksTest {
     class Java9 extends JdbcBlocksTCK {
 
         @Override
-        public JdbcBlocks generator() {
+        JdbcBlocks generator() {
             return DaoObjectMother.jdbcBlocks(JavaConfigurations.java9());
         }
 
         @Override
-        String connectionVariableExpectation() {
-            return "";
+        String getConnectionInlineExpectation() {
+            return "final java.sql.Connection connection = dataSource.getConnection()";
         }
 
         @Override
-        String statementVariableExpectation() {
-            return "";
+        String prepareStatementInlineExpectation() {
+            return "final java.sql.PreparedStatement statement = connection.prepareStatement(query)";
         }
 
         @Override
-        String callableVariableExpectation() {
-            return "";
+        String prepareCallInlineExpectation() {
+            return "final java.sql.CallableStatement statement = connection.prepareCall(query)";
         }
 
         @Override
-        String readMetaDataExpectation() {
-            return "";
+        String getMetaDataStatementExpectation() {
+            return """
+                    final java.sql.ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                    """;
         }
 
         @Override
-        String resultSetVariableExpectation() {
-            return "";
+        String executeQueryInlineExpectation() {
+            return "final java.sql.ResultSet resultSet = statement.executeQuery()";
         }
 
         @Override
-        String executeUpdateExpectation() {
-            return "";
+        String returnExecuteUpdateExpectation() {
+            return """
+                    return statement.executeUpdate();
+                    """;
         }
 
         @Override
         String executeBatchExpectation() {
-            return "";
+            return """
+                    return statement.executeBatch();
+                    """;
         }
 
         @Override
         String closeResultSetExpectation() {
-            return "";
+            return """
+                    resultSet.close();
+                    """;
         }
 
         @Override
         String closePrepareStatementExpectation() {
-            return "";
+            return """
+                    statement.close();
+                    """;
         }
 
         @Override
         String closeConnectionExpectation() {
-            return "";
+            return """
+                    connection.close();
+                    """;
         }
 
         @Override
         String closeStateExpectation() {
-            return "";
+            return """
+                    state.close();
+                    """;
         }
 
         @Override
         String executeStatementExpectation() {
-            return "";
+            return """
+                    try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
+                    """;
         }
 
         @Override
         String openConnectionExpectation() {
-            return "";
+            return """
+                    try (final java.sql.Connection connection = dataSource.getConnection()) {
+                    """;
         }
 
         @Override
         String tryPrepareCallableExpectation() {
-            return "";
+            return """
+                    try (final java.sql.CallableStatement statement = connection.prepareCall(query)) {
+                    """;
         }
 
         @Override
         String createStatementExpectation() {
-            return "";
+            return """
+                    try (final java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
+                    """;
         }
 
         @Override
         String prepareBatchExpectation() {
-            return "";
+            return """
+                    for (int batch = 0; batch < test.length; batch++) {
+                      for (final int jdbcIndex : index.get("test")) {
+                        statement.setObject(jdbcIndex, test[batch]);
+                      }
+                      for (final int jdbcIndex : index.get("id")) {
+                        statement.setObject(jdbcIndex, id[batch]);
+                      }
+                      statement.addBatch();
+                    }
+                    """;
         }
 
         @Override
         String pickVendorQueryExpectation() {
-            return "";
+            return """
+                    final java.lang.String query = QUERY_DATA;
+                    LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
+                    final java.lang.String rawQuery = QUERY_DATA_RAW;
+                    final java.util.Map<java.lang.String, int[]> index = QUERY_DATA_INDEX;
+                    LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                    """;
         }
 
         @Override
         String logExecutedQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final java.lang.String executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : test.toString())
+                        .replace(":id", java.lang.String.valueOf(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String logExecutedBatchQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final java.lang.String executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
+                        .replace(":id", java.util.Arrays.toString(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String returnAsMultipleExpectation() {
-            return "";
+            return """
+                    final java.util.List<java.lang.Object> list = new java.util.ArrayList<java.lang.Object>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list;
+                    """;
         }
 
         @Override
         String returnAsSingleExpectation() {
-            return "";
+            return """
+                    final java.util.List<java.util.List<java.lang.Object>> list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
         }
 
         @Override
         String setParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id);
+                    }
+                    """;
         }
 
         @Override
         String setBatchParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test[batch]);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id[batch]);
+                    }
+                    """;
         }
 
     }
@@ -399,123 +631,201 @@ class DefaultJdbcBlocksTest {
     class Java11 extends JdbcBlocksTCK {
 
         @Override
-        public JdbcBlocks generator() {
+        JdbcBlocks generator() {
             return DaoObjectMother.jdbcBlocks(JavaConfigurations.java11());
         }
 
         @Override
-        String connectionVariableExpectation() {
-            return "";
+        String getConnectionInlineExpectation() {
+            return "final var connection = dataSource.getConnection()";
         }
 
         @Override
-        String statementVariableExpectation() {
-            return "";
+        String prepareStatementInlineExpectation() {
+            return "final var statement = connection.prepareStatement(query)";
         }
 
         @Override
-        String callableVariableExpectation() {
-            return "";
+        String prepareCallInlineExpectation() {
+            return "final var statement = connection.prepareCall(query)";
         }
 
         @Override
-        String readMetaDataExpectation() {
-            return "";
+        String getMetaDataStatementExpectation() {
+            return """
+                    final var resultSetMetaData = resultSet.getMetaData();
+                    """;
         }
 
         @Override
-        String resultSetVariableExpectation() {
-            return "";
+        String executeQueryInlineExpectation() {
+            return "final var resultSet = statement.executeQuery()";
         }
 
         @Override
-        String executeUpdateExpectation() {
-            return "";
+        String returnExecuteUpdateExpectation() {
+            return """
+                    return statement.executeUpdate();
+                    """;
         }
 
         @Override
         String executeBatchExpectation() {
-            return "";
+            return """
+                    return statement.executeBatch();
+                    """;
         }
 
         @Override
         String closeResultSetExpectation() {
-            return "";
+            return """
+                    resultSet.close();
+                    """;
         }
 
         @Override
         String closePrepareStatementExpectation() {
-            return "";
+            return """
+                    statement.close();
+                    """;
         }
 
         @Override
         String closeConnectionExpectation() {
-            return "";
+            return """
+                    connection.close();
+                    """;
         }
 
         @Override
         String closeStateExpectation() {
-            return "";
+            return """
+                    state.close();
+                    """;
         }
 
         @Override
         String executeStatementExpectation() {
-            return "";
+            return """
+                    try (final var resultSet = statement.executeQuery()) {
+                    """;
         }
 
         @Override
         String openConnectionExpectation() {
-            return "";
+            return """
+                    try (final var connection = dataSource.getConnection()) {
+                    """;
         }
 
         @Override
         String tryPrepareCallableExpectation() {
-            return "";
+            return """
+                    try (final var statement = connection.prepareCall(query)) {
+                    """;
         }
 
         @Override
         String createStatementExpectation() {
-            return "";
+            return """
+                    try (final var statement = connection.prepareStatement(query)) {
+                    """;
         }
 
         @Override
         String prepareBatchExpectation() {
-            return "";
+            return """
+                    for (int batch = 0; batch < test.length; batch++) {
+                      for (final int jdbcIndex : index.get("test")) {
+                        statement.setObject(jdbcIndex, test[batch]);
+                      }
+                      for (final int jdbcIndex : index.get("id")) {
+                        statement.setObject(jdbcIndex, id[batch]);
+                      }
+                      statement.addBatch();
+                    }
+                    """;
         }
 
         @Override
         String pickVendorQueryExpectation() {
-            return "";
+            return """
+                    final var query = QUERY_DATA;
+                    LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
+                    final var rawQuery = QUERY_DATA_RAW;
+                    final var index = QUERY_DATA_INDEX;
+                    LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                    """;
         }
 
         @Override
         String logExecutedQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final var executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : test.toString())
+                        .replace(":id", java.lang.String.valueOf(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String logExecutedBatchQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final var executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
+                        .replace(":id", java.util.Arrays.toString(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String returnAsMultipleExpectation() {
-            return "";
+            return """
+                    final var list = new java.util.ArrayList<java.lang.Object>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list;
+                    """;
         }
 
         @Override
         String returnAsSingleExpectation() {
-            return "";
+            return """
+                    final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
         }
 
         @Override
         String setParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id);
+                    }
+                    """;
         }
 
         @Override
         String setBatchParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test[batch]);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id[batch]);
+                    }
+                    """;
         }
 
     }
@@ -525,123 +835,201 @@ class DefaultJdbcBlocksTest {
     class Java14 extends JdbcBlocksTCK {
 
         @Override
-        public JdbcBlocks generator() {
+        JdbcBlocks generator() {
             return DaoObjectMother.jdbcBlocks(JavaConfigurations.java14());
         }
 
         @Override
-        String connectionVariableExpectation() {
-            return "";
+        String getConnectionInlineExpectation() {
+            return "final var connection = dataSource.getConnection()";
         }
 
         @Override
-        String statementVariableExpectation() {
-            return "";
+        String prepareStatementInlineExpectation() {
+            return "final var statement = connection.prepareStatement(query)";
         }
 
         @Override
-        String callableVariableExpectation() {
-            return "";
+        String prepareCallInlineExpectation() {
+            return "final var statement = connection.prepareCall(query)";
         }
 
         @Override
-        String readMetaDataExpectation() {
-            return "";
+        String getMetaDataStatementExpectation() {
+            return """
+                    final var resultSetMetaData = resultSet.getMetaData();
+                    """;
         }
 
         @Override
-        String resultSetVariableExpectation() {
-            return "";
+        String executeQueryInlineExpectation() {
+            return "final var resultSet = statement.executeQuery()";
         }
 
         @Override
-        String executeUpdateExpectation() {
-            return "";
+        String returnExecuteUpdateExpectation() {
+            return """
+                    return statement.executeUpdate();
+                    """;
         }
 
         @Override
         String executeBatchExpectation() {
-            return "";
+            return """
+                    return statement.executeBatch();
+                    """;
         }
 
         @Override
         String closeResultSetExpectation() {
-            return "";
+            return """
+                    resultSet.close();
+                    """;
         }
 
         @Override
         String closePrepareStatementExpectation() {
-            return "";
+            return """
+                    statement.close();
+                    """;
         }
 
         @Override
         String closeConnectionExpectation() {
-            return "";
+            return """
+                    connection.close();
+                    """;
         }
 
         @Override
         String closeStateExpectation() {
-            return "";
+            return """
+                    state.close();
+                    """;
         }
 
         @Override
         String executeStatementExpectation() {
-            return "";
+            return """
+                    try (final var resultSet = statement.executeQuery()) {
+                    """;
         }
 
         @Override
         String openConnectionExpectation() {
-            return "";
+            return """
+                    try (final var connection = dataSource.getConnection()) {
+                    """;
         }
 
         @Override
         String tryPrepareCallableExpectation() {
-            return "";
+            return """
+                    try (final var statement = connection.prepareCall(query)) {
+                    """;
         }
 
         @Override
         String createStatementExpectation() {
-            return "";
+            return """
+                    try (final var statement = connection.prepareStatement(query)) {
+                    """;
         }
 
         @Override
         String prepareBatchExpectation() {
-            return "";
+            return """
+                    for (int batch = 0; batch < test.length; batch++) {
+                      for (final int jdbcIndex : index.get("test")) {
+                        statement.setObject(jdbcIndex, test[batch]);
+                      }
+                      for (final int jdbcIndex : index.get("id")) {
+                        statement.setObject(jdbcIndex, id[batch]);
+                      }
+                      statement.addBatch();
+                    }
+                    """;
         }
 
         @Override
         String pickVendorQueryExpectation() {
-            return "";
+            return """
+                    final var query = QUERY_DATA;
+                    LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
+                    final var rawQuery = QUERY_DATA_RAW;
+                    final var index = QUERY_DATA_INDEX;
+                    LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                    """;
         }
 
         @Override
         String logExecutedQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final var executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : test.toString())
+                        .replace(":id", java.lang.String.valueOf(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String logExecutedBatchQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final var executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
+                        .replace(":id", java.util.Arrays.toString(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String returnAsMultipleExpectation() {
-            return "";
+            return """
+                    final var list = new java.util.ArrayList<java.lang.Object>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list;
+                    """;
         }
 
         @Override
         String returnAsSingleExpectation() {
-            return "";
+            return """
+                    final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
         }
 
         @Override
         String setParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id);
+                    }
+                    """;
         }
 
         @Override
         String setBatchParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test[batch]);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id[batch]);
+                    }
+                    """;
         }
 
     }
@@ -651,123 +1039,201 @@ class DefaultJdbcBlocksTest {
     class Java16 extends JdbcBlocksTCK {
 
         @Override
-        public JdbcBlocks generator() {
+        JdbcBlocks generator() {
             return DaoObjectMother.jdbcBlocks(JavaConfigurations.java16());
         }
 
         @Override
-        String connectionVariableExpectation() {
-            return "";
+        String getConnectionInlineExpectation() {
+            return "final var connection = dataSource.getConnection()";
         }
 
         @Override
-        String statementVariableExpectation() {
-            return "";
+        String prepareStatementInlineExpectation() {
+            return "final var statement = connection.prepareStatement(query)";
         }
 
         @Override
-        String callableVariableExpectation() {
-            return "";
+        String prepareCallInlineExpectation() {
+            return "final var statement = connection.prepareCall(query)";
         }
 
         @Override
-        String readMetaDataExpectation() {
-            return "";
+        String getMetaDataStatementExpectation() {
+            return """
+                    final var resultSetMetaData = resultSet.getMetaData();
+                    """;
         }
 
         @Override
-        String resultSetVariableExpectation() {
-            return "";
+        String executeQueryInlineExpectation() {
+            return "final var resultSet = statement.executeQuery()";
         }
 
         @Override
-        String executeUpdateExpectation() {
-            return "";
+        String returnExecuteUpdateExpectation() {
+            return """
+                    return statement.executeUpdate();
+                    """;
         }
 
         @Override
         String executeBatchExpectation() {
-            return "";
+            return """
+                    return statement.executeBatch();
+                    """;
         }
 
         @Override
         String closeResultSetExpectation() {
-            return "";
+            return """
+                    resultSet.close();
+                    """;
         }
 
         @Override
         String closePrepareStatementExpectation() {
-            return "";
+            return """
+                    statement.close();
+                    """;
         }
 
         @Override
         String closeConnectionExpectation() {
-            return "";
+            return """
+                    connection.close();
+                    """;
         }
 
         @Override
         String closeStateExpectation() {
-            return "";
+            return """
+                    state.close();
+                    """;
         }
 
         @Override
         String executeStatementExpectation() {
-            return "";
+            return """
+                    try (final var resultSet = statement.executeQuery()) {
+                    """;
         }
 
         @Override
         String openConnectionExpectation() {
-            return "";
+            return """
+                    try (final var connection = dataSource.getConnection()) {
+                    """;
         }
 
         @Override
         String tryPrepareCallableExpectation() {
-            return "";
+            return """
+                    try (final var statement = connection.prepareCall(query)) {
+                    """;
         }
 
         @Override
         String createStatementExpectation() {
-            return "";
+            return """
+                    try (final var statement = connection.prepareStatement(query)) {
+                    """;
         }
 
         @Override
         String prepareBatchExpectation() {
-            return "";
+            return """
+                    for (int batch = 0; batch < test.length; batch++) {
+                      for (final int jdbcIndex : index.get("test")) {
+                        statement.setObject(jdbcIndex, test[batch]);
+                      }
+                      for (final int jdbcIndex : index.get("id")) {
+                        statement.setObject(jdbcIndex, id[batch]);
+                      }
+                      statement.addBatch();
+                    }
+                    """;
         }
 
         @Override
         String pickVendorQueryExpectation() {
-            return "";
+            return """
+                    final var query = QUERY_DATA;
+                    LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
+                    final var rawQuery = QUERY_DATA_RAW;
+                    final var index = QUERY_DATA_INDEX;
+                    LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
+                    """;
         }
 
         @Override
         String logExecutedQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final var executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : test.toString())
+                        .replace(":id", java.lang.String.valueOf(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String logExecutedBatchQueryExpectation() {
-            return "";
+            return """
+                    if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                      final var executedQuery = rawQuery
+                        .replace(":test", test == null ? "null" : java.util.Arrays.toString(test))
+                        .replace(":id", java.util.Arrays.toString(id));
+                      LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                    }
+                    """;
         }
 
         @Override
         String returnAsMultipleExpectation() {
-            return "";
+            return """
+                    final var list = new java.util.ArrayList<java.lang.Object>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list;
+                    """;
         }
 
         @Override
         String returnAsSingleExpectation() {
-            return "";
+            return """
+                    final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    while (resultSet.next()) {
+                      list.add(converter.apply(resultSet));
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
         }
 
         @Override
         String setParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id);
+                    }
+                    """;
         }
 
         @Override
         String setBatchParametersExpectation() {
-            return "";
+            return """
+                    for (final int jdbcIndex : index.get("test")) {
+                      statement.setObject(jdbcIndex, test[batch]);
+                    }
+                    for (final int jdbcIndex : index.get("id")) {
+                      statement.setObject(jdbcIndex, id[batch]);
+                    }
+                    """;
         }
 
     }

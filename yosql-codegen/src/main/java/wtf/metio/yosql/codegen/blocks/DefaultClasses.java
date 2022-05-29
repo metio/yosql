@@ -22,6 +22,12 @@ public final class DefaultClasses implements Classes {
     }
 
     @Override
+    public TypeSpec.Builder publicInterface(final ClassName name) {
+        return TypeSpec.interfaceBuilder(name)
+                .addModifiers(Modifier.PUBLIC);
+    }
+
+    @Override
     public TypeSpec.Builder publicClass(final ClassName name) {
         final var builder = TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC);
