@@ -34,7 +34,6 @@ abstract class JdbcBlocksTCK {
     abstract String closeResultSetExpectation();
     abstract String closePrepareStatementExpectation();
     abstract String closeConnectionExpectation();
-    abstract String closeStateExpectation();
     abstract String executeStatementExpectation();
     abstract String openConnectionExpectation();
     abstract String tryPrepareCallableExpectation();
@@ -116,13 +115,6 @@ abstract class JdbcBlocksTCK {
         Assertions.assertEquals(
                 closeConnectionExpectation(),
                 generator().closeConnection().toString());
-    }
-
-    @Test
-    final void closeState() {
-        Assertions.assertEquals(
-                closeStateExpectation(),
-                generator().closeState().toString());
     }
 
     @Test

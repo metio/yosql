@@ -32,6 +32,8 @@ public final class Repositories {
                 .addSettings(allowedWritePrefixes())
                 .addSettings(basePackageName())
                 .addSettings(generateInterfaces())
+//                .addSettings(markRepositoriesAsFinal())
+//                .addSettings(sealRepositoryInterfaces()) // TODO: since Java 15
                 .addSettings(repositoryInterfacePrefix())
                 .addSettings(repositoryInterfaceSuffix())
                 .addSettings(repositoryNamePrefix())

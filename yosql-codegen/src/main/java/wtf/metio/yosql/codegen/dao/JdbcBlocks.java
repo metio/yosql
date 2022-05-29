@@ -46,8 +46,6 @@ public interface JdbcBlocks {
 
     CodeBlock closeConnection();
 
-    CodeBlock closeState();
-
     CodeBlock executeStatement();
 
     CodeBlock openConnection();

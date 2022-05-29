@@ -18,4 +18,6 @@ public interface YoSQL {
      */
     void generateCode();
 
+    // TODO: add method that validates the supplied RuntimeConfiguration
+
 }

@@ -134,11 +134,6 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock closeState() {
-        return blocks.close(names.state());
-    }
-
-    @Override
     public CodeBlock executeStatement() {
         return controlFlows.tryWithResource(executeQueryInline());
     }

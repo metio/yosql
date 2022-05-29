@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 
 @CommandLine.Command(
         name = "generate",
-        description = "Generate JavaConfigurations code using SQL files as sources",
+        description = "Generate Java code using SQL files as sources",
         versionProvider = VersionProvider.class,
         mixinStandardHelpOptions = true,
         showAtFileInUsageHelp = true,
@@ -25,6 +25,12 @@ import java.util.concurrent.Callable;
         showDefaultValues = true
 )
 public class Generate implements Callable<Integer> {
+
+    @CommandLine.Mixin
+    public Annotations annotations;
+
+    @CommandLine.Mixin
+    public Converter converter;
 
     @CommandLine.Mixin
     public Files files;
@@ -36,7 +42,7 @@ public class Generate implements Callable<Integer> {
     public Logging logging;
 
     @CommandLine.Mixin
-    public Annotations annotations;
+    public Names names;
 
     @CommandLine.Mixin
     public Repositories repositories;
@@ -58,6 +64,13 @@ public class Generate implements Callable<Integer> {
     private RuntimeConfiguration createConfiguration() {
         return RuntimeConfiguration.usingDefaults()
                 .setAnnotations(annotations.asConfiguration())
+                .setFiles(files.asConfiguration(System.getProperty("user.dir")))
+                .setJava(java.asConfiguration())
+                .setLogging(logging.asConfiguration())
+                .setNames(names.asConfiguration())
+                .setRepositories(repositories.asConfiguration())
+                .setResources(resources.asConfiguration())
+                .setConverter(converter.asConfiguration())
                 .build();
     }
 

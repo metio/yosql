@@ -12,7 +12,7 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
-import wtf.metio.yosql.models.immutables.*;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
 /**
@@ -21,46 +21,10 @@ import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 public abstract class GenerateTask extends DefaultTask {
 
     /**
-     * @return The annotations configuration to use.
+     * @return The runtime configuration to use.
      */
     @Input
-    public abstract Property<AnnotationsConfiguration> getAnnotations();
-
-    /**
-     * @return The API configuration to use.
-     */
-    @Input
-    public abstract Property<LoggingConfiguration> getLoggingConfig();
-
-    /**
-     * @return The file configuration to use.
-     */
-    @Input
-    public abstract Property<FilesConfiguration> getFiles();
-
-    /**
-     * @return The JDBC configuration to use.
-     */
-    @Input
-    public abstract Property<ConverterConfiguration> getConverter();
-
-    /**
-     * @return The Java configuration to use.
-     */
-    @Input
-    public abstract Property<JavaConfiguration> getJava();
-
-    /**
-     * @return The repositories configuration to use.
-     */
-    @Input
-    public abstract Property<RepositoriesConfiguration> getRepositories();
-
-    /**
-     * @return The resources configuration to use.
-     */
-    @Input
-    public abstract Property<ResourcesConfiguration> getResources();
+    public abstract Property<RuntimeConfiguration> getRuntimeConfiguration();
 
     /**
      * Generate Java code.
@@ -68,23 +32,11 @@ public abstract class GenerateTask extends DefaultTask {
     @TaskAction
     public void generateCode() {
         DaggerYoSQLComponent.builder()
-                .runtimeConfiguration(createConfiguration())
+                .runtimeConfiguration(getRuntimeConfiguration().get())
                 .locale(SupportedLocales.defaultLocale())
                 .build()
                 .yosql()
                 .generateCode();
-    }
-
-    private RuntimeConfiguration createConfiguration() {
-        return RuntimeConfiguration.builder()
-                .setFiles(getFiles().get())
-                .setConverter(getConverter().get())
-                .setJava(getJava().get())
-                .setRepositories(getRepositories().get())
-                .setLogging(getLoggingConfig().get())
-                .setAnnotations(getAnnotations().get())
-                .setResources(getResources().get())
-                .build();
     }
 
 }

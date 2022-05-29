@@ -33,12 +33,16 @@ public class YoSqlPlugin implements Plugin<Project> {
         return project.getExtensions().create("yosql", YoSqlExtension.class);
     }
 
-    private void configureConventions(final YoSqlExtension extension, final ProjectLayout layout, final ObjectFactory objects) {
-        extension.getFiles().configureConventions(layout);
-        extension.getConverter().configureConventions(objects);
+    private void configureConventions(
+            final YoSqlExtension extension,
+            final ProjectLayout layout,
+            final ObjectFactory objects) {
         extension.getAnnotations().configureConventions();
-        extension.getLogging().configureConventions();
+        extension.getConverter().configureConventions(objects);
+        extension.getFiles().configureConventions(layout);
         extension.getJava().configureConventions();
+        extension.getLogging().configureConventions();
+        extension.getNames().configureConventions();
         extension.getRepositories().configureConventions();
         extension.getResources().configureConventions();
     }

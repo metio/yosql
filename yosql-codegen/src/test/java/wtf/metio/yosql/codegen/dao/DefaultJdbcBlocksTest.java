@@ -86,13 +86,6 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
-        String closeStateExpectation() {
-            return """
-                    state.close();
-                    """;
-        }
-
-        @Override
         String executeStatementExpectation() {
             return """
                     try (final var resultSet = statement.executeQuery()) {
@@ -286,13 +279,6 @@ class DefaultJdbcBlocksTest {
         String closeConnectionExpectation() {
             return """
                     connection.close();
-                    """;
-        }
-
-        @Override
-        String closeStateExpectation() {
-            return """
-                    state.close();
                     """;
         }
 
@@ -494,13 +480,6 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
-        String closeStateExpectation() {
-            return """
-                    state.close();
-                    """;
-        }
-
-        @Override
         String executeStatementExpectation() {
             return """
                     try (final java.sql.ResultSet resultSet = statement.executeQuery()) {
@@ -694,13 +673,6 @@ class DefaultJdbcBlocksTest {
         String closeConnectionExpectation() {
             return """
                     connection.close();
-                    """;
-        }
-
-        @Override
-        String closeStateExpectation() {
-            return """
-                    state.close();
                     """;
         }
 
@@ -902,13 +874,6 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
-        String closeStateExpectation() {
-            return """
-                    state.close();
-                    """;
-        }
-
-        @Override
         String executeStatementExpectation() {
             return """
                     try (final var resultSet = statement.executeQuery()) {
@@ -1102,13 +1067,6 @@ class DefaultJdbcBlocksTest {
         String closeConnectionExpectation() {
             return """
                     connection.close();
-                    """;
-        }
-
-        @Override
-        String closeStateExpectation() {
-            return """
-                    state.close();
                     """;
         }
 

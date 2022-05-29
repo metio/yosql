@@ -8,6 +8,7 @@
 package wtf.metio.yosql.tooling.gradle;
 
 import org.gradle.api.Action;
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 public class GenerateTaskConfiguration implements Action<GenerateTask> {
 
@@ -19,13 +20,16 @@ public class GenerateTaskConfiguration implements Action<GenerateTask> {
 
     @Override
     public void execute(final GenerateTask task) {
-        task.getAnnotations().set(extension.getAnnotations().asConfiguration());
-        task.getLoggingConfig().set(extension.getLogging().asConfiguration());
-        task.getFiles().set(extension.getFiles().asConfiguration());
-        task.getConverter().set(extension.getConverter().asConfiguration());
-        task.getJava().set(extension.getJava().asConfiguration());
-        task.getRepositories().set(extension.getRepositories().asConfiguration());
-        task.getResources().set(extension.getResources().asConfiguration());
+        task.getRuntimeConfiguration().set(RuntimeConfiguration.builder()
+                .setAnnotations(extension.getAnnotations().asConfiguration())
+                .setConverter(extension.getConverter().asConfiguration())
+                .setFiles(extension.getFiles().asConfiguration())
+                .setJava(extension.getJava().asConfiguration())
+                .setLogging(extension.getLogging().asConfiguration())
+                .setNames(extension.getNames().asConfiguration())
+                .setRepositories(extension.getRepositories().asConfiguration())
+                .setResources(extension.getResources().asConfiguration())
+                .build());
     }
 
 }

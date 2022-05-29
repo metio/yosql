@@ -7,9 +7,18 @@
 
 package wtf.metio.yosql.models.meta.data;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
+import org.immutables.value.Value;
+import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
+
+import javax.lang.model.element.Modifier;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public final class Names {
 
@@ -17,33 +26,50 @@ public final class Names {
         return ConfigurationGroup.builder()
                 .setName("Names")
                 .setDescription("Configures the names of variables in generated code.")
-                .addSettings(logger())
-                .addSettings(query())
-                .addSettings(rawQuery())
-                .addSettings(executedQuery())
-                .addSettings(databaseProductName())
-                .addSettings(action()) // TODO: remove?
-                .addSettings(result()) // TODO: remove?
-                .addSettings(value())
-                .addSettings(emitter()) // TODO: remove?
-                .addSettings(name())
-                .addSettings(state()) // TODO: remove?
-                .addSettings(exception())
-                .addSettings(rawSuffix())
-                .addSettings(indexSuffix())
-                .addSettings(dataSource())
-                .addSettings(connection())
-                .addSettings(statement())
-                .addSettings(databaseMetaData())
-                .addSettings(resultSetMetaData())
-                .addSettings(resultSet())
-                .addSettings(columnCount())
-                .addSettings(columnLabel())
-                .addSettings(batch())
-                .addSettings(list())
-                .addSettings(jdbcIndexVariable())
-                .addSettings(indexVariable())
-                .addSettings(row())
+                .addAllSettings(settings())
+                .setImmutableMethods(List.of(uniqueValueCount(settings())))
+                .build();
+    }
+
+    private static List<ConfigurationSetting> settings() {
+        return List.of(
+                logger(),
+                query(),
+                rawQuery(),
+                executedQuery(),
+                databaseProductName(),
+                action(),
+                exception(),
+                rawSuffix(),
+                indexSuffix(),
+                dataSource(),
+                connection(),
+                statement(),
+                databaseMetaData(),
+                resultSetMetaData(),
+                resultSet(),
+                columnCount(),
+                columnLabel(),
+                batch(),
+                list(),
+                jdbcIndexVariable(),
+                indexVariable(),
+                row());
+    }
+
+    private static MethodSpec uniqueValueCount(final List<ConfigurationSetting> settings) {
+        final var values = settings.stream()
+                .map(ConfigurationSetting::name)
+                .map(name -> name + "()")
+                .collect(Collectors.joining(",\n", "\n", ""));
+
+        return MethodSpec.methodBuilder("uniqueValueCount")
+                .addAnnotation(AnnotationSpec.builder(Value.Lazy.class).build())
+                .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
+                .returns(TypicalTypes.MAP_OF_STRING_AND_LONGS)
+                .addStatement("final var values = $T.of($L)", List.class, values)
+                .addStatement("return values.stream().collect($T.groupingBy($T.identity(), $T.counting()))",
+                        Collectors.class, Function.class, Collectors.class)
                 .build();
     }
 
@@ -98,51 +124,6 @@ public final class Names {
                 .setDescription("The name of an action.")
                 .setType(ClassName.get(String.class))
                 .setValue("action")
-                .build();
-    }
-
-    public static ConfigurationSetting result() {
-        return ConfigurationSetting.builder()
-                .setName("result")
-                .setDescription("The name of a result.")
-                .setType(ClassName.get(String.class))
-                .setValue("result")
-                .build();
-    }
-
-    public static ConfigurationSetting value() {
-        return ConfigurationSetting.builder()
-                .setName("value")
-                .setDescription("The name of a value.")
-                .setType(ClassName.get(String.class))
-                .setValue("value")
-                .build();
-    }
-
-    public static ConfigurationSetting emitter() {
-        return ConfigurationSetting.builder()
-                .setName("emitter")
-                .setDescription("The name of an emitter.")
-                .setType(ClassName.get(String.class))
-                .setValue("emitter")
-                .build();
-    }
-
-    public static ConfigurationSetting name() {
-        return ConfigurationSetting.builder()
-                .setName("name")
-                .setDescription("The name of a name variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("name")
-                .build();
-    }
-
-    public static ConfigurationSetting state() {
-        return ConfigurationSetting.builder()
-                .setName("state")
-                .setDescription("The name of a state.")
-                .setType(ClassName.get(String.class))
-                .setValue("state")
                 .build();
     }
 

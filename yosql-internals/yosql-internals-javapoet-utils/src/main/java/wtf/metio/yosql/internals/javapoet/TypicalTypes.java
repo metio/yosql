@@ -9,12 +9,14 @@ package wtf.metio.yosql.internals.javapoet;
 import com.squareup.javapoet.*;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-// TODO: Use 'TypeName.BOOLEAN' from JavaPoet directly
 public final class TypicalTypes {
 
     public static final ClassName INJECT = ClassName.get("javax.inject", "Inject");
@@ -34,6 +36,7 @@ public final class TypicalTypes {
 
     public static final TypeName MAP_OF_STRING_AND_ARRAY_OF_INTS = mapOf(ClassName.get(String.class), ARRAY_OF_INTS);
     public static final TypeName MAP_OF_STRING_AND_OBJECTS = mapOf(ClassName.get(String.class), TypeName.OBJECT);
+    public static final TypeName MAP_OF_STRING_AND_LONGS = mapOf(ClassName.get(String.class), ClassName.get(Long.class));
     public static final TypeName LINKED_MAP_OF_STRING_AND_OBJECTS = linkedMapOf(ClassName.get(String.class), TypeName.OBJECT);
 
     public static ParameterizedTypeName mapOf(final TypeName key, final TypeName value) {
@@ -62,18 +65,6 @@ public final class TypicalTypes {
 
     public static ParameterizedTypeName listOf(final TypeName type) {
         return ParameterizedTypeName.get(ClassName.get(List.class), type);
-    }
-
-    public static ParameterizedTypeName produceListOf(final TypeName type) {
-        return ParameterizedTypeName.get(ClassName.get(List.class), WildcardTypeName.subtypeOf(type));
-    }
-
-    public static ParameterizedTypeName consumeListOf(final TypeName type) {
-        return ParameterizedTypeName.get(ClassName.get(List.class), WildcardTypeName.supertypeOf(type));
-    }
-
-    public static ParameterizedTypeName setOf(final TypeName type) {
-        return ParameterizedTypeName.get(ClassName.get(Set.class), type);
     }
 
     public static ParameterizedTypeName streamOf(final TypeName type) {

@@ -22,12 +22,6 @@ public abstract class YoSqlExtension {
     public abstract Annotations getAnnotations();
 
     /**
-     * @return The API configuration.
-     */
-    @Nested
-    public abstract Logging getLogging();
-
-    /**
      * @return The files configuration.
      */
     @Nested
@@ -44,6 +38,18 @@ public abstract class YoSqlExtension {
      */
     @Nested
     public abstract Java getJava();
+
+    /**
+     * @return The API configuration.
+     */
+    @Nested
+    public abstract Logging getLogging();
+
+    /**
+     * @return The names configuration.
+     */
+    @Nested
+    public abstract Names getNames();
 
     /**
      * @return The repository configuration.
@@ -65,10 +71,10 @@ public abstract class YoSqlExtension {
     }
 
     /**
-     * @param action The API config to apply.
+     * @param action The converter config to apply.
      */
-    public void api(Action<? super Logging> action) {
-        action.execute(getLogging());
+    public void converter(Action<? super Converter> action) {
+        action.execute(getConverter());
     }
 
     /**
@@ -79,17 +85,24 @@ public abstract class YoSqlExtension {
     }
 
     /**
-     * @param action The converter config to apply.
-     */
-    public void converter(Action<? super Converter> action) {
-        action.execute(getConverter());
-    }
-
-    /**
      * @param action The Java config to apply.
      */
     public void java(Action<? super Java> action) {
         action.execute(getJava());
+    }
+
+    /**
+     * @param action The logging config to apply.
+     */
+    public void logging(Action<? super Logging> action) {
+        action.execute(getLogging());
+    }
+
+    /**
+     * @param action The names config to apply.
+     */
+    public void names(Action<? super Names> action) {
+        action.execute(getNames());
     }
 
     /**

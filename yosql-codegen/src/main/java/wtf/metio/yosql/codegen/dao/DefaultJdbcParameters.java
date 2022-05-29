@@ -68,7 +68,7 @@ public final class DefaultJdbcParameters implements JdbcParameters {
 
     @Override
     public ParameterSpec columnLabel() {
-        return parameters.parameter(ClassName.get(String.class), names.columnLabel());
+        return parameters.parameter(String.class, names.columnLabel());
     }
 
     @Override
