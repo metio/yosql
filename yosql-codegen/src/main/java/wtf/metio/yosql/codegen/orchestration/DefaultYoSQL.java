@@ -63,7 +63,7 @@ public final class DefaultYoSQL implements YoSQL {
             errors.runtimeException(messages.getMessage(ApplicationErrors.RUNTIME_INVALID));
         }
         supplyAsync(this::parseFiles, pool)
-                .thenApplyAsync(this::timeCodeGeneration, pool)
+                .thenApplyAsync(this::generateCode, pool)
                 .thenAcceptAsync(this::writeIntoFiles, pool)
                 .thenRunAsync(timer::printTimings, pool)
                 .exceptionally(this::handleExceptions)
@@ -82,8 +82,7 @@ public final class DefaultYoSQL implements YoSQL {
         return statements;
     }
 
-    private Stream<PackagedTypeSpec> timeCodeGeneration(
-            final List<SqlStatement> statements) {
+    private Stream<PackagedTypeSpec> generateCode(final List<SqlStatement> statements) {
         return timer.timed(messages.getMessage(CodegenLifecycle.GENERATE_REPOSITORIES),
                 () -> codeGenerator.generateCode(statements));
     }
