@@ -5,7 +5,7 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.tooling.dagger.codegen.blocks;
+package wtf.metio.yosql.tooling.dagger.blocks;
 
 import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
@@ -16,7 +16,7 @@ import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import javax.inject.Singleton;
 
 @Module
-public class DefaultGenericBlocksModule {
+public class DefaultBlocksModule {
 
     @Provides
     @Singleton

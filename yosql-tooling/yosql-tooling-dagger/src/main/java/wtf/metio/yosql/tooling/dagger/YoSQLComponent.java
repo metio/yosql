@@ -11,10 +11,13 @@ import dagger.BindsInstance;
 import dagger.Component;
 import wtf.metio.yosql.codegen.orchestration.YoSQL;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
-import wtf.metio.yosql.tooling.dagger.codegen.DefaultCodeGeneratorModule;
+import wtf.metio.yosql.tooling.dagger.blocks.DefaultBlocksModule;
+import wtf.metio.yosql.tooling.dagger.dao.DefaultDaoModule;
 import wtf.metio.yosql.tooling.dagger.files.DefaultFilesModule;
 import wtf.metio.yosql.tooling.dagger.i18n.Cal10nModule;
+import wtf.metio.yosql.tooling.dagger.logging.DefaultLoggingModule;
 import wtf.metio.yosql.tooling.dagger.orchestration.DefaultOrchestrationModule;
+import wtf.metio.yosql.tooling.dagger.validation.DefaultValidationModule;
 
 import javax.inject.Singleton;
 import java.util.Locale;
@@ -26,9 +29,12 @@ import java.util.Locale;
 @Singleton
 @Component(modules = {
         Cal10nModule.class,
+        DefaultValidationModule.class,
         DefaultOrchestrationModule.class,
         DefaultFilesModule.class,
-        DefaultCodeGeneratorModule.class
+        DefaultBlocksModule.class,
+        DefaultDaoModule.class,
+        DefaultLoggingModule.class
 })
 public interface YoSQLComponent {
 

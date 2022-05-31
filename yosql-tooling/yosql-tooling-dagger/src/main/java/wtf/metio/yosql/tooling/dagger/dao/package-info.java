@@ -5,4 +5,4 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.tooling.dagger.codegen.dao;
+package wtf.metio.yosql.tooling.dagger.dao;

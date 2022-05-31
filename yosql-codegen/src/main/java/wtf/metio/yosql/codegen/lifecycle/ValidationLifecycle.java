@@ -12,22 +12,12 @@ import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
 
 @LocaleData({@Locale("en"), @Locale("de")})
-@BaseName("codegen-lifecycle")
-public enum CodegenLifecycle {
+@BaseName("validation-lifecycle")
+public enum ValidationLifecycle {
 
     /**
-     * Signals that a type was generated.
+     * Signals that the configuration is about to be validated.
      */
-    TYPE_GENERATED,
-
-    /**
-     * Signals that repositories are about to be generated.
-     */
-    GENERATE_REPOSITORIES,
-
-    /**
-     * Signals that converters are about to be generated.
-     */
-    GENERATE_CONVERTERS,
+    VALIDATE_CONFIGURATION,
 
 }

@@ -80,6 +80,13 @@ public final class ExecutionErrors {
     /**
      * @param message The message to include.
      */
+    public void runtimeException(final String message) {
+        throwWith(new RuntimeException(message));
+    }
+
+    /**
+     * @param message The message to include.
+     */
     public void sqlFileParsingException(final String message) {
         throwWith(new SqlFileParsingException(message));
     }

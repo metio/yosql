@@ -4,31 +4,28 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.tooling.dagger.codegen.logging;
+package wtf.metio.yosql.tooling.dagger.logging;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
-import wtf.metio.yosql.codegen.blocks.Fields;
-import wtf.metio.yosql.codegen.logging.JulLoggingGenerator;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
+import wtf.metio.yosql.codegen.logging.TinylogLoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Singleton;
 
 /**
- * Dagger module for java.util.logging based logging generators.
+ * Dagger module for tinylog based logging generators.
  */
 @Module
-public class JulLoggingModule {
+public class TinylogLoggingModule {
 
     @IntoSet
     @Provides
     @Singleton
-    LoggingGenerator provideJdkLoggingGenerator(
-            final RuntimeConfiguration runtimeConfiguration,
-            final Fields fields) {
-        return new JulLoggingGenerator(runtimeConfiguration.names(), fields);
+    LoggingGenerator provideJdkLoggingGenerator(final RuntimeConfiguration runtimeConfiguration) {
+        return new TinylogLoggingGenerator(runtimeConfiguration.names());
     }
 
 }

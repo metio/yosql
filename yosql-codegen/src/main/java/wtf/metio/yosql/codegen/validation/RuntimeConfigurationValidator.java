@@ -5,4 +5,12 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.tooling.dagger.codegen.blocks;
+package wtf.metio.yosql.codegen.validation;
+
+import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+
+public interface RuntimeConfigurationValidator {
+
+    void validate(RuntimeConfiguration configuration);
+
+}

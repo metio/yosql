@@ -41,6 +41,11 @@ public enum ApplicationErrors {
     CODE_GENERATION_FAILED,
 
     /**
+     * Signals that runtime environment is invalid.
+     */
+    RUNTIME_INVALID,
+
+    /**
      * Signals that names configuration is invalid.
      */
     NAMES_CONFIG_INVALID,

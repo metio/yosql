@@ -4,7 +4,7 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.tooling.dagger.codegen.dao;
+package wtf.metio.yosql.tooling.dagger.dao;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,6 +24,15 @@ import javax.inject.Singleton;
  */
 @Module
 public class DefaultDaoModule {
+
+    @Provides
+    @Singleton
+    CodeGenerator provideCodeGenerator(
+            final RepositoryGenerator repositoryGenerator,
+            final ConverterGenerator converterGenerator,
+            final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultCodeGenerator(repositoryGenerator, converterGenerator, runtimeConfiguration.repositories());
+    }
 
     @Provides
     @Singleton

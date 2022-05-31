@@ -4,31 +4,31 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.tooling.dagger.codegen.logging;
+package wtf.metio.yosql.tooling.dagger.logging;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
 import wtf.metio.yosql.codegen.blocks.Fields;
+import wtf.metio.yosql.codegen.logging.Log4jLoggingGenerator;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
-import wtf.metio.yosql.codegen.logging.SystemLoggingGenerator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Singleton;
 
 /**
- * Dagger module for {@link System.Logger} logging generators.
+ * Dagger module for log4j based logging generators.
  */
 @Module
-public class SystemLoggingModule {
+public class Log4jLoggingModule {
 
     @IntoSet
     @Provides
     @Singleton
-    LoggingGenerator provideNoOpLoggingGenerator(
+    LoggingGenerator provideLog4jLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Fields fields) {
-        return new SystemLoggingGenerator(runtimeConfiguration.names(), fields);
+        return new Log4jLoggingGenerator(runtimeConfiguration.names(), fields);
     }
 
 }

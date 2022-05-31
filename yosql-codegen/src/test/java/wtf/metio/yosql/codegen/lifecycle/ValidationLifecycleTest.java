@@ -4,17 +4,16 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.codegen.orchestration;
 
-/**
- * High-level interface of YoSQL. All configuration options must be passed into the actual implementation
- * or otherwise obtained before generating code.
- */
-public interface YoSQL {
+package wtf.metio.yosql.codegen.lifecycle;
 
-    /**
-     * Generates .java files based on the configured .sql files and generator options.
-     */
-    void generateCode();
+import wtf.metio.yosql.codegen.testing.PropertiesTCK;
+
+final class ValidationLifecycleTest implements PropertiesTCK<ValidationLifecycle>  {
+
+    @Override
+    public Class<ValidationLifecycle> getEnumClass() {
+        return ValidationLifecycle.class;
+    }
 
 }

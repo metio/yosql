@@ -15,6 +15,7 @@ import wtf.metio.yosql.codegen.dao.CodeGenerator;
 import wtf.metio.yosql.codegen.files.FileParser;
 import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.orchestration.*;
+import wtf.metio.yosql.codegen.validation.RuntimeValidator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.TimeLogger;
 import wtf.metio.yosql.tooling.dagger.annotations.Writer;
@@ -29,10 +30,23 @@ public class DefaultOrchestrationModule {
     @Provides
     @Singleton
     YoSQL provideYoSql(
-            final Orchestrator orchestrator,
             final FileParser files,
-            final CodeGenerator codeGenerator) {
-        return new OrchestratedYoSQL(orchestrator, files, codeGenerator);
+            final CodeGenerator codeGenerator,
+            final Executor pool,
+            final Timer timer,
+            final IMessageConveyor messages,
+            final TypeWriter typeWriter,
+            final ExecutionErrors errors,
+            final RuntimeValidator runtimeValidator) {
+        return new DefaultYoSQL(
+                files,
+                codeGenerator,
+                pool,
+                timer,
+                messages,
+                typeWriter,
+                errors,
+                runtimeValidator);
     }
 
     @Provides
@@ -48,22 +62,6 @@ public class DefaultOrchestrationModule {
             final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors) {
         return new DefaultTypeWriter(logger, runtimeConfiguration.files(), errors);
-    }
-
-    @Provides
-    @Singleton
-    Orchestrator provideOrchestrator(
-            final Executor pool,
-            final Timer timer,
-            final IMessageConveyor messages,
-            final TypeWriter typeWriter,
-            final ExecutionErrors errors) {
-        return new DefaultOrchestrator(
-                pool,
-                timer,
-                messages,
-                typeWriter,
-                errors);
     }
 
     @Provides

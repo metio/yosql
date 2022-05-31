@@ -5,4 +5,17 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.tooling.dagger.codegen;
+package wtf.metio.yosql.codegen.validation;
+
+/**
+ * Validates the runtime environment before generating code.
+ */
+@FunctionalInterface
+public interface RuntimeValidator {
+
+    /**
+     * Validate the runtime environment.
+     */
+    void validate();
+
+}
