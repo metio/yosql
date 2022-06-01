@@ -8,6 +8,7 @@
 package wtf.metio.yosql.tooling.gradle;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
@@ -31,12 +32,16 @@ public abstract class GenerateCodeTask extends DefaultTask {
      */
     @TaskAction
     public void generateCode() {
-        DaggerYoSQLComponent.builder()
-                .runtimeConfiguration(getRuntimeConfiguration().get())
-                .locale(SupportedLocales.defaultLocale())
-                .build()
-                .yosql()
-                .generateCode();
+        try {
+            DaggerYoSQLComponent.builder()
+                    .runtimeConfiguration(getRuntimeConfiguration().get())
+                    .locale(SupportedLocales.defaultLocale())
+                    .build()
+                    .yosql()
+                    .generateCode();
+        } catch (final Throwable throwable) {
+            throw new GradleException("Failure to generate code", throwable);
+        }
 
     }
 
