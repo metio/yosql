@@ -10,7 +10,7 @@ package wtf.metio.yosql.tooling.gradle;
 import org.gradle.api.Action;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
-public class GenerateTaskConfiguration implements Action<GenerateTask> {
+public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
 
     private final YoSqlExtension extension;
 
@@ -19,7 +19,7 @@ public class GenerateTaskConfiguration implements Action<GenerateTask> {
     }
 
     @Override
-    public void execute(final GenerateTask task) {
+    public void execute(final GenerateCodeTask task) {
         task.getRuntimeConfiguration().set(RuntimeConfiguration.builder()
                 .setAnnotations(extension.getAnnotations().asConfiguration())
                 .setConverter(extension.getConverter().asConfiguration())

@@ -9,7 +9,7 @@ package wtf.metio.yosql.codegen.validation;
 
 import ch.qos.cal10n.IMessageConveyor;
 import wtf.metio.yosql.codegen.exceptions.InvalidNameConfigurationException;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import java.util.Map;

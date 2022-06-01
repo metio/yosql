@@ -8,8 +8,8 @@
 package wtf.metio.yosql.codegen.files;
 
 import ch.qos.cal10n.IMessageConveyor;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.lifecycle.ValidationErrors;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.configuration.SqlType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;

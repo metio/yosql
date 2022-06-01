@@ -7,8 +7,8 @@
 package wtf.metio.yosql.codegen.files;
 
 import ch.qos.cal10n.IMessageConveyor;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.lifecycle.FileErrors;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 
 import java.io.IOException;
 import java.nio.file.Files;

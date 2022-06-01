@@ -60,6 +60,7 @@ public final class DefaultYoSQL implements YoSQL {
     public void generateCode() {
         timer.timed(messages.getMessage(ValidationLifecycle.VALIDATE_CONFIGURATION), validator::validate);
         if (errors.hasErrors()) {
+            errors.logErrors();
             errors.runtimeException(messages.getMessage(ApplicationErrors.RUNTIME_INVALID));
         }
         supplyAsync(this::parseFiles, pool)
@@ -69,6 +70,7 @@ public final class DefaultYoSQL implements YoSQL {
                 .exceptionally(this::handleExceptions)
                 .join();
         if (errors.hasErrors()) {
+            errors.logErrors();
             errors.codeGenerationException(messages.getMessage(ApplicationErrors.CODE_GENERATION_FAILED));
         }
     }

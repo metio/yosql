@@ -12,7 +12,7 @@ import dagger.Module;
 import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.files.*;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.Parser;
 import wtf.metio.yosql.tooling.dagger.annotations.Reader;

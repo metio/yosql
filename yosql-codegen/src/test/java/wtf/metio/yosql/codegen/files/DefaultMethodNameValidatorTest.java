@@ -10,8 +10,9 @@ package wtf.metio.yosql.codegen.files;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
+import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.models.configuration.SqlType;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.testing.configs.RepositoriesConfigurations;
@@ -29,7 +30,7 @@ class DefaultMethodNameValidatorTest {
 
     @BeforeEach
     void setUp() {
-        errors = new ExecutionErrors();
+        errors = OrchestrationObjectMother.executionErrors();
         validator = new DefaultMethodNameValidator(RepositoriesConfigurations.validatingMethodNames(), errors, LoggingObjectMother.messages());
     }
 

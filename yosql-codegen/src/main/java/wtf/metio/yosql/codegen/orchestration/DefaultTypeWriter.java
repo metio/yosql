@@ -9,7 +9,6 @@ package wtf.metio.yosql.codegen.orchestration;
 import com.squareup.javapoet.JavaFile;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.lifecycle.ApplicationErrors;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.lifecycle.WriteLifecycle;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;

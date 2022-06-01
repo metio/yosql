@@ -17,7 +17,7 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 /**
- * The YoSQL Gradle plugin. It configures the {@link YoSqlExtension} and registers the {@link GenerateTask}.
+ * The YoSQL Gradle plugin. It configures the {@link YoSqlExtension} and registers the {@link GenerateCodeTask}.
  */
 public class YoSqlPlugin implements Plugin<Project> {
 
@@ -49,7 +49,7 @@ public class YoSqlPlugin implements Plugin<Project> {
 
     private void registerTask(final Project project, final YoSqlExtension extension) {
         final var generate = project.getTasks().register("generateJavaCode",
-                GenerateTask.class, new GenerateTaskConfiguration(extension));
+                GenerateCodeTask.class, new GenerateTaskConfiguration(extension));
         project.getTasks().withType(JavaCompile.class, task -> task.doFirst("yosql",
                 new GenerateCodeAction(generate)));
     }

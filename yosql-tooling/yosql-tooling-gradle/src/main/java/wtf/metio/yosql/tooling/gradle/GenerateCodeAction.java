@@ -13,9 +13,9 @@ import org.gradle.api.tasks.TaskProvider;
 
 public final class GenerateCodeAction implements Action<Task> {
 
-    private final TaskProvider<GenerateTask> generateTask;
+    private final TaskProvider<GenerateCodeTask> generateTask;
 
-    public GenerateCodeAction(final TaskProvider<GenerateTask> generateTask) {
+    public GenerateCodeAction(final TaskProvider<GenerateCodeTask> generateTask) {
         this.generateTask = generateTask;
     }
 

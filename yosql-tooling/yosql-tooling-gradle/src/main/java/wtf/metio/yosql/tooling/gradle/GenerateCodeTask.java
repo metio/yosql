@@ -18,7 +18,7 @@ import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 /**
  * Generate Java code by reading SQL code.
  */
-public abstract class GenerateTask extends DefaultTask {
+public abstract class GenerateCodeTask extends DefaultTask {
 
     /**
      * @return The runtime configuration to use.
@@ -37,6 +37,7 @@ public abstract class GenerateTask extends DefaultTask {
                 .build()
                 .yosql()
                 .generateCode();
+
     }
 
 }

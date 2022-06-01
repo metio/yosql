@@ -11,7 +11,7 @@ import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.codegen.validation.*;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.Delegating;

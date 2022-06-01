@@ -7,8 +7,8 @@
 
 package wtf.metio.yosql.codegen.files;
 
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
+import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.testing.configs.FilesConfigurations;
@@ -33,14 +33,14 @@ public final class FilesObjectMother {
     public static MethodParameterConfigurer methodParameterConfigurer() {
         return new DefaultMethodParameterConfigurer(
                 LoggingObjectMother.logger(),
-                new ExecutionErrors(),
+                OrchestrationObjectMother.executionErrors(),
                 LoggingObjectMother.messages());
     }
 
     public static MethodNameValidator methodNameValidator(final RepositoriesConfiguration repositories) {
         return new DefaultMethodNameValidator(
                 repositories,
-                new ExecutionErrors(),
+                OrchestrationObjectMother.executionErrors(),
                 LoggingObjectMother.messages());
     }
 
@@ -81,7 +81,7 @@ public final class FilesObjectMother {
                 LoggingObjectMother.logger(),
                 sqlConfigurationFactory(repositories, converter),
                 FilesConfigurations.defaults(),
-                new ExecutionErrors());
+                OrchestrationObjectMother.executionErrors());
     }
 
     private FilesObjectMother() {

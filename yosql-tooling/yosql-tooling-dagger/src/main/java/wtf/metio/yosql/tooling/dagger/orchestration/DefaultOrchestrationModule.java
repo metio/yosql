@@ -13,10 +13,10 @@ import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.dao.CodeGenerator;
 import wtf.metio.yosql.codegen.files.FileParser;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.orchestration.*;
 import wtf.metio.yosql.codegen.validation.RuntimeValidator;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+import wtf.metio.yosql.tooling.dagger.annotations.Execution;
 import wtf.metio.yosql.tooling.dagger.annotations.TimeLogger;
 import wtf.metio.yosql.tooling.dagger.annotations.Writer;
 
@@ -90,8 +90,8 @@ public class DefaultOrchestrationModule {
 
     @Provides
     @Singleton
-    ExecutionErrors provideExecutionErrors() {
-        return new ExecutionErrors();
+    ExecutionErrors provideExecutionErrors(@Execution final LocLogger logger) {
+        return new ExecutionErrors(logger);
     }
 
 }

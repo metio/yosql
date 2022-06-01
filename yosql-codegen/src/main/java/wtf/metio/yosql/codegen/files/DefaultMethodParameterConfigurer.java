@@ -9,8 +9,8 @@ package wtf.metio.yosql.codegen.files;
 
 import ch.qos.cal10n.IMessageConveyor;
 import org.slf4j.cal10n.LocLogger;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
 import wtf.metio.yosql.codegen.lifecycle.ValidationErrors;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 

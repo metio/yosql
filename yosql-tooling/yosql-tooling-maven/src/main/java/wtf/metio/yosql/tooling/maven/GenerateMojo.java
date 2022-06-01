@@ -66,14 +66,6 @@ public class GenerateMojo extends AbstractMojo {
         try {
             buildYoSQL().generateCode();
         } catch (final Throwable throwable) {
-            for (final var exception : throwable.getSuppressed()) {
-                LOG.error(exception.getMessage());
-                LOG.debug(exception.getMessage(), exception);
-                for (final var suppressed : exception.getSuppressed()) {
-                    LOG.error(suppressed.getMessage());
-                    LOG.debug(suppressed.getMessage(), suppressed);
-                }
-            }
             throw new MojoExecutionException("Failure to generate code", throwable);
         }
     }

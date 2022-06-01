@@ -74,8 +74,15 @@ public class Cal10nModule {
     @Converter
     @Provides
     @Singleton
-    LocLogger provideUtilitiesLocLogger(final LocLoggerFactory factory) {
+    LocLogger provideConverterLocLogger(final LocLoggerFactory factory) {
         return factory.getLocLogger(Loggers.CONVERTERS.loggerName);
+    }
+
+    @Execution
+    @Provides
+    @Singleton
+    LocLogger provideExecutionLocLogger(final LocLoggerFactory factory) {
+        return factory.getLocLogger(Loggers.EXECUTIONS.loggerName);
     }
 
 }

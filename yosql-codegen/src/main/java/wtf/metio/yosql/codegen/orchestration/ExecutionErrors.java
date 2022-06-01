@@ -4,12 +4,12 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.codegen.lifecycle;
+package wtf.metio.yosql.codegen.orchestration;
 
+import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.exceptions.CodeGenerationException;
 import wtf.metio.yosql.codegen.exceptions.SqlFileParsingException;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,13 +22,24 @@ import static java.util.Objects.requireNonNull;
 public final class ExecutionErrors {
 
     private final List<Throwable> errors = new ArrayList<>();
+    private final LocLogger logger;
 
     /**
      * Creates a new execution error instance.
      */
-    @Inject
-    public ExecutionErrors() {
-        // for dagger
+    public ExecutionErrors(final LocLogger logger) {
+        this.logger = logger;
+    }
+
+    public void logErrors() {
+        for (final var error : errors) {
+            logger.error(error.getMessage());
+            logger.debug(error.getMessage(), error);
+            for (final var suppressed : error.getSuppressed()) {
+                logger.error(suppressed.getMessage());
+                logger.debug(suppressed.getMessage(), suppressed);
+            }
+        }
     }
 
     /**
