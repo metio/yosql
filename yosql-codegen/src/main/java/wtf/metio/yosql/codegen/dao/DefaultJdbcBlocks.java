@@ -184,30 +184,28 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .beginControlFlow("switch ($N)", names.databaseProductName());
             sqlStatements.stream()
                     .map(SqlStatement::getConfiguration)
-                    .filter(config -> Objects.nonNull(config.vendor()))
+                    .filter(config -> config.vendor().isPresent())
                     .forEach(config -> {
                         final var query = fields.constantSqlStatementFieldName(config);
-                        builder.add("case $S:\n", config.vendor())
+                        builder.add("case $S:\n", config.vendor().orElseThrow())
                                 .addStatement("$>$N = $N", names.query(), query)
                                 .add(logging.vendorQueryPicked(query));
                         finalizeCase(builder, config);
                     });
-            final var firstConfigWithoutVendor = sqlStatements.stream()
+            sqlStatements.stream()
                     .map(SqlStatement::getConfiguration)
-                    .filter(config -> Objects.isNull(config.vendor()))
-                    .findFirst();
-            if (firstConfigWithoutVendor.isPresent()) {
-                final var config = firstConfigWithoutVendor.get();
-                final var query = fields.constantSqlStatementFieldName(config);
-                builder.add("default:\n")
-                        .addStatement("$>$N = $N", names.query(), query)
-                        .add(logging.vendorQueryPicked(query));
-                finalizeCase(builder, config);
-            } else {
-                builder.add("default:\n")
-                        .addStatement("$>throw new $T($T.format($S, $N))$<", IllegalStateException.class, String.class,
-                                "No suitable query defined for vendor [%s]", names.databaseProductName());
-            }
+                    .filter(config -> config.vendor().isEmpty())
+                    .findFirst()
+                    .ifPresentOrElse(config -> {
+                        final var query = fields.constantSqlStatementFieldName(config);
+                        builder.add("default:\n")
+                                .addStatement("$>$N = $N", names.query(), query)
+                                .add(logging.vendorQueryPicked(query));
+                        finalizeCase(builder, config);
+                    }, () -> builder.add("default:\n")
+                            .addStatement("$>throw new $T($T.format($S, $N))$<", IllegalStateException.class, String.class,
+                                    "No suitable query defined for vendor [%s]", names.databaseProductName()));
+
             builder.endControlFlow();
         } else {
             final var config = sqlStatements.get(0).getConfiguration();

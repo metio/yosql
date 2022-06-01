@@ -17,8 +17,8 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Inheritance -->
     <parent>
-        <groupId>wtf.metio.yosql.examples.maven</groupId>
-        <artifactId>yosql-examples-maven</artifactId>
+        <groupId>wtf.metio.yosql.examples</groupId>
+        <artifactId>yosql-examples</artifactId>
         <version>0.0.0-SNAPSHOT</version>
     </parent>
 
@@ -26,13 +26,13 @@
     <!--                               COORDINATES                               -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Maven_Coordinates -->
-    <artifactId>yosql-examples-maven-jdbc-java11</artifactId>
+    <artifactId>yosql-examples-common</artifactId>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!--                               INFORMATIONS                              -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
-    <name>YoSQL :: Examples :: Maven :: JDBC/Java11</name>
+    <name>YoSQL :: Examples :: Common</name>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!--                               DEPENDENCIES                              -->
@@ -40,45 +40,18 @@
     <!-- https://maven.apache.org/pom.html#Dependencies -->
     <dependencies>
         <dependency>
-            <groupId>wtf.metio.yosql.examples</groupId>
-            <artifactId>yosql-examples-common</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.immutables</groupId>
+            <artifactId>value</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>wtf.metio.yosql.tooling</groupId>
-                <artifactId>yosql-tooling-maven</artifactId>
-                <configuration>
-                    <files>
-                        <skipLines>6</skipLines>
-                        <inputBaseDirectory>../../yosql-examples-common/src/main/yosql</inputBaseDirectory>
-                    </files>
-                    <java>
-                        <apiVersion>11</apiVersion>
-                        <useTextBlocks>false</useTextBlocks>
-                        <useRecords>false</useRecords>
-                    </java>
-                    <repositories>
-                        <basePackageName>wtf.metio.yosql.example.maven.jdbc.java11.persistence</basePackageName>
-                        <generateInterfaces>true</generateInterfaces>
-                    </repositories>
-                    <converter>
-                        <mapConverterClass>wtf.metio.yosql.example.maven.jdbc.java11.persistence.converter.ToMapConverter</mapConverterClass>
-                        <rowConverters>
-                            <rowConverter>
-                                <alias>itemConverter</alias>
-                                <converterType>wtf.metio.yosql.example.maven.jdbc.java11.converter.ToItemConverter</converterType>
-                                <methodName>asUserType</methodName>
-                                <resultType>wtf.metio.yosql.example.maven.jdbc.java11.model.Item</resultType>
-                            </rowConverter>
-                        </rowConverters>
-                    </converter>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

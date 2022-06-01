@@ -71,6 +71,10 @@ public final class SqlConfigurations {
         return config.build();
     }
 
+    public static SqlConfiguration simpleSqlConfiguration() {
+        return SqlConfiguration.builder().setName("queryData").build();
+    }
+
     public static SqlConfiguration withCustomConverter() {
         return SqlConfiguration.copyOf(sqlConfiguration())
                 .withResultRowConverter(ResultRowConverter.builder()

@@ -6,99 +6,66 @@
  */
 package wtf.metio.yosql.example.maven.jdbc.java16;
 
-import com.zaxxer.hikari.HikariDataSource;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.CompanyRepository;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.PersonRepository;
-import wtf.metio.yosql.example.maven.jdbc.java16.persistence.SchemaRepository;
+import wtf.metio.yosql.example.common.DataSourceCreator;
+import wtf.metio.yosql.example.common.ReadingTests;
+import wtf.metio.yosql.example.common.SchemaCreator;
+import wtf.metio.yosql.example.common.WritingTests;
+import wtf.metio.yosql.example.maven.jdbc.java16.converter.ToItemConverter;
+import wtf.metio.yosql.example.maven.jdbc.java16.persistence.*;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ToMapConverter;
-
-import javax.sql.DataSource;
-import java.util.Arrays;
 
 public class ExampleApp {
 
     public static void main(final String[] arguments) {
-        if (match(arguments, "psql")) {
-            // start psql first with 'docker-compose up -d postgres'
-            final var dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl("jdbc:postgresql://localhost:50000/example");
-            dataSource.setUsername("example");
-            dataSource.setPassword("example");
-            runTests(arguments, dataSource);
-        } else if (match(arguments, "mysql")) {
-            // start mysql first with 'docker-compose up -d mysql'
-            final var dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:51000/example?useSSL=false");
-            dataSource.setUsername("example");
-            dataSource.setPassword("example");
-            runTests(arguments, dataSource);
-        } else {
-            // Use in-memory database
-            final var dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl("jdbc:h2:mem:example;DB_CLOSE_DELAY=-1");
-            dataSource.setUsername("sa");
-            runTests(arguments, dataSource);
+        try (final var dataSource = DataSourceCreator.createDataSource();) {
+            final var schemaRepository = new SchemaRepository(dataSource);
+            final var toMapConverter = new ToMapConverter();
+            final var toItemConverter = new ToItemConverter();
+            final var companyRepository = new CompanyRepository(dataSource, toMapConverter);
+            final var personRepository = new PersonRepository(dataSource, toMapConverter);
+            final var itemRepository = new ItemRepository(dataSource, toMapConverter, toItemConverter);
+            final var userRepository = new UserRepository(dataSource, toMapConverter);
+            final var adminRepository = new AdminRepository(dataSource, toMapConverter);
+
+            SchemaCreator.builder()
+                    .dropCompaniesTable(schemaRepository::dropCompaniesTable)
+                    .dropPersonsTable(schemaRepository::dropPersonsTable)
+                    .dropItemsTable(schemaRepository::dropItemsTable)
+                    .dropUsersTable(schemaRepository::dropUsersTable)
+                    .createCompaniesTable(schemaRepository::createCompaniesTable)
+                    .createPersonsTable(schemaRepository::createPersonsTable)
+                    .createItemsTable(schemaRepository::createItemsTable)
+                    .createUsersTable(schemaRepository::createUsersTable)
+                    .build()
+                    .createDatabaseSchema();
+
+            WritingTests.builder()
+                    .insertCompany(companyRepository::insertCompany)
+                    .insertPerson(personRepository::insertPerson)
+                    .insertCompanyBatch(companyRepository::insertCompanyBatch)
+                    .insertPersonBatch(personRepository::insertPersonBatch)
+                    .updateUser(adminRepository::updateUser)
+                    .insertUser(userRepository::insertUser)
+                    .insertUserBatch(userRepository::insertUserBatch)
+                    .insertItem(itemRepository::insertItem)
+                    .insertItemBatch(itemRepository::insertItemBatch)
+                    .build()
+                    .runWritingTests();
+
+            ReadingTests.builder()
+                    .queryAllCompanies(companyRepository::queryAllCompanies)
+                    .findCompanyByName(companyRepository::findCompanyByName)
+                    .findCompanies(companyRepository::findCompanies)
+                    .findPerson(personRepository::findPerson)
+                    .findPersons(personRepository::findPersons)
+                    .findItemByAllNames(itemRepository::findItemByAllNames)
+                    .findItemByName(itemRepository::findItemByName)
+                    .queryAllUsers(userRepository::queryAllUsers)
+                    .querySpecialUserWithConstantId(userRepository::querySpecialUserWithConstantId)
+                    .queryAdminUser(adminRepository::queryAdminUser)
+                    .build()
+                    .runReadingTests();
         }
-    }
-
-    private static void runTests(final String[] arguments, final DataSource dataSource) {
-        final var schemaRepository = new SchemaRepository(dataSource);
-        final var toMapConverter = new ToMapConverter();
-        final var companyRepository = new CompanyRepository(dataSource, toMapConverter);
-        final var personRepository = new PersonRepository(dataSource, toMapConverter);
-
-        if (match(arguments, "generic", "stream")) {
-            initializeDatabase(schemaRepository, companyRepository, personRepository);
-        }
-        if (match(arguments, "generic")) {
-            standardTests(companyRepository, personRepository);
-        }
-        if (match(arguments, "stream")) {
-            streamTests(companyRepository, personRepository);
-        }
-    }
-
-    private static boolean match(final String[] arguments, final String... values) {
-        return Arrays.stream(arguments).anyMatch(argument -> Arrays.asList(values).contains(argument));
-    }
-
-    private static void initializeDatabase(
-            final SchemaRepository schemaRepository,
-            final CompanyRepository companyRepository,
-            final PersonRepository personRepository) {
-        createSchema(schemaRepository);
-        writeCompanies(companyRepository);
-    }
-
-    private static void createSchema(final SchemaRepository schemaRepository) {
-        schemaRepository.dropCompaniesTable();
-        schemaRepository.dropPersonsTable();
-        schemaRepository.dropItemsTable();
-
-        schemaRepository.createCompaniesTable();
-        schemaRepository.createPersonsTable();
-        schemaRepository.createItemsTable();
-    }
-
-    private static void writeCompanies(final CompanyRepository companyRepository) {
-        companyRepository.insertCompany(1, "test");
-        companyRepository.insertCompany(2, "two");
-        companyRepository.insertCompany(3,"three");
-    }
-
-    private static void standardTests(
-            final CompanyRepository companyRepository,
-            final PersonRepository personRepository) {
-        companyRepository.queryAllCompanies();
-        companyRepository.findCompanyByName("test");
-        companyRepository.findCompanies(10, 20);
-        personRepository.findPerson("test");
-    }
-
-    private static void streamTests(
-            final CompanyRepository companyRepository,
-            final PersonRepository personRepository) {
-        companyRepository.queryAllCompanies();
     }
 
 }

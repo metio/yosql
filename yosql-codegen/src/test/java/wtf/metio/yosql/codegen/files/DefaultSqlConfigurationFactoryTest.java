@@ -9,8 +9,6 @@ package wtf.metio.yosql.codegen.files;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.codegen.lifecycle.ExecutionErrors;
-import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.configuration.SqlType;
@@ -182,24 +180,14 @@ class DefaultSqlConfigurationFactoryTest {
                 () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType(), "resultType"));
     }
 
-    private DefaultSqlConfigurationFactory factory() {
+    private SqlConfigurationFactory factory() {
         return factory(RuntimeConfigurations.defaults());
     }
 
-    private DefaultSqlConfigurationFactory factory(final RuntimeConfiguration runtimeConfiguration) {
-        final var logger = LoggingObjectMother.logger();
-        final var errors = new ExecutionErrors();
-        final var messages = LoggingObjectMother.messages();
-        return new DefaultSqlConfigurationFactory(
-                logger,
-                new DefaultSqlConfigurationParser(),
-                new DefaultMethodSettingsConfigurer(runtimeConfiguration.repositories()),
-                new DefaultMethodNameConfigurer(logger, runtimeConfiguration.repositories()),
-                new DefaultMethodNameValidator(runtimeConfiguration.repositories(), errors, messages),
-                new DefaultMethodApiConfigurer(runtimeConfiguration.repositories()),
-                new DefaultMethodParameterConfigurer(logger, errors, messages),
-                new DefaultMethodConverterConfigurer(runtimeConfiguration.converter()),
-                new DefaultRepositoryNameConfigurer(logger, runtimeConfiguration.files(), runtimeConfiguration.repositories()));
+    private SqlConfigurationFactory factory(final RuntimeConfiguration runtimeConfiguration) {
+        return FilesObjectMother.sqlConfigurationFactory(
+                runtimeConfiguration.repositories(),
+                runtimeConfiguration.converter());
     }
 
 }

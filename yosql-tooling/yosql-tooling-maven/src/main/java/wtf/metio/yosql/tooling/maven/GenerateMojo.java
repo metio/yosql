@@ -15,14 +15,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wtf.metio.yosql.codegen.exceptions.CodeGenerationException;
 import wtf.metio.yosql.codegen.orchestration.Loggers;
 import wtf.metio.yosql.codegen.orchestration.YoSQL;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
-
-import java.util.Arrays;
 
 /**
  * The 'generate' goal generates Java code based on SQL files.
@@ -68,13 +65,16 @@ public class GenerateMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         try {
             buildYoSQL().generateCode();
-        } catch (final CodeGenerationException exception) {
-            Arrays.stream(exception.getSuppressed())
-                    .forEach(suppressed -> LOG.error(suppressed.getMessage(), suppressed));
-            throw exception;
         } catch (final Throwable throwable) {
-            LOG.error(throwable.getMessage(), throwable);
-            throw new MojoExecutionException("Failure to execute YoSQL plugin", throwable);
+            for (final var exception : throwable.getSuppressed()) {
+                LOG.error(exception.getMessage());
+                LOG.debug(exception.getMessage(), exception);
+                for (final var suppressed : exception.getSuppressed()) {
+                    LOG.error(suppressed.getMessage());
+                    LOG.debug(suppressed.getMessage(), suppressed);
+                }
+            }
+            throw new MojoExecutionException("Failure to generate code", throwable);
         }
     }
 
