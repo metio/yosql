@@ -19,12 +19,14 @@ java {
 yosql {
     files {
         skipLines.set(6)
+        inputBaseDirectory.set(project.file("../../yosql-examples-common/src/main/yosql"))
     }
     repositories {
         basePackageName.set("${group}.persistence")
     }
     java {
         apiVersion.set(11)
+        useTextBlocks.set(false)
     }
     converter {
         mapConverterClass.set("${group}.converter.ToMapConverter")
@@ -41,5 +43,8 @@ yosql {
 dependencies {
     implementation(libs.bundles.database) {
         because("we need database access")
+    }
+    implementation("wtf.metio.yosql.examples:yosql-examples-common:${version}") {
+        because("we want to re-use the same example app across all example projects")
     }
 }

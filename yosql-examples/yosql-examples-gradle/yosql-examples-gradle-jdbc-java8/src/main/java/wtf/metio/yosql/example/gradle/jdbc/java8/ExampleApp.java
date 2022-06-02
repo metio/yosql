@@ -4,13 +4,13 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.example.gradle.jdbc.java16;
+package wtf.metio.yosql.example.gradle.jdbc.java8;
 
 import wtf.metio.yosql.example.common.DataSourceCreator;
 import wtf.metio.yosql.example.common.ReadingTests;
 import wtf.metio.yosql.example.common.SchemaCreator;
 import wtf.metio.yosql.example.common.WritingTests;
-import wtf.metio.yosql.example.gradle.jdbc.java16.persistence.*;
+import wtf.metio.yosql.example.gradle.jdbc.java8.persistence.*;
 
 public class ExampleApp {
 
