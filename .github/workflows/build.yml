@@ -3,6 +3,7 @@ on:
   push:
     branches: [ main ]
     paths:
+      - pom.xml
       - yosql-benchmarks/**
       - yosql-codegen/**
       - yosql-examples/**
@@ -14,6 +15,7 @@ on:
   pull_request:
     branches: [ main ]
     paths:
+      - pom.xml
       - yosql-benchmarks/**
       - yosql-codegen/**
       - yosql-examples/**
@@ -26,7 +28,7 @@ env:
   JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
-  JAVA_DISTRO: adopt
+  JAVA_DISTRO: temurin
 jobs:
   build:
     name: Build

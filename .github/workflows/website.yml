@@ -7,11 +7,11 @@ on:
       - .github/workflows/website.yml
       - yosql-website/**
 env:
-  PROJECT_URL: yosql.projects.metio.wtf
   JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
-  JAVA_DISTRO: adopt
+  JAVA_DISTRO: temurin
+  PROJECT_URL: yosql.projects.metio.wtf
 jobs:
   website:
     name: Website

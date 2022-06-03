@@ -6,7 +6,7 @@ env:
   JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
-  JAVA_DISTRO: adopt
+  JAVA_DISTRO: temurin
 jobs:
   build:
     runs-on: ubuntu-latest
