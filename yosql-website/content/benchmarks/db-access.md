@@ -11,7 +11,7 @@ tags:
   - access
 ---
 
-Each supported [persistence](/persistence/) API has their own performance characteristics. The following benchmarks try to use the fastest code paths available to execute SQL statements.
+The following benchmarks try to use the fastest code paths available to execute SQL statements.
 
 ### Common Scenarios
 
@@ -44,7 +44,7 @@ In order to select the best matching persistence API for your project, performan
 
 ### JDBC
 
-In order to run benchmarks for the  [JDBC](/persistence/jdbc/) implementation of `YoSQL` run:
+In order to run JDBC benchmarks of `YoSQL` run:
 
 ```console
 # run JDBC benchmarks
@@ -58,7 +58,7 @@ In order to compare a solution entirely based on `YoSQL` against other persisten
 
 ### EBean
 
-In order to run benchmarks against the [EBean](/persistence/ebean/) implementation run:
+In order to run benchmarks against EBean run:
 
 ```console
 # run EBean benchmarks
@@ -67,7 +67,7 @@ $ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-ebean --also-make --activa
 
 ### JDBI
 
-In order to run benchmarks against the [JDBI](/persistence/jdbi/) implementation run:
+In order to run benchmarks against JDBI implementation run:
 
 ```console
 # run JDBI benchmarks
@@ -76,7 +76,7 @@ $ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi --also-make --activat
 
 ### jOOQ
 
-In order to run benchmarks against the [jOOQ](/persistence/jooq/) implementation run:
+In order to run benchmarks against jOOQ implementation run:
 
 ```console
 # run jOOQ benchmarks
@@ -85,7 +85,7 @@ $ mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jooq --also-make --activat
 
 ### JPA
 
-In order to run benchmarks against the [JPA](/persistence/jpa/) implementation run:
+In order to run benchmarks against JPA implementation run:
 
 ```console
 # run JPA benchmarks
