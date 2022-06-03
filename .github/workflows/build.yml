@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: Maven Tooling
-        run: mvn --batch-mode install --define enforcer.skip
+        run: mvn --batch-mode install
       - id: gradle
         name: Gradle Tooling
         run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build
@@ -86,7 +86,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: run-benchmark
         name: Run Benchmark [${{ matrix.benchmark }}]
-        run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify --define org.slf4j.simpleLogger.log.yosql=warn --define skipTests --define enforcer.skip 2>&1 1> build.log
+        run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify --define org.slf4j.simpleLogger.log.yosql=warn --define skipTests 2>&1 1> build.log
       - id: upload-benchmark
         name: Upload Benchmark Results
         uses: actions/upload-artifact@v3
