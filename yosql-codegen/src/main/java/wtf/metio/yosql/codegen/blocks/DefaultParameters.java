@@ -17,11 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class DefaultParameters implements Parameters {
 
-    private final JavaConfiguration javaConfiguration;
+    private final JavaConfiguration java;
     private final ConcurrentHashMap<TypeName, Integer> args = new ConcurrentHashMap<>();
 
-    public DefaultParameters(final JavaConfiguration javaConfiguration) {
-        this.javaConfiguration = javaConfiguration;
+    public DefaultParameters(final JavaConfiguration java) {
+        this.java = java;
     }
 
     @Override
@@ -31,7 +31,7 @@ public final class DefaultParameters implements Parameters {
 
     @Override
     public ParameterSpec parameter(final TypeName type, final String name) {
-        return javaConfiguration.useFinal()
+        return java.useFinalParameters()
                 ? buildParameter(type, name, Modifier.FINAL)
                 : buildParameter(type, name);
     }

@@ -27,13 +27,13 @@ public final class JavaConfigurations {
     public static JavaConfiguration java8() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(8)
-                .withUseDiamondOperator(true)
-                .withUseGenerics(true)
                 .withUseRecords(false)
                 .withUseVar(false)
                 .withUseTextBlocks(false)
-                .withUseStreamAPI(true)
-                .withUseFinal(true);
+                .withUseSealedInterfaces(false)
+                .withUseFinalClasses(true)
+                .withUseFinalParameters(true)
+                .withUseFinalVariables(true);
     }
 
     /**
@@ -42,13 +42,13 @@ public final class JavaConfigurations {
     public static JavaConfiguration java9() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(9)
-                .withUseDiamondOperator(true)
-                .withUseGenerics(true)
                 .withUseRecords(false)
                 .withUseVar(false)
                 .withUseTextBlocks(false)
-                .withUseStreamAPI(true)
-                .withUseFinal(true);
+                .withUseSealedInterfaces(false)
+                .withUseFinalClasses(true)
+                .withUseFinalParameters(true)
+                .withUseFinalVariables(true);
     }
 
     /**
@@ -57,13 +57,13 @@ public final class JavaConfigurations {
     public static JavaConfiguration java11() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(11)
-                .withUseDiamondOperator(true)
-                .withUseGenerics(true)
                 .withUseRecords(false)
                 .withUseVar(true)
                 .withUseTextBlocks(false)
-                .withUseStreamAPI(true)
-                .withUseFinal(true);
+                .withUseSealedInterfaces(false)
+                .withUseFinalClasses(true)
+                .withUseFinalParameters(true)
+                .withUseFinalVariables(true);
     }
 
     /**
@@ -72,13 +72,28 @@ public final class JavaConfigurations {
     public static JavaConfiguration java14() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(14)
-                .withUseDiamondOperator(true)
-                .withUseGenerics(true)
                 .withUseRecords(false)
                 .withUseVar(true)
                 .withUseTextBlocks(true)
-                .withUseStreamAPI(true)
-                .withUseFinal(true);
+                .withUseSealedInterfaces(false)
+                .withUseFinalClasses(true)
+                .withUseFinalParameters(true)
+                .withUseFinalVariables(true);
+    }
+
+    /**
+     * @return Preset for Java 14.
+     */
+    public static JavaConfiguration java15() {
+        return JavaConfiguration.copyOf(defaults())
+                .withApiVersion(14)
+                .withUseRecords(false)
+                .withUseVar(true)
+                .withUseTextBlocks(true)
+                .withUseSealedInterfaces(true)
+                .withUseFinalClasses(true)
+                .withUseFinalParameters(true)
+                .withUseFinalVariables(true);
     }
 
     /**
@@ -87,13 +102,13 @@ public final class JavaConfigurations {
     public static JavaConfiguration java16() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(16)
-                .withUseDiamondOperator(true)
-                .withUseGenerics(true)
                 .withUseRecords(true)
                 .withUseVar(true)
                 .withUseTextBlocks(true)
-                .withUseStreamAPI(true)
-                .withUseFinal(true);
+                .withUseSealedInterfaces(true)
+                .withUseFinalClasses(true)
+                .withUseFinalParameters(true)
+                .withUseFinalVariables(true);
     }
 
     private JavaConfigurations() {

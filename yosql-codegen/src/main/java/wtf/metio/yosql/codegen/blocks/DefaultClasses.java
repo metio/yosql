@@ -31,7 +31,7 @@ public final class DefaultClasses implements Classes {
     public TypeSpec.Builder publicClass(final ClassName name) {
         final var builder = TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC);
-        if (java.useFinal()) {
+        if (java.useFinalClasses()) {
             builder.addModifiers(Modifier.FINAL);
         }
         return builder;

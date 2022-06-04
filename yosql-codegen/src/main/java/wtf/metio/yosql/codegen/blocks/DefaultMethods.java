@@ -28,7 +28,7 @@ public final class DefaultMethods implements Methods {
 
     @Override
     public MethodSpec.Builder publicMethod(final String name) {
-        final var modifiers = java.useFinal()
+        final var modifiers = java.useFinalMethods()
                 ? List.of(Modifier.PUBLIC, Modifier.FINAL)
                 : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
@@ -41,7 +41,7 @@ public final class DefaultMethods implements Methods {
             final String name, 
             final List<SqlStatement> statements, 
             final String configuration) {
-        final var modifiers = java.useFinal()
+        final var modifiers = java.useFinalMethods()
                 ? List.of(Modifier.PUBLIC, Modifier.FINAL)
                 : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
@@ -63,7 +63,7 @@ public final class DefaultMethods implements Methods {
 
     @Override
     public MethodSpec.Builder implementation(final String name) {
-        final var modifiers = java.useFinal()
+        final var modifiers = java.useFinalMethods()
                 ? List.of(Modifier.PUBLIC, Modifier.FINAL)
                 : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)

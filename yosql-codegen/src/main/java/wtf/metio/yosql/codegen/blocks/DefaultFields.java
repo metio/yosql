@@ -42,7 +42,7 @@ public final class DefaultFields implements Fields {
     @Override
     public FieldSpec field(final TypeName type, final String name) {
         final var builder = builder(type, name).addModifiers(Modifier.PRIVATE);
-        if (java.useFinal()) {
+        if (java.useFinalFields()) {
             builder.addModifiers(Modifier.FINAL);
         }
         return builder.build();

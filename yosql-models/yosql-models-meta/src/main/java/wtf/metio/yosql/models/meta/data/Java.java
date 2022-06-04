@@ -19,13 +19,15 @@ public final class Java {
                 .setName("Java")
                 .setDescription("Configures Java version and related settings.")
                 .addSettings(apiVersion())
-                .addSettings(useDiamondOperator())
-                .addSettings(useFinal())
-                .addSettings(useGenerics())
+                .addSettings(useFinalParameters())
+                .addSettings(useFinalVariables())
+                .addSettings(useFinalClasses())
+                .addSettings(useFinalFields())
+                .addSettings(useFinalMethods())
                 .addSettings(useRecords())
-                .addSettings(useStreamAPI())
                 .addSettings(useTextBlocks())
                 .addSettings(useVar())
+                .addSettings(useSealedInterfaces())
                 .build();
     }
 
@@ -46,53 +48,87 @@ public final class Java {
                 .build();
     }
 
-    private static ConfigurationSetting useDiamondOperator() {
+    private static ConfigurationSetting useFinalParameters() {
         return ConfigurationSetting.builder()
-                .setName("useDiamondOperator")
-                .setDescription("Controls whether the diamond operator is used in generated code.")
+                .setName("useFinalParameters")
+                .setDescription("Controls whether parameters are declared as final in generated code.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("true")
-                        .setDescription("The default value of the `useDiamondOperator` configuration option is `true` which enables the use of the diamond operator in generated code.")
+                        .setDescription("The default value of the `useFinalParameters` configuration option is `true` which enables the use of `final` for parameters.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
-                        .setDescription("Changing the `useDiamondOperator` configuration option to `false` disables the use of the diamond operator in generated code.")
+                        .setDescription("Changing the `useFinalParameters` configuration option to `false` disables the use of `final` for parameters.")
                         .build())
                 .build();
     }
 
-    private static ConfigurationSetting useFinal() {
+    private static ConfigurationSetting useFinalVariables() {
         return ConfigurationSetting.builder()
-                .setName("useFinal")
-                .setDescription("Controls whether variables and parameters are declared as final in generated code.")
+                .setName("useFinalVariables")
+                .setDescription("Controls whether variables are declared as final in generated code.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("true")
-                        .setDescription("The default value of the `useFinal` configuration option is `true` which enables the use of `final` for parameters and variables.")
+                        .setDescription("The default value of the `useFinalVariables` configuration option is `true` which enables the use of `final` for variables.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
-                        .setDescription("Changing the `useFinal` configuration option to `false` disables the use of `final` for parameters and variables.")
+                        .setDescription("Changing the `useFinalVariables` configuration option to `false` disables the use of `final` for variables.")
                         .build())
                 .build();
     }
 
-    private static ConfigurationSetting useGenerics() {
+    private static ConfigurationSetting useFinalClasses() {
         return ConfigurationSetting.builder()
-                .setName("useGenerics")
-                .setDescription("Controls the usage of generic types in generated code.")
+                .setName("useFinalClasses")
+                .setDescription("Controls whether classes are declared as final in generated code.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("true")
-                        .setDescription("The default value of the `useGenerics` configuration option is `true` which enables the use of generics in generated code.")
+                        .setDescription("The default value of the `useFinalClasses` configuration option is `true` which enables the use of `final` for classes.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
-                        .setDescription("Changing the `useGenerics` configuration option to `false` disables the use of generics in generated code.")
+                        .setDescription("Changing the `useFinalClasses` configuration option to `false` disables the use of `final` for classes.")
+                        .build())
+                .build();
+    }
+
+    private static ConfigurationSetting useFinalFields() {
+        return ConfigurationSetting.builder()
+                .setName("useFinalFields")
+                .setDescription("Controls whether fields are declared as final in generated code.")
+                .setType(TypeName.get(boolean.class))
+                .setValue(true)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default value of the `useFinalFields` configuration option is `true` which enables the use of `final` for fields.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("Changing the `useFinalFields` configuration option to `false` disables the use of `final` for fields.")
+                        .build())
+                .build();
+    }
+
+    private static ConfigurationSetting useFinalMethods() {
+        return ConfigurationSetting.builder()
+                .setName("useFinalMethods")
+                .setDescription("Controls whether methods are declared as final in generated code.")
+                .setType(TypeName.get(boolean.class))
+                .setValue(true)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default value of the `useFinalMethods` configuration option is `true` which enables the use of `final` for methods.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("Changing the `useFinalMethods` configuration option to `false` disables the use of `final` for methods.")
                         .build())
                 .build();
     }
@@ -110,23 +146,6 @@ public final class Java {
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
                         .setDescription("Changing the `useRecords` configuration option to `false` disables the use of records in generated code.")
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting useStreamAPI() {
-        return ConfigurationSetting.builder()
-                .setName("useStreamAPI")
-                .setDescription("Controls the usage of the stream API in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
-                        .setDescription("The default value of the `useStreamApi` configuration option is `true` which enables the use of the stream API in generated code.")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
-                        .setDescription("Changing the `useStreamApi` configuration option to `false` disables the use of the stream API in generated code.")
                         .build())
                 .build();
     }
@@ -161,6 +180,23 @@ public final class Java {
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
                         .setDescription("Changing the `useVar` configuration option to `false` disables the use of `var` in generated code.")
+                        .build())
+                .build();
+    }
+
+    private static ConfigurationSetting useSealedInterfaces() {
+        return ConfigurationSetting.builder()
+                .setName("useSealedInterfaces")
+                .setDescription("Controls whether interfaces should be sealed")
+                .setType(TypeName.get(boolean.class))
+                .setValue(false)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("The default value of the `useSealedInterfaces` configuration option is `false` which disables sealing interfaces in generated code.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("Changing the `useSealedInterfaces` configuration option to `true` enables sealing interfaces in generated code.")
                         .build())
                 .build();
     }

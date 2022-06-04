@@ -21,15 +21,15 @@ import java.util.stream.Stream;
  */
 public final class DefaultVariables implements Variables {
 
-    private final JavaConfiguration javaConfiguration;
+    private final JavaConfiguration java;
 
-    public DefaultVariables(final JavaConfiguration javaConfiguration) {
-        this.javaConfiguration = javaConfiguration;
+    public DefaultVariables(final JavaConfiguration java) {
+        this.java = java;
     }
 
     @Override
     public CodeBlock inline(final Class<?> variableClass, final String name) {
-        if (javaConfiguration.useFinal()) {
+        if (java.useFinalVariables()) {
             return CodeBlock.builder().add("final $T $N", variableClass, name).build();
         }
         return CodeBlock.builder().add("$T $N", variableClass, name).build();
@@ -44,7 +44,7 @@ public final class DefaultVariables implements Variables {
     public CodeBlock inline(final TypeName variableType, final String name, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = $L");
-        if (javaConfiguration.useVar()) {
+        if (java.useVar()) {
             builder.add(code.toString(), name, initializer);
         } else {
             builder.add(code.toString(), variableType, name, initializer);
@@ -79,7 +79,7 @@ public final class DefaultVariables implements Variables {
             final Object... initializerArgs) {
         final var builder = CodeBlock.builder();
         final var code = leftHandSide("$N = " + initializer);
-        if (javaConfiguration.useVar()) {
+        if (java.useVar()) {
             builder.add(code.toString(), Stream.concat(Stream.of(name), Arrays.stream(initializerArgs)).toArray());
         } else {
             builder.add(code.toString(), Stream.concat(Stream.of(variableType, name), Arrays.stream(initializerArgs)).toArray());
@@ -89,10 +89,10 @@ public final class DefaultVariables implements Variables {
 
     private StringJoiner leftHandSide(final String closer) {
         final var code = new StringJoiner(" ");
-        if (javaConfiguration.useFinal()) {
+        if (java.useFinalVariables()) {
             code.add("final");
         }
-        if (javaConfiguration.useVar()) {
+        if (java.useVar()) {
             code.add("var");
         } else {
             code.add("$T");
