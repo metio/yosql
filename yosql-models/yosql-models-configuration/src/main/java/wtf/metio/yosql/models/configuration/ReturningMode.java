@@ -10,7 +10,7 @@ package wtf.metio.yosql.models.configuration;
 /**
  * Enumeration of possible return modes.
  */
-public enum ReturningMode { // TODO: rename to 'returning' in .sql files
+public enum ReturningMode {
 
     /**
      * Statement returns no data.
