@@ -5,11 +5,15 @@
  * in the LICENSE file.
  */
 
--- returning: SINGLE
--- parameters:
---   - name: pid
---     type: long
-SELECT  *
-FROM    companies
-WHERE   pid = :pid
-;
+package wtf.metio.yosql.models.configuration;
+
+public final class Constants {
+
+    public static final String GENERATE_STANDARD_API = "generateStandardApi";
+    public static final String GENERATE_BATCH_API = "generateBatchApi";
+
+    private Constants() {
+        // constants class
+    }
+
+}

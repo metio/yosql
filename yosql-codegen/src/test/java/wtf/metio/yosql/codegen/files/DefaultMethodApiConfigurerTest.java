@@ -58,34 +58,34 @@ class DefaultMethodApiConfigurerTest {
     }
 
     @Test
-    void blockingKeep() {
+    void standardKeep() {
         final var original = SqlConfiguration.usingDefaults()
-                .setGenerateBlockingApi(false)
+                .setGenerateStandardApi(false)
                 .build();
-        final var adapted = configurer.blocking(original);
-        assertEquals(original.generateBlockingApi(), adapted.generateBlockingApi());
+        final var adapted = configurer.standard(original);
+        assertEquals(original.generateStandardApi(), adapted.generateStandardApi());
     }
 
     @Test
-    void blockingChangedToRepositoryDefault() {
+    void standardChangedToRepositoryDefault() {
         final var original = SqlConfiguration.usingDefaults()
-                // .setGenerateBlockingApi(true) // value is NOT set
+                // .setGenerateStandardApi(true) // value is NOT set
                 .build();
-        final var adapted = configurer.blocking(original);
-        assertTrue(adapted.generateBlockingApi().isPresent());
-        assertEquals(repositories.generateBlockingApi(), adapted.generateBlockingApi().get());
+        final var adapted = configurer.standard(original);
+        assertTrue(adapted.generateStandardApi().isPresent());
+        assertEquals(repositories.generateStandardApi(), adapted.generateStandardApi().get());
     }
 
     @Test
     void keepApis() {
         final var original = SqlConfiguration.usingDefaults()
                 .setGenerateBatchApi(false)
-                .setGenerateBlockingApi(false)
+                .setGenerateStandardApi(false)
                 .build();
         final var adapted = configurer.configureApis(original);
         assertAll(
                 () -> assertEquals(original.generateBatchApi(), adapted.generateBatchApi()),
-                () -> assertEquals(original.generateBlockingApi(), adapted.generateBlockingApi()));
+                () -> assertEquals(original.generateStandardApi(), adapted.generateStandardApi()));
     }
 
     @Test
@@ -94,7 +94,7 @@ class DefaultMethodApiConfigurerTest {
         final var adapted = configurer.configureApis(original);
         assertAll(
                 () -> assertEquals(repositories.generateBatchApi(), adapted.generateBatchApi().get()),
-                () -> assertEquals(repositories.generateBlockingApi(), adapted.generateBlockingApi().get()));
+                () -> assertEquals(repositories.generateStandardApi(), adapted.generateStandardApi().get()));
     }
 
 }

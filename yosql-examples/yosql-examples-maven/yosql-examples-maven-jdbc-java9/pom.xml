@@ -60,7 +60,6 @@
                         <apiVersion>9</apiVersion>
                         <useVar>false</useVar>
                         <useTextBlocks>false</useTextBlocks>
-                        <useRecords>false</useRecords>
                     </java>
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.java9.persistence</basePackageName>

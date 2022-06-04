@@ -24,7 +24,6 @@ public final class Java {
                 .addSettings(useFinalClasses())
                 .addSettings(useFinalFields())
                 .addSettings(useFinalMethods())
-                .addSettings(useRecords())
                 .addSettings(useTextBlocks())
                 .addSettings(useVar())
                 .addSettings(useSealedInterfaces())

@@ -46,7 +46,7 @@ public final class Sql {
                         mergeParameters(),
                         converter(),
                         batchName(),
-                        blockingName(), // TODO: rename to standardName, e.g. non-batching
+                        standardName(),
                         joinMethodNameParts()))
                 .build();
     }
@@ -115,7 +115,6 @@ public final class Sql {
                 .setName("repositoryInterface")
                 .setDescription("The fully qualified name of the target repository interface.")
                 .setType(TypeName.get(String.class))
-//                .setImmutableAnnotations(List.of(jsonProperty("repository")))
                 .build();
     }
 
@@ -160,7 +159,7 @@ public final class Sql {
                 .setName("returningMode")
                 .setDescription("The returning mode of the SQL statement.")
                 .setType(TypeName.get(ReturningMode.class))
-                .setImmutableAnnotations(List.of(jsonProperty("returningMode")))
+                .setImmutableAnnotations(List.of(jsonProperty("returning")))
                 .build();
     }
 
@@ -312,13 +311,13 @@ public final class Sql {
                 .build();
     }
 
-    private static MethodSpec blockingName() {
-        return MethodSpec.methodBuilder("blockingName")
+    private static MethodSpec standardName() {
+        return MethodSpec.methodBuilder("standardName")
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
                 .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
-                        "blockingPrefix", "", "name", "", "blockingSuffix", "")
+                        "standardPrefix", "", "name", "", "standardSuffix", "")
                 .build();
     }
 

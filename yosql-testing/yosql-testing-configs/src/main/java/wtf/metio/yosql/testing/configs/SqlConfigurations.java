@@ -58,7 +58,7 @@ public final class SqlConfigurations {
         config.setRepository("com.example.persistence.DataRepository");
         config.setCatchAndRethrow(true);
         config.setGenerateBatchApi(true);
-        config.setGenerateBlockingApi(true);
+        config.setGenerateStandardApi(true);
         config.setParameters(List.of(SqlParameter.builder()
                 .setName("test")
                 .setType(Object.class.getName())

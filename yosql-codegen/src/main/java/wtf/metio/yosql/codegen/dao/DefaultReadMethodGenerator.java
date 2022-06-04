@@ -11,6 +11,7 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.blocks.ControlFlows;
 import wtf.metio.yosql.codegen.blocks.Methods;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
+import wtf.metio.yosql.models.configuration.Constants;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -51,7 +52,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
 
     @Override
     public MethodSpec readMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var builder = methods.declaration(configuration.blockingName(), statements, "generateBlockingApi")
+        final var builder = methods.declaration(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration));
         returnTypes.resultType(configuration).ifPresent(builder::returns);
@@ -71,10 +72,10 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
     private MethodSpec readNone(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
+        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.blockingName())) // TODO: add business exception here
+                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.standardName())) // TODO: add business exception here
                 .addCode(controlFlows.maybeTry(configuration))
                 .addStatement(jdbc.getConnectionInline())
                 .addCode(jdbc.pickVendorQuery(statements))
@@ -92,11 +93,11 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
         final var resultType = TypeGuesser.guessTypeName(converter.resultType());
-        return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
+        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(returnTypes.singleResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.blockingName())) // TODO: add business exception here
+                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.standardName())) // TODO: add business exception here
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -114,11 +115,11 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
         final var listOfResults = returnTypes.multiResultType(configuration);
-        return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
+        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(listOfResults)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.blockingName())) // TODO: add business exception here
+                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.standardName())) // TODO: add business exception here
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -135,11 +136,11 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
+        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(returnTypes.cursorResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.blockingName())) // TODO: add business exception here
+                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.standardName())) // TODO: add business exception here
                 .addCode(controlFlows.maybeTry(configuration))
                 .addStatement(jdbc.getConnectionInline())
                 .addCode(jdbc.pickVendorQuery(statements))

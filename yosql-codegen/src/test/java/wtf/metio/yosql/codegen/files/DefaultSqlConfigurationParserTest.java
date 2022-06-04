@@ -148,7 +148,7 @@ class DefaultSqlConfigurationParserTest {
     @Test
     void shouldParseReturningModeNone() {
         final var yaml = """
-                returningMode: NONE
+                returning: NONE
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.returningMode().isPresent());
@@ -158,7 +158,7 @@ class DefaultSqlConfigurationParserTest {
     @Test
     void shouldParseReturningModeFirst() {
         final var yaml = """
-                returningMode: SINGLE
+                returning: SINGLE
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.returningMode().isPresent());
@@ -168,7 +168,7 @@ class DefaultSqlConfigurationParserTest {
     @Test
     void shouldParseReturningModeList() {
         final var yaml = """
-                returningMode: MULTIPLE
+                returning: MULTIPLE
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.returningMode().isPresent());
@@ -178,7 +178,7 @@ class DefaultSqlConfigurationParserTest {
     @Test
     void shouldParseReturningModeNoneCaseInsensitive() {
         final var yaml = """
-                returningMode: none
+                returning: none
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.returningMode().isPresent());
@@ -188,7 +188,7 @@ class DefaultSqlConfigurationParserTest {
     @Test
     void shouldParseReturningModeFirstCaseInsensitive() {
         final var yaml = """
-                returningMode: single
+                returning: single
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.returningMode().isPresent());
@@ -198,7 +198,7 @@ class DefaultSqlConfigurationParserTest {
     @Test
     void shouldParseReturningModeListCaseInsensitive() {
         final var yaml = """
-                returningMode: multiple
+                returning: multiple
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.returningMode().isPresent());
@@ -206,23 +206,23 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseGenerateBlockingApiEnabled() {
+    void shouldParseGenerateStandardApiEnabled() {
         final var yaml = """
-                generateBlockingApi: true
+                generateStandardApi: true
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.generateBlockingApi().isPresent());
-        assertTrue(config.generateBlockingApi().get());
+        assertTrue(config.generateStandardApi().isPresent());
+        assertTrue(config.generateStandardApi().get());
     }
 
     @Test
-    void shouldParseGenerateBlockingApiDisabled() {
+    void shouldParseGenerateStandardApiDisabled() {
         final var yaml = """
-                generateBlockingApi: false
+                generateStandardApi: false
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.generateBlockingApi().isPresent());
-        assertFalse(config.generateBlockingApi().get());
+        assertTrue(config.generateStandardApi().isPresent());
+        assertFalse(config.generateStandardApi().get());
     }
 
     @Test
@@ -286,23 +286,23 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseBlockingPrefix() {
+    void shouldParseStandardPrefix() {
         final var yaml = """
-                blockingPrefix: prefix
+                standardPrefix: prefix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.blockingPrefix().isPresent());
-        assertEquals("prefix", config.blockingPrefix().get());
+        assertTrue(config.standardPrefix().isPresent());
+        assertEquals("prefix", config.standardPrefix().get());
     }
 
     @Test
-    void shouldParseBlockingSuffix() {
+    void shouldParseStandardSuffix() {
         final var yaml = """
-                blockingSuffix: suffix
+                standardSuffix: suffix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.blockingSuffix().isPresent());
-        assertEquals("suffix", config.blockingSuffix().get());
+        assertTrue(config.standardSuffix().isPresent());
+        assertEquals("suffix", config.standardSuffix().get());
     }
 
     @Test

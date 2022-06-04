@@ -24,10 +24,10 @@ public final class JavaConfigurations {
     /**
      * @return Preset for Java 8.
      */
+    @Deprecated
     public static JavaConfiguration java8() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(8)
-                .withUseRecords(false)
                 .withUseVar(false)
                 .withUseTextBlocks(false)
                 .withUseSealedInterfaces(false)
@@ -39,10 +39,10 @@ public final class JavaConfigurations {
     /**
      * @return Preset for Java 9.
      */
+    @Deprecated
     public static JavaConfiguration java9() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(9)
-                .withUseRecords(false)
                 .withUseVar(false)
                 .withUseTextBlocks(false)
                 .withUseSealedInterfaces(false)
@@ -57,7 +57,6 @@ public final class JavaConfigurations {
     public static JavaConfiguration java11() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(11)
-                .withUseRecords(false)
                 .withUseVar(true)
                 .withUseTextBlocks(false)
                 .withUseSealedInterfaces(false)
@@ -72,7 +71,6 @@ public final class JavaConfigurations {
     public static JavaConfiguration java14() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(14)
-                .withUseRecords(false)
                 .withUseVar(true)
                 .withUseTextBlocks(true)
                 .withUseSealedInterfaces(false)
@@ -82,12 +80,11 @@ public final class JavaConfigurations {
     }
 
     /**
-     * @return Preset for Java 14.
+     * @return Preset for Java 15.
      */
     public static JavaConfiguration java15() {
         return JavaConfiguration.copyOf(defaults())
-                .withApiVersion(14)
-                .withUseRecords(false)
+                .withApiVersion(15)
                 .withUseVar(true)
                 .withUseTextBlocks(true)
                 .withUseSealedInterfaces(true)
@@ -102,7 +99,6 @@ public final class JavaConfigurations {
     public static JavaConfiguration java16() {
         return JavaConfiguration.copyOf(defaults())
                 .withApiVersion(16)
-                .withUseRecords(true)
                 .withUseVar(true)
                 .withUseTextBlocks(true)
                 .withUseSealedInterfaces(true)

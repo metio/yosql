@@ -2,7 +2,7 @@
 Feature: Read data from a database
 
   Developers should be able to use the generated code to read
-  data from a database using a blocking read statement.
+  data from a database using a standard read statement.
 
   @YEP-1-0 @YEP-1-0-0
   Scenario: Using YoSQL's default configuration

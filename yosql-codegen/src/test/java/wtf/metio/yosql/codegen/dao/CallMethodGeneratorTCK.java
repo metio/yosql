@@ -22,7 +22,7 @@ public abstract class CallMethodGeneratorTCK {
     abstract CallMethodGenerator generator();
 
     /**
-     * @return The expected generated code for a blocking call method.
+     * @return The expected generated code for a standard call method.
      */
     abstract String callMethodExpectation();
 

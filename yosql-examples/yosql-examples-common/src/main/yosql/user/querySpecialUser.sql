@@ -7,7 +7,7 @@
 
 --
 -- name: querySpecialUserWithConstantId
--- returningMode: single
+-- returning: single
 --
 select *
 from users

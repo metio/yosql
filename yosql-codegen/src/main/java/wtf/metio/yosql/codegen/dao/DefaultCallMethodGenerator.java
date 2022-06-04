@@ -10,6 +10,7 @@ import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.codegen.blocks.ControlFlows;
 import wtf.metio.yosql.codegen.blocks.Methods;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
+import wtf.metio.yosql.models.configuration.Constants;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -48,7 +49,7 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
 
     @Override
     public MethodSpec callMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var builder = methods.declaration(configuration.blockingName(), statements, "generateBlockingApi")
+        final var builder = methods.declaration(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(returnTypes.multiResultType(configuration))
                 .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration));
@@ -61,11 +62,11 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     public MethodSpec callMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
         final var resultType = returnTypes.multiResultType(configuration);
-        return methods.publicMethod(configuration.blockingName(), statements, "generateBlockingApi")
+        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(resultType)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElse(""), configuration.blockingName()))
+                .addCode(logging.entering(configuration.repository().orElse(""), configuration.standardName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.tryPrepareCallable())

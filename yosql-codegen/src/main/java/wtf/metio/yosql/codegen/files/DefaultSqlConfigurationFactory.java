@@ -92,10 +92,10 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         logger.debug("name:          {}", configuration.name());
         logger.debug("repository:    {}", configuration.repository());
         logger.debug("parameters:    {}", configuration.parameters().size());
-        logger.debug("blockingApi:   {}", configuration.generateBlockingApi());
+        logger.debug("standardApi:   {}", configuration.standardName());
         logger.debug("batchApi:      {}", configuration.generateBatchApi());
         logger.debug("type:          {}", configuration.type());
-        logger.debug("returningMode: {}", configuration.returningMode());
+        logger.debug("returning    : {}", configuration.returningMode());
         logger.debug("vendor:        {}", configuration.vendor());
     }
 

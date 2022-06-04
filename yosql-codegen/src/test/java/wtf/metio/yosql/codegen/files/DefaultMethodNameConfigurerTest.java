@@ -61,33 +61,33 @@ class DefaultMethodNameConfigurerTest {
     }
 
     @Test
-    void blockingNamePrefixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setBlockingPrefix("prefix").build();
-        final var adapted = configurer.blockingNamePrefix(original);
-        assertEquals(original.blockingPrefix(), adapted.blockingPrefix());
+    void standardNamePrefixKeep() {
+        final var original = SqlConfiguration.usingDefaults().setStandardPrefix("prefix").build();
+        final var adapted = configurer.standardNamePrefix(original);
+        assertEquals(original.standardPrefix(), adapted.standardPrefix());
     }
 
     @Test
-    void blockingNamePrefixChange() {
-        final var original = SqlConfiguration.usingDefaults().setBlockingPrefix(" ").build();
-        final var adapted = configurer.blockingNamePrefix(original);
-        assertTrue(adapted.blockingPrefix().isPresent());
-        assertEquals(repositories.blockingPrefix(), adapted.blockingPrefix().get());
+    void standardNamePrefixChange() {
+        final var original = SqlConfiguration.usingDefaults().setStandardPrefix(" ").build();
+        final var adapted = configurer.standardNamePrefix(original);
+        assertTrue(adapted.standardPrefix().isPresent());
+        assertEquals(repositories.standardPrefix(), adapted.standardPrefix().get());
     }
 
     @Test
-    void blockingNameSuffixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setBlockingSuffix("suffix").build();
-        final var adapted = configurer.blockingNameSuffix(original);
-        assertEquals(original.blockingSuffix(), adapted.blockingSuffix());
+    void standardNameSuffixKeep() {
+        final var original = SqlConfiguration.usingDefaults().setStandardSuffix("suffix").build();
+        final var adapted = configurer.standardNameSuffix(original);
+        assertEquals(original.standardSuffix(), adapted.standardSuffix());
     }
 
     @Test
-    void blockingNameSuffixChange() {
-        final var original = SqlConfiguration.usingDefaults().setBlockingSuffix(" ").build();
-        final var adapted = configurer.blockingNameSuffix(original);
-        assertTrue(adapted.blockingSuffix().isPresent());
-        assertEquals(repositories.blockingSuffix(), adapted.blockingSuffix().get());
+    void standardNameSuffixChange() {
+        final var original = SqlConfiguration.usingDefaults().setStandardSuffix(" ").build();
+        final var adapted = configurer.standardNameSuffix(original);
+        assertTrue(adapted.standardSuffix().isPresent());
+        assertEquals(repositories.standardSuffix(), adapted.standardSuffix().get());
     }
 
     @Test
@@ -95,15 +95,15 @@ class DefaultMethodNameConfigurerTest {
         final var original = SqlConfiguration.usingDefaults()
                 .setBatchPrefix("prefix")
                 .setBatchSuffix("suffix")
-                .setBlockingPrefix("prefix")
-                .setBlockingSuffix("suffix")
+                .setStandardPrefix("prefix")
+                .setStandardSuffix("suffix")
                 .build();
         final var adapted = configurer.affixes(original);
         assertAll(
                 () -> assertEquals(original.batchPrefix(), adapted.batchPrefix()),
                 () -> assertEquals(original.batchSuffix(), adapted.batchSuffix()),
-                () -> assertEquals(original.blockingPrefix(), adapted.blockingPrefix()),
-                () -> assertEquals(original.blockingSuffix(), adapted.blockingSuffix()));
+                () -> assertEquals(original.standardPrefix(), adapted.standardPrefix()),
+                () -> assertEquals(original.standardSuffix(), adapted.standardSuffix()));
     }
 
     @Test
@@ -111,20 +111,20 @@ class DefaultMethodNameConfigurerTest {
         final var original = SqlConfiguration.usingDefaults()
                 .setBatchPrefix(" ")
                 .setBatchSuffix(" ")
-                .setBlockingPrefix(" ")
-                .setBlockingSuffix(" ")
+                .setStandardPrefix(" ")
+                .setStandardSuffix(" ")
                 .build();
         final var adapted = configurer.affixes(original);
         assertAll(
                 () -> assertTrue(adapted.batchPrefix().isPresent()),
                 () -> assertTrue(adapted.batchSuffix().isPresent()),
-                () -> assertTrue(adapted.blockingPrefix().isPresent()),
-                () -> assertTrue(adapted.blockingSuffix().isPresent()));
+                () -> assertTrue(adapted.standardPrefix().isPresent()),
+                () -> assertTrue(adapted.standardSuffix().isPresent()));
         assertAll(
                 () -> assertEquals(repositories.batchPrefix(), adapted.batchPrefix().get()),
                 () -> assertEquals(repositories.batchSuffix(), adapted.batchSuffix().get()),
-                () -> assertEquals(repositories.blockingPrefix(), adapted.blockingPrefix().get()),
-                () -> assertEquals(repositories.blockingSuffix(), adapted.blockingSuffix().get()));
+                () -> assertEquals(repositories.standardPrefix(), adapted.standardPrefix().get()),
+                () -> assertEquals(repositories.standardSuffix(), adapted.standardSuffix().get()));
     }
 
     @Test

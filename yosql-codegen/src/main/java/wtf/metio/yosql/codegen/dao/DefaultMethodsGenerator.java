@@ -47,13 +47,13 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
     public Iterable<MethodSpec> asMethodsDeclarations(final List<SqlStatement> statements) {
         final var methods = new ArrayList<MethodSpec>(statements.size());
 
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingReadAPI,
+        methods.addAll(asMethods(statements, SqlStatement::generateStandardReadAPI,
                 readMethods::readMethodDeclaration));
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingCallAPI,
+        methods.addAll(asMethods(statements, SqlStatement::generateStandardCallAPI,
                 callingMethods::callMethodDeclaration));
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingWriteAPI,
+        methods.addAll(asMethods(statements, SqlStatement::generateStandardWriteAPI,
                 writeMethods::writeMethodDeclaration));
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBatchWriteAPI,
+        methods.addAll(asMethods(statements, SqlStatement::generateBatchWriteAPI,
                 writeMethods::batchWriteMethodDeclaration));
 
         return methods;
@@ -65,10 +65,10 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
 
         methods.add(constructor.repository(statements));
 
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingReadAPI, readMethods::readMethod));
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingCallAPI, callingMethods::callMethod));
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBlockingWriteAPI, writeMethods::writeMethod));
-        methods.addAll(asMethods(statements, SqlStatement::shouldGenerateBatchWriteAPI, writeMethods::batchWriteMethod));
+        methods.addAll(asMethods(statements, SqlStatement::generateStandardReadAPI, readMethods::readMethod));
+        methods.addAll(asMethods(statements, SqlStatement::generateStandardCallAPI, callingMethods::callMethod));
+        methods.addAll(asMethods(statements, SqlStatement::generateStandardWriteAPI, writeMethods::writeMethod));
+        methods.addAll(asMethods(statements, SqlStatement::generateBatchWriteAPI, writeMethods::batchWriteMethod));
 
         return methods;
     }

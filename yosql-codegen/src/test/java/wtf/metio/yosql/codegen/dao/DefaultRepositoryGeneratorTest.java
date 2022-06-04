@@ -110,7 +110,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -178,7 +178,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -285,7 +285,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -353,7 +353,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -460,7 +460,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -528,7 +528,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -635,7 +635,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -703,7 +703,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -812,7 +812,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -880,7 +880,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -989,7 +989,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",
@@ -1057,7 +1057,7 @@ class DefaultRepositoryGeneratorTest {
                        * <ul>
                        * <li>data/queryData.sql</li>
                        * </ul>
-                       * <p>Disable generating this method by setting <strong>generateBlockingApi</strong> to <strong>false</strong></p>
+                       * <p>Disable generating this method by setting <strong>generateStandardApi</strong> to <strong>false</strong></p>
                        */
                       @javax.annotation.processing.Generated(
                           value = "YoSQL",

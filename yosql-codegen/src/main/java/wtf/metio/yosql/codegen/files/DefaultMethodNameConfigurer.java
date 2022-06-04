@@ -80,8 +80,8 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
         var adapted = configuration;
         adapted = batchNamePrefix(adapted);
         adapted = batchNameSuffix(adapted);
-        adapted = blockingNamePrefix(adapted);
-        adapted = blockingNameSuffix(adapted);
+        adapted = standardNamePrefix(adapted);
+        adapted = standardNameSuffix(adapted);
         return adapted;
     }
 
@@ -108,24 +108,24 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
     }
 
     // visible for testing
-    SqlConfiguration blockingNamePrefix(final SqlConfiguration configuration) {
-        return configuration.blockingPrefix()
+    SqlConfiguration standardNamePrefix(final SqlConfiguration configuration) {
+        return configuration.standardPrefix()
                 .filter(not(Strings::isBlank))
                 .map(prefix -> configuration)
                 .orElseGet(() -> {
-                    logger.debug(SqlConfigurationLifecycle.BLOCKING_PREFIX_NAME_CHANGED, repositories.blockingPrefix());
-                    return SqlConfiguration.copyOf(configuration).withBlockingPrefix(repositories.blockingPrefix());
+                    logger.debug(SqlConfigurationLifecycle.STANDARD_PREFIX_NAME_CHANGED, repositories.standardPrefix());
+                    return SqlConfiguration.copyOf(configuration).withStandardPrefix(repositories.standardPrefix());
                 });
     }
 
     // visible for testing
-    SqlConfiguration blockingNameSuffix(final SqlConfiguration configuration) {
-        return configuration.blockingSuffix()
+    SqlConfiguration standardNameSuffix(final SqlConfiguration configuration) {
+        return configuration.standardSuffix()
                 .filter(not(Strings::isBlank))
                 .map(suffix -> configuration)
                 .orElseGet(() -> {
-                    logger.debug(SqlConfigurationLifecycle.BLOCKING_SUFFIX_NAME_CHANGED, repositories.blockingSuffix());
-                    return SqlConfiguration.copyOf(configuration).withBlockingSuffix(repositories.blockingSuffix());
+                    logger.debug(SqlConfigurationLifecycle.STANDARD_SUFFIX_NAME_CHANGED, repositories.standardSuffix());
+                    return SqlConfiguration.copyOf(configuration).withStandardSuffix(repositories.standardSuffix());
                 });
     }
 

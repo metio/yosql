@@ -22,7 +22,7 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
     public SqlConfiguration configureApis(final SqlConfiguration configuration) {
         var adapted = configuration;
         adapted = batch(adapted);
-        adapted = blocking(adapted);
+        adapted = standard(adapted);
         return adapted;
     }
 
@@ -35,9 +35,9 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
     }
 
     // visible for testing
-    SqlConfiguration blocking(final SqlConfiguration configuration) {
-        if (configuration.generateBlockingApi().isEmpty()) {
-            return SqlConfiguration.copyOf(configuration).withGenerateBlockingApi(repositories.generateBlockingApi());
+    SqlConfiguration standard(final SqlConfiguration configuration) {
+        if (configuration.generateStandardApi().isEmpty()) {
+            return SqlConfiguration.copyOf(configuration).withGenerateStandardApi(repositories.generateStandardApi());
         }
         return configuration;
     }

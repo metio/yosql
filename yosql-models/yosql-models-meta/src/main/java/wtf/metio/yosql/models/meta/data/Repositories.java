@@ -11,6 +11,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
+import wtf.metio.yosql.models.configuration.Constants;
 import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
@@ -32,8 +33,6 @@ public final class Repositories {
                 .addSettings(allowedWritePrefixes())
                 .addSettings(basePackageName())
                 .addSettings(generateInterfaces())
-//                .addSettings(markRepositoriesAsFinal())
-//                .addSettings(sealRepositoryInterfaces()) // TODO: since Java 15
                 .addSettings(repositoryInterfacePrefix())
                 .addSettings(repositoryInterfaceSuffix())
                 .addSettings(repositoryNamePrefix())
@@ -49,8 +48,8 @@ public final class Repositories {
      */
     public static List<ConfigurationSetting> stringMethods() {
         return List.of(
-                blockingPrefix(),
-                blockingSuffix(),
+                standardPrefix(),
+                standardSuffix(),
                 batchPrefix(),
                 batchSuffix());
     }
@@ -60,7 +59,7 @@ public final class Repositories {
      */
     public static List<ConfigurationSetting> booleanMethods() {
         return List.of(
-                generateBlockingApi(),
+                generateStandardApi(),
                 generateBatchApi(),
                 usePreparedStatement(),
                 catchAndRethrow(),
@@ -196,10 +195,10 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting generateBlockingApi() {
+    private static ConfigurationSetting generateStandardApi() {
         return ConfigurationSetting.builder()
-                .setName("generateBlockingApi")
-                .setDescription("Generate blocking methods")
+                .setName(Constants.GENERATE_STANDARD_API)
+                .setDescription("Generate standard methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .build();
@@ -207,7 +206,7 @@ public final class Repositories {
 
     private static ConfigurationSetting generateBatchApi() {
         return ConfigurationSetting.builder()
-                .setName("generateBatchApi")
+                .setName(Constants.GENERATE_BATCH_API)
                 .setDescription("Generate batch methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
@@ -293,19 +292,19 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting blockingPrefix() {
+    private static ConfigurationSetting standardPrefix() {
         return ConfigurationSetting.builder()
-                .setName("blockingPrefix")
-                .setDescription("The method prefix to use for generated blocking methods.")
+                .setName("standardPrefix")
+                .setDescription("The method prefix to use for generated standard methods.")
                 .setType(ClassName.get(String.class))
                 .setValue("")
                 .build();
     }
 
-    private static ConfigurationSetting blockingSuffix() {
+    private static ConfigurationSetting standardSuffix() {
         return ConfigurationSetting.builder()
-                .setName("blockingSuffix")
-                .setDescription("The method suffix to use for generated blocking methods.")
+                .setName("standardSuffix")
+                .setDescription("The method suffix to use for generated standard methods.")
                 .setType(ClassName.get(String.class))
                 .setValue("")
                 .build();

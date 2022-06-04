@@ -105,25 +105,25 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
-    default boolean shouldGenerateBatchWriteAPI() {
+    default boolean generateBatchWriteAPI() {
         return isWriting() &&
                 getConfiguration().generateBatchApi().orElse(Boolean.FALSE) &&
                 Buckets.hasEntries(getConfiguration().parameters());
     }
 
     @Value.Lazy
-    default boolean shouldGenerateBlockingReadAPI() {
-        return isReading() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
+    default boolean generateStandardReadAPI() {
+        return isReading() && getConfiguration().generateStandardApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
-    default boolean shouldGenerateBlockingCallAPI() {
-        return isCalling() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
+    default boolean generateStandardCallAPI() {
+        return isCalling() && getConfiguration().generateStandardApi().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
-    default boolean shouldGenerateBlockingWriteAPI() {
-        return isWriting() && getConfiguration().generateBlockingApi().orElse(Boolean.FALSE);
+    default boolean generateStandardWriteAPI() {
+        return isWriting() && getConfiguration().generateStandardApi().orElse(Boolean.FALSE);
     }
 
 }

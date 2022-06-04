@@ -6,7 +6,7 @@
  */
 
 --
--- returningMode: CURSOR
+-- returning: CURSOR
 --
 select *
 from persons
