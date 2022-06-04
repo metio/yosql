@@ -22,7 +22,7 @@ Each SQL statement can have an optional front matter section written in YAML tha
 --   - name: userId
 --     type: int
 -- type: READING
--- returningMode: ONE
+-- returning: ONE
 -- catchAndRethrow: true
 SELECT  *
 FROM    users
@@ -117,13 +117,32 @@ FROM    users
 WHERE   id = :userId
 ```
 
-## returningMode
+## returning
 
-The `returningMode` field can be used to change what the generated methods are returning. By default, `LIST` is used which can contain zero-to-many entities. Use `FIRST` in order to get just the first result (zero-to-one) or `ONE` to get the one result, while failing if there are more than one.
+The `returning` field can be used to change what the generated methods are returning. By default, `MULTIPLE` is used which can contain zero-to-many entities. Use `SINGLE` to get a single result, `NONE` to get no result or `CURSOR` to get a streaming cursor. These values are case insensitive, thus `multiple` is the same as `MULTIPLE`.
 
 ```sql
--- returningMode: ONE
+-- returning: NONE
+UPDATE users
+SET name = :name
+WHERE id = :userId
+```
+
+```sql
+-- returning: SINGLE
 SELECT  *
 FROM    users
 WHERE   id = :userId
+```
+
+```sql
+-- returning: MULTIPLE
+SELECT  *
+FROM    users
+```
+
+```sql
+-- returning: CURSOR
+SELECT  *
+FROM    users
 ```

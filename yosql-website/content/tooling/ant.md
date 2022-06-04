@@ -10,7 +10,7 @@ tags:
   - Ant
 ---
 
-**WORK IN PROGRESS**
+**WORK IN PROGRESS** - https://github.com/metio/yosql/issues/146
 
 1. Download the `yosql-tooling-ant` task jar file.
 2. Define a custom task based on that jar.

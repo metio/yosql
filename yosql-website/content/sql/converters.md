@@ -23,10 +23,9 @@ You can either specify the fully-qualified name of the converter or use its alia
 
 ```java
 // uses "User" as type argument for all return types
+Optional<User> findUsers()
 List<User> findUsers()
-Stream<User> findUsersStreamEager()
-Stream<User> findUsersStreamLazy()
-Flowable<User> findUsersFlow()
+Stream<User> findUsersStream()
 ```
 
 `my.own.UserConverter` could look like this:

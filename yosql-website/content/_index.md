@@ -17,7 +17,7 @@ date: 2020-04-13
 
 ### zero dependency
 
-`YoSQL` is a true zero dependency solution. Instead of adding a new dependency to your project, `YoSQL` is available as a build-tool that is only active during build-time. Once everything is generated, `YoSQL` is no longer required at run-time. Want to rely only on JDK classes without any external dependencies? - `YoSQL` got you covered as well.
+`YoSQL` is a true zero dependency solution. Instead of adding a new dependency to your project, `YoSQL` is available as a build-tool that is only active during build-time. Once everything is generated, `YoSQL` is no longer required at run-time. The generated code relies only on JDK classes without any external dependencies.
 
 ### developer friendly
 
