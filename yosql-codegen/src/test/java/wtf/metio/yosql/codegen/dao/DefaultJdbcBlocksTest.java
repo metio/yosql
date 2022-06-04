@@ -166,7 +166,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsMultipleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.lang.Object>();
+                    final var list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -177,7 +177,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    final var list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -363,7 +363,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsMultipleExpectation() {
             return """
-                    final java.util.List<java.lang.Object> list = new java.util.ArrayList<java.lang.Object>();
+                    final java.util.List<com.example.Domain> list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -374,7 +374,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final java.util.List<java.util.List<java.lang.Object>> list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    final java.util.List<com.example.Domain> list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -560,7 +560,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsMultipleExpectation() {
             return """
-                    final java.util.List<java.lang.Object> list = new java.util.ArrayList<java.lang.Object>();
+                    final java.util.List<com.example.Domain> list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -571,7 +571,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final java.util.List<java.util.List<java.lang.Object>> list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    final java.util.List<com.example.Domain> list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -757,7 +757,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsMultipleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.lang.Object>();
+                    final var list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -768,7 +768,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    final var list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -954,7 +954,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsMultipleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.lang.Object>();
+                    final var list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -965,7 +965,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    final var list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -1151,7 +1151,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsMultipleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.lang.Object>();
+                    final var list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }
@@ -1162,7 +1162,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.List<java.lang.Object>>();
+                    final var list = new java.util.ArrayList<com.example.Domain>();
                     while (resultSet.next()) {
                       list.add(converter.apply(resultSet));
                     }

@@ -9,6 +9,7 @@ package wtf.metio.yosql.codegen.dao;
 import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.codegen.blocks.ControlFlows;
 import wtf.metio.yosql.codegen.blocks.Methods;
+import wtf.metio.yosql.codegen.exceptions.MissingRepositoryNameException;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.models.configuration.Constants;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
@@ -61,19 +62,18 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     @Override
     public MethodSpec callMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = returnTypes.multiResultType(configuration);
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
-                .returns(resultType)
+                .returns(returnTypes.multiResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElse(""), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.tryPrepareCallable())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.returnAsMultiple(resultType, converter))
+                .addCode(jdbc.returnAsMultiple(converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

@@ -7,9 +7,9 @@
 package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.MethodSpec;
-import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.blocks.ControlFlows;
 import wtf.metio.yosql.codegen.blocks.Methods;
+import wtf.metio.yosql.codegen.exceptions.MissingRepositoryNameException;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.configuration.Constants;
@@ -77,7 +77,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .returns(int.class)
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository().orElse(""), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -93,12 +93,11 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(returnTypes.singleResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository().orElse(""), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -106,7 +105,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning())
                 .addCode(jdbc.getResultSet())
-                .addCode(jdbc.returnAsSingle(resultType, converter))
+                .addCode(jdbc.returnAsSingle(converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
@@ -116,12 +115,11 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = returnTypes.multiResultType(configuration);
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
-                .returns(resultType)
+                .returns(returnTypes.multiResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository().orElse(""), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -129,7 +127,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning())
                 .addCode(jdbc.getResultSet())
-                .addCode(jdbc.returnAsMultiple(resultType, converter))
+                .addCode(jdbc.returnAsMultiple(converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
@@ -139,12 +137,11 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = returnTypes.cursorResultType(configuration);
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
-                .returns(resultType)
+                .returns(returnTypes.cursorResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository().orElse(""), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
@@ -173,7 +170,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElse(""), configuration.batchName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.batchName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())

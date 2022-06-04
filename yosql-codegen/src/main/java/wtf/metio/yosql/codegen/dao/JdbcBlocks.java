@@ -7,8 +7,6 @@
 package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -62,9 +60,9 @@ public interface JdbcBlocks {
 
     CodeBlock logExecutedBatchQuery(SqlConfiguration sqlConfiguration);
 
-    CodeBlock returnAsMultiple(ParameterizedTypeName listOfResults, ResultRowConverter converter);
+    CodeBlock returnAsMultiple(ResultRowConverter converter);
 
-    CodeBlock returnAsSingle(TypeName resultType, ResultRowConverter converter);
+    CodeBlock returnAsSingle(ResultRowConverter converter);
 
     CodeBlock streamStateful(ResultRowConverter converter);
 

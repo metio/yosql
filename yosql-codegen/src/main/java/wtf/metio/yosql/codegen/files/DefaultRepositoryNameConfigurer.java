@@ -130,7 +130,7 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
             final var repositoryClass = userDefinedRepository(configuration)
                     .orElseGet(() -> calculateRepositoryName(source));
             final var repositoryInterface = interfaceName(repositoryClass);
-            logger.debug(RepositoryLifecycle.REPOSITORY_NAME_RESULT, repositoryInterface);
+            logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_RESULT, repositoryInterface);
             return Optional.of(repositoryInterface);
         }
         return Optional.empty();
@@ -138,10 +138,13 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
 
     // visible for testing
     String interfaceName(final String repositoryClass) {
-        // TODO: add debug log infos here
+        logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_CALC_SOURCE, repositoryClass);
         final var rawName = cleanupClassAffixes(repositoryClass);
+        logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_CALC_RAW, rawName);
         final var prefixedName = classWithPrefix(rawName, repositories.repositoryInterfacePrefix());
+        logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_CALC_PREFIXED, prefixedName);
         final var suffixedName = classWithSuffix(prefixedName, repositories.repositoryInterfaceSuffix());
+        logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_CALC_SUFFIXED, suffixedName);
 
         return repositoryClass.equals(suffixedName)
                 ? modifyClassName(suffixedName, name -> "I" + name)

@@ -74,29 +74,17 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final String yaml,
             final Map<String, List<Integer>> parameterIndices,
             final int statementInFile) {
-        var config = configParser.parseConfig(yaml);
-        logConfiguration(config);
-        config = methodNames.configureNames(config, FileNames.withoutExtension(source), statementInFile);
-        config = methodSettings.configureSettings(config);
-        config = methodApis.configureApis(config);
-        config = repositoryName.configureNames(config, source);
-        config = methodParameters.configureParameters(config, source, parameterIndices);
-        config = methodConverter.configureConverter(config);
-        logConfiguration(config);
-        methodNameValidator.validateNames(config, source);
-        return config;
-    }
-
-    private void logConfiguration(final SqlConfiguration configuration) {
-        logger.debug("SQL CONFIGURATION:");
-        logger.debug("name:          {}", configuration.name());
-        logger.debug("repository:    {}", configuration.repository());
-        logger.debug("parameters:    {}", configuration.parameters().size());
-        logger.debug("standardApi:   {}", configuration.standardName());
-        logger.debug("batchApi:      {}", configuration.generateBatchApi());
-        logger.debug("type:          {}", configuration.type());
-        logger.debug("returning    : {}", configuration.returningMode());
-        logger.debug("vendor:        {}", configuration.vendor());
+        var configuration = configParser.parseConfig(yaml);
+        logger.debug("SQL configuration: {}", configuration);
+        configuration = methodNames.configureNames(configuration, FileNames.withoutExtension(source), statementInFile);
+        configuration = methodSettings.configureSettings(configuration);
+        configuration = methodApis.configureApis(configuration);
+        configuration = repositoryName.configureNames(configuration, source);
+        configuration = methodParameters.configureParameters(configuration, source, parameterIndices);
+        configuration = methodConverter.configureConverter(configuration);
+        logger.debug("SQL configuration: {}", configuration);
+        methodNameValidator.validateNames(configuration, source);
+        return configuration;
     }
 
 }

@@ -7,9 +7,9 @@
 package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.MethodSpec;
-import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.blocks.ControlFlows;
 import wtf.metio.yosql.codegen.blocks.Methods;
+import wtf.metio.yosql.codegen.exceptions.MissingRepositoryNameException;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.models.configuration.Constants;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
@@ -75,7 +75,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.standardName())) // TODO: add business exception here
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(controlFlows.maybeTry(configuration))
                 .addStatement(jdbc.getConnectionInline())
                 .addCode(jdbc.pickVendorQuery(statements))
@@ -92,19 +92,18 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(returnTypes.singleResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.standardName())) // TODO: add business exception here
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.returnAsSingle(resultType, converter))
+                .addCode(jdbc.returnAsSingle(converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
@@ -114,19 +113,18 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var listOfResults = returnTypes.multiResultType(configuration);
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
-                .returns(listOfResults)
+                .returns(returnTypes.multiResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.standardName())) // TODO: add business exception here
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement())
-                .addCode(jdbc.returnAsMultiple(listOfResults, converter)) // TODO: pass-in raw resultType and let returnAsMultiple create list-type
+                .addCode(jdbc.returnAsMultiple(converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
@@ -140,7 +138,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
                 .returns(returnTypes.cursorResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(), configuration.standardName())) // TODO: add business exception here
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
                 .addCode(controlFlows.maybeTry(configuration))
                 .addStatement(jdbc.getConnectionInline())
                 .addCode(jdbc.pickVendorQuery(statements))

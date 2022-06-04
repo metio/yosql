@@ -6,7 +6,10 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeSpec;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
@@ -310,15 +313,15 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock returnAsMultiple(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
-        return prepareReturnList(listOfResults, converter)
+    public CodeBlock returnAsMultiple(final ResultRowConverter converter) {
+        return prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()), converter)
                 .addStatement("return $N", names.list())
                 .build();
     }
 
     @Override
-    public CodeBlock returnAsSingle(final TypeName resultType, final ResultRowConverter converter) {
-        return prepareReturnList(TypicalTypes.listOf(resultType), converter)
+    public CodeBlock returnAsSingle(final ResultRowConverter converter) {
+        return prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()), converter)
                 .addStatement("return $N.size() > 0 ? $T.of($N.get(0)) : $T.empty()",
                         names.list(), Optional.class, names.list(), Optional.class)
                 .build();

@@ -6,6 +6,8 @@
  */
 package wtf.metio.yosql.models.configuration;
 
+import com.squareup.javapoet.TypeName;
+import de.xn__ho_hia.javapoet.TypeGuesser;
 import org.immutables.value.Value;
 
 @Value.Immutable
@@ -22,5 +24,10 @@ public interface ResultRowConverter {
     String methodName();
 
     String resultType();
+
+    @Value.Lazy
+    default TypeName resultTypeName() {
+        return TypeGuesser.guessTypeName(resultType());
+    }
 
 }

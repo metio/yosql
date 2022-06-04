@@ -44,6 +44,21 @@
             <artifactId>value</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.xn--ho-hia.javapoet</groupId>
+            <artifactId>javapoet-type-guesser</artifactId>
+            <version>2017.03.19-185842</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.platform</groupId>
+                    <artifactId>junit-platform-runner</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>wtf.metio.yosql.internals</groupId>

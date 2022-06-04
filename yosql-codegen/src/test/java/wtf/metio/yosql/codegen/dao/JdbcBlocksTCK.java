@@ -7,10 +7,8 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.TypeName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
@@ -25,26 +23,47 @@ abstract class JdbcBlocksTCK {
     abstract JdbcBlocks generator();
 
     abstract String getConnectionInlineExpectation();
+
     abstract String prepareStatementInlineExpectation();
+
     abstract String prepareCallInlineExpectation();
+
     abstract String getMetaDataStatementExpectation();
+
     abstract String executeQueryInlineExpectation();
+
     abstract String returnExecuteUpdateExpectation();
+
     abstract String executeBatchExpectation();
+
     abstract String closeResultSetExpectation();
+
     abstract String closePrepareStatementExpectation();
+
     abstract String closeConnectionExpectation();
+
     abstract String executeStatementExpectation();
+
     abstract String openConnectionExpectation();
+
     abstract String tryPrepareCallableExpectation();
+
     abstract String createStatementExpectation();
+
     abstract String prepareBatchExpectation();
+
     abstract String pickVendorQueryExpectation();
+
     abstract String logExecutedQueryExpectation();
+
     abstract String logExecutedBatchQueryExpectation();
+
     abstract String returnAsMultipleExpectation();
+
     abstract String returnAsSingleExpectation();
+
     abstract String setParametersExpectation();
+
     abstract String setBatchParametersExpectation();
 
     @Test
@@ -178,11 +197,12 @@ abstract class JdbcBlocksTCK {
         final var converter = ResultRowConverter.builder()
                 .setAlias("converter")
                 .setConverterType("com.example.Converter")
-                .setMethodName("apply").setResultType("com.example.Domain")
+                .setMethodName("apply")
+                .setResultType("com.example.Domain")
                 .build();
         Assertions.assertEquals(
                 returnAsMultipleExpectation(),
-                generator().returnAsMultiple(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
+                generator().returnAsMultiple(converter).toString());
     }
 
     @Test
@@ -190,11 +210,12 @@ abstract class JdbcBlocksTCK {
         final var converter = ResultRowConverter.builder()
                 .setAlias("converter")
                 .setConverterType("com.example.Converter")
-                .setMethodName("apply").setResultType("com.example.Domain")
+                .setMethodName("apply")
+                .setResultType("com.example.Domain")
                 .build();
         Assertions.assertEquals(
                 returnAsSingleExpectation(),
-                generator().returnAsSingle(TypicalTypes.listOf(TypeName.OBJECT), converter).toString());
+                generator().returnAsSingle(converter).toString());
     }
 
     @Test
