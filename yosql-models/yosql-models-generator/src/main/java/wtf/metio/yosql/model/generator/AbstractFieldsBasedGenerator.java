@@ -83,8 +83,8 @@ public abstract class AbstractFieldsBasedGenerator implements Generator {
         }
         if (usesNioPath(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($T.get($L, $L))\n", Strings.upperCase(setting.name()), Paths.class,
-                            "projectBaseDirectory", setting.name())
+                    .add(".set$L($T.get($L, $L))\n", Strings.upperCase(setting.name()),
+                            Paths.class, "projectBaseDirectory", setting.name())
                     .build();
         }
         if (usesCharset(setting)) {
