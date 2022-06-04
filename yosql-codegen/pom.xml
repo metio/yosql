@@ -84,10 +84,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-ext</artifactId>
         </dependency>
-        <dependency> <!-- TODO: remove this dep? -->
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
