@@ -157,6 +157,46 @@ class DefaultRepositoryNameConfigurerTest {
     }
 
     @Test
+    void repositoryInBasePackageWithOverlappingSubpackage() {
+        assertEquals("com.example.persistence.domain.Test",
+                configurer.repositoryInBasePackage("persistence.domain.Test"));
+    }
+
+    @Test
+    void repositoryInBasePackageWithEmptyBasePackage() {
+        configurer = new DefaultRepositoryNameConfigurer(
+                LoggingObjectMother.logger(),
+                files,
+                RepositoriesConfiguration.usingDefaults()
+                        .setRepositoryNamePrefix("Prefix")
+                        .setRepositoryNameSuffix("Suffix")
+                        .setRepositoryInterfacePrefix("Inter")
+                        .setRepositoryInterfaceSuffix("Face")
+                        .setBasePackageName("")
+                        .build());
+
+        assertEquals("persistence.domain.Test",
+                configurer.repositoryInBasePackage("persistence.domain.Test"));
+    }
+
+    @Test
+    void repositoryInBasePackageWithEmptyBasePackageWithSimpleClass() {
+        configurer = new DefaultRepositoryNameConfigurer(
+                LoggingObjectMother.logger(),
+                files,
+                RepositoriesConfiguration.usingDefaults()
+                        .setRepositoryNamePrefix("Prefix")
+                        .setRepositoryNameSuffix("Suffix")
+                        .setRepositoryInterfacePrefix("Inter")
+                        .setRepositoryInterfaceSuffix("Face")
+                        .setBasePackageName("")
+                        .build());
+
+        assertEquals("Test",
+                configurer.repositoryInBasePackage("Test"));
+    }
+
+    @Test
     void extractRawRepositoryName() {
         assertEquals("PrefixSuffix",
                 configurer.extractRawRepositoryName(Paths.get("test.sql")));

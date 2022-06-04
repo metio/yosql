@@ -16,9 +16,12 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class DefaultRepositoryNameConfigurer implements RepositoryNameConfigurer {
 
@@ -104,10 +107,22 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
     }
 
     // visible for testing
-    String repositoryInBasePackage(final String name) {
-        return name.startsWith(repositories.basePackageName())
-                ? name
-                : repositories.basePackageName() + "." + name;
+    String repositoryInBasePackage(final String repositoryName) {
+        final var basePackages = repositories.basePackageName().split("\\.");
+        final var repositoryPackages = repositoryName.split("\\.");
+        final var iterationLength = Math.min(basePackages.length, repositoryPackages.length);
+
+        int overlappingPackages = 0;
+        for (int index = 0; index < iterationLength - 1; index++) {
+            if (basePackages[basePackages.length - 1 - index].equals(repositoryPackages[index])) {
+                overlappingPackages++;
+            }
+        }
+
+        return Stream.concat(Arrays.stream(basePackages), Arrays.stream(repositoryPackages)
+                        .skip(overlappingPackages))
+                .filter(Predicate.not(String::isBlank))
+                .collect(Collectors.joining("."));
     }
 
     private Optional<String> repositoryInterfaceName(final SqlConfiguration configuration, final Path source) {
@@ -123,6 +138,7 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
 
     // visible for testing
     String interfaceName(final String repositoryClass) {
+        // TODO: add debug log infos here
         final var rawName = cleanupClassAffixes(repositoryClass);
         final var prefixedName = classWithPrefix(rawName, repositories.repositoryInterfacePrefix());
         final var suffixedName = classWithSuffix(prefixedName, repositories.repositoryInterfaceSuffix());
