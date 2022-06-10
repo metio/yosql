@@ -7,11 +7,8 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
-
-import java.util.Objects;
 
 public final class DefaultCodeBlocks implements CodeBlocks {
 
@@ -46,11 +43,10 @@ public final class DefaultCodeBlocks implements CodeBlocks {
 
     @Override
     public CodeBlock initializeConverter(final ResultRowConverter converter) {
-        final var type = converter.converterType();
-        final ClassName converterClass = ClassName.bestGuess((Objects.isNull(type) || type.isBlank()) ? "java.lang.Object" :
-                type);
         return CodeBlock.builder()
-                .addStatement("this.$N = new $T()", converter.alias(), converterClass)
+                .addStatement("this.$N = new $T()",
+                        converter.alias().orElseThrow(), // TODO: throw business exception
+                        converter.converterTypeName().orElseThrow()) // TODO: throw business exception
                 .build();
     }
 

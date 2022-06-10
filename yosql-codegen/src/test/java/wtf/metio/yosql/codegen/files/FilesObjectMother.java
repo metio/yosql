@@ -44,8 +44,8 @@ public final class FilesObjectMother {
                 LoggingObjectMother.messages());
     }
 
-    public static MethodConverterConfigurer methodConverterConfigurer(final ConverterConfiguration converter) {
-        return new DefaultMethodConverterConfigurer(converter);
+    public static MethodResultRowConverterConfigurer methodConverterConfigurer(final ConverterConfiguration converter) {
+        return new DefaultMethodResultRowConverterConfigurer(converter);
     }
 
     public static RepositoryNameConfigurer repositoryNameConfigurer(final RepositoriesConfiguration repositories) {
@@ -56,7 +56,7 @@ public final class FilesObjectMother {
     }
 
     public static SqlConfigurationParser sqlConfigurationParser() {
-        return new DefaultSqlConfigurationParser();
+        return new DefaultSqlConfigurationParser(OrchestrationObjectMother.executionErrors());
     }
 
     public static SqlConfigurationFactory sqlConfigurationFactory(

@@ -92,6 +92,11 @@ public abstract class AbstractFieldsBasedGenerator implements Generator {
                     .add(".set$L($T.forName($L))\n", Strings.upperCase(setting.name()), Charset.class, setting.name())
                     .build();
         }
+        if (usesAnnotations(setting)) {
+            return CodeBlock.builder()
+                    .add(".set$L(createAnnotations($L))\n", Strings.upperCase(setting.name()), setting.name())
+                    .build();
+        }
         return CodeBlock.of(".set$L($L)\n", Strings.upperCase(setting.name()), setting.name());
     }
 

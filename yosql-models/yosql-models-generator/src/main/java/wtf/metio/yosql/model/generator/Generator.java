@@ -9,6 +9,7 @@ package wtf.metio.yosql.model.generator;
 
 import com.squareup.javapoet.*;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
+import wtf.metio.yosql.models.configuration.Annotation;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
@@ -81,6 +82,10 @@ public interface Generator extends Function<ConfigurationGroup, Stream<TypeSpec>
 
     default boolean usesResultRowConverters(final ConfigurationSetting setting) {
         return setting.type().equals(TypicalTypes.listOf(ResultRowConverter.class));
+    }
+
+    default boolean usesAnnotations(final ConfigurationSetting setting) {
+        return setting.type().equals(TypicalTypes.listOf(Annotation.class));
     }
 
 }

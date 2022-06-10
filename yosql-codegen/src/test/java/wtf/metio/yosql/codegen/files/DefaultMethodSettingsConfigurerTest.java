@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.models.configuration.ReturningMode;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.testing.configs.RepositoriesConfigurations;
@@ -32,7 +32,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void typeKeep() {
-        final var original = SqlConfiguration.usingDefaults().setType(SqlType.CALLING).build();
+        final var original = SqlConfiguration.usingDefaults().setType(SqlStatementType.CALLING).build();
         final var adapted = configurer.type(original);
         assertEquals(original.type(), adapted.type());
     }
@@ -40,45 +40,31 @@ class DefaultMethodSettingsConfigurerTest {
     @Test
     void typeChangeReading() {
         final var original = SqlConfiguration.usingDefaults()
-                .setType(SqlType.UNKNOWN)
                 .setName(repositories.allowedReadPrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
         assertTrue(adapted.type().isPresent());
-        assertEquals(SqlType.READING, adapted.type().get());
+        assertEquals(SqlStatementType.READING, adapted.type().get());
     }
 
     @Test
     void typeChangeWriting() {
         final var original = SqlConfiguration.usingDefaults()
-                .setType(SqlType.UNKNOWN)
                 .setName(repositories.allowedWritePrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
         assertTrue(adapted.type().isPresent());
-        assertEquals(SqlType.WRITING, adapted.type().get());
+        assertEquals(SqlStatementType.WRITING, adapted.type().get());
     }
 
     @Test
     void typeChangeCalling() {
         final var original = SqlConfiguration.usingDefaults()
-                .setType(SqlType.UNKNOWN)
                 .setName(repositories.allowedCallPrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
         assertTrue(adapted.type().isPresent());
-        assertEquals(SqlType.CALLING, adapted.type().get());
-    }
-
-    @Test
-    void typeChangeUnknown() {
-        final var original = SqlConfiguration.usingDefaults()
-                .setType(SqlType.UNKNOWN)
-                .setName("question" + "Something")
-                .build();
-        final var adapted = configurer.type(original);
-        assertTrue(adapted.type().isPresent());
-        assertEquals(SqlType.UNKNOWN, adapted.type().get());
+        assertEquals(SqlStatementType.CALLING, adapted.type().get());
     }
 
     @Test
@@ -86,16 +72,16 @@ class DefaultMethodSettingsConfigurerTest {
         final var original = SqlConfiguration.usingDefaults()
                 .setReturningMode(ReturningMode.MULTIPLE)
                 .build();
-        final var adapted = configurer.returningMode(original);
+        final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
         assertEquals(original.returningMode(), adapted.returningMode());
     }
 
     @Test
     void returningModeChangeReading() {
         final var original = SqlConfiguration.usingDefaults()
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .build();
-        final var adapted = configurer.returningMode(original);
+        final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
         assertTrue(adapted.returningMode().isPresent());
         assertEquals(ReturningMode.MULTIPLE, adapted.returningMode().get());
     }
@@ -103,9 +89,9 @@ class DefaultMethodSettingsConfigurerTest {
     @Test
     void returningModeChangeCalling() {
         final var original = SqlConfiguration.usingDefaults()
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .build();
-        final var adapted = configurer.returningMode(original);
+        final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
         assertTrue(adapted.returningMode().isPresent());
         assertEquals(ReturningMode.SINGLE, adapted.returningMode().get());
     }
@@ -113,22 +99,19 @@ class DefaultMethodSettingsConfigurerTest {
     @Test
     void returningModeChangeWriting() {
         final var original = SqlConfiguration.usingDefaults()
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .build();
-        final var adapted = configurer.returningMode(original);
+        final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
         assertTrue(adapted.returningMode().isPresent());
         assertEquals(ReturningMode.NONE, adapted.returningMode().get());
     }
 
     @Test
-    void returningModeChangeUnknown() {
+    void returningModeRemainUnknown() {
         final var original = SqlConfiguration.usingDefaults()
-                .setReturningMode(ReturningMode.NONE)
-                .setType(SqlType.UNKNOWN)
                 .build();
-        final var adapted = configurer.returningMode(original);
-        assertTrue(adapted.returningMode().isPresent());
-        assertEquals(ReturningMode.NONE, adapted.returningMode().get());
+        final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
+        assertTrue(adapted.returningMode().isEmpty());
     }
 
     @Test
@@ -210,7 +193,7 @@ class DefaultMethodSettingsConfigurerTest {
     @Test
     void keepSettings() {
         final var original = SqlConfiguration.usingDefaults()
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .setReturningMode(ReturningMode.MULTIPLE)
                 .setCatchAndRethrow(false)
                 .setInjectConverters(true)
@@ -227,7 +210,6 @@ class DefaultMethodSettingsConfigurerTest {
     void changeSettings() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(repositories.allowedCallPrefixes().get(0) + "Something")
-                .setType(SqlType.UNKNOWN)
                 // .setCatchAndRethrow(false) // do NOT set value
                 // .setInjectConverters(true) // do NOT set value
                 // .setThrowOnMultipleResultsForSingle(true) // value is NOT set
@@ -235,7 +217,7 @@ class DefaultMethodSettingsConfigurerTest {
                 .build();
         final var adapted = configurer.configureSettings(original);
         assertAll(
-                () -> assertEquals(SqlType.CALLING, adapted.type().get()),
+                () -> assertEquals(SqlStatementType.CALLING, adapted.type().get()),
                 () -> assertEquals(ReturningMode.SINGLE, adapted.returningMode().get()),
                 () -> assertEquals(repositories.catchAndRethrow(), adapted.catchAndRethrow().get()),
                 () -> assertEquals(repositories.injectConverters(), adapted.injectConverters().get()),

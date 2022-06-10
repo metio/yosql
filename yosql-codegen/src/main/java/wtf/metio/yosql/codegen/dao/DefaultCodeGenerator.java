@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class DefaultCodeGenerator implements CodeGenerator {
@@ -46,11 +47,11 @@ public final class DefaultCodeGenerator implements CodeGenerator {
     }
 
     private Stream<PackagedTypeSpec> generateRepositoryClasses(final List<SqlStatement> statements) {
-        return generate(statements, SqlStatement.groupByRepositoryClass(), repositoryGenerator::generateRepositoryClass);
+        return generate(statements, Collectors.groupingBy(SqlStatement::getRepositoryClass), repositoryGenerator::generateRepositoryClass);
     }
 
     private Stream<PackagedTypeSpec> generateRepositoryInterfaces(final List<SqlStatement> statements) {
-        return generate(statements, SqlStatement.groupByRepositoryInterface(), repositoryGenerator::generateRepositoryInterface);
+        return generate(statements, Collectors.groupingBy(SqlStatement::getRepositoryInterface), repositoryGenerator::generateRepositoryInterface);
     }
 
     private static Stream<PackagedTypeSpec> generate(

@@ -44,7 +44,8 @@
     <modules>
         <module>yosql-tooling-dagger</module>
         <module>yosql-tooling-maven</module>
-        <module>yosql-tooling-cli</module>
+<!--        <module>yosql-tooling-annotation-processor</module>-->
+<!--        <module>yosql-tooling-cli</module>-->
 <!--        <module>yosql-tooling-ant</module>-->
 <!--        <module>yosql-tooling-camel</module>-->
 <!--        <module>yosql-tooling-eclipse</module>-->

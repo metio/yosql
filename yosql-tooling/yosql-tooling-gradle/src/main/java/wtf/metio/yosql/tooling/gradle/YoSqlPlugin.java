@@ -23,17 +23,13 @@ public class YoSqlPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        final var extension = createExtension(project);
+        final var extension = project.getExtensions().create("yosql", YoSqlExtension.class);
         configureConventions(extension, project.getLayout(), project.getObjects());
         registerTask(project, extension);
         configureSourceSets(project, extension);
     }
 
-    private YoSqlExtension createExtension(final Project project) {
-        return project.getExtensions().create("yosql", YoSqlExtension.class);
-    }
-
-    private void configureConventions(
+    private static void configureConventions(
             final YoSqlExtension extension,
             final ProjectLayout layout,
             final ObjectFactory objects) {
@@ -47,14 +43,14 @@ public class YoSqlPlugin implements Plugin<Project> {
         extension.getResources().configureConventions();
     }
 
-    private void registerTask(final Project project, final YoSqlExtension extension) {
+    private static void registerTask(final Project project, final YoSqlExtension extension) {
         final var generate = project.getTasks().register("generateJavaCode",
                 GenerateCodeTask.class, new GenerateTaskConfiguration(extension));
         project.getTasks().withType(JavaCompile.class, task -> task.doFirst("yosql",
                 new GenerateCodeAction(generate)));
     }
 
-    private void configureSourceSets(final Project project, final YoSqlExtension extension) {
+    private static void configureSourceSets(final Project project, final YoSqlExtension extension) {
         project.getPlugins().withType(JavaPlugin.class, plugin -> project.getExtensions()
                 .getByType(JavaPluginExtension.class)
                 .getSourceSets()

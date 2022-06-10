@@ -19,11 +19,6 @@ import ch.qos.cal10n.LocaleData;
 public enum ValidationErrors {
 
     /**
-     * Signals that an unsupported SQL statement type was used.
-     */
-    UNSUPPORTED_TYPE,
-
-    /**
      * Signals that an invalid prefix was used for a query.
      */
     INVALID_PREFIX,

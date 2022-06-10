@@ -4,20 +4,8 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
-package wtf.metio.yosql.codegen.files;
 
-import java.nio.file.Path;
-import java.util.stream.Stream;
+package wtf.metio.yosql.example.common;
 
-/**
- * Resolves SQL files possibly from an external source, like the file system.
- */
-@FunctionalInterface
-public interface FileResolver {
-
-    /**
-     * @return A stream of SQL files found in the source of this resolver.
-     */
-    Stream<Path> resolveFiles();
-
+public @interface CustomAnnotation {
 }

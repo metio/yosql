@@ -9,7 +9,7 @@ package wtf.metio.yosql.codegen.files;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.testing.configs.RepositoriesConfigurations;
@@ -50,7 +50,7 @@ class DefaultMethodApiConfigurerTest {
     void batchAllowsReads() {
         final var original = SqlConfiguration.usingDefaults()
                 .setGenerateBatchApi(true)
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .build();
         final var adapted = configurer.batch(original);
         assertTrue(adapted.generateBatchApi().isPresent());

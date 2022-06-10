@@ -10,7 +10,7 @@ package wtf.metio.yosql.testing.configs;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.configuration.SqlParameter;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -53,7 +53,7 @@ public final class SqlConfigurations {
     public static SqlConfiguration sqlConfiguration() {
         final var config = SqlConfiguration.builder();
         config.setName("queryData");
-        config.setType(SqlType.READING);
+        config.setType(SqlStatementType.READING);
         config.setReturningMode(ReturningMode.MULTIPLE);
         config.setRepository("com.example.persistence.DataRepository");
         config.setCatchAndRethrow(true);

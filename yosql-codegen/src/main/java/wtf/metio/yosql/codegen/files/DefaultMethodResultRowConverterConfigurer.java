@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.codegen.files;
 
-import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -16,41 +15,37 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public final class DefaultMethodConverterConfigurer implements MethodConverterConfigurer {
+public final class DefaultMethodResultRowConverterConfigurer implements MethodResultRowConverterConfigurer {
 
-    private final ConverterConfiguration converter;
+    private final ConverterConfiguration converters;
 
-    public DefaultMethodConverterConfigurer(final ConverterConfiguration converter) {
-        this.converter = converter;
+    public DefaultMethodResultRowConverterConfigurer(final ConverterConfiguration converters) {
+        this.converters = converters;
     }
 
     @Override
-    public SqlConfiguration configureConverter(final SqlConfiguration configuration) {
-        if (configuration.resultRowConverter().isEmpty()) {
-            return SqlConfiguration.copyOf(configuration).withResultRowConverter(getDefaultRowConverter());
-        }
-        final var currentConverter = configuration.resultRowConverter().get();
-        final var converter = ResultRowConverter.builder()
-                .setAlias(Strings.isBlank(currentConverter.alias()) ?
-                        getDefaultAlias(currentConverter) : currentConverter.alias())
-                .setConverterType(Strings.isBlank(currentConverter.converterType()) ?
-                        getDefaultConverterType(currentConverter) : currentConverter.converterType())
-                .setMethodName(Strings.isBlank(currentConverter.methodName()) ?
-                        getDefaultMethodName(currentConverter) : currentConverter.methodName())
-                .setResultType(Strings.isBlank(currentConverter.resultType()) ?
-                        getDefaultResultType(currentConverter) : currentConverter.resultType())
-                .build();
-
+    public SqlConfiguration configureResultRowConverter(final SqlConfiguration configuration) {
         return SqlConfiguration.copyOf(configuration)
-                .withResultRowConverter(converter);
+                .withResultRowConverter(configuration.resultRowConverter()
+                        .map(this::adjustConverter)
+                        .or(this::getDefaultRowConverter));
+    }
+
+    private ResultRowConverter adjustConverter(final ResultRowConverter original) {
+        return ResultRowConverter.builder()
+                .setAlias(original.alias().orElse(getDefaultAlias(original)))
+                .setConverterType(original.converterType().orElse(getDefaultConverterType(original)))
+                .setMethodName(original.methodName().orElse(getDefaultMethodName(original)))
+                .setResultType(original.resultType().orElse(getDefaultResultType(original)))
+                .build();
     }
 
     private Optional<ResultRowConverter> getDefaultRowConverter() {
-        final var resultRowConverter = converter.defaultConverter();
-        return converter.rowConverters().stream()
-                .filter(converter -> resultRowConverter.isEmpty() || resultRowConverter.get().equals(converter))
+        final var defaultConverter = converters.defaultConverter();
+        return converters.rowConverters().stream()
+                .filter(converter -> defaultConverter.isEmpty() || defaultConverter.get().equals(converter))
                 .findFirst()
-                .or(() -> resultRowConverter);
+                .or(() -> defaultConverter);
     }
 
     private String getDefaultAlias(final ResultRowConverter resultConverter) {
@@ -81,10 +76,11 @@ public final class DefaultMethodConverterConfigurer implements MethodConverterCo
 
     private String getConverterFieldOrEmptyString(
             final Predicate<ResultRowConverter> predicate,
-            final Function<ResultRowConverter, String> mapper) {
-        return converter.rowConverters().stream()
+            final Function<ResultRowConverter, Optional<String>> mapper) {
+        return converters.rowConverters().stream()
                 .filter(predicate)
                 .map(mapper)
+                .flatMap(Optional::stream)
                 .findFirst()
                 .orElse("");
     }

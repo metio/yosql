@@ -10,8 +10,9 @@ package wtf.metio.yosql.codegen.files;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.models.configuration.ReturningMode;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +23,7 @@ class DefaultSqlConfigurationParserTest {
 
     @BeforeEach
     void setUp() {
-        parser = new DefaultSqlConfigurationParser();
+        parser = new DefaultSqlConfigurationParser(OrchestrationObjectMother.executionErrors());
     }
 
     @Test
@@ -66,23 +67,13 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseTypeUnknown() {
-        final var yaml = """
-                type: UNKNOWN
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.type().isPresent());
-        assertEquals(SqlType.UNKNOWN, config.type().get());
-    }
-
-    @Test
     void shouldParseTypeReading() {
         final var yaml = """
                 type: READING
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.type().isPresent());
-        assertEquals(SqlType.READING, config.type().get());
+        assertEquals(SqlStatementType.READING, config.type().get());
     }
 
     @Test
@@ -92,7 +83,7 @@ class DefaultSqlConfigurationParserTest {
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.type().isPresent());
-        assertEquals(SqlType.WRITING, config.type().get());
+        assertEquals(SqlStatementType.WRITING, config.type().get());
     }
 
     @Test
@@ -102,17 +93,7 @@ class DefaultSqlConfigurationParserTest {
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.type().isPresent());
-        assertEquals(SqlType.CALLING, config.type().get());
-    }
-
-    @Test
-    void shouldParseTypeUnknownCaseInsensitive() {
-        final var yaml = """
-                type: unknown
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.type().isPresent());
-        assertEquals(SqlType.UNKNOWN, config.type().get());
+        assertEquals(SqlStatementType.CALLING, config.type().get());
     }
 
     @Test
@@ -122,7 +103,7 @@ class DefaultSqlConfigurationParserTest {
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.type().isPresent());
-        assertEquals(SqlType.READING, config.type().get());
+        assertEquals(SqlStatementType.READING, config.type().get());
     }
 
     @Test
@@ -132,7 +113,7 @@ class DefaultSqlConfigurationParserTest {
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.type().isPresent());
-        assertEquals(SqlType.WRITING, config.type().get());
+        assertEquals(SqlStatementType.WRITING, config.type().get());
     }
 
     @Test
@@ -142,7 +123,7 @@ class DefaultSqlConfigurationParserTest {
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.type().isPresent());
-        assertEquals(SqlType.CALLING, config.type().get());
+        assertEquals(SqlStatementType.CALLING, config.type().get());
     }
 
     @Test
@@ -335,8 +316,8 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertEquals(1, config.parameters().size());
         assertAll(
-                () -> assertEquals("name", config.parameters().get(0).name()),
-                () -> assertEquals("java.lang.String", config.parameters().get(0).type()));
+                () -> assertEquals("name", config.parameters().get(0).name().get()),
+                () -> assertEquals("java.lang.String", config.parameters().get(0).type().get()));
     }
 
     @Test
@@ -353,12 +334,12 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertEquals(3, config.parameters().size());
         assertAll(
-                () -> assertEquals("string", config.parameters().get(0).name()),
-                () -> assertEquals("java.lang.String", config.parameters().get(0).type()),
-                () -> assertEquals("bool", config.parameters().get(1).name()),
-                () -> assertEquals("boolean", config.parameters().get(1).type()),
-                () -> assertEquals("number", config.parameters().get(2).name()),
-                () -> assertEquals("int", config.parameters().get(2).type()));
+                () -> assertEquals("string", config.parameters().get(0).name().get()),
+                () -> assertEquals("java.lang.String", config.parameters().get(0).type().get()),
+                () -> assertEquals("bool", config.parameters().get(1).name().get()),
+                () -> assertEquals("boolean", config.parameters().get(1).type().get()),
+                () -> assertEquals("number", config.parameters().get(2).name().get()),
+                () -> assertEquals("int", config.parameters().get(2).type().get()));
     }
 
     @Test
@@ -370,10 +351,10 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertTrue(config.resultRowConverter().isPresent());
         assertAll(
-                () -> assertEquals("converterAlias", config.resultRowConverter().get().alias()),
-                () -> assertEquals("", config.resultRowConverter().get().methodName()),
-                () -> assertEquals("", config.resultRowConverter().get().converterType()),
-                () -> assertEquals("", config.resultRowConverter().get().resultType()));
+                () -> assertEquals("converterAlias", config.resultRowConverter().get().alias().get()),
+                () -> assertTrue(config.resultRowConverter().get().methodName().isEmpty()),
+                () -> assertTrue(config.resultRowConverter().get().converterType().isEmpty()),
+                () -> assertTrue(config.resultRowConverter().get().resultType().isEmpty()));
     }
 
     @Test
@@ -385,10 +366,10 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertTrue(config.resultRowConverter().isPresent());
         assertAll(
-                () -> assertEquals("", config.resultRowConverter().get().alias()),
-                () -> assertEquals("someMethod", config.resultRowConverter().get().methodName()),
-                () -> assertEquals("", config.resultRowConverter().get().converterType()),
-                () -> assertEquals("", config.resultRowConverter().get().resultType()));
+                () -> assertTrue(config.resultRowConverter().get().alias().isEmpty()),
+                () -> assertEquals("someMethod", config.resultRowConverter().get().methodName().get()),
+                () -> assertTrue(config.resultRowConverter().get().converterType().isEmpty()),
+                () -> assertTrue(config.resultRowConverter().get().resultType().isEmpty()));
     }
 
     @Test
@@ -400,10 +381,10 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertTrue(config.resultRowConverter().isPresent());
         assertAll(
-                () -> assertEquals("", config.resultRowConverter().get().alias()),
-                () -> assertEquals("", config.resultRowConverter().get().methodName()),
-                () -> assertEquals("com.example.MyConverter", config.resultRowConverter().get().converterType()),
-                () -> assertEquals("", config.resultRowConverter().get().resultType()));
+                () -> assertTrue(config.resultRowConverter().get().alias().isEmpty()),
+                () -> assertTrue(config.resultRowConverter().get().methodName().isEmpty()),
+                () -> assertEquals("com.example.MyConverter", config.resultRowConverter().get().converterType().get()),
+                () -> assertTrue(config.resultRowConverter().get().resultType().isEmpty()));
     }
 
     @Test
@@ -415,10 +396,10 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertTrue(config.resultRowConverter().isPresent());
         assertAll(
-                () -> assertEquals("", config.resultRowConverter().get().alias()),
-                () -> assertEquals("", config.resultRowConverter().get().methodName()),
-                () -> assertEquals("", config.resultRowConverter().get().converterType()),
-                () -> assertEquals("com.example.MyResult", config.resultRowConverter().get().resultType()));
+                () -> assertTrue(config.resultRowConverter().get().alias().isEmpty()),
+                () -> assertTrue(config.resultRowConverter().get().methodName().isEmpty()),
+                () -> assertTrue(config.resultRowConverter().get().converterType().isEmpty()),
+                () -> assertEquals("com.example.MyResult", config.resultRowConverter().get().resultType().get()));
     }
 
     @Test
@@ -433,10 +414,88 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertTrue(config.resultRowConverter().isPresent());
         assertAll(
-                () -> assertEquals("converterAlias", config.resultRowConverter().get().alias()),
-                () -> assertEquals("someMethod", config.resultRowConverter().get().methodName()),
-                () -> assertEquals("com.example.MyConverter", config.resultRowConverter().get().converterType()),
-                () -> assertEquals("com.example.MyResult", config.resultRowConverter().get().resultType()));
+                () -> assertEquals("converterAlias", config.resultRowConverter().get().alias().get()),
+                () -> assertEquals("someMethod", config.resultRowConverter().get().methodName().get()),
+                () -> assertEquals("com.example.MyConverter", config.resultRowConverter().get().converterType().get()),
+                () -> assertEquals("com.example.MyResult", config.resultRowConverter().get().resultType().get()));
+    }
+
+    @Test
+    void shouldParseAnnotation() {
+        final var yaml = """
+                annotations:
+                  - type: com.example.MyAnnotation
+                    members:
+                      - key: some
+                        value: here
+                        type: java.lang.String
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertFalse(config.annotations().isEmpty());
+        assertAll("annotation",
+                () -> assertEquals("com.example.MyAnnotation", config.annotations().get(0).type()),
+                () -> assertAll("members",
+                        () -> assertFalse(config.annotations().get(0).members().isEmpty()),
+                        () -> assertEquals("some", config.annotations().get(0).members().get(0).key()),
+                        () -> assertEquals("here", config.annotations().get(0).members().get(0).value()),
+                        () -> assertEquals("java.lang.String", config.annotations().get(0).members().get(0).type())));
+    }
+
+    @Test
+    void shouldParseAnnotations() {
+        final var yaml = """
+                annotations:
+                  - type: com.example.MyAnnotation
+                    members:
+                      - key: some
+                        value: here
+                        type: java.lang.String
+                  - type: com.example.OtherAnnotation
+                    members:
+                      - key: another
+                        value: 12345
+                        type: int
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertFalse(config.annotations().isEmpty());
+        assertAll("annotation",
+                () -> assertEquals("com.example.MyAnnotation", config.annotations().get(0).type()),
+                () -> assertEquals("com.example.OtherAnnotation", config.annotations().get(1).type()),
+                () -> assertAll("members",
+                        () -> assertFalse(config.annotations().get(0).members().isEmpty()),
+                        () -> assertEquals("some", config.annotations().get(0).members().get(0).key()),
+                        () -> assertEquals("here", config.annotations().get(0).members().get(0).value()),
+                        () -> assertEquals("java.lang.String", config.annotations().get(0).members().get(0).type()),
+                        () -> assertEquals("another", config.annotations().get(1).members().get(0).key()),
+                        () -> assertEquals("12345", config.annotations().get(1).members().get(0).value()),
+                        () -> assertEquals("int", config.annotations().get(1).members().get(0).type())));
+    }
+
+    @Test
+    void shouldParseAnnotationMembers() {
+        final var yaml = """
+                annotations:
+                  - type: com.example.MyAnnotation
+                    members:
+                      - key: some
+                        value: here
+                        type: java.lang.String
+                      - key: another
+                        value: 12345
+                        type: int
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertFalse(config.annotations().isEmpty());
+        assertAll("annotation",
+                () -> assertEquals("com.example.MyAnnotation", config.annotations().get(0).type()),
+                () -> assertAll("members",
+                        () -> assertFalse(config.annotations().get(0).members().isEmpty()),
+                        () -> assertEquals("some", config.annotations().get(0).members().get(0).key()),
+                        () -> assertEquals("here", config.annotations().get(0).members().get(0).value()),
+                        () -> assertEquals("java.lang.String", config.annotations().get(0).members().get(0).type()),
+                        () -> assertEquals("another", config.annotations().get(0).members().get(1).key()),
+                        () -> assertEquals("12345", config.annotations().get(0).members().get(1).value()),
+                        () -> assertEquals("int", config.annotations().get(0).members().get(1).type())));
     }
 
 }

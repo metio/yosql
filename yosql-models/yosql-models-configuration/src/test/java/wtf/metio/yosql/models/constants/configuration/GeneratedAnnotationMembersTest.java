@@ -5,23 +5,23 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.models.constants.api;
+package wtf.metio.yosql.models.constants.configuration;
 
 import wtf.metio.yosql.internals.junit5.EnumTCK;
-import wtf.metio.yosql.models.configuration.AnnotationApis;
+import wtf.metio.yosql.models.configuration.GeneratedAnnotationMembers;
 
 import java.util.stream.Stream;
 
-class AnnotationApisTest implements EnumTCK<AnnotationApis> {
+final class GeneratedAnnotationMembersTest implements EnumTCK<GeneratedAnnotationMembers> {
 
     @Override
-    public Class<AnnotationApis> getEnumClass() {
-        return AnnotationApis.class;
+    public Class<GeneratedAnnotationMembers> getEnumClass() {
+        return GeneratedAnnotationMembers.class;
     }
 
     @Override
     public Stream<String> validValues() {
-        return Stream.of("AUTO", "ANNOTATION_API", "PROCESSING_API");
+        return Stream.of("ALL", "NONE", "VALUE", "DATE", "COMMENT", "WITHOUT_DATE");
     }
 
 }

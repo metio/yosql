@@ -1,7 +1,6 @@
 # YoSQL [![Chat](https://img.shields.io/badge/matrix-%23yosql:matrix.org-brightgreen.svg?style=social&label=Matrix)](https://matrix.to/#yosql:matrix.org) [![Mailing List](https://img.shields.io/badge/email-yosql%40metio.groups.io%20-brightgreen.svg?style=social&label=Mail)](https://metio.groups.io/g/yosql/topics)
 
-Take a look at the [project website](https://yosql.projects.metio.wtf/) to read the documentation. The *yosql-examples*
-folder contains multiple examples that uses all available features of YoSQL.
+Take a look at the [project website](https://yosql.projects.metio.wtf/) to read the documentation.
 
 ## License
 

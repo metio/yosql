@@ -10,13 +10,10 @@ import org.immutables.value.Value;
 import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.configuration.ReturningMode;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -33,17 +30,7 @@ public interface SqlStatement {
 
     //endregion
 
-    static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByName() {
-        return Collectors.groupingBy(SqlStatement::getName);
-    }
-
-    static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByRepositoryClass() {
-        return Collectors.groupingBy(SqlStatement::getRepositoryClass);
-    }
-
-    static Collector<SqlStatement, ?, Map<String, List<SqlStatement>>> groupByRepositoryInterface() {
-        return Collectors.groupingBy(SqlStatement::getRepositoryInterface);
-    }
+    //region utils
 
     static Stream<ResultRowConverter> resultConverters(
             final List<SqlStatement> statements,
@@ -61,12 +48,24 @@ public interface SqlStatement {
                 .orElse(Boolean.FALSE);
     }
 
+    //endregion
 
+    /**
+     * @return The file system path to the source file of this SQL statement.
+     */
     Path getSourcePath();
 
+    /**
+     * @return The parsed configuration of this SQL statement.
+     */
     SqlConfiguration getConfiguration();
 
+    /**
+     * @return The raw SQL statement.
+     */
     String getRawStatement();
+
+    //region derived
 
     @Value.Lazy
     default String getName() {
@@ -86,21 +85,21 @@ public interface SqlStatement {
     @Value.Lazy
     default boolean isReading() {
         return getConfiguration().type()
-                .map(type -> SqlType.READING == type)
+                .map(type -> SqlStatementType.READING == type)
                 .orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean isWriting() {
         return getConfiguration().type()
-                .map(type -> SqlType.WRITING == type)
+                .map(type -> SqlStatementType.WRITING == type)
                 .orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
     default boolean isCalling() {
         return getConfiguration().type()
-                .map(type -> SqlType.CALLING == type)
+                .map(type -> SqlStatementType.CALLING == type)
                 .orElse(Boolean.FALSE);
     }
 
@@ -125,5 +124,7 @@ public interface SqlStatement {
     default boolean generateStandardWriteAPI() {
         return isWriting() && getConfiguration().generateStandardApi().orElse(Boolean.FALSE);
     }
+
+    //endregion
 
 }

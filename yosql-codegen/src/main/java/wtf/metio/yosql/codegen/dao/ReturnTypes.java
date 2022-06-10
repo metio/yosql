@@ -7,7 +7,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.util.Optional;
@@ -24,7 +24,7 @@ public interface ReturnTypes {
      * @param configuration The configuration to use.
      * @return The fully qualified return type.
      */
-    Optional<ParameterizedTypeName> resultType(SqlConfiguration configuration);
+    Optional<TypeName> resultType(SqlConfiguration configuration);
 
     /**
      * Determine return type for a method that returns a single result.
@@ -32,7 +32,7 @@ public interface ReturnTypes {
      * @param configuration The configuration to use.
      * @return The fully qualified return type.
      */
-    ParameterizedTypeName singleResultType(SqlConfiguration configuration);
+    TypeName singleResultType(SqlConfiguration configuration);
 
     /**
      * Determine return type for a method that returns multiple results.
@@ -40,7 +40,7 @@ public interface ReturnTypes {
      * @param configuration The configuration to use.
      * @return The fully qualified return type.
      */
-    ParameterizedTypeName multiResultType(SqlConfiguration configuration);
+    TypeName multiResultType(SqlConfiguration configuration);
 
     /**
      * Determine return type for a method that returns a cursor result.
@@ -48,6 +48,6 @@ public interface ReturnTypes {
      * @param configuration The configuration to use.
      * @return The fully qualified return type.
      */
-    ParameterizedTypeName cursorResultType(SqlConfiguration configuration);
+    TypeName cursorResultType(SqlConfiguration configuration);
 
 }

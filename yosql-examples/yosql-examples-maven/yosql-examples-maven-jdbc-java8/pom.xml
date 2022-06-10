@@ -44,6 +44,11 @@
             <artifactId>yosql-examples-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -61,6 +66,32 @@
                         <useVar>false</useVar>
                         <useTextBlocks>false</useTextBlocks>
                     </java>
+                    <annotations>
+                        <repositoryAnnotations>
+                            <annotation>
+                                <type>javax.inject.Singleton</type>
+                            </annotation>
+                        </repositoryAnnotations>
+                        <constructorAnnotations>
+                            <annotation>
+                                <type>javax.inject.Inject</type>
+                            </annotation>
+                            <annotation>
+                                <type>javax.inject.Named</type>
+                                <members>
+                                    <member>
+                                        <key>value</key>
+                                        <value>Something</value>
+                                    </member>
+                                </members>
+                            </annotation>
+                        </constructorAnnotations>
+                        <methodAnnotations>
+                            <annotation>
+                                <type>javax.inject.Inject</type>
+                            </annotation>
+                        </methodAnnotations>
+                    </annotations>
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.java8.persistence</basePackageName>
                         <generateInterfaces>true</generateInterfaces>

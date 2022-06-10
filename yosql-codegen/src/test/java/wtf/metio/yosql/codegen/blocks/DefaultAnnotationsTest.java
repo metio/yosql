@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.models.configuration.Annotation;
+import wtf.metio.yosql.models.configuration.AnnotationMember;
 import wtf.metio.yosql.testing.configs.AnnotationsConfigurations;
 
 @DisplayName("DefaultAnnotations")
@@ -101,6 +103,168 @@ class DefaultAnnotationsTest {
                     annotations.iterator().next().toString());
         }
 
+    }
+
+    @Test
+    void asAnnotationSpec() {
+        final var annotation = Annotation.builder().setType("com.example.Annotation").build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMember() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder().setKey("value").setValue("test").build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation("test")""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingCustomKey() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder().setKey("random").setValue("test").build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(random = "test")""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMembers() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder().setKey("value").setValue("test").build())
+                .addMembers(AnnotationMember.builder().setKey("another").setValue("value").build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(value = "test", another = "value")""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingBoolType() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder()
+                        .setKey("test")
+                        .setValue("true")
+                        .setType("boolean")
+                        .build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(test = true)""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingIntType() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder()
+                        .setKey("test")
+                        .setValue("123")
+                        .setType("int")
+                        .build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(test = 123)""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingLongType() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder()
+                        .setKey("test")
+                        .setValue("456789")
+                        .setType("long")
+                        .build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(test = 456789)""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingShortType() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder()
+                        .setKey("test")
+                        .setValue("123")
+                        .setType("short")
+                        .build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(test = 123)""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingByteType() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder()
+                        .setKey("test")
+                        .setValue("123")
+                        .setType("byte")
+                        .build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(test = 123)""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingFloatType() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder()
+                        .setKey("test")
+                        .setValue("3.14")
+                        .setType("float")
+                        .build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(test = 3.14)""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingDoubleType() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder()
+                        .setKey("test")
+                        .setValue("3.14")
+                        .setType("double")
+                        .build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(test = 3.14)""", spec.toString());
+    }
+
+    @Test
+    void asAnnotationSpecWithMemberUsingCharType() {
+        final var annotation = Annotation.builder()
+                .setType("com.example.Annotation")
+                .addMembers(AnnotationMember.builder()
+                        .setKey("test")
+                        .setValue("a")
+                        .setType("char")
+                        .build())
+                .build();
+        final var spec = DefaultAnnotations.asAnnotationSpec(annotation);
+        Assertions.assertEquals("""
+                @com.example.Annotation(test = 'a')""", spec.toString());
     }
 
 }

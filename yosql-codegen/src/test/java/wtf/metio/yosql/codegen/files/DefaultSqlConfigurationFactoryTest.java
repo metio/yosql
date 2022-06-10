@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.configuration.ReturningMode;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.testing.configs.RuntimeConfigurations;
@@ -55,7 +55,7 @@ class DefaultSqlConfigurationFactoryTest {
         assertAll("Configuration",
                 () -> assertEquals("read", configuration.name().get(), "name"),
                 () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository().get(), "repository"),
-                () -> assertEquals(SqlType.READING, configuration.type().get(), "type"),
+                () -> assertEquals(SqlStatementType.READING, configuration.type().get(), "type"),
                 () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode().get(), "returningMode"));
     }
 
@@ -74,7 +74,7 @@ class DefaultSqlConfigurationFactoryTest {
         assertAll("Configuration",
                 () -> assertEquals("insert", configuration.name().get(), "name"),
                 () -> assertEquals("com.example.persistence.PersonRepository", configuration.repository().get(), "repository"),
-                () -> assertEquals(SqlType.WRITING, configuration.type().get(), "type"),
+                () -> assertEquals(SqlStatementType.WRITING, configuration.type().get(), "type"),
                 () -> assertEquals(ReturningMode.NONE, configuration.returningMode().get(), "returningMode"));
     }
 
@@ -92,7 +92,7 @@ class DefaultSqlConfigurationFactoryTest {
         // then
         assertAll("Configuration",
                 () -> assertEquals("dropPersons", configuration.name().get(), "name"),
-                () -> assertEquals(SqlType.WRITING, configuration.type().get(), "type"),
+                () -> assertEquals(SqlStatementType.WRITING, configuration.type().get(), "type"),
                 () -> assertEquals(ReturningMode.NONE, configuration.returningMode().get(), "returningMode"));
     }
 
@@ -126,13 +126,13 @@ class DefaultSqlConfigurationFactoryTest {
         // then
         assertAll("Configuration",
                 () -> assertEquals("findItemByName", configuration.name().get(), "name"),
-                () -> assertEquals(SqlType.READING, configuration.type().get(), "type"),
+                () -> assertEquals(SqlStatementType.READING, configuration.type().get(), "type"),
                 () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode().get(), "returningMode"),
                 () -> assertTrue(configuration.resultRowConverter().isPresent(), "resultRowConverter"),
-                () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias(), "alias"),
-                () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName(), "methodName"),
-                () -> assertEquals("com.example.ItemConverter", configuration.resultRowConverter().get().converterType(), "converterType"),
-                () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType(), "resultType"));
+                () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias().get(), "alias"),
+                () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName().get(), "methodName"),
+                () -> assertEquals("com.example.ItemConverter", configuration.resultRowConverter().get().converterType().get(), "converterType"),
+                () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType().get(), "resultType"));
     }
 
     @Test
@@ -171,20 +171,20 @@ class DefaultSqlConfigurationFactoryTest {
         // then
         assertAll("Configuration",
                 () -> assertEquals("findItemByName", configuration.name().get(), "name"),
-                () -> assertEquals(SqlType.READING, configuration.type().get(), "type"),
+                () -> assertEquals(SqlStatementType.READING, configuration.type().get(), "type"),
                 () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode().get(), "returningMode"),
                 () -> assertTrue(configuration.resultRowConverter().isPresent(), "resultRowConverter"),
-                () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias(), "alias"),
-                () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName(), "methodName"),
-                () -> assertEquals("com.example.ItemConverter", configuration.resultRowConverter().get().converterType(), "converterType"),
-                () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType(), "resultType"));
+                () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias().get(), "alias"),
+                () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName().get(), "methodName"),
+                () -> assertEquals("com.example.ItemConverter", configuration.resultRowConverter().get().converterType().get(), "converterType"),
+                () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType().get(), "resultType"));
     }
 
-    private SqlConfigurationFactory factory() {
+    private static SqlConfigurationFactory factory() {
         return factory(RuntimeConfigurations.defaults());
     }
 
-    private SqlConfigurationFactory factory(final RuntimeConfiguration runtimeConfiguration) {
+    private static SqlConfigurationFactory factory(final RuntimeConfiguration runtimeConfiguration) {
         return FilesObjectMother.sqlConfigurationFactory(
                 runtimeConfiguration.repositories(),
                 runtimeConfiguration.converter());

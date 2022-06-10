@@ -12,11 +12,6 @@ package wtf.metio.yosql.models.configuration;
 public enum LoggingApis {
 
     /**
-     * Automatically select an appropriate implementation based on project metadata.
-     */
-    AUTO,
-
-    /**
      * Disables logging in any of the generated files.
      */
     NONE,

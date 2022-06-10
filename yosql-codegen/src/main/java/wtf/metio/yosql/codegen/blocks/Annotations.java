@@ -8,6 +8,7 @@
 package wtf.metio.yosql.codegen.blocks;
 
 import com.squareup.javapoet.AnnotationSpec;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 /**
  * Generates annotations for classes, fields, and methods.
@@ -28,5 +29,20 @@ public interface Annotations {
      * @return Generated annotations for a single method.
      */
     Iterable<AnnotationSpec> generatedMethod();
+
+    /**
+     * @return User specified annotations for generated repositories and their interfaces.
+     */
+    Iterable<AnnotationSpec> generatedRepository();
+
+    /**
+     * @return User specified annotations for generated methods.
+     */
+    Iterable<AnnotationSpec> generatedMethod(SqlConfiguration configuration);
+
+    /**
+     * @return User specified annotations for generated constructors.
+     */
+    Iterable<AnnotationSpec> generatedConstructor();
 
 }

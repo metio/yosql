@@ -10,7 +10,7 @@ package wtf.metio.yosql.models.configuration;
 /**
  * Options for members of the "@Generated" annotation.
  */
-public enum AnnotationMembers {
+public enum GeneratedAnnotationMembers {
 
     /**
      * Use all available annotation members.

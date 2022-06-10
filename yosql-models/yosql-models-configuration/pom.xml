@@ -40,9 +40,19 @@
     <!-- https://maven.apache.org/pom.html#Dependencies -->
     <dependencies>
         <dependency>
+            <groupId>wtf.metio.yosql.internals</groupId>
+            <artifactId>yosql-internals-jdk-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.immutables</groupId>
             <artifactId>value</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
         <dependency>
             <groupId>com.squareup</groupId>

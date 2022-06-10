@@ -16,12 +16,11 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class DefaultMethodParameterConfigurer implements MethodParameterConfigurer {
 
@@ -53,10 +52,12 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
             final Path source,
             final Map<String, List<Integer>> parameterIndices,
             final SqlConfiguration configuration) {
-        final var parameterErrors = Stream.ofNullable(configuration.parameters())
-                .flatMap(Collection::stream)
-                .filter(param -> !parameterIndices.containsKey(param.name()))
-                .map(param -> messages.getMessage(ValidationErrors.UNKNOWN_PARAMETER, source, param.name()))
+        final var parameterErrors = configuration.parameters()
+                .stream()
+                .map(SqlParameter::name)
+                .flatMap(Optional::stream)
+                .filter(name -> !parameterIndices.containsKey(name))
+                .map(name -> messages.getMessage(ValidationErrors.UNKNOWN_PARAMETER, source, name))
                 .peek(errors::illegalArgument)
                 .peek(logger::error)
                 .toList();
@@ -65,12 +66,10 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
 
     private static List<SqlParameter> updateIndices(final List<SqlParameter> parameters, final Map<String, List<Integer>> indices) {
         return parameters.stream()
-                .map(parameter -> SqlParameter.builder()
-                        .setName(parameter.name())
-                        .setType(parameter.type())
-                        .setIndices(asIntArray(indices.get(parameter.name())))
-                        .setConverter(parameter.converter())
-                        .build())
+                .map(parameter -> SqlParameter.copyOf(parameter)
+                        .withIndices(parameter.name()
+                                .map(indices::get)
+                                .map(DefaultMethodParameterConfigurer::asIntArray)))
                 .collect(Collectors.toList());
     }
 
@@ -80,7 +79,7 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
                 .toArray();
     }
 
-    private List<SqlParameter> addMissingParameters(final List<SqlParameter> parameters, final Map<String, List<Integer>> indices) {
+    private static List<SqlParameter> addMissingParameters(final List<SqlParameter> parameters, final Map<String, List<Integer>> indices) {
         final var all = new ArrayList<>(parameters);
         for (final var entry : indices.entrySet()) {
             final var parameterName = entry.getKey();
@@ -96,11 +95,13 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
     }
 
     private static boolean isMissingParameter(final List<SqlParameter> parameters, final String parameterName) {
-        return Stream.ofNullable(parameters).flatMap(Collection::stream).noneMatch(nameMatches(parameterName));
+        return parameters.stream().noneMatch(nameMatches(parameterName));
     }
 
     private static Predicate<? super SqlParameter> nameMatches(final String parameterName) {
-        return parameter -> parameterName.equals(parameter.name());
+        return parameter -> parameter.name()
+                .map(parameterName::equals)
+                .orElse(Boolean.FALSE);
     }
 
 }

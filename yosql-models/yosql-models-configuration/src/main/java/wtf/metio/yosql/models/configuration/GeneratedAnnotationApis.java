@@ -9,12 +9,7 @@ package wtf.metio.yosql.models.configuration;
 /**
  * Options for the logging API used in the generated code.
  */
-public enum AnnotationApis {
-
-    /**
-     * Automatically select an appropriate implementation based on project metadata.
-     */
-    AUTO("please.report.this.bug"),
+public enum GeneratedAnnotationApis {
 
     /**
      * Uses the javax.annotation API.
@@ -28,7 +23,7 @@ public enum AnnotationApis {
 
     public final String annotationClass;
 
-    AnnotationApis(String annotationClass) {
+    GeneratedAnnotationApis(String annotationClass) {
         this.annotationClass = annotationClass;
     }
 

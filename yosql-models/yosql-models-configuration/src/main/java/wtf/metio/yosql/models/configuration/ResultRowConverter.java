@@ -6,28 +6,63 @@
  */
 package wtf.metio.yosql.models.configuration;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import org.immutables.value.Value;
 
+import java.util.Optional;
+
 @Value.Immutable
+@JsonSerialize(
+        as = ImmutableResultRowConverter.class
+)
+@JsonDeserialize(
+        as = ImmutableResultRowConverter.class
+)
 public interface ResultRowConverter {
 
-    static ImmutableResultRowConverter.AliasBuildStage builder() {
+    //region builders
+
+    static ImmutableResultRowConverter.Builder builder() {
         return ImmutableResultRowConverter.builder();
     }
 
-    String alias();
+    //endregion
 
-    String converterType();
+    /**
+     * @return The (short) alias of this converter.
+     */
+    Optional<String> alias();
 
-    String methodName();
+    /**
+     * @return The fully-qualified type name of this converter.
+     */
+    Optional<String> converterType();
 
-    String resultType();
+    /**
+     * @return The name of the method to use while converting values.
+     */
+    Optional<String> methodName();
+
+    /**
+     * @return The fully-qualified result type of this converter.
+     */
+    Optional<String> resultType();
+
+    //region derived
 
     @Value.Lazy
-    default TypeName resultTypeName() {
-        return TypeGuesser.guessTypeName(resultType());
+    default Optional<TypeName> resultTypeName() {
+        return resultType().map(TypeGuesser::guessTypeName);
     }
+
+    @Value.Lazy
+    default Optional<TypeName> converterTypeName() {
+        return converterType().map(TypeGuesser::guessTypeName);
+    }
+
+    //endregion
 
 }

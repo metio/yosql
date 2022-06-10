@@ -26,7 +26,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     private final MethodNameValidator methodNameValidator;
     private final MethodApiConfigurer methodApis;
     private final MethodParameterConfigurer methodParameters;
-    private final MethodConverterConfigurer methodConverter;
+    private final MethodResultRowConverterConfigurer methodConverter;
     private final RepositoryNameConfigurer repositoryName;
 
     /**
@@ -48,7 +48,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final MethodNameValidator methodNameValidator,
             final MethodApiConfigurer methodApis,
             final MethodParameterConfigurer methodParameters,
-            final MethodConverterConfigurer methodConverter,
+            final MethodResultRowConverterConfigurer methodConverter,
             final RepositoryNameConfigurer repositoryName) {
         this.methodParameters = methodParameters;
         this.logger = logger;
@@ -81,7 +81,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         configuration = methodApis.configureApis(configuration);
         configuration = repositoryName.configureNames(configuration, source);
         configuration = methodParameters.configureParameters(configuration, source, parameterIndices);
-        configuration = methodConverter.configureConverter(configuration);
+        configuration = methodConverter.configureResultRowConverter(configuration);
         logger.debug("SQL configuration: {}", configuration);
         methodNameValidator.validateNames(configuration, source);
         return configuration;

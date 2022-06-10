@@ -29,6 +29,20 @@ yosql {
         useTextBlocks.set(false)
         useVar.set(false)
     }
+    annotations {
+        repositoryAnnotations {
+            register("javax.inject.Singleton")
+        }
+        constructorAnnotations {
+            register("javax.inject.Named") {
+                members {
+                    register("value") {
+                        value.set("Something")
+                    }
+                }
+            }
+        }
+    }
     converter {
         mapConverterClass.set("${group}.converter.ToMapConverter")
         rowConverters {
@@ -47,5 +61,8 @@ dependencies {
     }
     implementation("wtf.metio.yosql.examples:yosql-examples-common:${version}") {
         because("we want to re-use the same example app across all example projects")
+    }
+    implementation("javax.inject:javax.inject:1") {
+        because("we want to showcase annotations on classes/methods")
     }
 }

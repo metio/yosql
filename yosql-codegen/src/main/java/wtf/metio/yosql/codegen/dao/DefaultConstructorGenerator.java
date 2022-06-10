@@ -54,7 +54,7 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
             final var constructor = methods.constructor().addParameter(jdbcParameters.dataSource());
             resultConverters(statements).forEach(converter -> {
                 constructor.addParameter(jdbcParameters.converter(converter));
-                builder.add(blocks.initializeFieldToSelf(converter.alias()));
+                builder.add(blocks.initializeFieldToSelf(converter.alias().orElseThrow())); // TODO: throw business exception
             });
             return constructor
                     .addCode(blocks.initializeFieldToSelf(names.dataSource()))

@@ -63,7 +63,8 @@ public final class DefaultRepositoryGenerator implements RepositoryGenerator {
                 .addJavadoc(javadoc.repositoryJavadoc(statements))
                 .addFields(fields.asFields(statements))
                 .addMethods(methods.asMethods(statements))
-                .addAnnotations(annotations.generatedClass());
+                .addAnnotations(annotations.generatedClass())
+                .addAnnotations(annotations.generatedRepository());
         fields.staticInitializer(statements).ifPresent(classBuilder::addStaticBlock);
         statements.stream()
                 .map(SqlStatement::getRepositoryInterface)
@@ -83,7 +84,8 @@ public final class DefaultRepositoryGenerator implements RepositoryGenerator {
         final var interfaceBuilder = classes.publicInterface(interfaceName)
                 .addJavadoc(javadoc.repositoryJavadoc(statements))
                 .addMethods(methods.asMethodsDeclarations(statements))
-                .addAnnotations(annotations.generatedClass());
+                .addAnnotations(annotations.generatedClass())
+                .addAnnotations(annotations.generatedRepository());
         logger.debug(CodegenLifecycle.TYPE_GENERATED, interfaceName.packageName(), interfaceName.simpleName());
         return PackagedTypeSpec.of(interfaceBuilder.build(), interfaceName.packageName());
     }

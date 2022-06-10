@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.testing.configs.RepositoriesConfigurations;
@@ -138,7 +138,6 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameUnknownType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.baseName(original, "filename", 0);
         assertTrue(adapted.name().isPresent());
@@ -149,18 +148,15 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameInvalidFileNameUnknownType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
-        assertTrue(adapted.name().isPresent());
-        assertEquals("statementNameWasChanged", adapted.name().get());
+        assertTrue(adapted.name().isEmpty());
     }
 
     @Test
     void baseNameInvalidNameUnknownTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.baseName(original, "filename", 3);
         assertTrue(adapted.name().isPresent());
@@ -171,18 +167,16 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameInvalidFileNameUnknownTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 3);
-        assertTrue(adapted.name().isPresent());
-        assertEquals("statementNameWasChanged3", adapted.name().get());
+        assertTrue(adapted.name().isEmpty());
     }
 
     @Test
     void baseNameInvalidNameReadType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .build();
         final var adapted = configurer.baseName(original, "filename", 0);
         assertTrue(adapted.name().isPresent());
@@ -193,7 +187,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameInvalidFileNameReadType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
         assertTrue(adapted.name().isPresent());
@@ -204,7 +198,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameReadTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .build();
         final var adapted = configurer.baseName(original, "filename", 2);
         assertTrue(adapted.name().isPresent());
@@ -215,7 +209,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameInvalidFileNameReadTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 2);
         assertTrue(adapted.name().isPresent());
@@ -226,7 +220,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameWriteType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .build();
         final var adapted = configurer.baseName(original, "filename", 0);
         assertTrue(adapted.name().isPresent());
@@ -237,7 +231,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameInvalidFileNameWriteType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
         assertTrue(adapted.name().isPresent());
@@ -248,7 +242,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameWriteTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .build();
         final var adapted = configurer.baseName(original, "filename", 3);
         assertTrue(adapted.name().isPresent());
@@ -259,7 +253,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameInvalidFileNameWriteTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 3);
         assertTrue(adapted.name().isPresent());
@@ -270,7 +264,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameCallType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .build();
         final var adapted = configurer.baseName(original, "filename", 0);
         assertTrue(adapted.name().isPresent());
@@ -281,7 +275,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameInvalidFileNameCallType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
         assertTrue(adapted.name().isPresent());
@@ -292,7 +286,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameCallTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .build();
         final var adapted = configurer.baseName(original, "filename", 4);
         assertTrue(adapted.name().isPresent());
@@ -303,7 +297,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameInvalidNameInvalidFileNameCallTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("!@#$%")
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 4);
         assertTrue(adapted.name().isPresent());
@@ -314,7 +308,6 @@ class DefaultMethodNameConfigurerTest {
     void baseNameBlankName() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("")
-                .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.baseName(original, "some", 0);
         assertTrue(adapted.name().isPresent());
@@ -325,7 +318,6 @@ class DefaultMethodNameConfigurerTest {
     void baseNameBlankNameNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName("")
-                .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.baseName(original, "some", 1);
         assertTrue(adapted.name().isPresent());
@@ -336,29 +328,25 @@ class DefaultMethodNameConfigurerTest {
     void baseNameBlankNameInvalidFileNameUnknownType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(" ")
-                .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
-        assertTrue(adapted.name().isPresent());
-        assertEquals("statementNameWasChanged", adapted.name().get());
+        assertTrue(adapted.name().isEmpty());
     }
 
     @Test
     void baseNameBlankNameInvalidFileNameUnknownTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(" ")
-                .setType(SqlType.UNKNOWN)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 1);
-        assertTrue(adapted.name().isPresent());
-        assertEquals("statementNameWasChanged", adapted.name().get());
+        assertTrue(adapted.name().isEmpty());
     }
 
     @Test
     void baseNameBlankNameInvalidFileNameReadType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(" ")
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
         assertTrue(adapted.name().isPresent());
@@ -369,7 +357,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameBlankNameInvalidFileNameReadTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(" ")
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 2);
         assertTrue(adapted.name().isPresent());
@@ -380,7 +368,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameBlankNameInvalidFileNameWriteType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(" ")
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
         assertTrue(adapted.name().isPresent());
@@ -391,7 +379,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameBlankNameInvalidFileNameWriteTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(" ")
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 3);
         assertTrue(adapted.name().isPresent());
@@ -402,7 +390,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameBlankNameInvalidFileNameCallType() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(" ")
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
         assertTrue(adapted.name().isPresent());
@@ -413,7 +401,7 @@ class DefaultMethodNameConfigurerTest {
     void baseNameBlankNameInvalidFileNameCallTypeNumbered() {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(" ")
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 3);
         assertTrue(adapted.name().isPresent());

@@ -5,17 +5,17 @@
  * in the LICENSE file.
  */
 
---
--- parameters:
---   - name: min
---     type: int
---   - name: max
---     type: int
--- annotations:
---   - type: wtf.metio.yosql.example.common.CustomAnnotation
---
-select *
-from   companies
-where  id < :max
-  and  id > :min
-;
+package wtf.metio.yosql.example.common;
+
+public @interface CustomAnnotationWithData {
+
+    char someChar();
+    boolean someBool();
+    byte someByte();
+    short someShort();
+    int someInt();
+    long someLong();
+    float someFloat();
+    double someDouble();
+
+}

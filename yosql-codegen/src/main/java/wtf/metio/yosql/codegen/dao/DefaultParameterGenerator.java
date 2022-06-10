@@ -9,13 +9,10 @@ package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ParameterSpec;
-import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.blocks.Parameters;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,7 +30,7 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     private ParameterSpec ofSqlParameter(final SqlParameter parameter) {
-        return parameters.parameter(TypeGuesser.guessTypeName(parameter.type()), parameter.name());
+        return parameters.parameter(parameter.typeName().orElseThrow(), parameter.name().orElseThrow());
     }
 
     @Override
@@ -42,7 +39,7 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     private ParameterSpec ofSqlParameterForInterfaces(final SqlParameter parameter) {
-        return parameters.parameterForInterfaces(TypeGuesser.guessTypeName(parameter.type()), parameter.name());
+        return parameters.parameterForInterfaces(parameter.typeName().orElseThrow(), parameter.name().orElseThrow());
     }
 
     @Override
@@ -51,7 +48,7 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     private ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
-        return parameters.parameter(ArrayTypeName.of(TypeGuesser.guessTypeName(parameter.type())), parameter.name());
+        return parameters.parameter(ArrayTypeName.of(parameter.typeName().orElseThrow()), parameter.name().orElseThrow());
     }
 
     @Override
@@ -60,17 +57,15 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     private ParameterSpec batchOfSqlParameterForInterfaces(final SqlParameter parameter) {
-        return parameters.parameterForInterfaces(ArrayTypeName.of(TypeGuesser.guessTypeName(parameter.type())), parameter.name());
+        return parameters.parameterForInterfaces(ArrayTypeName.of(parameter.typeName().orElseThrow()), parameter.name().orElseThrow());
     }
 
     private static Iterable<ParameterSpec> asParameterSpecs(
             final List<SqlParameter> parameters,
             final Function<SqlParameter, ParameterSpec> asParameter) {
-        return Optional.ofNullable(parameters)
-                .map(params -> params.stream()
-                        .map(asParameter)
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+        return parameters.stream()
+                .map(asParameter)
+                .collect(Collectors.toList());
     }
 
 }

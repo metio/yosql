@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Default implementation of a {@link MethodsGenerator} that delegates most of its work to other interfaces/classes.
@@ -79,7 +80,7 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
             final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> generator) {
         return statements.stream()
                 .filter(filter)
-                .collect(SqlStatement.groupByName())
+                .collect(Collectors.groupingBy(SqlStatement::getName))
                 .values()
                 .stream()
                 .map(statementsInRepository -> generator.apply(

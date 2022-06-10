@@ -14,10 +14,7 @@ import com.squareup.javapoet.*;
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Strings;
-import wtf.metio.yosql.models.configuration.ResultRowConverter;
-import wtf.metio.yosql.models.configuration.ReturningMode;
-import wtf.metio.yosql.models.configuration.SqlParameter;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.*;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
@@ -39,11 +36,10 @@ public final class Sql {
                 .setImmutableAnnotations(extraTypeAnnotations())
                 .addAllSettings(settings())
                 .addAllSettings(withExtraAnnotations(stringRepositorySettings()))
-                .addAllSettings(withExtraAnnotations(booleanRepositorySettings()))
+                .addAllSettings(withExtraAnnotations(booleanRepositorySettings())) // TODO: remove injectConverters from this list
                 .setImmutableMethods(List.of(
                         fromStatements(),
                         merge(),
-                        mergeParameters(),
                         converter(),
                         batchName(),
                         standardName(),
@@ -54,14 +50,15 @@ public final class Sql {
     private static List<ConfigurationSetting> settings() {
         return List.of(
                 repository(),
-                repositoryInterface(),
+                repositoryInterface(), // TODO: add JsonIgnore on this one?
                 name(),
                 description(),
                 vendor(),
                 type(),
                 returningMode(),
                 resultRowConverter(),
-                parameters());
+                parameters(),
+                annotations());
     }
 
     private static List<ConfigurationSetting> stringRepositorySettings() {
@@ -107,6 +104,7 @@ public final class Sql {
                 .setDescription("The fully qualified name of the target repository class.")
                 .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("repository")))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -124,6 +122,7 @@ public final class Sql {
                 .setDescription("The name of the SQL statement")
                 .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("name")))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -133,6 +132,7 @@ public final class Sql {
                 .setDescription("The description for the SQL statement")
                 .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("description")))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -142,6 +142,7 @@ public final class Sql {
                 .setDescription("The vendor name of the database the SQL statement is intended for")
                 .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("vendor")))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -149,8 +150,9 @@ public final class Sql {
         return ConfigurationSetting.builder()
                 .setName("type")
                 .setDescription("The type of the SQL statement.")
-                .setType(TypeName.get(SqlType.class))
+                .setType(TypeName.get(SqlStatementType.class))
                 .setImmutableAnnotations(List.of(jsonProperty("type")))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -160,6 +162,7 @@ public final class Sql {
                 .setDescription("The returning mode of the SQL statement.")
                 .setType(TypeName.get(ReturningMode.class))
                 .setImmutableAnnotations(List.of(jsonProperty("returning")))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -168,6 +171,7 @@ public final class Sql {
                 .setName("resultRowConverter")
                 .setDescription("The alias or fully-qualified name of the converter to use")
                 .setType(TypeName.get(ResultRowConverter.class))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -177,6 +181,17 @@ public final class Sql {
                 .setDescription("The parameters of the SQL statement.")
                 .setType(TypicalTypes.listOf(TypeName.get(SqlParameter.class)))
                 .setValue(CodeBlock.builder().add("$T.of()", List.class).build())
+                .addTags(Tags.FRONT_MATTER)
+                .build();
+    }
+
+    private static ConfigurationSetting annotations() {
+        return ConfigurationSetting.builder()
+                .setName("annotations")
+                .setDescription("The additional annotations to be placed on generated methods.")
+                .setType(TypicalTypes.listOf(Annotation.class))
+                .setValue(CodeBlock.builder().add("$T.of()", List.class).build())
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -205,9 +220,10 @@ public final class Sql {
                 .addParameter(ParameterSpec.builder(configuration, "first", Modifier.FINAL).build())
                 .addParameter(ParameterSpec.builder(configuration, "second", Modifier.FINAL).build())
                 .returns(configuration)
-                .addStatement("var merged = $T.copyOf($L)", configuration, "first")
-                .addCode(withAllSettings())
-                .addStatement("return merged")
+                .addStatement(CodeBlock.builder()
+                        .add("return $T.copyOf($L)", configuration, "first")
+                        .add(withAllSettings())
+                        .build())
                 .build();
     }
 
@@ -224,47 +240,16 @@ public final class Sql {
     }
 
     private static void addSetting(final CodeBlock.Builder builder, final ConfigurationSetting setting) {
-        if (TypeName.get(Boolean.class).equals(setting.type())
-                || TypeName.get(String.class).equals(setting.type())
-                || TypeName.get(SqlType.class).equals(setting.type())
-                || TypeName.get(ReturningMode.class).equals(setting.type())) {
-            builder.beginControlFlow("if (first.$L().or(() -> second.$L()).isPresent())",
-                    setting.name(), setting.name());
-            builder.addStatement("merged = merged.with$L(first.$L().or(() -> second.$L()).get())",
-                    Strings.upperCase(setting.name()), setting.name(), setting.name());
-            builder.endControlFlow();
-        } else if (TypeName.get(ResultRowConverter.class).equals(setting.type())) {
-            builder.addStatement("merged = merged.with$L(first.$L().or(second::resultRowConverter))",
-                    Strings.upperCase(setting.name()), setting.name());
-        } else if (TypicalTypes.listOf(TypeName.get(SqlParameter.class)).equals(setting.type())) {
-            builder.addStatement("merged = merged.with$L(mergeParameters(first.$L(), second.$L()))",
+        if (TypicalTypes.listOf(TypeName.get(SqlParameter.class)).equals(setting.type())) {
+            builder.add("$>$>\n.with$L($T.mergeParameters(first.$L(), second.$L()))$<$<",
+                    Strings.upperCase(setting.name()), SqlParameter.class, setting.name(), setting.name());
+        } else if (TypicalTypes.listOf(TypeName.get(Annotation.class)).equals(setting.type())) {
+            builder.add("$>$>\n.with$L($T.mergeAnnotations(first.$L(), second.$L()))$<$<",
+                    Strings.upperCase(setting.name()), Annotation.class, setting.name(), setting.name());
+        } else {
+            builder.add("$>$>\n.with$L(first.$L().or(second::$L))$<$<",
                     Strings.upperCase(setting.name()), setting.name(), setting.name());
         }
-    }
-
-    private static MethodSpec mergeParameters() {
-        final var listOfParameters = TypicalTypes.listOf(TypeName.get(SqlParameter.class));
-        return MethodSpec.methodBuilder("mergeParameters")
-                .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
-                .addParameter(ParameterSpec.builder(listOfParameters, "first", Modifier.FINAL).build())
-                .addParameter(ParameterSpec.builder(listOfParameters, "second", Modifier.FINAL).build())
-                .returns(listOfParameters)
-                .beginControlFlow("if (first == null || first.isEmpty())")
-                .addStatement("return second")
-                .endControlFlow()
-                .addCode("return first.stream()")
-                .addCode("$>\n.map(param -> second.stream()")
-                .addCode("$>\n.filter(op -> param.name().equals(op.name()))$<")
-                .addCode("\n.findFirst()")
-                .addCode("\n.map(other -> $T.builder()", SqlParameter.class)
-                .addCode("$>\n.setName(param.name())")
-                .addCode("\n.setType($T.class.getName().equals(param.type()) ? other.type() : param.type())", Object.class)
-                .addCode("\n.setIndices(param.indices() == null ? other.indices() : param.indices())")
-                .addCode("\n.setConverter(param.converter().or(other::converter))")
-                .addCode("\n.build())$<")
-                .addCode("\n.orElse($T.copy(param)))$<", SqlParameter.class)
-                .addStatement("\n.collect($T.toList())", Collectors.class)
-                .build();
     }
 
     private static MethodSpec converter() {
@@ -273,6 +258,7 @@ public final class Sql {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(parameterType, "defaultConverter").build())
                 .returns(ResultRowConverter.class)
+                .addAnnotation(Value.Lazy.class)
                 .addStatement(CodeBlock.builder()
                         .add("return resultRowConverter()")
                         .add("$>\n.or(defaultConverter)")

@@ -9,6 +9,7 @@ package wtf.metio.yosql.codegen.blocks;
 
 import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import javax.lang.model.element.Modifier;
@@ -47,6 +48,7 @@ public final class DefaultMethods implements Methods {
         return MethodSpec.methodBuilder(name)
                 .addModifiers(modifiers)
                 .addAnnotations(annotations.generatedMethod())
+                .addAnnotations(annotations.generatedMethod(SqlConfiguration.fromStatements(statements)))
                 .addJavadoc(javadoc.methodJavadoc(statements, configuration));
     }
 
@@ -58,6 +60,7 @@ public final class DefaultMethods implements Methods {
         return MethodSpec.methodBuilder(name)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addAnnotations(annotations.generatedMethod())
+                .addAnnotations(annotations.generatedMethod(SqlConfiguration.fromStatements(statements)))
                 .addJavadoc(javadoc.methodJavadoc(statements, configuration));
     }
 
@@ -76,7 +79,8 @@ public final class DefaultMethods implements Methods {
     public MethodSpec.Builder constructor() {
         return MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addAnnotations(annotations.generatedMethod());
+                .addAnnotations(annotations.generatedMethod())
+                .addAnnotations(annotations.generatedConstructor());
     }
 
 }

@@ -8,20 +8,20 @@
 package wtf.metio.yosql.models.constants.sql;
 
 import wtf.metio.yosql.internals.junit5.EnumTCK;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 
 import java.util.stream.Stream;
 
-final class SqlTypeTest implements EnumTCK<SqlType> {
+final class SqlStatementTypeTest implements EnumTCK<SqlStatementType> {
 
     @Override
-    public Class<SqlType> getEnumClass() {
-        return SqlType.class;
+    public Class<SqlStatementType> getEnumClass() {
+        return SqlStatementType.class;
     }
 
     @Override
     public Stream<String> validValues() {
-        return Stream.of("READING", "WRITING", "CALLING", "UNKNOWN");
+        return Stream.of("READING", "WRITING", "CALLING");
     }
 
     @Override

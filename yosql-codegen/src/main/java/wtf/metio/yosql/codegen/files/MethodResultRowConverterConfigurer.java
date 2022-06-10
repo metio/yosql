@@ -15,7 +15,7 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
  * @see DefaultSqlConfigurationFactory
  */
 @FunctionalInterface
-public interface MethodConverterConfigurer {
+public interface MethodResultRowConverterConfigurer {
 
     /**
      * Configures method converters.
@@ -23,6 +23,6 @@ public interface MethodConverterConfigurer {
      * @param configuration The original configuration to adapt.
      * @return An adapted version of the original.
      */
-    SqlConfiguration configureConverter(SqlConfiguration configuration);
+    SqlConfiguration configureResultRowConverter(SqlConfiguration configuration);
 
 }

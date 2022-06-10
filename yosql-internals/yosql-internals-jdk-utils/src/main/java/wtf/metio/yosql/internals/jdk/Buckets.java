@@ -8,10 +8,14 @@
 package wtf.metio.yosql.internals.jdk;
 
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
- * Utility methods that handle {@link java.util.Collection Collections}. The class is called "Buckets" because
- * "Collections" is way too common.
+ * Utility methods that handle {@link Collection collections} and {@link Stream streams}. The class is called "Buckets"
+ * because 'Collections' is way too common.
  */
 public final class Buckets {
 
@@ -21,6 +25,18 @@ public final class Buckets {
      */
     public static boolean hasEntries(final Collection<?> collection) {
         return collection != null && !collection.isEmpty();
+    }
+
+    /**
+     * Allows to use {@link Stream#distinct()} with a key.
+     *
+     * @param keyExtractor The function to extract the key from an object.
+     * @return A filter to use with @{@link Stream#filter(Predicate)}.
+     * @param <T> The type of the object in the stream.
+     */
+    public static <T> Predicate<T> distinctByKey(final Function<? super T, ?> keyExtractor) {
+        final var seen = ConcurrentHashMap.newKeySet();
+        return object -> seen.add(keyExtractor.apply(object));
     }
 
     private Buckets() {

@@ -21,16 +21,19 @@ public final class TypicalTypes {
 
     public static final ClassName INJECT = ClassName.get("javax.inject", "Inject");
 
+    public static final ClassName MAVEN_PARAMETER = ClassName.get("org.apache.maven.plugins.annotations", "Parameter");
+
     public static final ClassName GRADLE_PROPERTY = ClassName.get("org.gradle.api.provider", "Property");
-    public static final ClassName GRADLE_LIST_PROPERTY = ClassName.bestGuess("org.gradle.api.provider.ListProperty");
-    public static final ClassName GRADLE_INPUT = ClassName.bestGuess("org.gradle.api.tasks.Input");
-    public static final ClassName GRADLE_INPUT_DIRECTORY = ClassName.bestGuess("org.gradle.api.tasks.InputDirectory");
-    public static final ClassName GRADLE_OUTPUT_DIRECTORY = ClassName.bestGuess("org.gradle.api.tasks.OutputDirectory");
-    public static final ClassName GRADLE_CONTAINERS = ClassName.bestGuess("org.gradle.api.NamedDomainObjectContainer");
-    public static final ClassName GRADLE_DIRECTORY = ClassName.bestGuess("org.gradle.api.file.DirectoryProperty");
-    public static final ClassName GRADLE_LAYOUT = ClassName.bestGuess("org.gradle.api.file.ProjectLayout");
-    public static final ClassName GRADLE_OBJECTS = ClassName.bestGuess("org.gradle.api.model.ObjectFactory");
-    public static final ClassName GRADLE_NAMED = ClassName.bestGuess("org.gradle.api.Named");
+    public static final ClassName GRADLE_LIST_PROPERTY = ClassName.get("org.gradle.api.provider", "ListProperty");
+    public static final ClassName GRADLE_INPUT = ClassName.get("org.gradle.api.tasks", "Input");
+    public static final ClassName GRADLE_INPUT_DIRECTORY = ClassName.get("org.gradle.api.tasks", "InputDirectory");
+    public static final ClassName GRADLE_OUTPUT_DIRECTORY = ClassName.get("org.gradle.api.tasks", "OutputDirectory");
+    public static final ClassName GRADLE_CONTAINERS = ClassName.get("org.gradle.api", "NamedDomainObjectContainer");
+    public static final ClassName GRADLE_DIRECTORY = ClassName.get("org.gradle.api.file", "DirectoryProperty");
+    public static final ClassName GRADLE_LAYOUT = ClassName.get("org.gradle.api.file", "ProjectLayout");
+    public static final ClassName GRADLE_OBJECTS = ClassName.get("org.gradle.api.model", "ObjectFactory");
+    public static final ClassName GRADLE_NAMED = ClassName.get("org.gradle.api", "Named");
+    public static final TypeName GRADLE_STRING_PROPERTY = gradlePropertyOf(ClassName.get(String.class));
 
     public static final TypeName ARRAY_OF_INTS = ArrayTypeName.of(int.class);
 

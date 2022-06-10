@@ -9,6 +9,7 @@ package wtf.metio.yosql.models.meta;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 import org.immutables.value.Value;
 
 import java.util.Collections;
@@ -47,6 +48,21 @@ public interface ConfigurationGroup {
      * @return The optional list of tags associated with this configuration group.
      */
     List<String> tags();
+
+    /**
+     * @return The optional list of additional types for Maven.
+     */
+    List<TypeSpec> mavenTypes();
+
+    /**
+     * @return The optional list of additional types for Gradle.
+     */
+    List<TypeSpec> gradleTypes();
+
+    /**
+     * @return The optional list of additional types for the CLI.
+     */
+    List<TypeSpec> cliTypes();
 
     //region derived
 

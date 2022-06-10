@@ -7,8 +7,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ParameterizedTypeName;
-import de.xn__ho_hia.javapoet.TypeGuesser;
+import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -33,10 +32,11 @@ public final class DefaultReturnTypes implements ReturnTypes {
     }
 
     @Override
-    public Optional<ParameterizedTypeName> resultType(final SqlConfiguration configuration) {
+    public Optional<TypeName> resultType(final SqlConfiguration configuration) {
         return configuration.returningMode()
                 .filter(mode -> NONE != mode)
                 .map(mode -> switch (mode) {
+//                    case NONE -> TypeName.VOID;
                     case SINGLE -> singleResultType(configuration);
                     case CURSOR -> cursorResultType(configuration);
                     default -> multiResultType(configuration);
@@ -44,23 +44,23 @@ public final class DefaultReturnTypes implements ReturnTypes {
     }
 
     @Override
-    public ParameterizedTypeName singleResultType(final SqlConfiguration configuration) {
+    public TypeName singleResultType(final SqlConfiguration configuration) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
+        final var resultType = converter.resultTypeName().orElseThrow();
         return TypicalTypes.optionalOf(resultType);
     }
 
     @Override
-    public ParameterizedTypeName multiResultType(final SqlConfiguration configuration) {
+    public TypeName multiResultType(final SqlConfiguration configuration) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
+        final var resultType = converter.resultTypeName().orElseThrow();
         return TypicalTypes.listOf(resultType);
     }
 
     @Override
-    public ParameterizedTypeName cursorResultType(final SqlConfiguration configuration) {
+    public TypeName cursorResultType(final SqlConfiguration configuration) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = TypeGuesser.guessTypeName(converter.resultType());
+        final var resultType = converter.resultTypeName().orElseThrow();
         return TypicalTypes.streamOf(resultType);
     }
 

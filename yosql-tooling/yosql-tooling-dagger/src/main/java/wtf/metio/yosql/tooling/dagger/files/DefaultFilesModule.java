@@ -27,8 +27,8 @@ public class DefaultFilesModule {
 
     @Provides
     @Singleton
-    SqlConfigurationParser provideSqlConfigurationParser() {
-        return new DefaultSqlConfigurationParser();
+    SqlConfigurationParser provideSqlConfigurationParser(final ExecutionErrors errors) {
+        return new DefaultSqlConfigurationParser(errors);
     }
 
     @Provides
@@ -71,8 +71,8 @@ public class DefaultFilesModule {
 
     @Provides
     @Singleton
-    MethodConverterConfigurer provideMethodConverterConfigurer(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultMethodConverterConfigurer(runtimeConfiguration.converter());
+    MethodResultRowConverterConfigurer provideMethodConverterConfigurer(final RuntimeConfiguration runtimeConfiguration) {
+        return new DefaultMethodResultRowConverterConfigurer(runtimeConfiguration.converter());
     }
 
     @Provides
@@ -93,7 +93,7 @@ public class DefaultFilesModule {
             final MethodNameValidator methodNameValidator,
             final MethodApiConfigurer methodApis,
             final MethodParameterConfigurer methodParameters,
-            final MethodConverterConfigurer methodConverter,
+            final MethodResultRowConverterConfigurer methodConverter,
             final RepositoryNameConfigurer repositoryName) {
         return new DefaultSqlConfigurationFactory(
                 logger,
@@ -109,16 +109,6 @@ public class DefaultFilesModule {
 
     @Provides
     @Singleton
-    FileResolver provideSqlFileResolver(
-            @Reader final LocLogger logger,
-            final ParserPreconditions preconditions,
-            final RuntimeConfiguration runtimeConfiguration,
-            final ExecutionErrors errors) {
-        return new DefaultFileResolver(logger, preconditions, runtimeConfiguration.files(), errors);
-    }
-
-    @Provides
-    @Singleton
     SqlStatementParser provideSqlFileParser(
             @Parser final LocLogger logger,
             final SqlConfigurationFactory factory,
@@ -130,9 +120,17 @@ public class DefaultFilesModule {
     @Provides
     @Singleton
     FileParser provideFileParser(
-            final FileResolver fileResolver,
+            @Reader final LocLogger logger,
+            final ParserPreconditions preconditions,
+            final RuntimeConfiguration runtimeConfiguration,
+            final ExecutionErrors errors,
             final SqlStatementParser fileParser) {
-        return new DefaultFileParser(fileResolver, fileParser);
+        return new DefaultFileParser(
+                logger,
+                preconditions,
+                runtimeConfiguration.files(),
+                errors,
+                fileParser);
     }
 
     @Provides

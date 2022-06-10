@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.testing.configs.RepositoriesConfigurations;
 
@@ -35,19 +35,9 @@ class DefaultMethodNameValidatorTest {
     }
 
     @Test
-    void detectUnknownType() {
-        final var configuration = SqlConfiguration.usingDefaults()
-                .setType(SqlType.UNKNOWN)
-                .build();
-        final var source = Paths.get("some.sql");
-        validator.validateNames(configuration, source);
-        assertTrue(errors.hasErrors());
-    }
-
-    @Test
     void detectInvalidReadPrefix() {
         final var configuration = SqlConfiguration.usingDefaults()
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .setName("updateSomeData")
                 .build();
         final var source = Paths.get("some.sql");
@@ -58,7 +48,7 @@ class DefaultMethodNameValidatorTest {
     @Test
     void detectInvalidWritePrefix() {
         final var configuration = SqlConfiguration.usingDefaults()
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .setName("findSomeData")
                 .build();
         final var source = Paths.get("some.sql");
@@ -69,7 +59,7 @@ class DefaultMethodNameValidatorTest {
     @Test
     void detectInvalidCallPrefix() {
         final var configuration = SqlConfiguration.usingDefaults()
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .setName("findSomeData")
                 .build();
         final var source = Paths.get("some.sql");
@@ -80,7 +70,7 @@ class DefaultMethodNameValidatorTest {
     @Test
     void acceptValidReadPrefix() {
         final var configuration = SqlConfiguration.usingDefaults()
-                .setType(SqlType.READING)
+                .setType(SqlStatementType.READING)
                 .setName("findSomeData")
                 .build();
         final var source = Paths.get("some.sql");
@@ -91,7 +81,7 @@ class DefaultMethodNameValidatorTest {
     @Test
     void acceptValidWritePrefix() {
         final var configuration = SqlConfiguration.usingDefaults()
-                .setType(SqlType.WRITING)
+                .setType(SqlStatementType.WRITING)
                 .setName("writeSomeData")
                 .build();
         final var source = Paths.get("some.sql");
@@ -102,7 +92,7 @@ class DefaultMethodNameValidatorTest {
     @Test
     void acceptValidCallPrefix() {
         final var configuration = SqlConfiguration.usingDefaults()
-                .setType(SqlType.CALLING)
+                .setType(SqlStatementType.CALLING)
                 .setName("callSomeProcedure")
                 .build();
         final var source = Paths.get("some.sql");

@@ -36,8 +36,8 @@ class DefaultMethodParameterConfigurerTest {
 
         Assertions.assertEquals(2, adapted.parameters().size());
         Assertions.assertAll(
-                () -> Assertions.assertEquals("first", adapted.parameters().get(0).name()),
-                () -> Assertions.assertEquals("second", adapted.parameters().get(1).name()));
+                () -> Assertions.assertEquals("first", adapted.parameters().get(0).name().get()),
+                () -> Assertions.assertEquals("second", adapted.parameters().get(1).name().get()));
     }
 
 }

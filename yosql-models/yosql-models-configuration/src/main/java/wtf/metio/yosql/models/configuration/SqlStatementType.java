@@ -9,7 +9,7 @@ package wtf.metio.yosql.models.configuration;
 /**
  * Enumeration of possible SQL statement types.
  */
-public enum SqlType {
+public enum SqlStatementType {
 
     /**
      * Statement reads data from a database.
@@ -25,10 +25,5 @@ public enum SqlType {
      * Statement calls a (stored) procedure in a database.
      */
     CALLING,
-
-    /**
-     * Statement type is unknown.
-     */
-    UNKNOWN
 
 }

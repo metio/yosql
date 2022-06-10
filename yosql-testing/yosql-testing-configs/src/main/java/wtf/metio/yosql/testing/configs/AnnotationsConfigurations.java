@@ -7,7 +7,7 @@
 
 package wtf.metio.yosql.testing.configs;
 
-import wtf.metio.yosql.models.configuration.AnnotationApis;
+import wtf.metio.yosql.models.configuration.GeneratedAnnotationApis;
 import wtf.metio.yosql.models.immutables.AnnotationsConfiguration;
 
 /**
@@ -25,7 +25,7 @@ public final class AnnotationsConfigurations {
 
     public static AnnotationsConfiguration generated() {
         return AnnotationsConfiguration.copyOf(defaults())
-                .withAnnotationApi(AnnotationApis.ANNOTATION_API);
+                .withAnnotationApi(GeneratedAnnotationApis.ANNOTATION_API);
     }
 
     private AnnotationsConfigurations() {

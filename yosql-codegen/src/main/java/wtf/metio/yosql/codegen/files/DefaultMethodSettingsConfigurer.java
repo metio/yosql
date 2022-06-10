@@ -8,13 +8,14 @@
 package wtf.metio.yosql.codegen.files;
 
 import wtf.metio.yosql.models.configuration.ReturningMode;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.util.List;
+import java.util.Optional;
 
-import static wtf.metio.yosql.models.configuration.SqlType.*;
+import static wtf.metio.yosql.models.configuration.SqlStatementType.*;
 
 public final class DefaultMethodSettingsConfigurer implements MethodSettingsConfigurer {
 
@@ -38,22 +39,20 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
 
     // visible for testing
     SqlConfiguration type(final SqlConfiguration configuration) {
-        return configuration.type()
-                .filter(type -> UNKNOWN != type)
-                .map(type -> configuration)
-                .orElseGet(() -> SqlConfiguration.copyOf(configuration)
-                        .withType(mapNameToType(configuration.name().orElse(""))));
+        return SqlConfiguration.copyOf(configuration)
+                .withType(configuration.type()
+                        .or(() -> mapNameToType(configuration.name().orElse(""))));
     }
 
-    private SqlType mapNameToType(final String name) {
+    private Optional<SqlStatementType> mapNameToType(final String name) {
         if (startsWith(name, repositories.allowedWritePrefixes())) {
-            return WRITING;
+            return Optional.of(WRITING);
         } else if (startsWith(name, repositories.allowedReadPrefixes())) {
-            return READING;
+            return Optional.of(READING);
         } else if (startsWith(name, repositories.allowedCallPrefixes())) {
-            return CALLING;
+            return Optional.of(CALLING);
         }
-        return UNKNOWN;
+        return Optional.empty();
     }
 
     private static boolean startsWith(final String fileName, final List<String> prefixes) {
@@ -61,18 +60,17 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
     }
 
     // visible for testing
-    SqlConfiguration returningMode(final SqlConfiguration configuration) {
-        return configuration.returningMode()
-                .map(mode -> configuration)
-                .orElseGet(() -> SqlConfiguration.copyOf(configuration)
-                        .withReturningMode(mapTypeReturningMode(configuration.type().orElse(UNKNOWN))));
+    static SqlConfiguration returningMode(final SqlConfiguration configuration) {
+        return SqlConfiguration.copyOf(configuration)
+                .withReturningMode(configuration.returningMode()
+                        .or(() -> configuration.type().map(DefaultMethodSettingsConfigurer::mapTypeReturningMode)));
     }
 
-    private ReturningMode mapTypeReturningMode(final SqlType type) {
+    private static ReturningMode mapTypeReturningMode(final SqlStatementType type) {
         return switch (type) {
-            case READING -> ReturningMode.MULTIPLE;
             case CALLING -> ReturningMode.SINGLE;
-            default -> ReturningMode.NONE;
+            case READING -> ReturningMode.MULTIPLE;
+            case WRITING -> ReturningMode.NONE;
         };
     }
 

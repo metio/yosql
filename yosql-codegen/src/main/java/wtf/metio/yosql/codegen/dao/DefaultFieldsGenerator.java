@@ -9,7 +9,6 @@ package wtf.metio.yosql.codegen.dao;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
-import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.blocks.Fields;
 import wtf.metio.yosql.codegen.blocks.Javadoc;
 import wtf.metio.yosql.codegen.files.SqlStatementParser;
@@ -76,13 +75,15 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
             final SqlConfiguration config) {
         builder.addStatement("$N.put($S, $L)",
                 constantSqlStatementParameterIndexFieldName(config),
-                parameter.name(),
+                parameter.name().orElseThrow(), // TODO: throw business exception
                 indexArray(parameter));
     }
 
     private static String indexArray(final SqlParameter param) {
-        return IntStream.of(param.indices())
-                .boxed()
+        return param.indices()
+                .stream()
+                .map(IntStream::of)
+                .flatMap(IntStream::boxed)
                 .map(Object::toString)
                 .collect(Collectors.joining(", ", "new int[] { ", " }"));
     }
@@ -114,10 +115,6 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     }
 
     private Optional<FieldSpec> loggerField(final SqlStatement sqlStatement) {
-//        return sqlStatement.getRepository()
-//                .map(ClassName::bestGuess)
-//                .flatMap(logging::logger);
-
         return logging.logger(ClassName.bestGuess(sqlStatement.getRepositoryClass()));
     }
 
@@ -154,8 +151,8 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
 
     private FieldSpec asConverterField(final ResultRowConverter converter) {
         return fields.field(
-                TypeGuesser.guessTypeName(converter.converterType()),
-                converter.alias());
+                converter.converterTypeName().orElseThrow(), // TODO: throw business exception
+                converter.alias().orElseThrow()); // TODO: throw business exception
     }
 
     @Override

@@ -10,14 +10,12 @@ package wtf.metio.yosql.codegen.files;
 import ch.qos.cal10n.IMessageConveyor;
 import wtf.metio.yosql.codegen.lifecycle.ValidationErrors;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.nio.file.Path;
 import java.util.List;
-
-import static wtf.metio.yosql.models.configuration.SqlType.*;
 
 public final class DefaultMethodNameValidator implements MethodNameValidator {
 
@@ -37,30 +35,28 @@ public final class DefaultMethodNameValidator implements MethodNameValidator {
     @Override
     public void validateNames(final SqlConfiguration configuration, final Path source) {
         if (repositories.validateMethodNamePrefixes()) {
-            configuration.type().ifPresent(type -> {
-                switch (type) {
-                    case READING -> configuration.name()
-                            .filter(name -> notStartsWith(name, repositories.allowedReadPrefixes()))
-                            .ifPresent(name -> invalidPrefix(source, READING, name));
-                    case WRITING -> configuration.name()
-                            .filter(name -> notStartsWith(name, repositories.allowedWritePrefixes()))
-                            .ifPresent(name -> invalidPrefix(source, WRITING, name));
-                    case CALLING -> configuration.name()
-                            .filter(name -> notStartsWith(name, repositories.allowedCallPrefixes()))
-                            .ifPresent(name -> invalidPrefix(source, CALLING, name));
-                    default -> errors.illegalArgument(
-                            messages.getMessage(ValidationErrors.UNSUPPORTED_TYPE, source, configuration.type()));
-                }
-            });
+            configuration.type()
+                    .map(this::allowedPrefixes)
+                    .flatMap(prefixes -> configuration.name()
+                            .filter(name -> notStartsWith(name, prefixes)))
+                    .ifPresent(name -> invalidPrefix(source, name));
         }
+    }
+
+    private List<String> allowedPrefixes(final SqlStatementType type) {
+        return switch (type) {
+            case READING -> repositories.allowedReadPrefixes();
+            case WRITING -> repositories.allowedWritePrefixes();
+            case CALLING -> repositories.allowedCallPrefixes();
+        };
     }
 
     private static boolean notStartsWith(final String fileName, final List<String> prefixes) {
         return prefixes == null || prefixes.stream().noneMatch(fileName::startsWith);
     }
 
-    private void invalidPrefix(final Path source, final SqlType sqlType, final String name) {
-        errors.illegalArgument(messages.getMessage(ValidationErrors.INVALID_PREFIX, source, sqlType, name));
+    private void invalidPrefix(final Path source, final String name) {
+        errors.illegalArgument(messages.getMessage(ValidationErrors.INVALID_PREFIX, source, name));
     }
 
 }

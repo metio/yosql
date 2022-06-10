@@ -10,11 +10,12 @@ package wtf.metio.yosql.codegen.files;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.lifecycle.SqlConfigurationLifecycle;
 import wtf.metio.yosql.internals.jdk.Strings;
-import wtf.metio.yosql.models.configuration.SqlType;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import javax.lang.model.SourceVersion;
+import java.util.Optional;
 
 import static java.util.function.Predicate.not;
 
@@ -48,16 +49,18 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
 
     // visible for testing
     SqlConfiguration baseName(final SqlConfiguration configuration, final String fileName, final int statementInFile) {
-        return configuration.name()
-                .filter(not(Strings::isBlank))
-                .filter(SourceVersion::isName)
-                .map(name -> configuration)
-                .orElseGet(() -> SqlConfiguration.copyOf(configuration)
-                        .withName(calculateName(validName(configuration.type().orElse(SqlType.UNKNOWN), fileName),
-                                statementInFile)));
+        return SqlConfiguration.copyOf(configuration)
+                .withName(configuration.name()
+                        .filter(SourceVersion::isName)
+                        .or(() -> configuration.type()
+                                .map(type -> validName(type, fileName))
+                                .map(name -> calculateName(name, statementInFile)))
+                        .or(() -> Optional.of(fileName)
+                                .filter(SourceVersion::isName)
+                                .map(name -> calculateName(name, statementInFile))));
     }
 
-    private String validName(final SqlType type, final String fileName) {
+    private String validName(final SqlStatementType type, final String fileName) {
         return SourceVersion.isName(fileName) ? fileName : generateName(type);
     }
 
@@ -65,14 +68,13 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
         return statementInFile > 1 ? name + statementInFile : name;
     }
 
-    private String generateName(final SqlType type) {
-        final var typeLookup = switch (type) {
+    private String generateName(final SqlStatementType type) {
+        final var prefix = switch (type) {
             case READING -> repositories.allowedReadPrefixes().get(0);
             case WRITING -> repositories.allowedWritePrefixes().get(0);
             case CALLING -> repositories.allowedCallPrefixes().get(0);
-            case UNKNOWN -> "statement";
         };
-        return typeLookup + "NameWasChanged";
+        return prefix + "NameWasChanged";
     }
 
     // visible for testing

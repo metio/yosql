@@ -13,10 +13,11 @@ import de.xn__ho_hia.javapoet.TypeGuesser;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.function.Predicate.not;
 
@@ -93,10 +94,10 @@ public final class DefaultJavadoc implements Javadoc {
         builder.add(messages.getMessage(Javadocs.DISABLE_WITH), configuration);
         statements.stream()
                 .map(SqlStatement::getConfiguration)
-                .flatMap(config -> config.resultRowConverter().stream())
-                .filter(Objects::nonNull)
+                .map(SqlConfiguration::resultRowConverter)
+                .flatMap(Optional::stream)
                 .map(ResultRowConverter::resultType)
-                .filter(Objects::nonNull)
+                .flatMap(Optional::stream)
                 .filter(type -> !type.startsWith("java"))
                 .map(type -> type.substring(0, type.contains("<") ? type.indexOf("<") : type.length()))
                 .distinct()

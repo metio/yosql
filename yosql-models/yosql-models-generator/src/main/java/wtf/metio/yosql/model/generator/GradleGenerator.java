@@ -9,8 +9,6 @@ package wtf.metio.yosql.model.generator;
 
 import com.squareup.javapoet.*;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
-import wtf.metio.yosql.internals.jdk.Strings;
-import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
@@ -20,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static wtf.metio.yosql.internals.jdk.Strings.upperCase;
 
 public final class GradleGenerator extends AbstractMethodsBasedGenerator {
 
@@ -31,11 +31,7 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
 
     @Override
     public Stream<TypeSpec> apply(final ConfigurationGroup group) {
-        if ("Converter".equalsIgnoreCase(group.name())) {
-            return Stream.of(configGroupClass(group),
-                    rowConverterClass(true), rowConverterClass(false));
-        }
-        return Stream.of(configGroupClass(group));
+        return Stream.concat(Stream.of(configGroupClass(group)), group.gradleTypes().stream());
     }
 
     private TypeSpec configGroupClass(final ConfigurationGroup group) {
@@ -47,60 +43,6 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
                 .addMethods(methodsFor(group))
                 .addMethod(configureConventions(group))
                 .addMethod(asConfiguration(group, immutablesBasePackage))
-                .build();
-    }
-
-    private TypeSpec rowConverterClass(boolean defaultConverter) {
-        final var gradleStringProperty = TypicalTypes.gradlePropertyOf(ClassName.get(String.class));
-        final var className = defaultConverter ? "DefaultRowConverter" : "RowConverter";
-        final var classBuilder = TypeSpec.classBuilder(ClassName.bestGuess(className))
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .addJavadoc("Configures a single ResultRowConverter.")
-                .addMethod(MethodSpec.constructorBuilder()
-                        .addJavadoc("Required by Gradle")
-                        .addAnnotation(TypicalTypes.INJECT)
-                        .addModifiers(Modifier.PUBLIC)
-                        .build());
-        if (defaultConverter) {
-            classBuilder.addMethod(MethodSpec.methodBuilder("getAlias")
-                    .addJavadoc("@return The short alias for the converter.")
-                    .addAnnotation(TypicalTypes.GRADLE_INPUT)
-                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                    .returns(gradleStringProperty)
-                    .build());
-        } else {
-            classBuilder.addSuperinterface(TypicalTypes.GRADLE_NAMED);
-        }
-        return classBuilder
-                .addMethod(MethodSpec.methodBuilder("getConverterType")
-                        .addJavadoc("@return The fully-qualified name of the converter class.")
-                        .addAnnotation(TypicalTypes.GRADLE_INPUT)
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .returns(gradleStringProperty)
-                        .build())
-                .addMethod(MethodSpec.methodBuilder("getMethodName")
-                        .addJavadoc("@return The name of the method to call.")
-                        .addAnnotation(TypicalTypes.GRADLE_INPUT)
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .returns(gradleStringProperty)
-                        .build())
-                .addMethod(MethodSpec.methodBuilder("getResultType")
-                        .addJavadoc("@return The fully-qualified name of the converter class.")
-                        .addAnnotation(TypicalTypes.GRADLE_INPUT)
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .returns(gradleStringProperty)
-                        .build())
-                .addMethod(MethodSpec.methodBuilder("asRowConverter")
-                        .returns(ResultRowConverter.class)
-                        .addStatement(CodeBlock.builder()
-                                .add("return $T.builder()$>", ResultRowConverter.class)
-                                .add(defaultConverter ? "\n.setAlias(getAlias().get())" : "\n.setAlias(getName())")
-                                .add("\n.setConverterType(getConverterType().get())")
-                                .add("\n.setMethodName(getMethodName().get())")
-                                .add("\n.setResultType(getResultType().get())")
-                                .add("\n.build()$<")
-                                .build())
-                        .build())
                 .build();
     }
 
@@ -122,7 +64,7 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
                 .ifPresent(s -> builder.addParameter(ParameterSpec.builder(TypicalTypes.GRADLE_OBJECTS, "objects").build()));
         group.settings().stream()
                 .filter(setting -> valueOf(setting).isPresent())
-                .filter(setting -> !"rowConverters".equals(setting.name()))
+                .filter(setting -> !typeOf(setting).toString().startsWith(TypicalTypes.GRADLE_CONTAINERS.canonicalName()))
                 .forEach(setting -> builder.addStatement(conventionValue(setting)));
         group.settings().stream()
                 .filter(setting -> "defaultConverter".equals(setting.name()))
@@ -189,8 +131,8 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
                 .build();
     }
 
-    private String propertyName(final ConfigurationSetting setting) {
-        return "get" + Strings.upperCase(setting.name());
+    private static String propertyName(final ConfigurationSetting setting) {
+        return "get" + upperCase(setting.name());
     }
 
     private TypeName gradleReturnType(final ConfigurationSetting setting) {
@@ -198,7 +140,8 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
         if (type.isPrimitive()) {
             return TypicalTypes.gradlePropertyOf(type.box());
         }
-        if (type.toString().startsWith(TypicalTypes.GRADLE_CONTAINERS.canonicalName())) {
+        if (type.toString().startsWith(TypicalTypes.GRADLE_CONTAINERS.canonicalName())
+                || type.toString().startsWith(TypicalTypes.GRADLE_LIST_PROPERTY.canonicalName())) {
             return type;
         }
         if (type.toString().startsWith(ClassName.get(List.class).canonicalName())) {
@@ -226,19 +169,24 @@ public final class GradleGenerator extends AbstractMethodsBasedGenerator {
     private CodeBlock methodConfiguration(final ConfigurationSetting setting) {
         if (usesResultRowConverter(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($L().get().asRowConverter())\n", Strings.upperCase(setting.name()), propertyName(setting))
+                    .add(".set$L($L().get().asRowConverter())\n", upperCase(setting.name()), propertyName(setting))
                     .build();
         }
         if (usesResultRowConverters(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($L())\n", Strings.upperCase(setting.name()), "createRowConverters")
+                    .add(".set$L($L())\n", upperCase(setting.name()), "createRowConverters")
                     .build();
         }
         if (usesNioPath(setting)) {
             return CodeBlock.builder()
-                    .add(".set$L($L().get().getAsFile().toPath())\n", Strings.upperCase(setting.name()), propertyName(setting))
+                    .add(".set$L($L().get().getAsFile().toPath())\n", upperCase(setting.name()), propertyName(setting))
                     .build();
         }
-        return CodeBlock.of(".set$L($L().get())\n", Strings.upperCase(setting.name()), propertyName(setting));
+        if (usesAnnotations(setting)) {
+            return CodeBlock.builder()
+                    .add(".set$L(createAnnotations($L().stream().toList()))\n", upperCase(setting.name()), propertyName(setting))
+                    .build();
+        }
+        return CodeBlock.of(".set$L($L().get())\n", upperCase(setting.name()), propertyName(setting));
     }
 }

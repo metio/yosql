@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.codegen.blocks.Parameters;
@@ -73,7 +72,7 @@ public final class DefaultJdbcParameters implements JdbcParameters {
 
     @Override
     public ParameterSpec converter(final ResultRowConverter converter) {
-        return parameters.parameter(ClassName.bestGuess(converter.converterType()), converter.alias());
+        return parameters.parameter(converter.converterTypeName().orElseThrow(), converter.alias().orElseThrow()); // TODO: throw business exception
     }
 
     @Override

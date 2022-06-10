@@ -201,6 +201,7 @@ public final class Repositories {
                 .setDescription("Generate standard methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -210,6 +211,7 @@ public final class Repositories {
                 .setDescription("Generate batch methods")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -219,6 +221,7 @@ public final class Repositories {
                 .setDescription("Should `PreparedStatement`s be used instead of `Statement`s")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -228,6 +231,7 @@ public final class Repositories {
                 .setDescription("Catch exceptions during SQL execution and re-throw them as RuntimeExceptions")
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -237,6 +241,7 @@ public final class Repositories {
                 .setDescription("Throw an exception in case a statement using `ReturningMode.SINGLE` produces more than 1 result.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(false)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -246,6 +251,7 @@ public final class Repositories {
                 .setDescription("Toggles whether converters should be injected as constructor parameters.")
                 .setType(TypeName.get(boolean.class))
                 .setValue(false)
+                .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
                         .setDescription("The default value of the `injectConverters` configuration option is `false`. It produces code similar to this:")
@@ -298,6 +304,7 @@ public final class Repositories {
                 .setDescription("The method prefix to use for generated standard methods.")
                 .setType(ClassName.get(String.class))
                 .setValue("")
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -307,6 +314,7 @@ public final class Repositories {
                 .setDescription("The method suffix to use for generated standard methods.")
                 .setType(ClassName.get(String.class))
                 .setValue("")
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -316,6 +324,7 @@ public final class Repositories {
                 .setDescription("The method prefix to use for generated batch methods.")
                 .setType(ClassName.get(String.class))
                 .setValue("")
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -325,6 +334,7 @@ public final class Repositories {
                 .setDescription("The method suffix to use for generated batch methods.")
                 .setType(ClassName.get(String.class))
                 .setValue("Batch")
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
