@@ -15,6 +15,7 @@ import org.immutables.value.Value;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.*;
+import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
@@ -33,6 +34,9 @@ public final class Sql {
         return ConfigurationGroup.builder()
                 .setName(Sql.class.getSimpleName())
                 .setDescription("The configuration for a single SQL statement.")
+                .setExplanation("""
+                        All of these options are to be placed in the front matter of SQL statements and their overwrite
+                        their respective counterparts in the global configuration, e.g. in [repositories](../repositories/).""")
                 .setImmutableAnnotations(extraTypeAnnotations())
                 .addAllSettings(settings())
                 .addAllSettings(withExtraAnnotations(stringRepositorySettings()))
@@ -103,6 +107,13 @@ public final class Sql {
                 .setName("repository")
                 .setDescription("The fully qualified name of the target repository class.")
                 .setType(TypeName.get(String.class))
+                .setExplanation("""
+                        In order to overwrite the target repository of a single SQL statement, use the `repository` option.
+                        You can specify the fully qualified name of the repository that should contain your statement, or
+                        you can just specify the name of the class and `YoSQL` will automatically add the
+                        [base package name](../../repositories/basepackagename/) as well as the
+                        [repositoryNamePrefix](../../repositories/repositorynameprefix/) and
+                        [repositoryNameSuffix](../../repositories/repositorynamesuffix/) for you.""")
                 .setImmutableAnnotations(List.of(jsonProperty("repository")))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
@@ -113,6 +124,7 @@ public final class Sql {
                 .setName("repositoryInterface")
                 .setDescription("The fully qualified name of the target repository interface.")
                 .setType(TypeName.get(String.class))
+                .setGenerateDocs(false)
                 .build();
     }
 
@@ -123,6 +135,23 @@ public final class Sql {
                 .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("name")))
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("yourSpecialName")
+                        .setDescription("In case you use the `name` option, `YoSQL` will use the supplied value as a method name")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void yourSpecialName() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
                 .build();
     }
 
@@ -133,6 +162,26 @@ public final class Sql {
                 .setType(TypeName.get(String.class))
                 .setImmutableAnnotations(List.of(jsonProperty("description")))
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("Some random description")
+                        .setDescription("In case you use the `description` option, `YoSQL` will use the supplied value as a JavaDoc comment")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    /**
+                                     * Some random description
+                                     */
+                                    public void someMethod() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
                 .build();
     }
 

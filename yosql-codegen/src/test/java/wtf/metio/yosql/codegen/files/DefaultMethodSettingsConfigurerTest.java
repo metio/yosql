@@ -134,25 +134,6 @@ class DefaultMethodSettingsConfigurerTest {
     }
 
     @Test
-    void injectConvertersKeep() {
-        final var original = SqlConfiguration.usingDefaults()
-                .setInjectConverters(true)
-                .build();
-        final var adapted = configurer.injectConverters(original);
-        assertEquals(original.injectConverters(), adapted.injectConverters());
-    }
-
-    @Test
-    void injectConvertersChange() {
-        final var original = SqlConfiguration.usingDefaults()
-                // .setInjectConverters(true) // value is NOT set
-                .build();
-        final var adapted = configurer.injectConverters(original);
-        assertTrue(adapted.injectConverters().isPresent());
-        assertEquals(repositories.injectConverters(), adapted.injectConverters().get());
-    }
-
-    @Test
     void throwOnMultipleResultsForSingleKeep() {
         final var original = SqlConfiguration.usingDefaults()
                 .setThrowOnMultipleResultsForSingle(true)
@@ -196,14 +177,12 @@ class DefaultMethodSettingsConfigurerTest {
                 .setType(SqlStatementType.CALLING)
                 .setReturningMode(ReturningMode.MULTIPLE)
                 .setCatchAndRethrow(false)
-                .setInjectConverters(true)
                 .build();
         final var adapted = configurer.configureSettings(original);
         assertAll(
                 () -> assertEquals(original.type(), adapted.type()),
                 () -> assertEquals(original.returningMode(), adapted.returningMode()),
-                () -> assertEquals(original.catchAndRethrow(), adapted.catchAndRethrow()),
-                () -> assertEquals(original.injectConverters(), adapted.injectConverters()));
+                () -> assertEquals(original.catchAndRethrow(), adapted.catchAndRethrow()));
     }
 
     @Test
@@ -211,7 +190,6 @@ class DefaultMethodSettingsConfigurerTest {
         final var original = SqlConfiguration.usingDefaults()
                 .setName(repositories.allowedCallPrefixes().get(0) + "Something")
                 // .setCatchAndRethrow(false) // do NOT set value
-                // .setInjectConverters(true) // do NOT set value
                 // .setThrowOnMultipleResultsForSingle(true) // value is NOT set
                 // .setUsePreparedStatement(false) // value is NOT set
                 .build();
@@ -220,7 +198,6 @@ class DefaultMethodSettingsConfigurerTest {
                 () -> assertEquals(SqlStatementType.CALLING, adapted.type().get()),
                 () -> assertEquals(ReturningMode.SINGLE, adapted.returningMode().get()),
                 () -> assertEquals(repositories.catchAndRethrow(), adapted.catchAndRethrow().get()),
-                () -> assertEquals(repositories.injectConverters(), adapted.injectConverters().get()),
                 () -> assertEquals(repositories.throwOnMultipleResultsForSingle(), adapted.throwOnMultipleResultsForSingle().get()),
                 () -> assertEquals(repositories.usePreparedStatement(), adapted.usePreparedStatement().get()));
     }

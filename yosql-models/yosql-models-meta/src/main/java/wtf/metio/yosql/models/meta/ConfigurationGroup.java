@@ -14,6 +14,7 @@ import org.immutables.value.Value;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Meta model for a single configuration group (e.g. a single Java class).
@@ -38,6 +39,11 @@ public interface ConfigurationGroup {
      * @return The description for the entire configuration group.
      */
     String description();
+
+    /**
+     * @return Longer explanation for the website.
+     */
+    Optional<String> explanation();
 
     /**
      * @return All configuration settings in this configuration group.

@@ -3,7 +3,7 @@ title: Alternatives
 date: 2019-06-16T18:23:25+02:00
 menu:
   main:
-    parent: Project
+    parent: Community
 ---
 
 Here is an incomplete list of tools that we consider to be close siblings to `YoSQL`:

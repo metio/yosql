@@ -31,7 +31,6 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
         adapted = type(adapted);
         adapted = returningMode(adapted);
         adapted = catchAndRethrow(adapted);
-        adapted = injectConverters(adapted);
         adapted = throwOnMultipleResultsForSingle(adapted);
         adapted = usePreparedStatement(adapted);
         return adapted;
@@ -79,15 +78,6 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
         if (configuration.catchAndRethrow().isEmpty()) {
             return SqlConfiguration.copyOf(configuration)
                     .withCatchAndRethrow(repositories.catchAndRethrow());
-        }
-        return configuration;
-    }
-
-    // visible for testing
-    SqlConfiguration injectConverters(final SqlConfiguration configuration) {
-        if (configuration.injectConverters().isEmpty()) {
-            return SqlConfiguration.copyOf(configuration)
-                    .withInjectConverters(repositories.injectConverters());
         }
         return configuration;
     }

@@ -67,6 +67,14 @@ public interface ConfigurationSetting {
 
     //region defaults
 
+    /**
+     * @return Whether markdown documentation should be generated for this setting.
+     */
+    @Value.Default
+    default boolean generateDocs() {
+        return true;
+    }
+
     @Value.Default
     default List<AnnotationSpec> immutableAnnotations() {
         return Collections.emptyList();

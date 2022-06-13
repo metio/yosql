@@ -15,3 +15,8 @@ generated: true
 ---
 
 {{group.description}}
+
+{{#hasExplanation}}
+{{group.explanation}}
+
+{{/hasExplanation}}

@@ -10,6 +10,7 @@ tags:
   - CLI
 ---
 
+**WORK IN PROGRESS** - https://github.com/metio/yosql/issues/206
 
 1. Download the `yosql-tooling-cli` binary.
 2. Write .sql files in a directory of your choice (e.g. `/path/to/your/sql/files`).

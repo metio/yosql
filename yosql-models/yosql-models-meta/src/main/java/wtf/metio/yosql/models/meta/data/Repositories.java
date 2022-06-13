@@ -38,6 +38,7 @@ public final class Repositories {
                 .addSettings(repositoryNamePrefix())
                 .addSettings(repositoryNameSuffix())
                 .addSettings(validateMethodNamePrefixes())
+                .addSettings(injectConverters())
                 .addAllSettings(stringMethods())
                 .addAllSettings(booleanMethods())
                 .build();
@@ -63,8 +64,7 @@ public final class Repositories {
                 generateBatchApi(),
                 usePreparedStatement(),
                 catchAndRethrow(),
-                throwOnMultipleResultsForSingle(),
-                injectConverters());
+                throwOnMultipleResultsForSingle());
     }
 
     private static ConfigurationSetting basePackageName() {
@@ -232,6 +232,42 @@ public final class Repositories {
                 .setType(TypeName.get(boolean.class))
                 .setValue(true)
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default value for `catchAndRethrow` is `true`. This will catch any `SQLException` that happen during SQL execution and re-throw them as `RuntimeExceptions`.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void writeSome() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("In case you want to handle `SQLException`s yourself, set `catchAndRethrow` to `false`.")
+                        .setResult("""
+                                package com.example.persistence;
+                                
+                                import java.sql.SQLException;
+
+                                public class SomeRepository {
+
+                                    public void writeSome() throws SQLException {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
                 .build();
     }
 
@@ -305,6 +341,40 @@ public final class Repositories {
                 .setType(ClassName.get(String.class))
                 .setValue("")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("")
+                        .setDescription("The default value for `standardPrefix` is the empty string. It does not add any prefix in front of standard methods.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void writeSome() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("myPrefix")
+                        .setDescription("In case you want to prefix standard methods with something, set the `standardPrefix` option.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void myPrefixwriteSome() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
                 .build();
     }
 
@@ -315,6 +385,40 @@ public final class Repositories {
                 .setType(ClassName.get(String.class))
                 .setValue("")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("")
+                        .setDescription("The default value for `standardSuffix` is the empty string. It does not add any suffix after of standard methods.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void writeSome() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("MySuffix")
+                        .setDescription("In case you want to suffix standard methods with something, set the `standardSuffix` option.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void writeSomeMySuffix() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
                 .build();
     }
 
@@ -325,6 +429,40 @@ public final class Repositories {
                 .setType(ClassName.get(String.class))
                 .setValue("")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("")
+                        .setDescription("The default value for `batchPrefix` is the empty string. It does not add any prefix in front of batch methods.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void writeSomeBatch() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("myPrefix")
+                        .setDescription("In case you want to prefix batch methods with something, set the `batchPrefix` option.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void myPrefixwriteSomeBatch() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
                 .build();
     }
 
@@ -335,6 +473,40 @@ public final class Repositories {
                 .setType(ClassName.get(String.class))
                 .setValue("Batch")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("Batch")
+                        .setDescription("The default value for `batchSuffix` is 'Batch'. It adds the word 'Batch' after each batch method.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void writeSomeBatch() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("Other")
+                        .setDescription("In case you want to suffix batch methods with something else, set the `batchSuffix` option.")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public class SomeRepository {
+
+                                    public void writeSomeOther() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
                 .build();
     }
 

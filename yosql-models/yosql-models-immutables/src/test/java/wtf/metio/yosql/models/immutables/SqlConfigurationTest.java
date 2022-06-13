@@ -567,40 +567,6 @@ class SqlConfigurationTest {
     }
 
     @Test
-    void mergeInjectConvertersFirst() {
-        final var first = SqlConfiguration.usingDefaults()
-                .setInjectConverters(true)
-                .build();
-        final var second = SqlConfiguration.usingDefaults().build();
-
-        final var merged = SqlConfiguration.merge(first, second);
-
-        Assertions.assertEquals(first.injectConverters(), merged.injectConverters());
-    }
-
-    @Test
-    void mergeInjectConvertersSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setInjectConverters(true)
-                .build();
-
-        final var merged = SqlConfiguration.merge(first, second);
-
-        Assertions.assertEquals(second.injectConverters(), merged.injectConverters());
-    }
-
-    @Test
-    void mergeInjectConvertersMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
-
-        final var merged = SqlConfiguration.merge(first, second);
-
-        Assertions.assertTrue(merged.injectConverters().isEmpty());
-    }
-
-    @Test
     void mergeResultRowConverterFirst() {
         final var first = SqlConfiguration.usingDefaults()
                 .setResultRowConverter(ResultRowConverter.builder().build())

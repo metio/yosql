@@ -10,6 +10,7 @@ package wtf.metio.yosql.model.generator;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
+import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import wtf.metio.yosql.models.meta.data.AllConfigurations;
 import wtf.metio.yosql.models.meta.data.Runtime;
 import wtf.metio.yosql.models.meta.data.Sql;
@@ -66,9 +67,11 @@ public final class ModelGenerator {
 
     public void createMarkdownDocumentation(final String version) {
         final var factory = new RawTextMustacheFactory();
-        final var generator = new MarkdownGenerator(factory, version);
+        final var globalGenerator = new MarkdownGenerator(factory, version, "configurationSetting.md");
+        final var statementGenerator = new MarkdownGenerator(factory, version, "frontmatterSetting.md");
         AllConfigurations.allConfigurationGroups().forEach(group ->
-                writeMarkdownFiles(generator, group));
+                writeMarkdownFiles(globalGenerator, group));
+        writeMarkdownFiles(statementGenerator, Sql.configurationGroup());
     }
 
     private void writeMarkdownFiles(final MarkdownGenerator generator, final ConfigurationGroup group) {
@@ -76,7 +79,10 @@ public final class ModelGenerator {
             final var groupDirectory = outputDirectory.resolve(group.name().toLowerCase(Locale.ROOT));
             Files.createDirectories(groupDirectory);
             writeString(groupDirectory.resolve("_index.md"), generator.group(group));
-            group.settings().forEach(setting ->
+            group.settings()
+                    .stream()
+                    .filter(ConfigurationSetting::generateDocs)
+                    .forEach(setting ->
                     writeString(groupDirectory.resolve(setting.name() + ".md"), generator.setting(group, setting)));
         } catch (final IOException exception) {
             throw new RuntimeException(exception);

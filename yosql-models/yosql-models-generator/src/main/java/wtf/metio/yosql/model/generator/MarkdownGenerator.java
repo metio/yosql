@@ -33,9 +33,12 @@ public final class MarkdownGenerator {
     private final Mustache settingTemplate;
     private final String yosqlVersion;
 
-    public MarkdownGenerator(final MustacheFactory mustacheFactory, final String yosqlVersion) {
+    public MarkdownGenerator(
+            final MustacheFactory mustacheFactory,
+            final String yosqlVersion,
+            final String settingTemplateName) {
         groupTemplate = mustacheFactory.compile("configurationGroup.md");
-        settingTemplate = mustacheFactory.compile("configurationSetting.md");
+        settingTemplate = mustacheFactory.compile(settingTemplateName);
         this.yosqlVersion = yosqlVersion;
     }
 
@@ -46,7 +49,8 @@ public final class MarkdownGenerator {
                 "currentDate", LocalDate.now().toString(),
                 "lower", LOWER_CASE,
                 "upper", UPPER_CASE,
-                "kebab", KEBAB_CASE
+                "kebab", KEBAB_CASE,
+                "hasExplanation", group.explanation().isPresent()
         ));
     }
 
@@ -69,7 +73,7 @@ public final class MarkdownGenerator {
         ));
     }
 
-    private String applyTemplate(final Mustache template, final Map<String, Object> scopes) {
+    private static String applyTemplate(final Mustache template, final Map<String, Object> scopes) {
         try {
             final var writer = new StringWriter();
             template.execute(writer, scopes).flush();

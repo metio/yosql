@@ -84,11 +84,3 @@ Make sure that multiple executions do not make use of the same .sql files. Other
 the generated code of each other. The last execution will win. Share configuration across all executions by using a single top level `configuration` block.
 
 {{< maven/tooling/multi >}}
-
-#### Dev/Prod Split
-
-In case you want to generate logging statements while developing, but not have any log statements in production code in order to optimize runtime performance, you can use the following setup:
-
-{{< maven/tooling/split >}}
-
-This setup requires no additional step during development (which you would have to do a lot), but instead allows you to specify the logging API like this `mvn -DloggingApi=NONE` in order to change the logging API per invocation of Maven, thus allow you to pass in `NONE` to disable log statements during release builds.

@@ -247,26 +247,6 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseInjectConvertersEnabled() {
-        final var yaml = """
-                injectConverters: true
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.injectConverters().isPresent());
-        assertTrue(config.injectConverters().get());
-    }
-
-    @Test
-    void shouldParseInjectConvertersDisabled() {
-        final var yaml = """
-                injectConverters: false
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.injectConverters().isPresent());
-        assertFalse(config.injectConverters().get());
-    }
-
-    @Test
     void shouldParseStandardPrefix() {
         final var yaml = """
                 standardPrefix: prefix
