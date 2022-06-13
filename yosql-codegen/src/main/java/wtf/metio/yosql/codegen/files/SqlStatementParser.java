@@ -23,19 +23,22 @@ import java.util.stream.Stream;
 @FunctionalInterface
 public interface SqlStatementParser {
 
-    /** The regex to extract named parameters out of SQL statements. */
+    /**
+     * The regex to extract named parameters out of SQL statements.
+     */
     String NAMED_PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
     String PARAMETER_REGEX = "\\?";
 
-    /** The pattern to extract named parameters out of SQL statements */
+    /**
+     * The pattern to extract named parameters out of SQL statements
+     */
     Pattern NAMED_PARAMETER_PATTERN = Pattern.compile(NAMED_PARAMETER_REGEX);
     Pattern PARAMETER_PATTERN = Pattern.compile(PARAMETER_REGEX);
 
     /**
      * Parses SQL statements from a file.
      *
-     * @param pathToFile
-     *            The file to parse.
+     * @param pathToFile The file to parse.
      * @return A stream of statements founds inside the source file.
      */
     Stream<SqlStatement> parse(Path pathToFile);
@@ -43,8 +46,7 @@ public interface SqlStatementParser {
     /**
      * Extracts parameter indices from a given SQL statement.
      *
-     * @param sqlStatement
-     *            The raw SQL statement to parse.
+     * @param sqlStatement The raw SQL statement to parse.
      * @return Extracted parameters and their indices.
      */
     default Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {

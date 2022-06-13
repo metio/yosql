@@ -20,8 +20,7 @@ import java.util.List;
 /**
  * Verifies .properties files.
  *
- * @param <ENUMERATION>
- *            The type of the enumeration to test.
+ * @param <ENUMERATION> The type of the enumeration to test.
  */
 public interface PropertiesTCK<ENUMERATION extends Enum<ENUMERATION>> {
 

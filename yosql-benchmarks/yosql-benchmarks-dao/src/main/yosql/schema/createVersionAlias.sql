@@ -7,5 +7,6 @@
 
 --
 --
-CREATE ALIAS IF NOT EXISTS getVersion FOR "org.h2.util.CurrentTimestamp.get"
+CREATE
+ALIAS IF NOT EXISTS getVersion FOR "org.h2.util.CurrentTimestamp.get"
 ;

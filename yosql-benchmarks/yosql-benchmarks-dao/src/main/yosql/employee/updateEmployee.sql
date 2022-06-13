@@ -19,10 +19,10 @@
 --   - name: salary
 --     type: long
 UPDATE employees
-    SET department_pid = :department,
-        name = :name,
-        surname = :surname,
-        email = :email,
-        salary = :salary
+SET department_pid = :department,
+    name           = :name,
+    surname        = :surname,
+    email          = :email,
+    salary         = :salary
 WHERE pid = :pid
 ;

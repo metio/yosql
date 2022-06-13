@@ -9,8 +9,18 @@
 --
 CREATE TABLE IF NOT EXISTS projectEmployees
 (
-    project_pid     BIGINT REFERENCES projects(pid),
-    employee_pid    BIGINT REFERENCES employees(pid),
-    CONSTRAINT projectEmployees_pk PRIMARY KEY (project_pid, employee_pid)
+    project_pid BIGINT REFERENCES projects
+(
+    pid
+),
+    employee_pid BIGINT REFERENCES employees
+(
+    pid
+),
+    CONSTRAINT projectEmployees_pk PRIMARY KEY
+(
+    project_pid,
+    employee_pid
 )
+    )
 ;

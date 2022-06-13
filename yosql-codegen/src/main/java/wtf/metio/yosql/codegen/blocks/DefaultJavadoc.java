@@ -74,7 +74,7 @@ public final class DefaultJavadoc implements Javadoc {
             statement.getConfiguration().vendor()
                     .filter(not(Strings::isBlank))
                     .ifPresentOrElse(vendor ->
-                            builder.add(messages.getMessage(Javadocs.VENDOR), vendor),
+                                    builder.add(messages.getMessage(Javadocs.VENDOR), vendor),
                             () -> {
                                 if (statements.size() > 1) {
                                     builder.add(messages.getMessage(Javadocs.FALLBACK));

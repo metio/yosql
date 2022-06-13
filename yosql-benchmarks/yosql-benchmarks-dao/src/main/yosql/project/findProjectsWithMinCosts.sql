@@ -8,14 +8,12 @@
 -- parameters:
 --   - name: cost
 --     type: long
-SELECT  p.*
-FROM    projects p
-    INNER JOIN (
-        SELECT  pe.project_pid, sum(e.salary) as cost
-        FROM    projectEmployees pe
-            INNER JOIN employees e
-               ON pe.employee_pid = e.pid
-        GROUP BY pe.project_pid
-    ) data ON p.pid = data.project_pid
-WHERE   data.cost >= :cost
+SELECT p.*
+FROM projects p
+         INNER JOIN (SELECT pe.project_pid, sum(e.salary) as cost
+                     FROM projectEmployees pe
+                              INNER JOIN employees e
+                                         ON pe.employee_pid = e.pid
+                     GROUP BY pe.project_pid) data ON p.pid = data.project_pid
+WHERE data.cost >= :cost
 ;

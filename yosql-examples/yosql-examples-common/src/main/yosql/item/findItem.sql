@@ -13,9 +13,9 @@
 -- resultRowConverter:
 --   alias: itemConverter
 --
-select  *
-from    items
-where   name = :name
+select *
+from items
+where name = :name
 ;
 
 --
@@ -27,9 +27,9 @@ where   name = :name
 -- resultRowConverter:
 --   alias: itemConverter
 --
-select  *
-from    items
-where   name = :name
+select *
+from items
+where name = :name
 ;
 
 --
@@ -40,10 +40,10 @@ where   name = :name
 -- resultRowConverter:
 --   alias: itemConverter
 --
-select  *
-from    items
-where   name = :name
-  or    other_name = :name
+select *
+from items
+where name = :name
+   or other_name = :name
 ;
 
 --
@@ -54,7 +54,7 @@ where   name = :name
 -- resultRowConverter:
 --   alias: itemConverter
 --
-select  *
-from    items
-where   name = :name_of_item
+select *
+from items
+where name = :name_of_item
 ;

@@ -14,6 +14,6 @@
 --
 select *
 from users
-where   id = :userId
-  and   name = :name
+where id = :userId
+  and name = :name
 ;

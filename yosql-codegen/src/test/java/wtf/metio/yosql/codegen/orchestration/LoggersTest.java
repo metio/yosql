@@ -11,7 +11,7 @@ import wtf.metio.yosql.internals.junit5.EnumTCK;
 
 import java.util.stream.Stream;
 
-class LoggersTest  implements EnumTCK<Loggers> {
+class LoggersTest implements EnumTCK<Loggers> {
 
     @Override
     public Class<Loggers> getEnumClass() {

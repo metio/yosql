@@ -9,8 +9,19 @@
 --
 CREATE TABLE IF NOT EXISTS companies
 (
-    pid     BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name    VARCHAR(50),
-    address VARCHAR(50)
+    pid
+    BIGINT
+    PRIMARY
+    KEY
+    AUTO_INCREMENT,
+    name
+    VARCHAR
+(
+    50
+),
+    address VARCHAR
+(
+    50
 )
+    )
 ;

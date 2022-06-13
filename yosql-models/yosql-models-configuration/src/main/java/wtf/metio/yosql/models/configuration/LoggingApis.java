@@ -25,7 +25,7 @@ public enum LoggingApis {
      * Uses System.Logger in the generated code.
      */
     SYSTEM,
-    
+
     /**
      * Uses log4j in the generated code.
      */

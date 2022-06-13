@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 /**
  * TCK for enumerations.
  *
- * @param <ENUMERATION>
- *            The enumeration type.
+ * @param <ENUMERATION> The enumeration type.
  */
 public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
 

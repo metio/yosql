@@ -8,6 +8,7 @@
 -- parameters:
 --   - name: department
 --     type: long
-DELETE FROM departments
+DELETE
+FROM departments
 WHERE pid = :department
 ;

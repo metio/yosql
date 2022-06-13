@@ -16,7 +16,7 @@ CREATE TABLE persons
 
 CREATE TABLE person_to_company
 (
-    person_id INTEGER,
+    person_id  INTEGER,
     company_id INTEGER
 )
 ;

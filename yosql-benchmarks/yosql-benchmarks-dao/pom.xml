@@ -107,7 +107,9 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.dao.jul.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.jul.persistence.converter.ToMapConverter</mapConverterClass>
+                                <mapConverterClass>
+                                    wtf.metio.yosql.benchmark.dao.jul.persistence.converter.ToMapConverter
+                                </mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -128,7 +130,9 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.dao.log4j.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.log4j.persistence.converter.ToMapConverter</mapConverterClass>
+                                <mapConverterClass>
+                                    wtf.metio.yosql.benchmark.dao.log4j.persistence.converter.ToMapConverter
+                                </mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -149,7 +153,9 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.dao.noop.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.noop.persistence.converter.ToMapConverter</mapConverterClass>
+                                <mapConverterClass>
+                                    wtf.metio.yosql.benchmark.dao.noop.persistence.converter.ToMapConverter
+                                </mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -170,7 +176,9 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.dao.slf4j.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.slf4j.persistence.converter.ToMapConverter</mapConverterClass>
+                                <mapConverterClass>
+                                    wtf.metio.yosql.benchmark.dao.slf4j.persistence.converter.ToMapConverter
+                                </mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -191,7 +199,9 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.dao.system.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.system.persistence.converter.ToMapConverter</mapConverterClass>
+                                <mapConverterClass>
+                                    wtf.metio.yosql.benchmark.dao.system.persistence.converter.ToMapConverter
+                                </mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>
@@ -212,7 +222,9 @@
                                 <basePackageName>wtf.metio.yosql.benchmark.dao.tinylog.persistence</basePackageName>
                             </repositories>
                             <converter>
-                                <mapConverterClass>wtf.metio.yosql.benchmark.dao.tinylog.persistence.converter.ToMapConverter</mapConverterClass>
+                                <mapConverterClass>
+                                    wtf.metio.yosql.benchmark.dao.tinylog.persistence.converter.ToMapConverter
+                                </mapConverterClass>
                             </converter>
                         </configuration>
                     </execution>

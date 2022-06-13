@@ -11,45 +11,45 @@ package wtf.metio.yosql.codegen.orchestration;
  */
 public enum Loggers {
 
-  /**
-   * Logger for file writers.
-   */
-  WRITER("yosql.writer"),
+    /**
+     * Logger for file writers.
+     */
+    WRITER("yosql.writer"),
 
-  /**
-   * Logger for file parsers.
-   */
-  PARSER("yosql.parser"),
+    /**
+     * Logger for file parsers.
+     */
+    PARSER("yosql.parser"),
 
-  /**
-   * Logger for file readers.
-   */
-  READER("yosql.reader"),
+    /**
+     * Logger for file readers.
+     */
+    READER("yosql.reader"),
 
-  /**
-   * Logger for repository code generators.
-   */
-  REPOSITORIES("yosql.repositories"),
+    /**
+     * Logger for repository code generators.
+     */
+    REPOSITORIES("yosql.repositories"),
 
-  /**
-   * Logger for timers.
-   */
-  TIMER("yosql.timer"),
+    /**
+     * Logger for timers.
+     */
+    TIMER("yosql.timer"),
 
-  /**
-   * Logger for converters.
-   */
-  CONVERTERS("yosql.converters"),
+    /**
+     * Logger for converters.
+     */
+    CONVERTERS("yosql.converters"),
 
-  /**
-   * Logger for executions
-   */
-  EXECUTIONS("yosql.executions");
+    /**
+     * Logger for executions
+     */
+    EXECUTIONS("yosql.executions");
 
-  public final String loggerName;
+    public final String loggerName;
 
-  Loggers(String loggerName) {
-    this.loggerName = loggerName;
-  }
+    Loggers(String loggerName) {
+        this.loggerName = loggerName;
+    }
 
 }

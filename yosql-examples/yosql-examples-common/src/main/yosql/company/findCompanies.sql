@@ -15,7 +15,7 @@
 --   - type: wtf.metio.yosql.example.common.CustomAnnotation
 --
 select *
-from   companies
-where  id < :max
-  and  id > :min
+from companies
+where id < :max
+  and id > :min
 ;

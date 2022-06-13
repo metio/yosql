@@ -7,7 +7,8 @@
 
 --
 --
-CREATE TABLE users (
+CREATE TABLE users
+(
     id   INTEGER,
     name VARCHAR(50)
 );

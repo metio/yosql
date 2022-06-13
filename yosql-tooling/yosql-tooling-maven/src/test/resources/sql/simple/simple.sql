@@ -8,4 +8,5 @@
 --
 -- name: simple
 --
-select * from table;
+select *
+from table;

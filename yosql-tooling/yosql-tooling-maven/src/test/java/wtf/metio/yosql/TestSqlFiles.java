@@ -14,13 +14,11 @@ import java.nio.file.Paths;
 
 /**
  *
- *
  */
 public final class TestSqlFiles {
 
     /**
-     * @param relativeLocation
-     *            The location of the SQL file to load.
+     * @param relativeLocation The location of the SQL file to load.
      * @return The full path to the SQL file.
      */
     public static Path getFullPath(final String relativeLocation) {

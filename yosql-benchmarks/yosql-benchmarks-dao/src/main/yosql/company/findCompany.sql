@@ -9,7 +9,7 @@
 -- parameters:
 --   - name: pid
 --     type: long
-SELECT  *
-FROM    companies
-WHERE   pid = :pid
+SELECT *
+FROM companies
+WHERE pid = :pid
 ;

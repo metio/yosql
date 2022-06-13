@@ -5,5 +5,6 @@
  * in the LICENSE file.
  */
 
-DELETE FROM employees
+DELETE
+FROM employees
 ;

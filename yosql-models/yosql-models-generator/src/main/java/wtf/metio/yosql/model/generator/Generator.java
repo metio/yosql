@@ -50,7 +50,7 @@ public interface Generator extends Function<ConfigurationGroup, Stream<TypeSpec>
                     .map(String::strip)
                     .forEach(stringJoiner::add);
             builder.add("$T.of($L)", List.class, stringJoiner.toString());
-        }  else if ("java.nio.file.Path".equals(type.toString())) {
+        } else if ("java.nio.file.Path".equals(type.toString())) {
             builder.add("$T.get($S)", Paths.class, value);
         } else if ("java.nio.charset.Charset".equals(type.toString())) {
             builder.add("$T.forName($S)", Charset.class, value);

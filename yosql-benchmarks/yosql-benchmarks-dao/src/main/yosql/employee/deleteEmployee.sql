@@ -8,6 +8,7 @@
 -- parameters:
 --   - name: employee
 --     type: long
-DELETE FROM employees
+DELETE
+FROM employees
 WHERE pid = :employee
 ;

@@ -19,7 +19,7 @@ import java.util.stream.LongStream;
  */
 @State(Scope.Benchmark)
 public abstract class AbstractBenchmark {
-    
+
     protected static final long NOW = Instant.now().toEpochMilli();
     protected static final int BATCH_SIZE = 10;
     protected static final String[] NAMES_BATCH = IntStream.range(0, BATCH_SIZE)

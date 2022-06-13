@@ -8,7 +8,7 @@
 -- parameters:
 --   - name: salary
 --     type: long
-SELECT  *
-FROM    employees
-WHERE   salary >= :salary
+SELECT *
+FROM employees
+WHERE salary >= :salary
 ;

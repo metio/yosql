@@ -20,7 +20,7 @@ import static java.lang.annotation.ElementType.*;
 @Qualifier
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ TYPE, PARAMETER, METHOD })
+@Target({TYPE, PARAMETER, METHOD})
 public @interface Delegating {
 
     // marker annotation

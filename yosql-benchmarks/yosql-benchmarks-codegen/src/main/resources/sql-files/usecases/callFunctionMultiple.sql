@@ -5,13 +5,23 @@
  * in the LICENSE file.
  */
 
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
-MY_FUNCTION(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);
+MY_FUNCTION
+(:parameter);

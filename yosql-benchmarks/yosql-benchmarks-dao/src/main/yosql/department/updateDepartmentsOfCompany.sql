@@ -13,7 +13,7 @@
 --   - name: name
 --     type: java.lang.String
 UPDATE departments
-    SET company_pid = :company,
-        name = :name
+SET company_pid = :company,
+    name        = :name
 WHERE company_pid = :oldCompany
 ;

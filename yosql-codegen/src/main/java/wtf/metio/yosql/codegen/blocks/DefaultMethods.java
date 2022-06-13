@@ -39,8 +39,8 @@ public final class DefaultMethods implements Methods {
 
     @Override
     public MethodSpec.Builder publicMethod(
-            final String name, 
-            final List<SqlStatement> statements, 
+            final String name,
+            final List<SqlStatement> statements,
             final String configuration) {
         final var modifiers = java.useFinalMethods()
                 ? List.of(Modifier.PUBLIC, Modifier.FINAL)

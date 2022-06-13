@@ -9,8 +9,16 @@
 --
 CREATE TABLE IF NOT EXISTS projects
 (
-    pid         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name        VARCHAR(50),
+    pid
+    BIGINT
+    PRIMARY
+    KEY
+    AUTO_INCREMENT,
+    name
+    VARCHAR
+(
+    50
+),
     dateStarted BIGINT
-)
+    )
 ;

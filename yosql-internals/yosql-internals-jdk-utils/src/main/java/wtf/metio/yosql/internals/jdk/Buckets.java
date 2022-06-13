@@ -31,8 +31,8 @@ public final class Buckets {
      * Allows to use {@link Stream#distinct()} with a key.
      *
      * @param keyExtractor The function to extract the key from an object.
+     * @param <T>          The type of the object in the stream.
      * @return A filter to use with @{@link Stream#filter(Predicate)}.
-     * @param <T> The type of the object in the stream.
      */
     public static <T> Predicate<T> distinctByKey(final Function<? super T, ?> keyExtractor) {
         final var seen = ConcurrentHashMap.newKeySet();

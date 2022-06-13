@@ -14,22 +14,22 @@
 --
 select *
 from persons
-where   name = :name
+where name = :name
 ;
 
 --
 -- name: findPerson
 -- vendor: H2
 --
-select  *
-from    persons
-where   name = :name
+select *
+from persons
+where name = :name
 ;
 
 --
 -- name: findPerson
 --
-select  *
-from    persons
-where   name = :name
+select *
+from persons
+where name = :name
 ;

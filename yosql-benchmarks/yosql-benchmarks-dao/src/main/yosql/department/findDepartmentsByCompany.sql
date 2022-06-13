@@ -8,7 +8,7 @@
 -- parameters:
 --   - name: company
 --     type: long
-SELECT  *
-FROM    departments
-WHERE   company_pid = :company
+SELECT *
+FROM departments
+WHERE company_pid = :company
 ;

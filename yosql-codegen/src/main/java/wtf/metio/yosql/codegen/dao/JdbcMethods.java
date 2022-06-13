@@ -53,15 +53,15 @@ public interface JdbcMethods {
         CodeBlock prepareStatement();
 
         /**
-         * @see java.sql.Connection#prepareCall(String) 
+         * @see java.sql.Connection#prepareCall(String)
          */
         CodeBlock prepareCall();
 
         /**
-         * @see java.sql.Connection#getMetaData() 
+         * @see java.sql.Connection#getMetaData()
          */
         CodeBlock getMetaData();
-    
+
     }
 
     /**

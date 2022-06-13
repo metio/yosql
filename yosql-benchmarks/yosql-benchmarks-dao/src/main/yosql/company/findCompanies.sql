@@ -5,6 +5,6 @@
  * in the LICENSE file.
  */
 
-SELECT  *
-FROM    companies
+SELECT *
+FROM companies
 ;

@@ -9,7 +9,7 @@ package wtf.metio.yosql.codegen.lifecycle;
 
 import wtf.metio.yosql.codegen.testing.PropertiesTCK;
 
-final class ValidationLifecycleTest implements PropertiesTCK<ValidationLifecycle>  {
+final class ValidationLifecycleTest implements PropertiesTCK<ValidationLifecycle> {
 
     @Override
     public Class<ValidationLifecycle> getEnumClass() {

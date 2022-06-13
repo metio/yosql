@@ -6,8 +6,8 @@
   ~ in the LICENSE file.
   -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- ordering follows https://maven.apache.org/developers/conventions/code.html#POM_Code_Convention -->
@@ -97,11 +97,14 @@
                         <generateInterfaces>true</generateInterfaces>
                     </repositories>
                     <converter>
-                        <mapConverterClass>wtf.metio.yosql.example.maven.jdbc.java8.persistence.converter.ToMapConverter</mapConverterClass>
+                        <mapConverterClass>
+                            wtf.metio.yosql.example.maven.jdbc.java8.persistence.converter.ToMapConverter
+                        </mapConverterClass>
                         <rowConverters>
                             <rowConverter>
                                 <alias>itemConverter</alias>
-                                <converterType>wtf.metio.yosql.example.maven.jdbc.java8.converter.ToItemConverter</converterType>
+                                <converterType>wtf.metio.yosql.example.maven.jdbc.java8.converter.ToItemConverter
+                                </converterType>
                                 <methodName>asUserType</methodName>
                                 <resultType>wtf.metio.yosql.example.maven.jdbc.java8.model.Item</resultType>
                             </rowConverter>

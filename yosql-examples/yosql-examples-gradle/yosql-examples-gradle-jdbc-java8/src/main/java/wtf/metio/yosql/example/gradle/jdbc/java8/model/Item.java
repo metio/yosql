@@ -8,7 +8,7 @@ package wtf.metio.yosql.example.gradle.jdbc.java8.model;
 
 public class Item {
 
-    private int    id;
+    private int id;
     private String name;
 
     /**

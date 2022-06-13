@@ -99,7 +99,7 @@ public interface LoggingGenerator {
      * Log that a method was entered.
      *
      * @param repository The name of the enclosing class.
-     * @param method The name of the enclosing method.
+     * @param method     The name of the enclosing method.
      * @return Log statement that prints which class/method was entered.
      */
     CodeBlock entering(String repository, String method);

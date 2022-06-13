@@ -27,7 +27,7 @@ public interface Javadoc {
     /**
      * Creates typical javadoc documentation for generated methods.
      *
-     * @param statements The statements of the method.
+     * @param statements    The statements of the method.
      * @param configuration The configuration toggle to use.
      * @return The javadoc for a single method based on the given statements.
      */

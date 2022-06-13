@@ -35,23 +35,23 @@ class DefaultJavadocTest {
         @DisplayName("generate class comment")
         void shouldGenerateClassComment() {
             Assertions.assertEquals("""
-                Generated based on the following file(s):
-                <ul>
-                </ul>
-                """, generator.repositoryJavadoc(List.of()).toString());
+                    Generated based on the following file(s):
+                    <ul>
+                    </ul>
+                    """, generator.repositoryJavadoc(List.of()).toString());
         }
 
         @Test
         @DisplayName("generate method comment")
         void shouldGenerateMethodComment() {
             Assertions.assertEquals("""
-                <p>Executes the following statement:</p>
-                                
-                <p>Generated based on the following file(s):</p>
-                <ul>
-                </ul>
-                <p>Disable generating this method by setting <strong></strong> to <strong>false</strong></p>
-                """, generator.methodJavadoc(List.of(), "").toString());
+                    <p>Executes the following statement:</p>
+                                    
+                    <p>Generated based on the following file(s):</p>
+                    <ul>
+                    </ul>
+                    <p>Disable generating this method by setting <strong></strong> to <strong>false</strong></p>
+                    """, generator.methodJavadoc(List.of(), "").toString());
         }
 
         @Test
@@ -69,11 +69,11 @@ class DefaultJavadocTest {
 
             // then
             Assertions.assertEquals("""
-                Generated based on the following file(s):
-                <ul>
-                <li>test</li>
-                </ul>
-                """, comment.toString());
+                    Generated based on the following file(s):
+                    <ul>
+                    <li>test</li>
+                    </ul>
+                    """, comment.toString());
         }
 
         @Test
@@ -91,11 +91,11 @@ class DefaultJavadocTest {
 
             // then
             Assertions.assertEquals("""
-                Generated based on the following file(s):
-                <ul>
-                <li>test</li>
-                </ul>
-                """, comment.toString());
+                    Generated based on the following file(s):
+                    <ul>
+                    <li>test</li>
+                    </ul>
+                    """, comment.toString());
         }
 
     }
