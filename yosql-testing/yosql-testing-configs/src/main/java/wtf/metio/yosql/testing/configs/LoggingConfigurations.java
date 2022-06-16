@@ -16,7 +16,7 @@ import wtf.metio.yosql.models.immutables.LoggingConfiguration;
 public final class LoggingConfigurations {
 
     public static LoggingConfiguration defaults() {
-        return LoggingConfiguration.usingDefaults().build();
+        return LoggingConfiguration.builder().build();
     }
 
     public static LoggingConfiguration jul() {

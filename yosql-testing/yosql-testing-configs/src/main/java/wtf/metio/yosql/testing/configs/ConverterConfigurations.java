@@ -18,7 +18,7 @@ import java.util.List;
 public final class ConverterConfigurations {
 
     public static ConverterConfiguration withoutConverters() {
-        return ConverterConfiguration.usingDefaults().build();
+        return ConverterConfiguration.builder().build();
     }
 
     public static ConverterConfiguration withConverters() {

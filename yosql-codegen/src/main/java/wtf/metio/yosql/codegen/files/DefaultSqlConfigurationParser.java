@@ -39,7 +39,7 @@ public final class DefaultSqlConfigurationParser implements SqlConfigurationPars
         return Optional.of(yaml)
                 .filter(Predicate.not(Strings::isBlank))
                 .flatMap(this::parseYaml)
-                .orElseGet(() -> SqlConfiguration.usingDefaults().build());
+                .orElseGet(() -> SqlConfiguration.builder().build());
     }
 
     private Optional<SqlConfiguration> parseYaml(final String yaml) {

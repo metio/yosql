@@ -32,14 +32,14 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void batchNamePrefixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setBatchPrefix("prefix").build();
+        final var original = SqlConfiguration.builder().setBatchPrefix("prefix").build();
         final var adapted = configurer.batchNamePrefix(original);
         assertEquals(original.batchPrefix(), adapted.batchPrefix());
     }
 
     @Test
     void batchNamePrefixChange() {
-        final var original = SqlConfiguration.usingDefaults().setBatchPrefix(" ").build();
+        final var original = SqlConfiguration.builder().setBatchPrefix(" ").build();
         final var adapted = configurer.batchNamePrefix(original);
         assertTrue(adapted.batchPrefix().isPresent());
         assertEquals(repositories.batchPrefix(), adapted.batchPrefix().get());
@@ -47,14 +47,14 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void batchNameSuffixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setBatchSuffix("suffix").build();
+        final var original = SqlConfiguration.builder().setBatchSuffix("suffix").build();
         final var adapted = configurer.batchNameSuffix(original);
         assertEquals(original.batchSuffix(), adapted.batchSuffix());
     }
 
     @Test
     void batchNameSuffixChange() {
-        final var original = SqlConfiguration.usingDefaults().setBatchSuffix(" ").build();
+        final var original = SqlConfiguration.builder().setBatchSuffix(" ").build();
         final var adapted = configurer.batchNameSuffix(original);
         assertTrue(adapted.batchSuffix().isPresent());
         assertEquals(repositories.batchSuffix(), adapted.batchSuffix().get());
@@ -62,14 +62,14 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void standardNamePrefixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setStandardPrefix("prefix").build();
+        final var original = SqlConfiguration.builder().setStandardPrefix("prefix").build();
         final var adapted = configurer.standardNamePrefix(original);
         assertEquals(original.standardPrefix(), adapted.standardPrefix());
     }
 
     @Test
     void standardNamePrefixChange() {
-        final var original = SqlConfiguration.usingDefaults().setStandardPrefix(" ").build();
+        final var original = SqlConfiguration.builder().setStandardPrefix(" ").build();
         final var adapted = configurer.standardNamePrefix(original);
         assertTrue(adapted.standardPrefix().isPresent());
         assertEquals(repositories.standardPrefix(), adapted.standardPrefix().get());
@@ -77,14 +77,14 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void standardNameSuffixKeep() {
-        final var original = SqlConfiguration.usingDefaults().setStandardSuffix("suffix").build();
+        final var original = SqlConfiguration.builder().setStandardSuffix("suffix").build();
         final var adapted = configurer.standardNameSuffix(original);
         assertEquals(original.standardSuffix(), adapted.standardSuffix());
     }
 
     @Test
     void standardNameSuffixChange() {
-        final var original = SqlConfiguration.usingDefaults().setStandardSuffix(" ").build();
+        final var original = SqlConfiguration.builder().setStandardSuffix(" ").build();
         final var adapted = configurer.standardNameSuffix(original);
         assertTrue(adapted.standardSuffix().isPresent());
         assertEquals(repositories.standardSuffix(), adapted.standardSuffix().get());
@@ -92,7 +92,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void affixesKeep() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setBatchPrefix("prefix")
                 .setBatchSuffix("suffix")
                 .setStandardPrefix("prefix")
@@ -108,7 +108,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void affixesChange() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setBatchPrefix(" ")
                 .setBatchSuffix(" ")
                 .setStandardPrefix(" ")
@@ -129,14 +129,14 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameKeep() {
-        final var original = SqlConfiguration.usingDefaults().setName("name").build();
+        final var original = SqlConfiguration.builder().setName("name").build();
         final var adapted = configurer.baseName(original, "some", 0);
         assertEquals(original.name(), adapted.name());
     }
 
     @Test
     void baseNameInvalidNameUnknownType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .build();
         final var adapted = configurer.baseName(original, "filename", 0);
@@ -146,7 +146,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameInvalidFileNameUnknownType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
@@ -155,7 +155,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameUnknownTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .build();
         final var adapted = configurer.baseName(original, "filename", 3);
@@ -165,7 +165,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameInvalidFileNameUnknownTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 3);
@@ -174,7 +174,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameReadType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.READING)
                 .build();
@@ -185,7 +185,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameInvalidFileNameReadType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.READING)
                 .build();
@@ -196,7 +196,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameReadTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.READING)
                 .build();
@@ -207,7 +207,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameInvalidFileNameReadTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.READING)
                 .build();
@@ -218,7 +218,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameWriteType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.WRITING)
                 .build();
@@ -229,7 +229,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameInvalidFileNameWriteType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.WRITING)
                 .build();
@@ -240,7 +240,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameWriteTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.WRITING)
                 .build();
@@ -251,7 +251,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameInvalidFileNameWriteTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.WRITING)
                 .build();
@@ -262,7 +262,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameCallType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.CALLING)
                 .build();
@@ -273,7 +273,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameInvalidFileNameCallType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.CALLING)
                 .build();
@@ -284,7 +284,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameCallTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.CALLING)
                 .build();
@@ -295,7 +295,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameInvalidNameInvalidFileNameCallTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("!@#$%")
                 .setType(SqlStatementType.CALLING)
                 .build();
@@ -306,7 +306,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankName() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("")
                 .build();
         final var adapted = configurer.baseName(original, "some", 0);
@@ -316,7 +316,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName("")
                 .build();
         final var adapted = configurer.baseName(original, "some", 1);
@@ -326,7 +326,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameInvalidFileNameUnknownType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(" ")
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 0);
@@ -335,7 +335,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameInvalidFileNameUnknownTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(" ")
                 .build();
         final var adapted = configurer.baseName(original, "!@#$%", 1);
@@ -344,7 +344,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameInvalidFileNameReadType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(" ")
                 .setType(SqlStatementType.READING)
                 .build();
@@ -355,7 +355,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameInvalidFileNameReadTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(" ")
                 .setType(SqlStatementType.READING)
                 .build();
@@ -366,7 +366,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameInvalidFileNameWriteType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(" ")
                 .setType(SqlStatementType.WRITING)
                 .build();
@@ -377,7 +377,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameInvalidFileNameWriteTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(" ")
                 .setType(SqlStatementType.WRITING)
                 .build();
@@ -388,7 +388,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameInvalidFileNameCallType() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(" ")
                 .setType(SqlStatementType.CALLING)
                 .build();
@@ -399,7 +399,7 @@ class DefaultMethodNameConfigurerTest {
 
     @Test
     void baseNameBlankNameInvalidFileNameCallTypeNumbered() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(" ")
                 .setType(SqlStatementType.CALLING)
                 .build();

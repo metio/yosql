@@ -24,7 +24,7 @@ public final class ConfigurationSteps {
 
     @Given("YoSQL uses its defaults configuration")
     public void createDefaultConfiguration() {
-        configurationState.setRuntimeConfiguration(RuntimeConfiguration.usingDefaults().build());
+        configurationState.setRuntimeConfiguration(RuntimeConfiguration.builder().build());
     }
 
 }

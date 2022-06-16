@@ -19,12 +19,12 @@ public final class AllConfigurations {
     public static Stream<ConfigurationGroup> allConfigurationGroups() {
         return Stream.of(
                 Annotations.configurationGroup(),
-                Logging.configurationGroup(),
                 Converter.configurationGroup(),
                 Files.configurationGroup(),
-                Repositories.configurationGroup(),
                 Java.configurationGroup(),
+                Logging.configurationGroup(),
                 Names.configurationGroup(),
+                Repositories.configurationGroup(),
                 Resources.configurationGroup());
     }
 

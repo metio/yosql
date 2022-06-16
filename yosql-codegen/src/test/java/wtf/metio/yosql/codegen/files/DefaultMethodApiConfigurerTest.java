@@ -29,7 +29,7 @@ class DefaultMethodApiConfigurerTest {
 
     @Test
     void batchKeep() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setGenerateBatchApi(false)
                 .build();
         final var adapted = configurer.batch(original);
@@ -38,7 +38,7 @@ class DefaultMethodApiConfigurerTest {
 
     @Test
     void batchChangedToRepositoryDefault() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 // .setGenerateBatchApi(true) // value is NOT set
                 .build();
         final var adapted = configurer.batch(original);
@@ -48,7 +48,7 @@ class DefaultMethodApiConfigurerTest {
 
     @Test
     void batchAllowsReads() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setGenerateBatchApi(true)
                 .setType(SqlStatementType.READING)
                 .build();
@@ -59,7 +59,7 @@ class DefaultMethodApiConfigurerTest {
 
     @Test
     void standardKeep() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setGenerateStandardApi(false)
                 .build();
         final var adapted = configurer.standard(original);
@@ -68,7 +68,7 @@ class DefaultMethodApiConfigurerTest {
 
     @Test
     void standardChangedToRepositoryDefault() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 // .setGenerateStandardApi(true) // value is NOT set
                 .build();
         final var adapted = configurer.standard(original);
@@ -78,7 +78,7 @@ class DefaultMethodApiConfigurerTest {
 
     @Test
     void keepApis() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setGenerateBatchApi(false)
                 .setGenerateStandardApi(false)
                 .build();
@@ -90,7 +90,7 @@ class DefaultMethodApiConfigurerTest {
 
     @Test
     void changeApis() {
-        final var original = SqlConfiguration.usingDefaults().build();
+        final var original = SqlConfiguration.builder().build();
         final var adapted = configurer.configureApis(original);
         assertAll(
                 () -> assertEquals(repositories.generateBatchApi(), adapted.generateBatchApi().get()),

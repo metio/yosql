@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 public final class FilesConfigurations {
 
     public static FilesConfiguration defaults() {
-        return FilesConfiguration.usingDefaults().build();
+        return FilesConfiguration.builder().build();
     }
 
     public static FilesConfiguration maven() {

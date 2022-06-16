@@ -18,7 +18,7 @@ public final class JavaConfigurations {
      * @return Preset using the user visible defaults.
      */
     public static JavaConfiguration defaults() {
-        return JavaConfiguration.usingDefaults().build();
+        return JavaConfiguration.builder().build();
     }
 
     /**

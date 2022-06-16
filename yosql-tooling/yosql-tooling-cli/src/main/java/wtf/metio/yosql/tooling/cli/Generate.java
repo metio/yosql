@@ -8,11 +8,12 @@
 package wtf.metio.yosql.tooling.cli;
 
 import picocli.CommandLine;
+import wtf.metio.yosql.codegen.orchestration.YoSQL;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
-import wtf.metio.yosql.models.cli.*;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
+import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command(
@@ -52,25 +53,32 @@ public class Generate implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        DaggerYoSQLComponent.builder()
+        try {
+            buildYoSQL().generateCode();
+            return CommandLine.ExitCode.OK;
+        } catch (final Throwable throwable) {
+            return CommandLine.ExitCode.SOFTWARE;
+        }
+    }
+
+    private YoSQL buildYoSQL() {
+        return DaggerYoSQLComponent.builder()
                 .runtimeConfiguration(createConfiguration())
                 .locale(SupportedLocales.defaultLocale())
                 .build()
-                .yosql()
-                .generateCode();
-        return 0;
+                .yosql();
     }
 
     private RuntimeConfiguration createConfiguration() {
-        return RuntimeConfiguration.usingDefaults()
+        return RuntimeConfiguration.builder()
                 .setAnnotations(annotations.asConfiguration())
-                .setFiles(files.asConfiguration(System.getProperty("user.dir")))
+                .setConverter(converter.asConfiguration())
+                .setFiles(files.asConfiguration(Paths.get(System.getProperty("user.dir"))))
                 .setJava(java.asConfiguration())
                 .setLogging(logging.asConfiguration())
                 .setNames(names.asConfiguration())
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
-                .setConverter(converter.asConfiguration())
                 .build();
     }
 

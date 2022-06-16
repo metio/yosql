@@ -29,10 +29,19 @@ public interface ConfigurationExample {
 
     //endregion
 
+    /**
+     * @return The configuration value this example is written for.
+     */
     String value();
 
+    /**
+     * @return The description of this example.
+     */
     String description();
 
+    /**
+     * @return The resulting code snippet of this example.
+     */
     Optional<String> result();
 
 }

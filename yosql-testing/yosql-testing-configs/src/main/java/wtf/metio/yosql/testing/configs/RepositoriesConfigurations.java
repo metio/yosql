@@ -15,7 +15,7 @@ import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 public final class RepositoriesConfigurations {
 
     public static RepositoriesConfiguration defaults() {
-        return RepositoriesConfiguration.usingDefaults().build();
+        return RepositoriesConfiguration.builder().build();
     }
 
     public static RepositoriesConfiguration validatingMethodNames() {

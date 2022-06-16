@@ -15,7 +15,7 @@ import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 public final class RuntimeConfigurations {
 
     public static RuntimeConfiguration defaults() {
-        return RuntimeConfiguration.usingDefaults().build();
+        return RuntimeConfiguration.builder().build();
     }
 
     private RuntimeConfigurations() {

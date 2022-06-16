@@ -30,7 +30,7 @@ class DefaultMethodExceptionHandlerTest {
     @Test
     void sqlException() {
         // given
-        final var configuration = SqlConfiguration.usingDefaults().setCatchAndRethrow(false).build();
+        final var configuration = SqlConfiguration.builder().setCatchAndRethrow(false).build();
 
         // when
         final var exception = generator.thrownExceptions(configuration);
@@ -42,7 +42,7 @@ class DefaultMethodExceptionHandlerTest {
     @Test
     void noSqlException() {
         // given
-        final var configuration = SqlConfiguration.usingDefaults().setCatchAndRethrow(true).build();
+        final var configuration = SqlConfiguration.builder().setCatchAndRethrow(true).build();
 
         // when
         final var exception = generator.thrownExceptions(configuration);

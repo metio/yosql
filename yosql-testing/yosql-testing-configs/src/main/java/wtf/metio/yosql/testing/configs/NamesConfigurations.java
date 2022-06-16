@@ -15,7 +15,7 @@ import wtf.metio.yosql.models.immutables.NamesConfiguration;
 public final class NamesConfigurations {
 
     public static NamesConfiguration defaults() {
-        return NamesConfiguration.usingDefaults().build();
+        return NamesConfiguration.builder().build();
     }
 
     private NamesConfigurations() {

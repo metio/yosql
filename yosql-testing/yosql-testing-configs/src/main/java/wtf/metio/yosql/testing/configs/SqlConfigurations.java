@@ -59,7 +59,7 @@ public final class SqlConfigurations {
         config.setCatchAndRethrow(true);
         config.setGenerateBatchApi(true);
         config.setGenerateStandardApi(true);
-        config.setParameters(List.of(SqlParameter.builder()
+        config.addParameters(SqlParameter.builder()
                 .setName("test")
                 .setType(Object.class.getName())
                 .setIndices(new int[]{0})
@@ -67,7 +67,7 @@ public final class SqlConfigurations {
                 .setName("id")
                 .setType(int.class.getName())
                 .setIndices(new int[]{1})
-                .build()));
+                .build());
         return config.build();
     }
 

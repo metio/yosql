@@ -24,10 +24,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeRepositoryFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setRepository("com.example.Repository")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -36,8 +36,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeRepositorySecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setRepository("com.example.Repository")
                 .build();
 
@@ -48,8 +48,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeRepositoryMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -58,10 +58,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeRepositoryInterfaceFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setRepositoryInterface("com.example.Repository")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -70,8 +70,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeRepositoryInterfaceSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setRepositoryInterface("com.example.Repository")
                 .build();
 
@@ -82,8 +82,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeRepositoryInterfaceMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -92,10 +92,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeNameFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setName("name")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -104,8 +104,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeNameSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setName("name")
                 .build();
 
@@ -116,8 +116,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeNameMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -126,10 +126,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeDescriptionFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setDescription("some description")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -138,8 +138,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeDescriptionSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setDescription("some description")
                 .build();
 
@@ -150,8 +150,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeDescriptionMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -160,10 +160,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeVendorFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setVendor("H2 Database")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -172,8 +172,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeVendorSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setVendor("H2 Database")
                 .build();
 
@@ -184,8 +184,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeVendorMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -194,10 +194,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeTypeFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setType(SqlStatementType.READING)
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -206,8 +206,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeTypeSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setType(SqlStatementType.READING)
                 .build();
 
@@ -218,8 +218,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeTypeMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -228,10 +228,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeReturningModeFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setReturningMode(ReturningMode.SINGLE)
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -240,8 +240,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeReturningModeSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setReturningMode(ReturningMode.SINGLE)
                 .build();
 
@@ -252,8 +252,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeReturningModeMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -262,10 +262,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeStandardPrefixFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setStandardPrefix("prefix")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -274,8 +274,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeStandardPrefixSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setStandardPrefix("prefix")
                 .build();
 
@@ -286,8 +286,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeStandardPrefixMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -296,10 +296,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeStandardSuffixFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setStandardSuffix("suffix")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -308,8 +308,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeStandardSuffixSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setStandardSuffix("suffix")
                 .build();
 
@@ -320,8 +320,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeStandardSuffixMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -330,10 +330,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeBatchPrefixFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setBatchPrefix("prefix")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -342,8 +342,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeBatchPrefixSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setBatchPrefix("prefix")
                 .build();
 
@@ -354,8 +354,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeBatchPrefixMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -364,10 +364,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeBatchSuffixFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setBatchSuffix("suffix")
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -376,8 +376,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeBatchSuffixSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setBatchSuffix("suffix")
                 .build();
 
@@ -388,8 +388,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeBatchSuffixMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -398,10 +398,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeGenerateStandardApiFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setGenerateStandardApi(true)
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -410,8 +410,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeGenerateStandardApiSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setGenerateStandardApi(true)
                 .build();
 
@@ -422,8 +422,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeGenerateStandardApiMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -432,10 +432,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeGenerateBatchApiFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setGenerateBatchApi(true)
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -444,8 +444,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeGenerateBatchApiSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setGenerateBatchApi(true)
                 .build();
 
@@ -456,8 +456,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeGenerateBatchApiMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -466,10 +466,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeUsePreparedStatementFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setUsePreparedStatement(true)
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -478,8 +478,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeUsePreparedStatementSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setUsePreparedStatement(true)
                 .build();
 
@@ -490,8 +490,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeUsePreparedStatementMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -500,10 +500,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeCatchAndRethrowFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setCatchAndRethrow(true)
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -512,8 +512,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeCatchAndRethrowSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setCatchAndRethrow(true)
                 .build();
 
@@ -524,8 +524,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeCatchAndRethrowMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -534,10 +534,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeThrowOnMultipleResultsForSingleFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setThrowOnMultipleResultsForSingle(true)
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -546,8 +546,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeThrowOnMultipleResultsForSingleSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setThrowOnMultipleResultsForSingle(true)
                 .build();
 
@@ -558,8 +558,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeThrowOnMultipleResultsForSingleMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -568,10 +568,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeResultRowConverterFirst() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .setResultRowConverter(ResultRowConverter.builder().build())
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -580,8 +580,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeResultRowConverterSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
                 .setResultRowConverter(ResultRowConverter.builder().build())
                 .build();
 
@@ -592,8 +592,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeResultRowConverterMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -602,10 +602,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeParametersFirst() {
-        final var first = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder().setName("first").build()))
+        final var first = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder().setName("first").build())
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -614,9 +614,9 @@ class SqlConfigurationTest {
 
     @Test
     void mergeParametersSecond() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder().setName("second").build()))
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder().setName("second").build())
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
@@ -629,11 +629,11 @@ class SqlConfigurationTest {
         final var parameters = List.of(
                 SqlParameter.builder().setName("first").build(),
                 SqlParameter.builder().setName("second").build());
-        final var first = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(parameters.get(0)))
+        final var first = SqlConfiguration.builder()
+                .addParameters(parameters.get(0))
                 .build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(parameters.get(1)))
+        final var second = SqlConfiguration.builder()
+                .addParameters(parameters.get(1))
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
@@ -646,11 +646,11 @@ class SqlConfigurationTest {
         final List<SqlParameter> parameters = List.of(
                 SqlParameter.builder().setName("first").build(),
                 SqlParameter.builder().setName("second").build());
-        final var first = SqlConfiguration.usingDefaults()
-                .setParameters(parameters)
+        final var first = SqlConfiguration.builder()
+                .addAllParameters(parameters)
                 .build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder().setName("second").build()))
+        final var second = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder().setName("second").build())
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
@@ -663,11 +663,11 @@ class SqlConfigurationTest {
         final List<SqlParameter> parameters = List.of(
                 SqlParameter.builder().setName("first").build(),
                 SqlParameter.builder().setName("second").build());
-        final var first = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder().setName("first").build()))
+        final var first = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder().setName("first").build())
                 .build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setParameters(parameters)
+        final var second = SqlConfiguration.builder()
+                .addAllParameters(parameters)
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
@@ -677,19 +677,19 @@ class SqlConfigurationTest {
 
     @Test
     void mergeParametersDuplicated() {
-        final var first = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder()
+        final var first = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder()
                         .setName("name")
                         .setType("java.lang.String")
                         .setIndices(new int[]{1})
-                        .build()))
+                        .build())
                 .build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder()
+        final var second = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder()
                         .setName("name")
                         .setType("java.lang.String")
                         .setIndices(new int[]{1})
-                        .build()))
+                        .build())
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
@@ -701,18 +701,18 @@ class SqlConfigurationTest {
 
     @Test
     void mergeParametersDuplicatedNamesMissingTypeFirst() {
-        final var first = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder()
+        final var first = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder()
                         .setName("name")
                         .setIndices(new int[]{1})
-                        .build()))
+                        .build())
                 .build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder()
+        final var second = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder()
                         .setName("name")
                         .setType("java.lang.String")
                         .setIndices(new int[]{1})
-                        .build()))
+                        .build())
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
@@ -724,18 +724,18 @@ class SqlConfigurationTest {
 
     @Test
     void mergeParametersDuplicatedNamesMissingTypeSecond() {
-        final var first = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder()
+        final var first = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder()
                         .setName("name")
                         .setType("java.lang.String")
                         .setIndices(new int[]{1})
-                        .build()))
+                        .build())
                 .build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setParameters(List.of(SqlParameter.builder()
+        final var second = SqlConfiguration.builder()
+                .addParameters(SqlParameter.builder()
                         .setName("name")
                         .setIndices(new int[]{1})
-                        .build()))
+                        .build())
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
@@ -747,8 +747,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeParametersMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -757,8 +757,8 @@ class SqlConfigurationTest {
 
     @Test
     void mergeAnnotationsMissing() {
-        final var first = SqlConfiguration.usingDefaults().build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -767,10 +767,10 @@ class SqlConfigurationTest {
 
     @Test
     void mergeAnnotationsFirst() {
-        final var first = SqlConfiguration.usingDefaults()
-                .setAnnotations(List.of(Annotation.builder().setType("com.example.MyAnnotation").build()))
+        final var first = SqlConfiguration.builder()
+                .addAnnotations(Annotation.builder().setType("com.example.MyAnnotation").build())
                 .build();
-        final var second = SqlConfiguration.usingDefaults().build();
+        final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
@@ -779,15 +779,74 @@ class SqlConfigurationTest {
 
     @Test
     void mergeAnnotationsSecond() {
-        final var first = SqlConfiguration.usingDefaults()
+        final var first = SqlConfiguration.builder()
                 .build();
-        final var second = SqlConfiguration.usingDefaults()
-                .setAnnotations(List.of(Annotation.builder().setType("com.example.MyAnnotation").build()))
+        final var second = SqlConfiguration.builder()
+                .addAnnotations(Annotation.builder().setType("com.example.MyAnnotation").build())
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
         Assertions.assertEquals(second.annotations(), merged.annotations());
+    }
+
+    @Test
+    void standardNameEmpty() {
+        final var config = SqlConfiguration.builder()
+                .build();
+
+        Assertions.assertEquals("", config.standardName());
+    }
+
+    @Test
+    void standardNameWithoutAffixes() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .build();
+
+        Assertions.assertEquals("test", config.standardName());
+    }
+
+    @Test
+    void standardNameWithPrefix() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setStandardPrefix("prefix")
+                .build();
+
+        Assertions.assertEquals("prefixTest", config.standardName());
+    }
+
+    @Test
+    void standardNameWithSuffix() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setStandardSuffix("suffix")
+                .build();
+
+        Assertions.assertEquals("testSuffix", config.standardName());
+    }
+
+    @Test
+    void standardNameWithAffixes() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setStandardPrefix("prefix")
+                .setStandardSuffix("suffix")
+                .build();
+
+        Assertions.assertEquals("prefixTestSuffix", config.standardName());
+    }
+
+    @Test
+    void standardNameWithAffixesUpperCase() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setStandardPrefix("Prefix")
+                .setStandardSuffix("Suffix")
+                .build();
+
+        Assertions.assertEquals("PrefixTestSuffix", config.standardName());
     }
 
 }

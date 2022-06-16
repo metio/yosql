@@ -36,7 +36,7 @@ class DefaultMethodNameValidatorTest {
 
     @Test
     void detectInvalidReadPrefix() {
-        final var configuration = SqlConfiguration.usingDefaults()
+        final var configuration = SqlConfiguration.builder()
                 .setType(SqlStatementType.READING)
                 .setName("updateSomeData")
                 .build();
@@ -47,7 +47,7 @@ class DefaultMethodNameValidatorTest {
 
     @Test
     void detectInvalidWritePrefix() {
-        final var configuration = SqlConfiguration.usingDefaults()
+        final var configuration = SqlConfiguration.builder()
                 .setType(SqlStatementType.WRITING)
                 .setName("findSomeData")
                 .build();
@@ -58,7 +58,7 @@ class DefaultMethodNameValidatorTest {
 
     @Test
     void detectInvalidCallPrefix() {
-        final var configuration = SqlConfiguration.usingDefaults()
+        final var configuration = SqlConfiguration.builder()
                 .setType(SqlStatementType.CALLING)
                 .setName("findSomeData")
                 .build();
@@ -69,7 +69,7 @@ class DefaultMethodNameValidatorTest {
 
     @Test
     void acceptValidReadPrefix() {
-        final var configuration = SqlConfiguration.usingDefaults()
+        final var configuration = SqlConfiguration.builder()
                 .setType(SqlStatementType.READING)
                 .setName("findSomeData")
                 .build();
@@ -80,7 +80,7 @@ class DefaultMethodNameValidatorTest {
 
     @Test
     void acceptValidWritePrefix() {
-        final var configuration = SqlConfiguration.usingDefaults()
+        final var configuration = SqlConfiguration.builder()
                 .setType(SqlStatementType.WRITING)
                 .setName("writeSomeData")
                 .build();
@@ -91,7 +91,7 @@ class DefaultMethodNameValidatorTest {
 
     @Test
     void acceptValidCallPrefix() {
-        final var configuration = SqlConfiguration.usingDefaults()
+        final var configuration = SqlConfiguration.builder()
                 .setType(SqlStatementType.CALLING)
                 .setName("callSomeProcedure")
                 .build();

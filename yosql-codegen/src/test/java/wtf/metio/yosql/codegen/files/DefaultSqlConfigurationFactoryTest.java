@@ -109,14 +109,14 @@ class DefaultSqlConfigurationFactoryTest {
                   alias: itemConverter""";
         final Map<String, List<Integer>> indices = Map.of();
         final var statementInFile = 1;
-        final var config = RuntimeConfiguration.usingDefaults()
-                .setConverter(ConverterConfiguration.usingDefaults()
-                        .setRowConverters(List.of(ResultRowConverter.builder()
+        final var config = RuntimeConfiguration.builder()
+                .setConverter(ConverterConfiguration.builder()
+                        .addRowConverters(ResultRowConverter.builder()
                                 .setAlias("itemConverter")
                                 .setConverterType("com.example.ItemConverter")
                                 .setMethodName("asUserType")
                                 .setResultType("com.example.Item")
-                                .build()))
+                                .build())
                         .build())
                 .build();
 
@@ -148,20 +148,20 @@ class DefaultSqlConfigurationFactoryTest {
                   alias: itemConverter""";
         final Map<String, List<Integer>> indices = Map.of();
         final var statementInFile = 1;
-        final var config = RuntimeConfiguration.usingDefaults()
-                .setConverter(ConverterConfiguration.usingDefaults()
+        final var config = RuntimeConfiguration.builder()
+                .setConverter(ConverterConfiguration.builder()
                         .setDefaultConverter(ResultRowConverter.builder()
                                 .setAlias("resultRow")
                                 .setConverterType("com.example.ResultRowConverter")
                                 .setMethodName("apply")
                                 .setResultType("com.example.ResultRow")
                                 .build())
-                        .setRowConverters(List.of(ResultRowConverter.builder()
+                        .addRowConverters(ResultRowConverter.builder()
                                 .setAlias("itemConverter")
                                 .setConverterType("com.example.ItemConverter")
                                 .setMethodName("asUserType")
                                 .setResultType("com.example.Item")
-                                .build()))
+                                .build())
                         .build())
                 .build();
 

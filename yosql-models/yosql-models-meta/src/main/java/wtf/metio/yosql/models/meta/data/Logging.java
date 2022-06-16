@@ -13,24 +13,29 @@ import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
-public final class Logging {
+public final class Logging extends AbstractConfigurationGroup {
+
+    private static final String GROUP_NAME = Logging.class.getSimpleName();
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
-                .setName(Logging.class.getSimpleName())
+                .setName(GROUP_NAME)
                 .setDescription("Configures log statements in generated code.")
                 .addSettings(api())
+                .addImmutableMethods(immutableBuilder(GROUP_NAME))
+                .addImmutableMethods(immutableCopyOf(GROUP_NAME))
+                .addImmutableAnnotations(immutableAnnotation())
                 .build();
     }
 
     private static ConfigurationSetting api() {
-        return ConfigurationSetting.builder()
-                .setName("api")
-                .setDescription("The logging API to use.")
-                .setType(TypeName.get(LoggingApis.class))
-                .setValue(LoggingApis.NONE)
+        final var name = "api";
+        final var description = "The logging API to use.";
+        final var type = TypeName.get(LoggingApis.class);
+        final var value = LoggingApis.NONE;
+        return enumSetting(GROUP_NAME, name, description, value, type)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue(LoggingApis.NONE.name())
+                        .setValue(value.name())
                         .setDescription("The default `no-op` implementation for a logging generator. It won't generate any logging statements in your generated code.")
                         .build())
                 .addExamples(ConfigurationExample.builder()

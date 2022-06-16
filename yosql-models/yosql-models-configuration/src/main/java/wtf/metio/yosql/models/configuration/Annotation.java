@@ -37,6 +37,10 @@ public interface Annotation {
         return ImmutableAnnotation.copyOf(annotation);
     }
 
+    static Annotation fromString(final String input) {
+        return builder().setType("").build();
+    }
+
     //endregion
 
     //region utils

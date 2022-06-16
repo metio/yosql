@@ -8,7 +8,6 @@
 package wtf.metio.yosql.models.meta.data;
 
 import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
@@ -20,14 +19,19 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public final class Names {
+public final class Names extends AbstractConfigurationGroup {
+
+    private static final String GROUP_NAME = Names.class.getSimpleName();
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
-                .setName("Names")
+                .setName(GROUP_NAME)
                 .setDescription("Configures the names of variables in generated code.")
                 .addAllSettings(settings())
-                .setImmutableMethods(List.of(uniqueValueCount(settings())))
+                .addImmutableMethods(uniqueValueCount(settings()))
+                .addImmutableMethods(immutableBuilder(GROUP_NAME))
+                .addImmutableMethods(immutableCopyOf(GROUP_NAME))
+                .addImmutableAnnotations(immutableAnnotation())
                 .build();
     }
 
@@ -74,200 +78,161 @@ public final class Names {
     }
 
     public static ConfigurationSetting logger() {
-        return ConfigurationSetting.builder()
-                .setName("logger")
-                .setDescription("The name of the logger instance.")
-                .setType(ClassName.get(String.class))
-                .setValue("LOG")
+        final var name = "logger";
+        final var description = "The name of the logger instance.";
+        final var value = "LOG";
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     public static ConfigurationSetting query() {
-        return ConfigurationSetting.builder()
-                .setName("query")
-                .setDescription("The name of selected SQL statement.")
-                .setType(ClassName.get(String.class))
-                .setValue("query")
+        final var name = "query";
+        final var description = "The name of selected SQL statement.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     public static ConfigurationSetting rawQuery() {
-        return ConfigurationSetting.builder()
-                .setName("rawQuery")
-                .setDescription("The name of SQL statement before parameter replacement.")
-                .setType(ClassName.get(String.class))
-                .setValue("rawQuery")
+        final var name = "rawQuery";
+        final var description = "The name of SQL statement before parameter replacement.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     public static ConfigurationSetting executedQuery() {
-        return ConfigurationSetting.builder()
-                .setName("executedQuery")
-                .setDescription("The name of SQL statement after parameter replacement.")
-                .setType(ClassName.get(String.class))
-                .setValue("executedQuery")
+        final var name = "executedQuery";
+        final var description = "The name of SQL statement after parameter replacement.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     public static ConfigurationSetting databaseProductName() {
-        return ConfigurationSetting.builder()
-                .setName("databaseProductName")
-                .setDescription("The name of the variable that holds the database product name.")
-                .setType(ClassName.get(String.class))
-                .setValue("databaseProductName")
+        final var name = "databaseProductName";
+        final var description = "The name of the variable that holds the database product name.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     public static ConfigurationSetting action() {
-        return ConfigurationSetting.builder()
-                .setName("action")
-                .setDescription("The name of an action.")
-                .setType(ClassName.get(String.class))
-                .setValue("action")
+        final var name = "action";
+        final var description = "The name of an action.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     public static ConfigurationSetting exception() {
-        return ConfigurationSetting.builder()
-                .setName("exception")
-                .setDescription("The name of an exception.")
-                .setType(ClassName.get(String.class))
-                .setValue("exception")
+        final var name = "exception";
+        final var description = "The name of an exception.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting rawSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("rawSuffix")
-                .setDescription("The name suffix to add for raw SQL statements.")
-                .setType(ClassName.get(String.class))
-                .setValue("_RAW")
+        final var name = "rawSuffix";
+        final var description = "The name suffix to add for raw SQL statements.";
+        final var value = "_RAW";
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting indexSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("indexSuffix")
-                .setDescription("The name suffix to add for index lookup tables.")
-                .setType(ClassName.get(String.class))
-                .setValue("_INDEX")
+        final var name = "indexSuffix";
+        final var description = "The name suffix to add for index lookup tables.";
+        final var value = "_INDEX";
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting dataSource() {
-        return ConfigurationSetting.builder()
-                .setName("dataSource")
-                .setDescription("The name for a DataSource variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("dataSource")
+        final var name = "dataSource";
+        final var description = "The name for a DataSource variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting connection() {
-        return ConfigurationSetting.builder()
-                .setName("connection")
-                .setDescription("The name for a Connection variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("connection")
+        final var name = "connection";
+        final var description = "The name for a Connection variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting statement() {
-        return ConfigurationSetting.builder()
-                .setName("statement")
-                .setDescription("The name for a Statement variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("statement")
+        final var name = "statement";
+        final var description = "The name for a Statement variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting resultSetMetaData() {
-        return ConfigurationSetting.builder()
-                .setName("resultSetMetaData")
-                .setDescription("The name for a ResultSetMetaData variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("resultSetMetaData")
+        final var name = "resultSetMetaData";
+        final var description = "The name for a ResultSetMetaData variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting databaseMetaData() {
-        return ConfigurationSetting.builder()
-                .setName("databaseMetaData")
-                .setDescription("The name for a DatabaseMetaData variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("databaseMetaData")
+        final var name = "databaseMetaData";
+        final var description = "The name for a DatabaseMetaData variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting resultSet() {
-        return ConfigurationSetting.builder()
-                .setName("resultSet")
-                .setDescription("The name for a ResultSet variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("resultSet")
+        final var name = "resultSet";
+        final var description = "The name for a ResultSet variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting columnCount() {
-        return ConfigurationSetting.builder()
-                .setName("columnCount")
-                .setDescription("The name for a ColumnCount variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("columnCount")
+        final var name = "columnCount";
+        final var description = "The name for a ColumnCount variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting columnLabel() {
-        return ConfigurationSetting.builder()
-                .setName("columnLabel")
-                .setDescription("The name for a ColumnLabel variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("columnLabel")
+        final var name = "columnLabel";
+        final var description = "The name for a ColumnLabel variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting batch() {
-        return ConfigurationSetting.builder()
-                .setName("batch")
-                .setDescription("The name for a Batch variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("batch")
+        final var name = "batch";
+        final var description = "The name for a Batch variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting list() {
-        return ConfigurationSetting.builder()
-                .setName("list")
-                .setDescription("The name for a List variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("list")
+        final var name = "list";
+        final var description = "The name for a List variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 
     private static ConfigurationSetting jdbcIndexVariable() {
-        return ConfigurationSetting.builder()
-                .setName("jdbcIndexVariable")
-                .setDescription("The name for a JDBC index variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("jdbcIndex")
+        final var name = "jdbcIndexVariable";
+        final var description = "The name for a JDBC index variable.";
+        final var value = "jdbcIndex";
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting indexVariable() {
-        return ConfigurationSetting.builder()
-                .setName("indexVariable")
-                .setDescription("The name for a index variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("index")
+        final var name = "indexVariable";
+        final var description = "The name for a index variable.";
+        final var value = "index";
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting row() {
-        return ConfigurationSetting.builder()
-                .setName("row")
-                .setDescription("The name for a row variable.")
-                .setType(ClassName.get(String.class))
-                .setValue("row")
+        final var name = "row";
+        final var description = "The name for a row variable.";
+        return setting(GROUP_NAME, name, description, name)
                 .build();
     }
 

@@ -90,7 +90,7 @@ public abstract class FieldsGeneratorTCK {
     @Test
     final void constantSqlStatementFieldName() {
         // given
-        final var config = SqlConfiguration.usingDefaults().setName("test").build();
+        final var config = SqlConfiguration.builder().setName("test").build();
 
         // when
         final var constant = generator().constantSqlStatementFieldName(config);
@@ -103,7 +103,7 @@ public abstract class FieldsGeneratorTCK {
     @Test
     final void constantSqlStatementFieldNameWithVendor() {
         // given
-        final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
+        final var config = SqlConfiguration.builder().setName("test").setVendor("MyDB").build();
 
         // when
         final var constant = generator().constantSqlStatementFieldName(config);
@@ -116,7 +116,7 @@ public abstract class FieldsGeneratorTCK {
     @Test
     final void constantRawSqlStatementFieldName() {
         // given
-        final var config = SqlConfiguration.usingDefaults().setName("test").build();
+        final var config = SqlConfiguration.builder().setName("test").build();
 
         // when
         final var constant = generator().constantRawSqlStatementFieldName(config);
@@ -129,7 +129,7 @@ public abstract class FieldsGeneratorTCK {
     @Test
     final void constantRawSqlStatementFieldNameWithVendor() {
         // given
-        final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
+        final var config = SqlConfiguration.builder().setName("test").setVendor("MyDB").build();
 
         // when
         final var constant = generator().constantRawSqlStatementFieldName(config);
@@ -142,7 +142,7 @@ public abstract class FieldsGeneratorTCK {
     @Test
     final void constantSqlStatementParameterIndexFieldName() {
         // given
-        final var config = SqlConfiguration.usingDefaults().setName("test").build();
+        final var config = SqlConfiguration.builder().setName("test").build();
 
         // when
         final var constant = generator().constantSqlStatementParameterIndexFieldName(config);
@@ -155,7 +155,7 @@ public abstract class FieldsGeneratorTCK {
     @Test
     final void constantSqlStatementParameterIndexFieldNameWithVendor() {
         // given
-        final var config = SqlConfiguration.usingDefaults().setName("test").setVendor("MyDB").build();
+        final var config = SqlConfiguration.builder().setName("test").setVendor("MyDB").build();
 
         // when
         final var constant = generator().constantSqlStatementParameterIndexFieldName(config);

@@ -32,14 +32,14 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void typeKeep() {
-        final var original = SqlConfiguration.usingDefaults().setType(SqlStatementType.CALLING).build();
+        final var original = SqlConfiguration.builder().setType(SqlStatementType.CALLING).build();
         final var adapted = configurer.type(original);
         assertEquals(original.type(), adapted.type());
     }
 
     @Test
     void typeChangeReading() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(repositories.allowedReadPrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
@@ -49,7 +49,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void typeChangeWriting() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(repositories.allowedWritePrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
@@ -59,7 +59,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void typeChangeCalling() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(repositories.allowedCallPrefixes().get(0) + "Something")
                 .build();
         final var adapted = configurer.type(original);
@@ -69,7 +69,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void returningModeKeep() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setReturningMode(ReturningMode.MULTIPLE)
                 .build();
         final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
@@ -78,7 +78,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void returningModeChangeReading() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setType(SqlStatementType.READING)
                 .build();
         final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
@@ -88,7 +88,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void returningModeChangeCalling() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setType(SqlStatementType.CALLING)
                 .build();
         final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
@@ -98,7 +98,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void returningModeChangeWriting() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setType(SqlStatementType.WRITING)
                 .build();
         final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
@@ -108,7 +108,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void returningModeRemainUnknown() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .build();
         final var adapted = DefaultMethodSettingsConfigurer.returningMode(original);
         assertTrue(adapted.returningMode().isEmpty());
@@ -116,7 +116,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void catchAndRethrowKeep() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setCatchAndRethrow(false)
                 .build();
         final var adapted = configurer.catchAndRethrow(original);
@@ -125,7 +125,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void catchAndRethrowChange() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 // .setCatchAndRethrow(false) // value is NOT set
                 .build();
         final var adapted = configurer.catchAndRethrow(original);
@@ -135,7 +135,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void throwOnMultipleResultsForSingleKeep() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setThrowOnMultipleResultsForSingle(true)
                 .build();
         final var adapted = configurer.throwOnMultipleResultsForSingle(original);
@@ -144,7 +144,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void throwOnMultipleResultsForSingleChange() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 // .setThrowOnMultipleResultsForSingle(true) // value is NOT set
                 .build();
         final var adapted = configurer.throwOnMultipleResultsForSingle(original);
@@ -154,7 +154,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void usePreparedStatementKeep() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setUsePreparedStatement(false)
                 .build();
         final var adapted = configurer.usePreparedStatement(original);
@@ -163,7 +163,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void usePreparedStatementChange() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 // .setUsePreparedStatement(false) // value is NOT set
                 .build();
         final var adapted = configurer.usePreparedStatement(original);
@@ -173,7 +173,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void keepSettings() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setType(SqlStatementType.CALLING)
                 .setReturningMode(ReturningMode.MULTIPLE)
                 .setCatchAndRethrow(false)
@@ -187,7 +187,7 @@ class DefaultMethodSettingsConfigurerTest {
 
     @Test
     void changeSettings() {
-        final var original = SqlConfiguration.usingDefaults()
+        final var original = SqlConfiguration.builder()
                 .setName(repositories.allowedCallPrefixes().get(0) + "Something")
                 // .setCatchAndRethrow(false) // do NOT set value
                 // .setThrowOnMultipleResultsForSingle(true) // value is NOT set

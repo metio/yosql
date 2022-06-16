@@ -28,17 +28,15 @@ public class GradleModelPlugin implements Plugin<Project> {
                 .resolve("generated")
                 .resolve("sources")
                 .resolve("yosql");
-        final var immutablesBasePackage = "wtf.metio.yosql.models.immutables";
-        final var basePackage = "wtf.metio.yosql.tooling.gradle";
-        final var generator = new ModelGenerator(outputDirectory, immutablesBasePackage, basePackage);
+        final var generator = new ModelGenerator();
 
         configureSourceSets(project, outputDirectory);
-        registerTask(project, generator);
+        registerTask(project, generator, outputDirectory);
     }
 
-    private void registerTask(final Project project, final ModelGenerator generator) {
+    private void registerTask(final Project project, final ModelGenerator generator, final Path outputDirectory) {
         project.getTasks().withType(JavaCompile.class, task -> task.doFirst("createGradleModel",
-                new CreateGradleModel(generator)));
+                new CreateGradleModel(generator, outputDirectory)));
     }
 
     private void configureSourceSets(final Project project, final Path outputDirectory) {

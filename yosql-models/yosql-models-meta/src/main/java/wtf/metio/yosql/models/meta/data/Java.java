@@ -7,16 +7,17 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
-public final class Java {
+public final class Java extends AbstractConfigurationGroup {
+
+    private static final String GROUP_NAME = Java.class.getSimpleName();
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
-                .setName("Java")
+                .setName(GROUP_NAME)
                 .setDescription("Configures Java version and related settings.")
                 .addSettings(apiVersion())
                 .addSettings(useFinalParameters())
@@ -27,174 +28,151 @@ public final class Java {
                 .addSettings(useTextBlocks())
                 .addSettings(useVar())
                 .addSettings(useSealedInterfaces())
+                .addImmutableMethods(immutableBuilder(GROUP_NAME))
+                .addImmutableMethods(immutableCopyOf(GROUP_NAME))
+                .addImmutableAnnotations(immutableAnnotation())
                 .build();
     }
 
     private static ConfigurationSetting apiVersion() {
-        return ConfigurationSetting.builder()
-                .setName("apiVersion")
-                .setDescription("Controls the Java SDK API version to use in generated code.")
-                .setType(TypeName.get(int.class))
-                .setValue(17)
+        final var name = "apiVersion";
+        final var description = "Controls the Java SDK API version to use in generated code.";
+        final var value = 17;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("17")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `apiVersion` configuration option is `17`. It is updated alongside the minimum Java version required by `YoSQL`.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("11")
+                        .setValue(String.valueOf(11))
                         .setDescription("Changing the `apiVersion` configuration option to `11` will allow generated code to use Java APIs up until version 11 (including).")
                         .build())
                 .build();
     }
 
     private static ConfigurationSetting useFinalParameters() {
-        return ConfigurationSetting.builder()
-                .setName("useFinalParameters")
-                .setDescription("Controls whether parameters are declared as final in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
+        final var name = "useFinalParameters";
+        final var description = "Controls whether parameters are declared as final in generated code.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `useFinalParameters` configuration option is `true` which enables the use of `final` for parameters.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useFinalParameters` configuration option to `false` disables the use of `final` for parameters.")
                         .build())
                 .build();
     }
 
     private static ConfigurationSetting useFinalVariables() {
-        return ConfigurationSetting.builder()
-                .setName("useFinalVariables")
-                .setDescription("Controls whether variables are declared as final in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
+        final var name = "useFinalVariables";
+        final var description = "Controls whether variables are declared as final in generated code.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `useFinalVariables` configuration option is `true` which enables the use of `final` for variables.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useFinalVariables` configuration option to `false` disables the use of `final` for variables.")
                         .build())
                 .build();
     }
 
     private static ConfigurationSetting useFinalClasses() {
-        return ConfigurationSetting.builder()
-                .setName("useFinalClasses")
-                .setDescription("Controls whether classes are declared as final in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
+        final var name = "useFinalClasses";
+        final var description = "Controls whether classes are declared as final in generated code.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `useFinalClasses` configuration option is `true` which enables the use of `final` for classes.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useFinalClasses` configuration option to `false` disables the use of `final` for classes.")
                         .build())
                 .build();
     }
 
     private static ConfigurationSetting useFinalFields() {
-        return ConfigurationSetting.builder()
-                .setName("useFinalFields")
-                .setDescription("Controls whether fields are declared as final in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
+        final var name = "useFinalFields";
+        final var description = "Controls whether fields are declared as final in generated code.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `useFinalFields` configuration option is `true` which enables the use of `final` for fields.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useFinalFields` configuration option to `false` disables the use of `final` for fields.")
                         .build())
                 .build();
     }
 
     private static ConfigurationSetting useFinalMethods() {
-        return ConfigurationSetting.builder()
-                .setName("useFinalMethods")
-                .setDescription("Controls whether methods are declared as final in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
+        final var name = "useFinalMethods";
+        final var description = "Controls whether methods are declared as final in generated code.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `useFinalMethods` configuration option is `true` which enables the use of `final` for methods.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useFinalMethods` configuration option to `false` disables the use of `final` for methods.")
                         .build())
                 .build();
     }
 
-    private static ConfigurationSetting useRecords() {
-        return ConfigurationSetting.builder()
-                .setName("useRecords")
-                .setDescription("Controls the usage of records in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
-                        .setDescription("The default value of the `useRecords` configuration option is `true` which enables the use of records in generated code.")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
-                        .setDescription("Changing the `useRecords` configuration option to `false` disables the use of records in generated code.")
-                        .build())
-                .build();
-    }
-
     private static ConfigurationSetting useTextBlocks() {
-        return ConfigurationSetting.builder()
-                .setName("useTextBlocks")
-                .setDescription("Controls the usage of text blocks in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
+        final var name = "useTextBlocks";
+        final var description = "Controls the usage of text blocks in generated code.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `useTextBlocks` configuration option is `true` which enables the use of text blocks in generated code.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useTextBlocks` configuration option to `false` disables the use of text blocks in generated code.")
                         .build())
                 .build();
     }
 
     private static ConfigurationSetting useVar() {
-        return ConfigurationSetting.builder()
-                .setName("useVar")
-                .setDescription("Controls the usage of the 'var' keyword in generated code.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
+        final var name = "useVar";
+        final var description = "Controls the usage of the 'var' keyword in generated code.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `useVar` configuration option is `true` which enables the use of `var` in generated code.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useVar` configuration option to `false` disables the use of `var` in generated code.")
                         .build())
                 .build();
     }
 
     private static ConfigurationSetting useSealedInterfaces() {
-        return ConfigurationSetting.builder()
-                .setName("useSealedInterfaces")
-                .setDescription("Controls whether interfaces should be sealed")
-                .setType(TypeName.get(boolean.class))
-                .setValue(false)
+        final var name = "useSealedInterfaces";
+        final var description = "Controls whether interfaces should be sealed";
+        final var value = false;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `useSealedInterfaces` configuration option is `false` which disables sealing interfaces in generated code.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useSealedInterfaces` configuration option to `true` enables sealing interfaces in generated code.")
                         .build())
                 .build();

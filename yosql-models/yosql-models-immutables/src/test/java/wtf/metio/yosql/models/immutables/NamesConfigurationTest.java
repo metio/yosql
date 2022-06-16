@@ -20,7 +20,7 @@ class NamesConfigurationTest {
 
     @Test
     void shouldHaveNoDuplicatesInDefaultConfig() {
-        final var names = NamesConfiguration.usingDefaults().build();
+        final var names = NamesConfiguration.builder().build();
         final var counts = names.uniqueValueCount();
         final var duplicates = counts.entrySet().stream()
                 .filter(entry -> entry.getValue() > 1)

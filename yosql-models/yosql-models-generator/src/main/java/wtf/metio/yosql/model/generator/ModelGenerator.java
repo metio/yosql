@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.model.generator;
 
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
@@ -20,61 +19,57 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static wtf.metio.yosql.models.meta.data.ToolingPackages.*;
+
+/**
+ * Generator for Java models that delegates most of its work to tooling-specific generators.
+ */
 public final class ModelGenerator {
 
-    private final Path outputDirectory;
-    private final String immutablesBasePackage;
-    private final String basePackage;
-
-    public ModelGenerator(
-            final Path outputDirectory,
-            final String immutablesBasePackage,
-            final String basePackage) {
-        this.outputDirectory = outputDirectory;
-        this.immutablesBasePackage = immutablesBasePackage;
-        this.basePackage = basePackage;
+    public void createImmutableModel(final BiConsumer<String, TypeSpec> writer) {
+        final var generator = new ImmutablesModelGenerator();
+        forAllConfigurations(generator, type -> writer.accept(IMMUTABLES_PACKAGE, type));
+        generator.apply(Runtime.configurationGroup())
+                .forEach(type -> writer.accept(IMMUTABLES_PACKAGE, type));
+        generator.apply(Sql.configurationGroup())
+                .forEach(type -> writer.accept(IMMUTABLES_PACKAGE, type));
     }
 
-    public void createImmutableModel() {
-        final var generator = new ImmutablesGenerator(immutablesBasePackage);
-        final var writer = typeWriter(immutablesBasePackage);
-        forAllConfigurations(generator, writer);
-        generator.apply(Runtime.configurationGroup(immutablesBasePackage)).forEach(writer);
-        generator.apply(Sql.configurationGroup()).forEach(writer);
+    public void createMavenModel(final BiConsumer<String, TypeSpec> writer) {
+        final var generator = new MavenModelGenerator();
+        forAllConfigurations(generator, type -> writer.accept(MAVEN_PACKAGE, type));
     }
 
-    public void createMavenModel() {
-        final var generator = new MavenGenerator(immutablesBasePackage);
-        final var writer = typeWriter(basePackage);
-        forAllConfigurations(generator, writer);
+    public void createCliModel(final BiConsumer<String, TypeSpec> writer) {
+        final var generator = new CliModelGenerator();
+        forAllConfigurations(generator, type -> writer.accept(CLI_PACKAGE, type));
     }
 
-    public void createCliModel() {
-        final var generator = new CliGenerator(immutablesBasePackage);
-        final var writer = typeWriter(basePackage);
-        forAllConfigurations(generator, writer);
+    public void createAntModel(final BiConsumer<String, TypeSpec> writer) {
+        final var generator = new AntModelGenerator();
+        forAllConfigurations(generator, type -> writer.accept(ANT_PACKAGE, type));
     }
 
-    public void createGradleModel() {
-        final var generator = new GradleGenerator(immutablesBasePackage);
-        final var writer = typeWriter(basePackage);
-        forAllConfigurations(generator, writer);
+    public void createGradleModel(final BiConsumer<String, TypeSpec> writer) {
+        final var generator = new GradleModelGenerator();
+        forAllConfigurations(generator, type -> writer.accept(GRADLE_PACKAGE, type));
     }
 
-    public void createMarkdownDocumentation(final String version) {
+    public static void createMarkdownDocumentation(final String version, final Path outputDirectory) {
         final var factory = new RawTextMustacheFactory();
         final var globalGenerator = new MarkdownGenerator(factory, version, "configurationSetting.md");
         final var statementGenerator = new MarkdownGenerator(factory, version, "frontmatterSetting.md");
         AllConfigurations.allConfigurationGroups().forEach(group ->
-                writeMarkdownFiles(globalGenerator, group));
-        writeMarkdownFiles(statementGenerator, Sql.configurationGroup());
+                writeMarkdownFiles(globalGenerator, group, outputDirectory));
+        writeMarkdownFiles(statementGenerator, Sql.configurationGroup(), outputDirectory);
     }
 
-    private void writeMarkdownFiles(final MarkdownGenerator generator, final ConfigurationGroup group) {
+    private static void writeMarkdownFiles(final MarkdownGenerator generator, final ConfigurationGroup group, final Path outputDirectory) {
         try {
             final var groupDirectory = outputDirectory.resolve(group.name().toLowerCase(Locale.ROOT));
             Files.createDirectories(groupDirectory);
@@ -97,20 +92,10 @@ public final class ModelGenerator {
         }
     }
 
-    private static void forAllConfigurations(final Function<ConfigurationGroup, Stream<TypeSpec>> generator, final Consumer<TypeSpec> writer) {
+    private static void forAllConfigurations(
+            final Function<ConfigurationGroup, Stream<TypeSpec>> generator,
+            final Consumer<TypeSpec> writer) {
         AllConfigurations.allConfigurationGroups().flatMap(generator).forEach(writer);
-    }
-
-    private Consumer<TypeSpec> typeWriter(final String targetPackageName) {
-        return typeSpec -> {
-            try {
-                JavaFile.builder(targetPackageName, typeSpec)
-                        .build()
-                        .writeTo(outputDirectory);
-            } catch (final IOException exception) {
-                throw new RuntimeException(exception);
-            }
-        };
     }
 
 }

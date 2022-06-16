@@ -33,7 +33,6 @@ public final class TypicalTypes {
     public static final ClassName GRADLE_LAYOUT = ClassName.get("org.gradle.api.file", "ProjectLayout");
     public static final ClassName GRADLE_OBJECTS = ClassName.get("org.gradle.api.model", "ObjectFactory");
     public static final ClassName GRADLE_NAMED = ClassName.get("org.gradle.api", "Named");
-    public static final TypeName GRADLE_STRING_PROPERTY = gradlePropertyOf(ClassName.get(String.class));
 
     public static final TypeName ARRAY_OF_INTS = ArrayTypeName.of(int.class);
 

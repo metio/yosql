@@ -68,3 +68,5 @@ Optional<User> someMethod()
 List<User> someMethod()
 Stream<User> someMethod()
 ```
+
+**Tip**: In case you want to use custom types, but do not want to write your own converter, consider using [SimpleFlatMapper](https://simpleflatmapper.org/0102-getting-started-jdbc.html) with its built-in support for JDBC `ResultSet`s.

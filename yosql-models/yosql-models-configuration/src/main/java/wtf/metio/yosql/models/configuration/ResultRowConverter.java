@@ -11,8 +11,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
 import org.immutables.value.Value;
+import wtf.metio.yosql.internals.jdk.Strings;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Value.Immutable
 @JsonSerialize(
@@ -27,6 +29,20 @@ public interface ResultRowConverter {
 
     static ImmutableResultRowConverter.Builder builder() {
         return ImmutableResultRowConverter.builder();
+    }
+
+    static ResultRowConverter fromString(final String input) {
+        return Optional.ofNullable(input)
+                .map(String::strip)
+                .filter(Predicate.not(Strings::isBlank))
+                .map(value -> value.split(":"))
+                .map(values -> ResultRowConverter.builder()
+                        .setAlias(values[0])
+                        .setConverterType(values[1])
+                        .setMethodName(values[2])
+                        .setResultType(values[3])
+                        .build())
+                .orElse(null);
     }
 
     //endregion

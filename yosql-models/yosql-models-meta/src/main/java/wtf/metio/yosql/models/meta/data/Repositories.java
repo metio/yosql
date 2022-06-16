@@ -9,24 +9,30 @@ package wtf.metio.yosql.models.meta.data;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.configuration.Constants;
 import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
+import wtf.metio.yosql.models.meta.ImmutableConfigurationSetting;
 
 import java.util.List;
 import java.util.StringJoiner;
 
+import static wtf.metio.yosql.internals.javapoet.TypicalTypes.gradleListPropertyOf;
+import static wtf.metio.yosql.internals.jdk.Strings.upperCase;
+
 /**
  * Configures how repositories are generated.
  */
-public final class Repositories {
+public final class Repositories extends AbstractConfigurationGroup {
+
+    private static final String GROUP_NAME = Repositories.class.getSimpleName();
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
-                .setName(Repositories.class.getSimpleName())
+                .setName(GROUP_NAME)
                 .setDescription("The `repositories` configuration can be used to control how `YoSQL` outputs repositories.")
                 .addSettings(allowedCallPrefixes())
                 .addSettings(allowedReadPrefixes())
@@ -41,6 +47,9 @@ public final class Repositories {
                 .addSettings(injectConverters())
                 .addAllSettings(stringMethods())
                 .addAllSettings(booleanMethods())
+                .addImmutableMethods(immutableBuilder(GROUP_NAME))
+                .addImmutableMethods(immutableCopyOf(GROUP_NAME))
+                .addImmutableAnnotations(immutableAnnotation())
                 .build();
     }
 
@@ -68,13 +77,12 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting basePackageName() {
-        return ConfigurationSetting.builder()
-                .setName("basePackageName")
-                .setDescription("The base package name for all repositories")
-                .setType(ClassName.get(String.class))
-                .setValue("com.example.persistence")
+        final var name = "basePackageName";
+        final var description = "The base package name for all repositories";
+        final var value = "com.example.persistence";
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("com.example.persistence")
+                        .setValue(value)
                         .setDescription("The default value of the `basePackageName` configuration option is `com.example.persistence`. Setting the option to `com.example.persistence` therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:")
                         .setResult("""
                                 package com.example.persistence;
@@ -101,32 +109,29 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting repositoryInterfacePrefix() {
-        return ConfigurationSetting.builder()
-                .setName("repositoryInterfacePrefix")
-                .setDescription("The repository interface name prefix to use.")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+        final var name = "repositoryInterfacePrefix";
+        final var description = "The repository interface name prefix to use.";
+        final var value = "";
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting repositoryInterfaceSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("repositoryInterfaceSuffix")
-                .setDescription("The repository interface name suffix to use.")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+        final var name = "repositoryInterfaceSuffix";
+        final var description = "The repository interface name suffix to use.";
+        final var value = "";
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting repositoryNamePrefix() {
-        return ConfigurationSetting.builder()
-                .setName("repositoryNamePrefix")
-                .setDescription("The repository name prefix to use.")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+        final var name = "repositoryNamePrefix";
+        final var description = "The repository name prefix to use.";
+        final var value = "";
+        return setting(GROUP_NAME, name, description, value)
                 .setExplanation("In case the repository name already contains the configured prefix, it will not be added twice.")
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("")
+                        .setValue(value)
                         .setDescription("The default value of the `repositoryNamePrefix` configuration option is the empty string. Setting the option to `` therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:")
                         .setResult("""
                                 package com.example.persistence;
@@ -153,14 +158,13 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting repositoryNameSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("repositoryNameSuffix")
-                .setDescription("The repository name suffix to use.")
-                .setType(ClassName.get(String.class))
-                .setValue("Repository")
+        final var name = "repositoryNameSuffix";
+        final var description = "The repository name suffix to use.";
+        final var value = "Repository";
+        return setting(GROUP_NAME, name, description, value)
                 .setExplanation("In case the repository name already contains the configured suffix, it will not be added twice.")
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("Repository")
+                        .setValue(value)
                         .setDescription("The default value of the `repositoryNameSuffix` configuration option is `Repository`. Setting the option to `Repository` therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:")
                         .setResult("""
                                 package com.example.persistence;
@@ -187,53 +191,45 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting generateInterfaces() {
-        return ConfigurationSetting.builder()
-                .setName("generateInterfaces")
-                .setDescription("Generate interfaces for all repositories")
-                .setType(TypeName.get(boolean.class))
-                .setValue(false)
+        final var name = "generateInterfaces";
+        final var description = "Generate interfaces for all repositories";
+        final var value = false;
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting generateStandardApi() {
-        return ConfigurationSetting.builder()
-                .setName(Constants.GENERATE_STANDARD_API)
-                .setDescription("Generate standard methods")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .addTags(Tags.FRONT_MATTER)
+        final var name = Constants.GENERATE_STANDARD_API;
+        final var description = "Generate standard methods";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting generateBatchApi() {
-        return ConfigurationSetting.builder()
-                .setName(Constants.GENERATE_BATCH_API)
-                .setDescription("Generate batch methods")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .addTags(Tags.FRONT_MATTER)
+        final var name = Constants.GENERATE_BATCH_API;
+        final var description = "Generate batch methods";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting usePreparedStatement() {
-        return ConfigurationSetting.builder()
-                .setName("usePreparedStatement")
-                .setDescription("Should `PreparedStatement`s be used instead of `Statement`s")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
-                .addTags(Tags.FRONT_MATTER)
+        final var name = "usePreparedStatement";
+        final var description = "Should `PreparedStatement`s be used instead of `Statement`s";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .build();
     }
 
     private static ConfigurationSetting catchAndRethrow() {
-        return ConfigurationSetting.builder()
-                .setName("catchAndRethrow")
-                .setDescription("Catch exceptions during SQL execution and re-throw them as RuntimeExceptions")
-                .setType(TypeName.get(boolean.class))
-                .setValue(true)
+        final var name = "catchAndRethrow";
+        final var description = "Catch exceptions during SQL execution and re-throw them as RuntimeExceptions";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value for `catchAndRethrow` is `true`. This will catch any `SQLException` that happen during SQL execution and re-throw them as `RuntimeExceptions`.")
                         .setResult("""
                                 package com.example.persistence;
@@ -250,11 +246,11 @@ public final class Repositories {
                                 """)
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(!value))
                         .setDescription("In case you want to handle `SQLException`s yourself, set `catchAndRethrow` to `false`.")
                         .setResult("""
                                 package com.example.persistence;
-                                
+                                                                
                                 import java.sql.SQLException;
 
                                 public class SomeRepository {
@@ -272,24 +268,22 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting throwOnMultipleResultsForSingle() {
-        return ConfigurationSetting.builder()
-                .setName("throwOnMultipleResultsForSingle")
-                .setDescription("Throw an exception in case a statement using `ReturningMode.SINGLE` produces more than 1 result.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(false)
+        final var name = "throwOnMultipleResultsForSingle";
+        final var description = "Throw an exception in case a statement using `ReturningMode.SINGLE` produces more than 1 result.";
+        final var value = false;
+        return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
     private static ConfigurationSetting injectConverters() {
-        return ConfigurationSetting.builder()
-                .setName("injectConverters")
-                .setDescription("Toggles whether converters should be injected as constructor parameters.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(false)
+        final var name = "injectConverters";
+        final var description = "Toggles whether converters should be injected as constructor parameters.";
+        final var value = false;
+        return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `injectConverters` configuration option is `false`. It produces code similar to this:")
                         .setResult("""
                                 package com.example.persistence;
@@ -310,7 +304,7 @@ public final class Repositories {
                                 }""")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(!value))
                         .setDescription("Changing the `injectConverters` configuration option to `true` generates the following code instead:")
                         .setResult("""
                                 package your.own.domain;
@@ -335,14 +329,13 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting standardPrefix() {
-        return ConfigurationSetting.builder()
-                .setName("standardPrefix")
-                .setDescription("The method prefix to use for generated standard methods.")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+        final var name = "standardPrefix";
+        final var description = "The method prefix to use for generated standard methods.";
+        final var value = "";
+        return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("")
+                        .setValue(value)
                         .setDescription("The default value for `standardPrefix` is the empty string. It does not add any prefix in front of standard methods.")
                         .setResult("""
                                 package com.example.persistence;
@@ -366,7 +359,7 @@ public final class Repositories {
 
                                 public class SomeRepository {
 
-                                    public void myPrefixwriteSome() {
+                                    public void myPrefixWriteSome() {
                                         // ... some code
                                     }
 
@@ -379,14 +372,13 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting standardSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("standardSuffix")
-                .setDescription("The method suffix to use for generated standard methods.")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+        final var name = "standardSuffix";
+        final var description = "The method suffix to use for generated standard methods.";
+        final var value = "";
+        return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("")
+                        .setValue(value)
                         .setDescription("The default value for `standardSuffix` is the empty string. It does not add any suffix after of standard methods.")
                         .setResult("""
                                 package com.example.persistence;
@@ -403,7 +395,7 @@ public final class Repositories {
                                 """)
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("MySuffix")
+                        .setValue("mySuffix")
                         .setDescription("In case you want to suffix standard methods with something, set the `standardSuffix` option.")
                         .setResult("""
                                 package com.example.persistence;
@@ -423,14 +415,13 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting batchPrefix() {
-        return ConfigurationSetting.builder()
-                .setName("batchPrefix")
-                .setDescription("The method prefix to use for generated batch methods.")
-                .setType(ClassName.get(String.class))
-                .setValue("")
+        final var name = "batchPrefix";
+        final var description = "The method prefix to use for generated batch methods.";
+        final var value = "";
+        return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("")
+                        .setValue(value)
                         .setDescription("The default value for `batchPrefix` is the empty string. It does not add any prefix in front of batch methods.")
                         .setResult("""
                                 package com.example.persistence;
@@ -454,7 +445,7 @@ public final class Repositories {
 
                                 public class SomeRepository {
 
-                                    public void myPrefixwriteSomeBatch() {
+                                    public void myPrefixWriteSomeBatch() {
                                         // ... some code
                                     }
 
@@ -467,14 +458,13 @@ public final class Repositories {
     }
 
     private static ConfigurationSetting batchSuffix() {
-        return ConfigurationSetting.builder()
-                .setName("batchSuffix")
-                .setDescription("The method suffix to use for generated batch methods.")
-                .setType(ClassName.get(String.class))
-                .setValue("Batch")
+        final var name = "batchSuffix";
+        final var description = "The method suffix to use for generated batch methods.";
+        final var value = "Batch";
+        return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("Batch")
+                        .setValue(value)
                         .setDescription("The default value for `batchSuffix` is 'Batch'. It adds the word 'Batch' after each batch method.")
                         .setResult("""
                                 package com.example.persistence;
@@ -512,19 +502,13 @@ public final class Repositories {
 
     private static ConfigurationSetting allowedWritePrefixes() {
         final var defaultPrefixes = List.of("update", "insert", "delete", "create", "write", "add", "remove", "merge", "drop");
-        final var prefixesInCode = new StringJoiner("\", \"", "\"", "\"");
-        final var prefixesInDocs = new StringJoiner(", ");
-        defaultPrefixes.forEach(prefixesInCode::add);
-        defaultPrefixes.forEach(prefixesInDocs::add);
-        return ConfigurationSetting.builder()
-                .setName("allowedWritePrefixes")
-                .setDescription("Configures which name prefixes are allowed for statements that are writing data to your database.")
-                .setType(TypicalTypes.listOf(ClassName.get(String.class)))
-                .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
-                .setCliValue(prefixesInDocs.toString())
-                .setMavenValue(prefixesInDocs.toString())
+        final var prefixesInDocs = stringsInDocs(defaultPrefixes);
+        final var name = "allowedWritePrefixes";
+        final var description = "Configures which name prefixes are allowed for statements that are writing data to your database.";
+        final var type = TypicalTypes.listOf(String.class);
+        return stringListSetting(defaultPrefixes, name, description, type)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue(prefixesInDocs.toString())
+                        .setValue(prefixesInDocs)
                         .setDescription(String.format("The default value of the `allowedWritePrefixes` configuration option is `%s` to allow several commonly used names for writing statements.", prefixesInDocs))
                         .build())
                 .addExamples(ConfigurationExample.builder()
@@ -536,19 +520,13 @@ public final class Repositories {
 
     private static ConfigurationSetting allowedReadPrefixes() {
         final var defaultPrefixes = List.of("read", "select", "find", "query", "lookup", "get");
-        final var prefixesInCode = new StringJoiner("\", \"", "\"", "\"");
-        final var prefixesInDocs = new StringJoiner(", ");
-        defaultPrefixes.forEach(prefixesInCode::add);
-        defaultPrefixes.forEach(prefixesInDocs::add);
-        return ConfigurationSetting.builder()
-                .setName("allowedReadPrefixes")
-                .setDescription("Configures which name prefixes are allowed for statements that are reading data from your database.")
-                .setType(TypicalTypes.listOf(ClassName.get(String.class)))
-                .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
-                .setCliValue(prefixesInDocs.toString())
-                .setMavenValue(prefixesInDocs.toString())
+        final var prefixesInDocs = stringsInDocs(defaultPrefixes);
+        final var name = "allowedReadPrefixes";
+        final var description = "Configures which name prefixes are allowed for statements that are reading data from your database.";
+        final var type = TypicalTypes.listOf(String.class);
+        return stringListSetting(defaultPrefixes, name, description, type)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue(prefixesInDocs.toString())
+                        .setValue(prefixesInDocs)
                         .setDescription(String.format("The default value of the `allowedReadPrefixes` configuration option is `%s` to allow several commonly used names for reading statements.", prefixesInDocs))
                         .build())
                 .addExamples(ConfigurationExample.builder()
@@ -560,19 +538,13 @@ public final class Repositories {
 
     private static ConfigurationSetting allowedCallPrefixes() {
         final var defaultPrefixes = List.of("call", "execute", "evaluate", "eval");
-        final var prefixesInCode = new StringJoiner("\", \"", "\"", "\"");
-        final var prefixesInDocs = new StringJoiner(", ");
-        defaultPrefixes.forEach(prefixesInCode::add);
-        defaultPrefixes.forEach(prefixesInDocs::add);
-        return ConfigurationSetting.builder()
-                .setName("allowedCallPrefixes")
-                .setDescription("Configures which name prefixes are allowed for statements that are calling stored procedures.")
-                .setType(TypicalTypes.listOf(ClassName.get(String.class)))
-                .setValue(CodeBlock.of("$T.of($L)", List.class, prefixesInCode.toString()))
-                .setCliValue(prefixesInDocs.toString())
-                .setMavenValue(prefixesInDocs.toString())
+        final var prefixesInDocs = stringsInDocs(defaultPrefixes);
+        final var name = "allowedCallPrefixes";
+        final var description = "Configures which name prefixes are allowed for statements that are calling stored procedures.";
+        final var type = TypicalTypes.listOf(String.class);
+        return stringListSetting(defaultPrefixes, name, description, type)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue(prefixesInDocs.toString())
+                        .setValue(prefixesInDocs)
                         .setDescription(String.format("The default value of the `allowedCallPrefixes` configuration option is `%s` to allow several commonly used names for calling procedures.", prefixesInDocs))
                         .build())
                 .addExamples(ConfigurationExample.builder()
@@ -582,18 +554,52 @@ public final class Repositories {
                 .build();
     }
 
-    private static ConfigurationSetting validateMethodNamePrefixes() {
+    private static ImmutableConfigurationSetting.BuildFinal stringListSetting(
+            final List<String> values,
+            final String name,
+            final String description,
+            final ParameterizedTypeName type) {
+        final var prefixesInCode = stringsInCode(values);
+        final var prefixesInDocs = stringsInDocs(values);
         return ConfigurationSetting.builder()
-                .setName("validateMethodNamePrefixes")
-                .setDescription("Validate user given names against list of allowed prefixes per type.")
-                .setType(TypeName.get(boolean.class))
-                .setValue(false)
+                .setName(name)
+                .setDescription(description)
+                .setAntInitializer(CodeBlock.of(".set$L($L)\n", upperCase(name), name))
+                .setCliInitializer(CodeBlock.of(".set$L($L)\n", upperCase(name), name))
+                .setGradleInitializer(CodeBlock.of(".set$L($L().get())\n", upperCase(name), gradlePropertyName(name)))
+                .setMavenInitializer(CodeBlock.of(".set$L($L)\n", upperCase(name), name))
+                .setGradleConvention(CodeBlock.of("$L().convention($T.of($L))", gradlePropertyName(name), List.class, prefixesInCode))
+                .addAntFields(antField(type, name, description, CodeBlock.of("$T.of($L)", List.class, prefixesInCode)))
+                .addAntMethods(antSetter(type, name, description))
+                .addCliFields(picocliOption(type, GROUP_NAME, name, description, prefixesInDocs))
+                .addGradleMethods(gradleProperty(gradleListPropertyOf(ClassName.get(String.class)), name, description))
+                .addImmutableMethods(immutableMethod(type, name, description, CodeBlock.of("$T.of($L)", List.class, prefixesInCode)))
+                .addMavenFields(mavenParameter(type, name, description, prefixesInDocs, CodeBlock.of("$T.of($L)", List.class, prefixesInCode)));
+    }
+
+    private static String stringsInDocs(final List<String> defaultPrefixes) {
+        final var prefixesInDocs = new StringJoiner(", ");
+        defaultPrefixes.forEach(prefixesInDocs::add);
+        return prefixesInDocs.toString();
+    }
+
+    private static String stringsInCode(final List<String> defaultPrefixes) {
+        final var prefixesInCode = new StringJoiner("\", \"", "\"", "\"");
+        defaultPrefixes.forEach(prefixesInCode::add);
+        return prefixesInCode.toString();
+    }
+
+    private static ConfigurationSetting validateMethodNamePrefixes() {
+        final var name = "validateMethodNamePrefixes";
+        final var description = "Validate user given names against list of allowed prefixes per type.";
+        final var value = false;
+        return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("false")
+                        .setValue(String.valueOf(value))
                         .setDescription("The default value of the `validateMethodNamePrefixes` configuration option is `false` which disables the validation of names according to your configured prefixes.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
-                        .setValue("true")
+                        .setValue(String.valueOf(true))
                         .setDescription("Changing the `validateMethodNamePrefixes` configuration option to `true` enables the validation of method names.")
                         .build())
                 .build();

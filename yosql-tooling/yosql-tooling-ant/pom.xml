@@ -36,9 +36,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>wtf.metio.yosql.tooling</groupId>
+            <artifactId>yosql-tooling-dagger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.10.11</version>
         </dependency>
     </dependencies>
 

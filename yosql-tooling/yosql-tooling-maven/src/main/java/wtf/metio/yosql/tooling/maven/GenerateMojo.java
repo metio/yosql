@@ -13,9 +13,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import wtf.metio.yosql.codegen.orchestration.Loggers;
 import wtf.metio.yosql.codegen.orchestration.YoSQL;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
@@ -31,8 +28,6 @@ import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
         threadSafe = true
 )
 public class GenerateMojo extends AbstractMojo {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Loggers.EXECUTIONS.loggerName);
 
     @Parameter(required = true, defaultValue = "${classObject}")
     Files files;
@@ -80,7 +75,7 @@ public class GenerateMojo extends AbstractMojo {
 
     private RuntimeConfiguration createConfiguration() {
         return RuntimeConfiguration.builder()
-                .setFiles(files.asConfiguration(project.getBasedir().getAbsolutePath()))
+                .setFiles(files.asConfiguration(project.getBasedir().toPath()))
                 .setAnnotations(annotations.asConfiguration())
                 .setJava(java.asConfiguration())
                 .setLogging(logging.asConfiguration())

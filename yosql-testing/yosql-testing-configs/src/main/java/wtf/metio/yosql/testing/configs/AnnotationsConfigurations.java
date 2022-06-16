@@ -16,7 +16,7 @@ import wtf.metio.yosql.models.immutables.AnnotationsConfiguration;
 public final class AnnotationsConfigurations {
 
     public static AnnotationsConfiguration defaults() {
-        return AnnotationsConfiguration.usingDefaults()
+        return AnnotationsConfiguration.builder()
                 .setAnnotateClasses(true)
                 .setAnnotateFields(true)
                 .setAnnotateMethods(true)

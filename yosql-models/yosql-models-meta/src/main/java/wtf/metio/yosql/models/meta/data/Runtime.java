@@ -7,43 +7,42 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-public final class Runtime {
+public final class Runtime extends AbstractConfigurationGroup {
 
-    public static ConfigurationGroup configurationGroup(final String immutablesBasePackage) {
+    public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
                 .setName(Runtime.class.getSimpleName())
                 .setDescription("Wrapper around all existing configs")
-                .addAllSettings(all(immutablesBasePackage))
+                .addAllSettings(all())
+                .addImmutableAnnotations(immutableAnnotation())
+                .addImmutableMethods(immutableBuilder(Runtime.class.getSimpleName()))
+                .addImmutableMethods(immutableCopyOf(Runtime.class.getSimpleName()))
                 .build();
     }
 
-    private static List<ConfigurationSetting> all(final String immutablesBasePackage) {
+    private static List<ConfigurationSetting> all() {
         return AllConfigurations.allConfigurationGroups()
-                .map(group -> single(group, immutablesBasePackage))
+                .map(Runtime::single)
                 .collect(Collectors.toList());
     }
 
-    private static ConfigurationSetting single(final ConfigurationGroup group, final String immutablesBasePackage) {
-        final var returnType = ClassName.get(immutablesBasePackage, group.configurationName());
+    private static ConfigurationSetting single(final ConfigurationGroup group) {
+        final var returnType = immutableType(configurationName(group.name()));
+        final var name = Strings.lowerCase(group.name());
+        final var description = group.description();
         return ConfigurationSetting.builder()
-                .setName(lowerCase(group.name()))
-                .setDescription(group.description())
-                .setType(returnType)
-                .setValue(CodeBlock.builder().add("$T.usingDefaults().build()", returnType).build())
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(returnType, name, description, CodeBlock.of("$T.builder().build()", returnType)))
                 .build();
-    }
-
-    private static String lowerCase(final String name) {
-        return name.substring(0, 1).toLowerCase(Locale.ROOT) + name.substring(1);
     }
 
     private Runtime() {

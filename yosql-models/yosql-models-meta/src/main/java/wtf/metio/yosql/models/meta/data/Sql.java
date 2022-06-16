@@ -22,32 +22,44 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import javax.lang.model.element.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public final class Sql {
+public final class Sql extends AbstractConfigurationGroup {
+
+    private static final String GROUP_NAME = Sql.class.getSimpleName();
+    private static final String MERGE = "merge";
+    private static final String RESULT_ROW_CONVERTER = "resultRowConverter";
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
-                .setName(Sql.class.getSimpleName())
+                .setName(GROUP_NAME)
                 .setDescription("The configuration for a single SQL statement.")
                 .setExplanation("""
                         All of these options are to be placed in the front matter of SQL statements and their overwrite
                         their respective counterparts in the global configuration, e.g. in [repositories](../repositories/).""")
-                .setImmutableAnnotations(extraTypeAnnotations())
                 .addAllSettings(settings())
                 .addAllSettings(withExtraAnnotations(stringRepositorySettings()))
                 .addAllSettings(withExtraAnnotations(booleanRepositorySettings())) // TODO: remove injectConverters from this list
-                .setImmutableMethods(List.of(
+                .addImmutableMethods(immutableBuilder(GROUP_NAME))
+                .addImmutableMethods(immutableCopyOf(GROUP_NAME))
+                .addImmutableMethods(
                         fromStatements(),
                         merge(),
                         converter(),
                         batchName(),
                         standardName(),
-                        joinMethodNameParts()))
+                        joinMethodNameParts())
+                .addImmutableAnnotations(immutableAnnotation())
+                .addImmutableAnnotations(AnnotationSpec.builder(JsonSerialize.class)
+                        .addMember("as", "$T.class", immutableType(immutableConfigurationName(GROUP_NAME)))
+                        .build())
+                .addImmutableAnnotations(AnnotationSpec.builder(JsonDeserialize.class)
+                        .addMember("as", "$T.class", immutableType(immutableConfigurationName(GROUP_NAME)))
+                        .build())
                 .build();
     }
 
@@ -68,34 +80,24 @@ public final class Sql {
     private static List<ConfigurationSetting> stringRepositorySettings() {
         return Repositories.stringMethods().stream()
                 .map(setting -> ConfigurationSetting.copyOf(setting)
-                        .withType(TypeName.get(String.class))
-                        .withValue(Optional.empty()))
+                        .withImmutableMethods(immutableMethod(ClassName.get(String.class),
+                                setting.name(), setting.description())))
                 .collect(Collectors.toList());
     }
 
     private static List<ConfigurationSetting> booleanRepositorySettings() {
         return Repositories.booleanMethods().stream()
                 .map(setting -> ConfigurationSetting.copyOf(setting)
-                        .withType(TypeName.get(Boolean.class))
-                        .withValue(Optional.empty()))
+                        .withImmutableMethods(immutableMethod(ClassName.get(Boolean.class),
+                                setting.name(), setting.description())))
                 .collect(Collectors.toList());
     }
 
     private static List<? extends ConfigurationSetting> withExtraAnnotations(final List<ConfigurationSetting> settings) {
         return settings.stream()
                 .map(setting -> ConfigurationSetting.copyOf(setting)
-                        .withImmutableAnnotations(List.of(jsonProperty(setting.name()))))
+                        .withImmutableAnnotations(jsonProperty(setting.name())))
                 .toList();
-    }
-
-    private static List<AnnotationSpec> extraTypeAnnotations() {
-        final var serialize = AnnotationSpec.builder(JsonSerialize.class)
-                .addMember("as", "$T.class", immutableType("ImmutableSqlConfiguration"))
-                .build();
-        final var deserialize = AnnotationSpec.builder(JsonDeserialize.class)
-                .addMember("as", "$T.class", immutableType("ImmutableSqlConfiguration"))
-                .build();
-        return List.of(serialize, deserialize);
     }
 
     private static AnnotationSpec jsonProperty(final String name) {
@@ -103,10 +105,11 @@ public final class Sql {
     }
 
     private static ConfigurationSetting repository() {
+        final var name = "repository";
+        final var description = "The fully qualified name of the target repository class.";
         return ConfigurationSetting.builder()
-                .setName("repository")
-                .setDescription("The fully qualified name of the target repository class.")
-                .setType(TypeName.get(String.class))
+                .setName(name)
+                .setDescription(description)
                 .setExplanation("""
                         In order to overwrite the target repository of a single SQL statement, use the `repository` option.
                         You can specify the fully qualified name of the repository that should contain your statement, or
@@ -114,26 +117,29 @@ public final class Sql {
                         [base package name](../../repositories/basepackagename/) as well as the
                         [repositoryNamePrefix](../../repositories/repositorynameprefix/) and
                         [repositoryNameSuffix](../../repositories/repositorynamesuffix/) for you.""")
-                .setImmutableAnnotations(List.of(jsonProperty("repository")))
                 .addTags(Tags.FRONT_MATTER)
+                .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
                 .build();
     }
 
     private static ConfigurationSetting repositoryInterface() {
+        final var name = "repositoryInterface";
+        final var description = "The fully qualified name of the target repository interface.";
         return ConfigurationSetting.builder()
-                .setName("repositoryInterface")
-                .setDescription("The fully qualified name of the target repository interface.")
-                .setType(TypeName.get(String.class))
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
                 .setGenerateDocs(false)
                 .build();
     }
 
     private static ConfigurationSetting name() {
+        final var name = "name";
+        final var description = "The name of the SQL statement";
         return ConfigurationSetting.builder()
-                .setName("name")
-                .setDescription("The name of the SQL statement")
-                .setType(TypeName.get(String.class))
-                .setImmutableAnnotations(List.of(jsonProperty("name")))
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("yourSpecialName")
@@ -156,11 +162,12 @@ public final class Sql {
     }
 
     private static ConfigurationSetting description() {
+        final var name = "description";
+        final var description = "The description for the SQL statement";
         return ConfigurationSetting.builder()
-                .setName("description")
-                .setDescription("The description for the SQL statement")
-                .setType(TypeName.get(String.class))
-                .setImmutableAnnotations(List.of(jsonProperty("description")))
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("Some random description")
@@ -186,60 +193,69 @@ public final class Sql {
     }
 
     private static ConfigurationSetting vendor() {
+        final var name = "vendor";
+        final var description = "The vendor name of the database the SQL statement is intended for";
         return ConfigurationSetting.builder()
-                .setName("vendor")
-                .setDescription("The vendor name of the database the SQL statement is intended for")
-                .setType(TypeName.get(String.class))
-                .setImmutableAnnotations(List.of(jsonProperty("vendor")))
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
     private static ConfigurationSetting type() {
+        final var name = "type";
+        final var description = "The type of the SQL statement.";
         return ConfigurationSetting.builder()
-                .setName("type")
-                .setDescription("The type of the SQL statement.")
-                .setType(TypeName.get(SqlStatementType.class))
-                .setImmutableAnnotations(List.of(jsonProperty("type")))
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(ClassName.get(SqlStatementType.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
     private static ConfigurationSetting returningMode() {
+        final var name = "returningMode";
+        final var description = "The returning mode of the SQL statement.";
         return ConfigurationSetting.builder()
-                .setName("returningMode")
-                .setDescription("The returning mode of the SQL statement.")
-                .setType(TypeName.get(ReturningMode.class))
-                .setImmutableAnnotations(List.of(jsonProperty("returning")))
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(ClassName.get(ReturningMode.class), name, description, jsonProperty("returning")))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
     private static ConfigurationSetting resultRowConverter() {
+        final var name = RESULT_ROW_CONVERTER;
+        final var description = "The alias or fully-qualified name of the converter to use";
         return ConfigurationSetting.builder()
-                .setName("resultRowConverter")
-                .setDescription("The alias or fully-qualified name of the converter to use")
-                .setType(TypeName.get(ResultRowConverter.class))
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(ClassName.get(ResultRowConverter.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
     private static ConfigurationSetting parameters() {
+        final var name = "parameters";
+        final var description = "The parameters of the SQL statement.";
         return ConfigurationSetting.builder()
-                .setName("parameters")
-                .setDescription("The parameters of the SQL statement.")
-                .setType(TypicalTypes.listOf(TypeName.get(SqlParameter.class)))
-                .setValue(CodeBlock.builder().add("$T.of()", List.class).build())
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(TypicalTypes.listOf(SqlParameter.class), name, description))
+                .setMergeCode(CodeBlock.of("$T.mergeParameters(first.$L(), second.$L())", SqlParameter.class, name, name))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
     private static ConfigurationSetting annotations() {
+        final var name = "annotations";
+        final var description = "The additional annotations to be placed on generated methods.";
         return ConfigurationSetting.builder()
-                .setName("annotations")
-                .setDescription("The additional annotations to be placed on generated methods.")
-                .setType(TypicalTypes.listOf(Annotation.class))
-                .setValue(CodeBlock.builder().add("$T.of()", List.class).build())
+                .setName(name)
+                .setDescription(description)
+                .addImmutableMethods(immutableMethod(TypicalTypes.listOf(Annotation.class), name, description))
+                .setMergeCode(CodeBlock.of("$T.mergeAnnotations(first.$L(), second.$L())", Annotation.class, name, name))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }
@@ -251,11 +267,11 @@ public final class Sql {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(ParameterSpec.builder(statements, "statements", Modifier.FINAL).build())
                 .returns(configuration)
-                .addStatement("$T latest = $T.usingDefaults().build()", configuration, configuration)
+                .addStatement("$T latest = $T.$L().build()", configuration, configuration, BUILDER_METHOD_NAME)
                 .addCode(CodeBlock.builder()
                         .beginControlFlow("for (final var $L : $L)", "statement", "statements")
                         .addStatement("final var config = $L.getConfiguration()", "statement")
-                        .addStatement("latest = merge(latest, config)")
+                        .addStatement("latest = $L(latest, config)", MERGE)
                         .endControlFlow()
                         .build())
                 .addStatement("return latest")
@@ -264,20 +280,16 @@ public final class Sql {
 
     private static MethodSpec merge() {
         final var configuration = immutableType("SqlConfiguration");
-        return MethodSpec.methodBuilder("merge")
+        return MethodSpec.methodBuilder(MERGE)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(ParameterSpec.builder(configuration, "first", Modifier.FINAL).build())
                 .addParameter(ParameterSpec.builder(configuration, "second", Modifier.FINAL).build())
                 .returns(configuration)
                 .addStatement(CodeBlock.builder()
-                        .add("return $T.copyOf($L)", configuration, "first")
+                        .add("return $T.$L($L)", configuration, COPY_OF_METHOD_NAME, "first")
                         .add(withAllSettings())
                         .build())
                 .build();
-    }
-
-    private static ClassName immutableType(final String type) {
-        return ClassName.get("wtf.metio.yosql.models.immutables", type);
     }
 
     private static CodeBlock withAllSettings() {
@@ -289,28 +301,23 @@ public final class Sql {
     }
 
     private static void addSetting(final CodeBlock.Builder builder, final ConfigurationSetting setting) {
-        if (TypicalTypes.listOf(TypeName.get(SqlParameter.class)).equals(setting.type())) {
-            builder.add("$>$>\n.with$L($T.mergeParameters(first.$L(), second.$L()))$<$<",
-                    Strings.upperCase(setting.name()), SqlParameter.class, setting.name(), setting.name());
-        } else if (TypicalTypes.listOf(TypeName.get(Annotation.class)).equals(setting.type())) {
-            builder.add("$>$>\n.with$L($T.mergeAnnotations(first.$L(), second.$L()))$<$<",
-                    Strings.upperCase(setting.name()), Annotation.class, setting.name(), setting.name());
-        } else {
-            builder.add("$>$>\n.with$L(first.$L().or(second::$L))$<$<",
-                    Strings.upperCase(setting.name()), setting.name(), setting.name());
-        }
+        setting.mergeCode().ifPresentOrElse(
+                code -> builder.add("$>$>\n.with$L($L)$<$<", Strings.upperCase(setting.name()), code),
+                () -> builder.add("$>$>\n.with$L(first.$L().or(second::$L))$<$<",
+                        Strings.upperCase(setting.name()), setting.name(), setting.name()));
     }
 
     private static MethodSpec converter() {
         final var parameterType = TypicalTypes.supplierOf(TypicalTypes.optionalOf(ResultRowConverter.class));
+        final var defaultConverter = "defaultConverter";
         return MethodSpec.methodBuilder("converter")
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .addParameter(ParameterSpec.builder(parameterType, "defaultConverter").build())
+                .addParameter(ParameterSpec.builder(parameterType, defaultConverter).build())
                 .returns(ResultRowConverter.class)
                 .addAnnotation(Value.Lazy.class)
                 .addStatement(CodeBlock.builder()
-                        .add("return resultRowConverter()")
-                        .add("$>\n.or(defaultConverter)")
+                        .add("return $L()", RESULT_ROW_CONVERTER)
+                        .add("$>\n.or($L)", defaultConverter)
                         .add("\n.orElseThrow()$<")
                         .build())
                 .build();
@@ -330,7 +337,7 @@ public final class Sql {
                         .add("\n.filter($T.not($T::isBlank))", Predicate.class, String.class)
                         .add("\n.map(string -> part.getAndIncrement() == 0")
                         .add("$>\n? string")
-                        .add("\n: string.substring(0,1).toUpperCase() + string.substring(1))$<")
+                        .add("\n: string.substring(0, 1).toUpperCase($T.ROOT) + string.substring(1))$<", Locale.class)
                         .add("\n.collect($T.joining())$<", Collectors.class)
                         .build())
                 .build();

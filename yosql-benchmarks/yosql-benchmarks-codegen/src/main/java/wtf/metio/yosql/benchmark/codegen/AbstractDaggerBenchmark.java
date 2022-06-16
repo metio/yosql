@@ -38,8 +38,8 @@ abstract class AbstractDaggerBenchmark extends AbstractCodeGenBenchmark {
      * @return Fully configured runtime configuration.
      */
     private RuntimeConfiguration config() {
-        return RuntimeConfiguration.usingDefaults()
-                .setFiles(FilesConfiguration.usingDefaults()
+        return RuntimeConfiguration.builder()
+                .setFiles(FilesConfiguration.builder()
                         .setInputBaseDirectory(inputDirectory)
                         .setOutputBaseDirectory(outputDirectory)
                         .build())

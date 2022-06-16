@@ -23,7 +23,7 @@ import java.util.function.Function;
 /**
  * Generates markdown documentation for {@link ConfigurationGroup}s.
  */
-public final class MarkdownGenerator {
+final class MarkdownGenerator {
 
     private static final Function<String, String> LOWER_CASE = Strings::lowerCase;
     private static final Function<String, String> UPPER_CASE = Strings::upperCase;
@@ -33,7 +33,7 @@ public final class MarkdownGenerator {
     private final Mustache settingTemplate;
     private final String yosqlVersion;
 
-    public MarkdownGenerator(
+    MarkdownGenerator(
             final MustacheFactory mustacheFactory,
             final String yosqlVersion,
             final String settingTemplateName) {

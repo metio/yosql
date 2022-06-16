@@ -36,7 +36,7 @@ class DefaultRepositoryNameConfigurerTest {
         configurer = new DefaultRepositoryNameConfigurer(
                 LoggingObjectMother.logger(),
                 files,
-                RepositoriesConfiguration.usingDefaults()
+                RepositoriesConfiguration.builder()
                         .setRepositoryNamePrefix("Prefix")
                         .setRepositoryNameSuffix("Suffix")
                         .setRepositoryInterfacePrefix("Inter")
@@ -46,28 +46,28 @@ class DefaultRepositoryNameConfigurerTest {
 
     @Test
     void repositoryName() {
-        final var config = SqlConfiguration.usingDefaults().build();
+        final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, inputBaseDirectory.resolve("test.sql"));
         assertEquals("com.example.persistence.PrefixSuffix", name);
     }
 
     @Test
     void repositoryNameInSubdirectory() {
-        final var config = SqlConfiguration.usingDefaults().build();
+        final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, inputBaseDirectory.resolve("sub/test.sql"));
         assertEquals("com.example.persistence.PrefixSubSuffix", name);
     }
 
     @Test
     void repositoryNameInSubSubdirectory() {
-        final var config = SqlConfiguration.usingDefaults().build();
+        final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, inputBaseDirectory.resolve("foo/bar/test.sql"));
         assertEquals("com.example.persistence.foo.PrefixBarSuffix", name);
     }
 
     @Test
     void repositoryNameWithoutParent() {
-        final var config = SqlConfiguration.usingDefaults().build();
+        final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, Paths.get("test.sql"));
         assertEquals("com.example.persistence.PrefixSuffix", name);
     }
@@ -167,7 +167,7 @@ class DefaultRepositoryNameConfigurerTest {
         configurer = new DefaultRepositoryNameConfigurer(
                 LoggingObjectMother.logger(),
                 files,
-                RepositoriesConfiguration.usingDefaults()
+                RepositoriesConfiguration.builder()
                         .setRepositoryNamePrefix("Prefix")
                         .setRepositoryNameSuffix("Suffix")
                         .setRepositoryInterfacePrefix("Inter")
@@ -184,7 +184,7 @@ class DefaultRepositoryNameConfigurerTest {
         configurer = new DefaultRepositoryNameConfigurer(
                 LoggingObjectMother.logger(),
                 files,
-                RepositoriesConfiguration.usingDefaults()
+                RepositoriesConfiguration.builder()
                         .setRepositoryNamePrefix("Prefix")
                         .setRepositoryNameSuffix("Suffix")
                         .setRepositoryInterfacePrefix("Inter")
@@ -234,7 +234,7 @@ class DefaultRepositoryNameConfigurerTest {
 
     @Test
     void configureName() {
-        final var config = SqlConfiguration.usingDefaults().build();
+        final var config = SqlConfiguration.builder().build();
         final var altered = configurer.configureNames(config,
                 inputBaseDirectory.resolve("test.sql"));
         assertEquals("com.example.persistence.PrefixSuffix",
