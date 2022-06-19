@@ -56,6 +56,12 @@ jobs:
       - id: maven
         name: Maven Tooling
         run: mvn --batch-mode install
+      - id: upload-ant-tooling
+        name: Upload Ant Tooling
+        uses: actions/upload-artifact@v3
+        with:
+          name: yosql-tooling-ant
+          path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-jvm*
       - id: gradle
         name: Gradle Tooling
         run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
