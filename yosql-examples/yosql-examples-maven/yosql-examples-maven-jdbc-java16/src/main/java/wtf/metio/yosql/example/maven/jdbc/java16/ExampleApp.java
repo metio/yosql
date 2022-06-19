@@ -17,7 +17,7 @@ import wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ToMapConv
 public final class ExampleApp {
 
     public static void main(final String[] arguments) {
-        try (final var dataSource = DataSourceCreator.createDataSource();) {
+        try (final var dataSource = DataSourceCreator.createDataSource("java16")) {
             final var schemaRepository = new SchemaRepository(dataSource);
             final var toMapConverter = new ToMapConverter();
             final var toItemConverter = new ToItemConverter();

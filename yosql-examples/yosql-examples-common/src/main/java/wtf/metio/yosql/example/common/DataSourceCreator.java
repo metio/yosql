@@ -11,10 +11,11 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public final class DataSourceCreator {
 
-    public static HikariDataSource createDataSource() {
+    public static HikariDataSource createDataSource(final String name) {
         final var dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:h2:mem:example;DB_CLOSE_DELAY=-1");
-        dataSource.setUsername("sa");
+        dataSource.setDataSourceClassName("org.h2.jdbcx.JdbcDataSource");
+        dataSource.addDataSourceProperty("URL", "jdbc:h2:mem:" + name);
+        dataSource.addDataSourceProperty("user", "sa");
         return dataSource;
     }
 

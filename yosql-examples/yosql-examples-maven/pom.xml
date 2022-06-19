@@ -49,21 +49,6 @@
         <module>yosql-examples-maven-jdbc-java16</module>
     </modules>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!--                               DEPENDENCIES                              -->
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!-- https://maven.apache.org/pom.html#Dependencies -->
-    <dependencies>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>

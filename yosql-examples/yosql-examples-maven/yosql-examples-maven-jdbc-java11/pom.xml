@@ -44,6 +44,11 @@
             <artifactId>yosql-examples-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -77,6 +82,21 @@
                             </rowConverter>
                         </rowConverters>
                     </converter>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>wtf.metio.yosql.example.maven.jdbc.java11.ExampleApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>

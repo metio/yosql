@@ -12,10 +12,10 @@ import wtf.metio.yosql.example.common.SchemaCreator;
 import wtf.metio.yosql.example.common.WritingTests;
 import wtf.metio.yosql.example.maven.jdbc.java9.persistence.*;
 
-public class ExampleApp {
+public final class ExampleApp {
 
     public static void main(final String[] arguments) {
-        try (final var dataSource = DataSourceCreator.createDataSource();) {
+        try (final var dataSource = DataSourceCreator.createDataSource("java9")) {
             final var schemaRepository = new SchemaRepository(dataSource);
             final var companyRepository = new CompanyRepository(dataSource);
             final var personRepository = new PersonRepository(dataSource);
@@ -62,6 +62,10 @@ public class ExampleApp {
                     .build()
                     .runReadingTests();
         }
+    }
+
+    private ExampleApp() {
+        // application class
     }
 
 }
