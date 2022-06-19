@@ -13,6 +13,7 @@ import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.configuration.SqlStatementType;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -39,6 +40,10 @@ public interface SqlStatement {
                 .map(SqlStatement::getConfiguration)
                 .filter(SqlStatement::requiresConverter)
                 .map(config -> config.resultRowConverter().orElse(defaultConverter))
+                .sorted(Comparator.comparing((ResultRowConverter converter) -> converter.alias().orElse(""))
+                        .thenComparing(converter -> converter.converterType().orElse(""))
+                        .thenComparing(converter -> converter.resultType().orElse(""))
+                        .thenComparing(converter -> converter.methodName().orElse("")))
                 .distinct();
     }
 

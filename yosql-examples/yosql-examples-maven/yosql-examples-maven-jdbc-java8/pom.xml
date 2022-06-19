@@ -103,8 +103,7 @@
                         <rowConverters>
                             <rowConverter>
                                 <alias>itemConverter</alias>
-                                <converterType>wtf.metio.yosql.example.maven.jdbc.java8.converter.ToItemConverter
-                                </converterType>
+                                <converterType>wtf.metio.yosql.example.maven.jdbc.java8.converter.ToItemConverter</converterType>
                                 <methodName>asUserType</methodName>
                                 <resultType>wtf.metio.yosql.example.maven.jdbc.java8.model.Item</resultType>
                             </rowConverter>

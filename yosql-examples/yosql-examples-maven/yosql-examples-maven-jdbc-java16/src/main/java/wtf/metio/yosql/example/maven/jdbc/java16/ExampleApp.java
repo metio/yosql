@@ -14,7 +14,7 @@ import wtf.metio.yosql.example.maven.jdbc.java16.converter.ToItemConverter;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.*;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ToMapConverter;
 
-public class ExampleApp {
+public final class ExampleApp {
 
     public static void main(final String[] arguments) {
         try (final var dataSource = DataSourceCreator.createDataSource();) {
@@ -23,7 +23,7 @@ public class ExampleApp {
             final var toItemConverter = new ToItemConverter();
             final var companyRepository = new CompanyRepository(dataSource, toMapConverter);
             final var personRepository = new PersonRepository(dataSource, toMapConverter);
-            final var itemRepository = new ItemRepository(dataSource, toMapConverter, toItemConverter);
+            final var itemRepository = new ItemRepository(dataSource, toItemConverter, toMapConverter);
             final var userRepository = new UserRepository(dataSource, toMapConverter);
             final var adminRepository = new AdminRepository(dataSource, toMapConverter);
 
@@ -66,6 +66,10 @@ public class ExampleApp {
                     .build()
                     .runReadingTests();
         }
+    }
+
+    private ExampleApp() {
+        // application class
     }
 
 }

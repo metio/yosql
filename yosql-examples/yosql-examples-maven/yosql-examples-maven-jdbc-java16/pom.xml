@@ -71,8 +71,7 @@
                         <rowConverters>
                             <rowConverter>
                                 <alias>itemConverter</alias>
-                                <converterType>wtf.metio.yosql.example.maven.jdbc.java16.converter.ToItemConverter
-                                </converterType>
+                                <converterType>wtf.metio.yosql.example.maven.jdbc.java16.converter.ToItemConverter</converterType>
                                 <methodName>asUserType</methodName>
                                 <resultType>wtf.metio.yosql.example.maven.jdbc.java16.model.Item</resultType>
                             </rowConverter>
