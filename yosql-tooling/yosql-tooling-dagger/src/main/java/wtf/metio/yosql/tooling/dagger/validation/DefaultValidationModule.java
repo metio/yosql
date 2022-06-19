@@ -46,4 +46,13 @@ public class DefaultValidationModule {
         return new NamesConfigurationValidator(errors, messages);
     }
 
+    @IntoSet
+    @Provides
+    @Singleton
+    RuntimeConfigurationValidator provideConverterConfigurationValidator(
+            final ExecutionErrors errors,
+            final IMessageConveyor messages) {
+        return new ConverterConfigurationValidator(errors, messages);
+    }
+
 }

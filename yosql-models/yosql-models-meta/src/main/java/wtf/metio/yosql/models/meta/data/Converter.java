@@ -8,6 +8,7 @@
 package wtf.metio.yosql.models.meta.data;
 
 import com.squareup.javapoet.*;
+import org.immutables.value.Value;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
@@ -15,6 +16,7 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -62,9 +64,20 @@ public final class Converter extends AbstractConfigurationGroup {
                 .addGradleConventionParameters(ParameterSpec.builder(GRADLE_OBJECTS, OBJECTS, Modifier.FINAL).build())
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
+                .addImmutableMethods(uniqueConverterAliases())
                 .addImmutableAnnotations(immutableAnnotation())
                 .addMavenMethods(createMavenRowConverters(), createMavenRowConverter())
                 .addMavenTypes(mavenRowConverterType())
+                .build();
+    }
+
+    private static MethodSpec uniqueConverterAliases() {
+        return MethodSpec.methodBuilder("uniqueConverterAliases")
+                .addAnnotation(AnnotationSpec.builder(Value.Lazy.class).build())
+                .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
+                .returns(MAP_OF_STRING_AND_LONGS)
+                .addStatement("return $L().stream().map(converter -> converter.alias().orElse($S)).collect($T.groupingBy($T.identity(), $T.counting()))",
+                        ROW_CONVERTERS, "", Collectors.class, Function.class, Collectors.class)
                 .build();
     }
 

@@ -50,4 +50,9 @@ public enum ApplicationErrors {
      */
     NAMES_CONFIG_INVALID,
 
+    /**
+     * Signals that not all converter aliases are unique.
+     */
+    DUPLICATE_CONVERTER_ALIAS_USED,
+
 }
