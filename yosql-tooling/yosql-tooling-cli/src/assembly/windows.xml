@@ -1,0 +1,43 @@
+<!--
+  ~ This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
+  ~ directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
+  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+  ~ in the LICENSE file.
+  -->
+
+<!--
+  ~ This file is part of ilo. It is subject to the license terms in the LICENSE file found in the top-level
+  ~ directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of ilo,
+  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
+  ~ in the LICENSE file.
+  -->
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+
+    <id>windows</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory/>
+            <includes>
+                <include>yosql.exe</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/../..</directory>
+            <outputDirectory/>
+            <includes>
+                <include>README.md</include>
+                <include>LICENSE</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+</assembly>

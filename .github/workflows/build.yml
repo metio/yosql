@@ -62,6 +62,12 @@ jobs:
         with:
           name: yosql-tooling-ant
           path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-jvm*
+      - id: upload-cli-tooling
+        name: Upload CLI Tooling
+        uses: actions/upload-artifact@v3
+        with:
+          name: yosql-tooling-cli
+          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
       - id: gradle
         name: Gradle Tooling
         run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
