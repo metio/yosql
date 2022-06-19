@@ -29,6 +29,7 @@ import static wtf.metio.yosql.internals.jdk.Strings.upperCase;
 public final class Repositories extends AbstractConfigurationGroup {
 
     private static final String GROUP_NAME = Repositories.class.getSimpleName();
+    static final String INJECT_CONVERTERS = "injectConverters";
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
@@ -277,10 +278,9 @@ public final class Repositories extends AbstractConfigurationGroup {
     }
 
     private static ConfigurationSetting injectConverters() {
-        final var name = "injectConverters";
         final var description = "Toggles whether converters should be injected as constructor parameters.";
         final var value = false;
-        return setting(GROUP_NAME, name, description, value)
+        return setting(GROUP_NAME, INJECT_CONVERTERS, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue(String.valueOf(value))

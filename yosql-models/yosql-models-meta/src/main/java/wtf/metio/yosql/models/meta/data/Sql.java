@@ -7,6 +7,7 @@
 
 package wtf.metio.yosql.models.meta.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -28,6 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static wtf.metio.yosql.models.meta.data.Repositories.INJECT_CONVERTERS;
+
 public final class Sql extends AbstractConfigurationGroup {
 
     private static final String GROUP_NAME = Sql.class.getSimpleName();
@@ -43,7 +46,7 @@ public final class Sql extends AbstractConfigurationGroup {
                         their respective counterparts in the global configuration, e.g. in [repositories](../repositories/).""")
                 .addAllSettings(settings())
                 .addAllSettings(withExtraAnnotations(stringRepositorySettings()))
-                .addAllSettings(withExtraAnnotations(booleanRepositorySettings())) // TODO: remove injectConverters from this list
+                .addAllSettings(withExtraAnnotations(booleanRepositorySettings()))
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
                 .addImmutableMethods(
@@ -66,7 +69,7 @@ public final class Sql extends AbstractConfigurationGroup {
     private static List<ConfigurationSetting> settings() {
         return List.of(
                 repository(),
-                repositoryInterface(), // TODO: add JsonIgnore on this one?
+                repositoryInterface(),
                 name(),
                 description(),
                 vendor(),
@@ -87,6 +90,7 @@ public final class Sql extends AbstractConfigurationGroup {
 
     private static List<ConfigurationSetting> booleanRepositorySettings() {
         return Repositories.booleanMethods().stream()
+                .filter(setting -> !INJECT_CONVERTERS.equals(setting.name()))
                 .map(setting -> ConfigurationSetting.copyOf(setting)
                         .withImmutableMethods(immutableMethod(ClassName.get(Boolean.class),
                                 setting.name(), setting.description())))
@@ -128,7 +132,7 @@ public final class Sql extends AbstractConfigurationGroup {
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
-                .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
+                .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description, AnnotationSpec.builder(JsonIgnore.class).build()))
                 .setGenerateDocs(false)
                 .build();
     }
