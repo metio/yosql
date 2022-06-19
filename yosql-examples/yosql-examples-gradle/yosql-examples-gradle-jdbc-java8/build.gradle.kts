@@ -7,6 +7,7 @@
 
 plugins {
     java
+    application
     id("wtf.metio.yosql")
 }
 
@@ -14,6 +15,10 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(11)) // hikari needs at least Java 11
     }
+}
+
+application {
+    mainClass.set("${group}.ExampleApp")
 }
 
 yosql {

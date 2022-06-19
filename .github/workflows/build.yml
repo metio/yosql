@@ -58,7 +58,7 @@ jobs:
         run: mvn --batch-mode install
       - id: gradle
         name: Gradle Tooling
-        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build
+        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
   benchmarks:
     name: Benchmarks
     runs-on: ubuntu-latest
