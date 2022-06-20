@@ -10,8 +10,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.jdk.Buckets;
+import wtf.metio.yosql.internals.jdk.Strings;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +42,30 @@ public interface Annotation {
     }
 
     static Annotation fromString(final String input) {
-        return builder().setType("").build();
+        return Optional.ofNullable(input)
+                .map(String::strip)
+                .filter(Predicate.not(Strings::isBlank))
+                .map(value -> value.split(":"))
+                .filter(values -> values.length > 0)
+                .map(values -> Annotation.builder()
+                        .setType(values[0])
+                        .addAllMembers(parseMembers(values.length > 1 ? Arrays.copyOfRange(values, 1, values.length) : new String[]{}))
+                        .build())
+                .orElse(null);
+    }
+
+    static List<? extends AnnotationMember> parseMembers(final String[] input) {
+        return Arrays.stream(input)
+                .map(String::strip)
+                .filter(Predicate.not(Strings::isBlank))
+                .map(value -> value.split("\\|"))
+                .filter(values -> values.length > 1)
+                .map(values -> AnnotationMember.builder()
+                        .setKey(values[0])
+                        .setValue(values[1])
+                        .setType(values.length > 2 ? values[2] : "java.lang.String")
+                        .build())
+                .toList();
     }
 
     //endregion

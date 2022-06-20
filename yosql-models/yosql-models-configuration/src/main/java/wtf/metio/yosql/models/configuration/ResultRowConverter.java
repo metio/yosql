@@ -36,6 +36,7 @@ public interface ResultRowConverter {
                 .map(String::strip)
                 .filter(Predicate.not(Strings::isBlank))
                 .map(value -> value.split(":"))
+                .filter(values -> values.length == 4)
                 .map(values -> ResultRowConverter.builder()
                         .setAlias(values[0])
                         .setConverterType(values[1])

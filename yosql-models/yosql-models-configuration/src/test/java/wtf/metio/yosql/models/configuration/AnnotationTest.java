@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AnnotationTest {
 
@@ -74,6 +74,104 @@ class AnnotationTest {
         final var merged = Annotation.mergeAnnotations(first, second);
 
         assertIterableEquals(second, merged);
+    }
+
+    @Test
+    void fromStringWithoutMembers() {
+        final var annotationType = "com.example.MyAnnotation";
+        final var input = String.format("%s", annotationType);
+        final var annotation = Annotation.fromString(input);
+
+        assertNotNull(annotation);
+        assertAll(
+                () -> assertEquals(annotationType, annotation.type()),
+                () -> assertTrue(annotation.members().isEmpty()));
+    }
+
+    @Test
+    void fromStringWithMember() {
+        final var annotationType = "com.example.MyAnnotation";
+        final var key = "some";
+        final var value = "test";
+        final var input = String.format("%s:%s|%s", annotationType, key, value);
+        final var annotation = Annotation.fromString(input);
+
+        assertNotNull(annotation);
+        assertAll(
+                () -> assertEquals(annotationType, annotation.type()),
+                () -> assertFalse(annotation.members().isEmpty()),
+                () -> assertEquals(key, annotation.members().get(0).key()),
+                () -> assertEquals(value, annotation.members().get(0).value()),
+                () -> assertEquals("java.lang.String", annotation.members().get(0).type()));
+    }
+
+    @Test
+    void fromStringWithMembers() {
+        final var annotationType = "com.example.MyAnnotation";
+        final var key1 = "some";
+        final var value1 = "test";
+        final var key2 = "other";
+        final var value2 = "123";
+        final var type2 = "java.lang.Integer";
+        final var input = String.format("%s:%s|%s:%s|%s|%s", annotationType, key1, value1, key2, value2, type2);
+        final var annotation = Annotation.fromString(input);
+
+        assertNotNull(annotation);
+        assertAll(
+                () -> assertEquals(annotationType, annotation.type()),
+                () -> assertFalse(annotation.members().isEmpty()),
+                () -> assertEquals(key1, annotation.members().get(0).key()),
+                () -> assertEquals(value1, annotation.members().get(0).value()),
+                () -> assertEquals("java.lang.String", annotation.members().get(0).type()),
+                () -> assertEquals(key2, annotation.members().get(1).key()),
+                () -> assertEquals(value2, annotation.members().get(1).value()),
+                () -> assertEquals("java.lang.Integer", annotation.members().get(1).type()));
+    }
+
+    @Test
+    void fromStringWithMembersUsingPrimitiveType() {
+        final var annotationType = "com.example.MyAnnotation";
+        final var key1 = "some";
+        final var value1 = "test";
+        final var key2 = "other";
+        final var value2 = "true";
+        final var type2 = "boolean";
+        final var input = String.format("%s:%s|%s:%s|%s|%s", annotationType, key1, value1, key2, value2, type2);
+        final var annotation = Annotation.fromString(input);
+
+        assertNotNull(annotation);
+        assertAll(
+                () -> assertEquals(annotationType, annotation.type()),
+                () -> assertFalse(annotation.members().isEmpty()),
+                () -> assertEquals(key1, annotation.members().get(0).key()),
+                () -> assertEquals(value1, annotation.members().get(0).value()),
+                () -> assertEquals("java.lang.String", annotation.members().get(0).type()),
+                () -> assertEquals(key2, annotation.members().get(1).key()),
+                () -> assertEquals(value2, annotation.members().get(1).value()),
+                () -> assertEquals("boolean", annotation.members().get(1).type()));
+    }
+
+    @Test
+    void fromStringWithMembersUsingDifferentOrder() {
+        final var annotationType = "com.example.MyAnnotation";
+        final var key1 = "some";
+        final var value1 = "test";
+        final var type1 = "boolean";
+        final var key2 = "other";
+        final var value2 = "true";
+        final var input = String.format("%s:%s|%s|%s:%s|%s", annotationType, key1, value1, type1, key2, value2);
+        final var annotation = Annotation.fromString(input);
+
+        assertNotNull(annotation);
+        assertAll(
+                () -> assertEquals(annotationType, annotation.type()),
+                () -> assertFalse(annotation.members().isEmpty()),
+                () -> assertEquals(key1, annotation.members().get(0).key()),
+                () -> assertEquals(value1, annotation.members().get(0).value()),
+                () -> assertEquals("boolean", annotation.members().get(0).type()),
+                () -> assertEquals(key2, annotation.members().get(1).key()),
+                () -> assertEquals(value2, annotation.members().get(1).value()),
+                () -> assertEquals("java.lang.String", annotation.members().get(1).type()));
     }
 
 }
