@@ -14,6 +14,13 @@
       <option name="annotationNamesString" value="" />
     </inspection_tool>
     <inspection_tool class="MagicNumber" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MavenPackageUpdate" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="excludeList">
+        <list>
+          <option value="wtf.metio.yosql.tooling:yosql-tooling-dagger" />
+        </list>
+      </option>
+    </inspection_tool>
     <inspection_tool class="MethodMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_onlyPrivateOrFinal" value="true" />
       <option name="m_ignoreEmptyMethods" value="true" />

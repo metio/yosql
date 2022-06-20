@@ -78,8 +78,9 @@
                     <compilerArgs>
                         <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
                     </compilerArgs>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${version.jdk}</source>
+                    <target>${version.jdk}</target>
+                    <release>${version.jdk}</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -113,7 +114,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>add-yosql-source</id>
@@ -157,7 +157,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>jre-assembly</id>
+                        <id>jvm-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
