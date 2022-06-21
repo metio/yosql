@@ -43,6 +43,7 @@
     <!-- https://maven.apache.org/pom.html#Aggregation -->
     <modules>
         <module>yosql-examples-common</module>
+        <module>yosql-examples-cli</module>
         <module>yosql-examples-maven</module>
     </modules>
 

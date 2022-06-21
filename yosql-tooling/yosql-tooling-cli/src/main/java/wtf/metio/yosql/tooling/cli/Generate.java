@@ -53,12 +53,8 @@ public class Generate implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        try {
-            buildYoSQL().generateCode();
-            return CommandLine.ExitCode.OK;
-        } catch (final Throwable throwable) {
-            return CommandLine.ExitCode.SOFTWARE;
-        }
+        buildYoSQL().generateCode();
+        return CommandLine.ExitCode.OK;
     }
 
     private YoSQL buildYoSQL() {

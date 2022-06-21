@@ -34,7 +34,7 @@ public final class YoSQL implements Runnable {
      * @param arguments The CLI arguments.
      */
     public static void main(final String... arguments) {
-        System.exit(commandLine().execute(arguments));
+        commandLine().execute(arguments);
     }
 
     // visible for testing

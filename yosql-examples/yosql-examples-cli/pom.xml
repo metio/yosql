@@ -37,11 +37,42 @@
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: Examples :: CLI</name>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!--                                  MODULES                                -->
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!-- https://maven.apache.org/pom.html#Aggregation -->
-    <modules>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>wtf.metio.yosql.tooling</groupId>
+            <artifactId>yosql-tooling-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>using-defaults</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>verify</phase>
+                        <configuration>
+                            <mainClass>wtf.metio.yosql.tooling.cli.YoSQL</mainClass>
+                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                            <arguments>
+                                <argument>generate</argument>
+                                <argument>--files-input-base-directory</argument>
+                                <argument>yosql-examples/yosql-examples-common/src/main/yosql</argument>
+                                <argument>--files-output-base-directory</argument>
+                                <argument>${project.build.directory}/using-defaults</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

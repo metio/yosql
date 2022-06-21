@@ -897,7 +897,7 @@ public final class Annotations extends AbstractConfigurationGroup {
                 .setMavenInitializer(CodeBlock.of(".addAll$L($L($L))\n", upperCase(name), CREATE_ANNOTATIONS, name))
                 .addAntFields(antField(TypicalTypes.listOf(ANT_ANNOTATION_TYPE), name, description, CodeBlock.of("new $T<>()", ArrayList.class)))
                 .addAntMethods(antAdder(ANT_ANNOTATION_TYPE, name, description))
-                .addCliFields(picocliOption(TypicalTypes.listOf(String.class), GROUP_NAME, name, description, ""))
+                .addCliFields(picocliOption(TypicalTypes.listOf(String.class), GROUP_NAME, name, description))
                 .addGradleMethods(gradleProperty(gradleContainerOf(GRADLE_ANNOTATION_TYPE), name, description))
                 .addImmutableMethods(immutableMethod(TypicalTypes.listOf(Annotation.class), name, description))
                 .addMavenFields(mavenParameter(TypicalTypes.listOf(MAVEN_ANNOTATION_TYPE), name, description, "", CodeBlock.of("new $T<>()", ArrayList.class)))
