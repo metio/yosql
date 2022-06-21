@@ -54,7 +54,7 @@ public interface Annotation {
                 .orElse(null);
     }
 
-    static List<? extends AnnotationMember> parseMembers(final String[] input) {
+    private static List<? extends AnnotationMember> parseMembers(final String[] input) {
         return Arrays.stream(input)
                 .map(String::strip)
                 .filter(Predicate.not(Strings::isBlank))
