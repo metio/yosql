@@ -241,6 +241,18 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
                 .build();
     }
 
+    protected static FieldSpec picocliOption(
+            final TypeName type,
+            final String groupName,
+            final String settingName,
+            final String description,
+            final String value,
+            final String splitRegex) {
+        return FieldSpec.builder(type, settingName)
+                .addAnnotation(picocliOptionAnnotation(groupName, settingName, description, value, splitRegex))
+                .build();
+    }
+
     private static AnnotationSpec picocliOptionAnnotation(
             final String groupName,
             final String settingName,
@@ -262,6 +274,21 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
                 .addMember("names", "$S", cliOptionName(groupName, settingName))
                 .addMember("description", "$S", description)
                 .addMember("defaultValue", "$S", value);
+        return builder.build();
+    }
+
+    private static AnnotationSpec picocliOptionAnnotation(
+            final String groupName,
+            final String settingName,
+            final String description,
+            final String value,
+            final String splitRegex) {
+        final var option = ClassName.get("picocli.CommandLine", "Option");
+        final var builder = AnnotationSpec.builder(option)
+                .addMember("names", "$S", cliOptionName(groupName, settingName))
+                .addMember("description", "$S", description)
+                .addMember("defaultValue", "$S", value)
+                .addMember("split", "$S", splitRegex);
         return builder.build();
     }
 

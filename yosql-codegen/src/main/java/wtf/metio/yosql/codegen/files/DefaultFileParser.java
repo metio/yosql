@@ -30,19 +30,19 @@ public final class DefaultFileParser implements FileParser {
     private final ParserPreconditions preconditions;
     private final FilesConfiguration fileConfiguration;
     private final ExecutionErrors errors;
-    private final SqlStatementParser fileParser;
+    private final SqlStatementParser statementParser;
 
     public DefaultFileParser(
             final LocLogger logger,
             final ParserPreconditions preconditions,
             final FilesConfiguration fileConfiguration,
             final ExecutionErrors errors,
-            final SqlStatementParser fileParser) {
+            final SqlStatementParser statementParser) {
         this.logger = logger;
         this.preconditions = preconditions;
         this.fileConfiguration = fileConfiguration;
         this.errors = errors;
-        this.fileParser = fileParser;
+        this.statementParser = statementParser;
     }
 
     @Override
@@ -57,7 +57,7 @@ public final class DefaultFileParser implements FileParser {
                         .filter(Files::isRegularFile)
                         .filter(path -> path.toString().endsWith(fileConfiguration.sqlFilesSuffix()))
                         .peek(path -> logger.trace(FileLifecycle.CONSIDER_FILE, path))
-                        .flatMap(fileParser::parse)
+                        .flatMap(statementParser::parse)
                         .toList();
             } catch (final IOException | SecurityException exception) {
                 logger.error(ApplicationErrors.READ_FILES_FAILED, exception.getLocalizedMessage());

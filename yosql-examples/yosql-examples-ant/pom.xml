@@ -37,11 +37,53 @@
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: Examples :: Ant</name>
 
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!--                                  MODULES                                -->
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <!-- https://maven.apache.org/pom.html#Aggregation -->
-    <modules>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>wtf.metio.yosql.tooling</groupId>
+            <artifactId>yosql-tooling-ant</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version> <!-- TODO: manage plugin version -->
+                <executions>
+                    <execution>
+                        <id>first</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+
+                                <taskdef name="yosql"
+                                         classname="wtf.metio.yosql.tooling.ant.YoSQLGenerateTask"
+                                         classpath="${runtime_classpath}"/>
+
+                                <yosql>
+                                    <files inputBaseDirectory="../yosql-examples-common/src/main/yosql"
+                                           outputBaseDirectory="${project.build.directory}/first"
+                                           skipLines="6"/>
+                                    <repositories generateInterfaces="true"/>
+                                    <converter>
+                                        <rowConverters alias="itemConverter"
+                                                       converterType="wtf.metio.yosql.example.ant.converter.ToItemConverter"
+                                                       methodName="asUserType"
+                                                       resultType="wtf.metio.yosql.example.ant.model.Item"/>
+                                    </converter>
+                                </yosql>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -52,7 +52,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>using-defaults</id>
+                        <id>first</id>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -65,12 +65,45 @@
                                 <argument>--files-input-base-directory</argument>
                                 <argument>yosql-examples/yosql-examples-common/src/main/yosql</argument>
                                 <argument>--files-output-base-directory</argument>
-                                <argument>${project.build.directory}/using-defaults</argument>
+                                <argument>${project.build.directory}/first</argument>
+                                <argument>--files-skip-lines</argument>
+                                <argument>6</argument>
+                                <argument>--repositories-base-package-name</argument>
+                                <argument>wtf.metio.yosql.example.cli</argument>
+                                <argument>--converter-row-converters</argument>
+                                <argument>itemConverter:wtf.metio.yosql.example.cli.converter.ToItemConverter:asUserType:wtf.metio.yosql.example.cli.model.Item</argument>
+                                <argument>--converter-map-converter-class</argument>
+                                <argument>wtf.metio.yosql.example.cli.converter.ToMapConverter</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>second</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>verify</phase>
+                        <configuration>
+                            <mainClass>wtf.metio.yosql.tooling.cli.YoSQL</mainClass>
+                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                            <arguments>
+                                <argument>generate</argument>
+                                <argument>--files-input-base-directory</argument>
+                                <argument>yosql-examples/yosql-examples-common/src/main/yosql</argument>
+                                <argument>--files-output-base-directory</argument>
+                                <argument>${project.build.directory}/second</argument>
+                                <argument>--files-skip-lines</argument>
+                                <argument>6</argument>
+                                <argument>--repositories-base-package-name</argument>
+                                <argument>wtf.metio.yosql.example.cli</argument>
+                                <argument>--repositories-generate-interfaces</argument>
+                                <argument>--repositories-generate-standard-api=true</argument>
+                                <argument>--converter-row-converters</argument>
+                                <argument>itemConverter:wtf.metio.yosql.example.cli.converter.ToItemConverter:asUserType:wtf.metio.yosql.example.cli.model.Item</argument>
                             </arguments>
                         </configuration>
                     </execution>
                 </executions>
-
             </plugin>
         </plugins>
     </build>

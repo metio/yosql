@@ -45,6 +45,10 @@ public final class Converter extends AbstractConfigurationGroup {
     private static final String METHOD_NAME = "methodName";
     private static final String RESULT_TYPE = "resultType";
     private static final String OBJECTS = "objects";
+    private static final String ALIAS_DESCRIPTION = "The short alias for the converter";
+    private static final String CONVERTER_TYPE_DESCRIPTION = "The fully-qualified name of the converter class";
+    private static final String METHOD_NAME_DESCRIPTION = "The name of the method to call";
+    private static final String RESULT_TYPE_DESCRIPTION = "The fully-qualified name of the result type";
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
@@ -276,10 +280,14 @@ public final class Converter extends AbstractConfigurationGroup {
     private static TypeSpec antRowConverterType() {
         return TypeSpec.classBuilder(ROW_CONVERTER)
                 .addModifiers(Modifier.PUBLIC)
-                .addField(FieldSpec.builder(ClassName.get(String.class), ALIAS).build())
-                .addField(FieldSpec.builder(ClassName.get(String.class), CONVERTER_TYPE).build())
-                .addField(FieldSpec.builder(ClassName.get(String.class), METHOD_NAME).build())
-                .addField(FieldSpec.builder(ClassName.get(String.class), RESULT_TYPE).build())
+                .addField(antField(ClassName.get(String.class), ALIAS, ALIAS_DESCRIPTION))
+                .addMethod(antSetter(ClassName.get(String.class), ALIAS, ALIAS_DESCRIPTION))
+                .addField(antField(ClassName.get(String.class), CONVERTER_TYPE, CONVERTER_TYPE_DESCRIPTION))
+                .addMethod(antSetter(ClassName.get(String.class), CONVERTER_TYPE, CONVERTER_TYPE_DESCRIPTION))
+                .addField(antField(ClassName.get(String.class), METHOD_NAME, METHOD_NAME_DESCRIPTION))
+                .addMethod(antSetter(ClassName.get(String.class), METHOD_NAME, CONVERTER_TYPE_DESCRIPTION))
+                .addField(antField(ClassName.get(String.class), RESULT_TYPE, RESULT_TYPE_DESCRIPTION))
+                .addMethod(antSetter(ClassName.get(String.class), RESULT_TYPE, CONVERTER_TYPE_DESCRIPTION))
                 .addMethod(MethodSpec.methodBuilder(AS_ROW_CONVERTER)
                         .addModifiers(Modifier.FINAL)
                         .returns(ResultRowConverter.class)
@@ -324,14 +332,14 @@ public final class Converter extends AbstractConfigurationGroup {
                 .addJavadoc("Configures a single ResultRowConverter.")
                 .addMethod(gradleConstructor());
         if (defaultConverter) {
-            classBuilder.addMethod(gradleStringProperty(ALIAS, "The short alias for the converter"));
+            classBuilder.addMethod(gradleStringProperty(ALIAS, ALIAS_DESCRIPTION));
         } else {
             classBuilder.addSuperinterface(GRADLE_NAMED);
         }
         return classBuilder
-                .addMethod(gradleStringProperty(CONVERTER_TYPE, "The fully-qualified name of the converter class"))
-                .addMethod(gradleStringProperty(METHOD_NAME, "The name of the method to call"))
-                .addMethod(gradleStringProperty(RESULT_TYPE, "The fully-qualified name of the converter class"))
+                .addMethod(gradleStringProperty(CONVERTER_TYPE, CONVERTER_TYPE_DESCRIPTION))
+                .addMethod(gradleStringProperty(METHOD_NAME, METHOD_NAME_DESCRIPTION))
+                .addMethod(gradleStringProperty(RESULT_TYPE, RESULT_TYPE_DESCRIPTION))
                 .addMethod(MethodSpec.methodBuilder(AS_ROW_CONVERTER)
                         .returns(ResultRowConverter.class)
                         .addStatement(CodeBlock.builder()

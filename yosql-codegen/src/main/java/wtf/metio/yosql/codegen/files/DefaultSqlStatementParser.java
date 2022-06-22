@@ -95,7 +95,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         logger.trace(ParseLifecycle.STATEMENT_YAML_FRONT_MATTER_PARSED, rawYaml);
         logger.trace(ParseLifecycle.STATEMENT_PARSED, rawSqlStatement);
 
-        final var parameterIndices = extractParameterIndices(rawSqlStatement);
+        final var parameterIndices = SqlStatementParser.extractParameterIndices(rawSqlStatement);
         final var configuration = factory.createConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
         logger.debug(ParseLifecycle.STATEMENT_PARSING_FINISHED, source, configuration.name());
@@ -121,7 +121,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         }
     }
 
-    private void split(
+    private static void split(
             final Consumer<String> yaml,
             final Consumer<String> sql,
             final String line) {

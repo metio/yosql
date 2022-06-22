@@ -49,13 +49,13 @@ public interface SqlStatementParser {
      * @param sqlStatement The raw SQL statement to parse.
      * @return Extracted parameters and their indices.
      */
-    default Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {
+    static Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {
         final var indices = parseNamedParameters(sqlStatement);
         indices.putAll(parseUnnamedParameters(sqlStatement));
         return indices;
     }
 
-    private Map<String, List<Integer>> parseNamedParameters(final String sqlStatement) {
+    private static Map<String, List<Integer>> parseNamedParameters(final String sqlStatement) {
         final Map<String, List<Integer>> indices = new LinkedHashMap<>();
         final Matcher matcher = NAMED_PARAMETER_PATTERN.matcher(sqlStatement);
         int counter = 1;
@@ -66,7 +66,7 @@ public interface SqlStatementParser {
         return indices;
     }
 
-    private Map<String, List<Integer>> parseUnnamedParameters(final String sqlStatement) {
+    private static Map<String, List<Integer>> parseUnnamedParameters(final String sqlStatement) {
         final Map<String, List<Integer>> indices = new LinkedHashMap<>();
         final Matcher matcher = PARAMETER_PATTERN.matcher(sqlStatement);
         int counter = 1;

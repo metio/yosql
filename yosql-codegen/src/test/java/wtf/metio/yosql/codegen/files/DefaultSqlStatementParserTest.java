@@ -31,7 +31,7 @@ class DefaultSqlStatementParserTest {
 
     @Test
     void extractParameterIndices() {
-        final var indices = parser.extractParameterIndices("""
+        final var indices = SqlStatementParser.extractParameterIndices("""
                 INSERT INTO example_table (id, name)
                 VALUES (:id, :name);
                 """);
@@ -43,7 +43,7 @@ class DefaultSqlStatementParserTest {
 
     @Test
     void extractMultipleParameterIndices() {
-        final var indices = parser.extractParameterIndices("""
+        final var indices = SqlStatementParser.extractParameterIndices("""
                 INSERT INTO example_table (id, name, name)
                 VALUES (:id, :name, :name);
                 """);
@@ -55,7 +55,7 @@ class DefaultSqlStatementParserTest {
 
     @Test
     void extractUnorderedParameterIndices() {
-        final var indices = parser.extractParameterIndices("""
+        final var indices = SqlStatementParser.extractParameterIndices("""
                 INSERT INTO example_table (id, name, id)
                 VALUES (:id, :name, :id);
                 """);
@@ -67,7 +67,7 @@ class DefaultSqlStatementParserTest {
 
     @Test
     void extractParameterIndicesInOrder() {
-        final var indices = parser.extractParameterIndices("""
+        final var indices = SqlStatementParser.extractParameterIndices("""
                 INSERT INTO example_table (id, name)
                 VALUES (:id, :name);
                 """);
@@ -80,7 +80,7 @@ class DefaultSqlStatementParserTest {
 
     @Test
     void extractMultipleParameterIndicesInOrder() {
-        final var indices = parser.extractParameterIndices("""
+        final var indices = SqlStatementParser.extractParameterIndices("""
                 INSERT INTO example_table (id, name, id)
                 VALUES (:id, :name, :id);
                 """);

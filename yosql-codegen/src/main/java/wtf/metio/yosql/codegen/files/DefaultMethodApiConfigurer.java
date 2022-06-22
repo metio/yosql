@@ -21,23 +21,23 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
     @Override
     public SqlConfiguration configureApis(final SqlConfiguration configuration) {
         var adapted = configuration;
-        adapted = batch(adapted);
         adapted = standard(adapted);
+        adapted = batch(adapted);
         return adapted;
-    }
-
-    // visible for testing
-    SqlConfiguration batch(final SqlConfiguration configuration) {
-        if (configuration.generateBatchApi().isEmpty()) {
-            return SqlConfiguration.copyOf(configuration).withGenerateBatchApi(repositories.generateBatchApi());
-        }
-        return configuration;
     }
 
     // visible for testing
     SqlConfiguration standard(final SqlConfiguration configuration) {
         if (configuration.generateStandardApi().isEmpty()) {
             return SqlConfiguration.copyOf(configuration).withGenerateStandardApi(repositories.generateStandardApi());
+        }
+        return configuration;
+    }
+
+    // visible for testing
+    SqlConfiguration batch(final SqlConfiguration configuration) {
+        if (configuration.generateBatchApi().isEmpty()) {
+            return SqlConfiguration.copyOf(configuration).withGenerateBatchApi(repositories.generateBatchApi());
         }
         return configuration;
     }

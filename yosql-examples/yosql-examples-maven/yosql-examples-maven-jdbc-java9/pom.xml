@@ -68,7 +68,7 @@
                     </java>
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.java9.persistence</basePackageName>
-                        <generateInterfaces>true</generateInterfaces>
+                        <generateInterfaces>false</generateInterfaces>
                     </repositories>
                     <converter>
                         <mapConverterClass>
