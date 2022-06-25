@@ -31,6 +31,9 @@ public final class ExecutionErrors {
         this.logger = logger;
     }
 
+    /**
+     * Logs all previously recorded errors.
+     */
     public void logErrors() {
         for (final var error : errors) {
             logger.error(error.getMessage());
