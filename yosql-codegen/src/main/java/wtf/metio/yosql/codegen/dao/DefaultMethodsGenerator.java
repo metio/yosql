@@ -11,11 +11,13 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Default implementation of a {@link MethodsGenerator} that delegates most of its work to other interfaces/classes.
@@ -48,13 +50,10 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
     public Iterable<MethodSpec> asMethodsDeclarations(final List<SqlStatement> statements) {
         final var methods = new ArrayList<MethodSpec>(statements.size());
 
-        methods.addAll(asMethods(statements, SqlStatement::generateStandardReadAPI,
-                readMethods::readMethodDeclaration));
-        methods.addAll(asMethods(statements, SqlStatement::generateStandardCallAPI,
-                callingMethods::callMethodDeclaration));
-        methods.addAll(asMethods(statements, SqlStatement::generateStandardWriteAPI,
-                writeMethods::writeMethodDeclaration));
-        methods.addAll(asMethods(statements, SqlStatement::generateBatchWriteAPI,
+        methods.addAll(asMethods(statements,
+                callingMethods::callMethodDeclaration,
+                readMethods::readMethodDeclaration,
+                writeMethods::writeMethodDeclaration,
                 writeMethods::batchWriteMethodDeclaration));
 
         return methods;
@@ -65,13 +64,28 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
         final var methods = new ArrayList<MethodSpec>(statements.size());
 
         methods.add(constructor.repository(statements));
-
-        methods.addAll(asMethods(statements, SqlStatement::generateStandardReadAPI, readMethods::readMethod));
-        methods.addAll(asMethods(statements, SqlStatement::generateStandardCallAPI, callingMethods::callMethod));
-        methods.addAll(asMethods(statements, SqlStatement::generateStandardWriteAPI, writeMethods::writeMethod));
-        methods.addAll(asMethods(statements, SqlStatement::generateBatchWriteAPI, writeMethods::batchWriteMethod));
+        methods.addAll(asMethods(statements,
+                callingMethods::callMethod,
+                readMethods::readMethod,
+                writeMethods::writeMethod,
+                writeMethods::batchWriteMethod));
 
         return methods;
+    }
+
+    private static List<MethodSpec> asMethods(
+            final List<SqlStatement> statements,
+            final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> call,
+            final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> read,
+            final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> write,
+            final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> batchWrite) {
+        return Stream.of(
+                        asMethods(statements, SqlStatement::generateStandardCallAPI, call),
+                        asMethods(statements, SqlStatement::generateStandardReadAPI, read),
+                        asMethods(statements, SqlStatement::generateStandardWriteAPI, write),
+                        asMethods(statements, SqlStatement::generateBatchWriteAPI, batchWrite))
+                .flatMap(Collection::stream)
+                .toList();
     }
 
     private static List<MethodSpec> asMethods(
@@ -83,8 +97,8 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 .collect(Collectors.groupingBy(SqlStatement::getName))
                 .values()
                 .stream()
-                .map(statementsInRepository -> generator.apply(
-                        SqlConfiguration.fromStatements(statementsInRepository), statementsInRepository))
+                .map(statementsWithSameName -> generator.apply(
+                        SqlConfiguration.fromStatements(statementsWithSameName), statementsWithSameName))
                 .filter(Objects::nonNull)
                 .toList();
     }
