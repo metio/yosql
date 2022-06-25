@@ -9,12 +9,12 @@ package wtf.metio.yosql.codegen.blocks;
 
 import ch.qos.cal10n.MessageConveyor;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
+import wtf.metio.yosql.internals.testing.configs.AnnotationsConfigurations;
+import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
+import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
-import wtf.metio.yosql.testing.configs.AnnotationsConfigurations;
-import wtf.metio.yosql.testing.configs.FilesConfigurations;
-import wtf.metio.yosql.testing.configs.JavaConfigurations;
-import wtf.metio.yosql.testing.configs.NamesConfigurations;
 
 /**
  * Object mother for types in the codegen package.

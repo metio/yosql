@@ -10,7 +10,7 @@ package wtf.metio.yosql.codegen.files;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.SqlConfigurations;
+import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;

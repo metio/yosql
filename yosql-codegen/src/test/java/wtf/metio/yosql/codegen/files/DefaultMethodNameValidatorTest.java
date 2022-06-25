@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
+import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
 import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
-import wtf.metio.yosql.testing.configs.RepositoriesConfigurations;
 
 import java.nio.file.Paths;
 

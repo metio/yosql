@@ -11,10 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
+import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
-import wtf.metio.yosql.testing.configs.FilesConfigurations;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

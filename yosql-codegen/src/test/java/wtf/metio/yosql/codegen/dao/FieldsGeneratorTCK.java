@@ -11,8 +11,8 @@ import com.squareup.javapoet.FieldSpec;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
-import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;

@@ -13,8 +13,8 @@ import org.slf4j.cal10n.LocLogger;
 import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
-import wtf.metio.yosql.testing.configs.LoggingConfigurations;
-import wtf.metio.yosql.testing.configs.NamesConfigurations;
+import wtf.metio.yosql.internals.testing.configs.LoggingConfigurations;
+import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 
 import java.util.LinkedHashSet;
 

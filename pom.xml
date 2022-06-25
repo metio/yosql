@@ -94,8 +94,6 @@
         <module>yosql-models</module>
         <module>yosql-codegen</module>
         <module>yosql-tooling</module>
-        <module>yosql-testing</module>
-        <module>yosql-verification</module>
         <module>yosql-examples</module>
         <module>yosql-benchmarks</module>
         <module>yosql-website</module>

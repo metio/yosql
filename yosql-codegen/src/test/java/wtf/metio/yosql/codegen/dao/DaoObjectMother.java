@@ -12,9 +12,9 @@ import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
+import wtf.metio.yosql.internals.testing.configs.*;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
-import wtf.metio.yosql.testing.configs.*;
 
 /**
  * Object mother for DAO related classes.

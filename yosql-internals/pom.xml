@@ -44,6 +44,7 @@
         <module>yosql-internals-jdk-utils</module>
         <module>yosql-internals-javapoet-utils</module>
         <module>yosql-internals-junit5-utils</module>
+        <module>yosql-internals-testing-configs</module>
     </modules>
 
 </project>

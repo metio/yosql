@@ -8,11 +8,11 @@ package wtf.metio.yosql.benchmark.codegen;
 
 import org.openjdk.jmh.annotations.Setup;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
+import wtf.metio.yosql.internals.testing.configs.ConverterConfigurations;
+import wtf.metio.yosql.internals.testing.configs.LoggingConfigurations;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.LoggingConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
-import wtf.metio.yosql.testing.configs.ConverterConfigurations;
-import wtf.metio.yosql.testing.configs.LoggingConfigurations;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
 /**

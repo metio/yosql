@@ -6,8 +6,8 @@
  */
 package wtf.metio.yosql.benchmark.codegen;
 
+import wtf.metio.yosql.internals.testing.configs.LoggingConfigurations;
 import wtf.metio.yosql.models.immutables.LoggingConfiguration;
-import wtf.metio.yosql.testing.configs.LoggingConfigurations;
 
 /**
  * JMH based micro benchmark for YoSQL using the JDBC API and log4j as logging implementation using a small

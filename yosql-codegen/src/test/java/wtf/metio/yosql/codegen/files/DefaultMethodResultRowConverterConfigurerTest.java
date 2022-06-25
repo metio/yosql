@@ -9,10 +9,10 @@ package wtf.metio.yosql.codegen.files;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.internals.testing.configs.ConverterConfigurations;
+import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
-import wtf.metio.yosql.testing.configs.ConverterConfigurations;
-import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 import static org.junit.jupiter.api.Assertions.*;
 

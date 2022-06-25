@@ -9,12 +9,12 @@ package wtf.metio.yosql.codegen.files;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.internals.testing.configs.RuntimeConfigurations;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
-import wtf.metio.yosql.testing.configs.RuntimeConfigurations;
 
 import java.nio.file.Paths;
 import java.util.List;

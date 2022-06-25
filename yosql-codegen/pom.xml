@@ -104,8 +104,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>wtf.metio.yosql.testing</groupId>
-            <artifactId>yosql-testing-configs</artifactId>
+            <groupId>wtf.metio.yosql.internals</groupId>
+            <artifactId>yosql-internals-testing-configs</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

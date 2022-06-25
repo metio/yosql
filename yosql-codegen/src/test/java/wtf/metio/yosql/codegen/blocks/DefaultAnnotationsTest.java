@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.internals.testing.configs.AnnotationsConfigurations;
 import wtf.metio.yosql.models.configuration.Annotation;
 import wtf.metio.yosql.models.configuration.AnnotationMember;
-import wtf.metio.yosql.testing.configs.AnnotationsConfigurations;
 
 @DisplayName("DefaultAnnotations")
 class DefaultAnnotationsTest {

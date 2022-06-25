@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultVariables")
 class DefaultVariablesTest {

@@ -9,9 +9,9 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
-import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link WriteMethodGenerator}s work correctly.

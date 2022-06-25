@@ -9,7 +9,7 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import wtf.metio.yosql.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultConstructorGenerator")
 final class DefaultConstructorGeneratorTest {

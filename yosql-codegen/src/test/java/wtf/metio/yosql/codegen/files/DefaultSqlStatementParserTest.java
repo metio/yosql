@@ -9,8 +9,8 @@ package wtf.metio.yosql.codegen.files;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.testing.configs.ConverterConfigurations;
-import wtf.metio.yosql.testing.configs.RepositoriesConfigurations;
+import wtf.metio.yosql.internals.testing.configs.ConverterConfigurations;
+import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
 
 import java.util.LinkedHashSet;
 import java.util.List;

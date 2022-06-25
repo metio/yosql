@@ -9,7 +9,7 @@ package wtf.metio.yosql.codegen.logging;
 
 import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
-import wtf.metio.yosql.testing.configs.NamesConfigurations;
+import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 
 @DisplayName("Slf4jLoggingGenerator")
 final class Slf4jLoggingGeneratorTest implements LoggingGeneratorTCK {

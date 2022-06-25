@@ -9,8 +9,8 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
-import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 /**
  * Verifies that {@link JdbcBlocks}s work correctly.

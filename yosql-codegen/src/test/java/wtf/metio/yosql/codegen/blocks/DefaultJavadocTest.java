@@ -10,9 +10,9 @@ package wtf.metio.yosql.codegen.blocks;
 import ch.qos.cal10n.MessageConveyor;
 import org.junit.jupiter.api.*;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
+import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
+import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.immutables.SqlStatement;
-import wtf.metio.yosql.testing.configs.FilesConfigurations;
-import wtf.metio.yosql.testing.configs.SqlConfigurations;
 
 import java.nio.file.Paths;
 import java.util.List;
