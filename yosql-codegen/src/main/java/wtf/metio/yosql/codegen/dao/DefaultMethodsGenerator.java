@@ -13,7 +13,6 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -99,7 +98,6 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 .stream()
                 .map(statementsWithSameName -> generator.apply(
                         SqlConfiguration.fromStatements(statementsWithSameName), statementsWithSameName))
-                .filter(Objects::nonNull)
                 .toList();
     }
 
