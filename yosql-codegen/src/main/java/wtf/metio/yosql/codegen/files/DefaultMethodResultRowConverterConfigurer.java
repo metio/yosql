@@ -27,16 +27,24 @@ public final class DefaultMethodResultRowConverterConfigurer implements MethodRe
     public SqlConfiguration configureResultRowConverter(final SqlConfiguration configuration) {
         return SqlConfiguration.copyOf(configuration)
                 .withResultRowConverter(configuration.resultRowConverter()
-                        .map(this::adjustConverter)
+                        .map(this::setMissingValuesFromRuntimeConfig)
+                        .filter(DefaultMethodResultRowConverterConfigurer::ensureConverterIsFullyConfigured)
                         .or(this::getDefaultRowConverter));
     }
 
-    private ResultRowConverter adjustConverter(final ResultRowConverter original) {
+    private static boolean ensureConverterIsFullyConfigured(final ResultRowConverter converter) {
+        return converter.alias().isPresent()
+                && converter.converterType().isPresent()
+                && converter.methodName().isPresent()
+                && converter.resultType().isPresent();
+    }
+
+    private ResultRowConverter setMissingValuesFromRuntimeConfig(final ResultRowConverter original) {
         return ResultRowConverter.builder()
-                .setAlias(original.alias().orElse(getDefaultAlias(original)))
-                .setConverterType(original.converterType().orElse(getDefaultConverterType(original)))
-                .setMethodName(original.methodName().orElse(getDefaultMethodName(original)))
-                .setResultType(original.resultType().orElse(getDefaultResultType(original)))
+                .setAlias(original.alias().or(() -> getAliasFromRuntimeConfig(original)))
+                .setConverterType(original.converterType().or(() -> getConverterTypeFromRuntimeConfig(original)))
+                .setMethodName(original.methodName().or(() -> getMethodNameFromRuntimeConfig(original)))
+                .setResultType(original.resultType().or(() -> getResultTypeFromRuntimeConfig(original)))
                 .build();
     }
 
@@ -48,41 +56,40 @@ public final class DefaultMethodResultRowConverterConfigurer implements MethodRe
                 .or(() -> defaultConverter);
     }
 
-    private String getDefaultAlias(final ResultRowConverter resultConverter) {
-        return getConverterFieldOrEmptyString(
+    private Optional<String> getAliasFromRuntimeConfig(final ResultRowConverter resultConverter) {
+        return getConverterFieldFromRuntimeConfig(
                 converter -> converterTypeMatches(resultConverter, converter),
                 ResultRowConverter::alias);
     }
 
-    private String getDefaultConverterType(final ResultRowConverter resultConverter) {
-        return getConverterFieldOrEmptyString(
+    private Optional<String> getConverterTypeFromRuntimeConfig(final ResultRowConverter resultConverter) {
+        return getConverterFieldFromRuntimeConfig(
                 converter -> aliasMatches(resultConverter, converter),
                 ResultRowConverter::converterType);
     }
 
-    private String getDefaultResultType(final ResultRowConverter resultConverter) {
-        return getConverterFieldOrEmptyString(
+    private Optional<String> getResultTypeFromRuntimeConfig(final ResultRowConverter resultConverter) {
+        return getConverterFieldFromRuntimeConfig(
                 converter -> aliasMatches(resultConverter, converter)
                         || converterTypeMatches(resultConverter, converter),
                 ResultRowConverter::resultType);
     }
 
-    private String getDefaultMethodName(final ResultRowConverter resultConverter) {
-        return getConverterFieldOrEmptyString(
+    private Optional<String> getMethodNameFromRuntimeConfig(final ResultRowConverter resultConverter) {
+        return getConverterFieldFromRuntimeConfig(
                 converter -> aliasMatches(resultConverter, converter)
                         || converterTypeMatches(resultConverter, converter),
                 ResultRowConverter::methodName);
     }
 
-    private String getConverterFieldOrEmptyString(
+    private Optional<String> getConverterFieldFromRuntimeConfig(
             final Predicate<ResultRowConverter> predicate,
             final Function<ResultRowConverter, Optional<String>> mapper) {
         return converters.rowConverters().stream()
                 .filter(predicate)
                 .map(mapper)
                 .flatMap(Optional::stream)
-                .findFirst()
-                .orElse("");
+                .findFirst();
     }
 
     private static boolean aliasMatches(
