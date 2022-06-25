@@ -56,6 +56,7 @@ final class MarkdownGenerator {
 
     public String setting(final ConfigurationGroup group, final ConfigurationSetting setting) {
         final var relatedSettings = group.settings().stream()
+                .filter(ConfigurationSetting::generateDocs)
                 .filter(s -> !s.name().equals(setting.name()))
                 .sorted(Comparator.comparing(ConfigurationSetting::name))
                 .toList();
