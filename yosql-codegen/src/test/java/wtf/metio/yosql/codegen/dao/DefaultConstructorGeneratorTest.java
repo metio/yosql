@@ -46,7 +46,7 @@ final class DefaultConstructorGeneratorTest {
                     )
                     public Constructor(final javax.sql.DataSource dataSource) {
                       this.dataSource = dataSource;
-                      this.item = new com.example.ToItemConverter();
+                      this.item = new com.example.persistence.converter.ToItemConverter();
                     }
                     """;
         }
@@ -60,7 +60,7 @@ final class DefaultConstructorGeneratorTest {
                     )
                     public Constructor(final javax.sql.DataSource dataSource) {
                       this.dataSource = dataSource;
-                      this.item = new com.example.ToItemConverter();
+                      this.item = new com.example.persistence.converter.ToItemConverter();
                       this.toMap = new com.example.persistence.converter.ToMapConverter();
                     }
                     """;
@@ -100,7 +100,7 @@ final class DefaultConstructorGeneratorTest {
                     )
                     public Constructor(final javax.sql.DataSource dataSource) {
                       this.dataSource = dataSource;
-                      this.item = new com.example.ToItemConverter();
+                      this.item = new com.example.persistence.converter.ToItemConverter();
                     }
                     """;
         }
@@ -114,7 +114,7 @@ final class DefaultConstructorGeneratorTest {
                     )
                     public Constructor(final javax.sql.DataSource dataSource) {
                       this.dataSource = dataSource;
-                      this.item = new com.example.ToItemConverter();
+                      this.item = new com.example.persistence.converter.ToItemConverter();
                       this.toMap = new com.example.persistence.converter.ToMapConverter();
                     }
                     """;
@@ -154,7 +154,7 @@ final class DefaultConstructorGeneratorTest {
                     )
                     public Constructor(final javax.sql.DataSource dataSource) {
                       this.dataSource = dataSource;
-                      this.item = new com.example.ToItemConverter();
+                      this.item = new com.example.persistence.converter.ToItemConverter();
                     }
                     """;
         }
@@ -168,7 +168,7 @@ final class DefaultConstructorGeneratorTest {
                     )
                     public Constructor(final javax.sql.DataSource dataSource) {
                       this.dataSource = dataSource;
-                      this.item = new com.example.ToItemConverter();
+                      this.item = new com.example.persistence.converter.ToItemConverter();
                       this.toMap = new com.example.persistence.converter.ToMapConverter();
                     }
                     """;
@@ -208,7 +208,7 @@ final class DefaultConstructorGeneratorTest {
                     )
                     public Constructor(final javax.sql.DataSource dataSource) {
                       this.dataSource = dataSource;
-                      this.item = new com.example.ToItemConverter();
+                      this.item = new com.example.persistence.converter.ToItemConverter();
                     }
                     """;
         }
@@ -222,7 +222,7 @@ final class DefaultConstructorGeneratorTest {
                     )
                     public Constructor(final javax.sql.DataSource dataSource) {
                       this.dataSource = dataSource;
-                      this.item = new com.example.ToItemConverter();
+                      this.item = new com.example.persistence.converter.ToItemConverter();
                       this.toMap = new com.example.persistence.converter.ToMapConverter();
                     }
                     """;

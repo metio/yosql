@@ -23,18 +23,26 @@ public final class ConverterConfigurations {
 
     public static ConverterConfiguration withConverters() {
         return ConverterConfiguration.copyOf(withoutConverters())
-                .withDefaultConverter(ResultRowConverter.builder()
-                        .setAlias("toMap")
-                        .setConverterType("com.example.persistence.converter.ToMapConverter")
-                        .setMethodName("apply")
-                        .setResultType("java.util.Map<String, Object>")
-                        .build())
-                .withRowConverters(List.of(ResultRowConverter.builder()
-                        .setAlias("item")
-                        .setConverterType("com.example.persistence.converter.ToItemConverter")
-                        .setMethodName("asItem")
-                        .setResultType("com.example.domain.Item")
-                        .build()));
+                .withDefaultConverter(toMapConverter())
+                .withRowConverters(List.of(itemConverter()));
+    }
+
+    public static ResultRowConverter toMapConverter() {
+        return ResultRowConverter.builder()
+                .setAlias("toMap")
+                .setConverterType("com.example.persistence.converter.ToMapConverter")
+                .setMethodName("apply")
+                .setResultType("java.util.Map<String, Object>")
+                .build();
+    }
+
+    public static ResultRowConverter itemConverter() {
+        return ResultRowConverter.builder()
+                .setAlias("item")
+                .setConverterType("com.example.persistence.converter.ToItemConverter")
+                .setMethodName("asItem")
+                .setResultType("com.example.domain.Item")
+                .build();
     }
 
     private ConverterConfigurations() {

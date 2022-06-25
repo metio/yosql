@@ -7,7 +7,6 @@
 
 package wtf.metio.yosql.testing.configs;
 
-import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.configuration.SqlStatementType;
@@ -18,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Object mother for {@link SqlConfiguration}s and {@link SqlStatement}s.
+ * Object mother for {@link SqlConfiguration}s, {@link SqlStatement}s, and {@link SqlParameter}s.
  */
 public final class SqlConfigurations {
 
@@ -57,18 +56,25 @@ public final class SqlConfigurations {
         config.setReturningMode(ReturningMode.MULTIPLE);
         config.setRepository("com.example.persistence.DataRepository");
         config.setCatchAndRethrow(true);
-        config.setGenerateBatchApi(true);
         config.setGenerateStandardApi(true);
-        config.addParameters(SqlParameter.builder()
+        config.addParameters(testParameter(), idParameter());
+        return config.build();
+    }
+
+    public static SqlParameter testParameter() {
+        return SqlParameter.builder()
                 .setName("test")
                 .setType(Object.class.getName())
                 .setIndices(new int[]{0})
-                .build(), SqlParameter.builder()
+                .build();
+    }
+
+    public static SqlParameter idParameter() {
+        return SqlParameter.builder()
                 .setName("id")
                 .setType(int.class.getName())
                 .setIndices(new int[]{1})
-                .build());
-        return config.build();
+                .build();
     }
 
     public static SqlConfiguration simpleSqlConfiguration() {
@@ -77,12 +83,7 @@ public final class SqlConfigurations {
 
     public static SqlConfiguration withCustomConverter() {
         return SqlConfiguration.copyOf(sqlConfiguration())
-                .withResultRowConverter(ResultRowConverter.builder()
-                        .setAlias("item")
-                        .setConverterType("com.example.ToItemConverter")
-                        .setMethodName("asItem")
-                        .setResultType("com.example.domain.Item")
-                        .build());
+                .withResultRowConverter(ConverterConfigurations.itemConverter());
     }
 
     private SqlConfigurations() {
