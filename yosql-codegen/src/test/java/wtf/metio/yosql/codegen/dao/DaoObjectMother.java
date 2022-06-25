@@ -86,7 +86,8 @@ public final class DaoObjectMother {
                 constructorGenerator(java),
                 readMethodGenerator(java),
                 writeMethodGenerator(java),
-                callMethodGenerator(java));
+                callMethodGenerator(java),
+                LoggingObjectMother.logger());
     }
 
     public static ParameterGenerator parameterGenerator(final JavaConfiguration java) {

@@ -58,12 +58,14 @@ public class DefaultDaoModule {
             final ConstructorGenerator constructor,
             final ReadMethodGenerator readMethods,
             final WriteMethodGenerator writeMethods,
-            final CallMethodGenerator callMethods) {
+            final CallMethodGenerator callMethods,
+            @Generator final LocLogger logger) {
         return new DefaultMethodsGenerator(
                 constructor,
                 readMethods,
                 writeMethods,
-                callMethods);
+                callMethods,
+                logger);
     }
 
     @Provides

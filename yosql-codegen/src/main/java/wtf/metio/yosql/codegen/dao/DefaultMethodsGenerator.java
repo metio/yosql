@@ -7,6 +7,8 @@
 package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.MethodSpec;
+import org.slf4j.cal10n.LocLogger;
+import wtf.metio.yosql.codegen.lifecycle.ApplicationWarnings;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -27,22 +29,26 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
     private final ReadMethodGenerator readMethods;
     private final WriteMethodGenerator writeMethods;
     private final CallMethodGenerator callingMethods;
+    private final LocLogger logger;
 
     /**
      * @param constructor    The constructor generator to use.
      * @param readMethods    The read methods generator to use.
      * @param writeMethods   The write methods generator to use.
      * @param callingMethods The call methods generator to use.
+     * @param logger         The logger to use.
      */
     public DefaultMethodsGenerator(
             final ConstructorGenerator constructor,
             final ReadMethodGenerator readMethods,
             final WriteMethodGenerator writeMethods,
-            final CallMethodGenerator callingMethods) {
+            final CallMethodGenerator callingMethods,
+            final LocLogger logger) {
         this.constructor = constructor;
         this.readMethods = readMethods;
         this.writeMethods = writeMethods;
         this.callingMethods = callingMethods;
+        this.logger = logger;
     }
 
     @Override
@@ -68,6 +74,7 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 readMethods::readMethod,
                 writeMethods::writeMethod,
                 writeMethods::batchWriteMethod));
+        warnAboutIgnoredStatements(statements);
 
         return methods;
     }
@@ -99,6 +106,16 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 .map(statementsWithSameName -> generator.apply(
                         SqlConfiguration.fromStatements(statementsWithSameName), statementsWithSameName))
                 .toList();
+    }
+
+    private void warnAboutIgnoredStatements(final List<SqlStatement> statements) {
+        statements.stream()
+                .filter(Predicate.not(SqlStatement::generateStandardCallAPI)
+                        .and(Predicate.not(SqlStatement::generateStandardReadAPI))
+                        .and(Predicate.not(SqlStatement::generateStandardWriteAPI))
+                        .and(Predicate.not(SqlStatement::generateBatchWriteAPI)))
+                .forEach(statement -> logger.warn(ApplicationWarnings.SQL_STATEMENT_IGNORED,
+                        statement.getName(), statement.getSourcePath()));
     }
 
 }
