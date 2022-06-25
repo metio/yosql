@@ -1,0 +1,37 @@
+name: Announce Release
+on:
+  release:
+    types: [ published ]
+jobs:
+  announce:
+    name: Send Announcements
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # required in order to get all tags
+      - id: previous
+        name: Get Last Release
+        run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
+      - id: email
+        name: Send Mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: ${{ secrets.MAIL_SENDER }}
+          subject: release ${{ steps.previous.outputs.version }}
+          body: See https://github.com/metio/yosql/releases/tag/${{ steps.previous.outputs.version }} for details.
+      - id: matrix
+        name: Send Matrix Message
+        uses: s3krit/matrix-message-action@v0.0.3
+        with:
+          access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
+          room_id: ${{ secrets.MATRIX_ROOM_ID }}
+          server: ${{ secrets.MATRIX_SERVER }}
+          message: release ${{ steps.previous.outputs.version }} published - see https://github.com/metio/yosql/releases/tag/${{ steps.previous.outputs.version }} for details

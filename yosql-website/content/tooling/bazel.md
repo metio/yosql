@@ -10,8 +10,6 @@ tags:
   - Bazel
 ---
 
-**WORK IN PROGRESS** - requires https://github.com/metio/yosql/issues/206
-
 [bazel](https://bazel.build/) users can use the `yosql-cli` in their builds by following the steps. Replace placeholders with values from the actual release notes.
 
 1. Add git repository to your `WORKSPACE`:

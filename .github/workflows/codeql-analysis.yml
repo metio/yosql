@@ -8,9 +8,7 @@ on:
       - yosql-examples/**
       - yosql-internals/**
       - yosql-models/**
-      - yosql-testing/**
       - yosql-tooling/**
-      - yosql-verification/**
   schedule:
     - cron: 44 20 * * 6
 env:

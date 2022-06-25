@@ -10,9 +10,7 @@ tags:
   - Ant
 ---
 
-**WORK IN PROGRESS** - https://github.com/metio/yosql/issues/146
-
-1. Download the `yosql-tooling-ant` task jar file.
+1. Download the `yosql-tooling-ant` task zip file.
 2. Define a custom task based on that jar.
 3. Write .sql files in a directory of your choice (e.g. `/path/to/your/sql/files`).
 4. Point the task to your SQL statements.

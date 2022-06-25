@@ -32,7 +32,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: Maven Tooling
-        run: mvn --batch-mode install
+        run: mvn --batch-mode install --define skipTests
       - name: update yosql-tooling-gradle
         uses: gradle-update/update-gradle-wrapper-action@v1
         with:

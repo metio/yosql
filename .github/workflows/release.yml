@@ -1,14 +1,13 @@
-name: Perform Release
+name: Automated Release
 on:
   schedule:
-    - cron:  25 3 * * WED
+    - cron: 25 3 * * WED
   workflow_dispatch:
 env:
   JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
   JAVA_DISTRO: temurin
-  PROJECT_URL: yosql.projects.metio.wtf
 jobs:
   prepare:
     name: Prepare Release
@@ -17,17 +16,16 @@ jobs:
       commit_count: ${{ steps.commits.outputs.count }}
       release_version: ${{ steps.release.outputs.version }}
       previous_version: ${{ steps.previous.outputs.version }}
-      changelog: ${{ steps.changelog.outputs.content }}
       release_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - id: checkout
         name: Clone Git Repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # required in order to get all tags
+          fetch-depth: 0
       - id: commits
         name: Count Commits
-        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday' -- yosql-codegen yosql-converters yosql-dao yosql-internals yosql-logging yosql-models yosql-testing yosql-tooling)"
+        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday' -- yosql-codegen yosql-internals yosql-models yosql-tooling)"
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0
@@ -36,60 +34,10 @@ jobs:
         name: Get Last Release
         if: steps.commits.outputs.count > 0
         run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
-      - id: generate_changelog
-        name: Generate Changelog
-        if: steps.commits.outputs.count > 0
-        uses: heinrichreimer/github-changelog-generator-action@v2.3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          unreleased: true
-          issues: true
-          issuesWoLabels: true
-          pullRequests: true
-          prWoLabels: true
-          filterByMilestone: false
-          futureRelease: ${{ steps.release.outputs.version }}
-          sinceTag: ${{ steps.previous.outputs.version }}
-          stripGeneratorNotice: true
-          stripHeaders: true
-      - name: Check Changelog Existence
-        id: check_changelog
-        uses: andstor/file-existence-action@v1.1.0
-        with:
-          files: CHANGELOG.md
-      - name: Create Empty Changelog
-        id: empty_changelog
-        uses: 1arp/create-a-file-action@0.2
-        if: steps.check_changelog.outputs.files_exists == 'false'
-        with:
-          file: CHANGELOG.md
-          content: |
-            no user facing changes
-      - name: Read Changelog
-        id: changelog
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./CHANGELOG.md
-      - id: create_release
-        name: Create Release
-        if: steps.commits.outputs.count > 0
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.release.outputs.version }}
-          release_name: ${{ steps.release.outputs.version }}
-          draft: false
-          prerelease: false
-          body: |
-            # YoSQL
-            Write more SQL! Take a look at the [website](https://${{ env.PROJECT_URL }}/) for detailed information. **This release requires at least Java ${{ env.JAVA_VERSION }}** at build time.
-            ## Changes
-            ${{ steps.changelog.outputs.content }}
-  deploy:
-    name: Deploy Artifacts
-    runs-on: ubuntu-latest
+  maven:
+    name: Build Maven Tooling
     needs: prepare
+    runs-on: ubuntu-latest
     steps:
       - id: checkout
         name: Clone Git Repository
@@ -118,17 +66,56 @@ jobs:
             ${{ runner.os }}-maven-
       - id: gpg
         name: GPG Key
-        run: echo "${{ secrets.GPG_SECRET_KEY_BASE64 }}" | base64 --decode > $GITHUB_WORKSPACE/signing.key.asc
-      - name: Set release version
-        run: mvn --batch-mode versions:set -DnewVersion=${{ needs.prepare.outputs.release_version }} -DgenerateBackupPoms=false
         if: needs.prepare.outputs.commit_count > 0
-      - id: deploy-maven
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: signing.key.asc
+          fileDir: ${{ github.workspace}}
+          encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
+      - name: Set release version
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
+        if: needs.prepare.outputs.commit_count > 0
+      - id: deploy-maven-tooling
         name: Deploy Maven Tooling
-        run: MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED" mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-maven --also-make install deploy -Dpgp.secretkey=keyfile:$GITHUB_WORKSPACE/signing.key.asc -Dpgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
+        run: MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED" mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-maven --also-make install deploy --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
         if: needs.prepare.outputs.commit_count > 0
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+  gradle:
+    name: Build Gradle Tooling
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v3
+        if: needs.prepare.outputs.commit_count > 0
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v3
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v3
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Set release version
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
+        if: needs.prepare.outputs.commit_count > 0
+      - id: install-maven-tooling
+        name: Install Maven Tooling
+        run: mvn --batch-mode install
+        if: needs.prepare.outputs.commit_count > 0
       - id: build-gradle
         name: Build Gradle Tooling
         run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build -Pversion=${{ needs.prepare.outputs.release_version }}
@@ -137,13 +124,64 @@ jobs:
         name: Deploy Gradle Tooling
         run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew publishPlugins -Pversion=${{ needs.prepare.outputs.release_version }} -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
         if: needs.prepare.outputs.commit_count > 0
-  benchmarks:
-    name: Run Benchmarks
+  ant:
+    name: Build Ant Tooling
+    needs: prepare
     runs-on: ubuntu-latest
-    needs: [prepare, deploy]
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v3
+        if: needs.prepare.outputs.commit_count > 0
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v3
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v3
+        if: needs.prepare.outputs.commit_count > 0
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: gpg
+        name: GPG Key
+        if: needs.prepare.outputs.commit_count > 0
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: signing.key.asc
+          fileDir: ${{ github.workspace}}
+          encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
+      - name: Set release version
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
+        if: needs.prepare.outputs.commit_count > 0
+      - id: build-ant-tooling
+        name: Build Ant Tooling
+        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-ant --also-make install --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
+        if: needs.prepare.outputs.commit_count > 0
+      - id: upload-ant-tooling
+        name: Upload Ant Tooling Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ant
+          path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-jvm*
+  cli:
+    name: Build CLI Tooling on ${{ matrix.os }}
+    needs: prepare
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        benchmark: [codegen, jdbc]
+        os:
+          - ubuntu-latest
+    #          - macos-latest
+    #          - windows-latest
     steps:
       - id: checkout
         name: Clone Git Repository
@@ -167,95 +205,64 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - id: run-benchmark
-        name: Run Benchmark [${{ matrix.benchmark }}]
-        run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify -Dorg.slf4j.simpleLogger.log.yosql=warn -DskipTests 2>&1 1> build.log
+      - id: gpg
+        name: GPG Key
         if: needs.prepare.outputs.commit_count > 0
-      - id: upload-benchmark
-        name: Upload Benchmark Results
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: signing.key.asc
+          fileDir: ${{ github.workspace}}
+          encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
+      - name: Set release version
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
+        if: needs.prepare.outputs.commit_count > 0
+      - id: build-cli-tooling
+        name: Build CLI Tooling
+        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-cli --also-make install --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
+        if: needs.prepare.outputs.commit_count > 0
+      - id: upload-cli-tooling
+        name: Upload CLI Tooling Artifact
         uses: actions/upload-artifact@v3
-        if: needs.prepare.outputs.commit_count > 0
         with:
-          name: benchmark-${{ matrix.benchmark }}
-          path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
-  website:
-    name: Update Website
+          name: cli
+          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
+        if: runner.os == 'Linux'
+  release:
+    name: GitHub Release
+    needs: [prepare, maven, gradle, ant, cli]
     runs-on: ubuntu-latest
-    needs: [prepare, benchmarks]
+    permissions:
+      contents: write
     steps:
       - id: checkout
         name: Clone Git Repository
+        if: needs.prepare.outputs.commit_count > 0
         uses: actions/checkout@v3
-        if: needs.prepare.outputs.commit_count > 0
-      - id: java
-        name: Setup Java
-        uses: actions/setup-java@v3
-        if: needs.prepare.outputs.commit_count > 0
         with:
-          java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        if: needs.prepare.outputs.commit_count > 0
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          fetch-depth: 0
       - id: download
-        name: Download Benchmarks Results
+        name: Download Artifacts
+        if: needs.prepare.outputs.commit_count > 0
         uses: actions/download-artifact@v3
-        if: needs.prepare.outputs.commit_count > 0
-      - id: copy-codegen-results
-        name: Copy Codegen Results
-        run: cp --force ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-${{ needs.prepare.outputs.release_version }}.json
-        if: needs.prepare.outputs.commit_count > 0
-      - id: replace-codegen-results
-        name: Replace CURRENT Codegen Results
-        run: cp --force ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json
-        if: needs.prepare.outputs.commit_count > 0
-      - id: copy-jdbc-results
-        name: Copy JDBC Results
-        run: cp --force ./benchmark-dao/yosql-benchmarks-dao.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-dao-${{ needs.prepare.outputs.release_version }}.json
-        if: needs.prepare.outputs.commit_count > 0
-      - id: replace-jdbc-results
-        name: Replace CURRENT JDBC Results
-        run: cp --force ./benchmark-dao/yosql-benchmarks-dao.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-dao-CURRENT.json
-        if: needs.prepare.outputs.commit_count > 0
-      - id: push
-        name: Push Changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        if: needs.prepare.outputs.commit_count > 0
         with:
-          commit_message: Update website data for ${{ needs.prepare.outputs.release_version }}
-          file_pattern: yosql-website/*.json
-  announce:
-    name: Send Announcements
-    needs: [prepare, website]
-    runs-on: ubuntu-latest
-    steps:
-      - id: email
-        name: Send Mail
-        uses: dawidd6/action-send-mail@v3
+          path: artifacts
+      - id: create_release
+        name: Create Release
         if: needs.prepare.outputs.commit_count > 0
+        uses: softprops/action-gh-release@v1
         with:
-          server_address: ${{ secrets.MAIL_SERVER }}
-          server_port: ${{ secrets.MAIL_PORT }}
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          to: ${{ secrets.MAIL_TO }}
-          from: ${{ secrets.MAIL_SENDER }}
-          subject: release ${{ needs.prepare.outputs.release_version }}
-          body: See https://github.com/metio/yosql/releases/tag/${{ needs.prepare.outputs.release_version }} for details.
-      - id: matrix
-        name: Send Matrix Message
-        uses: s3krit/matrix-message-action@v0.0.3
-        if: needs.prepare.outputs.commit_count > 0
-        with:
-          access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
-          room_id: ${{ secrets.MATRIX_ROOM_ID }}
-          server: ${{ secrets.MATRIX_SERVER }}
-          message: release ${{ needs.prepare.outputs.release_version }} published - see https://github.com/metio/yosql/releases/tag/${{ needs.prepare.outputs.release_version }} for details
+          tag_name: ${{ needs.prepare.outputs.release_version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-jvm.zip
+            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-jvm.zip.asc
+            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-jvm.zip.sha512
+            artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip
+            artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.asc
+            artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.sha512
+
+
+

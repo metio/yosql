@@ -1,31 +1,27 @@
-name: Build Project
+name: Verify Commits
 on:
   push:
     branches: [ main ]
     paths:
-      - .github/workflows/build.yml
+      - .github/workflows/verify.yml
       - pom.xml
       - yosql-benchmarks/**
       - yosql-codegen/**
       - yosql-examples/**
       - yosql-internals/**
       - yosql-models/**
-      - yosql-testing/**
       - yosql-tooling/**
-      - yosql-verification/**
   pull_request:
     branches: [ main ]
     paths:
-      - .github/workflows/build.yml
+      - .github/workflows/verify.yml
       - pom.xml
       - yosql-benchmarks/**
       - yosql-codegen/**
       - yosql-examples/**
       - yosql-internals/**
       - yosql-models/**
-      - yosql-testing/**
       - yosql-tooling/**
-      - yosql-verification/**
 env:
   JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
@@ -73,39 +69,3 @@ jobs:
       - id: gradle
         name: Gradle Tooling
         run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
-  benchmarks:
-    name: Benchmarks
-    runs-on: ubuntu-latest
-    needs: [build]
-    strategy:
-      matrix:
-        benchmark: [codegen, dao]
-    steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v3
-      - id: java
-        name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - id: run-benchmark
-        name: Run Benchmark [${{ matrix.benchmark }}]
-        run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify --define org.slf4j.simpleLogger.log.yosql=warn --define skipTests 2>&1 1> build.log
-      - id: upload-benchmark
-        name: Upload Benchmark Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: benchmark-${{ matrix.benchmark }}
-          path: ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json
