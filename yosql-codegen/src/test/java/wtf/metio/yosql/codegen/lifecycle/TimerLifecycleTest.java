@@ -9,11 +9,10 @@ package wtf.metio.yosql.codegen.lifecycle;
 
 import wtf.metio.yosql.codegen.testing.PropertiesTCK;
 
-final class TimerLifecycleTest implements PropertiesTCK<TimerLifecycle> {
+final class TimerLifecycleTest extends PropertiesTCK<TimerLifecycle> {
 
-    @Override
-    public Class<TimerLifecycle> getEnumClass() {
-        return TimerLifecycle.class;
+    TimerLifecycleTest() {
+        super(TimerLifecycle.class);
     }
 
 }

@@ -9,11 +9,10 @@ package wtf.metio.yosql.codegen.lifecycle;
 
 import wtf.metio.yosql.codegen.testing.PropertiesTCK;
 
-final class ApplicationErrorsTest implements PropertiesTCK<ApplicationErrors> {
+final class ApplicationErrorsTest extends PropertiesTCK<ApplicationErrors> {
 
-    @Override
-    public Class<ApplicationErrors> getEnumClass() {
-        return ApplicationErrors.class;
+    ApplicationErrorsTest() {
+        super(ApplicationErrors.class);
     }
 
 }

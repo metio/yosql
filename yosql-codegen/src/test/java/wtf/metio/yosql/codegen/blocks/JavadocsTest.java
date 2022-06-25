@@ -9,11 +9,10 @@ package wtf.metio.yosql.codegen.blocks;
 
 import wtf.metio.yosql.codegen.testing.PropertiesTCK;
 
-class JavadocsTest implements PropertiesTCK<Javadocs> {
+final class JavadocsTest extends PropertiesTCK<Javadocs> {
 
-    @Override
-    public Class<Javadocs> getEnumClass() {
-        return Javadocs.class;
+    JavadocsTest() {
+        super(Javadocs.class);
     }
 
 }

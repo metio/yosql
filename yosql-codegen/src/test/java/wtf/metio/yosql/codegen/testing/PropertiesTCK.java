@@ -6,8 +6,6 @@
  */
 package wtf.metio.yosql.codegen.testing;
 
-import ch.qos.cal10n.verifier.Cal10nError;
-import ch.qos.cal10n.verifier.IMessageKeyVerifier;
 import ch.qos.cal10n.verifier.MessageKeyVerifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,28 +13,27 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 /**
  * Verifies .properties files.
  *
  * @param <ENUMERATION> The type of the enumeration to test.
  */
-public interface PropertiesTCK<ENUMERATION extends Enum<ENUMERATION>> {
+public abstract class PropertiesTCK<ENUMERATION extends Enum<ENUMERATION>> {
 
-    Logger LOGGER = LoggerFactory.getLogger(PropertiesTCK.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesTCK.class);
 
-    /**
-     * @return The class of the enum to test.
-     */
-    Class<ENUMERATION> getEnumClass();
+    private final Class<ENUMERATION> enumClass;
+
+    protected PropertiesTCK(final Class<ENUMERATION> enumClass) {
+        this.enumClass = enumClass;
+    }
 
     @Test
     @DisplayName("all properties exist in all locales")
-    default void shouldDeclareAllPropertiesInAllSupportedLocales() {
-        final IMessageKeyVerifier mkv = new MessageKeyVerifier(getEnumClass());
-        final List<Cal10nError> errorList = mkv.verifyAllLocales();
-        for (final Cal10nError error : errorList) {
+    final void shouldDeclareAllPropertiesInAllSupportedLocales() {
+        final var mkv = new MessageKeyVerifier(enumClass);
+        final var errorList = mkv.verifyAllLocales();
+        for (final var error : errorList) {
             LOGGER.error("Properties validation failed: {}", error);
         }
         Assertions.assertEquals(0, errorList.size());

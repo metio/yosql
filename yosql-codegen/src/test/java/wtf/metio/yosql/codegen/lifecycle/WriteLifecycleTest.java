@@ -9,11 +9,10 @@ package wtf.metio.yosql.codegen.lifecycle;
 
 import wtf.metio.yosql.codegen.testing.PropertiesTCK;
 
-final class WriteLifecycleTest implements PropertiesTCK<WriteLifecycle> {
+final class WriteLifecycleTest extends PropertiesTCK<WriteLifecycle> {
 
-    @Override
-    public Class<WriteLifecycle> getEnumClass() {
-        return WriteLifecycle.class;
+    WriteLifecycleTest() {
+        super(WriteLifecycle.class);
     }
 
 }
