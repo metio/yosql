@@ -57,7 +57,7 @@ Mixing nested and non-nested repositories work as well. The above example will g
 └── allQueries.sql
 ```
 
-Smaller projects might just want to use a single `.sql` file that contains all of your queries. In case none of your SQL statements change their target repository in their [front matter](../frontmatter/), all queries in the above structure will end up in a class called `<basePackageName>.Repository`.
+Smaller projects might just want to use a single `.sql` file that contains all of your queries. In case none of your SQL statements change their target repository in their [front matter](../sql-files/), all queries in the above structure will end up in a class called `<basePackageName>.Repository`.
 
 ```
 <inputBaseDirectory>/

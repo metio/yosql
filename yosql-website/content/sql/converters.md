@@ -53,7 +53,7 @@ public class UserConverter {
 }
 ```
 
-You can choose package, class name and method name at will. The converter method gives you full control about how you want to handle `ResultSet`s. You can use your own converter either by specifying it as the default converter mentioned above or by declaring it as a [resultRowConverter](../../configuration/sql/resultRowConverter) with either its fully qualified name or its alias like this in the front matter of your SQL statements:
+You can choose package, class name and method name at will. The converter method gives you full control about how you want to handle `ResultSet`s. You can use your own converter either by specifying it as the default converter mentioned above or by declaring it as a [resultRowConverter](../../configuration/sql/resultrowconverter) with either its fully qualified name or its alias like this in the front matter of your SQL statements:
 
 ```sql
 -- resultRowConverter: my.own.UserConverter
