@@ -44,13 +44,13 @@ public interface JdbcBlocks {
 
     CodeBlock closeConnection();
 
-    CodeBlock executeStatement();
-
     CodeBlock openConnection();
 
     CodeBlock tryPrepareCallable();
 
-    CodeBlock createStatement();
+    CodeBlock executeStatement(SqlConfiguration configuration);
+
+    CodeBlock createStatement(SqlConfiguration configuration);
 
     CodeBlock prepareBatch(SqlConfiguration configuration);
 

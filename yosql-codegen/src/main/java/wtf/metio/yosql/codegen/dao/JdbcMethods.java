@@ -48,6 +48,11 @@ public interface JdbcMethods {
     interface JdbcConnectionMethods {
 
         /**
+         * @see java.sql.Connection#createStatement()
+         */
+        CodeBlock createStatement();
+
+        /**
          * @see java.sql.Connection#prepareStatement(String)
          */
         CodeBlock prepareStatement();
@@ -113,9 +118,14 @@ public interface JdbcMethods {
     interface JdbcStatementMethods {
 
         /**
-         * @see java.sql.Statement#executeQuery(String)
+         * @see java.sql.PreparedStatement#executeQuery()
          */
         CodeBlock executeQuery();
+
+        /**
+         * @see java.sql.Statement#executeQuery(String)
+         */
+        CodeBlock executeGivenQuery();
 
         /**
          * @see java.sql.Statement#executeUpdate(String)

@@ -72,7 +72,7 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
                 .addCode(jdbc.tryPrepareCallable())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addCode(jdbc.executeStatement())
+                .addCode(jdbc.executeStatement(configuration))
                 .addCode(jdbc.returnAsMultiple(converter))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))

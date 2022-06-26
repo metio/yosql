@@ -19,6 +19,13 @@ public final class DefaultJdbcConnectionMethods implements JdbcMethods.JdbcConne
     }
 
     @Override
+    public CodeBlock createStatement() {
+        return CodeBlock.builder()
+                .add("$N.createStatement()", names.connection())
+                .build();
+    }
+
+    @Override
     public CodeBlock prepareStatement() {
         return CodeBlock.builder()
                 .add("$N.prepareStatement($N)", names.connection(), names.query())

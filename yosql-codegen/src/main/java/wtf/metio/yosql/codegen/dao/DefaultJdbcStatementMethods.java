@@ -26,6 +26,13 @@ public final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatem
     }
 
     @Override
+    public CodeBlock executeGivenQuery() {
+        return CodeBlock.builder()
+                .add("$N.executeQuery($N)", names.statement(), names.query())
+                .build();
+    }
+
+    @Override
     public CodeBlock executeUpdate() {
         return CodeBlock.builder()
                 .add("$N.executeUpdate()", names.statement())

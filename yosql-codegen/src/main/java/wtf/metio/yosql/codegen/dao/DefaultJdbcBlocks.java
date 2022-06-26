@@ -135,8 +135,17 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock executeStatement() {
-        return controlFlows.tryWithResource(executeQueryInline());
+    public CodeBlock executeStatement(final SqlConfiguration configuration) {
+        if (configuration.usePreparedStatement()
+                .orElse(runtimeConfiguration.repositories().usePreparedStatement())) {
+            return controlFlows.tryWithResource(executeQueryInline());
+        }
+        return controlFlows.tryWithResource(executeStatementQueryInline());
+    }
+
+    private CodeBlock executeStatementQueryInline() {
+        return variables.inline(ResultSet.class, names.resultSet(),
+                jdbcMethods.statement().executeGivenQuery());
     }
 
     @Override
@@ -150,8 +159,17 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock createStatement() {
-        return controlFlows.tryWithResource(prepareStatementInline());
+    public CodeBlock createStatement(final SqlConfiguration configuration) {
+        if (configuration.usePreparedStatement()
+                .orElse(runtimeConfiguration.repositories().usePreparedStatement())) {
+            return controlFlows.tryWithResource(prepareStatementInline());
+        }
+        return controlFlows.tryWithResource(statementInline());
+    }
+
+    private CodeBlock statementInline() {
+        return variables.inline(Statement.class, names.statement(),
+                jdbcMethods.connection().createStatement());
     }
 
     @Override

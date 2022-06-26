@@ -140,7 +140,7 @@ abstract class JdbcBlocksTCK {
     final void executeStatement() {
         Assertions.assertEquals(
                 executeStatementExpectation(),
-                generator().executeStatement().toString());
+                generator().executeStatement(SqlConfigurations.sqlConfiguration()).toString());
     }
 
     @Test
@@ -161,7 +161,7 @@ abstract class JdbcBlocksTCK {
     final void createStatement() {
         Assertions.assertEquals(
                 createStatementExpectation(),
-                generator().createStatement().toString());
+                generator().createStatement(SqlConfigurations.sqlConfiguration()).toString());
     }
 
     @Test
