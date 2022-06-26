@@ -85,6 +85,15 @@ public final class ExecutionErrors {
     }
 
     /**
+     * @param cause     The root cause of the illegal argument.
+     * @param message   The message to include.
+     * @param arguments The arguments to apply to the message.
+     */
+    public void illegalArgument(final Exception cause, final String message, final Object... arguments) {
+        errors.add(new IllegalArgumentException(String.format(message, arguments), cause));
+    }
+
+    /**
      * @param message The message to include.
      */
     public void codeGenerationException(final String message) {

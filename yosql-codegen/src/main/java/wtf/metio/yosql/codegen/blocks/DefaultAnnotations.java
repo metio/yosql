@@ -6,11 +6,13 @@
  */
 package wtf.metio.yosql.codegen.blocks;
 
+import ch.qos.cal10n.IMessageConveyor;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.TypeName;
 import de.xn__ho_hia.javapoet.TypeGuesser;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.configuration.Annotation;
 import wtf.metio.yosql.models.configuration.AnnotationMember;
 import wtf.metio.yosql.models.configuration.GeneratedAnnotationApis;
@@ -19,8 +21,12 @@ import wtf.metio.yosql.models.immutables.AnnotationsConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
+
+import static wtf.metio.yosql.codegen.lifecycle.ApplicationWarnings.CANNOT_GUESS_ANNOTATION_MEMBER_TYPE;
+import static wtf.metio.yosql.codegen.lifecycle.ApplicationWarnings.CANNOT_GUESS_ANNOTATION_TYPE;
 
 public final class DefaultAnnotations implements Annotations {
 
@@ -39,9 +45,16 @@ public final class DefaultAnnotations implements Annotations {
             GeneratedAnnotationMembers.WITHOUT_DATE);
 
     private final AnnotationsConfiguration annotations;
+    private final ExecutionErrors errors;
+    private final IMessageConveyor messages;
 
-    public DefaultAnnotations(final AnnotationsConfiguration annotations) {
+    public DefaultAnnotations(
+            final AnnotationsConfiguration annotations,
+            final ExecutionErrors errors,
+            final IMessageConveyor messages) {
         this.annotations = annotations;
+        this.errors = errors;
+        this.messages = messages;
     }
 
     @Override
@@ -88,52 +101,62 @@ public final class DefaultAnnotations implements Annotations {
             if (OPTIONS_WITH_COMMENT.contains(memberOption)) {
                 builder.addMember("comments", "$S", comment);
             }
-            return Collections.singletonList(builder.build());
+            return List.of(builder.build());
         }
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     public Iterable<AnnotationSpec> generatedRepository() {
         return annotations.repositoryAnnotations().stream()
-                .map(DefaultAnnotations::asAnnotationSpec)
+                .flatMap(annotation -> asAnnotationSpec(annotation).stream())
                 .toList();
     }
 
     @Override
     public Iterable<AnnotationSpec> generatedMethod(final SqlConfiguration configuration) {
         return Annotation.mergeAnnotations(configuration.annotations(), annotations.methodAnnotations()).stream()
-                .map(DefaultAnnotations::asAnnotationSpec)
+                .flatMap(annotation -> asAnnotationSpec(annotation).stream())
                 .toList();
     }
 
     @Override
     public Iterable<AnnotationSpec> generatedConstructor() {
         return annotations.constructorAnnotations().stream()
-                .map(DefaultAnnotations::asAnnotationSpec)
+                .flatMap(annotation -> asAnnotationSpec(annotation).stream())
                 .toList();
     }
 
     // visible for testing
-    static AnnotationSpec asAnnotationSpec(final Annotation annotation) {
-        // TODO: catch exception thrown by bestGuess and return Optional + use ExecutionErrors?
-        final var type = ClassName.bestGuess(annotation.type());
-        final var builder = AnnotationSpec.builder(type);
-        annotation.members().forEach(member -> builder.addMember(member.key(), asAnnotationMemberSpec(member)));
-        return builder.build();
+    Optional<AnnotationSpec> asAnnotationSpec(final Annotation annotation) {
+        try {
+            final var type = ClassName.bestGuess(annotation.type());
+            final var builder = AnnotationSpec.builder(type);
+            annotation.members().forEach(member -> asAnnotationMemberSpec(member)
+                    .ifPresent(code -> builder.addMember(member.key(), code)));
+            return Optional.of(builder.build());
+        } catch (final IllegalArgumentException exception) {
+            errors.illegalArgument(exception, messages.getMessage(CANNOT_GUESS_ANNOTATION_TYPE, annotation.type()));
+            return Optional.empty();
+        }
     }
 
-    private static CodeBlock asAnnotationMemberSpec(final AnnotationMember member) {
-        final var builder = CodeBlock.builder();
-        final var type = TypeGuesser.guessTypeName(member.type());
-        if (TypeName.CHAR.equals(type)) {
-            builder.add("'$L'", member.value());
-        } else if (type.isPrimitive()) {
-            builder.add("$L", member.value());
-        } else {
-            builder.add("$S", member.value());
+    private Optional<CodeBlock> asAnnotationMemberSpec(final AnnotationMember member) {
+        try {
+            final var builder = CodeBlock.builder();
+            final var type = TypeGuesser.guessTypeName(member.type());
+            if (TypeName.CHAR.equals(type)) {
+                builder.add("'$L'", member.value());
+            } else if (type.isPrimitive()) {
+                builder.add("$L", member.value());
+            } else {
+                builder.add("$S", member.value());
+            }
+            return Optional.of(builder.build());
+        } catch (final IllegalArgumentException exception) {
+            errors.illegalArgument(exception, messages.getMessage(CANNOT_GUESS_ANNOTATION_MEMBER_TYPE, member.type()));
+            return Optional.empty();
         }
-        return builder.build();
     }
 
 }

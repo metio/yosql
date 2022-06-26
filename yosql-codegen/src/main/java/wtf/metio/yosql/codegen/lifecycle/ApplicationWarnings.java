@@ -20,4 +20,14 @@ public enum ApplicationWarnings {
      */
     SQL_STATEMENT_IGNORED,
 
+    /**
+     * Signals that an annotation type cannot be guessed.
+     */
+    CANNOT_GUESS_ANNOTATION_TYPE,
+
+    /**
+     * Signals that an annotation type cannot be guessed.
+     */
+    CANNOT_GUESS_ANNOTATION_MEMBER_TYPE,
+
 }

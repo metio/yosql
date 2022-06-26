@@ -64,7 +64,7 @@ public final class ToMapConverterGenerator {
     public PackagedTypeSpec generateToMapConverterClass() {
         final var mapConverterClass = ClassName.bestGuess(converters.mapConverterClass());
         final var type = classes.publicClass(mapConverterClass)
-                // TODO: add javadoc with hint to disable generating this class
+                .addJavadoc("Disable generating this class by setting 'generateMapConverter' to 'false'.")
                 .addAnnotations(annotations.generatedClass())
                 .addMethod(toMapMethod())
                 .build();

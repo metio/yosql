@@ -11,6 +11,7 @@ import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.blocks.*;
+import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import javax.inject.Singleton;
@@ -26,8 +27,11 @@ public class DefaultBlocksModule {
 
     @Provides
     @Singleton
-    Annotations provideAnnotationGenerator(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultAnnotations(runtimeConfiguration.annotations());
+    Annotations provideAnnotationGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
+            final IMessageConveyor messages,
+            final ExecutionErrors errors) {
+        return new DefaultAnnotations(runtimeConfiguration.annotations(), errors, messages);
     }
 
     @Provides

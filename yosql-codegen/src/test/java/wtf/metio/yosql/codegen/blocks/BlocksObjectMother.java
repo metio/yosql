@@ -7,8 +7,8 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
-import ch.qos.cal10n.MessageConveyor;
-import wtf.metio.yosql.internals.jdk.SupportedLocales;
+import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
+import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.internals.testing.configs.AnnotationsConfigurations;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
 import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
@@ -58,7 +58,10 @@ public final class BlocksObjectMother {
     }
 
     public static Annotations annotationGenerator() {
-        return new DefaultAnnotations(AnnotationsConfigurations.defaults());
+        return new DefaultAnnotations(
+                AnnotationsConfigurations.defaults(),
+                OrchestrationObjectMother.executionErrors(),
+                LoggingObjectMother.messages());
     }
 
     public static Javadoc javadoc() {
@@ -66,7 +69,7 @@ public final class BlocksObjectMother {
     }
 
     public static Javadoc javadoc(final FilesConfiguration files) {
-        return new DefaultJavadoc(files, new MessageConveyor(SupportedLocales.ENGLISH));
+        return new DefaultJavadoc(files, LoggingObjectMother.messages());
     }
 
     private BlocksObjectMother() {
