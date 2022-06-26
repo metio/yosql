@@ -11,6 +11,8 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.codegen.blocks.CodeBlocks;
 import wtf.metio.yosql.codegen.blocks.Methods;
+import wtf.metio.yosql.codegen.exceptions.MissingConverterAliasException;
+import wtf.metio.yosql.codegen.exceptions.MissingDefaultConverterException;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
@@ -54,7 +56,8 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
             final var constructor = methods.constructor().addParameter(jdbcParameters.dataSource());
             resultConverters(statements).forEach(converter -> {
                 constructor.addParameter(jdbcParameters.converter(converter));
-                builder.add(blocks.initializeFieldToSelf(converter.alias().orElseThrow())); // TODO: throw business exception
+                builder.add(blocks.initializeFieldToSelf(converter.alias()
+                        .orElseThrow(MissingConverterAliasException::new)));
             });
             return constructor
                     .addCode(blocks.initializeFieldToSelf(names.dataSource()))
@@ -70,7 +73,8 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
     }
 
     private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {
-        return SqlStatement.resultConverters(statements, converters.defaultConverter().orElseThrow());
+        return SqlStatement.resultConverters(statements, converters.defaultConverter()
+                .orElseThrow(MissingDefaultConverterException::new));
     }
 
 }

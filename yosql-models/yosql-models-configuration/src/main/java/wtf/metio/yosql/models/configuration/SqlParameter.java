@@ -63,8 +63,7 @@ public interface SqlParameter {
                         .findFirst()
                         .map(other -> SqlParameter.copyOf(param)
                                 .withType(param.type().or(other::type))
-                                .withIndices(param.indices().or(other::indices))
-                                .withConverter(param.converter().or(other::converter)))
+                                .withIndices(param.indices().or(other::indices)))
                         .orElseGet(() -> SqlParameter.copyOf(param)));
     }
 
@@ -79,11 +78,6 @@ public interface SqlParameter {
      * @return The fully-qualified type name.
      */
     Optional<String> type();
-
-    /**
-     * @return The fully-qualified name of the converter to use.
-     */
-    Optional<String> converter();
 
     /**
      * @return The indices in the SQL statement that match this parameter.

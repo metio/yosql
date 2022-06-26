@@ -10,6 +10,8 @@ package wtf.metio.yosql.codegen.dao;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.yosql.codegen.blocks.Parameters;
+import wtf.metio.yosql.codegen.exceptions.MissingConverterAliasException;
+import wtf.metio.yosql.codegen.exceptions.MissingConverterTypeNameException;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
@@ -72,7 +74,8 @@ public final class DefaultJdbcParameters implements JdbcParameters {
 
     @Override
     public ParameterSpec converter(final ResultRowConverter converter) {
-        return parameters.parameter(converter.converterTypeName().orElseThrow(), converter.alias().orElseThrow()); // TODO: throw business exception
+        return parameters.parameter(converter.converterTypeName().orElseThrow(MissingConverterTypeNameException::new),
+                converter.alias().orElseThrow(MissingConverterAliasException::new));
     }
 
     @Override

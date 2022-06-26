@@ -8,6 +8,8 @@
 package wtf.metio.yosql.codegen.blocks;
 
 import com.squareup.javapoet.CodeBlock;
+import wtf.metio.yosql.codegen.exceptions.MissingConverterAliasException;
+import wtf.metio.yosql.codegen.exceptions.MissingConverterTypeNameException;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 
 public final class DefaultCodeBlocks implements CodeBlocks {
@@ -45,8 +47,8 @@ public final class DefaultCodeBlocks implements CodeBlocks {
     public CodeBlock initializeConverter(final ResultRowConverter converter) {
         return CodeBlock.builder()
                 .addStatement("this.$N = new $T()",
-                        converter.alias().orElseThrow(), // TODO: throw business exception
-                        converter.converterTypeName().orElseThrow()) // TODO: throw business exception
+                        converter.alias().orElseThrow(MissingConverterAliasException::new),
+                        converter.converterTypeName().orElseThrow(MissingConverterTypeNameException::new))
                 .build();
     }
 

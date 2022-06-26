@@ -14,6 +14,7 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -39,7 +40,7 @@ abstract class AbstractModelGenerator implements Function<ConfigurationGroup, St
 
     protected abstract CodeBlock initialize(ConfigurationSetting setting);
 
-    protected abstract CodeBlock convention(ConfigurationSetting setting);
+    protected abstract Optional<CodeBlock> convention(ConfigurationSetting setting);
 
     protected abstract List<ParameterSpec> immutableConfigurationParametersFor(ConfigurationGroup group);
 
@@ -109,8 +110,7 @@ abstract class AbstractModelGenerator implements Function<ConfigurationGroup, St
                 .addModifiers(Modifier.PUBLIC)
                 .addParameters(gradleConventionParametersFor(group));;
         group.settings().stream()
-                .map(this::convention)
-                .filter(code -> !code.toString().isBlank()) // TODO: use Optional instead?
+                .flatMap(setting -> convention(setting).stream())
                 .forEach(builder::addStatement);
         return builder.build();
     }

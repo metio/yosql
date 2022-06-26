@@ -13,6 +13,7 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
+import java.util.Optional;
 
 final class AntModelGenerator extends AbstractModelGenerator {
 
@@ -32,8 +33,8 @@ final class AntModelGenerator extends AbstractModelGenerator {
     }
 
     @Override
-    protected CodeBlock convention(final ConfigurationSetting setting) {
-        return CodeBlock.of("");
+    protected Optional<CodeBlock> convention(final ConfigurationSetting setting) {
+        return Optional.empty();
     }
 
     @Override

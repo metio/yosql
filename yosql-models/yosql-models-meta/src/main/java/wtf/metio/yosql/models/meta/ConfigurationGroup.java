@@ -175,7 +175,7 @@ public interface ConfigurationGroup {
     //region lazy
 
     @Value.Lazy
-    default String configurationName() { // TODO: remove?
+    default String configurationName() {
         return name() + "Configuration";
     }
 

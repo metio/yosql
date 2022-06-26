@@ -8,6 +8,7 @@
 package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.TypeName;
+import wtf.metio.yosql.codegen.exceptions.MissingConverterResultTypeException;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -46,21 +47,21 @@ public final class DefaultReturnTypes implements ReturnTypes {
     @Override
     public TypeName singleResultType(final SqlConfiguration configuration) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = converter.resultTypeName().orElseThrow();
+        final var resultType = converter.resultTypeName().orElseThrow(MissingConverterResultTypeException::new);
         return TypicalTypes.optionalOf(resultType);
     }
 
     @Override
     public TypeName multiResultType(final SqlConfiguration configuration) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = converter.resultTypeName().orElseThrow();
+        final var resultType = converter.resultTypeName().orElseThrow(MissingConverterResultTypeException::new);
         return TypicalTypes.listOf(resultType);
     }
 
     @Override
     public TypeName cursorResultType(final SqlConfiguration configuration) {
         final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = converter.resultTypeName().orElseThrow();
+        final var resultType = converter.resultTypeName().orElseThrow(MissingConverterResultTypeException::new);
         return TypicalTypes.streamOf(resultType);
     }
 

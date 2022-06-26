@@ -11,6 +11,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import wtf.metio.yosql.codegen.blocks.Fields;
 import wtf.metio.yosql.codegen.blocks.Javadoc;
+import wtf.metio.yosql.codegen.exceptions.*;
 import wtf.metio.yosql.codegen.files.SqlStatementParser;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
@@ -25,6 +26,7 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import javax.sql.DataSource;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,6 +39,7 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
 
     private static final String NAME_REGEX = "([a-z])([A-Z])";
     private static final String NAME_REPLACEMENT = "$1_$2";
+    private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
 
     private final ConverterConfiguration converters;
     private final NamesConfiguration names;
@@ -75,7 +78,7 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
             final SqlConfiguration config) {
         builder.addStatement("$N.put($S, $L)",
                 constantSqlStatementParameterIndexFieldName(config),
-                parameter.name().orElseThrow(), // TODO: throw business exception
+                parameter.name().orElseThrow(MissingParameterNameException::new),
                 indexArray(parameter));
     }
 
@@ -107,7 +110,8 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
                 repositoryFields.add(asConstantSqlParameterIndexField(statement));
             }
         }
-        SqlStatement.resultConverters(statements, converters.defaultConverter().orElseThrow())
+        SqlStatement.resultConverters(statements, converters.defaultConverter()
+                        .orElseThrow(MissingDefaultConverterException::new))
                 .map(this::asConverterField)
                 .forEach(repositoryFields::add);
 
@@ -151,17 +155,17 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
 
     private FieldSpec asConverterField(final ResultRowConverter converter) {
         return fields.field(
-                converter.converterTypeName().orElseThrow(), // TODO: throw business exception
-                converter.alias().orElseThrow()); // TODO: throw business exception
+                converter.converterTypeName().orElseThrow(MissingConverterTypeNameException::new),
+                converter.alias().orElseThrow(MissingConverterAliasException::new));
     }
 
     @Override
     public String constantSqlStatementFieldName(final SqlConfiguration configuration) {
         return configuration.name()
-                .map(name -> name.replaceAll(NAME_REGEX, NAME_REPLACEMENT))
+                .map(name -> NAME_PATTERN.matcher(name).replaceAll(NAME_REPLACEMENT))
                 .map(name -> name.toUpperCase(Locale.ROOT))
                 .map(name -> name + vendorSuffix(configuration))
-                .orElseThrow();
+                .orElseThrow(MissingSqlConfigurationNameException::new);
     }
 
     @Override

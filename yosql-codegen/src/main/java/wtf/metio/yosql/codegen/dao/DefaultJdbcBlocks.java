@@ -11,6 +11,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import wtf.metio.yosql.codegen.blocks.*;
+import wtf.metio.yosql.codegen.exceptions.*;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
@@ -178,7 +179,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 code("int $N = 0; $N < $N.length; $N++",
                         names.batch(),
                         names.batch(),
-                        config.parameters().get(0).name().orElseThrow(), // TODO: throw business exception
+                        config.parameters().get(0).name().orElseThrow(MissingParameterNameException::new),
                         names.batch()),
                 CodeBlock.builder()
                         .add(setBatchParameters(config))
@@ -206,7 +207,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .filter(config -> config.vendor().isPresent())
                     .forEach(config -> {
                         final var query = fields.constantSqlStatementFieldName(config);
-                        builder.add("case $S:\n", config.vendor().orElseThrow())
+                        builder.add("case $S:\n", config.vendor().orElseThrow(MissingSqlConfigurationVendorException::new))
                                 .addStatement("$>$N = $N", names.query(), query)
                                 .add(logging.vendorQueryPicked(query));
                         finalizeCase(builder, config);
@@ -266,8 +267,10 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             builder.add(variables.inline(String.class, names.executedQuery(), "$N", names.rawQuery()));
             sqlConfiguration.parameters()
                     .forEach(parameter -> {
-                        final var type = parameter.typeName().orElseThrow(); // TODO: throw business exception
-                        final var name = parameter.name().orElseThrow(); // TODO: throw business exception
+                        final var type = parameter.typeName()
+                                .orElseThrow(MissingParameterTypeNameException::new);
+                        final var name = parameter.name()
+                                .orElseThrow(MissingParameterNameException::new);
                         if (type.isPrimitive()) {
                             builder.add("\n$>.replace($S, $T.valueOf($N))$<", ":" + name,
                                     String.class, name);
@@ -291,8 +294,10 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             builder.add(variables.inline(String.class, names.executedQuery(), "$N", names.rawQuery()));
             sqlConfiguration.parameters()
                     .forEach(parameter -> {
-                        final var type = parameter.typeName().orElseThrow(); // TODO: throw business exception
-                        final var name = parameter.name().orElseThrow(); // TODO: throw business exception
+                        final var type = parameter.typeName()
+                                .orElseThrow(MissingParameterTypeNameException::new);
+                        final var name = parameter.name()
+                                .orElseThrow(MissingParameterNameException::new);
                         if (type.isPrimitive()) {
                             builder.add("\n$>.replace($S, $T.toString($N))$<", ":" + name, Arrays.class, name);
                         } else {
@@ -321,22 +326,24 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 .add(controlFlows.whileHasNext())
                 .addStatement("$N.add($N.$N($N))",
                         names.list(),
-                        converter.alias().orElseThrow(), // TODO: throw business exception
-                        converter.methodName().orElseThrow(), // TODO: throw business exception
+                        converter.alias().orElseThrow(MissingConverterAliasException::new),
+                        converter.methodName().orElseThrow(MissingConverterMethodNameException::new),
                         names.resultSet())
                 .endControlFlow();
     }
 
     @Override
     public CodeBlock returnAsMultiple(final ResultRowConverter converter) {
-        return prepareReturnList(TypicalTypes.listOf(converter.resultTypeName().orElseThrow()), converter) // TODO: throw business exception
+        return prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()
+                .orElseThrow(MissingConverterResultTypeException::new)), converter)
                 .addStatement("return $N", names.list())
                 .build();
     }
 
     @Override
     public CodeBlock returnAsSingle(final ResultRowConverter converter) {
-        return prepareReturnList(TypicalTypes.listOf(converter.resultTypeName().orElseThrow()), converter) // TODO: throw business exception
+        return prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()
+                .orElseThrow(MissingConverterResultTypeException::new)), converter)
                 .addStatement("return $N.size() > 0 ? $T.of($N.get(0)) : $T.empty()",
                         names.list(), Optional.class, names.list(), Optional.class)
                 .build();
@@ -355,7 +362,8 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     private TypeSpec lazyStreamSpliterator(final ResultRowConverter converter) {
         final var spliteratorClass = ClassName.get(Spliterators.AbstractSpliterator.class);
-        final var resultType = converter.resultTypeName().orElseThrow(); // TODO: throw business exception
+        final var resultType = converter.resultTypeName()
+                .orElseThrow(MissingConverterResultTypeException::new);
         final var superinterface = ParameterizedTypeName.get(spliteratorClass, resultType);
         final var consumerType = TypicalTypes.consumerOf(resultType);
         return TypeSpec
@@ -366,8 +374,9 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                         .returns(boolean.class)
                         .addCode(controlFlows.startTryBlock())
                         .addCode(controlFlows.ifHasNext())
-                        .addStatement("$N.accept($N.$N($N))", names.action(), converter.alias().orElseThrow(), // TODO: throw business exception
-                                converter.methodName().orElseThrow(), // TODO: throw business exception
+                        .addStatement("$N.accept($N.$N($N))", names.action(), converter.alias()
+                                        .orElseThrow(MissingConverterAliasException::new),
+                                converter.methodName().orElseThrow(MissingConverterMethodNameException::new),
                                 names.resultSet())
                         .addCode(blocks.returnTrue())
                         .addCode(controlFlows.endIf())
@@ -421,9 +430,10 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 code("final int $N : $N.get($S)",
                         names.jdbcIndexVariable(),
                         names.indexVariable(),
-                        parameter.name().orElseThrow()), // TODO: throw business exception
+                        parameter.name().orElseThrow(MissingParameterNameException::new)),
                 CodeBlock.builder()
-                        .addStatement(codeStatement, parameterSetter.apply(parameter.name().orElseThrow())) // TODO: throw business exception
+                        .addStatement(codeStatement, parameterSetter.apply(parameter.name()
+                                .orElseThrow(MissingParameterNameException::new)))
                         .build())));
 
         return builder.build();

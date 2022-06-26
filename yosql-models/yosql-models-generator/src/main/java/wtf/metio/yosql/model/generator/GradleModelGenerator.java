@@ -13,6 +13,7 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
+import java.util.Optional;
 
 final class GradleModelGenerator extends AbstractModelGenerator {
 
@@ -52,8 +53,8 @@ final class GradleModelGenerator extends AbstractModelGenerator {
     }
 
     @Override
-    protected CodeBlock convention(final ConfigurationSetting setting) {
-        return setting.gradleConvention().orElseGet(() -> CodeBlock.of(""));
+    protected Optional<CodeBlock> convention(final ConfigurationSetting setting) {
+        return setting.gradleConvention();
     }
 
     @Override

@@ -10,11 +10,12 @@ package wtf.metio.yosql.codegen.dao;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ParameterSpec;
 import wtf.metio.yosql.codegen.blocks.Parameters;
+import wtf.metio.yosql.codegen.exceptions.MissingParameterNameException;
+import wtf.metio.yosql.codegen.exceptions.MissingParameterTypeNameException;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class DefaultParameterGenerator implements ParameterGenerator {
 
@@ -30,7 +31,9 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     private ParameterSpec ofSqlParameter(final SqlParameter parameter) {
-        return parameters.parameter(parameter.typeName().orElseThrow(), parameter.name().orElseThrow());
+        return parameters.parameter(parameter.typeName()
+                        .orElseThrow(MissingParameterTypeNameException::new),
+                parameter.name().orElseThrow(MissingParameterNameException::new));
     }
 
     @Override
@@ -39,16 +42,20 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     private ParameterSpec ofSqlParameterForInterfaces(final SqlParameter parameter) {
-        return parameters.parameterForInterfaces(parameter.typeName().orElseThrow(), parameter.name().orElseThrow());
+        return parameters.parameterForInterfaces(parameter.typeName()
+                        .orElseThrow(MissingParameterTypeNameException::new),
+                parameter.name().orElseThrow(MissingParameterNameException::new));
     }
 
     @Override
-    public Iterable<ParameterSpec> asBatchParameterSpecs(List<SqlParameter> parameters) {
+    public Iterable<ParameterSpec> asBatchParameterSpecs(final List<SqlParameter> parameters) {
         return asParameterSpecs(parameters, this::batchOfSqlParameter);
     }
 
     private ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
-        return parameters.parameter(ArrayTypeName.of(parameter.typeName().orElseThrow()), parameter.name().orElseThrow());
+        return parameters.parameter(ArrayTypeName.of(parameter.typeName()
+                        .orElseThrow(MissingParameterTypeNameException::new)),
+                parameter.name().orElseThrow(MissingParameterNameException::new));
     }
 
     @Override
@@ -57,15 +64,17 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     private ParameterSpec batchOfSqlParameterForInterfaces(final SqlParameter parameter) {
-        return parameters.parameterForInterfaces(ArrayTypeName.of(parameter.typeName().orElseThrow()), parameter.name().orElseThrow());
+        return parameters.parameterForInterfaces(ArrayTypeName.of(parameter.typeName()
+                        .orElseThrow(MissingParameterTypeNameException::new)),
+                parameter.name().orElseThrow(MissingParameterNameException::new));
     }
 
-    private static Iterable<ParameterSpec> asParameterSpecs(
+    private static List<ParameterSpec> asParameterSpecs(
             final List<SqlParameter> parameters,
             final Function<SqlParameter, ParameterSpec> asParameter) {
         return parameters.stream()
                 .map(asParameter)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }
