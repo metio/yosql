@@ -27,19 +27,16 @@ import java.util.List;
 public final class DefaultFileParser implements FileParser {
 
     private final LocLogger logger;
-    private final ParserPreconditions preconditions;
     private final FilesConfiguration fileConfiguration;
     private final ExecutionErrors errors;
     private final SqlStatementParser statementParser;
 
     public DefaultFileParser(
             final LocLogger logger,
-            final ParserPreconditions preconditions,
             final FilesConfiguration fileConfiguration,
             final ExecutionErrors errors,
             final SqlStatementParser statementParser) {
         this.logger = logger;
-        this.preconditions = preconditions;
         this.fileConfiguration = fileConfiguration;
         this.errors = errors;
         this.statementParser = statementParser;
@@ -49,23 +46,19 @@ public final class DefaultFileParser implements FileParser {
     public List<SqlStatement> parseFiles() {
         final var source = fileConfiguration.inputBaseDirectory();
         logger.trace(FileLifecycle.READ_FILES, source);
-        preconditions.directoryIsReadable(source);
 
-        if (!errors.hasErrors()) {
-            try (final var files = Files.walk(source, FileVisitOption.FOLLOW_LINKS).parallel()) {
-                return files.peek(path -> logger.trace(FileLifecycle.ENCOUNTER_FILE, path))
-                        .filter(Files::isRegularFile)
-                        .filter(path -> path.toString().endsWith(fileConfiguration.sqlFilesSuffix()))
-                        .peek(path -> logger.trace(FileLifecycle.CONSIDER_FILE, path))
-                        .flatMap(statementParser::parse)
-                        .toList();
-            } catch (final IOException | SecurityException exception) {
-                logger.error(ApplicationErrors.READ_FILES_FAILED, exception.getLocalizedMessage());
-                errors.add(exception);
-            }
+        try (final var files = Files.walk(source, FileVisitOption.FOLLOW_LINKS).parallel()) {
+            return files.peek(path -> logger.trace(FileLifecycle.ENCOUNTER_FILE, path))
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(fileConfiguration.sqlFilesSuffix()))
+                    .peek(path -> logger.trace(FileLifecycle.CONSIDER_FILE, path))
+                    .flatMap(statementParser::parse)
+                    .toList();
+        } catch (final IOException | SecurityException exception) {
+            logger.error(ApplicationErrors.READ_FILES_FAILED, exception.getLocalizedMessage());
+            errors.add(exception);
+            return List.of();
         }
-
-        return List.of();
     }
 
 }

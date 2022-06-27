@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public final class DefaultParserPreconditions implements ParserPreconditions {
+public final class DefaultCodegenPreconditions implements CodegenPreconditions {
 
     private final ExecutionErrors errors;
     private final IMessageConveyor messages;
 
-    public DefaultParserPreconditions(
+    public DefaultCodegenPreconditions(
             final ExecutionErrors errors,
             final IMessageConveyor messages) {
         this.errors = errors;
@@ -27,10 +27,10 @@ public final class DefaultParserPreconditions implements ParserPreconditions {
     }
 
     @Override
-    public void assertDirectoryIsWriteable(final Path directory) {
+    public void directoryIsWriteable(final Path directory) {
         if (Files.notExists(directory)) {
             try {
-                if (Files.createDirectories(directory) != null) {
+                if (Files.createDirectories(directory) == null) {
                     errors.illegalState(messages.getMessage(FileErrors.CANNOT_CREATE_DIRECTORY, directory));
                 }
             } catch (final IOException cause) {

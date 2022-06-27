@@ -11,6 +11,7 @@ import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
+import wtf.metio.yosql.codegen.files.CodegenPreconditions;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.codegen.validation.*;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
@@ -53,6 +54,13 @@ public class DefaultValidationModule {
             final ExecutionErrors errors,
             final IMessageConveyor messages) {
         return new ConverterConfigurationValidator(errors, messages);
+    }
+
+    @IntoSet
+    @Provides
+    @Singleton
+    RuntimeConfigurationValidator provideFilesConfigurationValidator(final CodegenPreconditions preconditions) {
+        return new FilesConfigurationValidator(preconditions);
     }
 
 }

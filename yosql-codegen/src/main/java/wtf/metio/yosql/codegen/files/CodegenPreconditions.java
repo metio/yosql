@@ -12,7 +12,7 @@ import java.nio.file.Path;
 /**
  * Preconditions that have to be matched for SQL parsing to work.
  */
-public interface ParserPreconditions { // TODO: rename to CodegenPreconditions b/c writing is for generators not parsers
+public interface CodegenPreconditions {
 
     /**
      * Asserts that a single directory is writable. In order to be writable, the directory has to:
@@ -24,7 +24,7 @@ public interface ParserPreconditions { // TODO: rename to CodegenPreconditions b
      *
      * @param directory The directory to check
      */
-    void assertDirectoryIsWriteable(Path directory);
+    void directoryIsWriteable(Path directory);
 
     /**
      * Asserts that a single directory is readable. In order to be readable, the directory has to:

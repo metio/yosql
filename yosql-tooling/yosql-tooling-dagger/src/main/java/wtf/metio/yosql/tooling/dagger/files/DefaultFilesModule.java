@@ -121,13 +121,11 @@ public class DefaultFilesModule {
     @Singleton
     FileParser provideFileParser(
             @Reader final LocLogger logger,
-            final ParserPreconditions preconditions,
             final RuntimeConfiguration runtimeConfiguration,
             final ExecutionErrors errors,
             final SqlStatementParser fileParser) {
         return new DefaultFileParser(
                 logger,
-                preconditions,
                 runtimeConfiguration.files(),
                 errors,
                 fileParser);
@@ -135,10 +133,10 @@ public class DefaultFilesModule {
 
     @Provides
     @Singleton
-    ParserPreconditions provideParserPreconditions(
+    CodegenPreconditions provideParserPreconditions(
             final ExecutionErrors errors,
             final IMessageConveyor messages) {
-        return new DefaultParserPreconditions(errors, messages);
+        return new DefaultCodegenPreconditions(errors, messages);
     }
 
 }
