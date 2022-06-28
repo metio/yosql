@@ -8,25 +8,34 @@
 package wtf.metio.yosql.codegen.files;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
+import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.internals.testing.configs.ConverterConfigurations;
+import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
 import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
 
+import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("DefaultSqlStatementParser")
 class DefaultSqlStatementParserTest {
 
-    private SqlStatementParser parser;
+    private DefaultSqlStatementParser parser;
 
     @BeforeEach
     void setUp() {
-        parser = FilesObjectMother.sqlStatementParser(
-                RepositoriesConfigurations.defaults(),
-                ConverterConfigurations.withConverters());
+        parser = new DefaultSqlStatementParser(
+                LoggingObjectMother.logger(),
+                FilesObjectMother.sqlConfigurationFactory(
+                        RepositoriesConfigurations.defaults(),
+                        ConverterConfigurations.withConverters()),
+                FilesConfigurations.defaults(),
+                OrchestrationObjectMother.executionErrors());
     }
 
     @Test
@@ -89,6 +98,115 @@ class DefaultSqlStatementParserTest {
         expectation.add("id");
         expectation.add("name");
         assertIterableEquals(expectation, indices.keySet());
+    }
+
+    @Test
+    void parseStatement() {
+        final var source = Paths.get("writeData.sql");
+        final var statement = """
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);
+                """;
+
+        final var sqlStatement = parser.parseStatement(
+                source, statement, 1);
+
+        assertAll("statement attributes",
+                () -> assertEquals(source, sqlStatement.getSourcePath(), "source"),
+                () -> assertEquals(statement, sqlStatement.getRawStatement(), "statement"),
+                () -> assertNotNull(sqlStatement.getConfiguration(), "configuration")
+        );
+    }
+
+    @Test
+    void parseCallingStatement() {
+        final var statement = """
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);
+                """;
+
+        final var sqlStatement = parser.parseStatement(
+                Paths.get("callData.sql"), statement, 1);
+
+        assertAll("statement type",
+                () -> assertTrue(sqlStatement.isCalling(), "calling"),
+                () -> assertFalse(sqlStatement.isReading(), "reading"),
+                () -> assertFalse(sqlStatement.isWriting(), "writing")
+        );
+    }
+
+    @Test
+    void parseReadingStatement() {
+        final var statement = """
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);
+                """;
+
+        final var sqlStatement = parser.parseStatement(
+                Paths.get("readData.sql"), statement, 1);
+
+        assertAll("statement type",
+                () -> assertFalse(sqlStatement.isCalling(), "calling"),
+                () -> assertTrue(sqlStatement.isReading(), "reading"),
+                () -> assertFalse(sqlStatement.isWriting(), "writing")
+        );
+    }
+
+    @Test
+    void parseWritingStatement() {
+        final var statement = """
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);
+                """;
+
+        final var sqlStatement = parser.parseStatement(
+                Paths.get("writeData.sql"), statement, 1);
+
+        assertAll("statement type",
+                () -> assertFalse(sqlStatement.isCalling(), "calling"),
+                () -> assertFalse(sqlStatement.isReading(), "reading"),
+                () -> assertTrue(sqlStatement.isWriting(), "writing")
+        );
+    }
+
+    @Test
+    void parseStatementNameFromFile() {
+        final var statement = """
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);
+                """;
+
+        final var sqlStatement = parser.parseStatement(
+                Paths.get("writeData.sql"), statement, 1);
+
+        assertEquals("writeData", sqlStatement.getName());
+    }
+
+    @Test
+    void parseStatementNameFromFileWithMultipleStatementsInFile() {
+        final var statement = """
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);
+                """;
+
+        final var sqlStatement = parser.parseStatement(
+                Paths.get("writeData.sql"), statement, 3);
+
+        assertEquals("writeData3", sqlStatement.getName());
+    }
+
+    @Test
+    void parseStatementNameFromFrontMatter() {
+        final var statement = """
+                -- name: someName
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);
+                """;
+
+        final var sqlStatement = parser.parseStatement(
+                Paths.get("writeData.sql"), statement, 1);
+
+        assertEquals("someName", sqlStatement.getName());
     }
 
 }

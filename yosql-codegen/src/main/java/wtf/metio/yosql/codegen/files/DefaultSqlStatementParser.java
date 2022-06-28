@@ -80,7 +80,8 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         return builder.toString();
     }
 
-    private SqlStatement parseStatement(
+    // visible for testing
+    SqlStatement parseStatement(
             final Path source,
             final String rawStatement,
             final int statementInFile) {

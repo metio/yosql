@@ -9,20 +9,27 @@ package wtf.metio.yosql.codegen.files;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
+import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+@DisplayName("DefaultMethodParameterConfigurer")
 class DefaultMethodParameterConfigurerTest {
 
-    private MethodParameterConfigurer configurer;
+    private DefaultMethodParameterConfigurer configurer;
 
     @BeforeEach
     void setUp() {
-        configurer = FilesObjectMother.methodParameterConfigurer();
+        configurer = new DefaultMethodParameterConfigurer(
+                LoggingObjectMother.logger(),
+                OrchestrationObjectMother.executionErrors(),
+                LoggingObjectMother.messages());
     }
 
     @Test
