@@ -45,6 +45,13 @@ public interface SqlParameter {
 
     //region utils
 
+    /**
+     * Deeply merges two parameter lists using the name of the parameter as identifying key.
+     *
+     * @param first  The first list of parameters.
+     * @param second The second list of parameters.
+     * @return The merged list of parameters.
+     */
     static List<SqlParameter> mergeParameters(
             final List<SqlParameter> first,
             final List<SqlParameter> second) {
@@ -63,7 +70,10 @@ public interface SqlParameter {
                         .findFirst()
                         .map(other -> SqlParameter.copyOf(param)
                                 .withType(param.type().or(other::type))
-                                .withIndices(param.indices().or(other::indices)))
+                                .withIndices(param.indices().or(other::indices))
+                                .withVariant(param.variant().or(other::variant))
+                                .withSqlType(param.sqlType().or(other::sqlType))
+                                .withScale(param.scale().or(other::scale)))
                         .orElseGet(() -> SqlParameter.copyOf(param)));
     }
 
@@ -85,12 +95,26 @@ public interface SqlParameter {
     @JsonIgnore
     Optional<int[]> indices();
 
-    // TODO: add parameter type (in, out, inout)
-    // TODO: add sql type (see java.sql.Types)
-    // TODO: add scale for sql numeric/decimal types
+    /**
+     * @return The variant of this parameter.
+     */
+    Optional<SqlParameterVariant> variant();
 
-    //region derived
+    /**
+     * @return The JDBC type of this parameter.
+     */
+    Optional<Integer> sqlType();
 
+    /**
+     * @return The scale of this parameter in case its sqlType is numeric/decimal.
+     */
+    Optional<Integer> scale();
+
+    //region lazy
+
+    /**
+     * @return The parsed type name of this parameter.
+     */
     @Value.Lazy
     default Optional<TypeName> typeName() {
         return type().map(TypeGuesser::guessTypeName);

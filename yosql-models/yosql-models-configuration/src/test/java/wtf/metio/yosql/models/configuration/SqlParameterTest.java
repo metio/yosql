@@ -171,4 +171,106 @@ class SqlParameterTest {
         assertEquals(7, merged.get(0).indices().orElseThrow()[0]);
     }
 
+    @Test
+    void mergeParametersDuplicatedNamesMissingVariantFirst() {
+        final List<SqlParameter> first = List.of(SqlParameter.builder()
+                .setName("name")
+                .build());
+        final List<SqlParameter> second = List.of(SqlParameter.builder()
+                .setName("name")
+                .setVariant(SqlParameterVariant.IN)
+                .build());
+
+        final var merged = SqlParameter.mergeParameters(first, second);
+
+        assertEquals(1, merged.size());
+        assertEquals("name", merged.get(0).name().orElseThrow());
+        assertEquals(SqlParameterVariant.IN, merged.get(0).variant().orElseThrow());
+    }
+
+    @Test
+    void mergeParametersDuplicatedNamesMissingVariantSecond() {
+        final List<SqlParameter> first = List.of(SqlParameter.builder()
+                .setName("name")
+                .setVariant(SqlParameterVariant.IN)
+                .build());
+        final List<SqlParameter> second = List.of(SqlParameter.builder()
+                .setName("name")
+                .build());
+
+        final var merged = SqlParameter.mergeParameters(first, second);
+
+        assertEquals(1, merged.size());
+        assertEquals("name", merged.get(0).name().orElseThrow());
+        assertEquals(SqlParameterVariant.IN, merged.get(0).variant().orElseThrow());
+    }
+
+    @Test
+    void mergeParametersDuplicatedNamesMissingSqlTypeFirst() {
+        final List<SqlParameter> first = List.of(SqlParameter.builder()
+                .setName("name")
+                .build());
+        final List<SqlParameter> second = List.of(SqlParameter.builder()
+                .setName("name")
+                .setSqlType(1)
+                .build());
+
+        final var merged = SqlParameter.mergeParameters(first, second);
+
+        assertEquals(1, merged.size());
+        assertEquals("name", merged.get(0).name().orElseThrow());
+        assertEquals(1, merged.get(0).sqlType().orElseThrow());
+    }
+
+    @Test
+    void mergeParametersDuplicatedNamesMissingSqlTypeSecond() {
+        final List<SqlParameter> first = List.of(SqlParameter.builder()
+                .setName("name")
+                .setSqlType(1)
+                .build());
+        final List<SqlParameter> second = List.of(SqlParameter.builder()
+                .setName("name")
+                .build());
+
+        final var merged = SqlParameter.mergeParameters(first, second);
+
+        assertEquals(1, merged.size());
+        assertEquals("name", merged.get(0).name().orElseThrow());
+        assertEquals(1, merged.get(0).sqlType().orElseThrow());
+    }
+
+    @Test
+    void mergeParametersDuplicatedNamesMissingScaleFirst() {
+        final List<SqlParameter> first = List.of(SqlParameter.builder()
+                .setName("name")
+                .build());
+        final List<SqlParameter> second = List.of(SqlParameter.builder()
+                .setName("name")
+                .setScale(2)
+                .build());
+
+        final var merged = SqlParameter.mergeParameters(first, second);
+
+        assertEquals(1, merged.size());
+        assertEquals("name", merged.get(0).name().orElseThrow());
+        assertEquals(2, merged.get(0).scale().orElseThrow());
+    }
+
+    @Test
+    void mergeParametersDuplicatedNamesMissingScaleSecond() {
+        final List<SqlParameter> first = List.of(SqlParameter.builder()
+                .setName("name")
+                .setScale(2)
+                .build());
+        final List<SqlParameter> second = List.of(SqlParameter.builder()
+                .setName("name")
+                .build());
+
+        final var merged = SqlParameter.mergeParameters(first, second);
+
+        assertEquals(1, merged.size());
+        assertEquals("name", merged.get(0).name().orElseThrow());
+        assertEquals(2, merged.get(0).scale().orElseThrow());
+    }
+
 }
