@@ -18,11 +18,6 @@ import java.util.List;
 class SqlConfigurationTest {
 
     @Test
-    void fromStatements() {
-        // TODO: write test that ensures that the name of a SqlStatement is transferred to its SqlConfiguration(s)
-    }
-
-    @Test
     void mergeRepositoryFirst() {
         final var first = SqlConfiguration.builder()
                 .setRepository("com.example.Repository")

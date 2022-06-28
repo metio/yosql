@@ -131,12 +131,4 @@ public class DefaultFilesModule {
                 fileParser);
     }
 
-    @Provides
-    @Singleton
-    CodegenPreconditions provideParserPreconditions(
-            final ExecutionErrors errors,
-            final IMessageConveyor messages) {
-        return new DefaultCodegenPreconditions(errors, messages);
-    }
-
 }
