@@ -31,13 +31,6 @@
                 <include>LICENSE</include>
             </includes>
         </fileSet>
-        <fileSet>
-            <outputDirectory/>
-            <directory>${project.build.directory}</directory>
-            <includes>
-                <include>yosql-tooling-ant-*.jar</include>
-            </includes>
-        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
