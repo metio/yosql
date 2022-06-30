@@ -54,7 +54,7 @@ project/
         └── createItemTable.sql
 ```
 
-5. Declare a `filegroup` that contains all of your SQL files:
+5. Declare a [filegroup](https://bazel.build/reference/be/general#filegroup) that contains all of your SQL files:
 
 ```
 filegroup(
