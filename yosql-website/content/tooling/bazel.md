@@ -10,19 +10,36 @@ tags:
   - Bazel
 ---
 
-[bazel](https://bazel.build/) users can use the `yosql-cli` in their builds by following the steps. Replace placeholders with values from the actual release notes.
+[bazel](https://bazel.build/) users can use the [yosql-tooling-cli](../cli/) in their builds by following these steps:
 
-1. Add git repository to your `WORKSPACE`:
+1. Download the `yosql-tooling-cli` zip file from the [latest release](https://github.com/metio/yosql/releases/latest) (or any prior version).
+2. Use a [java_import](https://bazel.build/reference/be/java#java_import) rule to capture all `.jar` files used by `yosql-tooling-cli`
 
 ```
-git_repository(
-    name = "yosql",
-    remote = "https://github.com/metio/yosql.git",
-    tag = "0.0.1-bazel",
+java_import(
+    name = "yosql_tooling_cli",
+    jars = [
+        "lib/yosql-tooling-cli-x.y.z.jar",
+        "lib/yosql-codegen-x.y.z.jar",
+        "lib/yosql-models-immutables-x.y.z.jar",
+        ... every other jar file from the 'lib' folder
+    ],
 )
 ```
 
-2. Write .sql files in a directory of your choice (e.g. `persistence`)
+3. Use a [java_binary](https://bazel.build/reference/be/java#java_binary) rule to create a runnable binary for bazel
+
+```
+java_binary(
+    name = "yosql",
+    deps = [
+        ":yosql_tooling_cli",
+    ],
+    main_class = "wtf.metio.yosql.tooling.cli.YoSQL",
+)
+```
+
+4. Write .sql files in a directory of your choice (e.g. `persistence`)
 
 ```
 project/
@@ -37,7 +54,7 @@ project/
         └── createItemTable.sql
 ```
 
-3. Declare a `filegroup` that contains all of your SQL files:
+5. Declare a `filegroup` that contains all of your SQL files:
 
 ```
 filegroup(
@@ -46,43 +63,7 @@ filegroup(
 )
 ```
 
-4. Generate utilities first since they dont change that often:
-
-```
-genrule(
-  name = "your-utilities",
-  srcs = [":your-sql-files"],
-  outs = [
-    "com/example/persistence/util/ResultRow.java",
-    "com/example/persistence/util/ResultState.java",
-    "com/example/persistence/util/FlowState.java",
-  ],
-  cmd = """
-    $(location @yosql//yosql-cli) generate utilities
-  """,
-  tools = ["@yosql//yosql-cli"],
-)
-```
-
-5. Generate converters next, in order to connect user code to repositories
-
-
-```
-genrule(
-  name = "your-converters",
-  srcs = [":your-sql-files"],
-  outs = [
-    "com/example/persistence/converter/ToResultRowConverter.java",
-  ],
-  cmd = """
-    $(location @yosql//yosql-cli) generate converters
-  """,
-  tools = ["@yosql//yosql-cli"],
-)
-```
-
-
-6. Generate repositories last, since they'll change everytime a SQL file changes as well:
+6. Generate Java code by calling the previously defined `java_binary`:
 
 ```
 genrule(
@@ -91,12 +72,13 @@ genrule(
   outs = [
     "com/example/persistence/UserRepository.java",
     "com/example/persistence/ItemRepository.java",
+    ... all of your generated code
   ],
   cmd = """
-    $(location @yosql//yosql-cli) generate repositories
+    $(location :yosql) generate
   """,
-  tools = ["@yosql//yosql-cli"],
+  tools = [":yosql"],
 )
 ```
 
-8. Depend on the generated sources by using the target name of the generated code in the `srcs` of another rule.
+7. Depend on the generated sources by using the target name of the generated code in the `srcs` of another rule.
