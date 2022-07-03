@@ -36,8 +36,6 @@ jobs:
       - name: update yosql-tooling-gradle
         uses: gradle-update/update-gradle-wrapper-action@v1
         with:
-          paths: yosql-tooling/yosql-tooling-gradle/**
-      - name: update yosql-examples-gradle
-        uses: gradle-update/update-gradle-wrapper-action@v1
-        with:
-          paths: yosql-examples/yosql-examples-gradle/**
+          paths: |
+            yosql-tooling/yosql-tooling-gradle/**
+            yosql-examples/yosql-examples-gradle/**
