@@ -88,14 +88,14 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>jvm-assembly</id>
+                        <id>dist-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>${project.basedir}/src/assembly/jvm.xml</descriptor>
+                                <descriptor>${project.basedir}/src/assembly/dist.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>

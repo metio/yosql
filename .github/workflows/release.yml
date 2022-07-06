@@ -256,9 +256,9 @@ jobs:
           prerelease: false
           generate_release_notes: true
           files: |
-            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-jvm.zip
-            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-jvm.zip.asc
-            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-jvm.zip.sha512
+            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip
+            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip.asc
+            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip.sha512
             artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip
             artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.asc
             artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.sha512
