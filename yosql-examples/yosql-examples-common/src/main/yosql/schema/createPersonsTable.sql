@@ -14,6 +14,7 @@ CREATE TABLE persons
 )
 ;
 
+-- name: createPersonToCompany
 CREATE TABLE person_to_company
 (
     person_id  INTEGER,

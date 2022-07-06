@@ -36,6 +36,12 @@ public interface SchemaCreator {
 
     IntSupplier createUsersTable();
 
+    IntSupplier createNextPrimeFunction();
+
+    IntSupplier createRandomNumberFunction();
+
+    IntSupplier createNamesFunction();
+
     @Value.Lazy
     default void createDatabaseSchema() {
         try {
@@ -48,6 +54,9 @@ public interface SchemaCreator {
             createPersonsTable().getAsInt();
             createItemsTable().getAsInt();
             createUsersTable().getAsInt();
+            createNextPrimeFunction().getAsInt();
+            createRandomNumberFunction().getAsInt();
+            createNamesFunction().getAsInt();
         } catch (final RuntimeException exception) {
             LOG.log(System.Logger.Level.ERROR, "Error while creating database schema", exception);
             System.exit(1);

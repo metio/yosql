@@ -74,7 +74,8 @@ public final class Repositories extends AbstractConfigurationGroup {
                 generateBatchApi(),
                 usePreparedStatement(),
                 catchAndRethrow(),
-                throwOnMultipleResultsForSingle());
+//                returnUpdateCountForWritingMethodWithReturningModeNode(), // TODO: add & find better name
+                throwOnMultipleResultsForSingle()); // TODO: implement
     }
 
     private static ConfigurationSetting basePackageName() {
@@ -204,6 +205,7 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Generate standard methods";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -212,6 +214,7 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Generate batch methods";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -220,6 +223,7 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Should `PreparedStatement`s be used instead of `Statement`s";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
@@ -291,12 +295,11 @@ public final class Repositories extends AbstractConfigurationGroup {
                                 public class SomeRepository {
 
                                     private final DataSource dataSource;
-
-                                    private final ToResultRowConverter resultRow;
+                                    private final ToMapConverter toMap;
 
                                     public SomeRepository(final DataSource dataSource) {
                                         this.dataSource = dataSource;
-                                        this.resultRow = new ToResultRowConverter();
+                                        this.toMap = new ToMapConverter();
                                     }
 
                                     // ... rest of generated code
@@ -312,12 +315,11 @@ public final class Repositories extends AbstractConfigurationGroup {
                                 public class SomeRepository {
 
                                     private final DataSource dataSource;
+                                    private final ToMapConverter toMap;
 
-                                    private final ToResultRowConverter resultRow;
-
-                                    public SomeRepository(final DataSource dataSource, final ToResultRowConverter resultRow) {
+                                    public SomeRepository(final DataSource dataSource, final ToMapConverter toMap) {
                                         this.dataSource = dataSource;
-                                        this.resultRow = resultRow;
+                                        this.toMap = toMap;
                                     }
 
                                     // ... rest of generated code

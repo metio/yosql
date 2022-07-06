@@ -49,26 +49,33 @@ public interface ReadingTests {
     @Value.Lazy
     default void runReadingTests() {
         try {
-            queryAllCompanies().get().forEach(System.out::println);
-            findCompanyByName().apply("two").forEach(System.out::println);
-            findCompanies().apply(10, 20).forEach(System.out::println);
+            queryAllCompanies().get().forEach(ReadingTests::print);
+            findCompanyByName().apply("two").forEach(ReadingTests::print);
+            findCompanies().apply(10, 20).forEach(ReadingTests::print);
 
-            findPerson().apply("alice").forEach(System.out::println);
+            findPerson().apply("alice").forEach(ReadingTests::print);
             try (final var persons = findPersons().get()) {
-                persons.forEach(System.out::println);
+                persons.forEach(ReadingTests::print);
             }
 
-            findItemByAllNames().apply("").forEach(System.out::println);
-            findItemByName().apply("").forEach(System.out::println);
+            findItemByAllNames().apply("").forEach(result -> LOG.log(System.Logger.Level.INFO, result));
+            findItemByName().apply("").forEach(result -> LOG.log(System.Logger.Level.INFO, result));
 
-            queryAllUsers().get().forEach(System.out::println);
-            querySpecialUserWithConstantId().get()
-                    .ifPresentOrElse(System.out::println,
-                            () -> LOG.log(System.Logger.Level.INFO, "Could not find user with constant ID"));
+            queryAllUsers().get().forEach(ReadingTests::print);
+            querySpecialUserWithConstantId().get().ifPresentOrElse(ReadingTests::printFirstValue,
+                    () -> LOG.log(System.Logger.Level.INFO, "Could not find user with constant ID"));
         } catch (final RuntimeException exception) {
             LOG.log(System.Logger.Level.ERROR, "Error while running READING tests", exception);
             System.exit(1);
         }
+    }
+
+    private static void print(final Map<String, Object> result) {
+        LOG.log(System.Logger.Level.INFO, result);
+    }
+
+    private static void printFirstValue(final Map<String, Object> result) {
+        LOG.log(System.Logger.Level.INFO, result.values().stream().findFirst().orElseThrow());
     }
 
 }

@@ -5,10 +5,7 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.codegen.files;
-
-class DefaultFileParserTest {
-
-    // TODO: write tests
-
-}
+-- parameters:
+--   - name: value
+--     type: java.lang.String
+CALL NEXT_PRIME(:value);

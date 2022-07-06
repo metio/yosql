@@ -22,36 +22,6 @@ public final class JavaConfigurations {
     }
 
     /**
-     * @return Preset for Java 8.
-     */
-    @Deprecated
-    public static JavaConfiguration java8() {
-        return JavaConfiguration.copyOf(defaults())
-                .withApiVersion(8)
-                .withUseVar(false)
-                .withUseTextBlocks(false)
-                .withUseSealedInterfaces(false)
-                .withUseFinalClasses(true)
-                .withUseFinalParameters(true)
-                .withUseFinalVariables(true);
-    }
-
-    /**
-     * @return Preset for Java 9.
-     */
-    @Deprecated
-    public static JavaConfiguration java9() {
-        return JavaConfiguration.copyOf(defaults())
-                .withApiVersion(9)
-                .withUseVar(false)
-                .withUseTextBlocks(false)
-                .withUseSealedInterfaces(false)
-                .withUseFinalClasses(true)
-                .withUseFinalParameters(true)
-                .withUseFinalVariables(true);
-    }
-
-    /**
      * @return Preset for Java 11.
      */
     public static JavaConfiguration java11() {

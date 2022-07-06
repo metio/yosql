@@ -18,6 +18,8 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
 
+import static wtf.metio.yosql.models.configuration.ReturningMode.NONE;
+
 public final class DefaultCallMethodGenerator implements CallMethodGenerator {
 
     private final ControlFlows controlFlows;
@@ -51,16 +53,58 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     @Override
     public MethodSpec callMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var builder = methods.declaration(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
-                .returns(returnTypes.multiResultType(configuration))
                 .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration));
-        // TODO: support different return types for calling methods
-//        returnTypes.resultType(configuration).ifPresent(builder::returns);
+        returnTypes.resultType(configuration).ifPresent(builder::returns);
         return builder.build();
     }
 
     @Override
     public MethodSpec callMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        return switch (configuration.returningMode().orElse(NONE)) {
+            case NONE -> callNone(configuration, statements);
+            case SINGLE -> callSingle(configuration, statements);
+            case MULTIPLE -> callMultiple(configuration, statements);
+            case CURSOR -> callCursor(configuration, statements);
+        };
+    }
+
+    private MethodSpec callNone(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addExceptions(exceptions.thrownExceptions(configuration))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.tryPrepareCallable())
+                .addCode(jdbc.setParameters(configuration))
+                .addCode(jdbc.logExecutedQuery(configuration))
+                .addCode(jdbc.executeStatement(configuration))
+                .addCode(controlFlows.endMaybeTry(configuration))
+                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
+                .build();
+    }
+
+    private MethodSpec callSingle(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        final var converter = configuration.converter(converters::defaultConverter);
+        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+                .returns(returnTypes.singleResultType(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addExceptions(exceptions.thrownExceptions(configuration))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.tryPrepareCallable())
+                .addCode(jdbc.setParameters(configuration))
+                .addCode(jdbc.logExecutedQuery(configuration))
+                .addCode(jdbc.executeStatement(configuration))
+                .addCode(jdbc.returnAsSingle(converter))
+                .addCode(controlFlows.endTryBlock(3))
+                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
+                .build();
+    }
+
+    private MethodSpec callMultiple(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(returnTypes.multiResultType(configuration))
@@ -75,6 +119,25 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
                 .addCode(jdbc.executeStatement(configuration))
                 .addCode(jdbc.returnAsMultiple(converter))
                 .addCode(controlFlows.endTryBlock(3))
+                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
+                .build();
+    }
+
+    private MethodSpec callCursor(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        final var converter = configuration.converter(converters::defaultConverter);
+        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+                .returns(returnTypes.cursorResultType(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addExceptions(exceptions.thrownExceptions(configuration))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(jdbc.openConnection())
+                .addCode(jdbc.pickVendorQuery(statements))
+                .addCode(jdbc.tryPrepareCallable())
+                .addCode(jdbc.setParameters(configuration))
+                .addCode(jdbc.logExecutedQuery(configuration))
+                .addCode(jdbc.executeStatement(configuration))
+                .addCode(jdbc.streamStateful(converter))
+                .addCode(controlFlows.endMaybeTry(configuration))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
     }

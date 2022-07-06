@@ -5,10 +5,4 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.codegen.dao;
-
-class DefaultConverterGeneratorTest {
-
-    // TODO: write tests
-
-}
+CALL RANDOM_NUMBER();

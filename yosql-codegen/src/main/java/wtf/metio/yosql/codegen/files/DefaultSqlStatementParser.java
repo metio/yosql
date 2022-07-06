@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -27,14 +26,17 @@ import java.util.stream.Stream;
 import static java.util.function.Predicate.not;
 
 /**
- * Default SQL file parser.
+ * Default SQL statement parser.
  */
 public final class DefaultSqlStatementParser implements SqlStatementParser {
 
     private static final String SQL_COMMENT_PREFIX = "--";
     private static final String NEWLINE = "\n";
+    private static final String YOSQL_PRAGMA = SQL_COMMENT_PREFIX + "@yosql";
+    private static final Pattern CUSTOM_SQL_STATEMENT_SEPARATOR = Pattern.compile(
+            YOSQL_PRAGMA + " sqlStatementSeparator: ([^\\n]*)");
 
-    private final Pattern statementSplitter;
+    private final Pattern defaultStatementSplitter;
     private final LocLogger logger;
     private final SqlConfigurationFactory factory;
     private final FilesConfiguration files;
@@ -45,7 +47,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
             final SqlConfigurationFactory factory,
             final FilesConfiguration files,
             final ExecutionErrors errors) {
-        statementSplitter = Pattern.compile(files.sqlStatementSeparator());
+        defaultStatementSplitter = Pattern.compile(files.sqlStatementSeparator());
         this.logger = logger;
         this.factory = factory;
         this.files = files;
@@ -59,11 +61,12 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
             final var rawText = Files.readString(source, charset);
             final var skippedText = skipLines(rawText);
             final var counter = new AtomicInteger(1);
-            return statementSplitter.splitAsStream(skippedText)
+            final var splitter = getStatementSplitter(rawText);
+            return splitter.splitAsStream(skippedText)
                     .parallel()
-                    .filter(Objects::nonNull)
                     .map(String::strip)
                     .filter(not(String::isBlank))
+                    .filter(line -> !line.startsWith(YOSQL_PRAGMA))
                     .map(statement -> parseStatement(source, statement, counter.getAndIncrement()));
         } catch (final IOException exception) {
             errors.add(exception);
@@ -72,10 +75,18 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         }
     }
 
+    // visible for testing
+    Pattern getStatementSplitter(final String text) {
+        final var customStatementSeparator = CUSTOM_SQL_STATEMENT_SEPARATOR.matcher(text);
+        return customStatementSeparator.find() ?
+                Pattern.compile(customStatementSeparator.group(1))
+                : defaultStatementSplitter;
+    }
+
     private String skipLines(final String rawText) {
         final var builder = new StringBuilder(rawText);
         for (int index = 0; index < files.skipLines(); index++) {
-            builder.delete(0, builder.indexOf("\n") + 1);
+            builder.delete(0, builder.indexOf(NEWLINE) + 1);
         }
         return builder.toString();
     }
@@ -88,9 +99,9 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         final var yaml = new StringBuilder();
         final var sql = new StringBuilder();
 
+        logger.trace(ParseLifecycle.STATEMENT_PARSING_STARTING, rawStatement);
         splitUpYamlAndSql(rawStatement, yaml::append, sql::append);
 
-        logger.trace(ParseLifecycle.STATEMENT_PARSING_STARTING, rawStatement);
         final String rawYaml = yaml.toString();
         final String rawSqlStatement = sql.toString();
         logger.trace(ParseLifecycle.STATEMENT_YAML_FRONT_MATTER_PARSED, rawYaml);
@@ -100,6 +111,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         final var configuration = factory.createConfiguration(source, rawYaml,
                 parameterIndices, statementInFile);
         logger.debug(ParseLifecycle.STATEMENT_PARSING_FINISHED, source, configuration.name().orElse("unknown name"));
+
         return SqlStatement.builder()
                 .setSourcePath(source)
                 .setConfiguration(configuration)
@@ -114,8 +126,9 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         try (final var reader = new StringReader(rawStatement);
              final var buffer = new BufferedReader(reader)) {
             buffer.lines()
-                    .filter(line -> !line.strip().isEmpty())
+                    .filter(line -> !line.isBlank())
                     .filter(line -> !SQL_COMMENT_PREFIX.equals(line.strip()))
+                    .filter(line -> !line.startsWith(YOSQL_PRAGMA))
                     .forEach(line -> split(yaml, sql, line));
         } catch (final IOException exception) {
             errors.add(exception);

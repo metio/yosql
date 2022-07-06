@@ -6,10 +6,7 @@
  */
 package wtf.metio.yosql.example.maven.jdbc.java16;
 
-import wtf.metio.yosql.example.common.DataSourceCreator;
-import wtf.metio.yosql.example.common.ReadingTests;
-import wtf.metio.yosql.example.common.SchemaCreator;
-import wtf.metio.yosql.example.common.WritingTests;
+import wtf.metio.yosql.example.common.*;
 import wtf.metio.yosql.example.maven.jdbc.java16.converter.ToItemConverter;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.*;
 import wtf.metio.yosql.example.maven.jdbc.java16.persistence.converter.ToMapConverter;
@@ -26,6 +23,7 @@ public final class ExampleApp {
             final var itemRepository = new ItemRepository(dataSource, toItemConverter, toMapConverter);
             final var userRepository = new UserRepository(dataSource, toMapConverter);
             final var adminRepository = new AdminRepository(dataSource, toMapConverter);
+            final var callcenterRepository = new CallcenterRepository(dataSource, toMapConverter);
 
             SchemaCreator.builder()
                     .dropCompaniesTable(schemaRepository::dropCompaniesTable)
@@ -36,6 +34,9 @@ public final class ExampleApp {
                     .createPersonsTable(schemaRepository::createPersonsTable)
                     .createItemsTable(schemaRepository::createItemsTable)
                     .createUsersTable(schemaRepository::createUsersTable)
+                    .createNextPrimeFunction(schemaRepository::createNextPrimeFunction)
+                    .createRandomNumberFunction(schemaRepository::createRandomNumberFunction)
+                    .createNamesFunction(schemaRepository::createNamesFunction)
                     .build()
                     .createDatabaseSchema();
 
@@ -65,6 +66,13 @@ public final class ExampleApp {
                     .queryAdminUser(adminRepository::queryAdminUser)
                     .build()
                     .runReadingTests();
+
+            CallingTests.builder()
+                    .callRandomNumber(callcenterRepository::callRandomNumber)
+                    .callNextPrime(callcenterRepository::callNextPrime)
+                    .callNames(callcenterRepository::callNames)
+                    .build()
+                    .runCallingTests();
         }
     }
 

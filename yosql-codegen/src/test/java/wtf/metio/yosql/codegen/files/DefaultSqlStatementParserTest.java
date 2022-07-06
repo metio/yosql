@@ -209,4 +209,19 @@ class DefaultSqlStatementParserTest {
         assertEquals("someName", sqlStatement.getName());
     }
 
+    @Test
+    void getStatementSplitter() {
+        final var statement = """
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);;
+                INSERT INTO example_table (id, name, id)
+                VALUES (:id, :name, :id);;
+                """;
+
+        final var splitter = parser.getStatementSplitter("--@yosql sqlStatementSeparator: ;;");
+        final var statements = splitter.split(statement);
+
+        assertEquals(3, statements.length);
+    }
+
 }

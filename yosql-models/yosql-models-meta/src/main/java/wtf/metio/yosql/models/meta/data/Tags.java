@@ -16,7 +16,7 @@ public final class Tags {
     public static final String FIELDS = "fields";
     public static final String METHODS = "methods";
     public static final String THREADS = "threads";
-    public static final String FRONT_MATTER = "frontmatter"; // TODO: tag all settings that can be changed in the frontmatter and link to sitemap/tags in website
+    public static final String FRONT_MATTER = "frontmatter";
 
     private Tags() {
         // constants class

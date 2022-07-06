@@ -5,10 +5,4 @@
  * in the LICENSE file.
  */
 
-package wtf.metio.yosql.codegen.dao;
-
-class DefaultCodeGeneratorTest {
-
-    // TODO: write tests
-
-}
+CALL NAMES();

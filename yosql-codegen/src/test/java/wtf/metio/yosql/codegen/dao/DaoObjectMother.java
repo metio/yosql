@@ -53,7 +53,7 @@ public final class DaoObjectMother {
                 ConverterConfigurations.withConverters());
     }
 
-    private static DefaultJdbcParameters jdbcParameter(final JavaConfiguration java) {
+    public static DefaultJdbcParameters jdbcParameter(final JavaConfiguration java) {
         return new DefaultJdbcParameters(BlocksObjectMother.parameters(java), NamesConfigurations.defaults());
     }
 

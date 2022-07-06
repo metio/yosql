@@ -74,17 +74,17 @@ public interface SqlStatement {
 
     @Value.Lazy
     default String getName() {
-        return getConfiguration().name().orElse(""); // TODO: or throw?
+        return getConfiguration().name().orElseThrow();
     }
 
     @Value.Lazy
     default String getRepositoryClass() {
-        return getConfiguration().repository().orElse(""); // TODO: or throw?
+        return getConfiguration().repository().orElseThrow();
     }
 
     @Value.Lazy
     default String getRepositoryInterface() {
-        return getConfiguration().repositoryInterface().orElse(""); // TODO: or throw?
+        return getConfiguration().repositoryInterface().orElse("");
     }
 
     @Value.Lazy

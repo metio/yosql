@@ -994,7 +994,7 @@ public final class Annotations extends AbstractConfigurationGroup {
 
     private static MethodSpec createCliAnnotations() {
         return MethodSpec.methodBuilder(CREATE_ANNOTATIONS)
-                .addModifiers(Modifier.FINAL) // TODO: write tests for this method and keep it package-private
+                .addModifiers(Modifier.FINAL)
                 .returns(TypicalTypes.listOf(Annotation.class))
                 .addParameter(ParameterSpec.builder(TypicalTypes.listOf(String.class), "specs", Modifier.FINAL).build())
                 .addStatement("return $T.ofNullable($L).flatMap($T::stream).map($T::fromString).toList()",
