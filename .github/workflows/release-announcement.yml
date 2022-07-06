@@ -1,7 +1,8 @@
 name: Announce Release
 on:
   release:
-    types: [ released ]
+    types:
+      - created
 jobs:
   announce:
     name: Send Announcements
