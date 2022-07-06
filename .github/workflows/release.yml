@@ -16,7 +16,6 @@ jobs:
       commit_count: ${{ steps.commits.outputs.count }}
       release_version: ${{ steps.release.outputs.version }}
       previous_version: ${{ steps.previous.outputs.version }}
-      release_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - id: checkout
         name: Clone Git Repository
