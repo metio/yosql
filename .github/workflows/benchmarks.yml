@@ -1,4 +1,4 @@
-name: Verify Commits
+name: Run Benchmarks
 on:
   release:
     types: [ released ]
