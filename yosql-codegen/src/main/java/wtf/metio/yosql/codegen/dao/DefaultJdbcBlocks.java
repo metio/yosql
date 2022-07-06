@@ -341,10 +341,17 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock returnAsSingle(final ResultRowConverter converter) {
-        return prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()
-                .orElseThrow(MissingConverterResultTypeException::new)), converter)
-                .addStatement("return $N.size() > 0 ? $T.of($N.get(0)) : $T.empty()",
+    public CodeBlock returnAsSingle(final SqlConfiguration configuration) {
+        final var converters = runtimeConfiguration.converter();
+        final var converter = configuration.converter(converters::defaultConverter);
+        final var builder = prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()
+                .orElseThrow(MissingConverterResultTypeException::new)), converter);
+        if (configuration.throwOnMultipleResultsForSingle().orElse(Boolean.FALSE)) {
+            builder.beginControlFlow("if ($N.size() > 1)", names.list())
+                    .addStatement("throw new $T()", IllegalStateException.class)
+                    .endControlFlow();
+        }
+        return builder.addStatement("return $N.size() > 0 ? $T.of($N.get(0)) : $T.empty()",
                         names.list(), Optional.class, names.list(), Optional.class)
                 .build();
     }

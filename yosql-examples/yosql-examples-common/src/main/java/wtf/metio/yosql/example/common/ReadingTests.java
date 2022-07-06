@@ -28,7 +28,7 @@ public interface ReadingTests {
 
     Supplier<List<Map<String, Object>>> queryAllCompanies();
 
-    Function<String, List<Map<String, Object>>> findCompanyByName();
+    Function<String, Optional<Map<String, Object>>> findCompanyByName();
 
     BiFunction<Integer, Integer, List<Map<String, Object>>> findCompanies();
 
@@ -50,19 +50,26 @@ public interface ReadingTests {
     default void runReadingTests() {
         try {
             queryAllCompanies().get().forEach(ReadingTests::print);
-            findCompanyByName().apply("two").forEach(ReadingTests::print);
-            findCompanies().apply(10, 20).forEach(ReadingTests::print);
+            findCompanyByName().apply("two").ifPresentOrElse(ReadingTests::print,
+                    () -> LOG.log(System.Logger.Level.INFO, "Could not find company named 'two'"));
+            findCompanies().apply(2, 5).forEach(ReadingTests::print);
+            try {
+                findCompanyByName().apply("three").ifPresent(company ->
+                        LOG.log(System.Logger.Level.ERROR, "could read multiple companies with the same name"));
+            } catch (final IllegalStateException exception) {
+                LOG.log(System.Logger.Level.INFO, "Detected multiple companies with the same name");
+            }
 
             findPerson().apply("alice").forEach(ReadingTests::print);
             try (final var persons = findPersons().get()) {
                 persons.forEach(ReadingTests::print);
             }
 
-            findItemByAllNames().apply("").forEach(result -> LOG.log(System.Logger.Level.INFO, result));
-            findItemByName().apply("").forEach(result -> LOG.log(System.Logger.Level.INFO, result));
+            findItemByAllNames().apply("Android 49").forEach(result -> LOG.log(System.Logger.Level.INFO, result));
+            findItemByName().apply("iPhone 47 eXtreme").forEach(result -> LOG.log(System.Logger.Level.INFO, result));
 
             queryAllUsers().get().forEach(ReadingTests::print);
-            querySpecialUserWithConstantId().get().ifPresentOrElse(ReadingTests::printFirstValue,
+            querySpecialUserWithConstantId().get().ifPresentOrElse(ReadingTests::print,
                     () -> LOG.log(System.Logger.Level.INFO, "Could not find user with constant ID"));
         } catch (final RuntimeException exception) {
             LOG.log(System.Logger.Level.ERROR, "Error while running READING tests", exception);
@@ -72,10 +79,6 @@ public interface ReadingTests {
 
     private static void print(final Map<String, Object> result) {
         LOG.log(System.Logger.Level.INFO, result);
-    }
-
-    private static void printFirstValue(final Map<String, Object> result) {
-        LOG.log(System.Logger.Level.INFO, result.values().stream().findFirst().orElseThrow());
     }
 
 }

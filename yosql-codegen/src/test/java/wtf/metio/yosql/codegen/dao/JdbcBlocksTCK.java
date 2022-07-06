@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 /**
  * Verifies that {@link JdbcBlocks}s work correctly.
@@ -61,6 +62,8 @@ abstract class JdbcBlocksTCK {
     abstract String returnAsMultipleExpectation();
 
     abstract String returnAsSingleExpectation();
+
+    abstract String returnAsSingleWithThrowExpectation();
 
     abstract String setParametersExpectation();
 
@@ -207,15 +210,17 @@ abstract class JdbcBlocksTCK {
 
     @Test
     final void returnAsSingle() {
-        final var converter = ResultRowConverter.builder()
-                .setAlias("converter")
-                .setConverterType("com.example.Converter")
-                .setMethodName("apply")
-                .setResultType("com.example.Domain")
-                .build();
         Assertions.assertEquals(
                 returnAsSingleExpectation(),
-                generator().returnAsSingle(converter).toString());
+                generator().returnAsSingle(SqlConfigurations.sqlConfiguration()).toString());
+    }
+
+    @Test
+    final void returnAsSingleWithThrow() {
+        Assertions.assertEquals(
+                returnAsSingleWithThrowExpectation(),
+                generator().returnAsSingle(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withThrowOnMultipleResultsForSingle(true)).toString());
     }
 
     @Test

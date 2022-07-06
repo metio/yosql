@@ -75,7 +75,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                 usePreparedStatement(),
                 catchAndRethrow(),
 //                returnUpdateCountForWritingMethodWithReturningModeNode(), // TODO: add & find better name
-                throwOnMultipleResultsForSingle()); // TODO: implement
+                throwOnMultipleResultsForSingle());
     }
 
     private static ConfigurationSetting basePackageName() {

@@ -62,7 +62,7 @@ public interface JdbcBlocks {
 
     CodeBlock returnAsMultiple(ResultRowConverter converter);
 
-    CodeBlock returnAsSingle(ResultRowConverter converter);
+    CodeBlock returnAsSingle(SqlConfiguration sqlConfiguration);
 
     CodeBlock streamStateful(ResultRowConverter converter);
 

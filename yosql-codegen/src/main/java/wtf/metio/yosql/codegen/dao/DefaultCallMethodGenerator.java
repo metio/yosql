@@ -86,7 +86,6 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     }
 
     private MethodSpec callSingle(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(returnTypes.singleResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
@@ -98,7 +97,7 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement(configuration))
-                .addCode(jdbc.returnAsSingle(converter))
+                .addCode(jdbc.returnAsSingle(configuration))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

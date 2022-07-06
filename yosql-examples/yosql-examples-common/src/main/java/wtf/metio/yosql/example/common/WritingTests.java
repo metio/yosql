@@ -50,6 +50,7 @@ public interface WritingTests {
             insertPerson().applyAsInt(2, "adam");
             insertPerson().applyAsInt(3, "bob");
 
+            insertUser().applyAsInt(-1, "special user");
             insertUser().applyAsInt(1, "admin");
             insertUser().applyAsInt(2, "not-an-admin");
             insertUser().applyAsInt(3, "regular-user");
@@ -58,7 +59,7 @@ public interface WritingTests {
             insertItem().applyAsInt(2, "Android 49");
             insertItem().applyAsInt(3, "GenericPhone 38");
 
-            insertCompanyBatch().apply(new int[]{4, 5, 6}, new String[]{"four", "five", "six"});
+            insertCompanyBatch().apply(new int[]{4, 5, 6}, new String[]{"three", "five", "six"});
             insertPersonBatch().apply(new Object[]{4, 5, 6}, new String[]{"alice", "frank", "joe"});
         } catch (final RuntimeException exception) {
             LOG.log(System.Logger.Level.ERROR, "Error while running WRITING tests", exception);

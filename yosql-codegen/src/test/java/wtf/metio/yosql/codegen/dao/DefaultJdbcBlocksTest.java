@@ -177,9 +177,23 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<com.example.Domain>();
+                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
                     while (resultSet.next()) {
-                      list.add(converter.apply(resultSet));
+                      list.add(toMap.apply(resultSet));
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
+        }
+
+        @Override
+        String returnAsSingleWithThrowExpectation() {
+            return """
+                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    while (resultSet.next()) {
+                      list.add(toMap.apply(resultSet));
+                    }
+                    if (list.size() > 1) {
+                      throw new java.lang.IllegalStateException();
                     }
                     return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
                     """;
@@ -374,9 +388,23 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<com.example.Domain>();
+                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
                     while (resultSet.next()) {
-                      list.add(converter.apply(resultSet));
+                      list.add(toMap.apply(resultSet));
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
+        }
+
+        @Override
+        String returnAsSingleWithThrowExpectation() {
+            return """
+                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    while (resultSet.next()) {
+                      list.add(toMap.apply(resultSet));
+                    }
+                    if (list.size() > 1) {
+                      throw new java.lang.IllegalStateException();
                     }
                     return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
                     """;
@@ -571,13 +599,28 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<com.example.Domain>();
+                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
                     while (resultSet.next()) {
-                      list.add(converter.apply(resultSet));
+                      list.add(toMap.apply(resultSet));
                     }
                     return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
                     """;
         }
+
+        @Override
+        String returnAsSingleWithThrowExpectation() {
+            return """
+                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    while (resultSet.next()) {
+                      list.add(toMap.apply(resultSet));
+                    }
+                    if (list.size() > 1) {
+                      throw new java.lang.IllegalStateException();
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
+        }
+
 
         @Override
         String setParametersExpectation() {
@@ -768,13 +811,28 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<com.example.Domain>();
+                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
                     while (resultSet.next()) {
-                      list.add(converter.apply(resultSet));
+                      list.add(toMap.apply(resultSet));
                     }
                     return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
                     """;
         }
+
+        @Override
+        String returnAsSingleWithThrowExpectation() {
+            return """
+                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    while (resultSet.next()) {
+                      list.add(toMap.apply(resultSet));
+                    }
+                    if (list.size() > 1) {
+                      throw new java.lang.IllegalStateException();
+                    }
+                    return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                    """;
+        }
+
 
         @Override
         String setParametersExpectation() {

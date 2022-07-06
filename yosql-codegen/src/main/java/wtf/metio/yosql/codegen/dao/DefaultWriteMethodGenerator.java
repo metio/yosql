@@ -92,7 +92,6 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private MethodSpec writeReturningSingle(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .returns(returnTypes.singleResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
@@ -105,7 +104,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning())
                 .addCode(jdbc.getResultSet())
-                .addCode(jdbc.returnAsSingle(converter))
+                .addCode(jdbc.returnAsSingle(configuration))
                 .addCode(controlFlows.endTryBlock(3))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

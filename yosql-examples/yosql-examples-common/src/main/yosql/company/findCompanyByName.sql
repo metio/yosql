@@ -9,6 +9,8 @@
 -- parameters:
 --   - name: name
 --     type: java.lang.String
+-- returning: single
+-- throwOnMultipleResultsForSingle: true
 --
 select *
 from companies
