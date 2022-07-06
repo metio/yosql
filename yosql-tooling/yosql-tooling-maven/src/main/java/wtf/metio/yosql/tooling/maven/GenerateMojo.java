@@ -8,11 +8,9 @@ package wtf.metio.yosql.tooling.maven;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.InstantiationStrategy;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
+import org.sonatype.plexus.build.incremental.BuildContext;
 import wtf.metio.yosql.codegen.orchestration.YoSQL;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
@@ -56,18 +54,25 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     MavenProject project;
 
+    @Component
+    BuildContext buildContext;
+
     @Override
     public void execute() throws MojoExecutionException {
         try {
-            buildYoSQL().generateCode();
+            if (buildContext.hasDelta(files.inputBaseDirectory)) {
+                final var configuration = createConfiguration();
+                buildYoSQL(configuration).generateCode();
+                buildContext.refresh(configuration.files().outputBaseDirectory().toFile());
+            }
         } catch (final Throwable throwable) {
             throw new MojoExecutionException("Failure to generate code", throwable);
         }
     }
 
-    private YoSQL buildYoSQL() {
+    private static YoSQL buildYoSQL(final RuntimeConfiguration configuration) {
         return DaggerYoSQLComponent.builder()
-                .runtimeConfiguration(createConfiguration())
+                .runtimeConfiguration(configuration)
                 .locale(SupportedLocales.defaultLocale())
                 .build()
                 .yosql();
