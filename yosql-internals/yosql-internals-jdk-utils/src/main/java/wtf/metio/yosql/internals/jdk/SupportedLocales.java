@@ -12,7 +12,7 @@ import java.util.Locale;
 /**
  * Lists all supported locales within YoSQL.
  */
-public class SupportedLocales {
+public final class SupportedLocales {
 
     public static final Locale ENGLISH = Locale.ENGLISH;
     public static final Locale GERMAN = Locale.GERMAN;
@@ -23,6 +23,10 @@ public class SupportedLocales {
                 .filter(Locale.getDefault()::equals)
                 .findFirst()
                 .orElse(Locale.ENGLISH);
+    }
+
+    private SupportedLocales() {
+        // utility class
     }
 
 }
