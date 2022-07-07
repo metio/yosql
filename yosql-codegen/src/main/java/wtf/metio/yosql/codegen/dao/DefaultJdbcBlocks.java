@@ -106,8 +106,13 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock returnExecuteUpdate() {
-        return blocks.returnValue(jdbcMethods.statement().executeUpdate());
+    public CodeBlock returnExecuteUpdate(final SqlConfiguration configuration) {
+        return configuration.writesReturnUpdateCount()
+                .filter(Boolean.TRUE::equals)
+                .map(value -> blocks.returnValue(jdbcMethods.statement().executeUpdate()))
+                .orElseGet(() -> CodeBlock.builder()
+                        .addStatement(jdbcMethods.statement().executeUpdate())
+                        .build());
     }
 
     @Override

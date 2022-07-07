@@ -15,7 +15,7 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.util.Optional;
 
-import static wtf.metio.yosql.models.configuration.ReturningMode.NONE;
+import static wtf.metio.yosql.models.configuration.SqlStatementType.WRITING;
 
 /**
  * Default implementation for {@link ReturnTypes} that uses a {@link ConverterConfiguration} to determine the
@@ -35,34 +35,42 @@ public final class DefaultReturnTypes implements ReturnTypes {
     @Override
     public Optional<TypeName> resultType(final SqlConfiguration configuration) {
         return configuration.returningMode()
-                .filter(mode -> NONE != mode)
                 .map(mode -> switch (mode) {
-//                    case NONE -> TypeName.VOID;
+                    case NONE -> noneResultType(configuration);
                     case SINGLE -> singleResultType(configuration);
+                    case MULTIPLE -> multiResultType(configuration);
                     case CURSOR -> cursorResultType(configuration);
-                    default -> multiResultType(configuration);
                 });
     }
 
     @Override
+    public TypeName noneResultType(final SqlConfiguration configuration) {
+        return configuration.type()
+                .filter(WRITING::equals)
+                .filter(type -> configuration.writesReturnUpdateCount().orElse(Boolean.FALSE))
+                .map(type -> TypeName.INT)
+                .orElse(TypeName.VOID);
+    }
+
+    @Override
     public TypeName singleResultType(final SqlConfiguration configuration) {
-        final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = converter.resultTypeName().orElseThrow(MissingConverterResultTypeException::new);
-        return TypicalTypes.optionalOf(resultType);
+        return TypicalTypes.optionalOf(resultTypeOf(configuration));
     }
 
     @Override
     public TypeName multiResultType(final SqlConfiguration configuration) {
-        final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = converter.resultTypeName().orElseThrow(MissingConverterResultTypeException::new);
-        return TypicalTypes.listOf(resultType);
+        return TypicalTypes.listOf(resultTypeOf(configuration));
     }
 
     @Override
     public TypeName cursorResultType(final SqlConfiguration configuration) {
-        final var converter = configuration.converter(converters::defaultConverter);
-        final var resultType = converter.resultTypeName().orElseThrow(MissingConverterResultTypeException::new);
-        return TypicalTypes.streamOf(resultType);
+        return TypicalTypes.streamOf(resultTypeOf(configuration));
+    }
+
+    private TypeName resultTypeOf(final SqlConfiguration configuration) {
+        return configuration.converter(converters::defaultConverter)
+                .resultTypeName()
+                .orElseThrow(MissingConverterResultTypeException::new);
     }
 
 }

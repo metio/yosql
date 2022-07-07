@@ -51,9 +51,16 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
-        String returnExecuteUpdateExpectation() {
+        String returnExecuteUpdateWithReturnExpectation() {
             return """
                     return statement.executeUpdate();
+                    """;
+        }
+
+        @Override
+        String returnExecuteUpdateWithoutReturnExpectation() {
+            return """
+                    statement.executeUpdate();
                     """;
         }
 
@@ -177,7 +184,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }
@@ -188,7 +195,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleWithThrowExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }
@@ -262,9 +269,16 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
-        String returnExecuteUpdateExpectation() {
+        String returnExecuteUpdateWithReturnExpectation() {
             return """
                     return statement.executeUpdate();
+                    """;
+        }
+
+        @Override
+        String returnExecuteUpdateWithoutReturnExpectation() {
+            return """
+                    statement.executeUpdate();
                     """;
         }
 
@@ -388,7 +402,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }
@@ -399,7 +413,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleWithThrowExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }
@@ -473,9 +487,16 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
-        String returnExecuteUpdateExpectation() {
+        String returnExecuteUpdateWithReturnExpectation() {
             return """
                     return statement.executeUpdate();
+                    """;
+        }
+
+        @Override
+        String returnExecuteUpdateWithoutReturnExpectation() {
+            return """
+                    statement.executeUpdate();
                     """;
         }
 
@@ -599,7 +620,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }
@@ -610,7 +631,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleWithThrowExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }
@@ -685,9 +706,16 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
-        String returnExecuteUpdateExpectation() {
+        String returnExecuteUpdateWithReturnExpectation() {
             return """
                     return statement.executeUpdate();
+                    """;
+        }
+
+        @Override
+        String returnExecuteUpdateWithoutReturnExpectation() {
+            return """
+                    statement.executeUpdate();
                     """;
         }
 
@@ -811,7 +839,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }
@@ -822,7 +850,7 @@ class DefaultJdbcBlocksTest {
         @Override
         String returnAsSingleWithThrowExpectation() {
             return """
-                    final var list = new java.util.ArrayList<java.util.Map<String, Object>>();
+                    final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }

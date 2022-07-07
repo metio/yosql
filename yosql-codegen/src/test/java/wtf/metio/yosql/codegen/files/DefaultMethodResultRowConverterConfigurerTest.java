@@ -67,7 +67,7 @@ class DefaultMethodResultRowConverterConfigurerTest {
                 () -> assertEquals("toMap", adapted.resultRowConverter().get().alias().get()),
                 () -> assertEquals("com.example.persistence.converter.ToMapConverter", adapted.resultRowConverter().get().converterType().get()),
                 () -> assertEquals("apply", adapted.resultRowConverter().get().methodName().get()),
-                () -> assertEquals("java.util.Map<String, Object>", adapted.resultRowConverter().get().resultType().get())
+                () -> assertEquals("java.util.Map<java.lang.String, java.lang.Object>", adapted.resultRowConverter().get().resultType().get())
         );
     }
 

@@ -172,6 +172,25 @@ class DefaultMethodSettingsConfigurerTest {
     }
 
     @Test
+    void writesReturnUpdateCountKeep() {
+        final var original = SqlConfiguration.builder()
+                .setWritesReturnUpdateCount(false)
+                .build();
+        final var adapted = configurer.usePreparedStatement(original);
+        assertEquals(original.writesReturnUpdateCount(), adapted.writesReturnUpdateCount());
+    }
+
+    @Test
+    void writesReturnUpdateCountChange() {
+        final var original = SqlConfiguration.builder()
+                // .setWritesReturnUpdateCount(false) // value is NOT set
+                .build();
+        final var adapted = configurer.writesReturnUpdateCount(original);
+        assertTrue(adapted.writesReturnUpdateCount().isPresent());
+        assertEquals(repositories.writesReturnUpdateCount(), adapted.writesReturnUpdateCount().get());
+    }
+
+    @Test
     void keepSettings() {
         final var original = SqlConfiguration.builder()
                 .setType(SqlStatementType.CALLING)

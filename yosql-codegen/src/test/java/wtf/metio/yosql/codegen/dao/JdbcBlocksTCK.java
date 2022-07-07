@@ -33,7 +33,9 @@ abstract class JdbcBlocksTCK {
 
     abstract String executeQueryInlineExpectation();
 
-    abstract String returnExecuteUpdateExpectation();
+    abstract String returnExecuteUpdateWithReturnExpectation();
+
+    abstract String returnExecuteUpdateWithoutReturnExpectation();
 
     abstract String executeBatchExpectation();
 
@@ -105,10 +107,19 @@ abstract class JdbcBlocksTCK {
     }
 
     @Test
-    final void returnExecuteUpdate() {
+    final void returnExecuteUpdateWithReturn() {
         Assertions.assertEquals(
-                returnExecuteUpdateExpectation(),
-                generator().returnExecuteUpdate().toString());
+                returnExecuteUpdateWithReturnExpectation(),
+                generator().returnExecuteUpdate(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withWritesReturnUpdateCount(true)).toString());
+    }
+
+    @Test
+    final void returnExecuteUpdateWithoutReturn() {
+        Assertions.assertEquals(
+                returnExecuteUpdateWithoutReturnExpectation(),
+                generator().returnExecuteUpdate(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withWritesReturnUpdateCount(false)).toString());
     }
 
     @Test

@@ -247,6 +247,66 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
+    void shouldParseThrowOnMultipleResultsForSingleEnabled() {
+        final var yaml = """
+                throwOnMultipleResultsForSingle: true
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.throwOnMultipleResultsForSingle().isPresent());
+        assertTrue(config.throwOnMultipleResultsForSingle().get());
+    }
+
+    @Test
+    void shouldParseThrowOnMultipleResultsForSingleDisabled() {
+        final var yaml = """
+                throwOnMultipleResultsForSingle: false
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.throwOnMultipleResultsForSingle().isPresent());
+        assertFalse(config.throwOnMultipleResultsForSingle().get());
+    }
+
+    @Test
+    void shouldParseWritesReturnUpdateCountEnabled() {
+        final var yaml = """
+                writesReturnUpdateCount: true
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.writesReturnUpdateCount().isPresent());
+        assertTrue(config.writesReturnUpdateCount().get());
+    }
+
+    @Test
+    void shouldParseWritesReturnUpdateCountDisabled() {
+        final var yaml = """
+                writesReturnUpdateCount: false
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.writesReturnUpdateCount().isPresent());
+        assertFalse(config.writesReturnUpdateCount().get());
+    }
+
+    @Test
+    void shouldParseUsePreparedStatementEnabled() {
+        final var yaml = """
+                usePreparedStatement: true
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.usePreparedStatement().isPresent());
+        assertTrue(config.usePreparedStatement().get());
+    }
+
+    @Test
+    void shouldParseUsePreparedStatementDisabled() {
+        final var yaml = """
+                usePreparedStatement: false
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.usePreparedStatement().isPresent());
+        assertFalse(config.usePreparedStatement().get());
+    }
+
+    @Test
     void shouldParseStandardPrefix() {
         final var yaml = """
                 standardPrefix: prefix

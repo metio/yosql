@@ -32,7 +32,7 @@ public interface JdbcBlocks {
 
     CodeBlock executeQueryStatement();
 
-    CodeBlock returnExecuteUpdate();
+    CodeBlock returnExecuteUpdate(SqlConfiguration configuration);
 
     CodeBlock executeForReturning();
 

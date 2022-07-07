@@ -32,7 +32,7 @@ public final class ConverterConfigurations {
                 .setAlias("toMap")
                 .setConverterType("com.example.persistence.converter.ToMapConverter")
                 .setMethodName("apply")
-                .setResultType("java.util.Map<String, Object>")
+                .setResultType("java.util.Map<java.lang.String, java.lang.Object>")
                 .build();
     }
 

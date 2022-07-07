@@ -562,6 +562,40 @@ class SqlConfigurationTest {
     }
 
     @Test
+    void mergeWritesReturnUpdateCountFirst() {
+        final var first = SqlConfiguration.builder()
+                .setWritesReturnUpdateCount(true)
+                .build();
+        final var second = SqlConfiguration.builder().build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertEquals(first.writesReturnUpdateCount(), merged.writesReturnUpdateCount());
+    }
+
+    @Test
+    void mergeWritesReturnUpdateCountSecond() {
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
+                .setWritesReturnUpdateCount(true)
+                .build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertEquals(second.writesReturnUpdateCount(), merged.writesReturnUpdateCount());
+    }
+
+    @Test
+    void mergeWritesReturnUpdateCountMissing() {
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertTrue(merged.writesReturnUpdateCount().isEmpty());
+    }
+
+    @Test
     void mergeResultRowConverterFirst() {
         final var first = SqlConfiguration.builder()
                 .setResultRowConverter(ResultRowConverter.builder().build())

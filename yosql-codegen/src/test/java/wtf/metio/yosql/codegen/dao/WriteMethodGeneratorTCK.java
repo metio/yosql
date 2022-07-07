@@ -29,6 +29,11 @@ public abstract class WriteMethodGeneratorTCK {
     abstract String writeMethodReturningNoneExpectation();
 
     /**
+     * @return The expected generated code for a write method that returns the update count.
+     */
+    abstract String writeMethodReturningUpdateCountExpectation();
+
+    /**
      * @return The expected generated code for a write method that returns a single result.
      */
     abstract String writeMethodReturningSingleExpectation();
@@ -54,6 +59,16 @@ public abstract class WriteMethodGeneratorTCK {
                 writeMethodReturningNoneExpectation(),
                 generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
                         .withReturningMode(ReturningMode.NONE), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void writeReturningUpdateCountMethod() {
+        Assertions.assertEquals(
+                writeMethodReturningUpdateCountExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withReturningMode(ReturningMode.NONE)
+                        .withWritesReturnUpdateCount(true), SqlConfigurations.sqlStatement()).toString(),
                 "The generated write method does not match expectation");
     }
 

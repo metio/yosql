@@ -56,7 +56,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
         final var builder = methods.declaration(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
                 .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration));
-        returnTypes.resultType(configuration).ifPresentOrElse(builder::returns, () -> builder.returns(int.class));
+        returnTypes.resultType(configuration).ifPresent(builder::returns);
         return builder.build();
     }
 
@@ -74,7 +74,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
-                .returns(int.class)
+                .returns(returnTypes.noneResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
@@ -83,7 +83,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addCode(jdbc.returnExecuteUpdate())
+                .addCode(jdbc.returnExecuteUpdate(configuration))
                 .addCode(controlFlows.endTryBlock(2))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

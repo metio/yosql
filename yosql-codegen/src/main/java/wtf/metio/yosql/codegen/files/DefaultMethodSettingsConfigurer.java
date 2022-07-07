@@ -33,6 +33,7 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
         adapted = catchAndRethrow(adapted);
         adapted = throwOnMultipleResultsForSingle(adapted);
         adapted = usePreparedStatement(adapted);
+        adapted = writesReturnUpdateCount(adapted);
         return adapted;
     }
 
@@ -96,6 +97,15 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
         if (configuration.usePreparedStatement().isEmpty()) {
             return SqlConfiguration.copyOf(configuration)
                     .withUsePreparedStatement(repositories.usePreparedStatement());
+        }
+        return configuration;
+    }
+
+    // visible for testing
+    SqlConfiguration writesReturnUpdateCount(final SqlConfiguration configuration) {
+        if (configuration.writesReturnUpdateCount().isEmpty()) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withWritesReturnUpdateCount(repositories.writesReturnUpdateCount());
         }
         return configuration;
     }

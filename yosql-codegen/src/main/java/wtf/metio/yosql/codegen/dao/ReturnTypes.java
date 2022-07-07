@@ -27,6 +27,14 @@ public interface ReturnTypes {
     Optional<TypeName> resultType(SqlConfiguration configuration);
 
     /**
+     * Determine return type for a method that returns no result.
+     *
+     * @param configuration The configuration to use.
+     * @return The fully qualified return type.
+     */
+    TypeName noneResultType(SqlConfiguration configuration);
+
+    /**
      * Determine return type for a method that returns a single result.
      *
      * @param configuration The configuration to use.

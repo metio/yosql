@@ -74,7 +74,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                 generateBatchApi(),
                 usePreparedStatement(),
                 catchAndRethrow(),
-//                returnUpdateCountForWritingMethodWithReturningModeNode(), // TODO: add & find better name
+                writesReturnUpdateCount(),
                 throwOnMultipleResultsForSingle());
     }
 
@@ -269,6 +269,15 @@ public final class Repositories extends AbstractConfigurationGroup {
                                 }
                                 """)
                         .build())
+                .build();
+    }
+
+    private static ConfigurationSetting writesReturnUpdateCount() {
+        final var name = "writesReturnUpdateCount";
+        final var description = "Writing method which are using `ReturningMode.NONE` return the number of affected rows instead.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
