@@ -89,6 +89,7 @@ buildNumber.properties
 .idea/**/dataSources.local.xml
 .idea/**/dataSources.xml
 .idea/**/sqlDataSources.xml
+.idea/**/sqldialects.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
