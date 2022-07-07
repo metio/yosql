@@ -6,3 +6,7 @@ updates:
       interval: daily
     assignees:
       - sebhoss
+    labels:
+      - Build :: GitHub
+      - Priority :: Low
+      - Type :: Task

@@ -39,3 +39,7 @@ jobs:
           paths: |
             yosql-tooling/yosql-tooling-gradle/**
             yosql-examples/yosql-examples-gradle/**
+          labels: |
+            Build :: Gradle
+            Priority :: Low
+            Type :: Task

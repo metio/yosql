@@ -37,7 +37,10 @@ jobs:
           title: Update parent to latest version
           body: |
             `mvn --batch-mode versions:update-parent -DgenerateBackupPoms=false`
-          labels: dependencies
+          labels: |
+            Build :: Maven
+            Priority :: Low
+            Type :: Task
           assignees: sebhoss
           draft: false
           branch: update-parent
