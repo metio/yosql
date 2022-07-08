@@ -327,43 +327,63 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseStandardPrefix() {
+    void shouldParseExecuteOncePrefix() {
         final var yaml = """
-                standardPrefix: prefix
+                executeOncePrefix: prefix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.standardPrefix().isPresent());
-        assertEquals("prefix", config.standardPrefix().get());
+        assertTrue(config.executeOncePrefix().isPresent());
+        assertEquals("prefix", config.executeOncePrefix().get());
     }
 
     @Test
-    void shouldParseStandardSuffix() {
+    void shouldParseExecuteOnceSuffix() {
         final var yaml = """
-                standardSuffix: suffix
+                executeOnceSuffix: suffix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.standardSuffix().isPresent());
-        assertEquals("suffix", config.standardSuffix().get());
+        assertTrue(config.executeOnceSuffix().isPresent());
+        assertEquals("suffix", config.executeOnceSuffix().get());
     }
 
     @Test
-    void shouldParseBatchPrefix() {
+    void shouldParseExecuteBatchPrefix() {
         final var yaml = """
-                batchPrefix: prefix
+                executeBatchPrefix: prefix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.batchPrefix().isPresent());
-        assertEquals("prefix", config.batchPrefix().get());
+        assertTrue(config.executeBatchPrefix().isPresent());
+        assertEquals("prefix", config.executeBatchPrefix().get());
     }
 
     @Test
-    void shouldParseBatchSuffix() {
+    void shouldParseExecuteBatchSuffix() {
         final var yaml = """
-                batchSuffix: suffix
+                executeBatchSuffix: suffix
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.batchSuffix().isPresent());
-        assertEquals("suffix", config.batchSuffix().get());
+        assertTrue(config.executeBatchSuffix().isPresent());
+        assertEquals("suffix", config.executeBatchSuffix().get());
+    }
+
+    @Test
+    void shouldParseExecuteManyPrefix() {
+        final var yaml = """
+                executeManyPrefix: prefix
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.executeManyPrefix().isPresent());
+        assertEquals("prefix", config.executeManyPrefix().get());
+    }
+
+    @Test
+    void shouldParseExecuteManySuffix() {
+        final var yaml = """
+                executeManySuffix: suffix
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.executeManySuffix().isPresent());
+        assertEquals("suffix", config.executeManySuffix().get());
     }
 
     @Test

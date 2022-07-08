@@ -53,7 +53,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
     @Override
     public MethodSpec writeMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var builder = methods.declaration(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        final var builder = methods.declaration(configuration.executeOnceName(), statements, Constants.EXECUTE_ONCE)
                 .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration));
         returnTypes.resultType(configuration).ifPresent(builder::returns);
@@ -73,11 +73,12 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private MethodSpec writeReturningNone(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        final var name = configuration.executeOnceName();
+        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.noneResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
@@ -92,11 +93,12 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private MethodSpec writeReturningSingle(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        final var name = configuration.executeOnceName();
+        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.singleResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
@@ -113,12 +115,13 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private MethodSpec writeReturningMultiple(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
+        final var name = configuration.executeOnceName();
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.multiResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
@@ -135,12 +138,13 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private MethodSpec writeReturningCursor(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
+        final var name = configuration.executeOnceName();
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.cursorResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
@@ -156,7 +160,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
     @Override
     public MethodSpec batchWriteMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        return methods.declaration(configuration.batchName(), statements, Constants.EXECUTE_BATCH)
+        return methods.declaration(configuration.executeBatchName(), statements, Constants.EXECUTE_BATCH)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
@@ -165,11 +169,12 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
     @Override
     public MethodSpec batchWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.batchName(), statements, Constants.EXECUTE_BATCH)
+        final var name = configuration.executeBatchName();
+        return methods.publicMethod(name, statements, Constants.EXECUTE_BATCH)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.batchName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))

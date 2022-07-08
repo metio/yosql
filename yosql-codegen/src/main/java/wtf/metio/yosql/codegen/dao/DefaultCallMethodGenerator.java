@@ -52,7 +52,7 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
 
     @Override
     public MethodSpec callMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var builder = methods.declaration(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        final var builder = methods.declaration(configuration.executeOnceName(), statements, Constants.EXECUTE_ONCE)
                 .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration));
         returnTypes.resultType(configuration).ifPresent(builder::returns);
@@ -70,10 +70,11 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     }
 
     private MethodSpec callNone(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        final var name = configuration.executeOnceName();
+        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.tryPrepareCallable())
@@ -86,11 +87,12 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     }
 
     private MethodSpec callSingle(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        final var name = configuration.executeOnceName();
+        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.singleResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.tryPrepareCallable())
@@ -104,12 +106,13 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     }
 
     private MethodSpec callMultiple(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        final var name = configuration.executeOnceName();
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.multiResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.tryPrepareCallable())
@@ -123,12 +126,13 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     }
 
     private MethodSpec callCursor(final SqlConfiguration configuration, final List<SqlStatement> statements) {
+        final var name = configuration.executeOnceName();
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
+        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.cursorResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
+                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(jdbc.openConnection())
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.tryPrepareCallable())

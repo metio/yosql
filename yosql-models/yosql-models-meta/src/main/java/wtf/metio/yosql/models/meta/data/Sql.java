@@ -53,8 +53,9 @@ public final class Sql extends AbstractConfigurationGroup {
                         fromStatements(),
                         merge(),
                         converter(),
-                        batchName(),
-                        standardName(),
+                        executeOnceName(),
+                        executeBatchName(),
+                        executeManyName(),
                         joinMethodNameParts())
                 .addImmutableAnnotations(immutableAnnotation())
                 .addImmutableAnnotations(AnnotationSpec.builder(JsonSerialize.class)
@@ -347,23 +348,33 @@ public final class Sql extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static MethodSpec batchName() {
-        return MethodSpec.methodBuilder("batchName")
+    private static MethodSpec executeOnceName() {
+        return MethodSpec.methodBuilder("executeOnceName")
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
                 .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
-                        "batchPrefix", "", "name", "", "batchSuffix", "")
+                        "executeOncePrefix", "", "name", "", "executeOnceSuffix", "")
                 .build();
     }
 
-    private static MethodSpec standardName() {
-        return MethodSpec.methodBuilder("standardName")
+    private static MethodSpec executeBatchName() {
+        return MethodSpec.methodBuilder("executeBatchName")
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
                 .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
-                        "standardPrefix", "", "name", "", "standardSuffix", "")
+                        "executeBatchPrefix", "", "name", "", "executeBatchSuffix", "")
+                .build();
+    }
+
+    private static MethodSpec executeManyName() {
+        return MethodSpec.methodBuilder("executeManyName")
+                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
+                .returns(String.class)
+                .addAnnotation(Value.Lazy.class)
+                .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
+                        "executeManyPrefix", "", "name", "", "executeManySuffix", "")
                 .build();
     }
 

@@ -256,139 +256,139 @@ class SqlConfigurationTest {
     }
 
     @Test
-    void mergeStandardPrefixFirst() {
+    void mergeExecuteOncePrefixFirst() {
         final var first = SqlConfiguration.builder()
-                .setStandardPrefix("prefix")
+                .setExecuteOncePrefix("prefix")
                 .build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(first.standardPrefix(), merged.standardPrefix());
+        Assertions.assertEquals(first.executeOncePrefix(), merged.executeOncePrefix());
     }
 
     @Test
-    void mergeStandardPrefixSecond() {
+    void mergeExecuteOncePrefixSecond() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder()
-                .setStandardPrefix("prefix")
+                .setExecuteOncePrefix("prefix")
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(second.standardPrefix(), merged.standardPrefix());
+        Assertions.assertEquals(second.executeOncePrefix(), merged.executeOncePrefix());
     }
 
     @Test
-    void mergeStandardPrefixMissing() {
+    void mergeExecuteOncePrefixMissing() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertTrue(merged.standardPrefix().isEmpty());
+        Assertions.assertTrue(merged.executeOncePrefix().isEmpty());
     }
 
     @Test
-    void mergeStandardSuffixFirst() {
+    void mergeExecuteOnceSuffixFirst() {
         final var first = SqlConfiguration.builder()
-                .setStandardSuffix("suffix")
+                .setExecuteOnceSuffix("suffix")
                 .build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(first.standardSuffix(), merged.standardSuffix());
+        Assertions.assertEquals(first.executeOnceSuffix(), merged.executeOnceSuffix());
     }
 
     @Test
-    void mergeStandardSuffixSecond() {
+    void mergeExecuteOnceSuffixSecond() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder()
-                .setStandardSuffix("suffix")
+                .setExecuteOnceSuffix("suffix")
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(second.standardSuffix(), merged.standardSuffix());
+        Assertions.assertEquals(second.executeOnceSuffix(), merged.executeOnceSuffix());
     }
 
     @Test
-    void mergeStandardSuffixMissing() {
+    void mergeExecuteOnceSuffixMissing() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertTrue(merged.standardSuffix().isEmpty());
+        Assertions.assertTrue(merged.executeOnceSuffix().isEmpty());
     }
 
     @Test
-    void mergeBatchPrefixFirst() {
+    void mergeExecuteBatchPrefixFirst() {
         final var first = SqlConfiguration.builder()
-                .setBatchPrefix("prefix")
+                .setExecuteBatchPrefix("prefix")
                 .build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(first.batchPrefix(), merged.batchPrefix());
+        Assertions.assertEquals(first.executeBatchPrefix(), merged.executeBatchPrefix());
     }
 
     @Test
-    void mergeBatchPrefixSecond() {
+    void mergeExecuteBatchPrefixSecond() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder()
-                .setBatchPrefix("prefix")
+                .setExecuteBatchPrefix("prefix")
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(second.batchPrefix(), merged.batchPrefix());
+        Assertions.assertEquals(second.executeBatchPrefix(), merged.executeBatchPrefix());
     }
 
     @Test
-    void mergeBatchPrefixMissing() {
+    void mergeExecuteBatchPrefixMissing() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertTrue(merged.batchPrefix().isEmpty());
+        Assertions.assertTrue(merged.executeBatchPrefix().isEmpty());
     }
 
     @Test
-    void mergeBatchSuffixFirst() {
+    void mergeExecuteBatchSuffixFirst() {
         final var first = SqlConfiguration.builder()
-                .setBatchSuffix("suffix")
+                .setExecuteBatchSuffix("suffix")
                 .build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(first.batchSuffix(), merged.batchSuffix());
+        Assertions.assertEquals(first.executeBatchSuffix(), merged.executeBatchSuffix());
     }
 
     @Test
-    void mergeBatchSuffixSecond() {
+    void mergeExecuteBatchSuffixSecond() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder()
-                .setBatchSuffix("suffix")
+                .setExecuteBatchSuffix("suffix")
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(second.batchSuffix(), merged.batchSuffix());
+        Assertions.assertEquals(second.executeBatchSuffix(), merged.executeBatchSuffix());
     }
 
     @Test
-    void mergeBatchSuffixMissing() {
+    void mergeExecuteBatchSuffixMissing() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertTrue(merged.batchSuffix().isEmpty());
+        Assertions.assertTrue(merged.executeBatchSuffix().isEmpty());
     }
 
     @Test
@@ -854,62 +854,180 @@ class SqlConfigurationTest {
     }
 
     @Test
-    void standardNameEmpty() {
+    void executeOnceNameEmpty() {
         final var config = SqlConfiguration.builder()
                 .build();
 
-        Assertions.assertEquals("", config.standardName());
+        Assertions.assertEquals("", config.executeOnceName());
     }
 
     @Test
-    void standardNameWithoutAffixes() {
+    void executeOnceNameWithoutAffixes() {
         final var config = SqlConfiguration.builder()
                 .setName("test")
                 .build();
 
-        Assertions.assertEquals("test", config.standardName());
+        Assertions.assertEquals("test", config.executeOnceName());
     }
 
     @Test
-    void standardNameWithPrefix() {
+    void executeOnceNameWithPrefix() {
         final var config = SqlConfiguration.builder()
                 .setName("test")
-                .setStandardPrefix("prefix")
+                .setExecuteOncePrefix("prefix")
                 .build();
 
-        Assertions.assertEquals("prefixTest", config.standardName());
+        Assertions.assertEquals("prefixTest", config.executeOnceName());
     }
 
     @Test
-    void standardNameWithSuffix() {
+    void executeOnceNameWithSuffix() {
         final var config = SqlConfiguration.builder()
                 .setName("test")
-                .setStandardSuffix("suffix")
+                .setExecuteOnceSuffix("suffix")
                 .build();
 
-        Assertions.assertEquals("testSuffix", config.standardName());
+        Assertions.assertEquals("testSuffix", config.executeOnceName());
     }
 
     @Test
-    void standardNameWithAffixes() {
+    void executeOnceNameWithAffixes() {
         final var config = SqlConfiguration.builder()
                 .setName("test")
-                .setStandardPrefix("prefix")
-                .setStandardSuffix("suffix")
+                .setExecuteOncePrefix("prefix")
+                .setExecuteOnceSuffix("suffix")
                 .build();
 
-        Assertions.assertEquals("prefixTestSuffix", config.standardName());
+        Assertions.assertEquals("prefixTestSuffix", config.executeOnceName());
     }
 
     @Test
-    void standardNameWithAffixesUpperCase() {
+    void executeOnceNameWithAffixesUpperCase() {
         final var config = SqlConfiguration.builder()
                 .setName("test")
-                .setStandardPrefix("Prefix")
-                .setStandardSuffix("Suffix")
+                .setExecuteOncePrefix("Prefix")
+                .setExecuteOnceSuffix("Suffix")
                 .build();
 
-        Assertions.assertEquals("PrefixTestSuffix", config.standardName());
+        Assertions.assertEquals("PrefixTestSuffix", config.executeOnceName());
+    }
+
+    @Test
+    void executeBatchNameEmpty() {
+        final var config = SqlConfiguration.builder()
+                .build();
+
+        Assertions.assertEquals("", config.executeBatchName());
+    }
+
+    @Test
+    void executeBatchNameWithoutAffixes() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .build();
+
+        Assertions.assertEquals("test", config.executeBatchName());
+    }
+
+    @Test
+    void executeBatchNameWithPrefix() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setExecuteBatchPrefix("prefix")
+                .build();
+
+        Assertions.assertEquals("prefixTest", config.executeBatchName());
+    }
+
+    @Test
+    void executeBatchNameWithSuffix() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setExecuteBatchSuffix("suffix")
+                .build();
+
+        Assertions.assertEquals("testSuffix", config.executeBatchName());
+    }
+
+    @Test
+    void executeBatchNameWithAffixes() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setExecuteBatchPrefix("prefix")
+                .setExecuteBatchSuffix("suffix")
+                .build();
+
+        Assertions.assertEquals("prefixTestSuffix", config.executeBatchName());
+    }
+
+    @Test
+    void executeBatchNameWithAffixesUpperCase() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setExecuteBatchPrefix("Prefix")
+                .setExecuteBatchSuffix("Suffix")
+                .build();
+
+        Assertions.assertEquals("PrefixTestSuffix", config.executeBatchName());
+    }
+
+    @Test
+    void executeManyNameEmpty() {
+        final var config = SqlConfiguration.builder()
+                .build();
+
+        Assertions.assertEquals("", config.executeManyName());
+    }
+
+    @Test
+    void executeManyNameWithoutAffixes() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .build();
+
+        Assertions.assertEquals("test", config.executeManyName());
+    }
+
+    @Test
+    void executeManyNameWithPrefix() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setExecuteManyPrefix("prefix")
+                .build();
+
+        Assertions.assertEquals("prefixTest", config.executeManyName());
+    }
+
+    @Test
+    void executeManyNameWithSuffix() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setExecuteManySuffix("suffix")
+                .build();
+
+        Assertions.assertEquals("testSuffix", config.executeManyName());
+    }
+
+    @Test
+    void executeManyNameWithAffixes() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setExecuteManyPrefix("prefix")
+                .setExecuteManySuffix("suffix")
+                .build();
+
+        Assertions.assertEquals("prefixTestSuffix", config.executeManyName());
+    }
+
+    @Test
+    void executeManyNameWithAffixesUpperCase() {
+        final var config = SqlConfiguration.builder()
+                .setName("test")
+                .setExecuteManyPrefix("Prefix")
+                .setExecuteManySuffix("Suffix")
+                .build();
+
+        Assertions.assertEquals("PrefixTestSuffix", config.executeManyName());
     }
 
 }

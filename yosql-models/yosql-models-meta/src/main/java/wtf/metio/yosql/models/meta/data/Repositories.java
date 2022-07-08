@@ -59,10 +59,12 @@ public final class Repositories extends AbstractConfigurationGroup {
      */
     public static List<ConfigurationSetting> stringMethods() {
         return List.of(
-                standardPrefix(),
-                standardSuffix(),
-                batchPrefix(),
-                batchSuffix());
+                executeOncePrefix(),
+                executeOnceSuffix(),
+                executeBatchPrefix(),
+                executeBatchSuffix(),
+                executeManyPrefix(),
+                executeManySuffix());
     }
 
     /**
@@ -349,15 +351,15 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static ConfigurationSetting standardPrefix() {
-        final var name = "standardPrefix";
-        final var description = "The method prefix to use for generated standard methods.";
+    private static ConfigurationSetting executeOncePrefix() {
+        final var name = "executeOncePrefix";
+        final var description = "The method prefix to use for generated methods that execute once.";
         final var value = "";
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue(value)
-                        .setDescription("The default value for `standardPrefix` is the empty string. It does not add any prefix in front of standard methods.")
+                        .setDescription("The default value for `executeOncePrefix` is the empty string. It does not add any prefix in front of methods that are executed once.")
                         .setResult("""
                                 package com.example.persistence;
 
@@ -374,7 +376,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("myPrefix")
-                        .setDescription("In case you want to prefix standard methods with something, set the `standardPrefix` option.")
+                        .setDescription("In case you want to prefix methods that execute once with something, set the `executeOncePrefix` option.")
                         .setResult("""
                                 package com.example.persistence;
 
@@ -392,15 +394,15 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static ConfigurationSetting standardSuffix() {
-        final var name = "standardSuffix";
-        final var description = "The method suffix to use for generated standard methods.";
+    private static ConfigurationSetting executeOnceSuffix() {
+        final var name = "executeOnceSuffix";
+        final var description = "The method suffix to use for generated methods that execute once.";
         final var value = "";
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue(value)
-                        .setDescription("The default value for `standardSuffix` is the empty string. It does not add any suffix after of standard methods.")
+                        .setDescription("The default value for `executeOnceSuffix` is the empty string. It does not add any suffix after methods that execute once.")
                         .setResult("""
                                 package com.example.persistence;
 
@@ -417,7 +419,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("mySuffix")
-                        .setDescription("In case you want to suffix standard methods with something, set the `standardSuffix` option.")
+                        .setDescription("In case you want to suffix methods that execute once with something, set the `executeOnceSuffix` option.")
                         .setResult("""
                                 package com.example.persistence;
 
@@ -435,15 +437,15 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static ConfigurationSetting batchPrefix() {
-        final var name = "batchPrefix";
-        final var description = "The method prefix to use for generated batch methods.";
+    private static ConfigurationSetting executeBatchPrefix() {
+        final var name = "executeBatchPrefix";
+        final var description = "The method prefix to use for generated methods that execute in a batch.";
         final var value = "";
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue(value)
-                        .setDescription("The default value for `batchPrefix` is the empty string. It does not add any prefix in front of batch methods.")
+                        .setDescription("The default value for `executeBatchPrefix` is the empty string. It does not add any prefix in front of batch methods.")
                         .setResult("""
                                 package com.example.persistence;
 
@@ -460,7 +462,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("myPrefix")
-                        .setDescription("In case you want to prefix batch methods with something, set the `batchPrefix` option.")
+                        .setDescription("In case you want to prefix batch methods with something, set the `executeBatchPrefix` option.")
                         .setResult("""
                                 package com.example.persistence;
 
@@ -478,15 +480,15 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static ConfigurationSetting batchSuffix() {
-        final var name = "batchSuffix";
-        final var description = "The method suffix to use for generated batch methods.";
+    private static ConfigurationSetting executeBatchSuffix() {
+        final var name = "executeBatchSuffix";
+        final var description = "The method suffix to use for generated methods that execute in a batch.";
         final var value = "Batch";
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue(value)
-                        .setDescription("The default value for `batchSuffix` is 'Batch'. It adds the word 'Batch' after each batch method.")
+                        .setDescription("The default value for `executeBatchSuffix` is 'Batch'. It adds the word 'Batch' after each batch method.")
                         .setResult("""
                                 package com.example.persistence;
 
@@ -503,7 +505,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("Other")
-                        .setDescription("In case you want to suffix batch methods with something else, set the `batchSuffix` option.")
+                        .setDescription("In case you want to suffix batch methods with something else, set the `executeBatchSuffix` option.")
                         .setResult("""
                                 package com.example.persistence;
 
@@ -518,6 +520,24 @@ public final class Repositories extends AbstractConfigurationGroup {
                                 }
                                 """)
                         .build())
+                .build();
+    }
+
+    private static ConfigurationSetting executeManyPrefix() {
+        final var name = "executeManyPrefix";
+        final var description = "The method prefix to use for generated methods that can be executed many times.";
+        final var value = "";
+        return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
+                .build();
+    }
+
+    private static ConfigurationSetting executeManySuffix() {
+        final var name = "executeManySuffix";
+        final var description = "The method suffix to use for generated methods that can be executed many times.";
+        final var value = "Many";
+        return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
