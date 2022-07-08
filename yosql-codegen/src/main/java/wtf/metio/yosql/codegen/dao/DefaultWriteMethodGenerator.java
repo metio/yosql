@@ -53,7 +53,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
     @Override
     public MethodSpec writeMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var builder = methods.declaration(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        final var builder = methods.declaration(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration));
         returnTypes.resultType(configuration).ifPresent(builder::returns);
@@ -73,7 +73,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private MethodSpec writeReturningNone(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.noneResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
@@ -92,7 +92,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private MethodSpec writeReturningSingle(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.singleResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
@@ -114,7 +114,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.multiResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
@@ -136,7 +136,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.cursorResultType(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
@@ -156,7 +156,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
     @Override
     public MethodSpec batchWriteMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        return methods.declaration(configuration.batchName(), statements, Constants.GENERATE_BATCH_API)
+        return methods.declaration(configuration.batchName(), statements, Constants.EXECUTE_BATCH)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
@@ -165,7 +165,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
 
     @Override
     public MethodSpec batchWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.batchName(), statements, Constants.GENERATE_BATCH_API)
+        return methods.publicMethod(configuration.batchName(), statements, Constants.EXECUTE_BATCH)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
                 .addParameters(parameters.asBatchParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))

@@ -70,8 +70,9 @@ public final class Repositories extends AbstractConfigurationGroup {
      */
     public static List<ConfigurationSetting> booleanMethods() {
         return List.of(
-                generateStandardApi(),
-                generateBatchApi(),
+                executeOnce(),
+                executeBatch(),
+                executeMany(),
                 usePreparedStatement(),
                 catchAndRethrow(),
                 writesReturnUpdateCount(),
@@ -200,18 +201,27 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static ConfigurationSetting generateStandardApi() {
-        final var name = Constants.GENERATE_STANDARD_API;
-        final var description = "Generate standard methods";
+    private static ConfigurationSetting executeOnce() {
+        final var name = Constants.EXECUTE_ONCE;
+        final var description = "Generate methods that are executed once with the given parameters";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 
-    private static ConfigurationSetting generateBatchApi() {
-        final var name = Constants.GENERATE_BATCH_API;
-        final var description = "Generate batch methods";
+    private static ConfigurationSetting executeBatch() {
+        final var name = Constants.EXECUTE_BATCH;
+        final var description = "Generate methods that are executed as batch";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
+                .build();
+    }
+
+    private static ConfigurationSetting executeMany() {
+        final var name = Constants.EXECUTE_MANY;
+        final var description = "Generate methods that can be combined and executed with many other methods";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)

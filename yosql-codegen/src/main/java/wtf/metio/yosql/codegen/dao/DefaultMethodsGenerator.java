@@ -86,10 +86,10 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
             final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> write,
             final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> batchWrite) {
         return Stream.of(
-                        asMethods(statements, SqlStatement::generateStandardCallAPI, call),
-                        asMethods(statements, SqlStatement::generateStandardReadAPI, read),
-                        asMethods(statements, SqlStatement::generateStandardWriteAPI, write),
-                        asMethods(statements, SqlStatement::generateBatchWriteAPI, batchWrite))
+                        asMethods(statements, SqlStatement::executeCallOnce, call),
+                        asMethods(statements, SqlStatement::executeReadOnce, read),
+                        asMethods(statements, SqlStatement::executeWriteOnce, write),
+                        asMethods(statements, SqlStatement::executeWriteBatch, batchWrite))
                 .flatMap(Collection::stream)
                 .toList();
     }
@@ -110,10 +110,10 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
 
     private void warnAboutIgnoredStatements(final List<SqlStatement> statements) {
         statements.stream()
-                .filter(Predicate.not(SqlStatement::generateStandardCallAPI)
-                        .and(Predicate.not(SqlStatement::generateStandardReadAPI))
-                        .and(Predicate.not(SqlStatement::generateStandardWriteAPI))
-                        .and(Predicate.not(SqlStatement::generateBatchWriteAPI)))
+                .filter(Predicate.not(SqlStatement::executeCallOnce)
+                        .and(Predicate.not(SqlStatement::executeReadOnce))
+                        .and(Predicate.not(SqlStatement::executeWriteOnce))
+                        .and(Predicate.not(SqlStatement::executeWriteBatch)))
                 .forEach(statement -> logger.warn(ApplicationWarnings.SQL_STATEMENT_IGNORED,
                         statement.getName(), statement.getSourcePath()));
     }

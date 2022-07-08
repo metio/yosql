@@ -187,43 +187,63 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseGenerateStandardApiEnabled() {
+    void shouldParseExecuteOnceEnabled() {
         final var yaml = """
-                generateStandardApi: true
+                executeOnce: true
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.generateStandardApi().isPresent());
-        assertTrue(config.generateStandardApi().get());
+        assertTrue(config.executeOnce().isPresent());
+        assertTrue(config.executeOnce().get());
     }
 
     @Test
-    void shouldParseGenerateStandardApiDisabled() {
+    void shouldParseExecuteOnceDisabled() {
         final var yaml = """
-                generateStandardApi: false
+                executeOnce: false
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.generateStandardApi().isPresent());
-        assertFalse(config.generateStandardApi().get());
+        assertTrue(config.executeOnce().isPresent());
+        assertFalse(config.executeOnce().get());
     }
 
     @Test
-    void shouldParseGenerateBatchApiEnabled() {
+    void shouldParseExecuteBatchEnabled() {
         final var yaml = """
-                generateBatchApi: true
+                executeBatch: true
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.generateBatchApi().isPresent());
-        assertTrue(config.generateBatchApi().get());
+        assertTrue(config.executeBatch().isPresent());
+        assertTrue(config.executeBatch().get());
     }
 
     @Test
-    void shouldParseGenerateBatchApiDisabled() {
+    void shouldParseExecuteBatchDisabled() {
         final var yaml = """
-                generateBatchApi: false
+                executeBatch: false
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.generateBatchApi().isPresent());
-        assertFalse(config.generateBatchApi().get());
+        assertTrue(config.executeBatch().isPresent());
+        assertFalse(config.executeBatch().get());
+    }
+
+    @Test
+    void shouldParseExecuteManyEnabled() {
+        final var yaml = """
+                executeMany: true
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.executeMany().isPresent());
+        assertTrue(config.executeMany().get());
+    }
+
+    @Test
+    void shouldParseExecuteManyDisabled() {
+        final var yaml = """
+                executeMany: false
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.executeMany().isPresent());
+        assertFalse(config.executeMany().get());
     }
 
     @Test

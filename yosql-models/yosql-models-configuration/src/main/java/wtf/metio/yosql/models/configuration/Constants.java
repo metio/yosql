@@ -9,8 +9,9 @@ package wtf.metio.yosql.models.configuration;
 
 public final class Constants {
 
-    public static final String GENERATE_STANDARD_API = "generateStandardApi";
-    public static final String GENERATE_BATCH_API = "generateBatchApi";
+    public static final String EXECUTE_ONCE = "executeOnce";
+    public static final String EXECUTE_BATCH = "executeBatch";
+    public static final String EXECUTE_MANY = "executeMany";
 
     private Constants() {
         // constants class

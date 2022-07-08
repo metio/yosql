@@ -392,71 +392,105 @@ class SqlConfigurationTest {
     }
 
     @Test
-    void mergeGenerateStandardApiFirst() {
+    void mergeExecuteOnceFirst() {
         final var first = SqlConfiguration.builder()
-                .setGenerateStandardApi(true)
+                .setExecuteOnce(true)
                 .build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(first.generateStandardApi(), merged.generateStandardApi());
+        Assertions.assertEquals(first.executeOnce(), merged.executeOnce());
     }
 
     @Test
-    void mergeGenerateStandardApiSecond() {
+    void mergeExecuteOnceSecond() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder()
-                .setGenerateStandardApi(true)
+                .setExecuteOnce(true)
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(second.generateStandardApi(), merged.generateStandardApi());
+        Assertions.assertEquals(second.executeOnce(), merged.executeOnce());
     }
 
     @Test
-    void mergeGenerateStandardApiMissing() {
+    void mergeExecuteOnceMissing() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertTrue(merged.generateStandardApi().isEmpty());
+        Assertions.assertTrue(merged.executeOnce().isEmpty());
     }
 
     @Test
-    void mergeGenerateBatchApiFirst() {
+    void mergeExecuteBatchFirst() {
         final var first = SqlConfiguration.builder()
-                .setGenerateBatchApi(true)
+                .setExecuteBatch(true)
                 .build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(first.generateBatchApi(), merged.generateBatchApi());
+        Assertions.assertEquals(first.executeBatch(), merged.executeBatch());
     }
 
     @Test
-    void mergeGenerateBatchApiSecond() {
+    void mergeExecuteBatchSecond() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder()
-                .setGenerateBatchApi(true)
+                .setExecuteBatch(true)
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(second.generateBatchApi(), merged.generateBatchApi());
+        Assertions.assertEquals(second.executeBatch(), merged.executeBatch());
     }
 
     @Test
-    void mergeGenerateBatchApiMissing() {
+    void mergeExecuteBatchMissing() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertTrue(merged.generateStandardApi().isEmpty());
+        Assertions.assertTrue(merged.executeBatch().isEmpty());
+    }
+
+    @Test
+    void mergeExecuteManyFirst() {
+        final var first = SqlConfiguration.builder()
+                .setExecuteMany(true)
+                .build();
+        final var second = SqlConfiguration.builder().build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertEquals(first.executeMany(), merged.executeMany());
+    }
+
+    @Test
+    void mergeExecuteManySecond() {
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
+                .setExecuteMany(true)
+                .build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertEquals(second.executeMany(), merged.executeMany());
+    }
+
+    @Test
+    void mergeExecuteManyMissing() {
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertTrue(merged.executeMany().isEmpty());
     }
 
     @Test

@@ -52,7 +52,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
 
     @Override
     public MethodSpec readMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
-        final var builder = methods.declaration(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        final var builder = methods.declaration(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration));
         returnTypes.resultType(configuration).ifPresent(builder::returns);
@@ -72,7 +72,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
     private MethodSpec readNone(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), configuration.standardName()))
@@ -91,7 +91,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
     private MethodSpec readSingle(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
-        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.singleResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
@@ -112,7 +112,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.multiResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))
@@ -133,7 +133,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(configuration.standardName(), statements, Constants.GENERATE_STANDARD_API)
+        return methods.publicMethod(configuration.standardName(), statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.cursorResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addExceptions(exceptions.thrownExceptions(configuration))

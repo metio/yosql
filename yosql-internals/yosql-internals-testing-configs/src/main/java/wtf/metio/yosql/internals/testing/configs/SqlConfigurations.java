@@ -56,7 +56,7 @@ public final class SqlConfigurations {
         config.setReturningMode(ReturningMode.MULTIPLE);
         config.setRepository("com.example.persistence.DataRepository");
         config.setCatchAndRethrow(true);
-        config.setGenerateStandardApi(true);
+        config.setExecuteOnce(true);
         config.addParameters(testParameter(), idParameter());
         return config.build();
     }

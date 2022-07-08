@@ -109,25 +109,25 @@ public interface SqlStatement {
     }
 
     @Value.Lazy
-    default boolean generateBatchWriteAPI() {
+    default boolean executeWriteBatch() {
         return isWriting() &&
-                getConfiguration().generateBatchApi().orElse(Boolean.FALSE) &&
+                getConfiguration().executeBatch().orElse(Boolean.FALSE) &&
                 Buckets.hasEntries(getConfiguration().parameters());
     }
 
     @Value.Lazy
-    default boolean generateStandardReadAPI() {
-        return isReading() && getConfiguration().generateStandardApi().orElse(Boolean.FALSE);
+    default boolean executeReadOnce() {
+        return isReading() && getConfiguration().executeOnce().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
-    default boolean generateStandardCallAPI() {
-        return isCalling() && getConfiguration().generateStandardApi().orElse(Boolean.FALSE);
+    default boolean executeCallOnce() {
+        return isCalling() && getConfiguration().executeOnce().orElse(Boolean.FALSE);
     }
 
     @Value.Lazy
-    default boolean generateStandardWriteAPI() {
-        return isWriting() && getConfiguration().generateStandardApi().orElse(Boolean.FALSE);
+    default boolean executeWriteOnce() {
+        return isWriting() && getConfiguration().executeOnce().orElse(Boolean.FALSE);
     }
 
     //endregion

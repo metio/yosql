@@ -30,62 +30,83 @@ class DefaultMethodApiConfigurerTest {
     @Test
     void batchKeep() {
         final var original = SqlConfiguration.builder()
-                .setGenerateBatchApi(false)
+                .setExecuteBatch(false)
                 .build();
         final var adapted = configurer.batch(original);
-        assertEquals(original.generateBatchApi(), adapted.generateBatchApi());
+        assertEquals(original.executeBatch(), adapted.executeBatch());
     }
 
     @Test
     void batchChangedToRepositoryDefault() {
         final var original = SqlConfiguration.builder()
-                // .setGenerateBatchApi(true) // value is NOT set
+                // .setExecuteBatch(true) // value is NOT set
                 .build();
         final var adapted = configurer.batch(original);
-        assertTrue(adapted.generateBatchApi().isPresent());
-        assertEquals(repositories.generateBatchApi(), adapted.generateBatchApi().get());
+        assertTrue(adapted.executeBatch().isPresent());
+        assertEquals(repositories.executeBatch(), adapted.executeBatch().get());
     }
 
     @Test
     void batchAllowsReads() {
         final var original = SqlConfiguration.builder()
-                .setGenerateBatchApi(true)
+                .setExecuteBatch(true)
                 .setType(SqlStatementType.READING)
                 .build();
         final var adapted = configurer.batch(original);
-        assertTrue(adapted.generateBatchApi().isPresent());
-        assertTrue(adapted.generateBatchApi().get());
+        assertTrue(adapted.executeBatch().isPresent());
+        assertTrue(adapted.executeBatch().get());
     }
 
     @Test
-    void standardKeep() {
+    void onceKeep() {
         final var original = SqlConfiguration.builder()
-                .setGenerateStandardApi(false)
+                .setExecuteOnce(false)
                 .build();
-        final var adapted = configurer.standard(original);
-        assertEquals(original.generateStandardApi(), adapted.generateStandardApi());
+        final var adapted = configurer.once(original);
+        assertEquals(original.executeOnce(), adapted.executeOnce());
     }
 
     @Test
-    void standardChangedToRepositoryDefault() {
+    void onceChangedToRepositoryDefault() {
         final var original = SqlConfiguration.builder()
-                // .setGenerateStandardApi(true) // value is NOT set
+                // .setExecuteOnce(true) // value is NOT set
                 .build();
-        final var adapted = configurer.standard(original);
-        assertTrue(adapted.generateStandardApi().isPresent());
-        assertEquals(repositories.generateStandardApi(), adapted.generateStandardApi().get());
+        final var adapted = configurer.once(original);
+        assertTrue(adapted.executeOnce().isPresent());
+        assertEquals(repositories.executeOnce(), adapted.executeOnce().get());
+    }
+
+    @Test
+    void manyKeep() {
+        final var original = SqlConfiguration.builder()
+                .setExecuteMany(false)
+                .build();
+        final var adapted = configurer.many(original);
+        assertEquals(original.executeMany(), adapted.executeMany());
+    }
+
+    @Test
+    void manyChangedToRepositoryDefault() {
+        final var original = SqlConfiguration.builder()
+                // .setExecuteMany(true) // value is NOT set
+                .build();
+        final var adapted = configurer.many(original);
+        assertTrue(adapted.executeMany().isPresent());
+        assertEquals(repositories.executeMany(), adapted.executeMany().get());
     }
 
     @Test
     void keepApis() {
         final var original = SqlConfiguration.builder()
-                .setGenerateBatchApi(false)
-                .setGenerateStandardApi(false)
+                .setExecuteBatch(false)
+                .setExecuteOnce(false)
+                .setExecuteMany(false)
                 .build();
         final var adapted = configurer.configureApis(original);
         assertAll(
-                () -> assertEquals(original.generateBatchApi(), adapted.generateBatchApi()),
-                () -> assertEquals(original.generateStandardApi(), adapted.generateStandardApi()));
+                () -> assertEquals(original.executeBatch(), adapted.executeBatch()),
+                () -> assertEquals(original.executeOnce(), adapted.executeOnce()),
+                () -> assertEquals(original.executeMany(), adapted.executeMany()));
     }
 
     @Test
@@ -93,8 +114,9 @@ class DefaultMethodApiConfigurerTest {
         final var original = SqlConfiguration.builder().build();
         final var adapted = configurer.configureApis(original);
         assertAll(
-                () -> assertEquals(repositories.generateBatchApi(), adapted.generateBatchApi().get()),
-                () -> assertEquals(repositories.generateStandardApi(), adapted.generateStandardApi().get()));
+                () -> assertEquals(repositories.executeBatch(), adapted.executeBatch().get()),
+                () -> assertEquals(repositories.executeOnce(), adapted.executeOnce().get()),
+                () -> assertEquals(repositories.executeMany(), adapted.executeMany().get()));
     }
 
 }
