@@ -80,7 +80,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: Maven Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-dagger --also-make install
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-dagger,yosql-examples/yosql-examples-common --also-make install
       - id: gradle
         name: Gradle Tooling
         run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
