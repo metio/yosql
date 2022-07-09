@@ -27,9 +27,10 @@ env:
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
   JAVA_DISTRO: temurin
+  GRAAL_VERSION: 22.1.0
 jobs:
-  build:
-    name: Build
+  maven:
+    name: Build Maven Tooling
     runs-on: ubuntu-latest
     steps:
       - id: checkout
@@ -53,19 +54,125 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: Maven Tooling
-        run: mvn --batch-mode install
+        run: mvn --batch-mode verify
+  gradle:
+    name: Build Gradle Tooling
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v3
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: maven
+        name: Maven Tooling
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-dagger --also-make install
+      - id: gradle
+        name: Gradle Tooling
+        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
+  ant:
+    name: Build Ant Tooling
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v3
+      - id: java
+        name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          java-package: ${{ env.JAVA_PACKAGE }}
+          architecture: ${{ env.JAVA_ARCH }}
+          distribution: ${{ env.JAVA_DISTRO }}
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: maven
+        name: Ant Tooling
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-ant --also-make verify
       - id: upload-ant-tooling
         name: Upload Ant Tooling
         uses: actions/upload-artifact@v3
         with:
           name: yosql-tooling-ant
           path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-dist*
-      - id: upload-cli-tooling
-        name: Upload CLI Tooling
-        uses: actions/upload-artifact@v3
+  cli:
+    name: Build CLI Tooling on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    #          - windows-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v3
+      - id: graal
+        name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
-          name: yosql-tooling-cli
+          version: ${{ env.GRAAL_VERSION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          components: native-image
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: maven
+        name: CLI Tooling
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-cli --also-make verify --define skipNativeBuild=false
+      - id: upload-jvm-cli-tooling
+        name: Upload JVM CLI Tooling
+        uses: actions/upload-artifact@v3
+        if: runner.os == 'Linux'
+        with:
+          name: yosql-tooling-cli-jvm
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
-      - id: gradle
-        name: Gradle Tooling
-        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
+      - id: upload-linux-cli-tooling
+        name: Upload Linux CLI Tooling
+        uses: actions/upload-artifact@v3
+        if: runner.os == 'Linux'
+        with:
+          name: yosql-tooling-cli-linux
+          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-linux*
+      - id: upload-mac-cli-tooling
+        name: Upload Mac OSX CLI Tooling
+        uses: actions/upload-artifact@v3
+        if: runner.os == 'macOS'
+        with:
+          name: yosql-tooling-cli-mac
+          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-mac*
+      - id: upload-windows-cli-tooling
+        name: Upload Mac OSX CLI Tooling
+        uses: actions/upload-artifact@v3
+        if: runner.os == 'Windows'
+        with:
+          name: yosql-tooling-cli-windows
+          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-windows*
