@@ -8,7 +8,7 @@
 plugins {
     id("java-gradle-plugin")
     id("maven-publish")
-    id("com.gradle.plugin-publish") version "0.12.0"
+    id("com.gradle.plugin-publish") version "1.0.0"
     id("wtf.metio.yosql.models.gradle")
 }
 
@@ -19,11 +19,13 @@ java {
 }
 
 gradlePlugin {
-    val yoSql by plugins.creating {
-        id = "wtf.metio.yosql"
-        displayName = "YoSQL"
-        description = "Code generator that translates SQL to Java"
-        implementationClass = "${group}.YoSqlPlugin"
+    plugins {
+        create("yoSql") {
+            id = "wtf.metio.yosql"
+            displayName = "YoSQL"
+            description = "Code generator that translates SQL to Java"
+            implementationClass = "${group}.YoSqlPlugin"
+        }
     }
 }
 
