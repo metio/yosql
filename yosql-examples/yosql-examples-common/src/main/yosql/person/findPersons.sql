@@ -11,3 +11,10 @@
 select *
 from persons
 ;
+
+-- createConnection: false
+-- returning: CURSOR
+--
+select *
+from persons
+;

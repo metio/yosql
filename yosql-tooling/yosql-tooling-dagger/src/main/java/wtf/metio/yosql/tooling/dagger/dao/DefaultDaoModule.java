@@ -101,8 +101,10 @@ public class DefaultDaoModule {
 
     @Provides
     @Singleton
-    ParameterGenerator provideParameterGenerator(final Parameters parameters) {
-        return new DefaultParameterGenerator(parameters);
+    ParameterGenerator provideParameterGenerator(
+            final RuntimeConfiguration runtimeConfiguration,
+            final Parameters parameters) {
+        return new DefaultParameterGenerator(parameters, runtimeConfiguration.names());
     }
 
     @Provides

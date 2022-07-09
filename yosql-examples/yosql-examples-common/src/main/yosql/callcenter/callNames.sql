@@ -6,3 +6,6 @@
  */
 
 CALL NAMES();
+
+-- createConnection: false
+CALL NAMES();

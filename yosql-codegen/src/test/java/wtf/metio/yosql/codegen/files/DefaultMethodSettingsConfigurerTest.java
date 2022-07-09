@@ -136,20 +136,20 @@ class DefaultMethodSettingsConfigurerTest {
     @Test
     void throwOnMultipleResultsForSingleKeep() {
         final var original = SqlConfiguration.builder()
-                .setThrowOnMultipleResultsForSingle(true)
+                .setThrowOnMultipleResults(true)
                 .build();
-        final var adapted = configurer.throwOnMultipleResultsForSingle(original);
-        assertEquals(original.throwOnMultipleResultsForSingle(), adapted.throwOnMultipleResultsForSingle());
+        final var adapted = configurer.throwOnMultipleResults(original);
+        assertEquals(original.throwOnMultipleResults(), adapted.throwOnMultipleResults());
     }
 
     @Test
     void throwOnMultipleResultsForSingleChange() {
         final var original = SqlConfiguration.builder()
-                // .setThrowOnMultipleResultsForSingle(true) // value is NOT set
+                // .setThrowOnMultipleResults(true) // value is NOT set
                 .build();
-        final var adapted = configurer.throwOnMultipleResultsForSingle(original);
-        assertTrue(adapted.throwOnMultipleResultsForSingle().isPresent());
-        assertEquals(repositories.throwOnMultipleResultsForSingle(), adapted.throwOnMultipleResultsForSingle().get());
+        final var adapted = configurer.throwOnMultipleResults(original);
+        assertTrue(adapted.throwOnMultipleResults().isPresent());
+        assertEquals(repositories.throwOnMultipleResults(), adapted.throwOnMultipleResults().get());
     }
 
     @Test
@@ -176,7 +176,7 @@ class DefaultMethodSettingsConfigurerTest {
         final var original = SqlConfiguration.builder()
                 .setWritesReturnUpdateCount(false)
                 .build();
-        final var adapted = configurer.usePreparedStatement(original);
+        final var adapted = configurer.writesReturnUpdateCount(original);
         assertEquals(original.writesReturnUpdateCount(), adapted.writesReturnUpdateCount());
     }
 
@@ -188,6 +188,25 @@ class DefaultMethodSettingsConfigurerTest {
         final var adapted = configurer.writesReturnUpdateCount(original);
         assertTrue(adapted.writesReturnUpdateCount().isPresent());
         assertEquals(repositories.writesReturnUpdateCount(), adapted.writesReturnUpdateCount().get());
+    }
+
+    @Test
+    void createConnectionKeep() {
+        final var original = SqlConfiguration.builder()
+                .setCreateConnection(false)
+                .build();
+        final var adapted = configurer.createConnection(original);
+        assertEquals(original.createConnection(), adapted.createConnection());
+    }
+
+    @Test
+    void createConnectionChange() {
+        final var original = SqlConfiguration.builder()
+                // .setCreateConnection(false) // value is NOT set
+                .build();
+        final var adapted = configurer.createConnection(original);
+        assertTrue(adapted.createConnection().isPresent());
+        assertEquals(repositories.createConnection(), adapted.createConnection().get());
     }
 
     @Test
@@ -209,7 +228,7 @@ class DefaultMethodSettingsConfigurerTest {
         final var original = SqlConfiguration.builder()
                 .setName(repositories.allowedCallPrefixes().get(0) + "Something")
                 // .setCatchAndRethrow(false) // do NOT set value
-                // .setThrowOnMultipleResultsForSingle(true) // value is NOT set
+                // .setThrowOnMultipleResults(true) // value is NOT set
                 // .setUsePreparedStatement(false) // value is NOT set
                 .build();
         final var adapted = configurer.configureSettings(original);
@@ -217,7 +236,7 @@ class DefaultMethodSettingsConfigurerTest {
                 () -> assertEquals(SqlStatementType.CALLING, adapted.type().get()),
                 () -> assertEquals(ReturningMode.SINGLE, adapted.returningMode().get()),
                 () -> assertEquals(repositories.catchAndRethrow(), adapted.catchAndRethrow().get()),
-                () -> assertEquals(repositories.throwOnMultipleResultsForSingle(), adapted.throwOnMultipleResultsForSingle().get()),
+                () -> assertEquals(repositories.throwOnMultipleResults(), adapted.throwOnMultipleResults().get()),
                 () -> assertEquals(repositories.usePreparedStatement(), adapted.usePreparedStatement().get()));
     }
 

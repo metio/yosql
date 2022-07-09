@@ -15,3 +15,14 @@
 INSERT INTO items (id, name)
 VALUES (:id, :name)
 ;
+
+-- createConnection: false
+-- parameters:
+--   - name: id
+--     type: int
+--   - name: name
+--     type: java.lang.String
+--
+INSERT INTO items (id, name)
+VALUES (:id, :name)
+;

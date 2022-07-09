@@ -31,9 +31,10 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
         adapted = type(adapted);
         adapted = returningMode(adapted);
         adapted = catchAndRethrow(adapted);
-        adapted = throwOnMultipleResultsForSingle(adapted);
+        adapted = throwOnMultipleResults(adapted);
         adapted = usePreparedStatement(adapted);
         adapted = writesReturnUpdateCount(adapted);
+        adapted = createConnection(adapted);
         return adapted;
     }
 
@@ -84,10 +85,10 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
     }
 
     // visible for testing
-    SqlConfiguration throwOnMultipleResultsForSingle(final SqlConfiguration configuration) {
-        if (configuration.throwOnMultipleResultsForSingle().isEmpty()) {
+    SqlConfiguration throwOnMultipleResults(final SqlConfiguration configuration) {
+        if (configuration.throwOnMultipleResults().isEmpty()) {
             return SqlConfiguration.copyOf(configuration)
-                    .withThrowOnMultipleResultsForSingle(repositories.throwOnMultipleResultsForSingle());
+                    .withThrowOnMultipleResults(repositories.throwOnMultipleResults());
         }
         return configuration;
     }
@@ -106,6 +107,15 @@ public final class DefaultMethodSettingsConfigurer implements MethodSettingsConf
         if (configuration.writesReturnUpdateCount().isEmpty()) {
             return SqlConfiguration.copyOf(configuration)
                     .withWritesReturnUpdateCount(repositories.writesReturnUpdateCount());
+        }
+        return configuration;
+    }
+
+    // visible for testing
+    SqlConfiguration createConnection(final SqlConfiguration configuration) {
+        if (configuration.createConnection().isEmpty()) {
+            return SqlConfiguration.copyOf(configuration)
+                    .withCreateConnection(repositories.createConnection());
         }
         return configuration;
     }

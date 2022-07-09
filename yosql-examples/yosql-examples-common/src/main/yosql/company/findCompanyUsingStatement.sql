@@ -15,3 +15,14 @@ select *
 from companies
 where name = :name
 ;
+
+-- createConnection: false
+-- usePreparedStatement: true
+-- parameters:
+--   - name: name
+--     type: java.lang.String
+--
+select *
+from companies
+where name = :name
+;

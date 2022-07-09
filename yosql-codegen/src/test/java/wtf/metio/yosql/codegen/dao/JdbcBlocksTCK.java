@@ -47,11 +47,17 @@ abstract class JdbcBlocksTCK {
 
     abstract String executeStatementExpectation();
 
+    abstract String executeStatementWithoutPreparationExpectation();
+
     abstract String openConnectionExpectation();
+
+    abstract String openConnectionWithoutConnectionExpectation();
 
     abstract String tryPrepareCallableExpectation();
 
     abstract String createStatementExpectation();
+
+    abstract String createStatementWithoutPreparationExpectation();
 
     abstract String prepareBatchExpectation();
 
@@ -154,14 +160,32 @@ abstract class JdbcBlocksTCK {
     final void executeStatement() {
         Assertions.assertEquals(
                 executeStatementExpectation(),
-                generator().executeStatement(SqlConfigurations.sqlConfiguration()).toString());
+                generator().executeStatement(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withUsePreparedStatement(true)).toString());
+    }
+
+    @Test
+    final void executeStatementWithoutPreparation() {
+        Assertions.assertEquals(
+                executeStatementWithoutPreparationExpectation(),
+                generator().executeStatement(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withUsePreparedStatement(false)).toString());
     }
 
     @Test
     final void openConnection() {
         Assertions.assertEquals(
                 openConnectionExpectation(),
-                generator().openConnection().toString());
+                generator().openConnection(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withCreateConnection(true)).toString());
+    }
+
+    @Test
+    final void openConnectionWithoutConnection() {
+        Assertions.assertEquals(
+                openConnectionWithoutConnectionExpectation(),
+                generator().openConnection(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withCreateConnection(false)).toString());
     }
 
     @Test
@@ -175,7 +199,16 @@ abstract class JdbcBlocksTCK {
     final void createStatement() {
         Assertions.assertEquals(
                 createStatementExpectation(),
-                generator().createStatement(SqlConfigurations.sqlConfiguration()).toString());
+                generator().createStatement(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withUsePreparedStatement(true)).toString());
+    }
+
+    @Test
+    final void createStatementWithoutPreparation() {
+        Assertions.assertEquals(
+                createStatementWithoutPreparationExpectation(),
+                generator().createStatement(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withUsePreparedStatement(false)).toString());
     }
 
     @Test
@@ -231,7 +264,7 @@ abstract class JdbcBlocksTCK {
         Assertions.assertEquals(
                 returnAsSingleWithThrowExpectation(),
                 generator().returnAsSingle(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withThrowOnMultipleResultsForSingle(true)).toString());
+                        .withThrowOnMultipleResults(true)).toString());
     }
 
     @Test

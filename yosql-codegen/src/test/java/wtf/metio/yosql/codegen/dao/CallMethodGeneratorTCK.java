@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ReturningMode;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 /**
@@ -29,9 +30,19 @@ public abstract class CallMethodGeneratorTCK {
     abstract String callSingleMethodExpectation();
 
     /**
+     * @return The expected generated code for a call method that returns a single result and uses a given connection.
+     */
+    abstract String callSingleMethodWithGivenConnectionExpectation();
+
+    /**
      * @return The expected generated code for a call method that returns a multiple results.
      */
     abstract String callMultipleMethodExpectation();
+
+    /**
+     * @return The expected generated code for a call method that returns a multiple results and uses a given connection.
+     */
+    abstract String callMultipleMethodWithGivenConnectionExpectation();
 
     /**
      * @return The expected generated code for a call method that returns a cursor.
@@ -39,16 +50,65 @@ public abstract class CallMethodGeneratorTCK {
     abstract String callCursorMethodExpectation();
 
     /**
+     * @return The expected generated code for a call method that returns a cursor and uses a given connection.
+     */
+    abstract String callCursorMethodWithGivenConnectionExpectation();
+
+    /**
      * @return The expected generated code for a call method that returns no results.
      */
     abstract String callNoneMethodExpectation();
+
+    /**
+     * @return The expected generated code for a call method that returns no results and uses a given connection.
+     */
+    abstract String callNoneMethodWithGivenConnectionExpectation();
+
+    @Test
+    final void callNoneMethod() {
+        Assertions.assertEquals(
+                callNoneMethodExpectation(),
+                generator().callMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.CALLING)
+                        .withReturningMode(ReturningMode.NONE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
+                "The generated call none method does not match expectation");
+    }
+
+    @Test
+    final void callNoneMethodWithGivenConnection() {
+        Assertions.assertEquals(
+                callNoneMethodWithGivenConnectionExpectation(),
+                generator().callMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.CALLING)
+                        .withReturningMode(ReturningMode.NONE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated call none method does not match expectation");
+    }
 
     @Test
     final void callSingleMethod() {
         Assertions.assertEquals(
                 callSingleMethodExpectation(),
                 generator().callMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.SINGLE), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.CALLING)
+                        .withReturningMode(ReturningMode.SINGLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
+                "The generated call single method does not match expectation");
+    }
+
+    @Test
+    final void callSingleMethodWithGivenConnection() {
+        Assertions.assertEquals(
+                callSingleMethodWithGivenConnectionExpectation(),
+                generator().callMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.CALLING)
+                        .withReturningMode(ReturningMode.SINGLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
                 "The generated call single method does not match expectation");
     }
 
@@ -57,7 +117,22 @@ public abstract class CallMethodGeneratorTCK {
         Assertions.assertEquals(
                 callMultipleMethodExpectation(),
                 generator().callMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.MULTIPLE), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.CALLING)
+                        .withReturningMode(ReturningMode.MULTIPLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
+                "The generated call multiple method does not match expectation");
+    }
+
+    @Test
+    final void callMultipleMethodWithGivenConnection() {
+        Assertions.assertEquals(
+                callMultipleMethodWithGivenConnectionExpectation(),
+                generator().callMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.CALLING)
+                        .withReturningMode(ReturningMode.MULTIPLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
                 "The generated call multiple method does not match expectation");
     }
 
@@ -66,17 +141,23 @@ public abstract class CallMethodGeneratorTCK {
         Assertions.assertEquals(
                 callCursorMethodExpectation(),
                 generator().callMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.CURSOR), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.CALLING)
+                        .withReturningMode(ReturningMode.CURSOR)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
                 "The generated call cursor method does not match expectation");
     }
 
     @Test
-    final void callNoneMethod() {
+    final void callCursorMethodWithGivenConnection() {
         Assertions.assertEquals(
-                callNoneMethodExpectation(),
+                callCursorMethodWithGivenConnectionExpectation(),
                 generator().callMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.NONE), SqlConfigurations.sqlStatement()).toString(),
-                "The generated call none method does not match expectation");
+                        .withType(SqlStatementType.CALLING)
+                        .withReturningMode(ReturningMode.CURSOR)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated call cursor method does not match expectation");
     }
 
 }

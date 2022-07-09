@@ -13,3 +13,11 @@ select *
 from users
 where id = -1
 ;
+
+-- createConnection: false
+-- returning: single
+--
+select *
+from users
+where id = -1
+;

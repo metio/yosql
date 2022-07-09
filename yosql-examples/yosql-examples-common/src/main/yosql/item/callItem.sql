@@ -10,3 +10,8 @@ from items
 where name = :name
 ;
 
+-- createConnection: false
+select *
+from items
+where name = :name
+;

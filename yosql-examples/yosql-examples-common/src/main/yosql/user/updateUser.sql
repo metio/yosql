@@ -13,3 +13,11 @@ update users
 set name = :name
 where id = :id
 ;
+
+-- createConnection: false
+-- repository: AdminRepository
+--
+update users
+set name = :name
+where id = :id
+;

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ReturningMode;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 /**
@@ -26,84 +27,204 @@ public abstract class WriteMethodGeneratorTCK {
     /**
      * @return The expected generated code for a write method that returns no results.
      */
-    abstract String writeMethodReturningNoneExpectation();
+    abstract String writeReturningNoneMethodExpectation();
+
+    /**
+     * @return The expected generated code for a write method that returns no results and uses a given connection.
+     */
+    abstract String writeReturningNoneWithGivenConnectionExpectation();
 
     /**
      * @return The expected generated code for a write method that returns the update count.
      */
-    abstract String writeMethodReturningUpdateCountExpectation();
+    abstract String writeReturningUpdateCountExpectation();
+
+    /**
+     * @return The expected generated code for a write method that returns the update count and uses a given connection.
+     */
+    abstract String writeReturningUpdateCountWithGivenConnectionExpectation();
 
     /**
      * @return The expected generated code for a write method that returns a single result.
      */
-    abstract String writeMethodReturningSingleExpectation();
+    abstract String writeReturningSingleExpectation();
+
+    /**
+     * @return The expected generated code for a write method that returns a single result and uses a given connection.
+     */
+    abstract String writeReturningSingleWithGivenConnectionExpectation();
 
     /**
      * @return The expected generated code for a write method that returns multiple results.
      */
-    abstract String writeMethodReturningMultipleExpectation();
+    abstract String writeReturningMultipleExpectation();
+
+    /**
+     * @return The expected generated code for a write method that returns multiple results and uses a given connection.
+     */
+    abstract String writeReturningMultipleWithGivenConnectionExpectation();
 
     /**
      * @return The expected generated code for a write method that returns a cursor.
      */
-    abstract String writeMethodReturningCursorExpectation();
+    abstract String writeReturningCursorExpectation();
+
+    /**
+     * @return The expected generated code for a write method that returns a cursor and uses a given connection.
+     */
+    abstract String writeReturningCursorWithGivenConnectionExpectation();
 
     /**
      * @return The expected generated code for a batch write method.
      */
-    abstract String batchWriteMethodExpectation();
+    abstract String batchWriteExpectation();
+
+    /**
+     * @return The expected generated code for a batch write method which uses a given connection.
+     */
+    abstract String batchWriteWithGivenConnectionExpectation();
 
     @Test
-    final void writeReturningNoneMethod() {
+    final void writeReturningNone() {
         Assertions.assertEquals(
-                writeMethodReturningNoneExpectation(),
+                writeReturningNoneMethodExpectation(),
                 generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.NONE), SqlConfigurations.sqlStatement()).toString(),
-                "The generated write method does not match expectation");
-    }
-
-    @Test
-    final void writeReturningUpdateCountMethod() {
-        Assertions.assertEquals(
-                writeMethodReturningUpdateCountExpectation(),
-                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
                         .withReturningMode(ReturningMode.NONE)
-                        .withWritesReturnUpdateCount(true), SqlConfigurations.sqlStatement()).toString(),
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
                 "The generated write method does not match expectation");
     }
 
     @Test
-    final void writeReturningSingleMethod() {
+    final void writeReturningNoneWithGivenConnection() {
         Assertions.assertEquals(
-                writeMethodReturningSingleExpectation(),
+                writeReturningNoneWithGivenConnectionExpectation(),
                 generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.SINGLE), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.NONE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
                 "The generated write method does not match expectation");
     }
 
     @Test
-    final void writeReturningMultipleMethod() {
+    final void writeReturningUpdateCount() {
         Assertions.assertEquals(
-                writeMethodReturningMultipleExpectation(),
+                writeReturningUpdateCountExpectation(),
                 generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.MULTIPLE), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.NONE)
+                        .withUsePreparedStatement(true)
+                        .withWritesReturnUpdateCount(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
                 "The generated write method does not match expectation");
     }
 
     @Test
-    final void writeReturningCursorMethod() {
+    final void writeReturningUpdateCountWithGivenConnection() {
         Assertions.assertEquals(
-                writeMethodReturningCursorExpectation(),
+                writeReturningUpdateCountWithGivenConnectionExpectation(),
                 generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.CURSOR), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.NONE)
+                        .withUsePreparedStatement(true)
+                        .withWritesReturnUpdateCount(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
                 "The generated write method does not match expectation");
     }
 
     @Test
-    final void batchWriteMethod() {
+    final void writeReturningSingle() {
         Assertions.assertEquals(
-                batchWriteMethodExpectation(),
-                generator().batchWriteMethod(SqlConfigurations.sqlConfiguration(), SqlConfigurations.sqlStatement()).toString(),
+                writeReturningSingleExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.SINGLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void writeReturningSingleWithGivenConnection() {
+        Assertions.assertEquals(
+                writeReturningSingleWithGivenConnectionExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.SINGLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void writeReturningMultiple() {
+        Assertions.assertEquals(
+                writeReturningMultipleExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.MULTIPLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void writeReturningMultipleWithGivenConnection() {
+        Assertions.assertEquals(
+                writeReturningMultipleWithGivenConnectionExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.MULTIPLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void writeReturningCursor() {
+        Assertions.assertEquals(
+                writeReturningCursorExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.CURSOR)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void writeReturningCursorWithGivenConnection() {
+        Assertions.assertEquals(
+                writeReturningCursorWithGivenConnectionExpectation(),
+                generator().writeMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
+                        .withReturningMode(ReturningMode.CURSOR)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated write method does not match expectation");
+    }
+
+    @Test
+    final void batchWrite() {
+        Assertions.assertEquals(
+                batchWriteExpectation(),
+                generator().batchWriteMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
+                "The generated batch write method does not match expectation");
+    }
+
+    @Test
+    final void batchWriteWithGivenConnection() {
+        Assertions.assertEquals(
+                batchWriteWithGivenConnectionExpectation(),
+                generator().batchWriteMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.WRITING)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
                 "The generated batch write method does not match expectation");
     }
 

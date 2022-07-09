@@ -267,23 +267,23 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseThrowOnMultipleResultsForSingleEnabled() {
+    void shouldParseThrowOnMultipleResultEnabled() {
         final var yaml = """
-                throwOnMultipleResultsForSingle: true
+                throwOnMultipleResults: true
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.throwOnMultipleResultsForSingle().isPresent());
-        assertTrue(config.throwOnMultipleResultsForSingle().get());
+        assertTrue(config.throwOnMultipleResults().isPresent());
+        assertTrue(config.throwOnMultipleResults().get());
     }
 
     @Test
-    void shouldParseThrowOnMultipleResultsForSingleDisabled() {
+    void shouldParseThrowOnMultipleResultsDisabled() {
         final var yaml = """
-                throwOnMultipleResultsForSingle: false
+                throwOnMultipleResults: false
                 """;
         final var config = parser.parseConfig(yaml);
-        assertTrue(config.throwOnMultipleResultsForSingle().isPresent());
-        assertFalse(config.throwOnMultipleResultsForSingle().get());
+        assertTrue(config.throwOnMultipleResults().isPresent());
+        assertFalse(config.throwOnMultipleResults().get());
     }
 
     @Test
@@ -304,6 +304,26 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertTrue(config.writesReturnUpdateCount().isPresent());
         assertFalse(config.writesReturnUpdateCount().get());
+    }
+
+    @Test
+    void shouldParseCreateConnectionEnabled() {
+        final var yaml = """
+                createConnection: true
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.createConnection().isPresent());
+        assertTrue(config.createConnection().get());
+    }
+
+    @Test
+    void shouldParseCreateConnectionDisabled() {
+        final var yaml = """
+                createConnection: false
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.createConnection().isPresent());
+        assertFalse(config.createConnection().get());
     }
 
     @Test

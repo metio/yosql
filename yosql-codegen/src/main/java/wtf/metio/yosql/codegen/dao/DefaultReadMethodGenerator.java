@@ -53,7 +53,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
     @Override
     public MethodSpec readMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var builder = methods.declaration(configuration.executeOnceName(), statements, Constants.EXECUTE_ONCE)
-                .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
+                .addParameters(parameters.asParameterSpecsForInterfaces(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration));
         returnTypes.resultType(configuration).ifPresent(builder::returns);
         return builder.build();
@@ -74,11 +74,11 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
-                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(controlFlows.maybeTry(configuration))
-                .addStatement(jdbc.getConnectionInline())
+                .addCode(jdbc.getConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addStatement(jdbc.prepareStatementInline())
                 .addCode(jdbc.setParameters(configuration))
@@ -95,10 +95,10 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
         final var name = configuration.executeOnceName();
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.singleResultType(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection())
+                .addCode(jdbc.openConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
@@ -117,10 +117,10 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
         final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.multiResultType(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection())
+                .addCode(jdbc.openConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
@@ -139,11 +139,11 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
         final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.cursorResultType(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
+                .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(controlFlows.maybeTry(configuration))
-                .addStatement(jdbc.getConnectionInline())
+                .addCode(jdbc.getConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addStatement(jdbc.prepareStatementInline())
                 .addCode(jdbc.setParameters(configuration))

@@ -78,7 +78,8 @@ public final class Repositories extends AbstractConfigurationGroup {
                 usePreparedStatement(),
                 catchAndRethrow(),
                 writesReturnUpdateCount(),
-                throwOnMultipleResultsForSingle());
+                throwOnMultipleResults(),
+                createConnection());
     }
 
     private static ConfigurationSetting basePackageName() {
@@ -293,10 +294,19 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static ConfigurationSetting throwOnMultipleResultsForSingle() {
-        final var name = "throwOnMultipleResultsForSingle";
+    private static ConfigurationSetting throwOnMultipleResults() {
+        final var name = "throwOnMultipleResults";
         final var description = "Throw an exception in case a statement using `ReturningMode.SINGLE` produces more than 1 result.";
         final var value = false;
+        return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
+                .build();
+    }
+
+    private static ConfigurationSetting createConnection() {
+        final var name = "createConnection";
+        final var description = "Controls whether the generated code should create/open connection itself or use a given connection.";
+        final var value = true;
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
                 .build();

@@ -91,7 +91,7 @@ public final class DaoObjectMother {
     }
 
     public static ParameterGenerator parameterGenerator(final JavaConfiguration java) {
-        return new DefaultParameterGenerator(BlocksObjectMother.parameters(java));
+        return new DefaultParameterGenerator(BlocksObjectMother.parameters(java), NamesConfigurations.defaults());
     }
 
     public static ReturnTypes returnTypes() {

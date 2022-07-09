@@ -20,6 +20,8 @@ public interface JdbcBlocks {
 
     CodeBlock getConnectionInline();
 
+    CodeBlock getConnection(SqlConfiguration configuration);
+
     CodeBlock prepareStatementInline();
 
     CodeBlock prepareCallInline();
@@ -44,7 +46,7 @@ public interface JdbcBlocks {
 
     CodeBlock closeConnection();
 
-    CodeBlock openConnection();
+    CodeBlock openConnection(SqlConfiguration configuration);
 
     CodeBlock tryPrepareCallable();
 

@@ -100,9 +100,23 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
+        String executeStatementWithoutPreparationExpectation() {
+            return """
+                    try (final var resultSet = statement.executeQuery(query)) {
+                    """;
+        }
+
+        @Override
         String openConnectionExpectation() {
             return """
                     try (final var connection = dataSource.getConnection()) {
+                    """;
+        }
+
+        @Override
+        String openConnectionWithoutConnectionExpectation() {
+            return """
+                    try {
                     """;
         }
 
@@ -117,6 +131,13 @@ class DefaultJdbcBlocksTest {
         String createStatementExpectation() {
             return """
                     try (final var statement = connection.prepareStatement(query)) {
+                    """;
+        }
+
+        @Override
+        String createStatementWithoutPreparationExpectation() {
+            return """
+                    try (final var statement = connection.createStatement()) {
                     """;
         }
 
@@ -318,9 +339,23 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
+        String executeStatementWithoutPreparationExpectation() {
+            return """
+                    try (final var resultSet = statement.executeQuery(query)) {
+                    """;
+        }
+
+        @Override
         String openConnectionExpectation() {
             return """
                     try (final var connection = dataSource.getConnection()) {
+                    """;
+        }
+
+        @Override
+        String openConnectionWithoutConnectionExpectation() {
+            return """
+                    try {
                     """;
         }
 
@@ -335,6 +370,13 @@ class DefaultJdbcBlocksTest {
         String createStatementExpectation() {
             return """
                     try (final var statement = connection.prepareStatement(query)) {
+                    """;
+        }
+
+        @Override
+        String createStatementWithoutPreparationExpectation() {
+            return """
+                    try (final var statement = connection.createStatement()) {
                     """;
         }
 
@@ -536,9 +578,23 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
+        String executeStatementWithoutPreparationExpectation() {
+            return """
+                    try (final var resultSet = statement.executeQuery(query)) {
+                    """;
+        }
+
+        @Override
         String openConnectionExpectation() {
             return """
                     try (final var connection = dataSource.getConnection()) {
+                    """;
+        }
+
+        @Override
+        String openConnectionWithoutConnectionExpectation() {
+            return """
+                    try {
                     """;
         }
 
@@ -553,6 +609,13 @@ class DefaultJdbcBlocksTest {
         String createStatementExpectation() {
             return """
                     try (final var statement = connection.prepareStatement(query)) {
+                    """;
+        }
+
+        @Override
+        String createStatementWithoutPreparationExpectation() {
+            return """
+                    try (final var statement = connection.createStatement()) {
                     """;
         }
 
@@ -755,9 +818,23 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
+        String executeStatementWithoutPreparationExpectation() {
+            return """
+                    try (final var resultSet = statement.executeQuery(query)) {
+                    """;
+        }
+
+        @Override
         String openConnectionExpectation() {
             return """
                     try (final var connection = dataSource.getConnection()) {
+                    """;
+        }
+
+        @Override
+        String openConnectionWithoutConnectionExpectation() {
+            return """
+                    try {
                     """;
         }
 
@@ -772,6 +849,13 @@ class DefaultJdbcBlocksTest {
         String createStatementExpectation() {
             return """
                     try (final var statement = connection.prepareStatement(query)) {
+                    """;
+        }
+
+        @Override
+        String createStatementWithoutPreparationExpectation() {
+            return """
+                    try (final var statement = connection.createStatement()) {
                     """;
         }
 

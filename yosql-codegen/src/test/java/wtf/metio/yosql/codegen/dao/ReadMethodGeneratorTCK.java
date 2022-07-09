@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ReturningMode;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 /**
@@ -24,59 +25,139 @@ public abstract class ReadMethodGeneratorTCK {
     abstract ReadMethodGenerator generator();
 
     /**
+     * @return The expected generated code for a read none method.
+     */
+    abstract String readNoneExpectation();
+
+    /**
+     * @return The expected generated code for a read none method which uses a given connection.
+     */
+    abstract String readNoneWithGivenConnectionExpectation();
+
+    /**
      * @return The expected generated code for a read single method.
      */
-    abstract String readSingleMethodExpectation();
+    abstract String readSingleExpectation();
+
+    /**
+     * @return The expected generated code for a read single method which uses a given connection.
+     */
+    abstract String readSingleWithGivenConnectionExpectation();
 
     /**
      * @return The expected generated code for a read multiple method.
      */
-    abstract String readMultipleMethodExpectation();
+    abstract String readMultipleExpectation();
+
+    /**
+     * @return The expected generated code for a read multiple method which uses a given connection.
+     */
+    abstract String readMultipleWithGivenConnectionExpectation();
 
     /**
      * @return The expected generated code for a read cursor method.
      */
-    abstract String readCursorMethodExpectation();
+    abstract String readCursorExpectation();
 
     /**
-     * @return The expected generated code for a read none method.
+     * @return The expected generated code for a read cursor method which uses a given connection.
      */
-    abstract String readNoneMethodExpectation();
+    abstract String readCursorWithGivenConnectionExpectation();
 
     @Test
-    final void readSingleMethod() {
+    final void readNone() {
         Assertions.assertEquals(
-                readSingleMethodExpectation(),
+                readNoneExpectation(),
                 generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.SINGLE), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.READING)
+                        .withReturningMode(ReturningMode.NONE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
+                "The generated read none method does not match expectation");
+    }
+
+    @Test
+    final void readNoneWithGivenConnection() {
+        Assertions.assertEquals(
+                readNoneWithGivenConnectionExpectation(),
+                generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.READING)
+                        .withReturningMode(ReturningMode.NONE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated read none method does not match expectation");
+    }
+
+    @Test
+    final void readSingle() {
+        Assertions.assertEquals(
+                readSingleExpectation(),
+                generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.READING)
+                        .withReturningMode(ReturningMode.SINGLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
                 "The generated read single method does not match expectation");
     }
 
     @Test
-    final void readMultipleMethod() {
+    final void readSingleWithGivenConnection() {
         Assertions.assertEquals(
-                readMultipleMethodExpectation(),
+                readSingleWithGivenConnectionExpectation(),
                 generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.MULTIPLE), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.READING)
+                        .withReturningMode(ReturningMode.SINGLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated read single method does not match expectation");
+    }
+
+    @Test
+    final void readMultiple() {
+        Assertions.assertEquals(
+                readMultipleExpectation(),
+                generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.READING)
+                        .withReturningMode(ReturningMode.MULTIPLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
                 "The generated read multiple method does not match expectation");
     }
 
     @Test
-    final void readCursorMethod() {
+    final void readMultipleWithGivenConnection() {
         Assertions.assertEquals(
-                readCursorMethodExpectation(),
+                readMultipleWithGivenConnectionExpectation(),
                 generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.CURSOR), SqlConfigurations.sqlStatement()).toString(),
+                        .withType(SqlStatementType.READING)
+                        .withReturningMode(ReturningMode.MULTIPLE)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated read multiple method does not match expectation");
+    }
+
+    @Test
+    final void readCursor() {
+        Assertions.assertEquals(
+                readCursorExpectation(),
+                generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withType(SqlStatementType.READING)
+                        .withReturningMode(ReturningMode.CURSOR)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(true), SqlConfigurations.sqlStatement()).toString(),
                 "The generated read cursor method does not match expectation");
     }
 
     @Test
-    final void readNoneMethod() {
+    final void readCursorWithGivenConnection() {
         Assertions.assertEquals(
-                readNoneMethodExpectation(),
+                readCursorWithGivenConnectionExpectation(),
                 generator().readMethod(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
-                        .withReturningMode(ReturningMode.NONE), SqlConfigurations.sqlStatement()).toString(),
-                "The generated read none method does not match expectation");
+                        .withType(SqlStatementType.READING)
+                        .withReturningMode(ReturningMode.CURSOR)
+                        .withUsePreparedStatement(true)
+                        .withCreateConnection(false), SqlConfigurations.sqlStatement()).toString(),
+                "The generated read cursor method does not match expectation");
     }
 
 }

@@ -10,3 +10,8 @@
 select *
 from users
 ;
+
+-- createConnection: false
+select *
+from users
+;

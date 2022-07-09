@@ -8,18 +8,16 @@
 package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.ParameterSpec;
-import wtf.metio.yosql.models.configuration.SqlParameter;
-
-import java.util.List;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 public interface ParameterGenerator {
 
-    Iterable<ParameterSpec> asParameterSpecs(List<SqlParameter> parameters);
+    Iterable<ParameterSpec> asParameterSpecs(SqlConfiguration configuration);
 
-    Iterable<ParameterSpec> asParameterSpecsForInterfaces(List<SqlParameter> parameters);
+    Iterable<ParameterSpec> asParameterSpecsForInterfaces(SqlConfiguration configuration);
 
-    Iterable<ParameterSpec> asBatchParameterSpecs(List<SqlParameter> parameters);
+    Iterable<ParameterSpec> asBatchParameterSpecs(SqlConfiguration configuration);
 
-    Iterable<ParameterSpec> asBatchParameterSpecsForInterfaces(List<SqlParameter> parameters);
+    Iterable<ParameterSpec> asBatchParameterSpecsForInterfaces(SqlConfiguration configuration);
 
 }

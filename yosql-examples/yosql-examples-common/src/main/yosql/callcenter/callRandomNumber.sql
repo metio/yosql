@@ -6,3 +6,6 @@
  */
 
 CALL RANDOM_NUMBER();
+
+-- createConnection: false
+CALL RANDOM_NUMBER();

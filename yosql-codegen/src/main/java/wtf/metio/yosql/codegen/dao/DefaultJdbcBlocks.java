@@ -70,6 +70,15 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
+    public CodeBlock getConnection(final SqlConfiguration configuration) {
+        return configuration.createConnection()
+                .filter(Boolean.TRUE::equals)
+                .map(value -> variables.statement(Connection.class, names.connection(),
+                        jdbcMethods.dataSource().getConnection()))
+                .orElseGet(() -> CodeBlock.builder().build());
+    }
+
+    @Override
     public CodeBlock prepareStatementInline() {
         return variables.inline(PreparedStatement.class, names.statement(),
                 jdbcMethods.connection().prepareStatement());
@@ -142,11 +151,10 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock executeStatement(final SqlConfiguration configuration) {
-        if (configuration.usePreparedStatement()
-                .orElse(runtimeConfiguration.repositories().usePreparedStatement())) {
-            return controlFlows.tryWithResource(executeQueryInline());
-        }
-        return controlFlows.tryWithResource(executeStatementQueryInline());
+        return configuration.usePreparedStatement()
+                .filter(Boolean.TRUE::equals)
+                .map(value -> controlFlows.tryWithResource(executeQueryInline()))
+                .orElseGet(() -> controlFlows.tryWithResource(executeStatementQueryInline()));
     }
 
     private CodeBlock executeStatementQueryInline() {
@@ -155,8 +163,11 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock openConnection() {
-        return controlFlows.tryWithResource(getConnectionInline());
+    public CodeBlock openConnection(final SqlConfiguration configuration) {
+        return configuration.createConnection()
+                .filter(Boolean.TRUE::equals)
+                .map(value -> controlFlows.tryWithResource(getConnectionInline()))
+                .orElseGet(controlFlows::startTryBlock);
     }
 
     @Override
@@ -166,11 +177,10 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock createStatement(final SqlConfiguration configuration) {
-        if (configuration.usePreparedStatement()
-                .orElse(runtimeConfiguration.repositories().usePreparedStatement())) {
-            return controlFlows.tryWithResource(prepareStatementInline());
-        }
-        return controlFlows.tryWithResource(statementInline());
+        return configuration.usePreparedStatement()
+                .filter(Boolean.TRUE::equals)
+                .map(value -> controlFlows.tryWithResource(prepareStatementInline()))
+                .orElseGet(() -> controlFlows.tryWithResource(statementInline()));
     }
 
     private CodeBlock statementInline() {
@@ -351,7 +361,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         final var converter = configuration.converter(converters::defaultConverter);
         final var builder = prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()
                 .orElseThrow(MissingConverterResultTypeException::new)), converter);
-        if (configuration.throwOnMultipleResultsForSingle().orElse(Boolean.FALSE)) {
+        if (configuration.throwOnMultipleResults().orElse(Boolean.FALSE)) {
             builder.beginControlFlow("if ($N.size() > 1)", names.list())
                     .addStatement("throw new $T()", IllegalStateException.class)
                     .endControlFlow();

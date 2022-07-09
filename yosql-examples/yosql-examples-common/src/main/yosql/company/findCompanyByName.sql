@@ -10,7 +10,19 @@
 --   - name: name
 --     type: java.lang.String
 -- returning: single
--- throwOnMultipleResultsForSingle: true
+-- throwOnMultipleResults: true
+--
+select *
+from companies
+where name = :name
+;
+
+-- createConnection: false
+-- parameters:
+--   - name: name
+--     type: java.lang.String
+-- returning: single
+-- throwOnMultipleResults: true
 --
 select *
 from companies

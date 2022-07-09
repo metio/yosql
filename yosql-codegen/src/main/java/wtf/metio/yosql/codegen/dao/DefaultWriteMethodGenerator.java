@@ -54,7 +54,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     @Override
     public MethodSpec writeMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var builder = methods.declaration(configuration.executeOnceName(), statements, Constants.EXECUTE_ONCE)
-                .addParameters(parameters.asParameterSpecsForInterfaces(configuration.parameters()))
+                .addParameters(parameters.asParameterSpecsForInterfaces(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration));
         returnTypes.resultType(configuration).ifPresent(builder::returns);
         return builder.build();
@@ -76,10 +76,10 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
         final var name = configuration.executeOnceName();
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.noneResultType(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection())
+                .addCode(jdbc.openConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
@@ -96,10 +96,10 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
         final var name = configuration.executeOnceName();
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.singleResultType(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection())
+                .addCode(jdbc.openConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
@@ -119,10 +119,10 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
         final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.multiResultType(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection())
+                .addCode(jdbc.openConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
@@ -142,10 +142,10 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
         final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.cursorResultType(configuration))
+                .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration.parameters()))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection())
+                .addCode(jdbc.openConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
@@ -162,7 +162,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     public MethodSpec batchWriteMethodDeclaration(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         return methods.declaration(configuration.executeBatchName(), statements, Constants.EXECUTE_BATCH)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
-                .addParameters(parameters.asBatchParameterSpecsForInterfaces(configuration.parameters()))
+                .addParameters(parameters.asBatchParameterSpecsForInterfaces(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .build();
     }
@@ -172,10 +172,10 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
         final var name = configuration.executeBatchName();
         return methods.publicMethod(name, statements, Constants.EXECUTE_BATCH)
                 .returns(TypicalTypes.ARRAY_OF_INTS)
-                .addParameters(parameters.asBatchParameterSpecs(configuration.parameters()))
+                .addParameters(parameters.asBatchParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection())
+                .addCode(jdbc.openConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.prepareBatch(configuration))

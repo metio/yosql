@@ -13,21 +13,27 @@ import wtf.metio.yosql.codegen.blocks.Parameters;
 import wtf.metio.yosql.codegen.exceptions.MissingParameterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingParameterTypeNameException;
 import wtf.metio.yosql.models.configuration.SqlParameter;
+import wtf.metio.yosql.models.immutables.NamesConfiguration;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class DefaultParameterGenerator implements ParameterGenerator {
 
     private final Parameters parameters;
+    private final NamesConfiguration names;
 
-    public DefaultParameterGenerator(final Parameters parameters) {
+    public DefaultParameterGenerator(final Parameters parameters, final NamesConfiguration names) {
         this.parameters = parameters;
+        this.names = names;
     }
 
     @Override
-    public Iterable<ParameterSpec> asParameterSpecs(final List<SqlParameter> parameters) {
-        return asParameterSpecs(parameters, this::ofSqlParameter);
+    public List<ParameterSpec> asParameterSpecs(final SqlConfiguration configuration) {
+        return asParameterSpecs(configuration, this::ofSqlParameter);
     }
 
     private ParameterSpec ofSqlParameter(final SqlParameter parameter) {
@@ -37,8 +43,8 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     @Override
-    public Iterable<ParameterSpec> asParameterSpecsForInterfaces(final List<SqlParameter> parameters) {
-        return asParameterSpecs(parameters, this::ofSqlParameterForInterfaces);
+    public List<ParameterSpec> asParameterSpecsForInterfaces(final SqlConfiguration configuration) {
+        return asParameterSpecs(configuration, this::ofSqlParameterForInterfaces);
     }
 
     private ParameterSpec ofSqlParameterForInterfaces(final SqlParameter parameter) {
@@ -48,8 +54,8 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     @Override
-    public Iterable<ParameterSpec> asBatchParameterSpecs(final List<SqlParameter> parameters) {
-        return asParameterSpecs(parameters, this::batchOfSqlParameter);
+    public List<ParameterSpec> asBatchParameterSpecs(final SqlConfiguration configuration) {
+        return asParameterSpecs(configuration, this::batchOfSqlParameter);
     }
 
     private ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
@@ -59,8 +65,8 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     @Override
-    public Iterable<ParameterSpec> asBatchParameterSpecsForInterfaces(final List<SqlParameter> parameters) {
-        return asParameterSpecs(parameters, this::batchOfSqlParameterForInterfaces);
+    public List<ParameterSpec> asBatchParameterSpecsForInterfaces(final SqlConfiguration configuration) {
+        return asParameterSpecs(configuration, this::batchOfSqlParameterForInterfaces);
     }
 
     private ParameterSpec batchOfSqlParameterForInterfaces(final SqlParameter parameter) {
@@ -69,11 +75,15 @@ public class DefaultParameterGenerator implements ParameterGenerator {
                 parameter.name().orElseThrow(MissingParameterNameException::new));
     }
 
-    private static List<ParameterSpec> asParameterSpecs(
-            final List<SqlParameter> parameters,
+    private List<ParameterSpec> asParameterSpecs(
+            final SqlConfiguration configuration,
             final Function<SqlParameter, ParameterSpec> asParameter) {
-        return parameters.stream()
-                .map(asParameter)
+        return Stream.concat(
+                        configuration.createConnection()
+                                .filter(Boolean.FALSE::equals)
+                                .map(value -> parameters.parameter(Connection.class, names.connection()))
+                                .stream(),
+                        configuration.parameters().stream().map(asParameter))
                 .toList();
     }
 

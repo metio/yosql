@@ -562,37 +562,37 @@ class SqlConfigurationTest {
     }
 
     @Test
-    void mergeThrowOnMultipleResultsForSingleFirst() {
+    void mergeThrowOnMultipleResultsFirst() {
         final var first = SqlConfiguration.builder()
-                .setThrowOnMultipleResultsForSingle(true)
+                .setThrowOnMultipleResults(true)
                 .build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(first.throwOnMultipleResultsForSingle(), merged.throwOnMultipleResultsForSingle());
+        Assertions.assertEquals(first.throwOnMultipleResults(), merged.throwOnMultipleResults());
     }
 
     @Test
-    void mergeThrowOnMultipleResultsForSingleSecond() {
+    void mergeThrowOnMultipleResultsSecond() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder()
-                .setThrowOnMultipleResultsForSingle(true)
+                .setThrowOnMultipleResults(true)
                 .build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertEquals(second.throwOnMultipleResultsForSingle(), merged.throwOnMultipleResultsForSingle());
+        Assertions.assertEquals(second.throwOnMultipleResults(), merged.throwOnMultipleResults());
     }
 
     @Test
-    void mergeThrowOnMultipleResultsForSingleMissing() {
+    void mergeThrowOnMultipleResultsMissing() {
         final var first = SqlConfiguration.builder().build();
         final var second = SqlConfiguration.builder().build();
 
         final var merged = SqlConfiguration.merge(first, second);
 
-        Assertions.assertTrue(merged.throwOnMultipleResultsForSingle().isEmpty());
+        Assertions.assertTrue(merged.throwOnMultipleResults().isEmpty());
     }
 
     @Test
@@ -627,6 +627,40 @@ class SqlConfigurationTest {
         final var merged = SqlConfiguration.merge(first, second);
 
         Assertions.assertTrue(merged.writesReturnUpdateCount().isEmpty());
+    }
+
+    @Test
+    void mergeCreateConnectionFirst() {
+        final var first = SqlConfiguration.builder()
+                .setCreateConnection(true)
+                .build();
+        final var second = SqlConfiguration.builder().build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertEquals(first.createConnection(), merged.createConnection());
+    }
+
+    @Test
+    void mergeCreateConnectionSecond() {
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder()
+                .setCreateConnection(true)
+                .build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertEquals(second.createConnection(), merged.createConnection());
+    }
+
+    @Test
+    void mergeCreateConnectionMissing() {
+        final var first = SqlConfiguration.builder().build();
+        final var second = SqlConfiguration.builder().build();
+
+        final var merged = SqlConfiguration.merge(first, second);
+
+        Assertions.assertTrue(merged.createConnection().isEmpty());
     }
 
     @Test

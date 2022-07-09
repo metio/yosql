@@ -8,3 +8,8 @@
 INSERT INTO persons (id, name)
 VALUES (:id, :name)
 ;
+
+-- createConnection: false
+INSERT INTO persons (id, name)
+VALUES (:id, :name)
+;
