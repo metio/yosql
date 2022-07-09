@@ -170,8 +170,8 @@ jobs:
         name: Upload Ant Tooling Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ant
-          path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-jvm*
+          name: yosql-tooling-ant
+          path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-dist*
   cli:
     name: Build CLI Tooling on ${{ matrix.os }}
     needs: prepare
@@ -218,15 +218,36 @@ jobs:
         if: needs.prepare.outputs.commit_count > 0
       - id: build-cli-tooling
         name: Build CLI Tooling
-        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-cli --also-make install --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
+        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-cli --also-make install --define skipNativeBuild=false --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
         if: needs.prepare.outputs.commit_count > 0
-      - id: upload-cli-tooling
-        name: Upload CLI Tooling Artifact
+      - id: upload-jvm-cli-tooling
+        name: Upload JVM CLI Tooling
         uses: actions/upload-artifact@v3
+        if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
         with:
-          name: cli
+          name: yosql-tooling-cli-jvm
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
-        if: runner.os == 'Linux'
+      - id: upload-linux-cli-tooling
+        name: Upload Linux CLI Tooling
+        uses: actions/upload-artifact@v3
+        if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
+        with:
+          name: yosql-tooling-cli-linux
+          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-linux*
+      - id: upload-mac-cli-tooling
+        name: Upload Mac OSX CLI Tooling
+        uses: actions/upload-artifact@v3
+        if: needs.prepare.outputs.commit_count > 0 && runner.os == 'macOS'
+        with:
+          name: yosql-tooling-cli-mac
+          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-mac*
+      - id: upload-windows-cli-tooling
+        name: Upload Windows CLI Tooling
+        uses: actions/upload-artifact@v3
+        if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Windows'
+        with:
+          name: yosql-tooling-cli-windows
+          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-windows*
   release:
     name: GitHub Release
     needs: [prepare, maven, gradle, ant, cli]
@@ -257,12 +278,15 @@ jobs:
           prerelease: false
           generate_release_notes: true
           files: |
-            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip
-            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip.asc
-            artifacts/ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip.sha512
-            artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip
-            artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.asc
-            artifacts/cli/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.sha512
-
-
-
+            artifacts/yosql-tooling-ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip
+            artifacts/yosql-tooling-ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip.asc
+            artifacts/yosql-tooling-ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip.sha512
+            artifacts/yosql-tooling-cli-jvm/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip
+            artifacts/yosql-tooling-cli-jvm/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.asc
+            artifacts/yosql-tooling-cli-jvm/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.sha512
+            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-linux.zip
+            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-linux.zip.asc
+            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-linux.zip.sha512
+            artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip
+            artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip.asc
+            artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip.sha512
