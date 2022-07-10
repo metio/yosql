@@ -136,7 +136,6 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
-        final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.cursorResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration))
@@ -149,7 +148,7 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeQueryStatement())
-                .addCode(jdbc.streamStateful(converter))
+                .addCode(jdbc.streamStateful(configuration))
                 .addCode(controlFlows.endMaybeTry(configuration))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

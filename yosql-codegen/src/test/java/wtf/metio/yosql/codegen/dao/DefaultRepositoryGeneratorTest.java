@@ -119,13 +119,13 @@ class DefaultRepositoryGeneratorTest {
                       public final java.util.List<java.util.Map<java.lang.String, java.lang.Object>> queryData(
                           final java.lang.Object test, final int id) {
                         LOG.entering("com.example.persistence.DataRepository", "queryData");
-                        try {
+                        try (final var connection = dataSource.getConnection()) {
                           final var query = QUERY_DATA;
                           LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                           final var rawQuery = QUERY_DATA_RAW;
                           final var index = QUERY_DATA_INDEX;
                           LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
-                          try (final var statement = connection.createStatement()) {
+                          try (final var statement = connection.prepareStatement(query)) {
                             for (final int jdbcIndex : index.get("test")) {
                               statement.setObject(jdbcIndex, test);
                             }
@@ -138,7 +138,7 @@ class DefaultRepositoryGeneratorTest {
                                 .replace(":id", java.lang.String.valueOf(id));
                               LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                             }
-                            try (final var resultSet = statement.executeQuery(query)) {
+                            try (final var resultSet = statement.executeQuery()) {
                               final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                               while (resultSet.next()) {
                                 list.add(toMap.apply(resultSet));
@@ -295,13 +295,13 @@ class DefaultRepositoryGeneratorTest {
                       public final java.util.List<java.util.Map<java.lang.String, java.lang.Object>> queryData(
                           final java.lang.Object test, final int id) {
                         LOG.entering("com.example.persistence.DataRepository", "queryData");
-                        try {
+                        try (final var connection = dataSource.getConnection()) {
                           final var query = QUERY_DATA;
                           LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                           final var rawQuery = QUERY_DATA_RAW;
                           final var index = QUERY_DATA_INDEX;
                           LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
-                          try (final var statement = connection.createStatement()) {
+                          try (final var statement = connection.prepareStatement(query)) {
                             for (final int jdbcIndex : index.get("test")) {
                               statement.setObject(jdbcIndex, test);
                             }
@@ -314,7 +314,7 @@ class DefaultRepositoryGeneratorTest {
                                 .replace(":id", java.lang.String.valueOf(id));
                               LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                             }
-                            try (final var resultSet = statement.executeQuery(query)) {
+                            try (final var resultSet = statement.executeQuery()) {
                               final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                               while (resultSet.next()) {
                                 list.add(toMap.apply(resultSet));
@@ -473,13 +473,13 @@ class DefaultRepositoryGeneratorTest {
                       public final java.util.List<java.util.Map<java.lang.String, java.lang.Object>> queryData(
                           final java.lang.Object test, final int id) {
                         LOG.entering("com.example.persistence.DataRepository", "queryData");
-                        try {
+                        try (final var connection = dataSource.getConnection()) {
                           final var query = QUERY_DATA;
                           LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                           final var rawQuery = QUERY_DATA_RAW;
                           final var index = QUERY_DATA_INDEX;
                           LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
-                          try (final var statement = connection.createStatement()) {
+                          try (final var statement = connection.prepareStatement(query)) {
                             for (final int jdbcIndex : index.get("test")) {
                               statement.setObject(jdbcIndex, test);
                             }
@@ -492,7 +492,7 @@ class DefaultRepositoryGeneratorTest {
                                 .replace(":id", java.lang.String.valueOf(id));
                               LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                             }
-                            try (final var resultSet = statement.executeQuery(query)) {
+                            try (final var resultSet = statement.executeQuery()) {
                               final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                               while (resultSet.next()) {
                                 list.add(toMap.apply(resultSet));
@@ -651,13 +651,13 @@ class DefaultRepositoryGeneratorTest {
                       public final java.util.List<java.util.Map<java.lang.String, java.lang.Object>> queryData(
                           final java.lang.Object test, final int id) {
                         LOG.entering("com.example.persistence.DataRepository", "queryData");
-                        try {
+                        try (final var connection = dataSource.getConnection()) {
                           final var query = QUERY_DATA;
                           LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                           final var rawQuery = QUERY_DATA_RAW;
                           final var index = QUERY_DATA_INDEX;
                           LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
-                          try (final var statement = connection.createStatement()) {
+                          try (final var statement = connection.prepareStatement(query)) {
                             for (final int jdbcIndex : index.get("test")) {
                               statement.setObject(jdbcIndex, test);
                             }
@@ -670,7 +670,7 @@ class DefaultRepositoryGeneratorTest {
                                 .replace(":id", java.lang.String.valueOf(id));
                               LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
                             }
-                            try (final var resultSet = statement.executeQuery(query)) {
+                            try (final var resultSet = statement.executeQuery()) {
                               final var list = new java.util.ArrayList<java.util.Map<java.lang.String, java.lang.Object>>();
                               while (resultSet.next()) {
                                 list.add(toMap.apply(resultSet));

@@ -57,6 +57,8 @@ public final class SqlConfigurations {
         config.setRepository("com.example.persistence.DataRepository");
         config.setCatchAndRethrow(true);
         config.setExecuteOnce(true);
+        config.setUsePreparedStatement(true);
+        config.setCreateConnection(true);
         config.addParameters(testParameter(), idParameter());
         return config.build();
     }

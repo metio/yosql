@@ -402,7 +402,6 @@ class DefaultCallMethodGeneratorTest {
                                 try {
                                   resultSet.close();
                                   statement.close();
-                                  connection.close();
                                 }
                                 catch (final java.sql.SQLException exception) {
                                   throw new java.lang.RuntimeException(exception);
@@ -904,7 +903,6 @@ class DefaultCallMethodGeneratorTest {
                                 try {
                                   resultSet.close();
                                   statement.close();
-                                  connection.close();
                                 }
                                 catch (final java.sql.SQLException exception) {
                                   throw new java.lang.RuntimeException(exception);
@@ -1406,7 +1404,6 @@ class DefaultCallMethodGeneratorTest {
                                 try {
                                   resultSet.close();
                                   statement.close();
-                                  connection.close();
                                 }
                                 catch (final java.sql.SQLException exception) {
                                   throw new java.lang.RuntimeException(exception);
@@ -1908,7 +1905,6 @@ class DefaultCallMethodGeneratorTest {
                                 try {
                                   resultSet.close();
                                   statement.close();
-                                  connection.close();
                                 }
                                 catch (final java.sql.SQLException exception) {
                                   throw new java.lang.RuntimeException(exception);

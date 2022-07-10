@@ -139,7 +139,6 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
-        final var converter = configuration.converter(converters::defaultConverter);
         return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
                 .returns(returnTypes.cursorResultType(configuration))
                 .addParameters(parameters.asParameterSpecs(configuration))
@@ -152,7 +151,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning())
                 .addCode(jdbc.executeQueryStatement())
-                .addCode(jdbc.streamStateful(converter))
+                .addCode(jdbc.streamStateful(configuration))
                 .addCode(controlFlows.endMaybeTry(configuration))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();
