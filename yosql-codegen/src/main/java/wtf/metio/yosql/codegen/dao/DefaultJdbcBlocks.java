@@ -145,8 +145,11 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock closeConnection() {
-        return blocks.close(names.connection());
+    public CodeBlock closeConnection(final SqlConfiguration configuration) {
+        return configuration.createConnection()
+                .filter(Boolean.TRUE::equals)
+                .map(value -> blocks.close(names.connection()))
+                .orElseGet(() -> CodeBlock.builder().build());
     }
 
     @Override
@@ -372,12 +375,14 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
-    public CodeBlock streamStateful(final ResultRowConverter converter) {
+    public CodeBlock streamStateful(final SqlConfiguration configuration) {
+        final var converters = runtimeConfiguration.converter();
+        final var converter = configuration.converter(converters::defaultConverter);
         return CodeBlock.builder()
                 .addStatement("return $T.stream($L, false).onClose($L)",
                         StreamSupport.class,
                         lazyStreamSpliterator(converter),
-                        lazyStreamCloser())
+                        lazyStreamCloser(configuration))
                 .build();
     }
 
@@ -409,7 +414,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 .build();
     }
 
-    private TypeSpec lazyStreamCloser() {
+    private TypeSpec lazyStreamCloser(final SqlConfiguration configuration) {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(Runnable.class)
                 .addMethod(methods.implementation("run")
@@ -417,7 +422,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                         .addCode(controlFlows.startTryBlock())
                         .addCode(closeResultSet())
                         .addCode(closePrepareStatement())
-                        .addCode(closeConnection())
+                        .addCode(closeConnection(configuration))
                         .addCode(controlFlows.endTryBlock())
                         .addCode(controlFlows.catchAndRethrow())
                         .build())

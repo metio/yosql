@@ -45,6 +45,8 @@ abstract class JdbcBlocksTCK {
 
     abstract String closeConnectionExpectation();
 
+    abstract String closeConnectionWithGivenConnectionExpectation();
+
     abstract String executeStatementExpectation();
 
     abstract String executeStatementWithoutPreparationExpectation();
@@ -72,6 +74,10 @@ abstract class JdbcBlocksTCK {
     abstract String returnAsSingleExpectation();
 
     abstract String returnAsSingleWithThrowExpectation();
+
+    abstract String streamStatefulExpectation();
+
+    abstract String streamStatefulWithGivenConnectionExpectation();
 
     abstract String setParametersExpectation();
 
@@ -153,7 +159,15 @@ abstract class JdbcBlocksTCK {
     final void closeConnection() {
         Assertions.assertEquals(
                 closeConnectionExpectation(),
-                generator().closeConnection().toString());
+                generator().closeConnection(SqlConfigurations.sqlConfiguration()).toString());
+    }
+
+    @Test
+    final void closeConnectionWithGivenConnection() {
+        Assertions.assertEquals(
+                closeConnectionWithGivenConnectionExpectation(),
+                generator().closeConnection(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withCreateConnection(false)).toString());
     }
 
     @Test
@@ -265,6 +279,21 @@ abstract class JdbcBlocksTCK {
                 returnAsSingleWithThrowExpectation(),
                 generator().returnAsSingle(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
                         .withThrowOnMultipleResults(true)).toString());
+    }
+
+    @Test
+    final void streamStateful() {
+        Assertions.assertEquals(
+                streamStatefulExpectation(),
+                generator().streamStateful(SqlConfigurations.sqlConfiguration()).toString());
+    }
+
+    @Test
+    final void streamStatefulWithGivenConnection() {
+        Assertions.assertEquals(
+                streamStatefulWithGivenConnectionExpectation(),
+                generator().streamStateful(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withCreateConnection(false)).toString());
     }
 
     @Test

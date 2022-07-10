@@ -606,7 +606,6 @@ class DefaultWriteMethodGeneratorTest {
                               try {
                                 resultSet.close();
                                 statement.close();
-                                connection.close();
                               }
                               catch (final java.sql.SQLException exception) {
                                 throw new java.lang.RuntimeException(exception);
@@ -1320,7 +1319,6 @@ class DefaultWriteMethodGeneratorTest {
                               try {
                                 resultSet.close();
                                 statement.close();
-                                connection.close();
                               }
                               catch (final java.sql.SQLException exception) {
                                 throw new java.lang.RuntimeException(exception);
@@ -2034,7 +2032,6 @@ class DefaultWriteMethodGeneratorTest {
                               try {
                                 resultSet.close();
                                 statement.close();
-                                connection.close();
                               }
                               catch (final java.sql.SQLException exception) {
                                 throw new java.lang.RuntimeException(exception);
@@ -2748,7 +2745,6 @@ class DefaultWriteMethodGeneratorTest {
                               try {
                                 resultSet.close();
                                 statement.close();
-                                connection.close();
                               }
                               catch (final java.sql.SQLException exception) {
                                 throw new java.lang.RuntimeException(exception);
