@@ -44,7 +44,7 @@ public interface JdbcBlocks {
 
     CodeBlock closePrepareStatement();
 
-    CodeBlock closeConnection(final SqlConfiguration configuration);
+    CodeBlock closeConnection(SqlConfiguration configuration);
 
     CodeBlock openConnection(SqlConfiguration configuration);
 
