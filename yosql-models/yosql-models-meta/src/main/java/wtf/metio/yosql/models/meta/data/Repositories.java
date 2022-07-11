@@ -228,6 +228,7 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
+                .setGenerateDocs(false)
                 .build();
     }
 
@@ -237,6 +238,7 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
+                .setGenerateDocs(false)
                 .build();
     }
 
@@ -539,6 +541,7 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var value = "";
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
+                .setGenerateDocs(false)
                 .build();
     }
 
@@ -548,6 +551,7 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var value = "Many";
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
+                .setGenerateDocs(false)
                 .build();
     }
 
