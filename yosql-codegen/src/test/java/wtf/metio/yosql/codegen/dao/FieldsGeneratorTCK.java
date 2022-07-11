@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -35,6 +36,8 @@ public abstract class FieldsGeneratorTCK {
     abstract String asFieldsWithMultipleStatementsAndCustomConverterExpectations();
 
     abstract String asFieldsWithMultipleStatementsAndMixedConverterExpectations();
+
+    abstract String asFieldsWithGivenConnectionsExpectations();
 
     @Test
     final void staticInitializer() {
@@ -79,6 +82,14 @@ public abstract class FieldsGeneratorTCK {
         assertFields(
                 asFieldsWithMultipleStatementsAndMixedConverterExpectations(),
                 generator().asFields(SqlConfigurations.sqlStatementsWithMixedConverter()));
+    }
+
+    @Test
+    final void asFieldsWithGivenConnections() {
+        assertFields(
+                asFieldsWithGivenConnectionsExpectations(),
+                generator().asFields(List.of(SqlConfigurations.sqlStatement(SqlConfiguration.copyOf(
+                        SqlConfigurations.sqlConfiguration()).withCreateConnection(false)))));
     }
 
     private static void assertFields(final String expectedValue, final Iterable<FieldSpec> fields) {

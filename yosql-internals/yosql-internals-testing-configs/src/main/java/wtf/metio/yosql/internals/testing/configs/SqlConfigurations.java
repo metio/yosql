@@ -41,7 +41,7 @@ public final class SqlConfigurations {
         return List.of(sqlStatement(sqlConfiguration()), sqlStatement(withCustomConverter()));
     }
 
-    private static SqlStatement sqlStatement(final SqlConfiguration configuration) {
+    public static SqlStatement sqlStatement(final SqlConfiguration configuration) {
         return SqlStatement.builder()
                 .setSourcePath(Paths.get("src/main/yosql/data/queryData.sql"))
                 .setConfiguration(configuration)

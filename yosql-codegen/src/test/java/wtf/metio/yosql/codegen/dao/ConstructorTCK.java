@@ -10,6 +10,9 @@ package wtf.metio.yosql.codegen.dao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
+
+import java.util.List;
 
 /**
  * Verifies that {@link ConstructorGenerator}s work correctly.
@@ -25,6 +28,11 @@ public abstract class ConstructorTCK {
      * @return The expected generated code for a repository constructor.
      */
     abstract String forRepositoryExpectation();
+
+    /**
+     * @return The expected generated code for a repository constructor that only uses given connections.
+     */
+    abstract String forRepositoryWithGivenConnectionsExpectation();
 
     /**
      * @return The expected generated code for a repository constructor with a custom converter.
@@ -57,6 +65,15 @@ public abstract class ConstructorTCK {
         Assertions.assertEquals(
                 forRepositoryWithMultipleStatementsAndMixedConverterExpectation(),
                 generator().repository(SqlConfigurations.sqlStatementsWithMixedConverter()).toString(),
+                "The generated constructor does not match expectation");
+    }
+
+    @Test
+    final void forRepositoryWithGivenConnections() {
+        Assertions.assertEquals(
+                forRepositoryWithGivenConnectionsExpectation(),
+                generator().repository(List.of(SqlConfigurations.sqlStatement(SqlConfiguration.copyOf(
+                        SqlConfigurations.sqlConfiguration()).withCreateConnection(false)))).toString(),
                 "The generated constructor does not match expectation");
     }
 

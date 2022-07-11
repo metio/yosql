@@ -52,22 +52,28 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
     @Override
     public MethodSpec repository(final List<SqlStatement> statements) {
         final var builder = CodeBlock.builder();
+        final var constructor = methods.constructor();
+
+        statements.stream()
+                .map(SqlStatement::getConfiguration)
+                .flatMap(configuration -> configuration.createConnection().stream())
+                .filter(Boolean.TRUE::equals)
+                .findAny()
+                .ifPresent(createConnection -> constructor
+                        .addParameter(jdbcParameters.dataSource())
+                        .addCode(blocks.initializeFieldToSelf(names.dataSource())));
+
         if (repositories.injectConverters()) {
-            final var constructor = methods.constructor().addParameter(jdbcParameters.dataSource());
             resultConverters(statements).forEach(converter -> {
                 constructor.addParameter(jdbcParameters.converter(converter));
                 builder.add(blocks.initializeFieldToSelf(converter.alias()
                         .orElseThrow(MissingConverterAliasException::new)));
             });
-            return constructor
-                    .addCode(blocks.initializeFieldToSelf(names.dataSource()))
-                    .addCode(builder.build())
-                    .build();
+        } else {
+            resultConverters(statements).forEach(converter -> builder.add(blocks.initializeConverter(converter)));
         }
-        resultConverters(statements).forEach(converter -> builder.add(blocks.initializeConverter(converter)));
-        return methods.constructor()
-                .addParameter(jdbcParameters.dataSource())
-                .addCode(blocks.initializeFieldToSelf(names.dataSource()))
+
+        return constructor
                 .addCode(builder.build())
                 .build();
     }
