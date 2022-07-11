@@ -55,6 +55,8 @@ abstract class JdbcBlocksTCK {
 
     abstract String openConnectionWithoutConnectionExpectation();
 
+    abstract String openConnectionWithGivenConnectionWithoutRethrowExpectation();
+
     abstract String tryPrepareCallableExpectation();
 
     abstract String createStatementExpectation();
@@ -200,6 +202,15 @@ abstract class JdbcBlocksTCK {
                 openConnectionWithoutConnectionExpectation(),
                 generator().openConnection(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
                         .withCreateConnection(false)).toString());
+    }
+
+    @Test
+    final void openConnectionWithGivenConnectionWithoutRethrow() {
+        Assertions.assertEquals(
+                openConnectionWithGivenConnectionWithoutRethrowExpectation(),
+                generator().openConnection(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withCreateConnection(false)
+                        .withCatchAndRethrow(false)).toString());
     }
 
     @Test

@@ -127,6 +127,12 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
+        String openConnectionWithGivenConnectionWithoutRethrowExpectation() {
+            return """
+                    """;
+        }
+
+        @Override
         String tryPrepareCallableExpectation() {
             return """
                     try (final var statement = connection.prepareCall(query)) {
@@ -451,6 +457,12 @@ class DefaultJdbcBlocksTest {
         String openConnectionWithoutConnectionExpectation() {
             return """
                     try {
+                    """;
+        }
+
+        @Override
+        String openConnectionWithGivenConnectionWithoutRethrowExpectation() {
+            return """
                     """;
         }
 
@@ -783,6 +795,12 @@ class DefaultJdbcBlocksTest {
         }
 
         @Override
+        String openConnectionWithGivenConnectionWithoutRethrowExpectation() {
+            return """
+                    """;
+        }
+
+        @Override
         String tryPrepareCallableExpectation() {
             return """
                     try (final var statement = connection.prepareCall(query)) {
@@ -1108,6 +1126,12 @@ class DefaultJdbcBlocksTest {
         String openConnectionWithoutConnectionExpectation() {
             return """
                     try {
+                    """;
+        }
+
+        @Override
+        String openConnectionWithGivenConnectionWithoutRethrowExpectation() {
+            return """
                     """;
         }
 

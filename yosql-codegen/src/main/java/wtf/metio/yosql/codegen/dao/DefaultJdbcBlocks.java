@@ -170,7 +170,10 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         return configuration.createConnection()
                 .filter(Boolean.TRUE::equals)
                 .map(value -> controlFlows.tryWithResource(getConnectionInline()))
-                .orElseGet(controlFlows::startTryBlock);
+                .or(() -> configuration.catchAndRethrow()
+                        .filter(Boolean.TRUE::equals)
+                        .map(value -> controlFlows.startTryBlock()))
+                .orElseGet(() -> CodeBlock.builder().build());
     }
 
     @Override
