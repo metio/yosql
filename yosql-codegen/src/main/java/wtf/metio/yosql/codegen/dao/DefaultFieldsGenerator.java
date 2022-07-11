@@ -95,11 +95,21 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
         final var repositoryFields = new ArrayList<FieldSpec>(statements.size() * 2 + 2);
 
-        repositoryFields.add(fields.field(DataSource.class, names.dataSource()));
-        if (logging.isEnabled() && !statements.isEmpty()) {
-            // doesn't matter which statement we pick since they all end up in the same repository anyway
-            final var firstStatement = statements.get(0);
-            loggerField(firstStatement).ifPresent(repositoryFields::add);
+        statements.stream()
+                .map(SqlStatement::getConfiguration)
+                .flatMap(configuration -> configuration.createConnection().stream())
+                .filter(Boolean.TRUE::equals)
+                .findAny()
+                .ifPresent(createConnection -> repositoryFields.add(
+                        fields.field(DataSource.class, names.dataSource())));
+
+        if (logging.isEnabled()) {
+            statements.stream()
+                    .map(SqlStatement::getRepositoryClass)
+                    .map(ClassName::bestGuess)
+                    .flatMap(clazz -> logging.logger(clazz).stream())
+                    .findAny()
+                    .ifPresent(repositoryFields::add);
         }
         for (final var statement : statements) {
             if (logging.isEnabled()) {
@@ -116,10 +126,6 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
                 .forEach(repositoryFields::add);
 
         return repositoryFields;
-    }
-
-    private Optional<FieldSpec> loggerField(final SqlStatement sqlStatement) {
-        return logging.logger(ClassName.bestGuess(sqlStatement.getRepositoryClass()));
     }
 
     private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
