@@ -1,8 +1,9 @@
 name: Run Benchmarks
 on:
-  release:
+  workflow_run:
+    workflows: [Release]
     types:
-      - created
+      - completed
 env:
   JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
