@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -60,18 +61,19 @@ final class MarkdownGenerator {
                 .filter(s -> !s.name().equals(setting.name()))
                 .sorted(Comparator.comparing(ConfigurationSetting::name))
                 .toList();
-        return applyTemplate(settingTemplate, Map.of(
-                "group", group,
-                "setting", setting,
-                "yosqlVersion", yosqlVersion,
-                "currentDate", LocalDate.now().toString(),
-                "lower", LOWER_CASE,
-                "upper", UPPER_CASE,
-                "kebab", KEBAB_CASE,
-                "relatedSettings", relatedSettings,
-                "hasRelatedSettings", !relatedSettings.isEmpty(),
-                "hasExplanation", setting.explanation().isPresent()
-        ));
+        final var scopes = new HashMap<String, Object>();
+        scopes.put("group", group);
+        scopes.put("setting", setting);
+        scopes.put("frontMatterExampleCode", setting.frontMatterExampleCode().orElse("configValue"));
+        scopes.put("yosqlVersion", yosqlVersion);
+        scopes.put("currentDate", LocalDate.now().toString());
+        scopes.put("lower", LOWER_CASE);
+        scopes.put("upper", UPPER_CASE);
+        scopes.put("kebab", KEBAB_CASE);
+        scopes.put("relatedSettings", relatedSettings);
+        scopes.put("hasRelatedSettings", !relatedSettings.isEmpty());
+        scopes.put("hasExplanation", setting.explanation().isPresent());
+        return applyTemplate(settingTemplate, scopes);
     }
 
     private static String applyTemplate(final Mustache template, final Map<String, Object> scopes) {

@@ -259,9 +259,65 @@ public final class Sql extends AbstractConfigurationGroup {
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
+                .setExplanation("This list is empty by default and thus no annotations are added to generated methods.")
                 .addImmutableMethods(immutableMethod(TypicalTypes.listOf(Annotation.class), name, description))
                 .setMergeCode(CodeBlock.of("$T.mergeAnnotations(first.$L(), second.$L())", Annotation.class, name, name))
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("your.own.Annotation")
+                        .setDescription("In order to add an annotation to the generated methods, specify its fully-qualified name.")
+                        .setResult("""
+                                package com.example.persistence;
+                                                                
+                                import your.own.Annotation;
+
+                                public class SomeRepository {
+
+                                    @Annotation
+                                    public void someMethod() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("your.other.Annotation")
+                        .setDescription("In order to add an annotation with some member, specify name of the annotation member, its value, and its type. The type defaults to `java.lang.String`.")
+                        .setResult("""
+                                package com.example.persistence;
+                                                                
+                                import your.other.Annotation;
+
+                                public class SomeRepository {
+
+                                    @Annotation(member = "value")
+                                    public void someMethod() {
+                                        // ... some code
+                                    }
+
+                                    // ... rest of generated code
+
+                                }
+                                """)
+                        .build())
+                .setFrontMatterExampleCode("""
+                        
+                        --  - type: your.own.Annotation
+                        --    members:
+                        --      - key: someMember
+                        --        value: this is your value
+                        --        type: java.lang.String
+                        --      - key: another
+                        --        value: 5
+                        --        type: int
+                        --  - type: your.other.Annotation
+                        --    members:
+                        --      - key: value
+                        --        value: yep
+                        --  - type: some.annotation.WithoutMembers""")
                 .build();
     }
 

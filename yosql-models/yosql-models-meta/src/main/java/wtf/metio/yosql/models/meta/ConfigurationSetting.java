@@ -50,6 +50,11 @@ public interface ConfigurationSetting {
     Optional<String> explanation();
 
     /**
+     * @return Example code for the configuration value in the front matter section.
+     */
+    Optional<String> frontMatterExampleCode();
+
+    /**
      * @return The optional list of tags associated with this configuration setting.
      */
     List<String> tags();
