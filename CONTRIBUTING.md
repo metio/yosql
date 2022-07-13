@@ -1,44 +1,31 @@
 # Contributor Guide
 
-Thanks a lot for contributing to `YoSQL`!
+Thank you so much for helping out! This project uses a [DCO](https://developercertificate.org/) to verify that each change is acceptable. Its text is as follows:
 
-## Local Setup
+```
+By making a contribution to this project, I certify that:
 
-In order to build `YoSQL`, you will need Java 16+ and Maven 3.6.3+. Make sure that both are installed on your system and available on your `PATH`.
+(a) The contribution was created in whole or in part by me and I
+    have the right to submit it under the open source license
+    indicated in the file; or
 
-```shell
-# check java
-$ java -version
-penjdk version "16" 2021-03-16
-OpenJDK Runtime Environment (build 16+36-2231)
-OpenJDK 64-Bit Server VM (build 16+36-2231, mixed mode, sharing)
+(b) The contribution is based upon previous work that, to the best
+    of my knowledge, is covered under an appropriate open source
+    license and I have the right under that license to submit that
+    work with modifications, whether created in whole or in part
+    by me, under the same open source license (unless I am
+    permitted to submit under a different license), as indicated
+    in the file; or
 
-# check javac
-$ javac -version
-javac 16
+(c) The contribution was provided directly to me by some other
+    person who certified (a), (b) or (c) and I have not modified
+    it.
 
-# check maven version
-$ mvn --version
-Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
-Maven home: /usr/share/maven
-Java version: 16, vendor: Oracle Corporation, runtime: /usr/java/openjdk-16
-Default locale: en, platform encoding: UTF-8
-OS name: "linux", version: "5.11.10-200.fc33.x86_64", arch: "amd64", family: "unix"
+(d) I understand and agree that this project and the contribution
+    are public and that a record of the contribution (including all
+    personal information I submit with it, including my sign-off) is
+    maintained indefinitely and may be redistributed consistent with
+    this project or the open source license(s) involved.
 ```
 
-## Building the project
-
-In order to build the project use the typical Maven goals, e.g.:
-
-```shell
-# build all modules and run all tests
-$ mvn verify
-```
-
-**Note**: Each pull request will be build by GitHub and call `mvn verify`. In case you want to reproduce errors locally, run that first and fix any errors that show up.
-
-## Creating forks or feature branches
-
-In case you want to contribute code, either fork the repository if you are not yet an active contributor or create a git branch for every feature or bugfix you are working on. You can open up a pull request as early as you like, we recommend doing it right after creating your fork and adding a "WIP" prefix to your pull request. You can directly ping contributors with specific questions about existing code and how to implement your idea in the best way possible.
-
-Since `YoSQL` will not have a plugin system by design, we are trying to make contributor changes to the project as easy as possible. In case you encounter any errors, e.g. while building the project, don't hesitate to open a ticket in order to get that fixed first.
+In order to sign this DCO, simply use `git commit --signoff` while working on this project.
