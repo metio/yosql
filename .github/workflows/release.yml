@@ -41,12 +41,12 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/checkout@v3
       - id: java
         name: Setup Java
-        uses: actions/setup-java@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
           java-package: ${{ env.JAVA_PACKAGE }}
@@ -57,8 +57,8 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -73,12 +73,12 @@ jobs:
           fileDir: ${{ github.workspace}}
           encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
       - name: Set release version
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
         if: needs.prepare.outputs.commit_count > 0
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
       - id: deploy-maven-tooling
         name: Deploy Maven Tooling
-        run: MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED" mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-maven --also-make install deploy --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
         if: needs.prepare.outputs.commit_count > 0
+        run: MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED" mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-maven --also-make install deploy --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
@@ -89,12 +89,12 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/checkout@v3
       - id: java
         name: Setup Java
-        uses: actions/setup-java@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
           java-package: ${{ env.JAVA_PACKAGE }}
@@ -102,28 +102,28 @@ jobs:
           distribution: ${{ env.JAVA_DISTRO }}
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Set release version
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
         if: needs.prepare.outputs.commit_count > 0
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
       - id: install-maven-tooling
         name: Install Maven Tooling
-        run: mvn --batch-mode install
         if: needs.prepare.outputs.commit_count > 0
+        run: mvn --batch-mode install
       - id: build-gradle
         name: Build Gradle Tooling
-        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build -Pversion=${{ needs.prepare.outputs.release_version }}
         if: needs.prepare.outputs.commit_count > 0
+        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build -Pversion=${{ needs.prepare.outputs.release_version }}
       - id: deploy-gradle
         name: Deploy Gradle Tooling
-        run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew publishPlugins -Pversion=${{ needs.prepare.outputs.release_version }} -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
         if: needs.prepare.outputs.commit_count > 0
+        run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew publishPlugins -Pversion=${{ needs.prepare.outputs.release_version }} -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
   ant:
     name: Build Ant Tooling
     needs: prepare
@@ -131,12 +131,12 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/checkout@v3
       - id: java
         name: Setup Java
-        uses: actions/setup-java@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
           java-package: ${{ env.JAVA_PACKAGE }}
@@ -144,8 +144,8 @@ jobs:
           distribution: ${{ env.JAVA_DISTRO }}
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -160,14 +160,15 @@ jobs:
           fileDir: ${{ github.workspace}}
           encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
       - name: Set release version
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
         if: needs.prepare.outputs.commit_count > 0
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
       - id: build-ant-tooling
         name: Build Ant Tooling
-        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-ant --also-make install --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
         if: needs.prepare.outputs.commit_count > 0
+        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-ant --also-make install --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
       - id: upload-ant-tooling
         name: Upload Ant Tooling Artifact
+        if: needs.prepare.outputs.commit_count > 0
         uses: actions/upload-artifact@v3
         with:
           name: yosql-tooling-ant
@@ -185,12 +186,12 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/checkout@v3
       - id: graal
         name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
         if: needs.prepare.outputs.commit_count > 0
+        uses: graalvm/setup-graalvm@v1
         with:
           version: ${{ env.GRAAL_VERSION }}
           java-version: ${{ env.JAVA_VERSION }}
@@ -198,8 +199,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - id: cache
         name: Cache Maven Repository
-        uses: actions/cache@v3
         if: needs.prepare.outputs.commit_count > 0
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -214,37 +215,37 @@ jobs:
           fileDir: ${{ github.workspace}}
           encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
       - name: Set release version
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
         if: needs.prepare.outputs.commit_count > 0
+        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
       - id: build-cli-tooling
         name: Build CLI Tooling
-        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-cli --also-make install --define skipNativeBuild=false --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
         if: needs.prepare.outputs.commit_count > 0
+        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-cli --also-make install --define skipNativeBuild=false --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
       - id: upload-jvm-cli-tooling
         name: Upload JVM CLI Tooling
-        uses: actions/upload-artifact@v3
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
+        uses: actions/upload-artifact@v3
         with:
           name: yosql-tooling-cli-jvm
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
       - id: upload-linux-cli-tooling
         name: Upload Linux CLI Tooling
-        uses: actions/upload-artifact@v3
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
+        uses: actions/upload-artifact@v3
         with:
           name: yosql-tooling-cli-linux
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-linux*
       - id: upload-mac-cli-tooling
         name: Upload Mac OSX CLI Tooling
-        uses: actions/upload-artifact@v3
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'macOS'
+        uses: actions/upload-artifact@v3
         with:
           name: yosql-tooling-cli-mac
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-mac*
       - id: upload-windows-cli-tooling
         name: Upload Windows CLI Tooling
-        uses: actions/upload-artifact@v3
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Windows'
+        uses: actions/upload-artifact@v3
         with:
           name: yosql-tooling-cli-windows
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-windows*
