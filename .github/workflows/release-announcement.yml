@@ -13,12 +13,17 @@ jobs:
         name: Clone Git Repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # required in order to get all tags
+          fetch-depth: 0
+      - id: commits
+        name: Count Commits
+        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday' -- yosql-codegen yosql-internals yosql-models yosql-tooling)"
       - id: previous
         name: Get Last Release
+        if: steps.commits.outputs.count > 0
         run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
       - id: email
         name: Send Mail
+        if: steps.commits.outputs.count > 0
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.MAIL_SERVER }}
@@ -31,6 +36,7 @@ jobs:
           body: See https://github.com/metio/yosql/releases/tag/${{ steps.previous.outputs.version }} for details.
       - id: matrix
         name: Send Matrix Message
+        if: steps.commits.outputs.count > 0
         uses: s3krit/matrix-message-action@v0.0.3
         with:
           access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
