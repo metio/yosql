@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
       - id: commits
         name: Count Commits
-        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday' -- yosql-codegen yosql-internals yosql-models yosql-tooling)"
+        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday' -- pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling)"
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0
