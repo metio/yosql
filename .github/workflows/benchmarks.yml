@@ -24,11 +24,11 @@ jobs:
           fetch-depth: 0
       - id: commits
         name: Count Commits
-        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday' -- yosql-codegen yosql-internals yosql-models yosql-tooling)"
+        run: echo "count=$(git rev-list --count HEAD --since='last week')" >> $GITHUB_OUTPUT
       - id: previous
         name: Get Last Release
         if: steps.commits.outputs.count > 0
-        run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
+        run: echo "version=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
       - id: java
         name: Setup Java
         if: steps.commits.outputs.count > 0

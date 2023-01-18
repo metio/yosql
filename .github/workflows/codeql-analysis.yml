@@ -1,14 +1,5 @@
 name: CodeQL
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - yosql-benchmarks/**
-      - yosql-codegen/**
-      - yosql-examples/**
-      - yosql-internals/**
-      - yosql-models/**
-      - yosql-tooling/**
   schedule:
     - cron: 44 20 * * 6
 env:
@@ -16,6 +7,7 @@ env:
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
   JAVA_DISTRO: temurin
+  GRAAL_VERSION: latest
 jobs:
   analyze:
     name: Analyze
@@ -27,13 +19,13 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Set up Java
-      uses: actions/setup-java@v3
+    - name: Setup GraalVM
+      uses: graalvm/setup-graalvm@v1
       with:
+        version: ${{ env.GRAAL_VERSION }}
         java-version: ${{ env.JAVA_VERSION }}
-        java-package: ${{ env.JAVA_PACKAGE }}
-        architecture: ${{ env.JAVA_ARCH }}
-        distribution: ${{ env.JAVA_DISTRO }}
+        components: native-image
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/cache@v3
       with:
         path: ~/.m2/repository

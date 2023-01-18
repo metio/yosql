@@ -26,11 +26,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Update parent
-        run: mvn --batch-mode versions:update-parent --define generateBackupPoms=false
-      - name: Create Pull Request
+        run: mvn --batch-mode --define generateBackupPoms=false versions:update-parent
+      - id: cpr
+        name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           commit-message: Update parent to latest version
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
@@ -43,4 +44,13 @@ jobs:
             Type :: Task
           assignees: sebhoss
           draft: false
+          base: main
           branch: update-parent
+          delete-branch: true
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v2
+        with:
+          token: ${{ secrets.PAT }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: rebase

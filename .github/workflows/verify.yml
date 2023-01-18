@@ -2,32 +2,11 @@ name: Verify Commits
 on:
   push:
     branches: [ main ]
-    paths:
-      - .github/workflows/verify.yml
-      - pom.xml
-      - yosql-benchmarks/**
-      - yosql-codegen/**
-      - yosql-examples/**
-      - yosql-internals/**
-      - yosql-models/**
-      - yosql-tooling/**
   pull_request:
     branches: [ main ]
-    paths:
-      - .github/workflows/verify.yml
-      - pom.xml
-      - yosql-benchmarks/**
-      - yosql-codegen/**
-      - yosql-examples/**
-      - yosql-internals/**
-      - yosql-models/**
-      - yosql-tooling/**
 env:
   JAVA_VERSION: 17
-  JAVA_PACKAGE: jdk
-  JAVA_ARCH: x64
-  JAVA_DISTRO: temurin
-  GRAAL_VERSION: 22.1.0
+  GRAAL_VERSION: latest
 jobs:
   maven:
     name: Build Maven Tooling
@@ -36,14 +15,14 @@ jobs:
       - id: checkout
         name: Clone Git Repository
         uses: actions/checkout@v3
-      - id: java
-        name: Setup Java
-        uses: actions/setup-java@v3
+      - id: graal
+        name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
+          version: ${{ env.GRAAL_VERSION }}
           java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
+          components: native-image
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - id: cache
         name: Cache Maven Repository
         uses: actions/cache@v3
@@ -62,14 +41,14 @@ jobs:
       - id: checkout
         name: Clone Git Repository
         uses: actions/checkout@v3
-      - id: java
-        name: Setup Java
-        uses: actions/setup-java@v3
+      - id: graal
+        name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
+          version: ${{ env.GRAAL_VERSION }}
           java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
+          components: native-image
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - id: cache
         name: Cache Maven Repository
         uses: actions/cache@v3
@@ -91,14 +70,14 @@ jobs:
       - id: checkout
         name: Clone Git Repository
         uses: actions/checkout@v3
-      - id: java
-        name: Setup Java
-        uses: actions/setup-java@v3
+      - id: graal
+        name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
+          version: ${{ env.GRAAL_VERSION }}
           java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
+          components: native-image
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - id: cache
         name: Cache Maven Repository
         uses: actions/cache@v3
@@ -124,7 +103,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-    #          - windows-latest
+          - windows-latest
     steps:
       - id: checkout
         name: Clone Git Repository
@@ -147,7 +126,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: CLI Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-cli --also-make verify --define skipNativeBuild=false
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-cli --also-make --define skipNativeBuild=false verify
       - id: upload-jvm-cli-tooling
         name: Upload JVM CLI Tooling
         uses: actions/upload-artifact@v3

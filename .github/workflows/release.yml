@@ -8,7 +8,7 @@ env:
   JAVA_PACKAGE: jdk
   JAVA_ARCH: x64
   JAVA_DISTRO: temurin
-  GRAAL_VERSION: 22.1.0
+  GRAAL_VERSION: latest
 jobs:
   prepare:
     name: Prepare Release
@@ -25,15 +25,19 @@ jobs:
           fetch-depth: 0
       - id: commits
         name: Count Commits
-        run: echo "::set-output name=count::$(git rev-list --count HEAD --since='last Wednesday' -- pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling)"
+        run: echo "count=$(git rev-list --count HEAD --since='last week')" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0
-        run: echo "::set-output name=version::$(date +'%Y.%-m.%-d')"
+        run: echo "version=$(date +'%Y.%-m.%-d')" >> $GITHUB_OUTPUT
       - id: previous
         name: Get Last Release
         if: steps.commits.outputs.count > 0
-        run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
+        run: echo "version=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
+      - id: timestamp
+        name: Build Timestamp
+        if: steps.commits.outputs.count > 0
+        run: echo "iso8601=$(date --utc --iso-8601=seconds)" >> $GITHUB_OUTPUT
   maven:
     name: Build Maven Tooling
     needs: prepare
@@ -182,7 +186,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-    #          - windows-latest
+          - windows-latest
     steps:
       - id: checkout
         name: Clone Git Repository
@@ -216,7 +220,7 @@ jobs:
           encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
       - name: Set release version
         if: needs.prepare.outputs.commit_count > 0
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
+        run: mvn --batch-mode --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false versions:set
       - id: build-cli-tooling
         name: Build CLI Tooling
         if: needs.prepare.outputs.commit_count > 0
@@ -291,3 +295,6 @@ jobs:
             artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip
             artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip.asc
             artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip.sha512
+            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-windows.zip
+            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-windows.zip.asc
+            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-windows.zip.sha512
