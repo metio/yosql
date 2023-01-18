@@ -8,9 +8,7 @@ on:
       - yosql-website/**
 env:
   JAVA_VERSION: 17
-  JAVA_PACKAGE: jdk
-  JAVA_ARCH: x64
-  JAVA_DISTRO: temurin
+  GRAAL_VERSION: latest
   PROJECT_URL: yosql.projects.metio.wtf
 jobs:
   website:
@@ -27,14 +25,14 @@ jobs:
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: latest
-      - id: java
-        name: Setup Java
-        uses: actions/setup-java@v3
+      - id: graal
+        name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
+          version: ${{ env.GRAAL_VERSION }}
           java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
+          components: native-image
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - id: cache
         name: Cache Maven Repository
         uses: actions/cache@v3
@@ -45,12 +43,12 @@ jobs:
             ${{ runner.os }}-maven-
       - id: previous
         name: Get Last Release
-        run: echo "::set-output name=version::$(git describe --abbrev=0 --tags)"
+        run: echo "version=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
       - name: Set release version
-        run: mvn --batch-mode versions:set --define newVersion=${{ steps.previous.outputs.version }} --define generateBackupPoms=false
+        run: mvn --batch-mode --define newVersion=${{ steps.previous.outputs.version }} --define generateBackupPoms=false versions:set
       - id: create-documentation
         name: Create Documentation
-        run: mvn --batch-mode --projects yosql-website --also-make install --define skipTests
+        run: mvn --batch-mode --projects yosql-website --also-make --define skipTests install
       - id: website
         name: Build Website
         run: hugo --minify --printI18nWarnings --printPathWarnings --printUnusedTemplates --source yosql-website
