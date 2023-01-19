@@ -29,7 +29,7 @@ class DefaultRepositoryGeneratorTest {
                     /**
                      * Generated based on the following file(s):
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -46,7 +46,7 @@ class DefaultRepositoryGeneratorTest {
                       /**
                        * Generated based on the following file:
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        */
                       @javax.annotation.processing.Generated(
@@ -59,7 +59,7 @@ class DefaultRepositoryGeneratorTest {
                       /**
                        * Generated based on the following file:
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        */
                       @javax.annotation.processing.Generated(
@@ -108,7 +108,7 @@ class DefaultRepositoryGeneratorTest {
                        *
                        * <p>Generated based on the following file(s):</p>
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                        */
@@ -161,7 +161,7 @@ class DefaultRepositoryGeneratorTest {
                     /**
                      * Generated based on the following file(s):
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -176,7 +176,7 @@ class DefaultRepositoryGeneratorTest {
                        *
                        * <p>Generated based on the following file(s):</p>
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                        */
@@ -207,7 +207,7 @@ class DefaultRepositoryGeneratorTest {
                     /**
                      * Generated based on the following file(s):
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -224,7 +224,7 @@ class DefaultRepositoryGeneratorTest {
                       /**
                        * Generated based on the following file:
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        */
                       @javax.annotation.processing.Generated(
@@ -236,7 +236,7 @@ class DefaultRepositoryGeneratorTest {
                       /**
                        * Generated based on the following file:
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        */
                       @javax.annotation.processing.Generated(
@@ -284,7 +284,7 @@ class DefaultRepositoryGeneratorTest {
                        *
                        * <p>Generated based on the following file(s):</p>
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                        */
@@ -337,7 +337,7 @@ class DefaultRepositoryGeneratorTest {
                     /**
                      * Generated based on the following file(s):
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -352,7 +352,7 @@ class DefaultRepositoryGeneratorTest {
                        *
                        * <p>Generated based on the following file(s):</p>
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                        */
@@ -383,7 +383,7 @@ class DefaultRepositoryGeneratorTest {
                     /**
                      * Generated based on the following file(s):
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -400,7 +400,7 @@ class DefaultRepositoryGeneratorTest {
                       /**
                        * Generated based on the following file:
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        */
                       @javax.annotation.processing.Generated(
@@ -413,7 +413,7 @@ class DefaultRepositoryGeneratorTest {
                       /**
                        * Generated based on the following file:
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        */
                       @javax.annotation.processing.Generated(
@@ -462,7 +462,7 @@ class DefaultRepositoryGeneratorTest {
                        *
                        * <p>Generated based on the following file(s):</p>
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                        */
@@ -515,7 +515,7 @@ class DefaultRepositoryGeneratorTest {
                     /**
                      * Generated based on the following file(s):
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -530,7 +530,7 @@ class DefaultRepositoryGeneratorTest {
                        *
                        * <p>Generated based on the following file(s):</p>
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                        */
@@ -561,7 +561,7 @@ class DefaultRepositoryGeneratorTest {
                     /**
                      * Generated based on the following file(s):
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -578,7 +578,7 @@ class DefaultRepositoryGeneratorTest {
                       /**
                        * Generated based on the following file:
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        */
                       @javax.annotation.processing.Generated(
@@ -591,7 +591,7 @@ class DefaultRepositoryGeneratorTest {
                       /**
                        * Generated based on the following file:
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        */
                       @javax.annotation.processing.Generated(
@@ -640,7 +640,7 @@ class DefaultRepositoryGeneratorTest {
                        *
                        * <p>Generated based on the following file(s):</p>
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                        */
@@ -693,7 +693,7 @@ class DefaultRepositoryGeneratorTest {
                     /**
                      * Generated based on the following file(s):
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -708,7 +708,7 @@ class DefaultRepositoryGeneratorTest {
                        *
                        * <p>Generated based on the following file(s):</p>
                        * <ul>
-                       * <li>data/queryData.sql</li>
+                       * <li>queryData.sql</li>
                        * </ul>
                        * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                        */

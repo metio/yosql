@@ -49,7 +49,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -62,7 +62,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -104,7 +104,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -117,7 +117,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -159,7 +159,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -172,7 +172,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -191,7 +191,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -204,7 +204,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -246,7 +246,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -259,7 +259,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -278,7 +278,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -291,7 +291,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -333,7 +333,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -346,7 +346,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -365,7 +365,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -378,7 +378,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -420,7 +420,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -433,7 +433,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -494,7 +494,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -506,7 +506,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -547,7 +547,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -559,7 +559,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -600,7 +600,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -612,7 +612,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -630,7 +630,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -642,7 +642,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -683,7 +683,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -695,7 +695,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -713,7 +713,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -725,7 +725,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -766,7 +766,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -778,7 +778,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -796,7 +796,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -808,7 +808,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -849,7 +849,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -861,7 +861,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -921,7 +921,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -934,7 +934,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -976,7 +976,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -989,7 +989,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1031,7 +1031,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1044,7 +1044,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1063,7 +1063,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1076,7 +1076,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1118,7 +1118,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1131,7 +1131,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1150,7 +1150,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1163,7 +1163,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1205,7 +1205,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1218,7 +1218,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1237,7 +1237,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1250,7 +1250,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1292,7 +1292,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1305,7 +1305,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1366,7 +1366,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1379,7 +1379,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1421,7 +1421,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1434,7 +1434,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1476,7 +1476,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1489,7 +1489,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1508,7 +1508,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1521,7 +1521,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1563,7 +1563,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1576,7 +1576,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1595,7 +1595,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1608,7 +1608,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1650,7 +1650,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1663,7 +1663,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1682,7 +1682,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1695,7 +1695,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1737,7 +1737,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(
@@ -1750,7 +1750,7 @@ final class DefaultFieldsGeneratorTest {
                     /**
                      * Generated based on the following file:
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      */
                     @javax.annotation.processing.Generated(

@@ -211,14 +211,30 @@ class DefaultRepositoryNameConfigurerTest {
     }
 
     @Test
+    @EnabledOnOs({OS.LINUX, OS.MAC})
     void extractRawRepositoryNameInSubDirectory() {
         assertEquals("foo/bar",
                 configurer.extractRawRepositoryName(Paths.get("foo/bar/test.sql")));
     }
 
     @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void extractRawRepositoryNameInSubDirectoryWindows() {
+        assertEquals("foo\\bar",
+                configurer.extractRawRepositoryName(Paths.get("foo/bar/test.sql")));
+    }
+
+    @Test
+    @EnabledOnOs({OS.LINUX, OS.MAC})
     void extractRawRepositoryNameInSubSubDirectory() {
         assertEquals("foo/bar/baz",
+                configurer.extractRawRepositoryName(Paths.get("foo/bar/baz/test.sql")));
+    }
+
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void extractRawRepositoryNameInSubSubDirectoryWindows() {
+        assertEquals("foo\\bar\\baz",
                 configurer.extractRawRepositoryName(Paths.get("foo/bar/baz/test.sql")));
     }
 

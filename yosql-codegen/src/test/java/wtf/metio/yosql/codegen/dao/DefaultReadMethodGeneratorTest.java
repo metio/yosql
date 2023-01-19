@@ -33,7 +33,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -89,7 +89,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -145,7 +145,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -201,7 +201,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -257,7 +257,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -343,7 +343,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -427,7 +427,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -476,7 +476,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -536,7 +536,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -592,7 +592,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -648,7 +648,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -704,7 +704,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -760,7 +760,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -846,7 +846,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -930,7 +930,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -979,7 +979,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1039,7 +1039,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1095,7 +1095,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1151,7 +1151,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1207,7 +1207,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1263,7 +1263,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1349,7 +1349,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1433,7 +1433,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1482,7 +1482,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1542,7 +1542,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1598,7 +1598,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1654,7 +1654,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1710,7 +1710,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1766,7 +1766,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1852,7 +1852,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1936,7 +1936,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
@@ -1985,7 +1985,7 @@ class DefaultReadMethodGeneratorTest {
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
-                     * <li>data/queryData.sql</li>
+                     * <li>queryData.sql</li>
                      * </ul>
                      * <p>Disable generating this method by setting <strong>executeOnce</strong> to <strong>false</strong></p>
                      */
