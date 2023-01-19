@@ -59,6 +59,10 @@
             <artifactId>javapoet</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+        </dependency>
+        <dependency>
             <groupId>wtf.metio.javapoet</groupId>
             <artifactId>javapoet-type-guesser</artifactId>
         </dependency>

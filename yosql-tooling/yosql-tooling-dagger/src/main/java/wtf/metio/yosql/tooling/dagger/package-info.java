@@ -5,6 +5,7 @@
  * in the LICENSE file.
  */
 /**
- * Everything related to SQL file parsing.
+ * Dagger infrastructure for all YoSQL modules.
  */
+@org.jspecify.annotations.NullMarked
 package wtf.metio.yosql.tooling.dagger;

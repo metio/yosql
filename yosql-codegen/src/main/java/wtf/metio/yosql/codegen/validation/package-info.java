@@ -5,4 +5,4 @@
  * in the LICENSE file.
  */
 @org.jspecify.annotations.NullMarked
-package wtf.metio.yosql.tooling.dagger.blocks;
+package wtf.metio.yosql.codegen.validation;
