@@ -9,7 +9,7 @@ package wtf.metio.yosql.codegen.blocks;
 
 import ch.qos.cal10n.IMessageConveyor;
 import com.squareup.javapoet.CodeBlock;
-import de.xn__ho_hia.javapoet.TypeGuesser;
+import wtf.metio.javapoet.TypeGuesser;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
