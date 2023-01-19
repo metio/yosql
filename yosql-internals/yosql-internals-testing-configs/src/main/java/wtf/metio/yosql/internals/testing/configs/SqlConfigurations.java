@@ -43,7 +43,7 @@ public final class SqlConfigurations {
 
     public static SqlStatement sqlStatement(final SqlConfiguration configuration) {
         return SqlStatement.builder()
-                .setSourcePath(Paths.get("src/main/yosql/data/queryData.sql"))
+                .setSourcePath(Paths.get("src/main/yosql/queryData.sql"))
                 .setConfiguration(configuration)
                 .setRawStatement("SELECT raw FROM table WHERE test = ? AND id = ?;")
                 .build();
