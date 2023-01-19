@@ -14,8 +14,11 @@ import ch.qos.cal10n.LocaleData;
 /**
  * Enumeration of known validation errors.
  */
-@LocaleData({@Locale("en"), @Locale("de")})
 @BaseName("validation-errors")
+@LocaleData({
+        @Locale(value = "en", charset = "UTF-8"),
+        @Locale(value = "de", charset = "UTF-8"),
+})
 public enum ValidationErrors {
 
     /**
