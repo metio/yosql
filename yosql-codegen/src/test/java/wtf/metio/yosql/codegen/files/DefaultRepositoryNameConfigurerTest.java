@@ -10,6 +10,8 @@ package wtf.metio.yosql.codegen.files;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
@@ -221,15 +223,31 @@ class DefaultRepositoryNameConfigurerTest {
     }
 
     @Test
+    @EnabledOnOs({OS.LINUX, OS.MAC})
     void dottedRepositoryName() {
         assertEquals("foo.bar.baz",
                 configurer.dottedRepositoryName("foo/bar/baz"));
     }
 
     @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void dottedRepositoryNameWindows() {
+        assertEquals("foo.bar.baz",
+                configurer.dottedRepositoryName("foo\\bar\\baz"));
+    }
+
+    @Test
+    @EnabledOnOs({OS.LINUX, OS.MAC})
     void dottedRepositoryNameUpperCase() {
         assertEquals("Foo.Bar.Baz",
                 configurer.dottedRepositoryName("Foo/Bar/Baz"));
+    }
+
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void dottedRepositoryNameUpperCaseWindows() {
+        assertEquals("Foo.Bar.Baz",
+                configurer.dottedRepositoryName("Foo\\Bar\\Baz"));
     }
 
     @Test
