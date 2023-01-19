@@ -4,5 +4,8 @@
  * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
  * in the LICENSE file.
  */
+/**
+ * YoSQL configurations used during testing.
+ */
 @org.jspecify.annotations.NullMarked
-package wtf.metio.yosql.tooling.dagger.blocks;
+package wtf.metio.yosql.internals.testing.configs;

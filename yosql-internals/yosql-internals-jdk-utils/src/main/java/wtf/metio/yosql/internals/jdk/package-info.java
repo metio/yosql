@@ -7,4 +7,5 @@
 /**
  * Helpers used during code generation.
  */
+@org.jspecify.annotations.NullMarked
 package wtf.metio.yosql.internals.jdk;

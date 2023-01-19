@@ -7,13 +7,12 @@
 /**
  * The model used during code generation.
  */
-@Value.Style(
+@org.immutables.value.Value.Style(
         get = {"is*", "get*"},
         init = "set*",
         strictBuilder = true,
         jdkOnly = true,
         stagedBuilder = true
 )
+@org.jspecify.annotations.NullMarked
 package wtf.metio.yosql.models.meta;
-
-import org.immutables.value.Value;

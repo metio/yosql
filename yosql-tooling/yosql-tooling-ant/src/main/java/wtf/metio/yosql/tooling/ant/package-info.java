@@ -5,6 +5,7 @@
  * in the LICENSE file.
  */
 /**
- * Maven plugin for sane SQL code handling
+ * Ant task for sane SQL code handling
  */
+@org.jspecify.annotations.NullMarked
 package wtf.metio.yosql.tooling.ant;
