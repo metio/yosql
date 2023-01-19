@@ -62,15 +62,8 @@
             <artifactId>javapoet</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.xn--ho-hia.javapoet</groupId>
+            <groupId>wtf.metio.javapoet</groupId>
             <artifactId>javapoet-type-guesser</artifactId>
-            <version>2017.03.19-185842</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.platform</groupId>
-                    <artifactId>junit-platform-runner</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>ch.qos.cal10n</groupId>

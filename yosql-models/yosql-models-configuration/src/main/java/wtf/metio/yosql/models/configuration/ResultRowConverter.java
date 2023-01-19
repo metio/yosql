@@ -9,8 +9,8 @@ package wtf.metio.yosql.models.configuration;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.squareup.javapoet.TypeName;
-import de.xn__ho_hia.javapoet.TypeGuesser;
 import org.immutables.value.Value;
+import wtf.metio.javapoet.TypeGuesser;
 import wtf.metio.yosql.internals.jdk.Strings;
 
 import java.util.Optional;

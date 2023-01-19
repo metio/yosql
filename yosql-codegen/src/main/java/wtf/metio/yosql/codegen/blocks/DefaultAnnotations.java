@@ -11,7 +11,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.TypeName;
-import de.xn__ho_hia.javapoet.TypeGuesser;
+import wtf.metio.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.configuration.Annotation;
 import wtf.metio.yosql.models.configuration.AnnotationMember;
