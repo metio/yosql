@@ -264,7 +264,6 @@
                     <plugin>
                         <groupId>com.baidu.maven</groupId>
                         <artifactId>jmh-maven-plugin</artifactId>
-                        <version>1.0.3</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>

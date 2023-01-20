@@ -182,3 +182,38 @@ jobs:
         with:
           name: yosql-tooling-cli-windows
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-windows*
+  benchmarks:
+    name: Build Benchmarks on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    steps:
+      - id: checkout
+        name: Clone Git Repository
+        uses: actions/checkout@v3
+      - id: graal
+        name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: ${{ env.GRAAL_VERSION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          components: native-image
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - id: cache
+        name: Cache Maven Repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - id: maven
+        name: Maven Tooling
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-maven --also-make install
+      - id: maven_benchmarks
+        name: Build Benchmarks
+        run: mvn --batch-mode --projects yosql-benchmarks --also-make --also-make-dependents verify
