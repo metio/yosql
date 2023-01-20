@@ -9,8 +9,14 @@ env:
   GRAAL_VERSION: latest
 jobs:
   maven:
-    name: Build Maven Tooling
-    runs-on: ubuntu-latest
+    name: Build Maven Tooling on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
     steps:
       - id: checkout
         name: Clone Git Repository
@@ -33,10 +39,16 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: Maven Tooling
-        run: mvn --batch-mode verify
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-maven,yosql-examples/yosql-examples-maven --also-make verify
   gradle:
-    name: Build Gradle Tooling
-    runs-on: ubuntu-latest
+    name: Build Gradle Tooling on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
     steps:
       - id: checkout
         name: Clone Git Repository
@@ -64,8 +76,14 @@ jobs:
         name: Gradle Tooling
         run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
   ant:
-    name: Build Ant Tooling
-    runs-on: ubuntu-latest
+    name: Build Ant Tooling on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
     steps:
       - id: checkout
         name: Clone Git Repository
@@ -88,7 +106,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: Ant Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-ant --also-make verify
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-ant,yosql-examples/yosql-examples-ant --also-make verify
       - id: upload-ant-tooling
         name: Upload Ant Tooling
         uses: actions/upload-artifact@v3
@@ -126,7 +144,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: CLI Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-cli --also-make --define skipNativeBuild=false verify
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-cli,yosql-examples/yosql-examples-cli --also-make --define skipNativeBuild=false verify
       - id: upload-jvm-cli-tooling
         name: Upload JVM CLI Tooling
         uses: actions/upload-artifact@v3
