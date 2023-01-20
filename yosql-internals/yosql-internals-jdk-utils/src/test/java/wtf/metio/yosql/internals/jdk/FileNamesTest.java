@@ -25,4 +25,11 @@ class FileNamesTest {
                 () -> assertEquals("some.file.with", FileNames.withoutExtension(Paths.get("some.file.with.dots"))));
     }
 
+    @Test
+    void toSlashes() {
+        assertAll(
+                () -> assertEquals("some/folder/file", FileNames.toSlashes(Paths.get("some/folder/file"))),
+                () -> assertEquals("some/folder/file", FileNames.toSlashes(Paths.get("some\\folder\\file"))));
+    }
+
 }

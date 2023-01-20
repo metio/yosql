@@ -10,6 +10,7 @@ package wtf.metio.yosql.codegen.blocks;
 import ch.qos.cal10n.IMessageConveyor;
 import com.squareup.javapoet.CodeBlock;
 import wtf.metio.javapoet.TypeGuesser;
+import wtf.metio.yosql.internals.jdk.FileNames;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
@@ -41,7 +42,7 @@ public final class DefaultJavadoc implements Javadoc {
                 .map(SqlStatement::getSourcePath)
                 .distinct()
                 .map(input::relativize)
-                .forEach(path -> builder.add(messages.getMessage(Javadocs.LIST_ITEM), path));
+                .forEach(path -> builder.add(messages.getMessage(Javadocs.LIST_ITEM), FileNames.toSlashes(path)));
         builder.add(messages.getMessage(Javadocs.LIST_END));
         return builder.build();
     }
@@ -52,7 +53,7 @@ public final class DefaultJavadoc implements Javadoc {
         final var builder = CodeBlock.builder()
                 .add(messages.getMessage(Javadocs.USED_FILE))
                 .add(messages.getMessage(Javadocs.LIST_START))
-                .add(messages.getMessage(Javadocs.LIST_ITEM), input.relativize(statement.getSourcePath()));
+                .add(messages.getMessage(Javadocs.LIST_ITEM), FileNames.toSlashes(input.relativize(statement.getSourcePath())));
         builder.add(messages.getMessage(Javadocs.LIST_END));
         return builder.build();
     }
@@ -89,7 +90,7 @@ public final class DefaultJavadoc implements Javadoc {
                 .map(SqlStatement::getSourcePath)
                 .distinct()
                 .map(input::relativize)
-                .forEach(path -> builder.add(messages.getMessage(Javadocs.LIST_ITEM), path));
+                .forEach(path -> builder.add(messages.getMessage(Javadocs.LIST_ITEM), FileNames.toSlashes(path)));
         builder.add(messages.getMessage(Javadocs.LIST_END));
         builder.add(messages.getMessage(Javadocs.DISABLE_WITH), configuration);
         statements.stream()
