@@ -39,7 +39,7 @@ jobs:
             ${{ runner.os }}-maven-
       - id: maven
         name: Maven Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-maven --also-make verify
+        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-maven --also-make install
       - id: maven_examples
         name: Maven Examples
         run: mvn --batch-mode --projects yosql-examples/yosql-examples-maven --also-make --also-make-dependents verify
