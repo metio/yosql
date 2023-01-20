@@ -26,6 +26,16 @@ public final class FileNames {
         return dotIndex > 0 ? fileName.substring(0, dotIndex) : fileName;
     }
 
+    /**
+     * Converts the given path to its string representation using slashes as separators.
+     *
+     * @param path The path to convert
+     * @return The string representation of the path using slashes
+     */
+    public static String toSlashes(final Path path) {
+        return path.toString().replace("\\", "/");
+    }
+
     private FileNames() {
         // utility class
     }
