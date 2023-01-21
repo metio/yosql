@@ -77,36 +77,15 @@ class DefaultMethodApiConfigurerTest {
     }
 
     @Test
-    void manyKeep() {
-        final var original = SqlConfiguration.builder()
-                .setExecuteMany(false)
-                .build();
-        final var adapted = configurer.many(original);
-        assertEquals(original.executeMany(), adapted.executeMany());
-    }
-
-    @Test
-    void manyChangedToRepositoryDefault() {
-        final var original = SqlConfiguration.builder()
-                // .setExecuteMany(true) // value is NOT set
-                .build();
-        final var adapted = configurer.many(original);
-        assertTrue(adapted.executeMany().isPresent());
-        assertEquals(repositories.executeMany(), adapted.executeMany().get());
-    }
-
-    @Test
     void keepApis() {
         final var original = SqlConfiguration.builder()
                 .setExecuteBatch(false)
                 .setExecuteOnce(false)
-                .setExecuteMany(false)
                 .build();
         final var adapted = configurer.configureApis(original);
         assertAll(
                 () -> assertEquals(original.executeBatch(), adapted.executeBatch()),
-                () -> assertEquals(original.executeOnce(), adapted.executeOnce()),
-                () -> assertEquals(original.executeMany(), adapted.executeMany()));
+                () -> assertEquals(original.executeOnce(), adapted.executeOnce()));
     }
 
     @Test
@@ -115,8 +94,7 @@ class DefaultMethodApiConfigurerTest {
         final var adapted = configurer.configureApis(original);
         assertAll(
                 () -> assertEquals(repositories.executeBatch(), adapted.executeBatch().get()),
-                () -> assertEquals(repositories.executeOnce(), adapted.executeOnce().get()),
-                () -> assertEquals(repositories.executeMany(), adapted.executeMany().get()));
+                () -> assertEquals(repositories.executeOnce(), adapted.executeOnce().get()));
     }
 
 }

@@ -62,9 +62,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                 executeOncePrefix(),
                 executeOnceSuffix(),
                 executeBatchPrefix(),
-                executeBatchSuffix(),
-                executeManyPrefix(),
-                executeManySuffix());
+                executeBatchSuffix());
     }
 
     /**
@@ -74,7 +72,6 @@ public final class Repositories extends AbstractConfigurationGroup {
         return List.of(
                 executeOnce(),
                 executeBatch(),
-                executeMany(),
                 usePreparedStatement(),
                 catchAndRethrow(),
                 writesReturnUpdateCount(),
@@ -219,16 +216,6 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
                 .addTags(Tags.FRONT_MATTER)
-                .build();
-    }
-
-    private static ConfigurationSetting executeMany() {
-        final var name = Constants.EXECUTE_MANY;
-        final var description = "Generate methods that can be combined and executed with many other methods";
-        final var value = true;
-        return setting(GROUP_NAME, name, description, value)
-                .addTags(Tags.FRONT_MATTER)
-                .setGenerateDocs(false)
                 .build();
     }
 
@@ -532,26 +519,6 @@ public final class Repositories extends AbstractConfigurationGroup {
                                 }
                                 """)
                         .build())
-                .build();
-    }
-
-    private static ConfigurationSetting executeManyPrefix() {
-        final var name = "executeManyPrefix";
-        final var description = "The method prefix to use for generated methods that can be executed many times.";
-        final var value = "";
-        return setting(GROUP_NAME, name, description, value)
-                .addTags(Tags.FRONT_MATTER)
-                .setGenerateDocs(false)
-                .build();
-    }
-
-    private static ConfigurationSetting executeManySuffix() {
-        final var name = "executeManySuffix";
-        final var description = "The method suffix to use for generated methods that can be executed many times.";
-        final var value = "Many";
-        return setting(GROUP_NAME, name, description, value)
-                .addTags(Tags.FRONT_MATTER)
-                .setGenerateDocs(false)
                 .build();
     }
 

@@ -55,7 +55,6 @@ public final class Sql extends AbstractConfigurationGroup {
                         converter(),
                         executeOnceName(),
                         executeBatchName(),
-                        executeManyName(),
                         joinMethodNameParts())
                 .addImmutableAnnotations(immutableAnnotation())
                 .addImmutableAnnotations(AnnotationSpec.builder(JsonSerialize.class)
@@ -421,16 +420,6 @@ public final class Sql extends AbstractConfigurationGroup {
                 .addAnnotation(Value.Lazy.class)
                 .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
                         "executeBatchPrefix", "", "name", "", "executeBatchSuffix", "")
-                .build();
-    }
-
-    private static MethodSpec executeManyName() {
-        return MethodSpec.methodBuilder("executeManyName")
-                .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                .returns(String.class)
-                .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
-                        "executeManyPrefix", "", "name", "", "executeManySuffix", "")
                 .build();
     }
 
