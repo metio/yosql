@@ -224,8 +224,8 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
-          - windows-latest
+#          - macos-latest # TODO: enable once https://github.com/peaceiris/actions-hugo/issues/605 is fixed
+#          - windows-latest # TODO: enable once https://github.com/peaceiris/actions-hugo/issues/608 is fixed
     steps:
       - id: checkout
         name: Clone Git Repository
