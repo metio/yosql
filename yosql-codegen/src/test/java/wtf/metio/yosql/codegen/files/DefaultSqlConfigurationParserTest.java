@@ -227,26 +227,6 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseExecuteManyEnabled() {
-        final var yaml = """
-                executeMany: true
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.executeMany().isPresent());
-        assertTrue(config.executeMany().get());
-    }
-
-    @Test
-    void shouldParseExecuteManyDisabled() {
-        final var yaml = """
-                executeMany: false
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.executeMany().isPresent());
-        assertFalse(config.executeMany().get());
-    }
-
-    @Test
     void shouldParseCatchAndRethrowEnabled() {
         final var yaml = """
                 catchAndRethrow: true
@@ -384,26 +364,6 @@ class DefaultSqlConfigurationParserTest {
         final var config = parser.parseConfig(yaml);
         assertTrue(config.executeBatchSuffix().isPresent());
         assertEquals("suffix", config.executeBatchSuffix().get());
-    }
-
-    @Test
-    void shouldParseExecuteManyPrefix() {
-        final var yaml = """
-                executeManyPrefix: prefix
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.executeManyPrefix().isPresent());
-        assertEquals("prefix", config.executeManyPrefix().get());
-    }
-
-    @Test
-    void shouldParseExecuteManySuffix() {
-        final var yaml = """
-                executeManySuffix: suffix
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.executeManySuffix().isPresent());
-        assertEquals("suffix", config.executeManySuffix().get());
     }
 
     @Test

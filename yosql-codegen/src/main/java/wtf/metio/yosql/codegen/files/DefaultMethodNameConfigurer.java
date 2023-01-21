@@ -84,8 +84,6 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
         adapted = executeOnceSuffix(adapted);
         adapted = executeBatchPrefix(adapted);
         adapted = executeBatchSuffix(adapted);
-        adapted = executeManyPrefix(adapted);
-        adapted = executeManySuffix(adapted);
         return adapted;
     }
 
@@ -130,28 +128,6 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
                 .orElseGet(() -> {
                     logger.debug(SqlConfigurationLifecycle.EXECUTE_BATCH_SUFFIX_CHANGED, repositories.executeBatchSuffix());
                     return SqlConfiguration.copyOf(configuration).withExecuteBatchSuffix(repositories.executeBatchSuffix());
-                });
-    }
-
-    // visible for testing
-    SqlConfiguration executeManyPrefix(final SqlConfiguration configuration) {
-        return configuration.executeManyPrefix()
-                .filter(not(Strings::isBlank))
-                .map(prefix -> configuration)
-                .orElseGet(() -> {
-                    logger.debug(SqlConfigurationLifecycle.EXECUTE_BATCH_PREFIX_CHANGED, repositories.executeManyPrefix());
-                    return SqlConfiguration.copyOf(configuration).withExecuteManyPrefix(repositories.executeManyPrefix());
-                });
-    }
-
-    // visible for testing
-    SqlConfiguration executeManySuffix(final SqlConfiguration configuration) {
-        return configuration.executeManySuffix()
-                .filter(not(Strings::isBlank))
-                .map(suffix -> configuration)
-                .orElseGet(() -> {
-                    logger.debug(SqlConfigurationLifecycle.EXECUTE_BATCH_SUFFIX_CHANGED, repositories.executeManySuffix());
-                    return SqlConfiguration.copyOf(configuration).withExecuteManySuffix(repositories.executeManySuffix());
                 });
     }
 

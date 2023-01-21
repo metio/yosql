@@ -23,7 +23,6 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
         var adapted = configuration;
         adapted = once(adapted);
         adapted = batch(adapted);
-        adapted = many(adapted);
         return adapted;
     }
 
@@ -39,14 +38,6 @@ public final class DefaultMethodApiConfigurer implements MethodApiConfigurer {
     SqlConfiguration batch(final SqlConfiguration configuration) {
         if (configuration.executeBatch().isEmpty()) {
             return SqlConfiguration.copyOf(configuration).withExecuteBatch(repositories.executeBatch());
-        }
-        return configuration;
-    }
-
-    // visible for testing
-    SqlConfiguration many(final SqlConfiguration configuration) {
-        if (configuration.executeMany().isEmpty()) {
-            return SqlConfiguration.copyOf(configuration).withExecuteMany(repositories.executeMany());
         }
         return configuration;
     }

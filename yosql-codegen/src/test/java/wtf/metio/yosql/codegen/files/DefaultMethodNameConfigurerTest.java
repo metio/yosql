@@ -91,53 +91,19 @@ class DefaultMethodNameConfigurerTest {
     }
 
     @Test
-    void executeManyPrefixKeep() {
-        final var original = SqlConfiguration.builder().setExecuteManyPrefix("prefix").build();
-        final var adapted = configurer.executeManyPrefix(original);
-        assertEquals(original.executeManyPrefix(), adapted.executeManyPrefix());
-    }
-
-    @Test
-    void executeManyPrefixChange() {
-        final var original = SqlConfiguration.builder().setExecuteManyPrefix(" ").build();
-        final var adapted = configurer.executeManyPrefix(original);
-        assertTrue(adapted.executeManyPrefix().isPresent());
-        assertEquals(repositories.executeManyPrefix(), adapted.executeManyPrefix().get());
-    }
-
-    @Test
-    void executeManySuffixKeep() {
-        final var original = SqlConfiguration.builder().setExecuteManySuffix("suffix").build();
-        final var adapted = configurer.executeManySuffix(original);
-        assertEquals(original.executeManySuffix(), adapted.executeManySuffix());
-    }
-
-    @Test
-    void executeManySuffixChange() {
-        final var original = SqlConfiguration.builder().setExecuteManySuffix(" ").build();
-        final var adapted = configurer.executeManySuffix(original);
-        assertTrue(adapted.executeManySuffix().isPresent());
-        assertEquals(repositories.executeManySuffix(), adapted.executeManySuffix().get());
-    }
-
-    @Test
     void affixesKeep() {
         final var original = SqlConfiguration.builder()
                 .setExecuteOncePrefix("prefix")
                 .setExecuteOnceSuffix("suffix")
                 .setExecuteBatchPrefix("prefix")
                 .setExecuteBatchSuffix("suffix")
-                .setExecuteManyPrefix("prefix")
-                .setExecuteManySuffix("suffix")
                 .build();
         final var adapted = configurer.affixes(original);
         assertAll(
                 () -> assertEquals(original.executeOncePrefix(), adapted.executeOncePrefix()),
                 () -> assertEquals(original.executeOnceSuffix(), adapted.executeOnceSuffix()),
                 () -> assertEquals(original.executeBatchPrefix(), adapted.executeBatchPrefix()),
-                () -> assertEquals(original.executeBatchSuffix(), adapted.executeBatchSuffix()),
-                () -> assertEquals(original.executeManyPrefix(), adapted.executeManyPrefix()),
-                () -> assertEquals(original.executeManySuffix(), adapted.executeManySuffix()));
+                () -> assertEquals(original.executeBatchSuffix(), adapted.executeBatchSuffix()));
     }
 
     @Test
@@ -147,24 +113,18 @@ class DefaultMethodNameConfigurerTest {
                 .setExecuteOnceSuffix(" ")
                 .setExecuteBatchPrefix(" ")
                 .setExecuteBatchSuffix(" ")
-                .setExecuteManyPrefix(" ")
-                .setExecuteManySuffix(" ")
                 .build();
         final var adapted = configurer.affixes(original);
         assertAll(
                 () -> assertTrue(adapted.executeOncePrefix().isPresent()),
                 () -> assertTrue(adapted.executeOnceSuffix().isPresent()),
                 () -> assertTrue(adapted.executeBatchPrefix().isPresent()),
-                () -> assertTrue(adapted.executeBatchSuffix().isPresent()),
-                () -> assertTrue(adapted.executeManyPrefix().isPresent()),
-                () -> assertTrue(adapted.executeManySuffix().isPresent()));
+                () -> assertTrue(adapted.executeBatchSuffix().isPresent()));
         assertAll(
                 () -> assertEquals(repositories.executeOncePrefix(), adapted.executeOncePrefix().get()),
                 () -> assertEquals(repositories.executeOnceSuffix(), adapted.executeOnceSuffix().get()),
                 () -> assertEquals(repositories.executeBatchPrefix(), adapted.executeBatchPrefix().get()),
-                () -> assertEquals(repositories.executeBatchSuffix(), adapted.executeBatchSuffix().get()),
-                () -> assertEquals(repositories.executeManyPrefix(), adapted.executeManyPrefix().get()),
-                () -> assertEquals(repositories.executeManySuffix(), adapted.executeManySuffix().get()));
+                () -> assertEquals(repositories.executeBatchSuffix(), adapted.executeBatchSuffix().get()));
     }
 
     @Test
