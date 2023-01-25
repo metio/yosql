@@ -54,19 +54,19 @@ jobs:
       - id: copy-codegen-results
         name: Copy Codegen Results
         if: steps.commits.outputs.count > 0
-        run: cp --force ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-${{ steps.previous.outputs.version }}.json
+        run: cp --force ./yosql-benchmarks/yosql-benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-${{ steps.previous.outputs.version }}.json
       - id: replace-codegen-results
         name: Replace CURRENT Codegen Results
         if: steps.commits.outputs.count > 0
-        run: cp --force ./benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json
+        run: cp --force ./yosql-benchmarks/yosql-benchmark-codegen/yosql-benchmarks-codegen.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json
       - id: copy-jdbc-results
         name: Copy JDBC Results
         if: steps.commits.outputs.count > 0
-        run: cp --force ./benchmark-dao/yosql-benchmarks-dao.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-dao-${{ steps.previous.outputs.version }}.json
+        run: cp --force ./yosql-benchmarks/yosql-benchmark-dao/yosql-benchmarks-dao.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-dao-${{ steps.previous.outputs.version }}.json
       - id: replace-jdbc-results
         name: Replace CURRENT JDBC Results
         if: steps.commits.outputs.count > 0
-        run: cp --force ./benchmark-dao/yosql-benchmarks-dao.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-dao-CURRENT.json
+        run: cp --force ./yosql-benchmarks/yosql-benchmark-dao/yosql-benchmarks-dao.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-dao-CURRENT.json
       - id: push
         name: Push Changes
         if: steps.commits.outputs.count > 0
