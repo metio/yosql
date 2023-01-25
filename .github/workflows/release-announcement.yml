@@ -30,8 +30,8 @@ jobs:
           server_port: ${{ secrets.MAIL_PORT }}
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: ${{ github.event.repository.name }} version ${{ steps.release.outputs.version }} published
-          body: See https://github.com/metio/yosql/releases/tag/${{ steps.release.outputs.version }} for details.
+          subject: ${{ github.event.repository.name }} version ${{ steps.previous.outputs.version }} published
+          body: See https://github.com/metio/yosql/releases/tag/${{ steps.previous.outputs.version }} for details.
           to: ${{ secrets.MAIL_RECIPIENT }}
           from: ${{ secrets.MAIL_SENDER }}
       - id: matrix
@@ -41,5 +41,5 @@ jobs:
         with:
           room_id: ${{ secrets.MATRIX_ROOM_ID }}
           access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
-          message: ${{ github.event.repository.name }} version [${{ steps.release.outputs.version }}](https://github.com/metio/yosql/releases/tag/${{ steps.release.outputs.version }}) published
+          message: ${{ github.event.repository.name }} version [${{ steps.previous.outputs.version }}](https://github.com/metio/yosql/releases/tag/${{ steps.previous.outputs.version }}) published
           server: ${{ secrets.MATRIX_SERVER }}
