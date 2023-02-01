@@ -5,8 +5,10 @@
  * in the LICENSE file.
  */
 
---
---
-CREATE
-ALIAS IF NOT EXISTS getVersion FOR "org.h2.util.CurrentTimestamp.get"
-;
+--@yosql sqlStatementSeparator: ;;
+
+CREATE ALIAS getVersion AS '
+String version() {
+    return "1.0.0";
+}
+';;

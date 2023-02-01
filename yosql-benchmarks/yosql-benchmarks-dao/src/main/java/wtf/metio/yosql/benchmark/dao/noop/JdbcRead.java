@@ -41,12 +41,6 @@ public class JdbcRead extends AbstractNoOpBenchmark implements Read {
 
     @Override
     @Benchmark
-    public void readComplexRelationship() {
-        projectRepository.findProjectsWithMinCosts(250);
-    }
-
-    @Override
-    @Benchmark
     public void readMultipleEntitiesBasedOnCondition() {
         employeeRepository.findEmployeesWithMinSalary(500);
     }
