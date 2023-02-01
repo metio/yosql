@@ -5,20 +5,9 @@
  * in the LICENSE file.
  */
 
---
---
-CREATE TABLE IF NOT EXISTS projects
-(
-    pid
-    BIGINT
-    PRIMARY
-    KEY
-    AUTO_INCREMENT,
-    name
-    VARCHAR
-(
-    50
-),
+CREATE TABLE IF NOT EXISTS projects (
+    pid BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50),
     dateStarted BIGINT
-    )
+)
 ;

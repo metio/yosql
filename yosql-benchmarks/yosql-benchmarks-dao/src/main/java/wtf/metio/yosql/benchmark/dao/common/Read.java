@@ -33,11 +33,6 @@ public interface Read {
     void readMultipleEntities();
 
     /**
-     * Read a complex data structure composed of multiple tables.
-     */
-    void readComplexRelationship();
-
-    /**
      * Read multiple entities but filter them in the database before returning.
      */
     void readMultipleEntitiesBasedOnCondition();

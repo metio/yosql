@@ -5,7 +5,5 @@
  * in the LICENSE file.
  */
 
---
---
 DROP TABLE IF EXISTS projectEmployees
 ;

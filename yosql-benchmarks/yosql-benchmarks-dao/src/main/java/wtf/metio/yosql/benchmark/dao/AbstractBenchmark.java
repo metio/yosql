@@ -36,14 +36,13 @@ public abstract class AbstractBenchmark {
     @Setup(Level.Trial)
     public void setup() {
         dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:h2:mem:benchmarks-jdbc;DB_CLOSE_DELAY=-1");
+        dataSource.setJdbcUrl("jdbc:h2:mem:benchmarks-dao;DB_CLOSE_DELAY=-1");
         dataSource.setUsername("sa");
         schemaRepository = new SchemaRepository(dataSource);
         schemaRepository.createCompaniesTable();
         schemaRepository.createProjectsTable();
         schemaRepository.createDepartmentsTable();
         schemaRepository.createEmployeesTable();
-        schemaRepository.createProjectEmployeesTable();
         schemaRepository.createVersionAlias();
     }
 

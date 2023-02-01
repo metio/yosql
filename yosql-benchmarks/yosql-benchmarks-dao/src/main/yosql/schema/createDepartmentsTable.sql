@@ -5,25 +5,9 @@
  * in the LICENSE file.
  */
 
---
---
-CREATE TABLE IF NOT EXISTS departments
-(
-    pid
-    BIGINT
-    PRIMARY
-    KEY
-    AUTO_INCREMENT,
-    company_pid
-    BIGINT
-    REFERENCES
-    companies
-(
-    pid
-),
-    name VARCHAR
-(
-    50
+CREATE TABLE IF NOT EXISTS departments (
+    pid BIGINT PRIMARY KEY AUTO_INCREMENT,
+    company_pid BIGINT REFERENCES companies(pid),
+    name VARCHAR(50)
 )
-    )
 ;
