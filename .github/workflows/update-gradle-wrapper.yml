@@ -1,7 +1,7 @@
 name: Update Gradle Wrapper
 on:
   schedule:
-    - cron: 0 2 3 * *
+    - cron: 0 3 3 * *
 env:
   JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
@@ -37,12 +37,12 @@ jobs:
         name: yosql-tooling-gradle
         uses: EdwarDDay/upgrade-gradle-action@v1
         with:
-          working-directoy: yosql-tooling/yosql-tooling-gradle
+          working-directory: yosql-tooling/yosql-tooling-gradle
           distribution-type: all
       - name: yosql-examples-gradle
         uses: EdwarDDay/upgrade-gradle-action@v1
         with:
-          working-directoy: yosql-examples/yosql-examples-gradle
+          working-directory: yosql-examples/yosql-examples-gradle
           distribution-type: all
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
