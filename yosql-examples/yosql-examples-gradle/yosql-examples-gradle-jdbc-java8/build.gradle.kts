@@ -9,6 +9,7 @@ plugins {
     java
     application
     id("wtf.metio.yosql")
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.4.0")
 }
 
 java {

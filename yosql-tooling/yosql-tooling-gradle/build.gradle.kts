@@ -10,6 +10,7 @@ plugins {
     id("maven-publish")
     id("com.gradle.plugin-publish") version "1.0.0"
     id("wtf.metio.yosql.models.gradle")
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.4.0")
 }
 
 java {
