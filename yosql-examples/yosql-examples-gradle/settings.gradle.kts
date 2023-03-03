@@ -39,6 +39,10 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.4.0"
+}
+
 includeBuild("../../yosql-tooling/yosql-tooling-gradle")
 include(":yosql-examples-gradle-jdbc-java8")
 include(":yosql-examples-gradle-jdbc-java11")
