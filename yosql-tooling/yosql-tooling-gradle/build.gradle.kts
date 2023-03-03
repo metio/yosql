@@ -19,20 +19,17 @@ java {
 }
 
 gradlePlugin {
+    website.set("https://yosql.projects.metio.wtf/")
+    vcsUrl.set("https://github.com/metio/yosql.git")
     plugins {
         create("yoSql") {
             id = "wtf.metio.yosql"
             displayName = "YoSQL"
             description = "Code generator that translates SQL to Java"
+            tags.set(listOf("java", "sql", "code-generator", "javapoet", "jdbc"))
             implementationClass = "${group}.YoSqlPlugin"
         }
     }
-}
-
-pluginBundle {
-    website = "https://yosql.projects.metio.wtf/"
-    vcsUrl = "https://github.com/metio/yosql/"
-    tags = listOf("java", "sql", "code-generator", "javapoet", "jdbc")
 }
 
 dependencies {
