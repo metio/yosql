@@ -54,11 +54,11 @@ jobs:
       - id: copy-results
         name: Copy ${{ matrix.benchmark }} Results
         if: steps.commits.outputs.count > 0
-        run: cp --force ./yosql-benchmarks/yosql-benchmark-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-${{ matrix.benchmark }}-${{ steps.previous.outputs.version }}.json
+        run: cp --force ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-${{ matrix.benchmark }}-${{ steps.previous.outputs.version }}.json
       - id: replace-results
         name: Replace CURRENT ${{ matrix.benchmark }} Results
         if: steps.commits.outputs.count > 0
-        run: cp --force ./yosql-benchmarks/yosql-benchmark-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-${{ matrix.benchmark }}-CURRENT.json
+        run: cp --force ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-${{ matrix.benchmark }}-CURRENT.json
       - id: push
         name: Push Changes
         if: steps.commits.outputs.count > 0
