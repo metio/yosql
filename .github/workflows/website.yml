@@ -8,7 +8,6 @@ on:
       - yosql-website/**
 env:
   JAVA_VERSION: 17
-  GRAAL_VERSION: latest
   PROJECT_URL: yosql.projects.metio.wtf
 jobs:
   website:
@@ -17,7 +16,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # required in order to get all tags
       - id: hugo
@@ -29,18 +28,10 @@ jobs:
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ env.GRAAL_VERSION }}
+          distribution: graalvm
           java-version: ${{ env.JAVA_VERSION }}
-          components: native-image
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - id: previous
         name: Get Last Release
         run: echo "version=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT

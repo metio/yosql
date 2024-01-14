@@ -11,25 +11,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
           java-package: ${{ env.JAVA_PACKAGE }}
           architecture: ${{ env.JAVA_ARCH }}
           distribution: ${{ env.JAVA_DISTRO }}
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - name: Update parent
         run: mvn --batch-mode --define generateBackupPoms=false versions:update-parent
       - id: cpr
         name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.PAT }}
           commit-message: Update parent to latest version
@@ -49,8 +44,6 @@ jobs:
           delete-branch: true
       - name: Enable Pull Request Automerge
         if: steps.cpr.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v2
+        run: gh pr merge --rebase --auto "${{ steps.cpr.outputs.pull-request-number }}"
         with:
           token: ${{ secrets.PAT }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: rebase
