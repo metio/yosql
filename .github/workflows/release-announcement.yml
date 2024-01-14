@@ -11,35 +11,31 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - id: commits
-        name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last week')" >> $GITHUB_OUTPUT
-      - id: previous
-        name: Get Last Release
-        if: steps.commits.outputs.count > 0
-        run: echo "version=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
+      - id: last_release
+        name: Fetch last release info
+        run: echo "tag=$(gh release view --json tagName --jq '.tagName')" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: mail
         name: Send Mail
-        if: steps.commits.outputs.count > 0
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.MAIL_SERVER }}
           server_port: ${{ secrets.MAIL_PORT }}
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: ${{ github.event.repository.name }} version ${{ steps.previous.outputs.version }} published
-          body: See https://github.com/metio/yosql/releases/tag/${{ steps.previous.outputs.version }} for details.
+          subject: ${{ github.event.repository.name }} version ${{ steps.last_release.outputs.tag }} published
+          body: See https://github.com/metio/yosql/releases/tag/${{ steps.last_release.outputs.tag }} for details.
           to: ${{ secrets.MAIL_RECIPIENT }}
           from: ${{ secrets.MAIL_SENDER }}
       - id: matrix
         name: Send Matrix Message
-        if: steps.commits.outputs.count > 0
         uses: s3krit/matrix-message-action@v0.0.3
         with:
           room_id: ${{ secrets.MATRIX_ROOM_ID }}
           access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
-          message: ${{ github.event.repository.name }} version [${{ steps.previous.outputs.version }}](https://github.com/metio/yosql/releases/tag/${{ steps.previous.outputs.version }}) published
+          message: ${{ github.event.repository.name }} version [${{ steps.last_release.outputs.tag }}](https://github.com/metio/yosql/releases/tag/${{ steps.last_release.outputs.tag }}) published
           server: ${{ secrets.MATRIX_SERVER }}

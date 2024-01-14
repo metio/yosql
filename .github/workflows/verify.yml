@@ -1,12 +1,9 @@
 name: Verify Commits
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 env:
   JAVA_VERSION: 17
-  GRAAL_VERSION: latest
 jobs:
   maven:
     name: Build Maven Tooling on ${{ matrix.os }}
@@ -20,23 +17,15 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ env.GRAAL_VERSION }}
+          distribution: graalvm
           java-version: ${{ env.JAVA_VERSION }}
-          components: native-image
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - id: maven
         name: Maven Tooling
         run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-maven,yosql-examples/yosql-examples-common --also-make install
@@ -55,23 +44,15 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ env.GRAAL_VERSION }}
+          distribution: graalvm
           java-version: ${{ env.JAVA_VERSION }}
-          components: native-image
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - id: maven
         name: Maven Tooling
         run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-dagger,yosql-examples/yosql-examples-common --also-make install
@@ -90,23 +71,15 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ env.GRAAL_VERSION }}
+          distribution: graalvm
           java-version: ${{ env.JAVA_VERSION }}
-          components: native-image
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - id: maven
         name: Ant Tooling
         run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-ant --also-make verify
@@ -131,23 +104,15 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ env.GRAAL_VERSION }}
+          distribution: graalvm
           java-version: ${{ env.JAVA_VERSION }}
-          components: native-image
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - id: maven
         name: CLI Tooling
         run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-cli --also-make --define skipNativeBuild=false verify
@@ -194,23 +159,15 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ env.GRAAL_VERSION }}
+          distribution: graalvm
           java-version: ${{ env.JAVA_VERSION }}
-          components: native-image
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - id: maven
         name: Maven Tooling
         run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-maven --also-make install
@@ -229,7 +186,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - id: hugo
         name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
@@ -239,18 +196,10 @@ jobs:
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ env.GRAAL_VERSION }}
+          distribution: graalvm
           java-version: ${{ env.JAVA_VERSION }}
-          components: native-image
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - id: cache
-        name: Cache Maven Repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - id: maven
         name: Maven Tooling
         run: mvn --batch-mode --projects yosql-website --also-make --define skipTests install

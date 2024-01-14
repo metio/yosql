@@ -13,56 +13,43 @@ jobs:
   benchmarks:
     name: Benchmarks
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         benchmark: [codegen, dao]
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - id: commits
-        name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last week')" >> $GITHUB_OUTPUT
-      - id: previous
-        name: Get Last Release
-        if: steps.commits.outputs.count > 0
-        run: echo "version=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
+      - id: last_release
+        name: Fetch last release info
+        run: echo "tag=$(gh release view --json tagName --jq '.tagName')" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: java
         name: Setup Java
-        if: steps.commits.outputs.count > 0
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
           java-package: ${{ env.JAVA_PACKAGE }}
           architecture: ${{ env.JAVA_ARCH }}
           distribution: ${{ env.JAVA_DISTRO }}
-      - id: cache
-        name: Cache Maven Repository
-        if: steps.commits.outputs.count > 0
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: maven
       - id: run-benchmark
         name: Run Benchmark [${{ matrix.benchmark }}]
-        if: steps.commits.outputs.count > 0
         run: mvn --batch-mode --projects yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }} --also-make --activate-profiles benchmarks verify --define org.slf4j.simpleLogger.log.yosql=warn --define skipTests 2>&1 1> build.log
       - id: copy-results
         name: Copy ${{ matrix.benchmark }} Results
-        if: steps.commits.outputs.count > 0
-        run: cp --force ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-${{ matrix.benchmark }}-${{ steps.previous.outputs.version }}.json
+        run: cp --force ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-${{ matrix.benchmark }}-${{ steps.last_release.outputs.tag }}.json
       - id: replace-results
         name: Replace CURRENT ${{ matrix.benchmark }} Results
-        if: steps.commits.outputs.count > 0
         run: cp --force ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-${{ matrix.benchmark }}-CURRENT.json
       - id: push
         name: Push Changes
-        if: steps.commits.outputs.count > 0
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Update benchmark data for ${{ steps.previous.outputs.version }}
+          commit_message: Update benchmark data for ${{ steps.last_release.outputs.tag }}
           file_pattern: yosql-website/*.json
