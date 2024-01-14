@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">threads on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/threads/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/threads/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/threads/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/threads/</id><entry><title type="html">maxThreads</title><link href="https://yosql.projects.metio.wtf/configuration/resources/maxthreads/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/configuration/resources/maxthreads/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Controls how many threads are used during code generation.</p>
+<p>The maximum number will be capped to the number of available CPU cores of your system.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-1">Option: &lsquo;1&rsquo;</h3>
+<p>The default value of the <code>maxThreads</code> configuration option is <code>1</code> which uses one thread to generate code.</p>
+<h3 id="option-123">Option: &lsquo;123&rsquo;</h3>
+<p>Changing the <code>maxThreads</code> configuration option to <code>123</code> will use the available number of CPU cores in your system or 123 threads, depending on which is lower.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --resources-max-threads<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --max-threads<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>maxThreads</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">resources</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">maxThreads</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">resources</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">maxThreads</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>maxThreads</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;resources&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;maxThreads&gt;</span>configValue<span class="nt">&lt;/maxThreads&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/resources&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/resources" term="resources" label="resources"/><category scheme="https://yosql.projects.metio.wtf/tags/threads" term="threads" label="threads"/></entry></feed>

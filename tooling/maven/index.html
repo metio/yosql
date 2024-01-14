@@ -1,0 +1,130 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta content="metio.wtf" name=author><meta content="YoSQL" name=subject><meta content="Write more SQL" name=description><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:title" content="Maven"><meta property="og:description" content="Maven projects can use the yosql-tooling-maven plugin to use YoSQL in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.
+Add the plugin to your pom.xml: <build> <plugins> ... <plugin> <groupId>wtf.metio.yosql</groupId> <artifactId>yosql-tooling-maven</artifactId> <version>2023.2.22</version> </plugin> ... </plugins> </build> Add .sql files in src/main/yosql and write SQL statements into them. Take a look at the various options to structure your SQL files."><meta property="og:type" content="article"><meta property="og:url" content="https://yosql.projects.metio.wtf/tooling/maven/"><meta property="article:section" content="tooling"><meta property="article:published_time" content="2019-06-16T18:23:45+02:00"><meta property="article:modified_time" content="2019-06-16T18:23:45+02:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Maven"><meta name=twitter:description content="Maven projects can use the yosql-tooling-maven plugin to use YoSQL in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.
+Add the plugin to your pom.xml: <build> <plugins> ... <plugin> <groupId>wtf.metio.yosql</groupId> <artifactId>yosql-tooling-maven</artifactId> <version>2023.2.22</version> </plugin> ... </plugins> </build> Add .sql files in src/main/yosql and write SQL statements into them. Take a look at the various options to structure your SQL files."><meta itemprop=name content="Maven"><meta itemprop=description content="Maven projects can use the yosql-tooling-maven plugin to use YoSQL in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.
+Add the plugin to your pom.xml: <build> <plugins> ... <plugin> <groupId>wtf.metio.yosql</groupId> <artifactId>yosql-tooling-maven</artifactId> <version>2023.2.22</version> </plugin> ... </plugins> </build> Add .sql files in src/main/yosql and write SQL statements into them. Take a look at the various options to structure your SQL files."><meta itemprop=datePublished content="2019-06-16T18:23:45+02:00"><meta itemprop=dateModified content="2019-06-16T18:23:45+02:00"><meta itemprop=wordCount content="405"><meta itemprop=keywords content="Maven,"><link href=https://yosql.projects.metio.wtf/tooling/maven/ rel=canonical><link href=https://yosql.projects.metio.wtf/atom.xml rel=alternate title="YoSQL Atom" type=application/atom+xml><link href=https://yosql.projects.metio.wtf/index.xml rel=alternate title="YoSQL RSS" type=application/rss+xml><link href=https://yosql.projects.metio.wtf/sitemap.xml rel=sitemap title="YoSQL Sitemap" type=application/xml><link rel=author href=https://yosql.projects.metio.wtf/humans.txt><link rel=alternate type=application/rdf+xml title=FOAF href=https://yosql.projects.metio.wtf/foaf.rdf><link rel=license href=https://creativecommons.org/publicdomain/zero/1.0/><link href=https://yosql.projects.metio.wtf/css/mobile.min.f7b2f8e08197e3a93bca2dc49850674c55c72127825448c35fc3dac23935d22a4a86d6f23e946b2ea33e78e2adb319df3e2ebc62184d5957abdba8d693a482a0.css integrity="sha512-97L44IGX46k7yi3EmFBnTFXHISeCVEjDX8Pawjk10ipKhtbyPpRrLqM+eOKtsxnfPi68YhhNWVer26jWk6SCoA==" media="screen and (max-width: 800px)" rel=stylesheet><link href=https://yosql.projects.metio.wtf/css/tablet.min.7b33cca77c2e1d0e0510519f51f6ae57dde200dd55383fb484a5134842741cf9584dc8cee1781a2f205836190cf5185f2879c4e47591c457d27848ee20538ab6.css integrity="sha512-ezPMp3wuHQ4FEFGfUfauV93iAN1VOD+0hKUTSEJ0HPlYTcjO4XgaLyBYNhkM9RhfKHnE5HWRxFfSeEjuIFOKtg==" media="screen and (min-width: 801px) and (max-width: 1199px)" rel=stylesheet><link href=https://yosql.projects.metio.wtf/css/desktop.min.c4182a6d68c77dd9b9671179c4075a55282bef97efc44e6295a0a848a668d71bc08ed1390e3f389b61094a08ad9600308da13fe35b77eea7839ac86d2ad13c8a.css integrity="sha512-xBgqbWjHfdm5ZxF5xAdaVSgr75fvxE5ilaCoSKZo1xvAjtE5Dj84m2EJSgitlgAwjaE/41t37qeDmshtKtE8ig==" media="screen and (min-width: 1200px)" rel=stylesheet><link href=https://yosql.projects.metio.wtf/css/darkmode.min.2a5ba1ebf79d23ac725522a486af2ffebf831a4a634fc1471a4b0007daa25afb4417f20dc4cf0e2c1eeb8eb704183160ff9aaf84e060180993fe1e010ac6907f.css integrity="sha512-Kluh6/edI6xyVSKkhq8v/r+DGkpjT8FHGksAB9qiWvtEF/INxM8OLB7rjrcEGDFg/5qvhOBgGAmT/h4BCsaQfw==" media="screen and (prefers-color-scheme: dark)" rel=stylesheet><title>YoSQL &ndash; Maven</title></head><body id=site><header id=header><h1 id=projectname><a id=rootlink href=https://yosql.projects.metio.wtf/>YoSQL</a>
+<a href=https://yosql.projects.metio.wtf/sitemap/ title="show me all pages" id=sitemaplink><img class=svgimg src=https://yosql.projects.metio.wtf/images/sitemap.svg alt=sitemap width=30 height=30></a></h1><span id=actions><a href=https://matrix.to/#/%23yosql%3amatrix.org id=matrix title="lets talk"><img class=svgimg src=https://yosql.projects.metio.wtf/images/matrix.svg alt=matrix width=32 height=32>
+</a><a href=https://metio.groups.io/g/yosql/topics id=email title="i want to write you an email"><img class=svgimg src=https://yosql.projects.metio.wtf/images/email.svg alt=email width=32 height=32>
+</a><a href=https://github.com/metio/yosql id=github title="want some code?"><img class=svgimg src=https://yosql.projects.metio.wtf/images/github.svg alt=github width=32 height=32>
+</a><a href=https://metio.groups.io/g/yosql/calendar id=calendar title="release calendar"><img class=svgimg src=https://yosql.projects.metio.wtf/images/calendar.svg alt=github width=32 height=32>
+</a><a href=https://yosql.projects.metio.wtf/atom.xml id=newsfeed title="get notified about updates"><img class=svgimg src=https://yosql.projects.metio.wtf/images/rss.svg alt=newsfeed width=32 height=32></a></span></header><nav id=navigation><ul><h3 class="mobileonly menutitle">Links</h3><li class=mobileonly><a href=https://yosql.projects.metio.wtf/>Home</a></li><li class=mobileonly><a href=https://matrix.to/#/%23yosql%3amatrix.org>Let's talk on Matrix</a></li><li class=mobileonly><a href=https://metio.groups.io/g/yosql/topics>Send an email</a></li><li class=mobileonly><a href=https://github.com/metio/yosql>See some code at GitHub</a></li><li class=mobileonly><a href=https://metio.groups.io/g/yosql/calendar>Check the release calendar</a></li><li class=mobileonly><a href=https://yosql.projects.metio.wtf/atom.xml>Subscribe to the Atom feed</a></li><li class=mobileonly><a href=https://yosql.projects.metio.wtf/sitemap/>See all pages at the sitemap</a></li><hr class="mobileonly menudivider"><h3 class="mobile-and-tablet menutitle">Navigation</h3><li><a href=/tooling/ class=active>Tooling</a><ul><li><a href=/tooling/ant/>Ant</a></li><li><a href=/tooling/bazel/>Bazel</a></li><li><a href=/tooling/cli/>CLI</a></li><li><a href=/tooling/gradle/>Gradle</a></li><li class=active><a href=/tooling/maven/>Maven</a></li></ul></li><li><a href=/sql/>SQL</a><ul><li><a href=/sql/converters/>Converters</a></li><li><a href=/sql/sql-files/>SQL Files</a></li><li><a href=/sql/structure/>Structure</a></li></ul></li><li><a href=/configuration/>Configuration</a><ul><li><a href=/configuration/annotations/>Annotations</a></li><li><a href=/configuration/converter/>Converter</a></li><li><a href=/configuration/files/>Files</a></li><li><a href=/configuration/java/>Java</a></li><li><a href=/configuration/logging/>Logging</a></li><li><a href=/configuration/names/>Names</a></li><li><a href=/configuration/repositories/>Repositories</a></li><li><a href=/configuration/resources/>Resources</a></li><li><a href=/configuration/sql/>Sql</a></li></ul></li><li><a href=/benchmarks/>Benchmarks</a><ul><li><a href=/benchmarks/codegen/>Code Generation</a></li><li><a href=/benchmarks/db-access/>Database Access</a></li></ul></li><li><a href=/community/>Community</a><ul><li><a href=/community/alternatives/>Alternatives</a></li><li><a href=/community/help/>Help</a></li></ul></li></ul></nav><main id=content><h1 class=post-titel><a href=https://yosql.projects.metio.wtf/tooling/maven/>Maven
+</a><a href=https://github.com/metio/yosql/commits/main/yosql-website/content/tooling/maven.md><img src=https://yosql.projects.metio.wtf/images/history.svg height=16 width=14 class="icon svgimg" alt="see history">
+</a><a href=https://github.com/metio/yosql/edit/main/yosql-website/content/tooling/maven.md><img src=https://yosql.projects.metio.wtf/images/pencil.svg height=16 width=14 class="icon svgimg" alt="edit this page"></a></h1><div class=subtitle>Talks about:
+&lt;a class="post-tag post-tag-maven" href="/tags/maven">Maven&lt;/a></div><div id=post-content><p><a href=https://maven.apache.org/>Maven</a> projects can use the <code>yosql-tooling-maven</code> plugin to use <code>YoSQL</code> in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.</p><ol><li>Add the <a href=https://search.maven.org/artifact/wtf.metio.yosql.tooling/yosql-tooling-maven>plugin</a> to your <code>pom.xml</code>:<div class=highlight><pre class=chroma><code class=language-xml data-lang=xml><span class=nt>&lt;build&gt;</span>
+       <span class=nt>&lt;plugins&gt;</span>
+           ...
+           <span class=nt>&lt;plugin&gt;</span>
+               <span class=nt>&lt;groupId&gt;</span>wtf.metio.yosql<span class=nt>&lt;/groupId&gt;</span>
+               <span class=nt>&lt;artifactId&gt;</span>yosql-tooling-maven<span class=nt>&lt;/artifactId&gt;</span>
+               <span class=nt>&lt;version&gt;</span>2023.2.22<span class=nt>&lt;/version&gt;</span>
+           <span class=nt>&lt;/plugin&gt;</span>
+           ...
+       <span class=nt>&lt;/plugins&gt;</span>
+   <span class=nt>&lt;/build&gt;</span>
+   </code></pre></div></li><li>Add .sql files in <code>src/main/yosql</code> and write SQL statements into them. Take a look at the various options to <a href=/sql/structure/>structure</a> your <a href=/sql/sql-files/>SQL files</a>.<pre tabindex=0><code>&lt;project_root&gt;/
+├── pom.xml
+└── src/
+    └── main/
+        └── yosql/
+            └── domainObject/
+                ├── queryData.sql
+                └── changeYourData.sql
+            └── aggregateRoot/
+                ├── findRoot.sql
+                └── addData.sql
+</code></pre></li><li>Execute the <code>yosql:generate</code> goal (or just run <code>mvn generate-sources</code>) to generate the Java code.</li></ol><h2 id=build-helper-plugin>Build Helper Plugin</h2><p>As an optional and final step to complete the setup of <code>YoSQL</code>, you can add the <a href=https://www.mojohaus.org/build-helper-maven-plugin/>build-helper-maven-plugin</a> to your build in order to mark the <a href=/configuration/files/outputbasedirectory/>outputBaseDirectory</a> as a source directory in your IDE like this:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;build&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugins&gt;</span>
+</span></span><span class=line><span class=cl>        ...
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;groupId&gt;</span>org.codehaus.mojo<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;artifactId&gt;</span>build-helper-maven-plugin<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;executions&gt;</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&lt;execution&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&lt;id&gt;</span>add-source<span class=nt>&lt;/id&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&lt;phase&gt;</span>generate-sources<span class=nt>&lt;/phase&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&lt;goals&gt;</span>
+</span></span><span class=line><span class=cl>                        <span class=nt>&lt;goal&gt;</span>add-source<span class=nt>&lt;/goal&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&lt;/goals&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&lt;configuration&gt;</span>
+</span></span><span class=line><span class=cl>                        <span class=nt>&lt;sources&gt;</span>
+</span></span><span class=line><span class=cl>                            <span class=nt>&lt;source&gt;</span>${project.build.directory}/generated-sources/yosql<span class=nt>&lt;/source&gt;</span>
+</span></span><span class=line><span class=cl>                        <span class=nt>&lt;/sources&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&lt;/configuration&gt;</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&lt;/execution&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;/executions&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;/plugin&gt;</span>
+</span></span><span class=line><span class=cl>        ...
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/plugins&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/build&gt;</span>
+</span></span></code></pre></div><h2 id=configuration>Configuration</h2><p>You can configure how YoSQL operates and how the generated code looks like by using the <a href=https://maven.apache.org/guides/mini/guide-configuring-plugins.html>default Maven configuration
+mechanism</a>. Take a look at the <a href=/configuration/>available configuration options</a> in order to see what can be configured.</p><div class=highlight><pre class=chroma><code class=language-xml data-lang=xml><span class=nt>&lt;build&gt;</span>
+    <span class=nt>&lt;plugins&gt;</span>
+        ...
+        <span class=nt>&lt;plugin&gt;</span>
+            <span class=nt>&lt;groupId&gt;</span>wtf.metio.yosql<span class=nt>&lt;/groupId&gt;</span>
+            <span class=nt>&lt;artifactId&gt;</span>yosql-tooling-maven<span class=nt>&lt;/artifactId&gt;</span>
+            <span class=nt>&lt;version&gt;</span>2023.2.22<span class=nt>&lt;/version&gt;</span>
+            <span class=nt>&lt;configuration&gt;</span>
+                <span class=nt>&lt;configOption&gt;</span>configValue<span class=nt>&lt;/configOption&gt;</span>
+            <span class=nt>&lt;/configuration&gt;</span>
+            <span class=nt>&lt;executions&gt;</span>
+                <span class=nt>&lt;execution&gt;</span>
+                    <span class=nt>&lt;phase&gt;</span>generate-sources<span class=nt>&lt;/phase&gt;</span>
+                    <span class=nt>&lt;goals&gt;</span>
+                        <span class=nt>&lt;goal&gt;</span>generate<span class=nt>&lt;/goal&gt;</span>
+                    <span class=nt>&lt;/goals&gt;</span>
+                <span class=nt>&lt;/execution&gt;</span>
+            <span class=nt>&lt;/executions&gt;</span>
+        <span class=nt>&lt;/plugin&gt;</span>
+        ...
+    <span class=nt>&lt;/plugins&gt;</span>
+<span class=nt>&lt;/build&gt;</span>
+</code></pre></div><p>The <code>generate</code> goal binds itself automatically to the <code>generate-sources</code> phase. In case you want to run it in another phase, change the above example accordingly.</p><h3 id=multiple-configurations>Multiple Configurations</h3><p>In some cases it might be preferable to generate some repositories with a specific set of configuration options while using another set for other repositories. There are several ways how this can be accomplished:</p><ol><li>Place SQL files in different Maven modules.</li><li>Use a single module with multiple <code>execution</code> configurations.</li><li>Override configuration for individual SQL statements.</li></ol><h4 id=multiple-executions>Multiple <code>execution</code>s</h4><p>Make sure that multiple executions do not make use of the same .sql files. Otherwise, the executions will overwrite
+the generated code of each other. The last execution will win. Share configuration across all executions by using a single top level <code>configuration</code> block.</p><div class=highlight><pre class=chroma><code class=language-xml data-lang=xml><span class=nt>&lt;build&gt;</span>
+    <span class=nt>&lt;plugins&gt;</span>
+        ...
+        <span class=nt>&lt;plugin&gt;</span>
+            <span class=nt>&lt;groupId&gt;</span>wtf.metio.yosql<span class=nt>&lt;/groupId&gt;</span>
+            <span class=nt>&lt;artifactId&gt;</span>yosql-tooling-maven<span class=nt>&lt;/artifactId&gt;</span>
+            <span class=nt>&lt;version&gt;</span>2023.2.22<span class=nt>&lt;/version&gt;</span>
+            <span class=nt>&lt;configuration&gt;</span>
+                <span class=nt>&lt;repositories&gt;</span>
+                    <span class=nt>&lt;basePackageName&gt;</span>your.domain.persistence<span class=nt>&lt;/basePackageName&gt;</span>
+                <span class=nt>&lt;/repositories&gt;</span>
+            <span class=nt>&lt;/configuration&gt;</span>
+            <span class=nt>&lt;executions&gt;</span>
+                <span class=nt>&lt;execution&gt;</span>
+                    <span class=nt>&lt;id&gt;</span>config-a<span class=nt>&lt;/id&gt;</span>
+                    <span class=nt>&lt;goals&gt;</span>
+                        <span class=nt>&lt;goal&gt;</span>generate<span class=nt>&lt;/goal&gt;</span>
+                    <span class=nt>&lt;/goals&gt;</span>
+                    <span class=nt>&lt;configuration&gt;</span>
+                        <span class=nt>&lt;files&gt;</span>
+                            <span class=nt>&lt;inputBaseDirectory&gt;</span>src/main/database/reactive<span class=nt>&lt;/inputBaseDirectory&gt;</span>
+                        <span class=nt>&lt;/files&gt;</span>
+                    <span class=nt>&lt;/configuration&gt;</span>
+                <span class=nt>&lt;/execution&gt;</span>
+                <span class=nt>&lt;execution&gt;</span>
+                    <span class=nt>&lt;id&gt;</span>config-b<span class=nt>&lt;/id&gt;</span>
+                    <span class=nt>&lt;goals&gt;</span>
+                        <span class=nt>&lt;goal&gt;</span>generate<span class=nt>&lt;/goal&gt;</span>
+                    <span class=nt>&lt;/goals&gt;</span>
+                    <span class=nt>&lt;configuration&gt;</span>
+                        <span class=nt>&lt;files&gt;</span>
+                            <span class=nt>&lt;inputBaseDirectory&gt;</span>src/main/database/synchronous<span class=nt>&lt;/inputBaseDirectory&gt;</span>
+                        <span class=nt>&lt;/files&gt;</span>
+                        <span class=nt>&lt;repositories&gt;</span>
+                            <span class=nt>&lt;apiVersion&gt;</span>16<span class=nt>&lt;/apiVersion&gt;</span>
+                        <span class=nt>&lt;/repositories&gt;</span>
+                    <span class=nt>&lt;/configuration&gt;</span>
+                <span class=nt>&lt;/execution&gt;</span>
+            <span class=nt>&lt;/executions&gt;</span>
+        <span class=nt>&lt;/plugin&gt;</span>
+        ...
+    <span class=nt>&lt;/plugins&gt;</span>
+<span class=nt>&lt;/build&gt;</span>
+</code></pre></div></div></main><footer id=footer><p xmlns:dct=http://purl.org/dc/terms/ xmlns:vcard=http://www.w3.org/2001/vcard-rdf/3.0#><a rel=license href=https://creativecommons.org/publicdomain/zero/1.0/><img src=https://yosql.projects.metio.wtf/images/cc0.png style=border-style:none alt=CC0 width=88px height=31px></a><br>To the extent possible under law,
+<a rel=dct:publisher href=https://yosql.projects.metio.wtf/><span property="dct:title">metio.wtf</span>
+</a>has waived all copyright and related or neighboring rights to
+<span property="dct:title">yosql.projects.metio.wtf</span>.
+This work is published from:
+<span property="vcard:Country" datatype="dct:ISO3166" content="EN" about="https://yosql.projects.metio.wtf/">Germany</span></p></footer></body></html>

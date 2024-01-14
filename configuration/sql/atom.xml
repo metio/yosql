@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">Sql on YoSQL</title><link href="https://yosql.projects.metio.wtf/configuration/sql/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/configuration/sql/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/configuration/sql/</id><entry><title type="html">annotations</title><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatchprefix/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatchPrefix"/><id>https://yosql.projects.metio.wtf/configuration/sql/annotations/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The additional annotations to be placed on generated methods.</p>
+<p>This list is empty by default and thus no annotations are added to generated methods.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-yourownannotation">Option: &lsquo;your.own.Annotation&rsquo;</h3>
+<p>In order to add an annotation to the generated methods, specify its fully-qualified name.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">your.own.Annotation</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Annotation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-yourotherannotation">Option: &lsquo;your.other.Annotation&rsquo;</h3>
+<p>In order to add an annotation with some member, specify name of the annotation member, its value, and its type. The type defaults to <code>java.lang.String</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">your.other.Annotation</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Annotation</span><span class="p">(</span><span class="n">member</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;value&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- annotations: 
+</span></span></span><span class="line"><span class="cl"><span class="c1">--  - type: your.own.Annotation
+</span></span></span><span class="line"><span class="cl"><span class="c1">--    members:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--      - key: someMember
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        value: this is your value
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        type: java.lang.String
+</span></span></span><span class="line"><span class="cl"><span class="c1">--      - key: another
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        value: 5
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        type: int
+</span></span></span><span class="line"><span class="cl"><span class="c1">--  - type: your.other.Annotation
+</span></span></span><span class="line"><span class="cl"><span class="c1">--    members:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--      - key: value
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        value: yep
+</span></span></span><span class="line"><span class="cl"><span class="c1">--  - type: some.annotation.WithoutMembers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">catchAndRethrow</title><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatchprefix/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatchPrefix"/><id>https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default value for <code>catchAndRethrow</code> is <code>true</code>. This will catch any <code>SQLException</code> that happen during SQL execution and re-throw them as <code>RuntimeExceptions</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSome</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>In case you want to handle <code>SQLException</code>s yourself, set <code>catchAndRethrow</code> to <code>false</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.sql.SQLException</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSome</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">SQLException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- catchAndRethrow: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">createConnection</title><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatchprefix/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatchPrefix"/><id>https://yosql.projects.metio.wtf/configuration/sql/createconnection/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Controls whether the generated code should create/open connection itself or use a given connection.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- createConnection: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">description</title><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatchprefix/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatchPrefix"/><id>https://yosql.projects.metio.wtf/configuration/sql/description/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The description for the SQL statement</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-some-random-description">Option: &lsquo;Some random description&rsquo;</h3>
+<p>In case you use the <code>description</code> option, <code>YoSQL</code> will use the supplied value as a JavaDoc comment</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Some random description
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- description: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeBatch</title><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatchprefix/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatchPrefix"/><id>https://yosql.projects.metio.wtf/configuration/sql/executebatch/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate methods that are executed as batch</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- executeBatch: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeBatchPrefix</title><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatchprefix/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/executebatchprefix/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The method prefix to use for generated methods that execute in a batch.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-">Option: ''</h3>
+<p>The default value for <code>executeBatchPrefix</code> is the empty string. It does not add any prefix in front of batch methods.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSomeBatch</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-myprefix">Option: &lsquo;myPrefix&rsquo;</h3>
+<p>In case you want to prefix batch methods with something, set the <code>executeBatchPrefix</code> option.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myPrefixWriteSomeBatch</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- executeBatchPrefix: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeBatchSuffix</title><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatchsuffix/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/executebatchsuffix/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The method suffix to use for generated methods that execute in a batch.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-batch">Option: &lsquo;Batch&rsquo;</h3>
+<p>The default value for <code>executeBatchSuffix</code> is &lsquo;Batch&rsquo;. It adds the word &lsquo;Batch&rsquo; after each batch method.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSomeBatch</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-other">Option: &lsquo;Other&rsquo;</h3>
+<p>In case you want to suffix batch methods with something else, set the <code>executeBatchSuffix</code> option.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSomeOther</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- executeBatchSuffix: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeOnce</title><link href="https://yosql.projects.metio.wtf/configuration/sql/executeonce/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/executeonce/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate methods that are executed once with the given parameters</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- executeOnce: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeOncePrefix</title><link href="https://yosql.projects.metio.wtf/configuration/sql/executeonceprefix/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/executeonceprefix/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The method prefix to use for generated methods that execute once.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-">Option: ''</h3>
+<p>The default value for <code>executeOncePrefix</code> is the empty string. It does not add any prefix in front of methods that are executed once.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSome</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-myprefix">Option: &lsquo;myPrefix&rsquo;</h3>
+<p>In case you want to prefix methods that execute once with something, set the <code>executeOncePrefix</code> option.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">myPrefixWriteSome</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- executeOncePrefix: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeOnceSuffix</title><link href="https://yosql.projects.metio.wtf/configuration/sql/executeoncesuffix/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/executeoncesuffix/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The method suffix to use for generated methods that execute once.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-">Option: ''</h3>
+<p>The default value for <code>executeOnceSuffix</code> is the empty string. It does not add any suffix after methods that execute once.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSome</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-mysuffix">Option: &lsquo;mySuffix&rsquo;</h3>
+<p>In case you want to suffix methods that execute once with something, set the <code>executeOnceSuffix</code> option.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSomeMySuffix</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- executeOnceSuffix: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">name</title><link href="https://yosql.projects.metio.wtf/configuration/sql/name/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/name/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The name of the SQL statement</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-yourspecialname">Option: &lsquo;yourSpecialName&rsquo;</h3>
+<p>In case you use the <code>name</code> option, <code>YoSQL</code> will use the supplied value as a method name</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">yourSpecialName</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">parameters</title><link href="https://yosql.projects.metio.wtf/configuration/sql/parameters/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/parameters/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The parameters of the SQL statement.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- parameters: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">repository</title><link href="https://yosql.projects.metio.wtf/configuration/sql/repository/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/repository/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The fully qualified name of the target repository class.</p>
+<p>In order to overwrite the target repository of a single SQL statement, use the <code>repository</code> option.
+You can specify the fully qualified name of the repository that should contain your statement, or
+you can just specify the name of the class and <code>YoSQL</code> will automatically add the
+<a href="../../repositories/basepackagename/">base package name</a> as well as the
+<a href="../../repositories/repositorynameprefix/">repositoryNamePrefix</a> and
+<a href="../../repositories/repositorynamesuffix/">repositoryNameSuffix</a> for you.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- repository: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">resultRowConverter</title><link href="https://yosql.projects.metio.wtf/configuration/sql/resultrowconverter/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/resultrowconverter/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The alias or fully-qualified name of the converter to use</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowConverter: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">returningMode</title><link href="https://yosql.projects.metio.wtf/configuration/sql/returningmode/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/returningmode/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The returning mode of the SQL statement.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- returningMode: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">throwOnMultipleResults</title><link href="https://yosql.projects.metio.wtf/configuration/sql/throwonmultipleresults/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/throwonmultipleresults/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- throwOnMultipleResults: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">type</title><link href="https://yosql.projects.metio.wtf/configuration/sql/type/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/type/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The type of the SQL statement.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- type: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">vendor</title><link href="https://yosql.projects.metio.wtf/configuration/sql/vendor/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/vendor/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The vendor name of the database the SQL statement is intended for</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>: Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- vendor: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">writesReturnUpdateCount</title><link href="https://yosql.projects.metio.wtf/configuration/sql/writesreturnupdatecount/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/writesreturnupdatecount/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotations/">annotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../catchandrethrow/">catchAndRethrow</a>: Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</li>
+<li><a href="../createconnection/">createConnection</a>: Controls whether the generated code should create/open connection itself or use a given connection.</li>
+<li><a href="../description/">description</a>: The description for the SQL statement</li>
+<li><a href="../executebatch/">executeBatch</a>: Generate methods that are executed as batch</li>
+<li><a href="../executebatchprefix/">executeBatchPrefix</a>: The method prefix to use for generated methods that execute in a batch.</li>
+<li><a href="../executebatchsuffix/">executeBatchSuffix</a>: The method suffix to use for generated methods that execute in a batch.</li>
+<li><a href="../executeonce/">executeOnce</a>: Generate methods that are executed once with the given parameters</li>
+<li><a href="../executeonceprefix/">executeOncePrefix</a>: The method prefix to use for generated methods that execute once.</li>
+<li><a href="../executeoncesuffix/">executeOnceSuffix</a>: The method suffix to use for generated methods that execute once.</li>
+<li><a href="../name/">name</a>: The name of the SQL statement</li>
+<li><a href="../parameters/">parameters</a>: The parameters of the SQL statement.</li>
+<li><a href="../repository/">repository</a>: The fully qualified name of the target repository class.</li>
+<li><a href="../resultrowconverter/">resultRowConverter</a>: The alias or fully-qualified name of the converter to use</li>
+<li><a href="../returningmode/">returningMode</a>: The returning mode of the SQL statement.</li>
+<li><a href="../throwonmultipleresults/">throwOnMultipleResults</a>: Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</li>
+<li><a href="../type/">type</a>: The type of the SQL statement.</li>
+<li><a href="../vendor/">vendor</a>: The vendor name of the database the SQL statement is intended for</li>
+</ul>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- writesReturnUpdateCount: configValue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry></feed>

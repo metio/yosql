@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">Converter on YoSQL</title><link href="https://yosql.projects.metio.wtf/configuration/converter/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/configuration/converter/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/configuration/converter/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/configuration/converter/</id><entry><title type="html">defaultConverter</title><link href="https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/?utm_source=atom_feed" rel="related" type="text/html" title="generateMapConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterAlias"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterClass"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterMethod"/><link href="https://yosql.projects.metio.wtf/configuration/converter/rowconverters/?utm_source=atom_feed" rel="related" type="text/html" title="rowConverters"/><id>https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The default converter to use, if no other is specified on a query itself.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../generatemapconverter/">generateMapConverter</a>: Whether the ToMap converter should be generated.</li>
+<li><a href="../mapconverteralias/">mapConverterAlias</a>: The name of the alias referencing the ToMap converter.</li>
+<li><a href="../mapconverterclass/">mapConverterClass</a>: The fully-qualified class name of the ToMap converter.</li>
+<li><a href="../mapconvertermethod/">mapConverterMethod</a>: The name of the method to generate/call in the ToMap converter.</li>
+<li><a href="../rowconverters/">rowConverters</a>: The converters configured by the user.</li>
+</ul>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --converter-default-converter<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --default-converter<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>defaultConverter</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">defaultConverter</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">defaultConverter</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>defaultConverter</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;defaultConverter&gt;</span>configValue<span class="nt">&lt;/defaultConverter&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/converter&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/converter" term="converter" label="converter"/></entry><entry><title type="html">generateMapConverter</title><link href="https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/?utm_source=atom_feed" rel="related" type="text/html" title="defaultConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterAlias"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterClass"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterMethod"/><link href="https://yosql.projects.metio.wtf/configuration/converter/rowconverters/?utm_source=atom_feed" rel="related" type="text/html" title="rowConverters"/><id>https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Whether the ToMap converter should be generated.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../defaultconverter/">defaultConverter</a>: The default converter to use, if no other is specified on a query itself.</li>
+<li><a href="../mapconverteralias/">mapConverterAlias</a>: The name of the alias referencing the ToMap converter.</li>
+<li><a href="../mapconverterclass/">mapConverterClass</a>: The fully-qualified class name of the ToMap converter.</li>
+<li><a href="../mapconvertermethod/">mapConverterMethod</a>: The name of the method to generate/call in the ToMap converter.</li>
+<li><a href="../rowconverters/">rowConverters</a>: The converters configured by the user.</li>
+</ul>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --converter-generate-map-converter<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --generate-map-converter<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>generateMapConverter</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">generateMapConverter</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">generateMapConverter</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>generateMapConverter</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;generateMapConverter&gt;</span>configValue<span class="nt">&lt;/generateMapConverter&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/converter&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/converter" term="converter" label="converter"/></entry><entry><title type="html">mapConverterAlias</title><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/?utm_source=atom_feed" rel="related" type="text/html" title="defaultConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/?utm_source=atom_feed" rel="related" type="text/html" title="generateMapConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterClass"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterMethod"/><link href="https://yosql.projects.metio.wtf/configuration/converter/rowconverters/?utm_source=atom_feed" rel="related" type="text/html" title="rowConverters"/><id>https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The name of the alias referencing the ToMap converter.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../defaultconverter/">defaultConverter</a>: The default converter to use, if no other is specified on a query itself.</li>
+<li><a href="../generatemapconverter/">generateMapConverter</a>: Whether the ToMap converter should be generated.</li>
+<li><a href="../mapconverterclass/">mapConverterClass</a>: The fully-qualified class name of the ToMap converter.</li>
+<li><a href="../mapconvertermethod/">mapConverterMethod</a>: The name of the method to generate/call in the ToMap converter.</li>
+<li><a href="../rowconverters/">rowConverters</a>: The converters configured by the user.</li>
+</ul>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --converter-map-converter-alias<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --map-converter-alias<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>mapConverterAlias</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mapConverterAlias</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mapConverterAlias</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>mapConverterAlias</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;mapConverterAlias&gt;</span>configValue<span class="nt">&lt;/mapConverterAlias&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/converter&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/converter" term="converter" label="converter"/></entry><entry><title type="html">mapConverterClass</title><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/?utm_source=atom_feed" rel="related" type="text/html" title="defaultConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/?utm_source=atom_feed" rel="related" type="text/html" title="generateMapConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterAlias"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterMethod"/><link href="https://yosql.projects.metio.wtf/configuration/converter/rowconverters/?utm_source=atom_feed" rel="related" type="text/html" title="rowConverters"/><id>https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The fully-qualified class name of the ToMap converter.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../defaultconverter/">defaultConverter</a>: The default converter to use, if no other is specified on a query itself.</li>
+<li><a href="../generatemapconverter/">generateMapConverter</a>: Whether the ToMap converter should be generated.</li>
+<li><a href="../mapconverteralias/">mapConverterAlias</a>: The name of the alias referencing the ToMap converter.</li>
+<li><a href="../mapconvertermethod/">mapConverterMethod</a>: The name of the method to generate/call in the ToMap converter.</li>
+<li><a href="../rowconverters/">rowConverters</a>: The converters configured by the user.</li>
+</ul>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --converter-map-converter-class<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --map-converter-class<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>mapConverterClass</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mapConverterClass</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mapConverterClass</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>mapConverterClass</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;mapConverterClass&gt;</span>configValue<span class="nt">&lt;/mapConverterClass&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/converter&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/converter" term="converter" label="converter"/></entry><entry><title type="html">mapConverterMethod</title><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/?utm_source=atom_feed" rel="related" type="text/html" title="defaultConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/?utm_source=atom_feed" rel="related" type="text/html" title="generateMapConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterAlias"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterClass"/><link href="https://yosql.projects.metio.wtf/configuration/converter/rowconverters/?utm_source=atom_feed" rel="related" type="text/html" title="rowConverters"/><id>https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The name of the method to generate/call in the ToMap converter.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../defaultconverter/">defaultConverter</a>: The default converter to use, if no other is specified on a query itself.</li>
+<li><a href="../generatemapconverter/">generateMapConverter</a>: Whether the ToMap converter should be generated.</li>
+<li><a href="../mapconverteralias/">mapConverterAlias</a>: The name of the alias referencing the ToMap converter.</li>
+<li><a href="../mapconverterclass/">mapConverterClass</a>: The fully-qualified class name of the ToMap converter.</li>
+<li><a href="../rowconverters/">rowConverters</a>: The converters configured by the user.</li>
+</ul>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --converter-map-converter-method<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --map-converter-method<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>mapConverterMethod</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mapConverterMethod</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mapConverterMethod</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>mapConverterMethod</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;mapConverterMethod&gt;</span>configValue<span class="nt">&lt;/mapConverterMethod&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/converter&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/converter" term="converter" label="converter"/></entry><entry><title type="html">rowConverters</title><link href="https://yosql.projects.metio.wtf/configuration/converter/rowconverters/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/?utm_source=atom_feed" rel="related" type="text/html" title="defaultConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/?utm_source=atom_feed" rel="related" type="text/html" title="generateMapConverter"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterAlias"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterClass"/><link href="https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/?utm_source=atom_feed" rel="related" type="text/html" title="mapConverterMethod"/><id>https://yosql.projects.metio.wtf/configuration/converter/rowconverters/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The converters configured by the user.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../defaultconverter/">defaultConverter</a>: The default converter to use, if no other is specified on a query itself.</li>
+<li><a href="../generatemapconverter/">generateMapConverter</a>: Whether the ToMap converter should be generated.</li>
+<li><a href="../mapconverteralias/">mapConverterAlias</a>: The name of the alias referencing the ToMap converter.</li>
+<li><a href="../mapconverterclass/">mapConverterClass</a>: The fully-qualified class name of the ToMap converter.</li>
+<li><a href="../mapconvertermethod/">mapConverterMethod</a>: The name of the method to generate/call in the ToMap converter.</li>
+</ul>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --converter-row-converters<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --row-converters<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>rowConverters</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rowConverters</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">converter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rowConverters</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>rowConverters</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;rowConverters&gt;</span>configValue<span class="nt">&lt;/rowConverters&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/converter&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/converter" term="converter" label="converter"/></entry></feed>

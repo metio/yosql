@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">Maven on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/maven/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/maven/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/maven/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/maven/</id><entry><title type="html">Maven</title><link href="https://yosql.projects.metio.wtf/tooling/maven/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/maven/</id><published>2019-06-16T18:23:45+02:00</published><updated>2019-06-16T18:23:45+02:00</updated><content type="html"><![CDATA[<p><a href="https://maven.apache.org/">Maven</a> projects can use the <code>yosql-tooling-maven</code> plugin to use <code>YoSQL</code> in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.</p>
+<ol>
+<li>Add the <a href="https://search.maven.org/artifact/wtf.metio.yosql.tooling/yosql-tooling-maven">plugin</a> to your <code>pom.xml</code>:
+
+   
+   <div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;build&gt;</span>
+       <span class="nt">&lt;plugins&gt;</span>
+           ...
+           <span class="nt">&lt;plugin&gt;</span>
+               <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+               <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+               <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+           <span class="nt">&lt;/plugin&gt;</span>
+           ...
+       <span class="nt">&lt;/plugins&gt;</span>
+   <span class="nt">&lt;/build&gt;</span>
+   </code></pre>
+   </div>
+</li>
+<li>Add .sql files in <code>src/main/yosql</code> and write SQL statements into them. Take a look at the various options to <a href="/sql/structure/">structure</a> your <a href="/sql/sql-files/">SQL files</a>.
+<pre tabindex="0"><code>&lt;project_root&gt;/
+├── pom.xml
+└── src/
+    └── main/
+        └── yosql/
+            └── domainObject/
+                ├── queryData.sql
+                └── changeYourData.sql
+            └── aggregateRoot/
+                ├── findRoot.sql
+                └── addData.sql
+</code></pre></li>
+<li>Execute the <code>yosql:generate</code> goal (or just run <code>mvn generate-sources</code>) to generate the Java code.</li>
+</ol>
+<h2 id="build-helper-plugin">Build Helper Plugin</h2>
+<p>As an optional and final step to complete the setup of <code>YoSQL</code>, you can add the <a href="https://www.mojohaus.org/build-helper-maven-plugin/">build-helper-maven-plugin</a> to your build in order to mark the <a href="/configuration/files/outputbasedirectory/">outputBaseDirectory</a> as a source directory in your IDE like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>build-helper-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;executions&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;execution&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;id&gt;</span>add-source<span class="nt">&lt;/id&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;phase&gt;</span>generate-sources<span class="nt">&lt;/phase&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;goals&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;goal&gt;</span>add-source<span class="nt">&lt;/goal&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/goals&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;sources&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;source&gt;</span>${project.build.directory}/generated-sources/yosql<span class="nt">&lt;/source&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/sources&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/execution&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/executions&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div><h2 id="configuration">Configuration</h2>
+<p>You can configure how YoSQL operates and how the generated code looks like by using the <a href="https://maven.apache.org/guides/mini/guide-configuring-plugins.html">default Maven configuration
+mechanism</a>. Take a look at the <a href="/configuration/">available configuration options</a> in order to see what can be configured.</p>
+
+
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+        ...
+        <span class="nt">&lt;plugin&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;configuration&gt;</span>
+                <span class="nt">&lt;configOption&gt;</span>configValue<span class="nt">&lt;/configOption&gt;</span>
+            <span class="nt">&lt;/configuration&gt;</span>
+            <span class="nt">&lt;executions&gt;</span>
+                <span class="nt">&lt;execution&gt;</span>
+                    <span class="nt">&lt;phase&gt;</span>generate-sources<span class="nt">&lt;/phase&gt;</span>
+                    <span class="nt">&lt;goals&gt;</span>
+                        <span class="nt">&lt;goal&gt;</span>generate<span class="nt">&lt;/goal&gt;</span>
+                    <span class="nt">&lt;/goals&gt;</span>
+                <span class="nt">&lt;/execution&gt;</span>
+            <span class="nt">&lt;/executions&gt;</span>
+        <span class="nt">&lt;/plugin&gt;</span>
+        ...
+    <span class="nt">&lt;/plugins&gt;</span>
+<span class="nt">&lt;/build&gt;</span>
+</code></pre>
+</div>
+
+<p>The <code>generate</code> goal binds itself automatically to the <code>generate-sources</code> phase. In case you want to run it in another phase, change the above example accordingly.</p>
+<h3 id="multiple-configurations">Multiple Configurations</h3>
+<p>In some cases it might be preferable to generate some repositories with a specific set of configuration options while using another set for other repositories. There are several ways how this can be accomplished:</p>
+<ol>
+<li>Place SQL files in different Maven modules.</li>
+<li>Use a single module with multiple <code>execution</code> configurations.</li>
+<li>Override configuration for individual SQL statements.</li>
+</ol>
+<h4 id="multiple-executions">Multiple <code>execution</code>s</h4>
+<p>Make sure that multiple executions do not make use of the same .sql files. Otherwise, the executions will overwrite
+the generated code of each other. The last execution will win. Share configuration across all executions by using a single top level <code>configuration</code> block.</p>
+
+
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+        ...
+        <span class="nt">&lt;plugin&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;configuration&gt;</span>
+                <span class="nt">&lt;repositories&gt;</span>
+                    <span class="nt">&lt;basePackageName&gt;</span>your.domain.persistence<span class="nt">&lt;/basePackageName&gt;</span>
+                <span class="nt">&lt;/repositories&gt;</span>
+            <span class="nt">&lt;/configuration&gt;</span>
+            <span class="nt">&lt;executions&gt;</span>
+                <span class="nt">&lt;execution&gt;</span>
+                    <span class="nt">&lt;id&gt;</span>config-a<span class="nt">&lt;/id&gt;</span>
+                    <span class="nt">&lt;goals&gt;</span>
+                        <span class="nt">&lt;goal&gt;</span>generate<span class="nt">&lt;/goal&gt;</span>
+                    <span class="nt">&lt;/goals&gt;</span>
+                    <span class="nt">&lt;configuration&gt;</span>
+                        <span class="nt">&lt;files&gt;</span>
+                            <span class="nt">&lt;inputBaseDirectory&gt;</span>src/main/database/reactive<span class="nt">&lt;/inputBaseDirectory&gt;</span>
+                        <span class="nt">&lt;/files&gt;</span>
+                    <span class="nt">&lt;/configuration&gt;</span>
+                <span class="nt">&lt;/execution&gt;</span>
+                <span class="nt">&lt;execution&gt;</span>
+                    <span class="nt">&lt;id&gt;</span>config-b<span class="nt">&lt;/id&gt;</span>
+                    <span class="nt">&lt;goals&gt;</span>
+                        <span class="nt">&lt;goal&gt;</span>generate<span class="nt">&lt;/goal&gt;</span>
+                    <span class="nt">&lt;/goals&gt;</span>
+                    <span class="nt">&lt;configuration&gt;</span>
+                        <span class="nt">&lt;files&gt;</span>
+                            <span class="nt">&lt;inputBaseDirectory&gt;</span>src/main/database/synchronous<span class="nt">&lt;/inputBaseDirectory&gt;</span>
+                        <span class="nt">&lt;/files&gt;</span>
+                        <span class="nt">&lt;repositories&gt;</span>
+                            <span class="nt">&lt;apiVersion&gt;</span>16<span class="nt">&lt;/apiVersion&gt;</span>
+                        <span class="nt">&lt;/repositories&gt;</span>
+                    <span class="nt">&lt;/configuration&gt;</span>
+                <span class="nt">&lt;/execution&gt;</span>
+            <span class="nt">&lt;/executions&gt;</span>
+        <span class="nt">&lt;/plugin&gt;</span>
+        ...
+    <span class="nt">&lt;/plugins&gt;</span>
+<span class="nt">&lt;/build&gt;</span>
+</code></pre>
+</div>
+
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/maven" term="maven" label="Maven"/></entry></feed>

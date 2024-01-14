@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">Gradle on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/gradle/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/gradle/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/gradle/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/gradle/</id><entry><title type="html">Gradle</title><link href="https://yosql.projects.metio.wtf/tooling/gradle/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/gradle/</id><published>2019-06-16T18:23:45+02:00</published><updated>2019-06-16T18:23:45+02:00</updated><content type="html"><![CDATA[<p><a href="https://gradle.org/">Gradle</a> projects can use the <a href="https://plugins.gradle.org/plugin/wtf.metio.yosql">yosql-tooling-gradle</a> plugin to use <code>YoSQL</code> in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.</p>
+<ol>
+<li>Add the <a href="https://plugins.gradle.org/plugin/wtf.metio.yosql">plugin</a> to your <code>build.gradle(.kts)</code> file as describe in the Gradle plugin portal.</li>
+<li>Add .sql files in <code>src/main/yosql</code> and write SQL statements into them. Take a look at the various options to <a href="/sql/structure/">structure</a> your <a href="/sql/sql-files/">SQL files</a>.
+<pre tabindex="0"><code>&lt;project_root&gt;/
+├── build.gradle.kts
+├── settings.gradle.kts
+└── src/
+    └── main/
+        └── yosql/
+            └── domainObject/
+                ├── queryData.sql
+                └── changeYourData.sql
+            └── aggregateRoot/
+                ├── findRoot.sql
+                └── addData.sql
+</code></pre></li>
+<li>Execute the <code>yosql</code> task (or just run <code>gradle build</code>) to generate the Java code.</li>
+</ol>
+<p><strong>Note</strong>: The YoSQL Gradle plugin will automatically add the generated sources to the main source set as defined by the Gradle Java plugin. If your project is not using the Java plugin, you have to configure the <a href="/configuration/files/outputbasedirectory/">outputBaseDirectory</a> to be part of a source sets of your project yourself.</p>
+<h2 id="configuration">Configuration</h2>
+<p>You can configure how YoSQL operates and how the generated code looks like by using the <code>yosql</code> task extension. Take a look at the <a href="/configuration/">available configuration options</a> in order to see what can be configured.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/gradle" term="gradle" label="Gradle"/></entry></feed>

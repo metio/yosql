@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">methods on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/methods/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/methods/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/methods/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/methods/</id><entry><title type="html">annotateMethods</title><link href="https://yosql.projects.metio.wtf/configuration/annotations/annotatemethods/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/annotations/annotateclasses/?utm_source=atom_feed" rel="related" type="text/html" title="annotateClasses"/><link href="https://yosql.projects.metio.wtf/configuration/annotations/annotatefields/?utm_source=atom_feed" rel="related" type="text/html" title="annotateFields"/><link href="https://yosql.projects.metio.wtf/configuration/annotations/annotationapi/?utm_source=atom_feed" rel="related" type="text/html" title="annotationApi"/><link href="https://yosql.projects.metio.wtf/configuration/annotations/classcomment/?utm_source=atom_feed" rel="related" type="text/html" title="classComment"/><link href="https://yosql.projects.metio.wtf/configuration/annotations/classmembers/?utm_source=atom_feed" rel="related" type="text/html" title="classMembers"/><id>https://yosql.projects.metio.wtf/configuration/annotations/annotatemethods/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Controls whether Generated annotations should be added to the generated methods.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The default value of the <code>annotateMethods</code> configuration option is <code>false</code>. Setting the option to <code>false</code> therefore produces the same code generated as the default configuration.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-true">Option: &rsquo;true'</h3>
+<p>Changing the <code>annotateMethods</code> configuration option to <code>true</code> adds the <code>@Generated</code> annotation to every generated methods. Its is possible to configure each value individually using other config options.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">javax.annotation.processing.Generated</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Generated</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;YoSQL&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;&lt;current_timestamp&gt;&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">comments</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;DO NOT MODIFY - automatically generated by YoSQL&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code (same as above)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<ul>
+<li><a href="../annotateclasses/">annotateClasses</a>: Controls whether Generated annotations should be added to the generated classes.</li>
+<li><a href="../annotatefields/">annotateFields</a>: Controls whether Generated annotations should be added to the generated fields.</li>
+<li><a href="../annotationapi/">annotationApi</a>: The annotation API to use.</li>
+<li><a href="../classcomment/">classComment</a>: Sets the comment used for annotated classes.</li>
+<li><a href="../classmembers/">classMembers</a>: The annotation members to use for classes.</li>
+<li><a href="../constructorannotations/">constructorAnnotations</a>: The additional annotations to be placed on generated constructors.</li>
+<li><a href="../fieldcomment/">fieldComment</a>: Sets the comment used for annotated fields.</li>
+<li><a href="../fieldmembers/">fieldMembers</a>: The annotation members to use for fields.</li>
+<li><a href="../generatorname/">generatorName</a>: The name of the code generator</li>
+<li><a href="../methodannotations/">methodAnnotations</a>: The additional annotations to be placed on generated methods.</li>
+<li><a href="../methodcomment/">methodComment</a>: Sets the comment used for annotated methods.</li>
+<li><a href="../methodmembers/">methodMembers</a>: The annotation members to use for methods.</li>
+<li><a href="../repositoryannotations/">repositoryAnnotations</a>: The additional annotations to be placed on generated repository classes.</li>
+</ul>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --annotations-annotate-methods<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --annotate-methods<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>annotateMethods</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">annotations</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">annotateMethods</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">annotations</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">annotateMethods</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>annotateMethods</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;annotations&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;annotateMethods&gt;</span>configValue<span class="nt">&lt;/annotateMethods&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/annotations&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/annotations" term="annotations" label="annotations"/><category scheme="https://yosql.projects.metio.wtf/tags/methods" term="methods" label="methods"/></entry></feed>

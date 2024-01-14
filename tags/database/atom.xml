@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">database on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/database/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/database/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/database/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/database/</id><entry><title type="html">Database Access</title><link href="https://yosql.projects.metio.wtf/benchmarks/db-access/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/benchmarks/db-access/</id><published>2019-06-16T18:51:48+02:00</published><updated>2019-06-16T18:51:48+02:00</updated><content type="html"><![CDATA[<p>The following benchmarks try to use the fastest code paths available to execute SQL statements.</p>
+<h3 id="common-scenarios">Common Scenarios</h3>
+<p>The common scenarios define what each persistence solution must solve in order to pass the TCK. All benchmarks run through the following benchmarks:</p>
+<h4 id="reading-data">Reading Data</h4>
+<ul>
+<li><code>readComplexRelationship</code>: Read a complex data relationship.</li>
+<li><code>readManyToOneRelation</code>: Reads the one part of a many-to-one relation.</li>
+<li><code>readMultipleEntities</code>: Read multiple entities in one go.</li>
+<li><code>readMultipleEntitiesBasedOnCondition</code>: Read multiple entities and filter them inside the database.</li>
+<li><code>readOneToManyRelation</code>: Reads the many part of a one-to-many relation.</li>
+<li><code>readSingleEntityByPrimaryKey</code>: Read a single entity using its primary key.</li>
+</ul>
+<h4 id="writing-data">Writing Data</h4>
+<ul>
+<li><code>writeMultipleEntities</code>: Writes multiple entities into the database.</li>
+<li><code>writeSingleEntity</code>: Writes a new entity into the database.</li>
+<li><code>updateOneToManyRelation</code>: Update the one-to-many relationship part of an entity.</li>
+<li><code>updateManyToOneRelation</code>: Update the many-to-one relationship part of an entity.</li>
+<li><code>deleteSingleEntityByPrimaryKey</code>: Delete a single entity using its primary key.</li>
+</ul>
+<h4 id="calling-stored-procedures">Calling Stored Procedures</h4>
+<ul>
+<li><code>callStoredProcedure</code>: Call a single stored procedure.</li>
+</ul>
+<h2 id="yosql-implementations">YoSQL Implementations</h2>
+<p>In order to select the best matching persistence API for your project, performance might be taken into consideration. In general, we recommend to use whatever persistence API is already used in your project in order to minimize the number of dependencies.</p>
+<h3 id="jdbc">JDBC</h3>
+<p>In order to run JDBC benchmarks of <code>YoSQL</code> run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> run JDBC benchmarks
+</span></span><span class="line"><span class="cl"><span class="gp">$</span> mvn --projects yosql-benchmarks/yosql-benchmarks-dao --also-make --activate-profiles benchmarks verify
+</span></span></code></pre></div><p>The <a href="https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-dao-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-dao-CURRENT.json">results</a> are measured in <strong>microseconds</strong>. All available logging implementation are tested with their maximal output configuration in order to gauge how much overhead each implementation causes on top of the no-op implementation without any logging statements.</p>
+<h2 id="other-solutions">Other Solutions</h2>
+<p>In order to compare a solution entirely based on <code>YoSQL</code> against other persistence solutions, the following set of benchmarks was created. None of them use <code>Yosql</code> and solely use own native persistence API itself.</p>
+<h3 id="ebean">EBean</h3>
+<p>In order to run benchmarks against EBean run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> run EBean benchmarks
+</span></span><span class="line"><span class="cl"><span class="gp">$</span> mvn --projects yosql-benchmarks/yosql-benchmarks-vs-ebean --also-make --activate-profiles benchmarks verify
+</span></span></code></pre></div><h3 id="jdbi">JDBI</h3>
+<p>In order to run benchmarks against JDBI implementation run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> run JDBI benchmarks
+</span></span><span class="line"><span class="cl"><span class="gp">$</span> mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi --also-make --activate-profiles benchmarks verify
+</span></span></code></pre></div><h3 id="jooq">jOOQ</h3>
+<p>In order to run benchmarks against jOOQ implementation run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> run jOOQ benchmarks
+</span></span><span class="line"><span class="cl"><span class="gp">$</span> mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jooq --also-make --activate-profiles benchmarks verify
+</span></span></code></pre></div><h3 id="jpa">JPA</h3>
+<p>In order to run benchmarks against JPA implementation run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> run JPA benchmarks
+</span></span><span class="line"><span class="cl"><span class="gp">$</span> mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jpa --also-make --activate-profiles benchmarks verify
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/benchmarks" term="benchmarks" label="Benchmarks"/><category scheme="https://yosql.projects.metio.wtf/tags/database" term="database" label="database"/><category scheme="https://yosql.projects.metio.wtf/tags/access" term="access" label="access"/></entry></feed>

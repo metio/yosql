@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">CLI on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/cli/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/cli/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/cli/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/cli/</id><entry><title type="html">CLI</title><link href="https://yosql.projects.metio.wtf/tooling/cli/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/cli/</id><published>2019-06-16T18:23:45+02:00</published><updated>2019-06-16T18:23:45+02:00</updated><content type="html"><![CDATA[<p>In order to use the <code>YoSQL</code> <a href="https://en.wikipedia.org/wiki/Command-line_interface">CLI</a> tooling follow these steps:</p>
+<ol>
+<li>Download the <code>yosql-tooling-cli</code> zip file from the <a href="https://github.com/metio/yosql/releases/latest">latest release</a> (or any prior version).</li>
+<li>Place <code>bin/yosql</code> (or <code>bin/yosql.bat</code> on Windows) on your PATH.</li>
+<li>Write <code>.sql</code> files in a directory of your choice (e.g. <code>/path/to/your/sql/files</code>).</li>
+<li>Call <code>yosql --inputBaseDirectory /path/to/your/sql/files</code>.</li>
+<li>Adjust the <a href="/configuration/">configuration</a> according to your requirements.</li>
+</ol>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/cli" term="cli" label="CLI"/></entry></feed>

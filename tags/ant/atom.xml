@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">Ant on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/ant/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/ant/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/ant/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/ant/</id><entry><title type="html">Ant</title><link href="https://yosql.projects.metio.wtf/tooling/ant/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/ant/</id><published>2019-06-16T18:23:45+02:00</published><updated>2019-06-16T18:23:45+02:00</updated><content type="html"><![CDATA[<p>In order to use the <code>YoSQL</code> tooling for <a href="https://ant.apache.org/">Ant</a>, follow these steps:</p>
+<ol>
+<li>Download the <code>yosql-tooling-ant</code> task zip file from the <a href="https://github.com/metio/yosql/releases/latest">latest release</a> (or any prior version).</li>
+<li>Define a task in your build.xml. The <code>lib</code> folder of the <code>yosql-tooling-ant</code> zip file contains all jar files that are required for the task.</li>
+<li>Write <code>.sql</code> files in a directory of your choice (e.g. <code>/path/to/your/sql/files</code>).</li>
+<li>Adjust the <a href="/configuration/">configuration</a> of the <code>YoSQL</code> task.</li>
+<li>Execute the <code>YoSQL</code> task in order to generate Java code.</li>
+</ol>
+<p>An example build.xml file could look like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;project</span> <span class="na">name=</span><span class="s">&#34;YourProject&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;description&gt;</span>
+</span></span><span class="line"><span class="cl">    example showing how to use YoSQL with Ant
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/description&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c">&lt;!-- define YoSQL task --&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">&#34;yosql&#34;</span>
+</span></span><span class="line"><span class="cl">           <span class="na">classname=</span><span class="s">&#34;wtf.metio.yosql.tooling.ant.YoSQLGenerateTask&#34;</span>
+</span></span><span class="line"><span class="cl">           <span class="na">classpath=</span><span class="s">&#34;/path/of/all/yosql/jar/files&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c">&lt;!-- configure YoSQL --&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;yosql&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;files</span> <span class="na">inputBaseDirectory=</span><span class="s">&#34;/path/to/your/sql/files&#34;</span>
+</span></span><span class="line"><span class="cl">           <span class="na">outputBaseDirectory=</span><span class="s">&#34;/path/for/writing/java/code&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;repositories</span> <span class="na">generateInterfaces=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;rowConverters</span> <span class="na">alias=</span><span class="s">&#34;yourConverter&#34;</span>
+</span></span><span class="line"><span class="cl">                     <span class="na">converterType=</span><span class="s">&#34;com.example.YourConverter&#34;</span>
+</span></span><span class="line"><span class="cl">                     <span class="na">methodName=</span><span class="s">&#34;yourCustomMethod&#34;</span>
+</span></span><span class="line"><span class="cl">                     <span class="na">resultType=</span><span class="s">&#34;com.example.YourDomainObject&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/converter&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/yosql&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/project&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/ant" term="ant" label="Ant"/></entry></feed>

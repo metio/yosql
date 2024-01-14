@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">generation on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/generation/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/generation/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/generation/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/generation/</id><entry><title type="html">Code Generation</title><link href="https://yosql.projects.metio.wtf/benchmarks/codegen/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/benchmarks/codegen/</id><published>2019-06-16T18:51:48+02:00</published><updated>2019-06-16T18:51:48+02:00</updated><content type="html"><![CDATA[<p><a href="https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-codegen-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json">Code Generation</a>: Measures how long it takes to read, parse, and generate 50, 25, and 10 repositories in various configurations.</p>
+<ul>
+<li>JDBC without logging: Generates code using the JDBC API without any logging statements. Use these benchmarks as a baseline for benchmarks.</li>
+<li>JDBC with JUL: Enables the use of the <code>java.util.logging</code> API in generated code.</li>
+<li>JDBC with log4j: Enables the use of the <code>log4j</code> API in generated code.</li>
+<li>JDBC with slf4j: Enables the use of the <code>slf4j</code> API in generated code.</li>
+<li>JDBC with tinylog: Enables the use of the <code>tinylog</code> API in generated code.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> run code generation benchmark
+</span></span><span class="line"><span class="cl"><span class="gp">$</span> mvn --projects yosql-benchmarks/yosql-benchmarks-codegen --also-make --activate-profiles benchmarks verify
+</span></span></code></pre></div><p>The above command will execute the four configurations mentioned at the top of this page. Each configuration uses repositories that contain:</p>
+<ul>
+<li>Call to a stored procedure.</li>
+<li>Multiple calls to a stored procedure.</li>
+<li>Write of an entity.</li>
+<li>Multiple writes of an entity.</li>
+<li>Read of an entity.</li>
+<li>Multiple reads of an entity.</li>
+<li>Update of an entity.</li>
+<li>Multiple updates to an entity.</li>
+</ul>
+<p>Comparing code to benchmark, we are expecting that generating any kind of logging statement takes slightly longer than not generating any logging statements at all. Amongst the logging implementation, no observable performance difference can be measured. In case you are concerned about the total time it takes <code>YoSQL</code> to generate code, disabling logging statements will make a difference, however the code generation process time can be measures in milliseconds even for very large sample sizes, thus you should probably look somewhere else to improve the total performance of your build. In order to avoid generating code altogether, consider creating repositories inside one module and depend on it in other modules.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/benchmarks" term="benchmarks" label="Benchmarks"/><category scheme="https://yosql.projects.metio.wtf/tags/code" term="code" label="code"/><category scheme="https://yosql.projects.metio.wtf/tags/generation" term="generation" label="generation"/></entry></feed>

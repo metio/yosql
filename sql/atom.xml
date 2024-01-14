@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">SQL on YoSQL</title><link href="https://yosql.projects.metio.wtf/sql/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/sql/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/sql/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/sql/</id><entry><title type="html">Converters</title><link href="https://yosql.projects.metio.wtf/sql/converters/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/sql/converters/</id><published>2019-07-07T14:27:54+02:00</published><updated>2019-07-07T14:27:54+02:00</updated><content type="html"><![CDATA[<p>The JDBC API offers no built-in object mapping mechanism. In order to use high level types of your domain, use a <strong>converter</strong> to map results to your types. Converters are just plain Java classes that have at least one method that converts a <code>java.sql.ResultSet</code> into some other type. Each converter has an alias to make it easier to reference different converters without specifying their fully qualified name.</p>
+<h2 id="map-converter">Map Converter</h2>
+<p>In case you do not want to use custom domain types, <code>YoSQL</code> provides a built-in default converter that returns a <code>Map&lt;String, Object&gt;</code>. That converter is declared as the <a href="../../configuration/converter/defaultconverter/">defaultConverter</a> if not otherwise specified by yourself, thus newly generated code will always return <code>Map</code>s at first. You can disable generating the mapping converter by using <a href="../../configuration/converter/generatemapconverter/">generateMapConverter</a>. You can change its location with <a href="../../configuration/converter/mapconverterclass/">mapConverterClass</a>, its method name with <a href="../../configuration/converter/mapconvertermethod/">mapConverterMethod</a> and its alias with <a href="../../configuration/converter/mapconverteralias/">mapConverterAlias</a>. Methods that use the mapping converter have a signature similar to this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Stream</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span></code></pre></div><h2 id="default-converter">Default Converter</h2>
+<p>If not otherwise specified, generated code will use the default converter to converter between <code>java.sql.ResultSet</code> and some type declared by the configured default converter.
+In case you want to adjust the converter used by all your statements, set the <a href="../../configuration/converter/defaultconverter/">defaultConverter</a> configuration option accordingly. By default, this points to the map converter mentioned above.</p>
+<h2 id="custom-converter">Custom Converter</h2>
+<p>In order to use your own domain types in generated code, write a custom converter like in the following example and register each custom converter using the <a href="../../configuration/converter/rowconverters/">rowConverters</a> configuration option:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">my.own</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.sql.ResultSet</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.sql.SQLException</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">my.own.User</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">my.own.persistence.util.ResultState</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">UserConverter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="n">ResultState</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">SQLException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ResultSet</span><span class="w"> </span><span class="n">resultSet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="na">getResultSet</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">User</span><span class="w"> </span><span class="n">pojo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">User</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">pojo</span><span class="p">.</span><span class="na">setId</span><span class="p">(</span><span class="n">resultSet</span><span class="p">.</span><span class="na">getInt</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">pojo</span><span class="p">.</span><span class="na">setName</span><span class="p">(</span><span class="n">resultSet</span><span class="p">.</span><span class="na">getString</span><span class="p">(</span><span class="s">&#34;name&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pojo</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>You can choose package, class name and method name at will. The converter method gives you full control about how you want to handle <code>ResultSet</code>s. You can use your own converter either by specifying it as the default converter mentioned above or by declaring it as a <a href="../../configuration/sql/resultrowconverter">resultRowConverter</a> with either its fully qualified name or its alias like this in the front matter of your SQL statements:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowConverter: my.own.UserConverter
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="o">*</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">users</span><span class="w">
+</span></span></span></code></pre></div><p>Generated code will now use your custom converter along with the result type configured for your converter, e.g.:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Stream</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Tip</strong>: In case you want to use custom types, but do not want to write your own converter, consider using <a href="https://simpleflatmapper.org/0102-getting-started-jdbc.html">SimpleFlatMapper</a> with its built-in support for JDBC <code>ResultSet</code>s.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/sql" term="sql" label="SQL"/><category scheme="https://yosql.projects.metio.wtf/tags/converters" term="converters" label="converters"/></entry><entry><title type="html">SQL Files</title><link href="https://yosql.projects.metio.wtf/sql/sql-files/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/sql/structure/?utm_source=atom_feed" rel="related" type="text/html" title="Structure"/><id>https://yosql.projects.metio.wtf/sql/sql-files/</id><published>2019-07-07T14:27:54+02:00</published><updated>2019-07-07T14:27:54+02:00</updated><content type="html"><![CDATA[<p>Writing <code>.sql</code> files is the essential work that needs to be done in order to use <code>YoSQL</code>. Each file can contain multiple SQL statements. Each statement has its own configuration and metadata attached to it.</p>
+<h2 id="statement-type">Statement Type</h2>
+<p><code>YoSQL</code> supports the tree types of SQL statements and is able to generate code for them: <code>READING</code> for SQL statements that read data, <code>WRITING</code> for SQL statements that write data, and <code>CALLING</code> for SQL statements that call stored procedures.</p>
+<p>In order to correctly guess which type your statement is, <code>YoSQL</code> does not parse your SQL code, but uses the file name of your <code>.sql</code> files or the <code>name</code> front matter. It applies the following rules to determine the statement type from its name:</p>
+<ul>
+<li>All names that start with the <a href="/configuration/repositories/allowedreadprefixes/">configured read prefixes</a> are assigned the <code>READING</code> type.</li>
+<li>All names that start with the <a href="/configuration/repositories/allowedwriteprefixes/">configured write prefixes</a> are assigned the <code>WRITING</code> type.</li>
+<li>All names that start with the <a href="/configuration/repositories/allowedcallprefixes/">configured call prefixes</a> are assigned the <code>CALLING</code> type.</li>
+</ul>
+<p>SQL statements that cannot be mapped to one of the available types <strong>are not considered</strong> while generating code! You can always overwrite that guess with a specific <a href="/configuration/sql/type/">type</a> value in your front matter. This can be useful if you want to use a special name for your statement, but don&rsquo;t want to adhere to the configured prefixes. On the other hand, enable <a href="/configuration/repositories/validatemethodnameprefixes/">validateMethodNamePrefixes</a> to enforce that all statements are named accordingly to the configured prefixes.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>Each SQL statement can have an optional front matter section written in YAML that is placed inside an SQL comment. Configuration options that are specified in a front matter of an SQL statement overwrite the same option that was specified globally, e.g. in a <code>pom.xml</code>/<code>build.gradle</code> file.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: someName
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- description: Retrieves a single user
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- repository: com.example.persistence.YourRepository
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- vendor: H2
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   - name: userId
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     type: int
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- type: reading
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: one
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- catchAndRethrow: true
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="o">*</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">users</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">userId</span><span class="w">
+</span></span></span></code></pre></div><p>While parsing your <code>.sql</code> files, <code>YoSQL</code> will strip the SQL comment prefix (<code>--</code>) and read the remaining text as a YAML object. The available configuration options that can be used in the front matter, can be seen <a href="/configuration/sql/">here</a>.</p>
+<h2 id="file-extension">File Extension</h2>
+<p>By default, <code>YoSQL</code> only considers files that end in <code>.sql</code>, but this can be configured using the <a href="/configuration/files/sqlfilessuffix">sqlFilesSuffix</a> option. Lots of editors have built-in syntax support for SQL and they auto-enable that once you open an <code>.sql</code> file, so we recommend to stick to the default and only change if it necessary.</p>
+<h2 id="file-charset">File Charset</h2>
+<p>By default, <code>YoSQL</code> uses the <strong>UTF-8</strong> charset. In order to change this, use the <a href="/configuration/files/sqlfilescharset">sqlFilesCharset</a> option.</p>
+<h2 id="statement-separator">Statement Separator</h2>
+<p>By default, <code>YoSQL</code> uses <code>;</code> to separate multiple SQL statements within a single file. In order to change this, use the <a href="/configuration/files/sqlstatementseparator">sqlStatementSeparator</a> option.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: firstStatement
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="o">*</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">users</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">userId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-- name: secondStatement
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w">  </span><span class="o">*</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w">    </span><span class="n">customers</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w">   </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">customerId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><h2 id="license-headers">License Headers</h2>
+<p>In case your <code>.sql</code> files contain a license header, use the <a href="/configuration/files/skiplines">skipLines</a> option to skip those initial lines. Otherwise <code>YoSQL</code> will consider those lines to be part of the first statement in your <code>.sql</code> file.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/sql" term="sql" label="SQL"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/files" term="files" label="files"/></entry><entry><title type="html">Structure</title><link href="https://yosql.projects.metio.wtf/sql/structure/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/sql/structure/</id><published>2019-06-16T18:33:06+02:00</published><updated>2019-06-16T18:33:06+02:00</updated><content type="html"><![CDATA[<p>In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. <code>YoSQL</code> will try to detect which repository your SQL statements will end up in. Based on the <a href="/configuration/files/inputbasedirectory/">inputBaseDirectory</a> configuration option, your project structure could look like this:</p>
+<pre tabindex="0"><code>&lt;inputBaseDirectory&gt;/
+└── user/
+    └── getAllUsers.sql
+</code></pre><p>Based on the above example, <code>YoSQL</code> will determine that you want a method called <code>getAllUsers</code> in a repository called <code>UserRepository</code>. Use the <a href="/configuration/repositories/basepackagename/">basePackageName</a> option to change the base package name for all generated repositories. Together they will form the fully qualified name <code>&lt;basePackageName&gt;.UserRepository</code>.</p>
+<pre tabindex="0"><code>&lt;inputBaseDirectory&gt;/
+└── internal/
+    └── user/
+        └── getAllUsers.sql
+</code></pre><p>Nested package structures are supported as well - they are simply interpreted as subpackages, that are appended to the <a href="/configuration/repositories/basepackagename/">basePackageName</a> option to form the fully qualified name <code>&lt;basePackageName&gt;.internal.UserRepository</code>.</p>
+<pre tabindex="0"><code>&lt;inputBaseDirectory&gt;/
+  └── user/
+    └── vips/
+        └── findSpecialUsers.sql
+    └── getAllUsers.sql
+</code></pre><p>Nesting repositories within other repositories is supported as well - <code>YoSql</code> will create two repositories for the above example: <code>&lt;basePackageName&gt;.UserRepository</code> with a method called <code>getAllUsers</code> and <code>&lt;basePackageName&gt;.user.VipsRepository</code> with a method called <code>findSpecialUsers</code>.</p>
+<pre tabindex="0"><code>&lt;inputBaseDirectory&gt;/
+└── internal/
+    └── user/
+        └── getAllUsers.sql
+└── user/
+    └── findUser.sql
+</code></pre><p>Mixing nested and non-nested repositories work as well. The above example will generate the two repositories <code>&lt;basePackageName&gt;.internal.UserRepository</code> and <code>&lt;basePackageName&gt;.UserRepository</code>.</p>
+<pre tabindex="0"><code>&lt;inputBaseDirectory&gt;/
+└── allQueries.sql
+</code></pre><p>Smaller projects might just want to use a single <code>.sql</code> file that contains all of your queries. In case none of your SQL statements change their target repository in their <a href="../sql-files/">front matter</a>, all queries in the above structure will end up in a class called <code>&lt;basePackageName&gt;.Repository</code>.</p>
+<pre tabindex="0"><code>&lt;inputBaseDirectory&gt;/
+└── internal/
+    └── user/
+        └── vips/
+            └── findSpecialUsers.sql
+        └── getAllUsers.sql
+└── user/
+    └── findUser.sql
+└── lotsOfQueries.sql
+</code></pre><p>Mixing all options is of course supported as well - we recommend using any structure that best fits to your project/team. One statement per file makes it easier to quickly find single statements, however grouping multiple statements together in one file might make sense for multiple reasons, e.g. a statement might have multiple variants based on the used database or any other set of statements that are usually changed together as a single unit.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/sql" term="sql" label="SQL"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/files" term="files" label="files"/><category scheme="https://yosql.projects.metio.wtf/tags/structure" term="structure" label="structure"/></entry></feed>

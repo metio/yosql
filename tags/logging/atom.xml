@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">logging on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/logging/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/logging/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/logging/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/logging/</id><entry><title type="html">api</title><link href="https://yosql.projects.metio.wtf/configuration/logging/api/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/configuration/logging/api/</id><published>2024-01-14T00:00:00+00:00</published><updated>2024-01-14T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The logging API to use.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-none">Option: &lsquo;NONE&rsquo;</h3>
+<p>The default <code>no-op</code> implementation for a logging generator. It won&rsquo;t generate any logging statements in your generated code.</p>
+<h3 id="option-jul">Option: &lsquo;JUL&rsquo;</h3>
+<p>The <code>java.util.logging</code> based implementation for a logging generator. The generated code does not require any external non-JDK classes. All loggers use the <a href="/configuration/repositories/basepackagename/">basePackageName</a> as their base name.</p>
+<h3 id="option-log4j">Option: &lsquo;LOG4J&rsquo;</h3>
+<p>The <a href="https://logging.apache.org/log4j/2.x/">log4j</a> based implementation for a logging generator. All loggers use the <a href="/configuration/repositories/basepackagename/">basePackageName</a> as their base name.</p>
+<h3 id="option-slf4j">Option: &lsquo;SLF4J&rsquo;</h3>
+<p>The <a href="https://www.slf4j.org/">slf4j</a> based implementation for a logging generator. All loggers use the <a href="/configuration/repositories/basepackagename/">basePackageName</a> as their base name.</p>
+<h3 id="option-system">Option: &lsquo;SYSTEM&rsquo;</h3>
+<p>The <a href="https://docs.oracle.com/javase/9/docs/api/java/lang/System.Logger.html">System.Logger</a> based implementation for a logging generator.</p>
+<h3 id="option-tinylog">Option: &lsquo;TINYLOG&rsquo;</h3>
+<p>The <a href="https://tinylog.org/v2/">Tinylog</a> based implementation for a logging generator.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --logging-api<span class="o">=</span>configValue
+</span></span></code></pre></div><p>As long as the name of the config option is unique across all configuration groups, you can use the shorter form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> yosql --api<span class="o">=</span>configValue
+</span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>. The <code>api</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">logging</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">api</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">logging</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">api</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>. The <code>api</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;logging&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;api&gt;</span>configValue<span class="nt">&lt;/api&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/logging&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/logging" term="logging" label="logging"/></entry></feed>

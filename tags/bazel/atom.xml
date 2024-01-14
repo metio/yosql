@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.121.2">Hugo</generator><title type="html">Bazel on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/bazel/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/bazel/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/bazel/atom.xml" rel="self" type="application/atom+xml" title="Atom"/><updated>2024-01-14T07:19:38+00:00</updated><id>https://yosql.projects.metio.wtf/tags/bazel/</id><entry><title type="html">Bazel</title><link href="https://yosql.projects.metio.wtf/tooling/bazel/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/bazel/</id><published>2019-06-16T18:23:45+02:00</published><updated>2019-06-16T18:23:45+02:00</updated><content type="html"><![CDATA[<p><a href="https://bazel.build/">bazel</a> users can use the <a href="../cli/">yosql-tooling-cli</a> in their builds by following these steps:</p>
+<ol>
+<li>Download the <code>yosql-tooling-cli</code> zip file from the <a href="https://github.com/metio/yosql/releases/latest">latest release</a> (or any prior version).</li>
+<li>Use a <a href="https://bazel.build/reference/be/java#java_import">java_import</a> rule to capture all <code>.jar</code> files used by <code>yosql-tooling-cli</code></li>
+</ol>
+<pre tabindex="0"><code>java_import(
+    name = &#34;yosql_tooling_cli&#34;,
+    jars = [
+        &#34;lib/yosql-tooling-cli-x.y.z.jar&#34;,
+        &#34;lib/yosql-codegen-x.y.z.jar&#34;,
+        &#34;lib/yosql-models-immutables-x.y.z.jar&#34;,
+        ... every other jar file from the &#39;lib&#39; folder
+    ],
+)
+</code></pre><ol start="3">
+<li>Use a <a href="https://bazel.build/reference/be/java#java_binary">java_binary</a> rule to create a runnable binary for bazel</li>
+</ol>
+<pre tabindex="0"><code>java_binary(
+    name = &#34;yosql&#34;,
+    deps = [
+        &#34;:yosql_tooling_cli&#34;,
+    ],
+    main_class = &#34;wtf.metio.yosql.tooling.cli.YoSQL&#34;,
+)
+</code></pre><ol start="4">
+<li>Write .sql files in a directory of your choice (e.g. <code>persistence</code>)</li>
+</ol>
+<pre tabindex="0"><code>project/
+├── WORKSPACE
+├── BUILD
+└── persistence/   
+    └── user/
+        ├── findUser.sql
+        └── addUser.sql
+    └── item/
+        ├── queryAllItems.sql
+        └── createItemTable.sql
+</code></pre><ol start="5">
+<li>Declare a <a href="https://bazel.build/reference/be/general#filegroup">filegroup</a> that contains all of your SQL files:</li>
+</ol>
+<pre tabindex="0"><code>filegroup(
+  name = &#34;your-sql-files&#34;,
+  srcs = glob([&#34;persistence/**/*.sql&#34;]),
+)
+</code></pre><ol start="6">
+<li>Generate Java code by calling the previously defined <code>java_binary</code>:</li>
+</ol>
+<pre tabindex="0"><code>genrule(
+  name = &#34;your-repositories&#34;,
+  srcs = [&#34;:your-sql-files&#34;],
+  outs = [
+    &#34;com/example/persistence/UserRepository.java&#34;,
+    &#34;com/example/persistence/ItemRepository.java&#34;,
+    ... all of your generated code
+  ],
+  cmd = &#34;&#34;&#34;
+    $(location :yosql) generate
+  &#34;&#34;&#34;,
+  tools = [&#34;:yosql&#34;],
+)
+</code></pre><ol start="7">
+<li>Depend on the generated sources by using the target name of the generated code in the <code>srcs</code> of another rule.</li>
+</ol>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/bazel" term="bazel" label="Bazel"/></entry></feed>
