@@ -89,6 +89,12 @@
         <dependency>
             <groupId>com.google.dagger</groupId>
             <artifactId>dagger-producers</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>failureaccess</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.dagger</groupId>
@@ -101,6 +107,10 @@
                 <exclusion>
                     <groupId>com.google.devtools.ksp</groupId>
                     <artifactId>symbol-processing-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>failureaccess</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
