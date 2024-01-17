@@ -1,9 +1,7 @@
 name: Announce Release
 on:
-  workflow_run:
-    workflows: [Automated Release]
-    types:
-      - completed
+  release:
+    types: [released]
 jobs:
   announce:
     name: Send Announcements

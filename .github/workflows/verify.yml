@@ -88,9 +88,9 @@ jobs:
         run: mvn --batch-mode --projects yosql-examples/yosql-examples-ant --also-make --also-make-dependents verify
       - id: upload-ant-tooling
         name: Upload Ant Tooling
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: yosql-tooling-ant
+          name: yosql-tooling-ant-${{ matrix.os }}
           path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-dist*
   cli:
     name: Build CLI Tooling on ${{ matrix.os }}
@@ -121,28 +121,28 @@ jobs:
         run: mvn --batch-mode --projects yosql-examples/yosql-examples-cli --also-make --also-make-dependents verify
       - id: upload-jvm-cli-tooling
         name: Upload JVM CLI Tooling
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: runner.os == 'Linux'
         with:
           name: yosql-tooling-cli-jvm
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
       - id: upload-linux-cli-tooling
         name: Upload Linux CLI Tooling
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: runner.os == 'Linux'
         with:
           name: yosql-tooling-cli-linux
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-linux*
       - id: upload-mac-cli-tooling
         name: Upload Mac OSX CLI Tooling
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: runner.os == 'macOS'
         with:
           name: yosql-tooling-cli-mac
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-mac*
       - id: upload-windows-cli-tooling
         name: Upload Windows CLI Tooling
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: runner.os == 'Windows'
         with:
           name: yosql-tooling-cli-windows

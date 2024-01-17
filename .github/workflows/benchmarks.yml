@@ -1,9 +1,7 @@
 name: Run Benchmarks
 on:
-  workflow_run:
-    workflows: [Automated Release]
-    types:
-      - completed
+  release:
+    types: [released]
 env:
   JAVA_VERSION: 17
   JAVA_PACKAGE: jdk
@@ -53,3 +51,29 @@ jobs:
         with:
           commit_message: Update benchmark data for ${{ steps.last_release.outputs.tag }}
           file_pattern: yosql-website/*.json
+      - id: cpr
+        name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: Update benchmarks for latest release
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          title: Update benchmarks for latest release
+          body: ${{ steps.gwu.outputs.version-information }}
+          labels: |
+            Release :: Ignore
+            Benchmarks :: CodeGen
+            Benchmarks :: DAO
+            Priority :: Low
+            Type :: Task
+          assignees: sebhoss
+          draft: false
+          base: main
+          branch: update-benchmarks
+          delete-branch: true
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        run: gh pr merge --rebase --auto "${{ steps.cpr.outputs.pull-request-number }}"
+        with:
+          token: ${{ secrets.PAT }}
