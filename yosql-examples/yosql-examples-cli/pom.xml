@@ -97,7 +97,6 @@
                                 <argument>--repositories-base-package-name</argument>
                                 <argument>wtf.metio.yosql.example.cli</argument>
                                 <argument>--repositories-generate-interfaces</argument>
-                                <argument>--repositories-generate-standard-api=true</argument>
                                 <argument>--converter-row-converters</argument>
                                 <argument>itemConverter:wtf.metio.yosql.example.cli.converter.ToItemConverter:asUserType:wtf.metio.yosql.example.cli.model.Item</argument>
                             </arguments>
