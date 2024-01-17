@@ -29,7 +29,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count ${{ steps.last_release.outputs.tag }}..HEAD)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count ${{ steps.last_release.outputs.tag }}..HEAD) -- pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0
@@ -149,7 +149,7 @@ jobs:
       - id: upload-ant-tooling
         name: Upload Ant Tooling Artifact
         if: needs.prepare.outputs.commit_count > 0
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yosql-tooling-ant
           path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-dist*
@@ -195,28 +195,28 @@ jobs:
       - id: upload-jvm-cli-tooling
         name: Upload JVM CLI Tooling
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yosql-tooling-cli-jvm
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
       - id: upload-linux-cli-tooling
         name: Upload Linux CLI Tooling
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yosql-tooling-cli-linux
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-linux*
       - id: upload-mac-cli-tooling
         name: Upload Mac OSX CLI Tooling
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'macOS'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yosql-tooling-cli-mac
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-mac*
       - id: upload-windows-cli-tooling
         name: Upload Windows CLI Tooling
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Windows'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yosql-tooling-cli-windows
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-windows*
@@ -236,7 +236,7 @@ jobs:
       - id: download
         name: Download Artifacts
         if: needs.prepare.outputs.commit_count > 0
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
       - id: create_release
