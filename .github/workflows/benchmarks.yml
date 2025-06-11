@@ -47,7 +47,7 @@ jobs:
         run: cp --force ./yosql-benchmarks/yosql-benchmarks-${{ matrix.benchmark }}/target/benchmark/yosql-benchmarks-${{ matrix.benchmark }}.json ./yosql-website/content/benchmarks/results/yosql-benchmarks-${{ matrix.benchmark }}-CURRENT.json
       - id: push
         name: Push Changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: Update benchmark data for ${{ steps.last_release.outputs.tag }}
           file_pattern: yosql-website/*.json
