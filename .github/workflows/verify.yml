@@ -17,7 +17,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
@@ -44,7 +44,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
@@ -71,7 +71,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
@@ -104,7 +104,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
@@ -159,7 +159,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - id: graal
         name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
@@ -186,7 +186,7 @@ jobs:
     steps:
       - id: checkout
         name: Clone Git Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - id: hugo
         name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
