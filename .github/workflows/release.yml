@@ -149,7 +149,7 @@ jobs:
       - id: upload-ant-tooling
         name: Upload Ant Tooling Artifact
         if: needs.prepare.outputs.commit_count > 0
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: yosql-tooling-ant
           path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-dist*
@@ -195,28 +195,28 @@ jobs:
       - id: upload-jvm-cli-tooling
         name: Upload JVM CLI Tooling
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: yosql-tooling-cli-jvm
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
       - id: upload-linux-cli-tooling
         name: Upload Linux CLI Tooling
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: yosql-tooling-cli-linux
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-linux*
       - id: upload-mac-cli-tooling
         name: Upload Mac OSX CLI Tooling
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'macOS'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: yosql-tooling-cli-mac
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-mac*
       - id: upload-windows-cli-tooling
         name: Upload Windows CLI Tooling
         if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Windows'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: yosql-tooling-cli-windows
           path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-windows*
