@@ -20,14 +20,17 @@ generated: true
 {{setting.explanation}}
 
 {{/hasExplanation}}
+
 ## Configuration Options
 
 {{#setting.examples}}
+
 ### Option: '{{value}}'
 
 {{description}}
 
 {{#result}}
+
 ```java
 {{{.}}}
 ```
@@ -35,9 +38,11 @@ generated: true
 {{/result}}
 {{/setting.examples}}
 {{#hasRelatedSettings}}
+
 ## Related Options
 
 {{#relatedSettings}}
+
 - [{{name}}](../{{#lower}}{{name}}{{/lower}}/): {{description}}
 {{/relatedSettings}}
 {{/hasRelatedSettings}}

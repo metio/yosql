@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: CC0-1.0
+default: true
+MD013: false # line length: tables and links exceed any sane limit
+MD024:
+  siblings_only: true
+MD033: false # inline HTML: the SPDX comment header

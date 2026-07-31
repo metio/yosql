@@ -1,39 +1,42 @@
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: CC0-1.0
+
 name: Announce Release
 on:
   release:
     types: [released]
+permissions:
+  contents: read
 jobs:
   announce:
     name: Send Announcements
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - id: last_release
-        name: Fetch last release info
-        run: echo "tag=$(gh release view --json tagName --jq '.tagName')" >> $GITHUB_OUTPUT
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: mail
-        name: Send Mail
-        uses: dawidd6/action-send-mail@v3
+      - id: released
+        name: Read the released version
+        run: echo "version=$(git describe --abbrev=0 --tags)" >> "$GITHUB_OUTPUT"
+      - name: Send mail
+        uses: dawidd6/action-send-mail@6d98ae34d733f9a723a9e04e94f2f24ba05e1402 # v6
         with:
           server_address: ${{ secrets.MAIL_SERVER }}
           server_port: ${{ secrets.MAIL_PORT }}
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: ${{ github.event.repository.name }} version ${{ steps.last_release.outputs.tag }} published
-          body: See https://github.com/metio/yosql/releases/tag/${{ steps.last_release.outputs.tag }} for details.
+          subject: yosql version ${{ steps.released.outputs.version }} published
+          body: See https://github.com/metio/yosql/releases/tag/${{ steps.released.outputs.version }} for details.
           to: ${{ secrets.MAIL_RECIPIENT }}
           from: ${{ secrets.MAIL_SENDER }}
-      - id: matrix
-        name: Send Matrix Message
-        uses: s3krit/matrix-message-action@v0.0.3
+      - name: Send Matrix message
+        uses: s3krit/matrix-message-action@70ad3fb812ee0e45ff8999d6af11cafad11a6ecf # v0.0.3
         with:
           room_id: ${{ secrets.MATRIX_ROOM_ID }}
           access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
-          message: ${{ github.event.repository.name }} version [${{ steps.last_release.outputs.tag }}](https://github.com/metio/yosql/releases/tag/${{ steps.last_release.outputs.tag }}) published
+          message: >
+            yosql version
+            [${{ steps.released.outputs.version }}](https://github.com/metio/yosql/releases/tag/${{ steps.released.outputs.version }})
+            published
           server: ${{ secrets.MATRIX_SERVER }}

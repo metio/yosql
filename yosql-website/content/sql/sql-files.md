@@ -45,7 +45,7 @@ FROM    users
 WHERE   id = :userId
 ```
 
-While parsing your `.sql` files, `YoSQL` will strip the SQL comment prefix (`--`) and read the remaining text as a YAML object. The available configuration options that can be used in the front matter, can be seen [here](/configuration/sql/).
+While parsing your `.sql` files, `YoSQL` will strip the SQL comment prefix (`--`) and read the remaining text as a YAML object. The available configuration options that can be used in the front matter, are listed under [SQL statement configuration](/configuration/sql/).
 
 ## File Extension
 

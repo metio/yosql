@@ -15,7 +15,8 @@ tags:
 1. Add the [plugin](https://search.maven.org/artifact/wtf.metio.yosql.tooling/yosql-tooling-maven) to your `pom.xml`:
    {{< maven/tooling/index >}}
 2. Add .sql files in `src/main/yosql` and write SQL statements into them. Take a look at the various options to [structure](/sql/structure/) your [SQL files](/sql/sql-files/).
-    ```
+
+    ```text
     <project_root>/
     ├── pom.xml
     └── src/
@@ -28,6 +29,7 @@ tags:
                     ├── findRoot.sql
                     └── addData.sql
     ```
+
 3. Execute the `yosql:generate` goal (or just run `mvn generate-sources`) to generate the Java code.
 
 ## Build Helper Plugin
@@ -63,7 +65,7 @@ As an optional and final step to complete the setup of `YoSQL`, you can add the 
 
 ## Configuration
 
-You can configure how YoSQL operates and how the generated code looks like by using the [default Maven configuration 
+You can configure how YoSQL operates and how the generated code looks like by using the [default Maven configuration
 mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html). Take a look at the [available configuration options](/configuration/) in order to see what can be configured.
 
 {{< maven/tooling/full >}}
@@ -80,7 +82,7 @@ In some cases it might be preferable to generate some repositories with a specif
 
 #### Multiple `execution`s
 
-Make sure that multiple executions do not make use of the same .sql files. Otherwise, the executions will overwrite 
+Make sure that multiple executions do not make use of the same .sql files. Otherwise, the executions will overwrite
 the generated code of each other. The last execution will win. Share configuration across all executions by using a single top level `configuration` block.
 
 {{< maven/tooling/multi >}}

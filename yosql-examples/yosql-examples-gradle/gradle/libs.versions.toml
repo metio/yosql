@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: CC0-1.0
+
 [libraries]
 hikari = "com.zaxxer:HikariCP:latest.release"
 h2 = "com.h2database:h2:latest.release"

@@ -1,58 +1,62 @@
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: CC0-1.0
+
 name: Publish Website
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - .github/workflows/website.yml
       - yosql-website/**
-env:
-  JAVA_VERSION: 17
-  PROJECT_URL: yosql.projects.metio.wtf
+      - yosql-models/**
+permissions:
+  contents: read
 jobs:
   website:
     name: Website
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # push the built site to the gh-pages branch
+    env:
+      PROJECT_URL: yosql.projects.metio.wtf
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          fetch-depth: 0 # required in order to get all tags
-      - id: hugo
-        name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+          fetch-depth: 0 # the version banner reads the newest tag
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          hugo-version: latest
-      - id: graal
-        name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
-        with:
-          distribution: graalvm
-          java-version: ${{ env.JAVA_VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - id: previous
-        name: Get Last Release
-        run: echo "version=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
-      - name: Set release version
-        run: mvn --batch-mode --define newVersion=${{ steps.previous.outputs.version }} --define generateBackupPoms=false versions:set
-      - id: create-documentation
-        name: Create Documentation
-        run: mvn --batch-mode --projects yosql-website --also-make --define skipTests install
-      - id: website
-        name: Build Website
-        run: hugo --minify --printI18nWarnings --printPathWarnings --printUnusedTemplates --source yosql-website
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      - id: released
+        name: Read the newest release
+        # The site quotes a version consumers can actually resolve, so it takes
+        # the newest tag rather than the development version in the POMs.
+        run: echo "version=$(git describe --abbrev=0 --tags)" >> "$GITHUB_OUTPUT"
+      - name: Set the documented version
         env:
-          YOSQL_RELEASE: ${{ steps.previous.outputs.version }}
-      - id: htmltest
-        name: Run htmltest
-        uses: wjdp/htmltest-action@master
-        with:
-          config: ./yosql-website/htmltest.yml
-      - id: deploy
-        name: Deploy Website
-        uses: peaceiris/actions-gh-pages@v4
+          VERSION: ${{ steps.released.outputs.version }}
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --define newVersion="$VERSION"
+          --define generateBackupPoms=false
+          versions:set
+      - name: Generate the configuration reference
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --projects yosql-website --also-make --define skipTests install
+      - name: Build the site
+        env:
+          YOSQL_RELEASE: ${{ steps.released.outputs.version }}
+        run: >
+          nix develop --command hugo --minify --printI18nWarnings
+          --printPathWarnings --printUnusedTemplates --source yosql-website
+      - name: Check the links
+        run: nix develop --command htmltest --conf yosql-website/htmltest.yml
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./yosql-website/public

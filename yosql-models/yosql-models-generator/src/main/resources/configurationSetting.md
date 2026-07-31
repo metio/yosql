@@ -20,14 +20,17 @@ generated: true
 {{setting.explanation}}
 
 {{/hasExplanation}}
+
 ## Configuration Options
 
 {{#setting.examples}}
+
 ### Option: '{{value}}'
 
 {{description}}
 
 {{#result}}
+
 ```java
 {{{.}}}
 ```
@@ -35,9 +38,11 @@ generated: true
 {{/result}}
 {{/setting.examples}}
 {{#hasRelatedSettings}}
+
 ## Related Options
 
 {{#relatedSettings}}
+
 - [{{name}}](../{{#lower}}{{name}}{{/lower}}/): {{description}}
 {{/relatedSettings}}
 {{/hasRelatedSettings}}
@@ -57,13 +62,13 @@ In order to use `YoSQL` together with [Bazel](https://bazel.build/), take a look
 In order to use `YoSQL` on the command line, take a look at the tooling [documentation for CLI](/tooling/cli/).
 
 ```console
-$ yosql --{{#lower}}{{group.name}}{{/lower}}-{{#kebab}}{{setting.name}}{{/kebab}}=configValue
+yosql --{{#lower}}{{group.name}}{{/lower}}-{{#kebab}}{{setting.name}}{{/kebab}}=configValue
 ```
 
 As long as the name of the config option is unique across all configuration groups, you can use the shorter form:
 
 ```console
-$ yosql --{{#kebab}}{{setting.name}}{{/kebab}}=configValue
+yosql --{{#kebab}}{{setting.name}}{{/kebab}}=configValue
 ```
 
 ### Gradle

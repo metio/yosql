@@ -13,11 +13,11 @@ tags:
 
 The following benchmarks try to use the fastest code paths available to execute SQL statements.
 
-### Common Scenarios
+## Common Scenarios
 
 The common scenarios define what each persistence solution must solve in order to pass the TCK. All benchmarks run through the following benchmarks:
 
-#### Reading Data
+### Reading Data
 
 - `readComplexRelationship`: Read a complex data relationship.
 - `readManyToOneRelation`: Reads the one part of a many-to-one relation.
@@ -26,7 +26,7 @@ The common scenarios define what each persistence solution must solve in order t
 - `readOneToManyRelation`: Reads the many part of a one-to-many relation.
 - `readSingleEntityByPrimaryKey`: Read a single entity using its primary key.
 
-#### Writing Data
+### Writing Data
 
 - `writeMultipleEntities`: Writes multiple entities into the database.
 - `writeSingleEntity`: Writes a new entity into the database.
@@ -34,7 +34,7 @@ The common scenarios define what each persistence solution must solve in order t
 - `updateManyToOneRelation`: Update the many-to-one relationship part of an entity.
 - `deleteSingleEntityByPrimaryKey`: Delete a single entity using its primary key.
 
-#### Calling Stored Procedures
+### Calling Stored Procedures
 
 - `callStoredProcedure`: Call a single stored procedure.
 
@@ -50,6 +50,7 @@ In order to run JDBC benchmarks of `YoSQL` run:
 # run JDBC benchmarks
 $ mvn --projects yosql-benchmarks/yosql-benchmarks-dao --also-make --activate-profiles benchmarks verify
 ```
+
 The [results](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-dao-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-dao-CURRENT.json) are measured in **microseconds**. All available logging implementation are tested with their maximal output configuration in order to gauge how much overhead each implementation causes on top of the no-op implementation without any logging statements.
 
 ## Other Solutions

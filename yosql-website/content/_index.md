@@ -3,8 +3,6 @@ title: write more SQL
 date: 2020-04-13
 ---
 
-# YoSQL
-
 > write more SQL!
 
 `YoSQL` is a [yesql](https://github.com/krisajenkins/yesql) inspired persistence solution for [Java](https://www.java.com/). It converts [SQL](https://en.wikipedia.org/wiki/SQL) statements into type-safe Java code with lots of configuration options for fine-tuning.
@@ -25,7 +23,7 @@ No magic involved - `YoSQL` generates code that is easy to read and debug. Step-
 
 ## Usage
 
-Want to try it out? Head over to the [tooling](./tooling) section to find out how you can add `YoSQL` to your project. Once the setup is done, the general approach to use `YoSQL` is always the same: 
+Want to try it out? Head over to the [tooling](./tooling) section to find out how you can add `YoSQL` to your project. Once the setup is done, the general approach to use `YoSQL` is always the same:
 
 1. Write SQL statements or fine-tune `YoSQL` config.
 2. Run the `YoSQL` tooling you have set up in your project to generate Java code.
