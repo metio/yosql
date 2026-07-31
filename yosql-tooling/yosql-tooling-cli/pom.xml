@@ -90,15 +90,15 @@
                         <path>
                             <groupId>info.picocli</groupId>
                             <artifactId>picocli-codegen</artifactId>
-                            <version>4.6.3</version>
+                            <version>${version.picocli}</version>
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>
                         <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
                     </compilerArgs>
-                    <source>${version.jdk}</source>
-                    <target>${version.jdk}</target>
-                    <release>${version.jdk}</release>
+                    <source>${global.jdkVersion}</source>
+                    <target>${global.jdkVersion}</target>
+                    <release>${global.jdkVersion}</release>
                 </configuration>
             </plugin>
             <plugin>

@@ -170,7 +170,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.6.4</version>
+                <configuration>
+                    <!-- The artifactId matches neither `maven-*-plugin` nor
+                         `*-maven-plugin`, so the prefix cannot be derived from it.
+                         This is the value the descriptor has always carried. -->
+                    <goalPrefix>yosql-models-generator</goalPrefix>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -178,13 +183,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm</artifactId>
-                        <version>9.3</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
