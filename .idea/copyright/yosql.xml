@@ -1,7 +1,7 @@
 <component name="CopyrightManager">
   <copyright>
     <option name="keyword" value="SPDX-License-Identifier" />
-    <option name="notice" value="SPDX-FileCopyrightText: The yosql Authors&#10;SPDX-License-Identifier: CC0-1.0" />
+    <option name="notice" value="SPDX-FileCopyrightText: The yosql Authors&#10;SPDX-License-Identifier: 0BSD" />
     <option name="myName" value="yosql" />
   </copyright>
 </component>

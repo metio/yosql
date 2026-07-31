@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: The yosql Authors
-# SPDX-License-Identifier: CC0-1.0
+# SPDX-License-Identifier: 0BSD
 
 version = 1
 SPDX-PackageName = "yosql"
@@ -12,7 +12,7 @@ SPDX-PackageDownloadLocation = "https://github.com/metio/yosql"
 path = [".github/renovate.json", "flake.lock", "yosql-website/content/benchmarks/results/**"]
 precedence = "override"
 SPDX-FileCopyrightText = "The yosql Authors"
-SPDX-License-Identifier = "CC0-1.0"
+SPDX-License-Identifier = "0BSD"
 
 # Dotfiles and metadata whose formats either forbid comments or would treat one
 # as content.
@@ -20,7 +20,7 @@ SPDX-License-Identifier = "CC0-1.0"
 path = [".mailmap", "LICENSE", "yosql-tooling/yosql-tooling-cli/src/assembly/licenseHeaderFile"]
 precedence = "override"
 SPDX-FileCopyrightText = "The yosql Authors"
-SPDX-License-Identifier = "CC0-1.0"
+SPDX-License-Identifier = "0BSD"
 
 # Hugo reads the front matter from the first line of a content file, and the
 # generator's Mustache templates render into content files, so a header at the
@@ -33,7 +33,7 @@ path = [
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "The yosql Authors"
-SPDX-License-Identifier = "CC0-1.0"
+SPDX-License-Identifier = "0BSD"
 
 # The site theme is vendored from github.com/metio/metio-hugo-theme.
 [[annotations]]
@@ -48,7 +48,7 @@ SPDX-License-Identifier = "CC0-1.0"
 path = ".idea/**"
 precedence = "override"
 SPDX-FileCopyrightText = "The yosql Authors"
-SPDX-License-Identifier = "CC0-1.0"
+SPDX-License-Identifier = "0BSD"
 
 # The Gradle wrapper is Gradle's own, shipped verbatim so a checkout can build
 # without Gradle installed.

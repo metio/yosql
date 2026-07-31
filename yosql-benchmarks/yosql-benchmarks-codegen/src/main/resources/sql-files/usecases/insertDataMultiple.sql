@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: The yosql Authors
- * SPDX-License-Identifier: CC0-1.0
+ * SPDX-License-Identifier: 0BSD
  */
 
 INSERT INTO users (id, name)
