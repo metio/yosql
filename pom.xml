@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
-  ~ directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
-  ~ including this file, may be copied, modified, propagated, or distributed except according to the terms contained
-  ~ in the LICENSE file.
+  ~ SPDX-FileCopyrightText: The yosql Authors
+  ~ SPDX-License-Identifier: CC0-1.0
   -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
@@ -17,9 +15,9 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Inheritance -->
     <parent>
-        <groupId>wtf.metio.maven.parents</groupId>
-        <artifactId>maven-parents-java-prototype</artifactId>
-        <version>2024.1.12</version>
+        <groupId>wtf.metio.maven</groupId>
+        <artifactId>maven-parent</artifactId>
+        <version>2026.7.24</version>
     </parent>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -65,10 +63,43 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#Properties -->
     <properties>
-        <version.jdk>17</version.jdk>
+        <!-- A fixed value keeps jar entry timestamps out of the artifact bytes, so
+             two builds of the same source produce byte-identical jars. The release
+             overrides it with the timestamp of the release commit. -->
         <project.build.outputTimestamp>2017</project.build.outputTimestamp>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Dependency versions. The parent POM manages plugins but no libraries,
+             so every third-party version a module uses is declared here and
+             maintained by Renovate. -->
+        <version.ant>1.10.14</version.ant>
+        <version.cal10n>0.8.1</version.cal10n>
+        <version.dagger>2.50</version.dagger>
+        <version.graal-sdk>23.1.1</version.graal-sdk>
+        <version.h2>2.2.224</version.h2>
+        <version.hikaricp>5.1.0</version.hikaricp>
+        <version.immutables>2.10.0</version.immutables>
+        <version.jackson>2.16.1</version.jackson>
+        <version.javapoet>1.13.0</version.javapoet>
+        <version.javapoet-type-guesser>2024.1.9</version.javapoet-type-guesser>
+        <version.javax-inject>1</version.javax-inject>
+        <version.jmh>1.37</version.jmh>
+        <version.jspecify>0.3.0</version.jspecify>
+        <version.junit>5.10.1</version.junit>
+        <version.kotlin>1.9.22</version.kotlin>
+        <version.log4j>2.22.1</version.log4j>
+        <version.logback>1.4.14</version.logback>
+        <version.maven>3.9.6</version.maven>
+        <version.maven-plugin-tools>3.11.0</version.maven-plugin-tools>
+        <version.mustache>0.9.11</version.mustache>
+        <version.picocli>4.7.5</version.picocli>
+        <version.plexus-build-api>0.0.7</version.plexus-build-api>
+        <version.plexus-sec-dispatcher>2.0</version.plexus-sec-dispatcher>
+        <version.sisu>0.9.0.M2</version.sisu>
+        <version.slf4j>2.0.11</version.slf4j>
+        <version.tinylog>2.7.0-M3</version.tinylog>
+
+        <!-- Plugin versions the parent POM does not manage. -->
+        <version.m-plugin-p>3.11.0</version.m-plugin-p>
     </properties>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -81,10 +112,6 @@
             <name>official website</name>
             <url>https://yosql.projects.metio.wtf</url>
         </site>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -100,5 +127,240 @@
         <module>yosql-benchmarks</module>
         <module>yosql-website</module>
     </modules>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                           DEPENDENCY MANAGEMENT                         -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Dependency_Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${version.jackson}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${version.junit}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.cal10n</groupId>
+                <artifactId>cal10n-api</artifactId>
+                <version>${version.cal10n}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${version.logback}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.spullara.mustache.java</groupId>
+                <artifactId>compiler</artifactId>
+                <version>${version.mustache}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.dagger</groupId>
+                <artifactId>dagger</artifactId>
+                <version>${version.dagger}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.dagger</groupId>
+                <artifactId>dagger-compiler</artifactId>
+                <version>${version.dagger}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.dagger</groupId>
+                <artifactId>dagger-producers</artifactId>
+                <version>${version.dagger}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.dagger</groupId>
+                <artifactId>dagger-spi</artifactId>
+                <version>${version.dagger}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${version.h2}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup</groupId>
+                <artifactId>javapoet</artifactId>
+                <version>${version.javapoet}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${version.hikaricp}</version>
+            </dependency>
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>${version.picocli}</version>
+            </dependency>
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli-codegen</artifactId>
+                <version>${version.picocli}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${version.javax-inject}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>${version.ant}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${version.log4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${version.log4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>${version.maven}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${version.maven}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${version.maven-plugin-tools}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-sec-dispatcher</artifactId>
+                <version>${version.plexus-sec-dispatcher}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.sisu</groupId>
+                <artifactId>org.eclipse.sisu.inject</artifactId>
+                <version>${version.sisu}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.sisu</groupId>
+                <artifactId>org.eclipse.sisu.plexus</artifactId>
+                <version>${version.sisu}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.graalvm.sdk</groupId>
+                <artifactId>graal-sdk</artifactId>
+                <version>${version.graal-sdk}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.immutables</groupId>
+                <artifactId>value</artifactId>
+                <version>${version.immutables}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.immutables</groupId>
+                <artifactId>value-annotations</artifactId>
+                <version>${version.immutables}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>${version.kotlin}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${version.jspecify}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>${version.jmh}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-generator-annprocess</artifactId>
+                <version>${version.jmh}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-ext</artifactId>
+                <version>${version.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${version.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sonatype.plexus</groupId>
+                <artifactId>plexus-build-api</artifactId>
+                <version>${version.plexus-build-api}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tinylog</groupId>
+                <artifactId>tinylog-impl</artifactId>
+                <version>${version.tinylog}</version>
+            </dependency>
+            <dependency>
+                <groupId>wtf.metio.javapoet</groupId>
+                <artifactId>javapoet-type-guesser</artifactId>
+                <version>${version.javapoet-type-guesser}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                DEPENDENCIES                             -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Dependencies -->
+    <dependencies>
+        <!-- Every module tests with JUnit 5, so both halves are inherited rather
+             than repeated in 30-odd module POMs. -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                   BUILD                                 -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Build -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- https://maven.apache.org/plugin-tools/maven-plugin-plugin/ -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>${version.m-plugin-p}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
