@@ -18,8 +18,17 @@ public final class UnsupportedComponentTypeException extends RuntimeException {
 
     public UnsupportedComponentTypeException(final String component, final TypeName type, final String supported) {
         super(("Component '%s' has type %s, which cannot be read from a result set. "
-                + "Supported types are %s, any enum, and any record built from those.")
-                .formatted(component, type, supported));
+                + "Supported types are %s, any enum, and any record built from those. "
+                + "To read this one from a single column, give it a "
+                + "'public static %s valueOf(<supported type>)' factory — that is all the generator "
+                + "needs in order to build it.")
+                .formatted(component, type, supported, simpleNameOf(type)));
+    }
+
+    private static String simpleNameOf(final TypeName type) {
+        final var name = type.toString();
+        final var dot = name.lastIndexOf('.');
+        return dot < 0 ? name : name.substring(dot + 1);
     }
 
 }

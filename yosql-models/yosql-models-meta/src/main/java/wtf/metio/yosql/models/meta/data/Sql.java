@@ -261,6 +261,11 @@ public final class Sql extends AbstractConfigurationGroup {
                         on the Java side and the query knows nothing about it, so a nested component claims the column
                         matching its own name, not a prefixed one.
 
+                        A type the generator cannot otherwise read works if it says how: a `static` factory called
+                        `valueOf`, taking one value the generator does know, is called with the column's value. That is
+                        the same convention enums follow, and it is what makes a one-component record a value wrapped
+                        around a column rather than a nesting.
+
                         A column no component claims, or a component no column supplies, fails the build and names the
                         file, the statement and the component.""")
                 .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))

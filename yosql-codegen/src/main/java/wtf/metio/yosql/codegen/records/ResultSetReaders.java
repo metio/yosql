@@ -120,6 +120,32 @@ public final class ResultSetReaders {
                 || VIA_GET_OBJECT.contains(type);
     }
 
+    /**
+     * Reads one column and hands it to the type's own {@code valueOf}.
+     *
+     * <p>The column is read exactly as it would be for a bare value of the parameter's type, so
+     * every rule above still holds — a primitive parameter refuses NULL, an object parameter accepts
+     * it — and the factory is called only for a value that is there. A type that can say how to
+     * build itself from a column needs no configuration to say it.</p>
+     */
+    public CodeBlock readVia(
+            final TypeName valueType,
+            final TypeName parameterType,
+            final String column,
+            final String variable,
+            final String path) {
+        final var raw = variable + "Value";
+        final var block = CodeBlock.builder()
+                .add(read(parameterType, false, column, raw, path));
+        if (parameterType.isPrimitive()) {
+            block.addStatement("final $T $N = $T.valueOf($N)", valueType, variable, valueType, raw);
+        } else {
+            block.addStatement("final $T $N = $N == null ? null : $T.valueOf($N)",
+                    valueType, variable, raw, valueType, raw);
+        }
+        return block.build();
+    }
+
     private CodeBlock readPrimitive(
             final TypeName type, final String column, final String variable, final String path) {
         return CodeBlock.builder()

@@ -6,6 +6,7 @@
 package wtf.metio.yosql.codegen.records;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import wtf.metio.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.exceptions.UnparsableRecordException;
 
@@ -72,13 +73,57 @@ public final class JavaSourceParser {
             }
             return switch (declaration.group(1)) {
                 case "record" -> JavaSourceType.record(expected,
-                        components(text, declaration.end(), location, expected, packageName, imports));
+                        components(text, declaration.end(), location, expected, packageName, imports),
+                        valueOfParameters(text, expected, packageName, imports));
                 case "enum" -> JavaSourceType.enumeration(expected);
-                default -> JavaSourceType.other(expected);
+                default -> JavaSourceType.other(expected,
+                        valueOfParameters(text, expected, packageName, imports));
             };
         }
         throw new UnparsableRecordException(location, expected,
                 "no type named '%s' is declared in it".formatted(expected.simpleName()));
+    }
+
+
+    /**
+     * The parameter types of every {@code static <Type> valueOf(single argument)} the file declares.
+     *
+     * <p>Read as text like everything else here: a factory is recognised by returning the type it is
+     * declared in and taking one argument. Several overloads are kept rather than picked between,
+     * because choosing silently is worse than saying they are ambiguous.</p>
+     */
+    private List<TypeName> valueOfParameters(
+            final String text,
+            final ClassName owner,
+            final String packageName,
+            final Map<String, String> imports) {
+        final var factory = Pattern.compile(
+                "\\bstatic\\b[^;{}()]{0,120}?\\b(?:" + Pattern.quote(owner.simpleName())
+                        + "|" + Pattern.quote(owner.toString()) + ")\\s+valueOf\\s*\\(([^)]*)\\)");
+        final var matcher = factory.matcher(text);
+        final var parameters = new ArrayList<TypeName>();
+        while (matcher.find()) {
+            final var arguments = matcher.group(1).strip();
+            if (arguments.isEmpty()) {
+                continue;
+            }
+            final var split = splitTopLevel(arguments);
+            if (split.size() != 1) {
+                continue;
+            }
+            var declaration = stripAnnotations(split.get(0)).strip();
+            // `final` is a modifier on a parameter, not part of its type.
+            if (declaration.startsWith("final ")) {
+                declaration = declaration.substring("final ".length()).stripLeading();
+            }
+            final var space = lastTopLevelSpace(declaration);
+            if (space < 0) {
+                continue;
+            }
+            parameters.add(TypeGuesser.guessTypeName(
+                    qualify(declaration.substring(0, space).strip(), packageName, imports)));
+        }
+        return parameters;
     }
 
     private List<JavaSourceComponent> components(
