@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: The yosql Authors
-# SPDX-License-Identifier: CC0-1.0
+# SPDX-License-Identifier: 0BSD
 
 # The single source of the development toolchain: CI and local shells run every
 # gate through this flake's devShell, so both use the exact tool versions pinned

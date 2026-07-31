@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: The yosql Authors
-# SPDX-License-Identifier: CC0-1.0
+# SPDX-License-Identifier: 0BSD
 
 # Handle line endings automatically for files detected as text
 # and leave all files detected as binary untouched.
