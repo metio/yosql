@@ -142,6 +142,9 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # The theme is a submodule; without it Hugo has no layouts at all.
+          submodules: recursive
       - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
@@ -151,17 +154,15 @@ jobs:
       - name: Generate the configuration reference
         run: >
           nix develop --command mvn --batch-mode --no-transfer-progress
-          --projects yosql-website --also-make --define skipTests install
+          --projects docs --also-make --define skipTests install
       - name: Build the site
         env:
           YOSQL_RELEASE: 0.0.0
         run: >
           nix develop --command hugo --minify --printI18nWarnings
-          --printPathWarnings --printUnusedTemplates --source yosql-website
-      # No link check yet: the generated configuration reference does not render
-      # on the pinned Hugo, so every link into /configuration/ dangles and
-      # htmltest has nothing useful to say until that is fixed. Building the
-      # site still catches a broken shortcode or template.
+          --printPathWarnings --printUnusedTemplates --source docs
+      - name: Check the links
+        run: nix develop --command htmltest --conf docs/htmltest.yml
   dco:
     # Developer Certificate of Origin: every commit must carry a Signed-off-by
     # trailer. Skipped for bot-authored PRs (Renovate cannot sign off); a

@@ -3,6 +3,7 @@ title: {{setting.name}}
 date: {{currentDate}}
 menu:
   main:
+    identifier: {{#lower}}{{group.name}}{{/lower}}-{{setting.name}}
     parent: {{group.name}}
 categories:
   - Configuration

@@ -14,7 +14,7 @@ CI runs the same shell, so a green gate here is a green gate there.
 
 ```console
 nix develop --command mvn verify                        # the full gate
-nix develop --command hugo server --source yosql-website # the website, live
+nix develop --command hugo server --source docs           # the website, live
 nix develop .#native --command mvn -Pnative-image verify # the GraalVM native-image gate
 ```
 

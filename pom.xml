@@ -127,7 +127,7 @@
         <module>yosql-tooling</module>
         <module>yosql-examples</module>
         <module>yosql-benchmarks</module>
-        <module>yosql-website</module>
+        <module>docs</module>
     </modules>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->

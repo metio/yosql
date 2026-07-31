@@ -58,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           results="./yosql-benchmarks/yosql-benchmarks-${BENCHMARK}/target/benchmark/yosql-benchmarks-${BENCHMARK}.json"
-          target="./yosql-website/content/benchmarks/results"
+          target="./docs/content/benchmarks/results"
           cp --force "$results" "${target}/yosql-benchmarks-${BENCHMARK}-${VERSION}.json"
           cp --force "$results" "${target}/yosql-benchmarks-${BENCHMARK}-CURRENT.json"
       - name: Open a pull request
@@ -67,7 +67,7 @@ jobs:
           commit-message: "Record ${{ matrix.benchmark }} benchmarks for ${{ steps.released.outputs.version }}"
           title: "Record ${{ matrix.benchmark }} benchmarks for ${{ steps.released.outputs.version }}"
           body: Measured on the released code by the benchmarks workflow.
-          add-paths: yosql-website/content/benchmarks/results/*.json
+          add-paths: docs/content/benchmarks/results/*.json
           branch: benchmarks/${{ matrix.benchmark }}
           delete-branch: true
           base: main
