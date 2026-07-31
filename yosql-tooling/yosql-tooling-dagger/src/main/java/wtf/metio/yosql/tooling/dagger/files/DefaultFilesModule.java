@@ -11,6 +11,7 @@ import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.files.*;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
+import wtf.metio.yosql.codegen.records.RecordConverterNames;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.Parser;
 import wtf.metio.yosql.tooling.dagger.annotations.Reader;
@@ -69,8 +70,10 @@ public class DefaultFilesModule {
 
     @Provides
     @Singleton
-    MethodResultRowConverterConfigurer provideMethodConverterConfigurer(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultMethodResultRowConverterConfigurer(runtimeConfiguration.converter());
+    MethodResultRowConverterConfigurer provideMethodConverterConfigurer(
+            final RuntimeConfiguration runtimeConfiguration,
+            final RecordConverterNames recordConverterNames) {
+        return new DefaultMethodResultRowConverterConfigurer(runtimeConfiguration.converter(), recordConverterNames);
     }
 
     @Provides
