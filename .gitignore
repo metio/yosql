@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: The yosql Authors
-# SPDX-License-Identifier: CC0-1.0
+# SPDX-License-Identifier: 0BSD
 
 ########################################################################################################################
 # Java GitIgnore                                                                                                       #
@@ -165,3 +165,6 @@ fabric.properties
 /yosql-website/.hugo_build.lock
 /yosql-website/content/configuration/*
 !/yosql-website/content/configuration/_index.md
+
+# htmltest writes its reference cache next to where it is run
+/tmp/
