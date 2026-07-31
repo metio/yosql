@@ -11,7 +11,7 @@ extend-exclude = [
   "**/*_pl.properties",
   # The site theme is vendored from metio/metio-hugo-theme; its identifiers
   # are upstream's to rename.
-  "yosql-website/themes/metio/",
+  "docs/themes/metio/",
 ]
 
 [default.extend-words]

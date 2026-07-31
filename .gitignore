@@ -161,10 +161,10 @@ fabric.properties
 # Project specific ignores                                                                                             #
 ########################################################################################################################
 
-/yosql-website/public
-/yosql-website/.hugo_build.lock
-/yosql-website/content/configuration/*
-!/yosql-website/content/configuration/_index.md
+/docs/public
+/docs/.hugo_build.lock
+/docs/content/configuration/*
+!/docs/content/configuration/_index.md
 
 # htmltest writes its reference cache next to where it is run
 /tmp/

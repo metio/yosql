@@ -1,7 +1,0 @@
-{{ if .IsTranslated }}
-<span id="languages">
-    {{ range .Translations }}
-        <a href="{{ .Permalink }}">{{ index hugo.Data.i18n.Flags .Lang }}</a>
-    {{ end }}
-</span>
-{{ end }}

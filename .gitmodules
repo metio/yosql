@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: 0BSD
+
+[submodule "docs/themes/metio"]
+	path = docs/themes/metio
+	url = https://github.com/metio/metio-hugo-theme.git

@@ -14,6 +14,7 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,11 @@ final class MarkdownGenerator {
         return applyTemplate(groupTemplate, Map.of(
                 "group", group,
                 "yosqlVersion", yosqlVersion,
-                "currentDate", LocalDate.now().toString(),
+                // UTC, because Hugo compares a page's date against the current instant in UTC
+                // and drops anything dated later. A date-only stamp taken in a zone ahead of
+                // UTC is tomorrow midnight UTC, which silently removes every generated page
+                // from the site for as many hours as the offset.
+                "currentDate", LocalDate.now(ZoneOffset.UTC).toString(),
                 "lower", LOWER_CASE,
                 "upper", UPPER_CASE,
                 "kebab", KEBAB_CASE,
@@ -64,7 +69,7 @@ final class MarkdownGenerator {
         scopes.put("setting", setting);
         scopes.put("frontMatterExampleCode", setting.frontMatterExampleCode().orElse("configValue"));
         scopes.put("yosqlVersion", yosqlVersion);
-        scopes.put("currentDate", LocalDate.now().toString());
+        scopes.put("currentDate", LocalDate.now(ZoneOffset.UTC).toString());
         scopes.put("lower", LOWER_CASE);
         scopes.put("upper", UPPER_CASE);
         scopes.put("kebab", KEBAB_CASE);

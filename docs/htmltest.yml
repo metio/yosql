@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: 0BSD
+
+DirectoryPath: docs/public
+IgnoreDirectoryMissingTrailingSlash: true
+EnforceHTML5: true
+EnforceHTTPS: true
+# External links are somebody else's uptime: a dead third-party URL, a bot-blocked
+# 403, or a CSS asset that only exists once the site is deployed would all fail a
+# gate that has nothing to do with the change being reviewed. Internal links are
+# ours, and those are checked.
+CheckExternal: false

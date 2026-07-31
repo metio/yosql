@@ -9,7 +9,7 @@ SPDX-PackageDownloadLocation = "https://github.com/metio/yosql"
 # JSON carries no comment syntax. renovate.json follows Renovate's fixed schema,
 # flake.lock is nix-generated, and the benchmark results are JMH output.
 [[annotations]]
-path = [".github/renovate.json", "flake.lock", "yosql-website/content/benchmarks/results/**"]
+path = [".github/renovate.json", "flake.lock", "docs/content/benchmarks/results/**"]
 precedence = "override"
 SPDX-FileCopyrightText = "The yosql Authors"
 SPDX-License-Identifier = "0BSD"
@@ -27,20 +27,14 @@ SPDX-License-Identifier = "0BSD"
 # top of either is content rather than metadata.
 [[annotations]]
 path = [
-  "yosql-website/archetypes/**",
-  "yosql-website/content/**",
+  "docs/archetypes/**",
+  "docs/content/**",
   "yosql-models/yosql-models-generator/src/main/resources/*.md",
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "The yosql Authors"
 SPDX-License-Identifier = "0BSD"
 
-# The site theme is vendored from github.com/metio/metio-hugo-theme.
-[[annotations]]
-path = "yosql-website/themes/metio/**"
-precedence = "override"
-SPDX-FileCopyrightText = "The metio-hugo-theme Authors"
-SPDX-License-Identifier = "CC0-1.0"
 
 # IDE settings, shared so everyone's formatter agrees. XML that IntelliJ
 # rewrites wholesale, dropping anything it did not put there.

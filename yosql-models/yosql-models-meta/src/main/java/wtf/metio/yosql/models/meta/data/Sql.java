@@ -248,7 +248,7 @@ public final class Sql extends AbstractConfigurationGroup {
                 .setDescription(description)
                 .setExplanation("""
                         Name a record and `YoSQL` writes the converter for you. It reads the record's canonical
-                        constructor out of its source file — under [sourceDirectory](../files/sourcedirectory/) — and
+                        constructor out of its source file — under [sourceDirectory](../../files/sourcedirectory/) — and
                         emits one `resultSet.getX(...)` call per component, in a class of its own. No reflection is
                         involved at any point, so the result survives a GraalVM native image intact.
 
