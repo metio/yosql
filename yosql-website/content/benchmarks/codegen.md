@@ -12,11 +12,12 @@ tags:
 ---
 
 [Code Generation](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-codegen-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json): Measures how long it takes to read, parse, and generate 50, 25, and 10 repositories in various configurations.
-  - JDBC without logging: Generates code using the JDBC API without any logging statements. Use these benchmarks as a baseline for benchmarks.
-  - JDBC with JUL: Enables the use of the `java.util.logging` API in generated code.
-  - JDBC with log4j: Enables the use of the `log4j` API in generated code.
-  - JDBC with slf4j: Enables the use of the `slf4j` API in generated code.
-  - JDBC with tinylog: Enables the use of the `tinylog` API in generated code.
+
+- JDBC without logging: Generates code using the JDBC API without any logging statements. Use these benchmarks as a baseline for benchmarks.
+- JDBC with JUL: Enables the use of the `java.util.logging` API in generated code.
+- JDBC with log4j: Enables the use of the `log4j` API in generated code.
+- JDBC with slf4j: Enables the use of the `slf4j` API in generated code.
+- JDBC with tinylog: Enables the use of the `tinylog` API in generated code.
 
 ```console
 # run code generation benchmark

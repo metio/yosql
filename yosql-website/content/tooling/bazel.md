@@ -15,7 +15,7 @@ tags:
 1. Download the `yosql-tooling-cli` zip file from the [latest release](https://github.com/metio/yosql/releases/latest) (or any prior version).
 2. Use a [java_import](https://bazel.build/reference/be/java#java_import) rule to capture all `.jar` files used by `yosql-tooling-cli`
 
-```
+```python
 java_import(
     name = "yosql_tooling_cli",
     jars = [
@@ -27,9 +27,9 @@ java_import(
 )
 ```
 
-3. Use a [java_binary](https://bazel.build/reference/be/java#java_binary) rule to create a runnable binary for bazel
+1. Use a [java_binary](https://bazel.build/reference/be/java#java_binary) rule to create a runnable binary for bazel
 
-```
+```python
 java_binary(
     name = "yosql",
     deps = [
@@ -39,9 +39,9 @@ java_binary(
 )
 ```
 
-4. Write .sql files in a directory of your choice (e.g. `persistence`)
+1. Write .sql files in a directory of your choice (e.g. `persistence`)
 
-```
+```text
 project/
 ├── WORKSPACE
 ├── BUILD
@@ -54,18 +54,18 @@ project/
         └── createItemTable.sql
 ```
 
-5. Declare a [filegroup](https://bazel.build/reference/be/general#filegroup) that contains all of your SQL files:
+1. Declare a [filegroup](https://bazel.build/reference/be/general#filegroup) that contains all of your SQL files:
 
-```
+```text
 filegroup(
   name = "your-sql-files",
   srcs = glob(["persistence/**/*.sql"]),
 )
 ```
 
-6. Generate Java code by calling the previously defined `java_binary`:
+1. Generate Java code by calling the previously defined `java_binary`:
 
-```
+```text
 genrule(
   name = "your-repositories",
   srcs = [":your-sql-files"],
@@ -81,4 +81,4 @@ genrule(
 )
 ```
 
-7. Depend on the generated sources by using the target name of the generated code in the `srcs` of another rule.
+1. Depend on the generated sources by using the target name of the generated code in the `srcs` of another rule.

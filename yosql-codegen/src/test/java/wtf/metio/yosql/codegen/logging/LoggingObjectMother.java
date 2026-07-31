@@ -1,8 +1,6 @@
 /*
- * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
- * directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
- * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
- * in the LICENSE file.
+ * SPDX-FileCopyrightText: The yosql Authors
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 package wtf.metio.yosql.codegen.logging;
@@ -34,7 +32,7 @@ public final class LoggingObjectMother {
         generators.add(new Log4jLoggingGenerator(names, fields));
         generators.add(new Slf4jLoggingGenerator(names, fields));
         generators.add(new SystemLoggingGenerator(names, fields));
-        generators.add(new ThatsInteresingLoggingGenerator());
+        generators.add(new ThatsInterestingLoggingGenerator());
         generators.add(new NoOpLoggingGenerator());
         return new DelegatingLoggingGenerator(LoggingConfigurations.jul(), generators);
     }

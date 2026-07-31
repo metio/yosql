@@ -1,8 +1,6 @@
 /*
- * This file is part of yosql. It is subject to the license terms in the LICENSE file found in the top-level
- * directory of this distribution and at https://creativecommons.org/publicdomain/zero/1.0/. No part of yosql,
- * including this file, may be copied, modified, propagated, or distributed except according to the terms contained
- * in the LICENSE file.
+ * SPDX-FileCopyrightText: The yosql Authors
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 package wtf.metio.yosql.codegen.validation;
@@ -34,10 +32,10 @@ public final class FilesConfigurationValidator implements RuntimeConfigurationVa
         final var files = configuration.files();
 
         directoryIsReadable(files.inputBaseDirectory());
-        directoryIsWriteable(files.outputBaseDirectory());
+        directoryIsWritable(files.outputBaseDirectory());
     }
 
-    private void directoryIsWriteable(final Path directory) {
+    private void directoryIsWritable(final Path directory) {
         if (Files.notExists(directory)) {
             try {
                 if (Files.createDirectories(directory) == null) {

@@ -1,215 +1,164 @@
-name: Verify Commits
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: CC0-1.0
+
+name: Verify
 on:
   pull_request:
-    branches: [ main ]
-env:
-  JAVA_VERSION: 17
+    branches: [main]
+permissions:
+  contents: read
 jobs:
   maven:
-    name: Build Maven Tooling on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-    steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v7
-      - id: graal
-        name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
-        with:
-          distribution: graalvm
-          java-version: ${{ env.JAVA_VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - id: maven
-        name: Maven Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-maven,yosql-examples/yosql-examples-common --also-make install
-      - id: maven_examples
-        name: Maven Examples
-        run: mvn --batch-mode --projects yosql-examples/yosql-examples-maven --also-make --also-make-dependents verify
+    # Reusable Maven pipeline shared across the metio JVM repos. Named "Maven"
+    # so its checks read "Maven / build", "Maven / javadoc". `mvn verify` at the
+    # root covers the whole reactor — generator, tooling, the Ant/CLI/Maven
+    # examples and the benchmarks — so the frontends are exercised by building
+    # the projects that consume them.
+    name: Maven
+    uses: metio/ci/.github/workflows/maven.yml@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
   gradle:
-    name: Build Gradle Tooling on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+    # The Gradle example is not a Maven module, so the reactor never reaches it.
+    # Building it is the only check that the Gradle plugin's DSL still matches
+    # the configuration model the generator produces.
+    name: Gradle
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v7
-      - id: graal
-        name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          distribution: graalvm
-          java-version: ${{ env.JAVA_VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - id: maven
-        name: Maven Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-dagger,yosql-examples/yosql-examples-common --also-make install
-      - id: gradle
-        name: Gradle Tooling
-        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build run
-  ant:
-    name: Build Ant Tooling on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      - name: Install the tooling the Gradle plugin builds on
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --projects yosql-tooling/yosql-tooling-dagger,yosql-examples/yosql-examples-common
+          --also-make install
+      - name: Build and run the Gradle example
+        working-directory: ./yosql-examples/yosql-examples-gradle
+        run: nix develop --command ./gradlew build run
+  native:
+    # A native image cannot be proven by the JVM suite: reflection that the JVM
+    # resolves at runtime simply is not there once the image is closed, and the
+    # failure shows up the first time the code path runs. So this job compiles
+    # the CLI to a binary and runs it. Its own devShell carries GraalVM, which
+    # the other jobs do not download.
+    name: Native image
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v7
-      - id: graal
-        name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          distribution: graalvm
-          java-version: ${{ env.JAVA_VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - id: maven
-        name: Ant Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-ant --also-make verify
-      - id: maven_examples
-        name: Ant Examples
-        run: mvn --batch-mode --projects yosql-examples/yosql-examples-ant --also-make --also-make-dependents verify
-      - id: upload-ant-tooling
-        name: Upload Ant Tooling
-        uses: actions/upload-artifact@v7
-        with:
-          name: yosql-tooling-ant-${{ matrix.os }}
-          path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-dist*
-  cli:
-    name: Build CLI Tooling on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      - name: Build the CLI native image
+        run: >
+          nix develop .#native --command mvn --batch-mode --no-transfer-progress
+          --projects yosql-tooling/yosql-tooling-cli --also-make
+          --define skipNativeBuild=false verify
+      - name: Run the binary
+        run: ./yosql-tooling/yosql-tooling-cli/target/yosql --help
+  reuse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v7
-      - id: graal
-        name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
-        with:
-          distribution: graalvm
-          java-version: ${{ env.JAVA_VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - id: maven
-        name: CLI Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-cli --also-make --define skipNativeBuild=false verify
-      - id: maven_examples
-        name: CLI Examples
-        run: mvn --batch-mode --projects yosql-examples/yosql-examples-cli --also-make --also-make-dependents verify
-      - id: upload-jvm-cli-tooling
-        name: Upload JVM CLI Tooling
-        uses: actions/upload-artifact@v7
-        if: runner.os == 'Linux'
-        with:
-          name: yosql-tooling-cli-jvm
-          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
-      - id: upload-linux-cli-tooling
-        name: Upload Linux CLI Tooling
-        uses: actions/upload-artifact@v7
-        if: runner.os == 'Linux'
-        with:
-          name: yosql-tooling-cli-linux
-          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-linux*
-      - id: upload-mac-cli-tooling
-        name: Upload Mac OSX CLI Tooling
-        uses: actions/upload-artifact@v7
-        if: runner.os == 'macOS'
-        with:
-          name: yosql-tooling-cli-mac
-          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-mac*
-      - id: upload-windows-cli-tooling
-        name: Upload Windows CLI Tooling
-        uses: actions/upload-artifact@v7
-        if: runner.os == 'Windows'
-        with:
-          name: yosql-tooling-cli-windows
-          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-windows*
-  benchmarks:
-    name: Build Benchmarks on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - run: nix develop --command ci-reuse
+  yaml:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v7
-      - id: graal
-        name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
-        with:
-          distribution: graalvm
-          java-version: ${{ env.JAVA_VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - id: maven
-        name: Maven Tooling
-        run: mvn --batch-mode --projects yosql-tooling/yosql-tooling-maven --also-make install
-      - id: maven_benchmarks
-        name: Build Benchmarks
-        run: mvn --batch-mode --projects yosql-benchmarks --also-make --also-make-dependents verify
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - run: nix develop --command ci-yaml
+  github-actions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      # shellcheck rides in the devShell, so actionlint lints run: blocks too.
+      - run: nix develop --command ci-actionlint
+  markdown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - run: nix develop --command ci-markdown
+  typos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - run: nix develop --command ci-typos
   website:
-    name: Build Website on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-#          - macos-latest # TODO: enable once https://github.com/peaceiris/actions-hugo/issues/605 is fixed
-#          - windows-latest # TODO: enable once https://github.com/peaceiris/actions-hugo/issues/608 is fixed
+    # A broken shortcode or a dead internal link fails the same way a broken
+    # test does. Hugo reads the generated configuration reference, so the site
+    # only builds after the Maven side has produced it.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v7
-      - id: hugo
-        name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          hugo-version: latest
-      - id: graal
-        name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
-        with:
-          distribution: graalvm
-          java-version: ${{ env.JAVA_VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - id: maven
-        name: Maven Tooling
-        run: mvn --batch-mode --projects yosql-website --also-make --define skipTests install
-      - id: website
-        name: Build Website
-        run: hugo --minify --printI18nWarnings --printPathWarnings --printUnusedTemplates --source yosql-website
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      - name: Generate the configuration reference
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --projects yosql-website --also-make --define skipTests install
+      - name: Build the site
         env:
           YOSQL_RELEASE: 0.0.0
-      - id: htmltest
-        name: Run htmltest
-        uses: wjdp/htmltest-action@master
+        run: >
+          nix develop --command hugo --minify --printI18nWarnings
+          --printPathWarnings --printUnusedTemplates --source yosql-website
+      - name: Check the links
+        run: nix develop --command htmltest --conf yosql-website/htmltest.yml
+  dco:
+    # Developer Certificate of Origin: every commit must carry a Signed-off-by
+    # trailer. Skipped for bot-authored PRs (Renovate cannot sign off); a
+    # skipped job still satisfies the all-green gate below.
+    if: github.event.pull_request.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          config: ./yosql-website/htmltest.yml
+          fetch-depth: 0
+      - uses: metio/ci/dco@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+  policy:
+    # metio org workflow conventions (conftest/Rego from metio/ci): SHA-pinned
+    # uses refs, top-level permissions, timeout-minutes on every job, no
+    # untrusted ${{ github.event.* }} interpolation in run: blocks, and — since
+    # this repo ships a flake.nix — every tool coming from the devShell.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/ci/policy-check@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+  verify:
+    # Single required check covering every job above: mark only this one
+    # required in branch protection and new jobs are covered automatically.
+    name: Verify
+    needs: [maven, gradle, native, reuse, yaml, github-actions, markdown, typos, website, dco, policy]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify every job succeeded or skipped
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          bad=$(echo "$NEEDS" | jq -r 'to_entries[] | select(.value.result != "success" and .value.result != "skipped") | "\(.key)=\(.value.result)"')
+          [ -z "$bad" ] || { echo "::error::$bad"; exit 1; }

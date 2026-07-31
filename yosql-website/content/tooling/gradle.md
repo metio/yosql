@@ -14,7 +14,8 @@ tags:
 
 1. Add the [plugin](https://plugins.gradle.org/plugin/wtf.metio.yosql) to your `build.gradle(.kts)` file as describe in the Gradle plugin portal.
 2. Add .sql files in `src/main/yosql` and write SQL statements into them. Take a look at the various options to [structure](/sql/structure/) your [SQL files](/sql/sql-files/).
-    ```
+
+    ```text
     <project_root>/
     ├── build.gradle.kts
     ├── settings.gradle.kts
@@ -28,6 +29,7 @@ tags:
                     ├── findRoot.sql
                     └── addData.sql
     ```
+
 3. Execute the `yosql` task (or just run `gradle build`) to generate the Java code.
 
 **Note**: The YoSQL Gradle plugin will automatically add the generated sources to the main source set as defined by the Gradle Java plugin. If your project is not using the Java plugin, you have to configure the [outputBaseDirectory](/configuration/files/outputbasedirectory/) to be part of a source sets of your project yourself.

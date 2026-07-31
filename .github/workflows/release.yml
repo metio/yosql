@@ -1,267 +1,281 @@
-name: Automated Release
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: CC0-1.0
+
+name: Release
+
+# Weekly calendar-versioned release. Two gates guard it: the generator or the
+# tooling must have changed since the last release, and the organization's
+# shared Maven Central budget must have room. A skipped week costs nothing —
+# the gate measures against the last release, not the last run, so pending
+# changes ride the next slot.
 on:
   schedule:
     - cron: 25 3 * * WED
   workflow_dispatch:
-env:
-  JAVA_VERSION: 17
-  JAVA_PACKAGE: jdk
-  JAVA_ARCH: x64
-  JAVA_DISTRO: temurin
+
+permissions:
+  contents: read
+
+# Serialize runs: the gate reads the previous tag before this run creates its
+# own, so two runs in flight would emit overlapping notes. Queue, never cancel,
+# so the earlier run tags first.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
-  prepare:
-    name: Prepare Release
+  gate:
+    name: Gate
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
-      commit_count: ${{ steps.commits.outputs.count }}
-      previous_version: ${{ steps.last_release.outputs.version }}
-      release_version: ${{ steps.release.outputs.version }}
+      release: ${{ steps.gate.outputs.needed == 'true' && steps.quota.outputs.available == 'true' }}
+      last: ${{ steps.gate.outputs.last }}
+      version: ${{ steps.version.outputs.version }}
+      timestamp: ${{ steps.version.outputs.timestamp }}
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          fetch-depth: 0
-      - id: last_release
-        name: Fetch last release info
-        run: echo "tag=$(gh release view --json tagName --jq '.tagName')" >> $GITHUB_OUTPUT
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: commits
-        name: Count Commits
-        run: echo "count=$(git rev-list --count ${{ steps.last_release.outputs.tag }}..HEAD) -- pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling" >> $GITHUB_OUTPUT
-      - id: release
-        name: Create Release Version
-        if: steps.commits.outputs.count > 0
-        run: echo "version=$(date +'%Y.%-m.%-d')" >> $GITHUB_OUTPUT
-      - id: timestamp
-        name: Build Timestamp
-        if: steps.commits.outputs.count > 0
-        run: echo "iso8601=$(date --utc --iso-8601=seconds)" >> $GITHUB_OUTPUT
-  maven:
-    name: Build Maven Tooling
-    needs: prepare
+          fetch-depth: 0 # the gate reads tags and history
+      - id: gate
+        uses: metio/ci/needs-release@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+        with:
+          # The examples, the benchmarks and the website ship nothing, so a
+          # change confined to them is not worth a release.
+          paths: pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling
+      - id: quota
+        if: steps.gate.outputs.needed == 'true'
+        uses: metio/ci/central-quota@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+      - id: version
+        name: Compute the version and the build timestamp
+        if: steps.gate.outputs.needed == 'true'
+        # Plain YYYY.M.D rather than the org's second-precision calver: every
+        # version published to Central since 2021 has this shape, and a weekly
+        # slot cannot collide with itself. The timestamp feeds
+        # project.build.outputTimestamp so the jars are byte-reproducible.
+        run: |
+          set -euo pipefail
+          {
+            echo "version=$(date --utc +'%Y.%-m.%-d')"
+            echo "timestamp=$(date --utc --iso-8601=seconds)"
+          } >> "$GITHUB_OUTPUT"
+
+  central:
+    # The Maven plugin and everything it is built from. The parent POM's
+    # `release` profile carries both halves of the publish: sign-maven-plugin
+    # for the PGP signatures Central requires on every file, and
+    # central-publishing-maven-plugin for the upload itself.
+    name: Maven Central
+    needs: [gate]
+    if: needs.gate.outputs.release == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/checkout@v7
-      - id: java
-        name: Setup Java
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/setup-java@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
-          server-id: ossrh
-          server-username: MAVEN_CENTRAL_USERNAME
-          server-password: MAVEN_CENTRAL_TOKEN
-          cache: maven
-      - id: gpg
-        name: GPG Key
-        if: needs.prepare.outputs.commit_count > 0
-        uses: timheuer/base64-to-file@v2
-        with:
-          fileName: signing.key.asc
-          fileDir: ${{ github.workspace}}
-          encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
-      - name: Set release version
-        if: needs.prepare.outputs.commit_count > 0
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
-      - id: deploy-maven-tooling
-        name: Deploy Maven Tooling
-        if: needs.prepare.outputs.commit_count > 0
-        run: MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED" mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-maven --also-make install deploy --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      - name: Set the release version
+        env:
+          VERSION: ${{ needs.gate.outputs.version }}
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --define newVersion="$VERSION"
+          --define generateBackupPoms=false
+          versions:set
+      - name: Write the signing key and the Central credentials
+        env:
+          GPG_SECRET_KEY_BASE64: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
+        run: |
+          echo "$GPG_SECRET_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/signing.key.asc"
+          # The parent POM publishes through server id "central"; the credentials
+          # are read from the environment at deploy time so no secret is written
+          # into the settings file itself.
+          cat > "$RUNNER_TEMP/settings.xml" <<'XML'
+          <settings>
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${env.MAVEN_CENTRAL_USERNAME}</username>
+                <password>${env.MAVEN_CENTRAL_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          XML
+      - name: Publish to Maven Central
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          SIGN_KEY_PASS: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
+          TIMESTAMP: ${{ needs.gate.outputs.timestamp }}
+        # Only the Maven plugin and its dependencies. The Ant and CLI
+        # distributions ship on the GitHub release, the examples and benchmarks
+        # ship nowhere.
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --settings "$RUNNER_TEMP/settings.xml"
+          --activate-profiles release
+          --projects yosql-tooling/yosql-tooling-maven --also-make
+          --define project.build.outputTimestamp="$TIMESTAMP"
+          --define sign.keyFile="$RUNNER_TEMP/signing.key.asc"
+          --define sign.keyPass="$SIGN_KEY_PASS"
+          deploy
+
   gradle:
-    name: Build Gradle Tooling
-    needs: prepare
+    name: Gradle Plugin Portal
+    needs: [gate]
+    if: needs.gate.outputs.release == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/checkout@v7
-      - id: java
-        name: Setup Java
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/setup-java@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
-          cache: maven
-      - name: Set release version
-        if: needs.prepare.outputs.commit_count > 0
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
-      - id: install-maven-tooling
-        name: Install Maven Tooling
-        if: needs.prepare.outputs.commit_count > 0
-        run: mvn --batch-mode install
-      - id: build-gradle
-        name: Build Gradle Tooling
-        if: needs.prepare.outputs.commit_count > 0
-        run: cd ./yosql-examples/yosql-examples-gradle/ && ./gradlew build -Pversion=${{ needs.prepare.outputs.release_version }}
-      - id: deploy-gradle
-        name: Deploy Gradle Tooling
-        if: needs.prepare.outputs.commit_count > 0
-        run: cd ./yosql-tooling/yosql-tooling-gradle/ && ./gradlew publishPlugins -Pversion=${{ needs.prepare.outputs.release_version }} -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
-  ant:
-    name: Build Ant Tooling
-    needs: prepare
-    runs-on: ubuntu-latest
-    steps:
-      - id: checkout
-        name: Clone Git Repository
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/checkout@v7
-      - id: java
-        name: Setup Java
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/setup-java@v5
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          java-package: ${{ env.JAVA_PACKAGE }}
-          architecture: ${{ env.JAVA_ARCH }}
-          distribution: ${{ env.JAVA_DISTRO }}
-          cache: maven
-      - id: gpg
-        name: GPG Key
-        if: needs.prepare.outputs.commit_count > 0
-        uses: timheuer/base64-to-file@v2
-        with:
-          fileName: signing.key.asc
-          fileDir: ${{ github.workspace}}
-          encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
-      - name: Set release version
-        if: needs.prepare.outputs.commit_count > 0
-        run: mvn --batch-mode versions:set --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false
-      - id: build-ant-tooling
-        name: Build Ant Tooling
-        if: needs.prepare.outputs.commit_count > 0
-        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-ant --also-make install --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
-      - id: upload-ant-tooling
-        name: Upload Ant Tooling Artifact
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/upload-artifact@v7
-        with:
-          name: yosql-tooling-ant
-          path: ./yosql-tooling/yosql-tooling-ant/target/yosql-tooling-ant-*-dist*
-  cli:
-    name: Build CLI Tooling on ${{ matrix.os }}
-    needs: prepare
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      - name: Set the release version
+        env:
+          VERSION: ${{ needs.gate.outputs.version }}
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --define newVersion="$VERSION"
+          --define generateBackupPoms=false
+          versions:set
+      - name: Install the tooling the Gradle plugin builds on
+        run: nix develop --command mvn --batch-mode --no-transfer-progress install
+      - name: Publish the Gradle plugin
+        working-directory: ./yosql-tooling/yosql-tooling-gradle
+        env:
+          VERSION: ${{ needs.gate.outputs.version }}
+          PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+        run: >
+          nix develop --command ./gradlew publishPlugins
+          -Pversion="$VERSION"
+          -Pgradle.publish.key="$PUBLISH_KEY"
+          -Pgradle.publish.secret="$PUBLISH_SECRET"
+
+  distributions:
+    # The Ant task and the CLI, which are downloaded rather than resolved. Both
+    # are built on the runner they target: GraalVM cannot cross-compile, so a
+    # native binary needs a runner of its own architecture. Windows is absent
+    # because the toolchain contract is the flake, and Nix does not run there.
+    name: Distributions on ${{ matrix.os }}
+    needs: [gate]
+    if: needs.gate.outputs.release == 'true'
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+        os: [ubuntu-latest, macos-latest]
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/checkout@v7
-      - id: graal
-        name: Setup GraalVM
-        if: needs.prepare.outputs.commit_count > 0
-        uses: graalvm/setup-graalvm@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
-          distribution: graalvm
-          java-version: ${{ env.JAVA_VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - id: gpg
-        name: GPG Key
-        if: needs.prepare.outputs.commit_count > 0
-        uses: timheuer/base64-to-file@v2
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      - name: Set the release version
+        env:
+          VERSION: ${{ needs.gate.outputs.version }}
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --define newVersion="$VERSION"
+          --define generateBackupPoms=false
+          versions:set
+      - name: Build the Ant distribution
+        if: runner.os == 'Linux'
+        env:
+          TIMESTAMP: ${{ needs.gate.outputs.timestamp }}
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --projects yosql-tooling/yosql-tooling-ant --also-make
+          --define project.build.outputTimestamp="$TIMESTAMP"
+          install
+      - name: Build the CLI distribution
+        env:
+          TIMESTAMP: ${{ needs.gate.outputs.timestamp }}
+        run: >
+          nix develop .#native --command mvn --batch-mode --no-transfer-progress
+          --projects yosql-tooling/yosql-tooling-cli --also-make
+          --define project.build.outputTimestamp="$TIMESTAMP"
+          --define skipNativeBuild=false
+          install
+      - name: Collect the archives
+        env:
+          # The native binary is named after the platform it was built on, and
+          # every job in the matrix produces one. The JVM archive and the Ant
+          # distribution are platform-independent, so only one job contributes
+          # them — otherwise the merged download would have two jobs writing the
+          # same file name.
+          PATTERNS: ${{ runner.os == 'Linux' && '*-linux.zip *-jvm.zip *-dist*.zip' || '*-mac.zip' }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          for dir in ./yosql-tooling/yosql-tooling-ant/target ./yosql-tooling/yosql-tooling-cli/target; do
+            [ -d "$dir" ] || continue
+            for pattern in $PATTERNS; do
+              find "$dir" -maxdepth 1 -type f -name "$pattern" -exec cp {} dist/ \;
+            done
+          done
+          ls -l dist
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          fileName: signing.key.asc
-          fileDir: ${{ github.workspace}}
-          encodedString: ${{ secrets.GPG_SECRET_KEY_BASE64 }}
-      - name: Set release version
-        if: needs.prepare.outputs.commit_count > 0
-        run: mvn --batch-mode --define newVersion=${{ needs.prepare.outputs.release_version }} --define generateBackupPoms=false versions:set
-      - id: build-cli-tooling
-        name: Build CLI Tooling
-        if: needs.prepare.outputs.commit_count > 0
-        run: mvn --batch-mode --activate-profiles release --projects yosql-tooling/yosql-tooling-cli --also-make install --define skipNativeBuild=false --define pgp.secretkey=keyfile:signing.key.asc --define pgp.passphrase=literal:${{ secrets.GPG_SECRET_KEY_PASSWORD }}
-      - id: upload-jvm-cli-tooling
-        name: Upload JVM CLI Tooling
-        if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
-        uses: actions/upload-artifact@v7
-        with:
-          name: yosql-tooling-cli-jvm
-          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-jvm*
-      - id: upload-linux-cli-tooling
-        name: Upload Linux CLI Tooling
-        if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Linux'
-        uses: actions/upload-artifact@v7
-        with:
-          name: yosql-tooling-cli-linux
-          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-linux*
-      - id: upload-mac-cli-tooling
-        name: Upload Mac OSX CLI Tooling
-        if: needs.prepare.outputs.commit_count > 0 && runner.os == 'macOS'
-        uses: actions/upload-artifact@v7
-        with:
-          name: yosql-tooling-cli-mac
-          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-mac*
-      - id: upload-windows-cli-tooling
-        name: Upload Windows CLI Tooling
-        if: needs.prepare.outputs.commit_count > 0 && runner.os == 'Windows'
-        uses: actions/upload-artifact@v7
-        with:
-          name: yosql-tooling-cli-windows
-          path: ./yosql-tooling/yosql-tooling-cli/target/yosql-tooling-cli-*-windows*
-  release:
+          name: distributions-${{ matrix.os }}
+          path: dist/
+          if-no-files-found: error
+
+  github:
+    # The GitHub release is what central-quota counts, so it is created only
+    # after Central accepted the deployment — a failed publish must not consume
+    # the organization's monthly budget.
     name: GitHub Release
-    needs: [prepare, maven, gradle, ant, cli]
+    needs: [gate, central, gradle, distributions]
+    if: needs.gate.outputs.release == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
-      contents: write
+      contents: write # create the release
+      id-token: write # cosign keyless signing
     steps:
-      - id: checkout
-        name: Clone Git Repository
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          fetch-depth: 0
-      - id: download
-        name: Download Artifacts
-        if: needs.prepare.outputs.commit_count > 0
-        uses: actions/download-artifact@v8
+          fetch-depth: 0 # the notes read tags and history
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           path: artifacts
-      - id: create_release
-        name: Create Release
-        if: needs.prepare.outputs.commit_count > 0
-        uses: softprops/action-gh-release@v3
+          merge-multiple: true
+      - name: Checksum the archives
+        working-directory: artifacts
+        # One signed manifest rather than one signature per file: the manifest
+        # names every archive and its digest, so a single verification covers
+        # the whole release and adding an archive cannot silently escape it.
+        run: sha256sum ./*.zip > SHA256SUMS
+      - id: cosign
+        uses: metio/ci/cosign-sign-blob@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
         with:
-          tag_name: ${{ needs.prepare.outputs.release_version }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          files: |
-            artifacts/yosql-tooling-ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip
-            artifacts/yosql-tooling-ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip.asc
-            artifacts/yosql-tooling-ant/yosql-tooling-ant-${{ needs.prepare.outputs.release_version }}-dist.zip.sha512
-            artifacts/yosql-tooling-cli-jvm/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip
-            artifacts/yosql-tooling-cli-jvm/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.asc
-            artifacts/yosql-tooling-cli-jvm/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-jvm.zip.sha512
-            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-linux.zip
-            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-linux.zip.asc
-            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-linux.zip.sha512
-            artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip
-            artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip.asc
-            artifacts/yosql-tooling-cli-mac/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-mac.zip.sha512
-            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-windows.zip
-            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-windows.zip.asc
-            artifacts/yosql-tooling-cli-linux/yosql-tooling-cli-${{ needs.prepare.outputs.release_version }}-windows.zip.sha512
+          file: artifacts/SHA256SUMS
+      - id: notes
+        uses: metio/ci/release-notes@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+        with:
+          version: ${{ needs.gate.outputs.version }}
+          previous: ${{ needs.gate.outputs.last }}
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.gate.outputs.version }}
+          NOTES: ${{ steps.notes.outputs.file }}
+        run: >
+          gh release create "$VERSION"
+          --target "$GITHUB_SHA"
+          --title "$VERSION"
+          --notes-file "$NOTES"
+          artifacts/*.zip
+          artifacts/SHA256SUMS
+          artifacts/SHA256SUMS.bundle

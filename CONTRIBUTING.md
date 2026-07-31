@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: The yosql Authors
+SPDX-License-Identifier: CC0-1.0
+-->
+
 # Contributor Guide
 
 Thank you so much for helping out! This project uses a [DCO](https://developercertificate.org/) to verify that each change is acceptable. Its text is as follows:
 
-```
+```text
 By making a contribution to this project, I certify that:
 
 (a) The contribution was created in whole or in part by me and I

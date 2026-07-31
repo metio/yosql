@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: CC0-1.0
+
 baseURL = "https://yosql.projects.metio.wtf/"
 languageCode = "en"
 theme = "metio"

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: The yosql Authors
+SPDX-License-Identifier: CC0-1.0
+-->
+
 # YoSQL [![Chat](https://img.shields.io/badge/matrix-%23talk.metio:matrix.org-brightgreen.svg?style=social&label=Matrix)](https://matrix.to/#/#talk.metio:matrix.org)
 
 Take a look at the [project website](https://yosql.projects.metio.wtf/) to read the documentation.
@@ -8,14 +13,14 @@ The whole toolchain — JDK, Maven, Hugo, htmltest, Postgres — comes from `fla
 CI runs the same shell, so a green gate here is a green gate there.
 
 ```console
-$ nix develop --command mvn verify                        # the full gate
-$ nix develop --command hugo server --source yosql-website # the website, live
-$ nix develop .#native --command mvn -Pnative-image verify # the GraalVM native-image gate
+nix develop --command mvn verify                        # the full gate
+nix develop --command hugo server --source yosql-website # the website, live
+nix develop .#native --command mvn -Pnative-image verify # the GraalVM native-image gate
 ```
 
 ## License
 
-```
+```text
 To the extent possible under law, the author(s) have dedicated all copyright
 and related and neighboring rights to this software to the public domain
 worldwide. This software is distributed without any warranty.
