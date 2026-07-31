@@ -51,6 +51,26 @@ class RecordConverterNamesTest {
     }
 
     @Test
+    @DisplayName("takes the class-name affixes from configuration")
+    void affixesAreConfigurable() {
+        final var renamed = ConverterConfiguration.copyOf(ConverterConfigurations.withConverters())
+                .withRecordConverterPrefix("")
+                .withRecordConverterSuffix("RowMapper");
+        final var names = new RecordConverterNames(renamed);
+        assertEquals(ClassName.get("com.example.persistence.converter", "TenantRowMapper"),
+                names.converterClass(TENANT));
+        assertEquals("tenantRowMapper", names.alias(TENANT), "the field follows the suffix");
+    }
+
+    @Test
+    @DisplayName("takes the method name from configuration")
+    void methodNameIsConfigurable() {
+        final var renamed = ConverterConfiguration.copyOf(ConverterConfigurations.withConverters())
+                .withRecordConverterMethod("mapRow");
+        assertEquals("mapRow", new RecordConverterNames(renamed).methodName());
+    }
+
+    @Test
     @DisplayName("uses only the simple name, so two packages cannot both be right")
     void nestedTypesUseTheirOwnSimpleName() {
         // A nested record is still addressed by its simple name here; two records sharing one

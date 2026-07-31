@@ -75,6 +75,7 @@ public final class Sql extends AbstractConfigurationGroup {
                 returningMode(),
                 resultRowConverter(),
                 resultRowType(),
+                resultRowColumns(),
                 parameters(),
                 annotations());
     }
@@ -263,6 +264,36 @@ public final class Sql extends AbstractConfigurationGroup {
                         A column no component claims, or a component no column supplies, fails the build and names the
                         file, the statement and the component.""")
                 .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
+                .addTags(Tags.FRONT_MATTER)
+                .build();
+    }
+
+    private static ConfigurationSetting resultRowColumns() {
+        final var name = "resultRowColumns";
+        final var description = "Overrides which column a component of the result row type reads";
+        return ConfigurationSetting.builder()
+                .setName(name)
+                .setDescription(description)
+                .setExplanation("""
+                        A component reads the column its own name implies, `camelCase` read as `snake_case`. Where the
+                        two disagree, aliasing the column in the query is usually the better answer, because it puts the
+                        mapping next to the column being renamed. This is for when the query is not yours to change —
+                        a view you do not own, or SQL generated elsewhere.
+
+                        Keys are component paths from the root of the result row type, so a component of a nested record
+                        is addressed through the component holding it:
+
+                        ```sql
+                        -- resultRowColumns:
+                        --   amount.minorUnits: amount_cents
+                        --   at: created_at
+                        ```
+
+                        A column override belongs to the type rather than to one query, so every statement naming the
+                        same result row type shares one set: overrides declared on any of them apply to all of them, and
+                        two statements mapping the same component to different columns fail the build.""")
+                .addImmutableMethods(immutableMethod(TypicalTypes.MAP_OF_STRING_AND_STRINGS, name, description))
+                .setMergeCode(CodeBlock.of("$T.mergeColumns(first.$L(), second.$L())", ResultRowColumns.class, name, name))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }

@@ -81,6 +81,23 @@ from ledger_entry
 That keeps the one place the two naming schemes meet next to the column being renamed, rather than
 in configuration you would have to go and find.
 
+When the query is not yours to change — a view you do not own, or SQL generated elsewhere — name
+the column in the front matter instead. Keys are component paths from the root of the result row
+type:
+
+```sql
+-- name: findLedgerEntries
+-- returning: multiple
+-- resultRowType: com.example.domain.LedgerEntry
+-- resultRowColumns:
+--   amount.minorUnits: amount_cents
+--   at: created_at
+```
+
+A column override belongs to the type rather than to one query, so every statement naming the same
+result row type shares one set: overrides declared on any of them apply to all of them, and two
+statements mapping the same component to different columns fail the build.
+
 ### Value objects spanning several columns
 
 A component whose type is itself a record is built from the same flat row. Nesting groups values on
@@ -167,7 +184,13 @@ Stream<Map<String, Object>> someMethod()
 ```
 
 Generated record converters live in the same package as the map converter, so `mapConverterClass`
-decides where they all go.
+decides where they all go. What they are called comes from
+[recordConverterPrefix](../../configuration/converter/recordconverterprefix/) and
+[recordConverterSuffix](../../configuration/converter/recordconvertersuffix/) — `To` and `Converter`
+by default, giving `ToTenantConverter` and a repository field named `tenantConverter`. The method
+each one declares is [recordConverterMethod](../../configuration/converter/recordconvertermethod/),
+`asUserType` by default. Set them to whatever the hand-written converters in your project already
+use, so a repository reads the same whichever kind it calls.
 
 ## Default converter
 

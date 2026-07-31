@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.codegen.dao.DaoObjectMother;
+import wtf.metio.yosql.codegen.exceptions.ConflictingColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingRecordSourceException;
 import wtf.metio.yosql.codegen.exceptions.RecursiveRecordException;
@@ -33,6 +34,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -83,6 +85,22 @@ class RecordConverterGeneratorTest {
                         .setReturningMode(ReturningMode.MULTIPLE)
                         .setRepository("com.example.persistence.TenantRepository")
                         .setResultRowType(resultRowType)
+                        .build())
+                .setRawStatement(sql)
+                .build();
+    }
+
+    private static SqlStatement statement(
+            final String name, final String resultRowType, final String sql, final Map<String, String> columns) {
+        return SqlStatement.builder()
+                .setSourcePath(Path.of("src", "main", "yosql", "tenant", name + ".sql"))
+                .setConfiguration(SqlConfiguration.builder()
+                        .setName(name)
+                        .setType(SqlStatementType.READING)
+                        .setReturningMode(ReturningMode.MULTIPLE)
+                        .setRepository("com.example.persistence.TenantRepository")
+                        .setResultRowType(resultRowType)
+                        .setResultRowColumns(columns)
                         .build())
                 .setRawStatement(sql)
                 .build();
@@ -248,6 +266,91 @@ class RecordConverterGeneratorTest {
             assertTrue(code.contains("final long innerWeight = "), code);
             assertTrue(code.contains("new com.example.domain.Outer(id, new com.example.domain.Inner(innerWeight))"),
                     code);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("column overrides")
+    class Overrides {
+
+        @Test
+        @DisplayName("reads the named column instead of the one the component name implies")
+        void overridesAColumn() {
+            writeTenant();
+            final var code = generateOne(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                    "select id, slug, inserted_at from tenant",
+                    Map.of("createdAt", "inserted_at"))));
+            assertTrue(code.contains("getTimestamp(\"inserted_at\")"), code);
+            assertFalse(code.contains("getTimestamp(\"created_at\")"), code);
+        }
+
+        @Test
+        @DisplayName("addresses a nested component through the component holding it")
+        void overridesANestedColumn() {
+            writeLedger();
+            final var code = generateOne(List.of(statement("findEntries", DOMAIN + ".LedgerEntry",
+                    "select id, amount_cents, currency, reason, created_at",
+                    Map.of("amount.minorUnits", "amount_cents", "at", "created_at"))));
+            assertTrue(code.contains("getLong(\"amount_cents\")"), code);
+            assertTrue(code.contains("getTimestamp(\"created_at\")"), code);
+        }
+
+        @Test
+        @DisplayName("checks the overridden column, not the derived one")
+        void validatesAgainstTheOverride() {
+            writeTenant();
+            final var exception = assertThrows(UnmappedColumnsException.class, () ->
+                    generator().generateConverterClasses(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                            "select id, slug, created_at from tenant",
+                            Map.of("createdAt", "inserted_at")))).toList());
+            assertTrue(exception.getMessage().contains("inserted_at"), exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("applies to every statement naming the type, wherever it was declared")
+        void sharedAcrossStatements() {
+            writeTenant();
+            final var generated = generator().generateConverterClasses(List.of(
+                    statement("findTenant", DOMAIN + ".Tenant",
+                            "select id, slug, inserted_at from tenant",
+                            Map.of("createdAt", "inserted_at")),
+                    // declares nothing, and still reads inserted_at
+                    statement("findTenants", DOMAIN + ".Tenant",
+                            "select id, slug, inserted_at from tenant")
+            )).toList();
+            assertEquals(1, generated.size());
+            assertTrue(render(generated.get(0)).contains("getTimestamp(\"inserted_at\")"));
+        }
+
+        @Test
+        @DisplayName("refuses two statements that map one component to different columns")
+        void conflictingOverrides() {
+            writeTenant();
+            final var exception = assertThrows(ConflictingColumnOverrideException.class, () ->
+                    generator().generateConverterClasses(List.of(
+                            statement("findTenant", DOMAIN + ".Tenant", "select id, slug, inserted_at from tenant",
+                                    Map.of("createdAt", "inserted_at")),
+                            statement("findTenants", DOMAIN + ".Tenant", "select id, slug, added_at from tenant",
+                                    Map.of("createdAt", "added_at"))
+                    )).toList());
+            assertTrue(exception.getMessage().contains("createdAt"), exception.getMessage());
+            assertTrue(exception.getMessage().contains("inserted_at"), exception.getMessage());
+            assertTrue(exception.getMessage().contains("added_at"), exception.getMessage());
+            assertTrue(exception.getMessage().contains("findTenants"), exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("accepts the same override declared twice")
+        void repeatedIdenticalOverrides() {
+            writeTenant();
+            final var generated = generator().generateConverterClasses(List.of(
+                    statement("findTenant", DOMAIN + ".Tenant", "select id, slug, inserted_at from tenant",
+                            Map.of("createdAt", "inserted_at")),
+                    statement("findTenants", DOMAIN + ".Tenant", "select id, slug, inserted_at from tenant",
+                            Map.of("createdAt", "inserted_at"))
+            )).toList();
+            assertEquals(1, generated.size());
         }
 
     }
