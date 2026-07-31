@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ SPDX-FileCopyrightText: The yosql Authors
-  ~ SPDX-License-Identifier: CC0-1.0
+  ~ SPDX-License-Identifier: 0BSD
   -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
@@ -45,6 +45,7 @@
         <module>yosql-examples-cli</module>
         <module>yosql-examples-maven</module>
         <module>yosql-examples-records</module>
+        <module>yosql-examples-native</module>
     </modules>
 
 </project>

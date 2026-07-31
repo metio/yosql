@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ SPDX-FileCopyrightText: The yosql Authors
-  ~ SPDX-License-Identifier: CC0-1.0
+  ~ SPDX-License-Identifier: 0BSD
   -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
@@ -90,10 +90,12 @@
         <version.logback>1.4.14</version.logback>
         <version.maven>3.9.6</version.maven>
         <version.maven-plugin-tools>3.11.0</version.maven-plugin-tools>
+        <version.maven-shared-utils>3.4.2</version.maven-shared-utils>
         <version.mustache>0.9.11</version.mustache>
         <version.picocli>4.7.5</version.picocli>
         <version.plexus-build-api>0.0.7</version.plexus-build-api>
         <version.plexus-sec-dispatcher>2.0</version.plexus-sec-dispatcher>
+        <version.postgresql>42.7.13</version.postgresql>
         <version.sisu>0.9.0.M2</version.sisu>
         <version.slf4j>2.0.11</version.slf4j>
         <version.tinylog>2.7.0-M3</version.tinylog>
@@ -293,6 +295,11 @@
                 <groupId>org.openjdk.jmh</groupId>
                 <artifactId>jmh-generator-annprocess</artifactId>
                 <version>${version.jmh}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${version.postgresql}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>

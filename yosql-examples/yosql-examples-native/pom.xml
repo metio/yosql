@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: The yosql Authors
+  ~ SPDX-License-Identifier: 0BSD
+  -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ordering follows https://maven.apache.org/developers/conventions/code.html#POM_Code_Convention -->
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                 PARENT                                  -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Inheritance -->
+    <parent>
+        <groupId>wtf.metio.yosql.examples</groupId>
+        <artifactId>yosql-examples</artifactId>
+        <version>0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               COORDINATES                               -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Maven_Coordinates -->
+    <groupId>wtf.metio.yosql.examples.nativeimage</groupId>
+    <artifactId>yosql-examples-native</artifactId>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               INFORMATION                               -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#More_Project_Information -->
+    <name>YoSQL :: Examples :: Native Image</name>
+    <description>
+        Generated mapping code compiled into a GraalVM native image and run against a real
+        Postgres, with no reflection registered for anything this module generates.
+    </description>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                PROPERTIES                               -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Properties -->
+    <properties>
+        <yosql.mainClass>wtf.metio.yosql.example.nativeimage.ReflectionFreeProof</yosql.mainClass>
+    </properties>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               DEPENDENCIES                              -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>wtf.metio.yosql.tooling</groupId>
+                <artifactId>yosql-tooling-maven</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <files>
+                        <skipLines>4</skipLines>
+                    </files>
+                    <repositories>
+                        <basePackageName>wtf.metio.yosql.example.nativeimage.persistence</basePackageName>
+                    </repositories>
+                    <converter>
+                        <mapConverterClass>
+                            wtf.metio.yosql.example.nativeimage.persistence.converter.ToMapConverter
+                        </mapConverterClass>
+                    </converter>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/yosql</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                                 PROFILES                                -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Profiles -->
+    <profiles>
+        <profile>
+            <!-- Compiling an image needs a GraalVM JDK, which the ordinary gate does not
+                 download. `nix develop .#native` provides one. -->
+            <id>native-image</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <!-- The plugin reaches for MessageUtils to colour its console output but
+                             does not resolve maven-shared-utils into its own class realm, so the
+                             image build dies on a missing class before it starts. Supplying it
+                             here puts it on the realm. -->
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.shared</groupId>
+                                <artifactId>maven-shared-utils</artifactId>
+                                <version>${version.maven-shared-utils}</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>compile-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <imageName>yosql-native-proof</imageName>
+                            <mainClass>${yosql.mainClass}</mainClass>
+                            <buildArgs>
+                                <!-- No fallback image: if anything needs reflection that was not
+                                     registered, the build fails here rather than quietly producing
+                                     a binary that starts a JVM. That is what makes this a proof
+                                     rather than a demonstration. -->
+                                <buildArg>--no-fallback</buildArg>
+                            </buildArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
