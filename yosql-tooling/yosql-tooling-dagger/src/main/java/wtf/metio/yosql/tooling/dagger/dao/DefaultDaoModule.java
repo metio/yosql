@@ -10,6 +10,7 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.codegen.dao.*;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
+import wtf.metio.yosql.codegen.records.*;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.Converter;
 import wtf.metio.yosql.tooling.dagger.annotations.Delegating;
@@ -109,10 +110,56 @@ public class DefaultDaoModule {
     @Singleton
     ConverterGenerator provideConverterGenerator(
             final RuntimeConfiguration runtimeConfiguration,
-            final ToMapConverterGenerator mapConverterGenerator) {
+            final ToMapConverterGenerator mapConverterGenerator,
+            final RecordConverterGenerator recordConverterGenerator) {
         return new DefaultConverterGenerator(
                 runtimeConfiguration.converter(),
-                mapConverterGenerator);
+                mapConverterGenerator,
+                recordConverterGenerator);
+    }
+
+    @Provides
+    @Singleton
+    RecordConverterNames provideRecordConverterNames(final RuntimeConfiguration runtimeConfiguration) {
+        return new RecordConverterNames(runtimeConfiguration.converter());
+    }
+
+    @Provides
+    @Singleton
+    JavaSourceParser provideJavaSourceParser() {
+        return new JavaSourceParser();
+    }
+
+    @Provides
+    @Singleton
+    RecordScanner provideRecordScanner(
+            final RuntimeConfiguration runtimeConfiguration,
+            final JavaSourceParser parser) {
+        return new RecordScanner(runtimeConfiguration.files(), parser);
+    }
+
+    @Provides
+    @Singleton
+    RecordConverterGenerator provideRecordConverterGenerator(
+            @Converter final LocLogger logger,
+            final RecordScanner scanner,
+            final RecordConverterNames names,
+            final RuntimeConfiguration runtimeConfiguration,
+            final Annotations annotations,
+            final Classes classes,
+            final Methods methods,
+            final JdbcParameters jdbcParameters,
+            final MethodExceptionHandler exceptions) {
+        return new RecordConverterGenerator(
+                logger,
+                scanner,
+                names,
+                runtimeConfiguration.names(),
+                annotations,
+                classes,
+                methods,
+                jdbcParameters,
+                exceptions);
     }
 
     @Provides

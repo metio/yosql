@@ -74,6 +74,7 @@ public final class Sql extends AbstractConfigurationGroup {
                 type(),
                 returningMode(),
                 resultRowConverter(),
+                resultRowType(),
                 parameters(),
                 annotations());
     }
@@ -234,6 +235,34 @@ public final class Sql extends AbstractConfigurationGroup {
                 .setName(name)
                 .setDescription(description)
                 .addImmutableMethods(immutableMethod(ClassName.get(ResultRowConverter.class), name, description))
+                .addTags(Tags.FRONT_MATTER)
+                .build();
+    }
+
+    private static ConfigurationSetting resultRowType() {
+        final var name = "resultRowType";
+        final var description = "The fully-qualified name of a record to build each result row into";
+        return ConfigurationSetting.builder()
+                .setName(name)
+                .setDescription(description)
+                .setExplanation("""
+                        Name a record and `YoSQL` writes the converter for you. It reads the record's canonical
+                        constructor out of its source file — under [sourceDirectory](../files/sourcedirectory/) — and
+                        emits one `resultSet.getX(...)` call per component, in a class of its own. No reflection is
+                        involved at any point, so the result survives a GraalVM native image intact.
+
+                        A component takes its column from its own name, `camelCase` read as `snake_case`: `tenantId`
+                        reads the `tenant_id` column. When a column is named something else, alias it in the SQL —
+                        `select amount_cents as minor_units` — which keeps the mapping next to the query that produces
+                        it.
+
+                        Components whose own type is a record are built from the same flat row: nesting groups values
+                        on the Java side and the query knows nothing about it, so a nested component claims the column
+                        matching its own name, not a prefixed one.
+
+                        A column no component claims, or a component no column supplies, fails the build and names the
+                        file, the statement and the component.""")
+                .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
                 .build();
     }

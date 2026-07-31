@@ -5,6 +5,8 @@
 
 package wtf.metio.yosql.codegen.files;
 
+import com.squareup.javapoet.ClassName;
+import wtf.metio.yosql.codegen.records.RecordConverterNames;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -16,9 +18,13 @@ import java.util.function.Predicate;
 public final class DefaultMethodResultRowConverterConfigurer implements MethodResultRowConverterConfigurer {
 
     private final ConverterConfiguration converters;
+    private final RecordConverterNames recordConverters;
 
-    public DefaultMethodResultRowConverterConfigurer(final ConverterConfiguration converters) {
+    public DefaultMethodResultRowConverterConfigurer(
+            final ConverterConfiguration converters,
+            final RecordConverterNames recordConverters) {
         this.converters = converters;
+        this.recordConverters = recordConverters;
     }
 
     @Override
@@ -27,7 +33,29 @@ public final class DefaultMethodResultRowConverterConfigurer implements MethodRe
                 .withResultRowConverter(configuration.resultRowConverter()
                         .map(this::setMissingValuesFromRuntimeConfig)
                         .filter(DefaultMethodResultRowConverterConfigurer::ensureConverterIsFullyConfigured)
+                        .or(() -> generatedRecordConverter(configuration))
                         .or(this::getDefaultRowConverter));
+    }
+
+    /**
+     * Points the statement at the converter that will be generated for its {@code resultRowType}.
+     * The repository then treats it like any other converter — a field of that type, called by that
+     * name — which is why naming a record needs no other configuration.
+     *
+     * <p>A statement that names both a converter and a record type keeps the converter: naming a
+     * converter names the exact code to call, and there is nothing to infer.</p>
+     */
+    private Optional<ResultRowConverter> generatedRecordConverter(final SqlConfiguration configuration) {
+        return configuration.resultRowType()
+                .map(String::strip)
+                .filter(Predicate.not(String::isEmpty))
+                .map(ClassName::bestGuess)
+                .map(type -> ResultRowConverter.builder()
+                        .setAlias(recordConverters.alias(type))
+                        .setConverterType(recordConverters.converterClass(type).toString())
+                        .setMethodName(recordConverters.methodName())
+                        .setResultType(type.toString())
+                        .build());
     }
 
     private static boolean ensureConverterIsFullyConfigured(final ResultRowConverter converter) {

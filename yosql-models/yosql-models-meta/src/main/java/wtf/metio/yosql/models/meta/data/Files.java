@@ -33,6 +33,7 @@ public final class Files extends AbstractConfigurationGroup {
                 .setDescription("Configures how files are handled.")
                 .addSettings(inputBaseDirectory())
                 .addSettings(outputBaseDirectory())
+                .addSettings(sourceDirectory())
                 .addSettings(sqlFilesSuffix())
                 .addSettings(sqlFilesCharset())
                 .addSettings(sqlStatementSeparator())
@@ -80,6 +81,47 @@ public final class Files extends AbstractConfigurationGroup {
                 .addExamples(ConfigurationExample.builder()
                         .setValue("/an/absolute/path")
                         .setDescription("Changing the `inputBaseDirectory` configuration option to `/an/absolute/path!` configures `YoSQL` to look into the absolute directory path `/an/absolute/path`.")
+                        .build())
+                .build();
+    }
+
+    private static ConfigurationSetting sourceDirectory() {
+        final var name = "sourceDirectory";
+        final var description = "The directory holding the Java sources of types referenced by SQL statements.";
+        final var mavenValue = "src/main/java";
+        return ConfigurationSetting.builder()
+                .setName(name)
+                .setDescription(description)
+                .setExplanation("""
+                        Naming a record as the `resultRowType` of a statement makes `YoSQL` read that record's source to
+                        learn its component names and types. The source is looked up under this directory, at the path
+                        its package implies, so a record `com.example.Tenant` is expected in `<sourceDirectory>/com/example/Tenant.java`.
+
+                        Nothing is loaded or executed while reading — the record is parsed as text, at build time, before
+                        it has been compiled. That is what lets the generated converter be plain `resultSet.getX(...)`
+                        calls with no reflection left at runtime.""")
+                .setAntInitializer(CodeBlock.of(".set$L($L.resolve($L.toPath()).toAbsolutePath())\n", upperCase(name), PROJECT_BASE_DIRECTORY, name))
+                .setCliInitializer(CodeBlock.of(".set$L($L.resolve($L))\n", upperCase(name), PROJECT_BASE_DIRECTORY, name))
+                .setGradleInitializer(CodeBlock.of(".set$L($L().get().getAsFile().toPath())\n", upperCase(name), gradlePropertyName(name)))
+                .setMavenInitializer(CodeBlock.of(".set$L($L.resolve($L))\n", upperCase(name), PROJECT_BASE_DIRECTORY, name))
+                .setGradleConvention(CodeBlock.of("$L().convention($N.getProjectDirectory().dir($S))", gradlePropertyName(name), LAYOUT, mavenValue))
+                .addAntFields(antField(ClassName.get(File.class), name, description, CodeBlock.of("new $T($S)", File.class, ".")))
+                .addAntMethods(antSetter(ClassName.get(File.class), name, description))
+                .addCliFields(picocliOption(ClassName.get(String.class), GROUP_NAME, name, description, "."))
+                .addGradleMethods(gradleProperty(GRADLE_DIRECTORY, name, description, GRADLE_INPUT_DIRECTORY))
+                .addImmutableMethods(immutableMethod(ClassName.get(Path.class), name, description, CodeBlock.of("$T.of($S)", Path.class, ".")))
+                .addMavenFields(mavenParameter(ClassName.get(String.class), name, description, mavenValue, CodeBlock.of("$S", mavenValue)))
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(mavenValue)
+                        .setDescription("The default value of the `sourceDirectory` configuration option used by the Gradle- and Maven-tooling is `src/main/java`, the directory those tools compile from.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(".")
+                        .setDescription("The default value of the `sourceDirectory` configuration option used by the Ant- and CLI-tooling is `.` - the current directory.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("src/main/domain")
+                        .setDescription("Changing the `sourceDirectory` configuration option to `src/main/domain` makes `YoSQL` look for `resultRowType` records under that directory instead.")
                         .build())
                 .build();
     }

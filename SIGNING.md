@@ -23,7 +23,7 @@ temporary directory, never into the repository or the settings file.
 To verify a downloaded artifact:
 
 ```console
-$ gpg --verify yosql-tooling-maven-<version>.jar.asc yosql-tooling-maven-<version>.jar
+gpg --verify yosql-tooling-maven-<version>.jar.asc yosql-tooling-maven-<version>.jar
 ```
 
 ## GitHub release archives: cosign, keyless
@@ -42,11 +42,11 @@ and an archive added later cannot quietly escape it.
 To verify a release:
 
 ```console
-$ cosign verify-blob SHA256SUMS \
+cosign verify-blob SHA256SUMS \
     --bundle SHA256SUMS.bundle \
     --certificate-identity-regexp '^https://github\.com/metio/yosql/\.github/workflows/release\.yml@refs/' \
     --certificate-oidc-issuer 'https://token.actions.githubusercontent.com'
-$ sha256sum --check SHA256SUMS
+sha256sum --check SHA256SUMS
 ```
 
 The certificate identity is the point of the exercise: it proves the archives
