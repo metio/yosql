@@ -516,6 +516,173 @@ class JavaSourceParserTest {
     }
 
     @Nested
+    @DisplayName("value factories")
+    class Factories {
+
+        @Test
+        @DisplayName("finds a static valueOf returning the type")
+        void findsValueOf() {
+            final var type = parse("""
+                    package com.example;
+
+                    import java.util.UUID;
+
+                    public record Tenant(UUID value) {
+                        public static Tenant valueOf(final UUID value) {
+                            return new Tenant(value);
+                        }
+                    }
+                    """);
+            assertTrue(type.hasValueOf());
+            assertEquals(List.of(ClassName.get("java.util", "UUID")), type.valueOfParameters());
+        }
+
+        @Test
+        @DisplayName("finds one on a class as well as on a record")
+        void findsValueOfOnAClass() {
+            final var type = parse("""
+                    package com.example;
+
+                    public final class Tenant {
+                        public static Tenant valueOf(String slug) {
+                            return new Tenant();
+                        }
+                    }
+                    """);
+            assertFalse(type.isRecord());
+            assertEquals(List.of(ClassName.get("java.lang", "String")), type.valueOfParameters());
+        }
+
+        @Test
+        @DisplayName("does not care in which order the modifiers were written")
+        void modifierOrder() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(long value) {
+                        static public Tenant valueOf(long value) {
+                            return new Tenant(value);
+                        }
+                    }
+                    """);
+            assertEquals(List.of(TypeName.LONG), type.valueOfParameters());
+        }
+
+        @Test
+        @DisplayName("reads a parameter declared final")
+        void finalParameter() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(String value) {
+                        public static Tenant valueOf(final String value) {
+                            return new Tenant(value);
+                        }
+                    }
+                    """);
+            assertEquals(List.of(ClassName.get("java.lang", "String")), type.valueOfParameters());
+        }
+
+        @Test
+        @DisplayName("keeps every overload rather than choosing between them")
+        void overloads() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(String value) {
+                        public static Tenant valueOf(String value) {
+                            return new Tenant(value);
+                        }
+
+                        public static Tenant valueOf(long value) {
+                            return new Tenant(Long.toString(value));
+                        }
+                    }
+                    """);
+            assertEquals(2, type.valueOfParameters().size());
+        }
+
+        @Test
+        @DisplayName("ignores a valueOf that returns something else")
+        void ignoresForeignReturnType() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(String value) {
+                        public static String valueOf(int input) {
+                            return Integer.toString(input);
+                        }
+                    }
+                    """);
+            assertFalse(type.hasValueOf());
+        }
+
+        @Test
+        @DisplayName("ignores an instance method of the same name")
+        void ignoresInstanceMethod() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(String value) {
+                        public Tenant valueOf(String other) {
+                            return new Tenant(other);
+                        }
+                    }
+                    """);
+            assertFalse(type.hasValueOf());
+        }
+
+        @Test
+        @DisplayName("ignores one taking no argument or several")
+        void ignoresWrongArity() {
+            assertFalse(parse("""
+                    package com.example;
+
+                    public record Tenant(String value) {
+                        public static Tenant valueOf() {
+                            return new Tenant("");
+                        }
+                    }
+                    """).hasValueOf());
+            assertFalse(parse("""
+                    package com.example;
+
+                    public record Tenant(String value) {
+                        public static Tenant valueOf(String a, String b) {
+                            return new Tenant(a + b);
+                        }
+                    }
+                    """).hasValueOf());
+        }
+
+        @Test
+        @DisplayName("ignores one written inside a comment")
+        void ignoresCommentedFactory() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(String value) {
+                        // public static Tenant valueOf(String value) { … }
+                    }
+                    """);
+            assertFalse(type.hasValueOf());
+        }
+
+        @Test
+        @DisplayName("says a record has none when it declares none")
+        void plainRecordHasNoFactory() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(String slug, String name) {
+                    }
+                    """);
+            assertFalse(type.hasValueOf());
+        }
+
+    }
+
+    @Nested
     @DisplayName("diagnostics")
     class Diagnostics {
 

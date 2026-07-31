@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.codegen.dao.DaoObjectMother;
+import wtf.metio.yosql.codegen.exceptions.AmbiguousValueOfException;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingRecordSourceException;
@@ -266,6 +267,235 @@ class RecordConverterGeneratorTest {
             assertTrue(code.contains("final long innerWeight = "), code);
             assertTrue(code.contains("new com.example.domain.Outer(id, new com.example.domain.Inner(innerWeight))"),
                     code);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("types that build themselves")
+    class ValueFactories {
+
+        private void writeTenantId() {
+            write("TenantId", """
+                    package com.example.domain;
+
+                    import java.util.UUID;
+
+                    public record TenantId(UUID value) {
+                        public static TenantId valueOf(final UUID value) {
+                            return new TenantId(value);
+                        }
+                    }
+                    """);
+        }
+
+        @Test
+        @DisplayName("reads one column and hands it to the type's own valueOf")
+        void wrapsAColumn() {
+            writeTenantId();
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(TenantId id, String slug) {
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                    "select id, slug from tenant")));
+            assertTrue(code.contains("getObject(\"id\", java.util.UUID.class)"), code);
+            assertTrue(code.contains("com.example.domain.TenantId.valueOf(idValue)"), code);
+            assertTrue(code.contains("new com.example.domain.Tenant(id, slug)"), code);
+        }
+
+        @Test
+        @DisplayName("does not call the factory for a column that is NULL")
+        void nullSkipsTheFactory() {
+            writeTenantId();
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(TenantId id, String slug) {
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                    "select id, slug from tenant")));
+            assertTrue(code.contains("idValue == null ? null : com.example.domain.TenantId.valueOf(idValue)"), code);
+        }
+
+        @Test
+        @DisplayName("a primitive parameter still refuses NULL rather than wrapping a zero")
+        void primitiveParameterRefusesNull() {
+            write("Cents", """
+                    package com.example.domain;
+
+                    public record Cents(long value) {
+                        public static Cents valueOf(long value) {
+                            return new Cents(value);
+                        }
+                    }
+                    """);
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(Cents balance) {
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                    "select balance from tenant")));
+            assertTrue(code.contains("getLong(\"balance\")"), code);
+            assertTrue(code.contains("wasNull()"), code);
+            assertTrue(code.contains("com.example.domain.Cents.valueOf(balanceValue)"), code);
+            assertFalse(code.contains("balanceValue == null"), code);
+        }
+
+        @Test
+        @DisplayName("the factory decides that a one-component record is a value, not a nesting")
+        void factoryWinsOverNesting() {
+            writeTenantId();
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(TenantId id) {
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                    "select id from tenant")));
+            assertTrue(code.contains("getObject(\"id\""), code);
+            assertFalse(code.contains("getObject(\"value\""), "without a factory this would read the inner name");
+        }
+
+        @Test
+        @DisplayName("without a factory the same shape is still a nested record")
+        void withoutFactoryItNests() {
+            write("TenantId", """
+                    package com.example.domain;
+
+                    import java.util.UUID;
+
+                    public record TenantId(UUID value) {
+                    }
+                    """);
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(TenantId id) {
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                    "select value from tenant")));
+            assertTrue(code.contains("getObject(\"value\""), code);
+        }
+
+        @Test
+        @DisplayName("validates the column the factory reads, not the one inside the type")
+        void validatesTheOuterColumn() {
+            writeTenantId();
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(TenantId id) {
+                    }
+                    """);
+            final var exception = assertThrows(UnmappedColumnsException.class, () ->
+                    generator().generateConverterClasses(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                            "select value from tenant"))).toList());
+            assertTrue(exception.getMessage().contains("id"), exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("an override names the column the factory reads")
+        void honoursColumnOverrides() {
+            writeTenantId();
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(TenantId id) {
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                    "select tenant_uuid from tenant", Map.of("id", "tenant_uuid"))));
+            assertTrue(code.contains("getObject(\"tenant_uuid\""), code);
+        }
+
+        @Test
+        @DisplayName("refuses a type offering two ways to be built from a column")
+        void ambiguousFactories() {
+            write("Ident", """
+                    package com.example.domain;
+
+                    import java.util.UUID;
+
+                    public record Ident(String value) {
+                        public static Ident valueOf(String value) {
+                            return new Ident(value);
+                        }
+
+                        public static Ident valueOf(UUID value) {
+                            return new Ident(value.toString());
+                        }
+                    }
+                    """);
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(Ident id) {
+                    }
+                    """);
+            final var exception = assertThrows(AmbiguousValueOfException.class, () ->
+                    generator().generateConverterClasses(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                            "select id from tenant"))).toList());
+            assertTrue(exception.getMessage().contains("java.lang.String"), exception.getMessage());
+            assertTrue(exception.getMessage().contains("java.util.UUID"), exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("a factory taking something unreadable is no factory at all")
+        void unreadableParameterIsIgnored() {
+            write("Address", """
+                    package com.example.domain;
+
+                    public final class Address {
+                    }
+                    """);
+            write("Ident", """
+                    package com.example.domain;
+
+                    public final class Ident {
+                        public static Ident valueOf(Address address) {
+                            return new Ident();
+                        }
+                    }
+                    """);
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(Ident id) {
+                    }
+                    """);
+            final var exception = assertThrows(UnsupportedComponentTypeException.class, () ->
+                    generator().generateConverterClasses(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                            "select id from tenant"))).toList());
+            assertTrue(exception.getMessage().contains("valueOf"), exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("names valueOf when it cannot read a component's type")
+        void diagnosticSuggestsTheFactory() {
+            write("Address", """
+                    package com.example.domain;
+
+                    public final class Address {
+                    }
+                    """);
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(Address address) {
+                    }
+                    """);
+            final var exception = assertThrows(UnsupportedComponentTypeException.class, () ->
+                    generator().generateConverterClasses(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                            "select address from tenant"))).toList());
+            assertTrue(exception.getMessage().contains("static Address valueOf"), exception.getMessage());
         }
 
     }

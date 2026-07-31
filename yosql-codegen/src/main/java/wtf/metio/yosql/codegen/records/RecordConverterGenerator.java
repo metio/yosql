@@ -15,6 +15,7 @@ import wtf.metio.yosql.codegen.blocks.Classes;
 import wtf.metio.yosql.codegen.blocks.Methods;
 import wtf.metio.yosql.codegen.dao.JdbcParameters;
 import wtf.metio.yosql.codegen.dao.MethodExceptionHandler;
+import wtf.metio.yosql.codegen.exceptions.AmbiguousValueOfException;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingRecordSourceException;
@@ -226,7 +227,8 @@ public final class RecordConverterGenerator {
         final var arguments = new ArrayList<CodeBlock>(record.components().size());
         for (final var component : record.components()) {
             final var componentPath = append(path, component.name());
-            final var nested = nestedRecord(component.type());
+            final var factory = valueOfParameter(component.type(), componentPath);
+            final var nested = factory.isPresent() ? Optional.<JavaSourceType>empty() : nestedRecord(component.type());
             if (nested.isPresent()) {
                 rejectCycle(nested.get().type(), componentPath, enclosing);
                 final var deeper = new LinkedHashSet<>(enclosing);
@@ -235,12 +237,12 @@ public final class RecordConverterGenerator {
                 continue;
             }
             final var variable = variableFor(componentPath, taken);
-            body.add(readers.read(
-                    component.type(),
-                    isEnum(component.type()),
-                    columnFor(componentPath, component.name(), overrides),
-                    variable,
-                    String.join(".", componentPath)));
+            final var column = columnFor(componentPath, component.name(), overrides);
+            final var where = String.join(".", componentPath);
+            body.add(factory
+                    .map(parameter -> readers.readVia(component.type(), parameter, column, variable, where))
+                    .orElseGet(() -> readers.read(
+                            component.type(), isEnum(component.type()), column, variable, where)));
             arguments.add(CodeBlock.of("$N", variable));
         }
         return CodeBlock.of("new $T($L)", record.type(), CodeBlock.join(arguments, ", "));
@@ -269,7 +271,9 @@ public final class RecordConverterGenerator {
             final Map<String, String> overrides) {
         for (final var component : record.components()) {
             final var componentPath = append(path, component.name());
-            final var nested = nestedRecord(component.type());
+            final var nested = valueOfParameter(component.type(), componentPath).isPresent()
+                    ? Optional.<JavaSourceType>empty()
+                    : nestedRecord(component.type());
             if (nested.isPresent()) {
                 rejectCycle(nested.get().type(), componentPath, enclosing);
                 final var deeper = new LinkedHashSet<>(enclosing);
@@ -287,6 +291,31 @@ public final class RecordConverterGenerator {
         if (enclosing.contains(type)) {
             throw new RecursiveRecordException(type, String.join(".", path));
         }
+    }
+
+    /**
+     * The single value a type's own {@code valueOf} takes, when it has one.
+     *
+     * <p>Checked before nesting, and that order is the rule: a one-component record with a factory
+     * is a value wrapped around a column, and without one it is a record whose component reads a
+     * column of its own. The type says which by declaring the factory or not.</p>
+     */
+    private Optional<TypeName> valueOfParameter(final TypeName type, final List<String> path) {
+        if (!(type instanceof ClassName className)) {
+            return Optional.empty();
+        }
+        final var source = scanner.scan(className);
+        if (source.isEmpty() || !source.get().hasValueOf()) {
+            return Optional.empty();
+        }
+        final var readable = source.get().valueOfParameters().stream()
+                .filter(parameter -> readers.supports(parameter, isEnum(parameter)))
+                .distinct()
+                .toList();
+        if (readable.size() > 1) {
+            throw new AmbiguousValueOfException(String.join(".", path), type, readable);
+        }
+        return readable.stream().findFirst();
     }
 
     private Optional<JavaSourceType> nestedRecord(final TypeName type) {

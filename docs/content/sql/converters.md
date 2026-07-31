@@ -156,16 +156,55 @@ build and names the file, the statement and the component:
 - a selected column no component claims;
 - two records that would need converters of the same name;
 - a record that contains itself;
-- a component whose type nothing can read from a result set.
+- a component whose type nothing can read from a result set — the error names the `valueOf`
+  factory that would fix it;
+- a type declaring more than one `valueOf` the generator could use.
 
 Where the select list cannot be enumerated — `select *`, or an expression without an alias — the
 first two checks are skipped rather than guessed at. Aliasing your expressions gets them back.
 
+### Types that build themselves
+
+A type nothing above can read still works, if it says how. Give it a `static` factory called
+`valueOf` taking one value the generator does know, and a component of that type is read from a
+single column and handed to it:
+
+```java
+public record TenantId(UUID value) {
+    public static TenantId valueOf(final UUID value) {
+        return new TenantId(value);
+    }
+}
+```
+
+```java
+final UUID tenantIdValue = resultSet.getObject("tenant_id", UUID.class);
+final TenantId tenantId = tenantIdValue == null ? null : TenantId.valueOf(tenantIdValue);
+```
+
+This is the same convention enums already follow — `OrderState.valueOf(String)` — extended to your
+own types, and it is the extension point for anything the built-in list cannot cover: an identifier
+wrapped around a `UUID`, a normalising short name, a column holding JSON that your factory parses.
+The mapping lives on the type it belongs to, written in Java, and the emitted call is still a
+direct one, so nothing about it needs a native-image hint.
+
+Every rule above still holds, because the column is read exactly as a bare value of the parameter's
+type would be: a primitive parameter refuses NULL, an object parameter accepts it, and the factory
+is only called for a value that is actually there.
+
+The factory also settles what a one-component record means. With one, `TenantId` is a value wrapped
+around a column and reads the column its *component in the outer record* names. Without one, it is
+an ordinary nested record and its component reads a column called `value`. The type says which by
+declaring the factory or not.
+
+Two `valueOf` overloads that both take a readable type is a build error rather than a coin flip —
+leave a single one taking the type the column holds.
+
 ### Types a component can have
 
 `String`, `UUID`, `Instant`, `LocalDate`, `LocalDateTime`, `LocalTime`, `OffsetDateTime`,
-`BigDecimal`, `Currency`, `byte[]`, the primitives and their wrappers, any enum, and any record
-built from those.
+`BigDecimal`, `Currency`, `byte[]`, the primitives and their wrappers, any enum, any record built
+from those, and any type with a `valueOf` factory taking one of them.
 
 ## Map converter
 
