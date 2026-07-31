@@ -4,4 +4,4 @@
 <link href="{{ "/sitemap.xml" | absURL }}" rel="sitemap" title="{{ .Site.Title }} Sitemap" type="application/xml">
 <link rel="author" href="{{ "/humans.txt" | absURL }}" />
 <link rel="alternate" type="application/rdf+xml" title="FOAF" href="{{ "/foaf.rdf" | absURL }}">
-<link rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/">
+<link rel="license" href="{{ .Site.Params.licenseURL | default "https://creativecommons.org/publicdomain/zero/1.0/" }}">

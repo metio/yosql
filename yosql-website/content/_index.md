@@ -17,6 +17,15 @@ date: 2020-04-13
 
 `YoSQL` is a true zero dependency solution. Instead of adding a new dependency to your project, `YoSQL` is available as a build-tool that is only active during build-time. Once everything is generated, `YoSQL` is no longer required at run-time. The generated code relies only on JDK classes without any external dependencies.
 
+### reflection-free
+
+Generated code reads a `ResultSet` through calls the compiler has already resolved — no reflection,
+no proxies, no runtime type lookup. Name a record as a statement's result row type and the mapper is
+written for you, still as plain `resultSet.getX(...)` calls. That is what makes a
+[GraalVM](https://www.graalvm.org/) native image straightforward: nothing in the persistence layer
+needs a reflection hint, and no code path can fail the first time it runs because a registration was
+missing.
+
 ### developer friendly
 
 No magic involved - `YoSQL` generates code that is easy to read and debug. Step-through in case you encounter an error or use the extensive logging capabilities of `YoSQL` to monitor both code generation and SQL execution. No hidden SELECT statements or opened transactions, developers using `YoSQL` are 100% in control on how their SQL statements are executed. Get started quickly in under a minute (not reading this included): Just add the appropriate plugin to your project, and you are good to go.
