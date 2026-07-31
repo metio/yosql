@@ -3,14 +3,20 @@
 
 name: Release
 
-# Weekly calendar-versioned release. Two gates guard it: the generator or the
+# Monthly calendar-versioned release. Two gates guard it: the generator or the
 # tooling must have changed since the last release, and the organization's
-# shared Maven Central budget must have room. A skipped week costs nothing —
+# shared Maven Central budget must have room. A skipped month costs nothing —
 # the gate measures against the last release, not the last run, so pending
 # changes ride the next slot.
+#
+# The 8th, because Maven Central meters publishing per organization and that
+# budget is shared across every metio repo that publishes there. A weekly slot
+# would take most of a month's allowance on its own and quietly starve the
+# others. The parent POM releases on the 1st, so taking a slot a week later
+# means a release here builds against a parent that already exists.
 on:
   schedule:
-    - cron: 25 3 * * WED
+    - cron: 25 3 8 * *
   workflow_dispatch:
 
 permissions:
@@ -50,7 +56,7 @@ jobs:
         name: Compute the version and the build timestamp
         if: steps.gate.outputs.needed == 'true'
         # Plain YYYY.M.D rather than the org's second-precision calver: every
-        # version published to Central since 2021 has this shape, and a weekly
+        # version published to Central since 2021 has this shape, and a monthly
         # slot cannot collide with itself. The timestamp feeds
         # project.build.outputTimestamp so the jars are byte-reproducible.
         run: |
