@@ -15,6 +15,7 @@ import wtf.metio.yosql.codegen.blocks.Classes;
 import wtf.metio.yosql.codegen.blocks.Methods;
 import wtf.metio.yosql.codegen.dao.JdbcParameters;
 import wtf.metio.yosql.codegen.dao.MethodExceptionHandler;
+import wtf.metio.yosql.codegen.exceptions.ConflictingColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingRecordSourceException;
 import wtf.metio.yosql.codegen.exceptions.RecursiveRecordException;
@@ -30,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -81,17 +83,52 @@ public final class RecordConverterGenerator {
 
     public Stream<PackagedTypeSpec> generateConverterClasses(final List<SqlStatement> statements) {
         final var byType = new LinkedHashMap<ClassName, JavaSourceType>();
+        final var columnsByType = new LinkedHashMap<ClassName, Map<String, String>>();
+
+        // Two passes, because a column override belongs to the result row type rather than to one
+        // query: every statement naming that type shares one set, so the set has to be complete
+        // before any statement can be checked against it.
+        final var declaring = new ArrayList<SqlStatement>();
         for (final var statement : statements) {
             final var declared = statement.getConfiguration().resultRowType();
             if (declared.isEmpty()) {
                 continue;
             }
             final var type = ClassName.bestGuess(declared.get().strip());
-            final var record = byType.computeIfAbsent(type, key -> read(key, statement));
-            verify(statement, record);
+            byType.computeIfAbsent(type, key -> read(key, statement));
+            mergeOverrides(type, statement, columnsByType);
+            declaring.add(statement);
         }
         rejectCollidingNames(byType.keySet());
-        return byType.values().stream().map(this::generateConverterClass);
+        for (final var statement : declaring) {
+            final var type = ClassName.bestGuess(statement.getConfiguration().resultRowType().orElseThrow().strip());
+            verify(statement, byType.get(type), columnsByType.getOrDefault(type, Map.of()));
+        }
+        return byType.values().stream()
+                .map(record -> generateConverterClass(record, columnsByType.getOrDefault(record.type(), Map.of())));
+    }
+
+    /**
+     * Folds one statement's overrides into the type's set. Two statements mapping the same component
+     * to different columns is a contradiction rather than a precedence question — there is one
+     * converter, and it cannot read both.
+     */
+    private static void mergeOverrides(
+            final ClassName type,
+            final SqlStatement statement,
+            final Map<ClassName, Map<String, String>> columnsByType) {
+        final var declared = statement.getConfiguration().resultRowColumns().orElse(Map.of());
+        if (declared.isEmpty()) {
+            return;
+        }
+        final var merged = columnsByType.computeIfAbsent(type, key -> new LinkedHashMap<>());
+        for (final var override : declared.entrySet()) {
+            final var previous = merged.put(override.getKey(), override.getValue());
+            if (previous != null && !previous.equals(override.getValue())) {
+                throw new ConflictingColumnOverrideException(
+                        type.toString(), override.getKey(), previous, override.getValue(), statement.getName());
+            }
+        }
     }
 
     /**
@@ -120,7 +157,10 @@ public final class RecordConverterGenerator {
         return source;
     }
 
-    private void verify(final SqlStatement statement, final JavaSourceType record) {
+    private void verify(
+            final SqlStatement statement,
+            final JavaSourceType record,
+            final Map<String, String> overrides) {
         final var selected = SelectedColumns.of(statement.getRawStatement());
         if (selected.isEmpty()) {
             // `select *` and unaliased expressions name nothing checkable. Saying so beats
@@ -131,7 +171,7 @@ public final class RecordConverterGenerator {
         final var columns = new LinkedHashSet<>(selected.get());
         final var claimed = new LinkedHashSet<String>();
         final var missing = new ArrayList<String>();
-        for (final var leaf : flatten(record)) {
+        for (final var leaf : flatten(record, overrides)) {
             if (columns.contains(leaf.column())) {
                 claimed.add(leaf.column());
             } else {
@@ -146,22 +186,23 @@ public final class RecordConverterGenerator {
         }
     }
 
-    private PackagedTypeSpec generateConverterClass(final JavaSourceType record) {
+    private PackagedTypeSpec generateConverterClass(
+            final JavaSourceType record, final Map<String, String> overrides) {
         final var converterClass = names.converterClass(record.type());
         final var type = classes.publicClass(converterClass)
                 .addJavadoc("Builds $T from a result set row.\n", record.type())
                 .addAnnotations(annotations.generatedClass())
-                .addMethod(converterMethod(record))
+                .addMethod(converterMethod(record, overrides))
                 .build();
         logger.debug(CodegenLifecycle.TYPE_GENERATED, converterClass.packageName(), converterClass.simpleName());
         return PackagedTypeSpec.of(type, converterClass.packageName());
     }
 
-    private MethodSpec converterMethod(final JavaSourceType record) {
+    private MethodSpec converterMethod(final JavaSourceType record, final Map<String, String> overrides) {
         final var body = CodeBlock.builder();
         final var taken = new LinkedHashSet<String>();
         final var construction = build(record, List.of(), body, taken,
-                new LinkedHashSet<>(List.of(record.type())));
+                new LinkedHashSet<>(List.of(record.type())), overrides);
         return methods.publicMethod(names.methodName())
                 .addParameters(jdbcParameters.toMapConverterParameterSpecs())
                 .addException(exceptions.thrownException())
@@ -180,7 +221,8 @@ public final class RecordConverterGenerator {
             final List<String> path,
             final CodeBlock.Builder body,
             final Set<String> taken,
-            final Set<ClassName> enclosing) {
+            final Set<ClassName> enclosing,
+            final Map<String, String> overrides) {
         final var arguments = new ArrayList<CodeBlock>(record.components().size());
         for (final var component : record.components()) {
             final var componentPath = append(path, component.name());
@@ -189,14 +231,14 @@ public final class RecordConverterGenerator {
                 rejectCycle(nested.get().type(), componentPath, enclosing);
                 final var deeper = new LinkedHashSet<>(enclosing);
                 deeper.add(nested.get().type());
-                arguments.add(build(nested.get(), componentPath, body, taken, deeper));
+                arguments.add(build(nested.get(), componentPath, body, taken, deeper, overrides));
                 continue;
             }
             final var variable = variableFor(componentPath, taken);
             body.add(readers.read(
                     component.type(),
                     isEnum(component.type()),
-                    ColumnNames.columnFor(component.name()),
+                    columnFor(componentPath, component.name(), overrides),
                     variable,
                     String.join(".", componentPath)));
             arguments.add(CodeBlock.of("$N", variable));
@@ -204,17 +246,27 @@ public final class RecordConverterGenerator {
         return CodeBlock.of("new $T($L)", record.type(), CodeBlock.join(arguments, ", "));
     }
 
-    private List<Leaf> flatten(final JavaSourceType record) {
+    private List<Leaf> flatten(final JavaSourceType record, final Map<String, String> overrides) {
         final var leaves = new ArrayList<Leaf>();
-        collect(record, List.of(), leaves, new LinkedHashSet<>(List.of(record.type())));
+        collect(record, List.of(), leaves, new LinkedHashSet<>(List.of(record.type())), overrides);
         return leaves;
+    }
+
+    /**
+     * The column a component reads: its own name as snake_case, unless a statement named one.
+     */
+    private static String columnFor(
+            final List<String> path, final String componentName, final Map<String, String> overrides) {
+        final var override = overrides.get(String.join(".", path));
+        return override != null ? override : ColumnNames.columnFor(componentName);
     }
 
     private void collect(
             final JavaSourceType record,
             final List<String> path,
             final List<Leaf> leaves,
-            final Set<ClassName> enclosing) {
+            final Set<ClassName> enclosing,
+            final Map<String, String> overrides) {
         for (final var component : record.components()) {
             final var componentPath = append(path, component.name());
             final var nested = nestedRecord(component.type());
@@ -222,9 +274,10 @@ public final class RecordConverterGenerator {
                 rejectCycle(nested.get().type(), componentPath, enclosing);
                 final var deeper = new LinkedHashSet<>(enclosing);
                 deeper.add(nested.get().type());
-                collect(nested.get(), componentPath, leaves, deeper);
+                collect(nested.get(), componentPath, leaves, deeper, overrides);
             } else {
-                leaves.add(new Leaf(String.join(".", componentPath), ColumnNames.columnFor(component.name())));
+                leaves.add(new Leaf(String.join(".", componentPath),
+                        columnFor(componentPath, component.name(), overrides)));
             }
         }
     }
