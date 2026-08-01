@@ -337,14 +337,8 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     private CodeBlock.Builder prepareReturnList(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
-        final var java = runtimeConfiguration.java();
-        CodeBlock template;
-        if (java.useVar()) {
-            template = CodeBlock.of("new $T()", ParameterizedTypeName.get(
-                    ClassName.get(ArrayList.class), listOfResults.typeArguments.get(0)));
-        } else {
-            template = CodeBlock.of("new $T<>()", ArrayList.class);
-        }
+        final var template = CodeBlock.of("new $T()", ParameterizedTypeName.get(
+                ClassName.get(ArrayList.class), listOfResults.typeArguments.get(0)));
         return CodeBlock.builder()
                 .addStatement(variables.inline(listOfResults, names.list(), template))
                 .add(controlFlows.whileHasNext())

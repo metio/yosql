@@ -17,34 +17,15 @@ public final class Java extends AbstractConfigurationGroup {
         return ConfigurationGroup.builder()
                 .setName(GROUP_NAME)
                 .setDescription("Configures Java version and related settings.")
-                .addSettings(apiVersion())
                 .addSettings(useFinalParameters())
                 .addSettings(useFinalVariables())
                 .addSettings(useFinalClasses())
                 .addSettings(useFinalFields())
                 .addSettings(useFinalMethods())
-                .addSettings(useTextBlocks())
-                .addSettings(useVar())
                 .addSettings(useSealedInterfaces())
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
                 .addImmutableAnnotations(immutableAnnotation())
-                .build();
-    }
-
-    private static ConfigurationSetting apiVersion() {
-        final var name = "apiVersion";
-        final var description = "Controls the Java SDK API version to use in generated code.";
-        final var value = 17;
-        return setting(GROUP_NAME, name, description, value)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(String.valueOf(value))
-                        .setDescription("The default value of the `apiVersion` configuration option is `17`. It is updated alongside the minimum Java version required by `YoSQL`.")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(String.valueOf(11))
-                        .setDescription("Changing the `apiVersion` configuration option to `11` will allow generated code to use Java APIs up until version 11 (including).")
-                        .build())
                 .build();
     }
 
@@ -124,38 +105,6 @@ public final class Java extends AbstractConfigurationGroup {
                 .addExamples(ConfigurationExample.builder()
                         .setValue(String.valueOf(!value))
                         .setDescription("Changing the `useFinalMethods` configuration option to `false` disables the use of `final` for methods.")
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting useTextBlocks() {
-        final var name = "useTextBlocks";
-        final var description = "Controls the usage of text blocks in generated code.";
-        final var value = true;
-        return setting(GROUP_NAME, name, description, value)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(String.valueOf(value))
-                        .setDescription("The default value of the `useTextBlocks` configuration option is `true` which enables the use of text blocks in generated code.")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(String.valueOf(!value))
-                        .setDescription("Changing the `useTextBlocks` configuration option to `false` disables the use of text blocks in generated code.")
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting useVar() {
-        final var name = "useVar";
-        final var description = "Controls the usage of the 'var' keyword in generated code.";
-        final var value = true;
-        return setting(GROUP_NAME, name, description, value)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(String.valueOf(value))
-                        .setDescription("The default value of the `useVar` configuration option is `true` which enables the use of `var` in generated code.")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(String.valueOf(!value))
-                        .setDescription("Changing the `useVar` configuration option to `false` disables the use of `var` in generated code.")
                         .build())
                 .build();
     }

@@ -42,7 +42,4 @@ plugins {
 }
 
 includeBuild("../../yosql-tooling/yosql-tooling-gradle")
-include(":yosql-examples-gradle-jdbc-java8")
-include(":yosql-examples-gradle-jdbc-java11")
-include(":yosql-examples-gradle-jdbc-java15")
-include(":yosql-examples-gradle-jdbc-java16")
+include(":yosql-examples-gradle-jdbc")
