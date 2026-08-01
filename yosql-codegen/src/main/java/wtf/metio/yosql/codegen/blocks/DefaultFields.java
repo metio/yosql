@@ -58,15 +58,10 @@ public final class DefaultFields implements Fields {
 
     @Override
     public CodeBlock initialize(final String statement) {
-        if (java.useTextBlocks()) {
-            return CodeBlock.builder()
-                    .add("\"\"\"")
-                    .add("$>$>\n$L", statement)
-                    .add("\"\"\"$<$<")
-                    .build();
-        }
         return CodeBlock.builder()
-                .add("$S", statement)
+                .add("\"\"\"")
+                .add("$>$>\n$L", statement)
+                .add("\"\"\"$<$<")
                 .build();
     }
 

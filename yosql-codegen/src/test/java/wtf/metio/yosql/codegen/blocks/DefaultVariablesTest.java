@@ -71,7 +71,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java11());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -85,7 +85,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java11());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -99,7 +99,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java11());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -120,7 +120,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java14());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -134,7 +134,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java14());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -148,7 +148,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java14());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -169,7 +169,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables")
         void shouldCreateVariable() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java16());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.inline(String.class, "test");
@@ -183,7 +183,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variables with initializer")
         void shouldCreateVariableWithInitializer() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java16());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.inline(String.class, "test", CodeBlocks.code("$S", "hello world"));
@@ -197,7 +197,7 @@ class DefaultVariablesTest {
         @DisplayName("creates variable statements")
         void shouldCreateVariableStatement() {
             // given
-            final var variables = new DefaultVariables(JavaConfigurations.java16());
+            final var variables = new DefaultVariables(JavaConfigurations.defaults());
 
             // when
             final var variable = variables.statement(String.class, "test", CodeBlocks.code("$S", "hello world"));

@@ -83,9 +83,6 @@
                     <files>
                         <skipLines>4</skipLines>
                     </files>
-                    <java>
-                        <apiVersion>16</apiVersion>
-                    </java>
                 </configuration>
                 <executions>
                     <execution>

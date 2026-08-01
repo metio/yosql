@@ -41,12 +41,7 @@ public final class DefaultVariables implements Variables {
     @Override
     public CodeBlock inline(final TypeName variableType, final String name, final CodeBlock initializer) {
         final var builder = CodeBlock.builder();
-        final var code = leftHandSide("$N = $L");
-        if (java.useVar()) {
-            builder.add(code.toString(), name, initializer);
-        } else {
-            builder.add(code.toString(), variableType, name, initializer);
-        }
+        builder.add(leftHandSide("$N = $L").toString(), name, initializer);
         return builder.build();
     }
 
@@ -76,12 +71,8 @@ public final class DefaultVariables implements Variables {
             final String initializer,
             final Object... initializerArgs) {
         final var builder = CodeBlock.builder();
-        final var code = leftHandSide("$N = " + initializer);
-        if (java.useVar()) {
-            builder.add(code.toString(), Stream.concat(Stream.of(name), Arrays.stream(initializerArgs)).toArray());
-        } else {
-            builder.add(code.toString(), Stream.concat(Stream.of(variableType, name), Arrays.stream(initializerArgs)).toArray());
-        }
+        builder.add(leftHandSide("$N = " + initializer).toString(),
+                Stream.concat(Stream.of(name), Arrays.stream(initializerArgs)).toArray());
         return builder.build();
     }
 
@@ -90,11 +81,7 @@ public final class DefaultVariables implements Variables {
         if (java.useFinalVariables()) {
             code.add("final");
         }
-        if (java.useVar()) {
-            code.add("var");
-        } else {
-            code.add("$T");
-        }
+        code.add("var");
         code.add(closer);
         return code;
     }
