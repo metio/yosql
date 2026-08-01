@@ -8,7 +8,7 @@ plugins {
 }
 
 gradlePlugin {
-    val gradleModel by plugins.creating {
+    plugins.create("gradleModel") {
         id = "wtf.metio.yosql.models.gradle"
         displayName = "GradleModel"
         description = "Create the Gradle configuration model"

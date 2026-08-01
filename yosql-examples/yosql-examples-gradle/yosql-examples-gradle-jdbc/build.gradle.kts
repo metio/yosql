@@ -11,8 +11,8 @@ plugins {
 
 java {
     toolchain {
-        // Generated code uses text blocks and var, so it compiles on 17 or later.
-        languageVersion.set(JavaLanguageVersion.of(17))
+        // The baseline generated code is built and run against.
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 

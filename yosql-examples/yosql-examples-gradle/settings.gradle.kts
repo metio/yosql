@@ -16,7 +16,7 @@ dependencyResolutionManagement {
 }
 
 pluginManagement {
-    val version: String by settings
+    val version = providers.gradleProperty("version").get()
     plugins {
         id("wtf.metio.yosql") version version
     }
