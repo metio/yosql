@@ -44,14 +44,14 @@ jobs:
         with:
           fetch-depth: 0 # the gate reads tags and history
       - id: gate
-        uses: metio/ci/needs-release@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+        uses: metio/ci/needs-release@d2ce47fb838ca7dd9cd6d3e896978bbc2ea58b87 # 2026.8.1094619
         with:
           # The examples, the benchmarks and the website ship nothing, so a
           # change confined to them is not worth a release.
           paths: pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling
       - id: quota
         if: steps.gate.outputs.needed == 'true'
-        uses: metio/ci/central-quota@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+        uses: metio/ci/central-quota@d2ce47fb838ca7dd9cd6d3e896978bbc2ea58b87 # 2026.8.1094619
       - id: version
         name: Compute the version and the build timestamp
         if: steps.gate.outputs.needed == 'true'
@@ -264,11 +264,11 @@ jobs:
         # the whole release and adding an archive cannot silently escape it.
         run: sha256sum ./*.zip > SHA256SUMS
       - id: cosign
-        uses: metio/ci/cosign-sign-blob@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+        uses: metio/ci/cosign-sign-blob@d2ce47fb838ca7dd9cd6d3e896978bbc2ea58b87 # 2026.8.1094619
         with:
           file: artifacts/SHA256SUMS
       - id: notes
-        uses: metio/ci/release-notes@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+        uses: metio/ci/release-notes@d2ce47fb838ca7dd9cd6d3e896978bbc2ea58b87 # 2026.8.1094619
         with:
           version: ${{ needs.gate.outputs.version }}
           previous: ${{ needs.gate.outputs.last }}

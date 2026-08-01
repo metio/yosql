@@ -15,7 +15,7 @@ jobs:
     # examples and the benchmarks — so the frontends are exercised by building
     # the projects that consume them.
     name: Maven
-    uses: metio/ci/.github/workflows/maven.yml@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+    uses: metio/ci/.github/workflows/maven.yml@d2ce47fb838ca7dd9cd6d3e896978bbc2ea58b87 # 2026.8.1094619
   gradle:
     # The Gradle example is not a Maven module, so the reactor never reaches it.
     # Building it is the only check that the Gradle plugin's DSL still matches
@@ -174,7 +174,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - uses: metio/ci/dco@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+      - uses: metio/ci/dco@d2ce47fb838ca7dd9cd6d3e896978bbc2ea58b87 # 2026.8.1094619
   policy:
     # metio org workflow conventions (conftest/Rego from metio/ci): SHA-pinned
     # uses refs, top-level permissions, timeout-minutes on every job, no
@@ -184,7 +184,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/ci/policy-check@8470d3176f66a800c48c79697518042b66146450 # 2026.7.30140746
+      - uses: metio/ci/policy-check@d2ce47fb838ca7dd9cd6d3e896978bbc2ea58b87 # 2026.8.1094619
   verify:
     # Single required check covering every job above: mark only this one
     # required in branch protection and new jobs are covered automatically.
