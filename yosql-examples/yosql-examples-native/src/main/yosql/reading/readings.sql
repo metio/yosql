@@ -76,3 +76,25 @@ from reading
 where sensor_id = :sensorId
 order by recorded_at
 ;
+
+-- name: insertReadingReturningId
+-- type: reading
+-- returning: single
+-- resultRowType: wtf.metio.yosql.example.nativeimage.domain.ReadingId
+-- parameters:
+--   - name: id
+--     type: java.util.UUID
+--   - name: sensorId
+--     type: java.lang.String
+--   - name: level
+--     type: java.lang.String
+--   - name: amount
+--     type: java.math.BigDecimal
+--   - name: unit
+--     type: java.lang.String
+--   - name: recordedAt
+--     type: java.sql.Timestamp
+insert into reading (id, sensor_id, level, amount, unit, recorded_at)
+values (:id, :sensorId, :level, :amount, :unit, :recordedAt)
+returning id
+;

@@ -7,6 +7,7 @@ package wtf.metio.yosql.example.nativeimage;
 import org.postgresql.ds.PGSimpleDataSource;
 import wtf.metio.yosql.example.nativeimage.domain.Level;
 import wtf.metio.yosql.example.nativeimage.domain.Reading;
+import wtf.metio.yosql.example.nativeimage.domain.ReadingId;
 import wtf.metio.yosql.example.nativeimage.persistence.ReadingRepository;
 
 import java.math.BigDecimal;
@@ -58,6 +59,15 @@ public final class ReflectionFreeProof {
                 () -> new AssertionError("the second row was not found"));
         check("level", Level.CRITICAL, open.level());
         check("clearedAt", null, open.clearedAt());
+
+        // `insert … returning id` is a write that answers with a row, so it runs through the read
+        // path: executeQuery, then the generated converter. Postgres is what makes it meaningful —
+        // the statement is only legal there.
+        final var returned = UUID.fromString("8c1f0b44-0000-4000-8000-000000000003");
+        final var inserted = repository.insertReadingReturningId(returned, "boiler-2", "INFO",
+                new BigDecimal("21.000"), "celsius", Timestamp.from(RECORDED)).orElseThrow(
+                () -> new AssertionError("insert … returning id produced no row"));
+        check("returning id", new ReadingId(returned), inserted);
 
         final var bySensor = repository.findReadingsBySensor("boiler-1");
         check("row count", 2, bySensor.size());
