@@ -33,6 +33,31 @@ class DefaultMethodNameValidatorTest {
     }
 
     @Test
+    @DisplayName("a statement whose kind is unknown fails the build instead of vanishing")
+    void detectUnknownStatementType() {
+        // Neither the name nor the front matter says what this is, so nothing would be generated
+        // for it — a build that succeeds and produces nothing.
+        final var configuration = SqlConfiguration.builder()
+                .setName("countSomeData")
+                .build();
+        validator.validateNames(configuration, Paths.get("some.sql"));
+        assertTrue(errors.hasErrors());
+    }
+
+    @Test
+    @DisplayName("naming the kind outright is enough, whatever the name starts with")
+    void declaredTypeIsEnough() {
+        final var lenient = new DefaultMethodNameValidator(
+                RepositoriesConfigurations.defaults(), errors, LoggingObjectMother.messages());
+        final var configuration = SqlConfiguration.builder()
+                .setType(SqlStatementType.READING)
+                .setName("countSomeData")
+                .build();
+        lenient.validateNames(configuration, Paths.get("some.sql"));
+        assertFalse(errors.hasErrors());
+    }
+
+    @Test
     void detectInvalidReadPrefix() {
         final var configuration = SqlConfiguration.builder()
                 .setType(SqlStatementType.READING)

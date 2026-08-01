@@ -32,6 +32,13 @@ public final class DefaultMethodNameValidator implements MethodNameValidator {
 
     @Override
     public void validateNames(final SqlConfiguration configuration, final Path source) {
+        // Not gated on validateMethodNamePrefixes: that option is about naming style, while a
+        // statement of unknown kind generates no method at all. A build that succeeds and produces
+        // nothing is the worst outcome available, so this one always fails.
+        if (configuration.type().isEmpty()) {
+            unknownType(source, configuration.name().orElse(""));
+            return;
+        }
         if (repositories.validateMethodNamePrefixes()) {
             configuration.type()
                     .map(this::allowedPrefixes)
@@ -39,6 +46,14 @@ public final class DefaultMethodNameValidator implements MethodNameValidator {
                             .filter(name -> notStartsWith(name, prefixes)))
                     .ifPresent(name -> invalidPrefix(source, name));
         }
+    }
+
+    private void unknownType(final Path source, final String name) {
+        errors.illegalArgument(messages.getMessage(ValidationErrors.UNKNOWN_STATEMENT_TYPE,
+                source, name,
+                repositories.allowedReadPrefixes(),
+                repositories.allowedWritePrefixes(),
+                repositories.allowedCallPrefixes()));
     }
 
     private List<String> allowedPrefixes(final SqlStatementType type) {
