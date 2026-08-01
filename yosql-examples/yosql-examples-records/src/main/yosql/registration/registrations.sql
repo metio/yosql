@@ -56,3 +56,44 @@ select tenant_id,
 from registration
 where tenant_id = :tenantId
 ;
+
+-- name: countRegistrations
+-- type: reading
+-- returning: single
+-- resultRowType: java.lang.Long
+select count(*)
+from registration
+;
+
+-- name: findSlugText
+-- returning: single
+-- resultRowType: java.lang.String
+-- parameters:
+--   - name: tenantId
+--     type: wtf.metio.yosql.example.records.domain.TenantId
+select slug
+from registration
+where tenant_id = :tenantId
+;
+
+-- name: findTenantIdentity
+-- returning: single
+-- resultRowType: wtf.metio.yosql.example.records.domain.TenantId
+-- parameters:
+--   - name: slug
+--     type: wtf.metio.yosql.example.records.domain.Slug
+select tenant_id
+from registration
+where slug = :slug
+;
+
+-- name: findMissingBalance
+-- returning: single
+-- resultRowType: java.lang.Long
+-- parameters:
+--   - name: tenantId
+--     type: wtf.metio.yosql.example.records.domain.TenantId
+select nullif(balance, balance)
+from registration
+where tenant_id = :tenantId
+;

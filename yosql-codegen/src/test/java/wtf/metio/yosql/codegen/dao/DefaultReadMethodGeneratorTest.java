@@ -66,7 +66,7 @@ class DefaultReadMethodGeneratorTest {
                             while (resultSet.next()) {
                               list.add(toMap.apply(resultSet));
                             }
-                            return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                            return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
                           }
                         }
                       }
@@ -122,7 +122,7 @@ class DefaultReadMethodGeneratorTest {
                             while (resultSet.next()) {
                               list.add(toMap.apply(resultSet));
                             }
-                            return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                            return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
                           }
                         }
                       }
@@ -569,7 +569,7 @@ class DefaultReadMethodGeneratorTest {
                             while (resultSet.next()) {
                               list.add(toMap.apply(resultSet));
                             }
-                            return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                            return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
                           }
                         }
                       }
@@ -625,7 +625,7 @@ class DefaultReadMethodGeneratorTest {
                             while (resultSet.next()) {
                               list.add(toMap.apply(resultSet));
                             }
-                            return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                            return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
                           }
                         }
                       }
@@ -1072,7 +1072,7 @@ class DefaultReadMethodGeneratorTest {
                             while (resultSet.next()) {
                               list.add(toMap.apply(resultSet));
                             }
-                            return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                            return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
                           }
                         }
                       }
@@ -1128,7 +1128,7 @@ class DefaultReadMethodGeneratorTest {
                             while (resultSet.next()) {
                               list.add(toMap.apply(resultSet));
                             }
-                            return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                            return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
                           }
                         }
                       }
@@ -1575,7 +1575,7 @@ class DefaultReadMethodGeneratorTest {
                             while (resultSet.next()) {
                               list.add(toMap.apply(resultSet));
                             }
-                            return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                            return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
                           }
                         }
                       }
@@ -1631,7 +1631,7 @@ class DefaultReadMethodGeneratorTest {
                             while (resultSet.next()) {
                               list.add(toMap.apply(resultSet));
                             }
-                            return list.size() > 0 ? java.util.Optional.of(list.get(0)) : java.util.Optional.empty();
+                            return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
                           }
                         }
                       }

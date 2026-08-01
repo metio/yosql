@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A row whose every component is a type that knows how to build itself from one column.
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ValueTypeTest {
 
     private static final UUID TENANT = UUID.fromString("5d0c9e11-0000-4000-8000-000000000001");
+    private static final UUID SCALAR = UUID.fromString("5d0c9e11-0000-4000-8000-00000000000a");
     private static final Instant REGISTERED = Instant.parse("2026-02-11T08:00:00Z");
 
     private static RegistrationRepository registrations;
@@ -39,6 +41,9 @@ class ValueTypeTest {
         // Stored with capitals and padding, so the factory's normalisation is observable rather
         // than merely executed.
         registrations.insertRegistration(TENANT, "  ACME-GmbH  ", 12_345L, Timestamp.from(REGISTERED));
+        // A row written entirely through the typed path, for the statements that read one value.
+        registrations.insertTypedRegistration(
+                new TenantId(SCALAR), Slug.valueOf("scalar-probe"), new Cents(7L), REGISTERED);
     }
 
     @Test
@@ -86,6 +91,28 @@ class ValueTypeTest {
                 new TenantId(third), Slug.valueOf("acme-two"), new Cents(1L), REGISTERED);
 
         assertEquals(REGISTERED, registrations.findRegistration(third).orElseThrow().registeredAt());
+    }
+
+    @Test
+    @DisplayName("a statement whose result is one value needs no record around it")
+    void scalarResults() {
+        assertEquals("scalar-probe", registrations.findSlugText(new TenantId(SCALAR)).orElseThrow());
+        // Other tests write rows of their own, so the count is a lower bound rather than a number.
+        assertTrue(registrations.countRegistrations().orElseThrow() >= 2L);
+    }
+
+    @Test
+    @DisplayName("a single value can be a type that builds itself")
+    void scalarValueType() {
+        assertEquals(new TenantId(SCALAR),
+                registrations.findTenantIdentity(Slug.valueOf("scalar-probe")).orElseThrow());
+    }
+
+    @Test
+    @DisplayName("a row holding SQL NULL answers empty rather than throwing")
+    void nullScalarIsEmpty() {
+        // Optional.of would have raised a NullPointerException from inside generated code here.
+        assertTrue(registrations.findMissingBalance(new TenantId(SCALAR)).isEmpty());
     }
 
     private static DataSource dataSource() {

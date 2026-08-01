@@ -78,32 +78,57 @@ public final class ResultSetReaders {
             final String column,
             final String variable,
             final String path) {
+        return read(type, enumeration, CodeBlock.of("$S", column), column, variable, path);
+    }
+
+    /**
+     * Reads the first column, for a statement whose result is a single value rather than a row.
+     *
+     * <p>By position rather than by name, because a value has no name to go by: {@code select
+     * count(*)} names nothing at all, and inventing an alias requirement for it would be a rule
+     * about SQL style rather than about mapping.</p>
+     */
+    public CodeBlock readFirstColumn(
+            final TypeName type,
+            final boolean enumeration,
+            final String variable,
+            final String path) {
+        return read(type, enumeration, CodeBlock.of("1"), "1", variable, path);
+    }
+
+    private CodeBlock read(
+            final TypeName type,
+            final boolean enumeration,
+            final CodeBlock column,
+            final String described,
+            final String variable,
+            final String path) {
         if (enumeration) {
             return readEnum(type, column, variable);
         }
         if (type.isPrimitive()) {
-            return readPrimitive(type, column, variable, path);
+            return readPrimitive(type, column, described, variable, path);
         }
         if (type.isBoxedPrimitive()) {
-            return declare(type, variable, CodeBlock.of("$N.getObject($S, $T.class)", resultSet, column, type));
+            return declare(type, variable, CodeBlock.of("$N.getObject($L, $T.class)", resultSet, column, type));
         }
         if (INSTANT_TYPE.equals(type)) {
             return readInstant(column, variable);
         }
         if (STRING_TYPE.equals(type)) {
-            return declare(type, variable, CodeBlock.of("$N.getString($S)", resultSet, column));
+            return declare(type, variable, CodeBlock.of("$N.getString($L)", resultSet, column));
         }
         if (BIG_DECIMAL_TYPE.equals(type)) {
-            return declare(type, variable, CodeBlock.of("$N.getBigDecimal($S)", resultSet, column));
+            return declare(type, variable, CodeBlock.of("$N.getBigDecimal($L)", resultSet, column));
         }
         if (BYTE_ARRAY.equals(type)) {
-            return declare(type, variable, CodeBlock.of("$N.getBytes($S)", resultSet, column));
+            return declare(type, variable, CodeBlock.of("$N.getBytes($L)", resultSet, column));
         }
         if (CURRENCY_TYPE.equals(type)) {
             return readCurrency(column, variable);
         }
         if (VIA_GET_OBJECT.contains(type)) {
-            return declare(type, variable, CodeBlock.of("$N.getObject($S, $T.class)", resultSet, column, type));
+            return declare(type, variable, CodeBlock.of("$N.getObject($L, $T.class)", resultSet, column, type));
         }
         throw new UnsupportedComponentTypeException(path, type, SUPPORTED);
     }
@@ -134,9 +159,29 @@ public final class ResultSetReaders {
             final String column,
             final String variable,
             final String path) {
+        return readVia(valueType, parameterType, read(parameterType, false, column, variable + "Value", path),
+                variable);
+    }
+
+    /**
+     * The same, for a single value read by position.
+     */
+    public CodeBlock readFirstColumnVia(
+            final TypeName valueType,
+            final TypeName parameterType,
+            final String variable,
+            final String path) {
+        return readVia(valueType, parameterType,
+                readFirstColumn(parameterType, false, variable + "Value", path), variable);
+    }
+
+    private CodeBlock readVia(
+            final TypeName valueType,
+            final TypeName parameterType,
+            final CodeBlock read,
+            final String variable) {
         final var raw = variable + "Value";
-        final var block = CodeBlock.builder()
-                .add(read(parameterType, false, column, raw, path));
+        final var block = CodeBlock.builder().add(read);
         if (parameterType.isPrimitive()) {
             block.addStatement("final $T $N = $T.valueOf($N)", valueType, variable, valueType, raw);
         } else {
@@ -147,15 +192,16 @@ public final class ResultSetReaders {
     }
 
     private CodeBlock readPrimitive(
-            final TypeName type, final String column, final String variable, final String path) {
+            final TypeName type, final CodeBlock column, final String described,
+            final String variable, final String path) {
         return CodeBlock.builder()
-                .addStatement("final $T $N = $N.$N($S)", type, variable, resultSet, primitiveGetter(type, path), column)
+                .addStatement("final $T $N = $N.$N($L)", type, variable, resultSet, primitiveGetter(type, path), column)
                 .beginControlFlow("if ($N.wasNull())", resultSet)
                 // A primitive cannot hold NULL, and answering 0 or false instead is the bug this
                 // check exists to make impossible.
                 .addStatement("throw new $T($S)", SQLException.class,
                         "Column '%s' is NULL, but component '%s' is a %s and cannot represent it"
-                                .formatted(column, path, type))
+                                .formatted(described, path, type))
                 .endControlFlow()
                 .build();
     }
@@ -165,10 +211,10 @@ public final class ResultSetReaders {
      * something every driver implements, while a {@link Timestamp} holds the epoch millisecond and
      * converts exactly.
      */
-    private CodeBlock readInstant(final String column, final String variable) {
+    private CodeBlock readInstant(final CodeBlock column, final String variable) {
         final var raw = variable + "Timestamp";
         return CodeBlock.builder()
-                .addStatement("final $T $N = $N.getTimestamp($S)", TIMESTAMP_TYPE, raw, resultSet, column)
+                .addStatement("final $T $N = $N.getTimestamp($L)", TIMESTAMP_TYPE, raw, resultSet, column)
                 .addStatement("final $T $N = $N == null ? null : $N.toInstant()", INSTANT_TYPE, variable, raw, raw)
                 .build();
     }
@@ -177,19 +223,19 @@ public final class ResultSetReaders {
      * No driver returns a {@link Currency}, but its ISO-4217 code is exactly what the column holds,
      * and it is the other half of every money value object.
      */
-    private CodeBlock readCurrency(final String column, final String variable) {
+    private CodeBlock readCurrency(final CodeBlock column, final String variable) {
         final var raw = variable + "Code";
         return CodeBlock.builder()
-                .addStatement("final $T $N = $N.getString($S)", STRING_TYPE, raw, resultSet, column)
+                .addStatement("final $T $N = $N.getString($L)", STRING_TYPE, raw, resultSet, column)
                 .addStatement("final $T $N = $N == null ? null : $T.getInstance($N)",
                         CURRENCY_TYPE, variable, raw, CURRENCY_TYPE, raw)
                 .build();
     }
 
-    private CodeBlock readEnum(final TypeName type, final String column, final String variable) {
+    private CodeBlock readEnum(final TypeName type, final CodeBlock column, final String variable) {
         final var raw = variable + "Name";
         return CodeBlock.builder()
-                .addStatement("final $T $N = $N.getString($S)", STRING_TYPE, raw, resultSet, column)
+                .addStatement("final $T $N = $N.getString($L)", STRING_TYPE, raw, resultSet, column)
                 // valueOf throws IllegalArgumentException naming the type and the value it did not
                 // know. A persistence layer handed a state it cannot represent should stop, not
                 // invent a default.
