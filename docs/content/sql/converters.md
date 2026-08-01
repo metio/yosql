@@ -206,6 +206,35 @@ leave a single one taking the type the column holds.
 `BigDecimal`, `Currency`, `byte[]`, the primitives and their wrappers, any enum, any record built
 from those, and any type with a `valueOf` factory taking one of them.
 
+### Writes that answer with a row
+
+`insert … returning id` is a write that produces a result set, and Postgres will only hand it back
+through `executeQuery`. Say so with `type`, because the method name decides otherwise — anything
+starting with `insert`, `update`, `delete` and the rest of
+[allowedWritePrefixes](../../configuration/repositories/allowedwriteprefixes/) is taken for a write,
+and a write runs `executeUpdate` and throws the row away:
+
+```sql
+-- name: insertSignIn
+-- type: reading
+-- returning: single
+-- resultRowType: com.example.domain.SignInId
+-- parameters:
+--   - name: accountId
+--     type: java.util.UUID
+insert into sign_in (account_id, created_at)
+values (:accountId, now())
+returning id
+```
+
+```java
+public record SignInId(UUID id) {
+}
+```
+
+The record's component is named after the column the statement returns, so a single returned value
+needs a one-component record rather than a bare `UUID` — a result row type is always a row.
+
 ## Map converter
 
 Without a `resultRowType` or a converter of your own, generated code returns
