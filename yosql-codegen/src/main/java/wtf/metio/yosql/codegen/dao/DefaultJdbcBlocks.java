@@ -11,12 +11,14 @@ import com.squareup.javapoet.TypeSpec;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.codegen.exceptions.*;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
+import wtf.metio.yosql.codegen.records.ParameterConversions;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.models.configuration.LoggingApis;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
+import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -39,6 +41,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     private final FieldsGenerator fields;
     private final Parameters params;
     private final Methods methods;
+    private final ParameterConversions parameterConversions;
 
     public DefaultJdbcBlocks(
             final RuntimeConfiguration runtimeConfiguration,
@@ -49,7 +52,8 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             final JdbcMethods jdbcMethods,
             final LoggingGenerator logging,
             final Parameters params,
-            final Methods methods) {
+            final Methods methods,
+            final ParameterConversions parameterConversions) {
         this.runtimeConfiguration = runtimeConfiguration;
         this.blocks = blocks;
         this.names = runtimeConfiguration.names();
@@ -60,6 +64,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         this.logging = logging;
         this.params = params;
         this.methods = methods;
+        this.parameterConversions = parameterConversions;
     }
 
     @Override
@@ -432,37 +437,46 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock setParameters(final SqlConfiguration config) {
-        return parameterAssignment(config, "$N.setObject($N, $N)",
-                parameterName -> new String[]{
-                        names.statement(),
-                        names.jdbcIndexVariable(),
-                        parameterName});
+        return parameterAssignment(config, parameter -> CodeBlock.of("$N",
+                parameter.name().orElseThrow(MissingParameterNameException::new)));
     }
 
     @Override
     public CodeBlock setBatchParameters(final SqlConfiguration config) {
-        return parameterAssignment(config, "$N.setObject($N, $N[$N])",
-                parameterName -> new String[]{
-                        names.statement(),
-                        names.jdbcIndexVariable(),
-                        parameterName,
-                        names.batch()});
+        return parameterAssignment(config, parameter -> CodeBlock.of("$N[$N]",
+                parameter.name().orElseThrow(MissingParameterNameException::new), names.batch()));
     }
 
+    /**
+     * Binds every parameter of a statement, converting the ones a driver would not take as they
+     * were declared.
+     *
+     * <p>A conversion is hoisted in front of the index loop rather than repeated inside it: a
+     * parameter named twice in one statement is bound twice, and unwrapping or allocating twice for
+     * that would be work nobody asked for. A parameter needing no conversion emits exactly what it
+     * always emitted.</p>
+     */
     private CodeBlock parameterAssignment(
             final SqlConfiguration config,
-            final String codeStatement,
-            final Function<String, Object[]> parameterSetter) {
+            final Function<SqlParameter, CodeBlock> source) {
         final var builder = CodeBlock.builder();
-        config.parameters().forEach(parameter -> builder.add(controlFlows.forLoop(
-                code("final int $N : $N.get($S)",
-                        names.jdbcIndexVariable(),
-                        names.indexVariable(),
-                        parameter.name().orElseThrow(MissingParameterNameException::new)),
-                CodeBlock.builder()
-                        .addStatement(codeStatement, parameterSetter.apply(parameter.name()
-                                .orElseThrow(MissingParameterNameException::new)))
-                        .build())));
+        config.parameters().forEach(parameter -> {
+            final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
+            final var conversion = parameterConversions.convert(parameter, source.apply(parameter));
+            final var bound = conversion
+                    .map(converted -> CodeBlock.of("$N", converted.boundName()))
+                    .orElseGet(() -> source.apply(parameter));
+            conversion.ifPresent(converted -> builder.add(converted.declarations()));
+            builder.add(controlFlows.forLoop(
+                    code("final int $N : $N.get($S)",
+                            names.jdbcIndexVariable(),
+                            names.indexVariable(),
+                            name),
+                    CodeBlock.builder()
+                            .addStatement("$N.setObject($N, $L)",
+                                    names.statement(), names.jdbcIndexVariable(), bound)
+                            .build()));
+        });
 
         return builder.build();
     }

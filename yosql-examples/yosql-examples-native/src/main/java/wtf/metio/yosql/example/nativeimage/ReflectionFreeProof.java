@@ -11,7 +11,6 @@ import wtf.metio.yosql.example.nativeimage.domain.ReadingId;
 import wtf.metio.yosql.example.nativeimage.persistence.ReadingRepository;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,9 +40,9 @@ public final class ReflectionFreeProof {
         repository.createReadingTable();
         repository.deleteReadings();
         repository.insertReading(CLEARED, "boiler-1", "WARNING", new BigDecimal("81.500"), "celsius",
-                Timestamp.from(RECORDED), Timestamp.from(CLEARED_AT));
+                RECORDED, CLEARED_AT);
         repository.insertReading(OPEN, "boiler-1", "CRITICAL", new BigDecimal("97.250"), "celsius",
-                Timestamp.from(RECORDED.plusSeconds(60)), null);
+                RECORDED.plusSeconds(60), null);
 
         final var cleared = repository.findReading(CLEARED).orElseThrow(
                 () -> new AssertionError("the row that was just inserted was not found"));
@@ -65,7 +64,7 @@ public final class ReflectionFreeProof {
         // the statement is only legal there.
         final var returned = UUID.fromString("8c1f0b44-0000-4000-8000-000000000003");
         final var inserted = repository.insertReadingReturningId(returned, "boiler-2", "INFO",
-                new BigDecimal("21.000"), "celsius", Timestamp.from(RECORDED)).orElseThrow(
+                new BigDecimal("21.000"), "celsius", RECORDED).orElseThrow(
                 () -> new AssertionError("insert … returning id produced no row"));
         check("returning id", new ReadingId(returned), inserted);
 
