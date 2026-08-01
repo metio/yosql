@@ -120,6 +120,20 @@ public class DefaultDaoModule {
 
     @Provides
     @Singleton
+    StatementBinders provideStatementBinders() {
+        return new StatementBinders();
+    }
+
+    @Provides
+    @Singleton
+    ParameterConversions provideParameterConversions(
+            final RecordScanner scanner,
+            final StatementBinders binders) {
+        return new ParameterConversions(scanner, binders);
+    }
+
+    @Provides
+    @Singleton
     RecordConverterNames provideRecordConverterNames(final RuntimeConfiguration runtimeConfiguration) {
         return new RecordConverterNames(runtimeConfiguration.converter());
     }
@@ -333,7 +347,8 @@ public class DefaultDaoModule {
             final JdbcMethods jdbcMethods,
             @Delegating final LoggingGenerator logging,
             final Parameters params,
-            final Methods methods) {
+            final Methods methods,
+            final ParameterConversions parameterConversions) {
         return new DefaultJdbcBlocks(
                 runtimeConfiguration,
                 blocks,
@@ -343,7 +358,8 @@ public class DefaultDaoModule {
                 jdbcMethods,
                 logging,
                 params,
-                methods);
+                methods,
+                parameterConversions);
     }
 
 }

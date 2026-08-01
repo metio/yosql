@@ -35,9 +35,9 @@ delete from reading
 --   - name: unit
 --     type: java.lang.String
 --   - name: recordedAt
---     type: java.sql.Timestamp
+--     type: java.time.Instant
 --   - name: clearedAt
---     type: java.sql.Timestamp
+--     type: java.time.Instant
 insert into reading (id, sensor_id, level, amount, unit, recorded_at, cleared_at)
 values (:id, :sensorId, :level, :amount, :unit, :recordedAt, :clearedAt)
 ;
@@ -93,7 +93,7 @@ order by recorded_at
 --   - name: unit
 --     type: java.lang.String
 --   - name: recordedAt
---     type: java.sql.Timestamp
+--     type: java.time.Instant
 insert into reading (id, sensor_id, level, amount, unit, recorded_at)
 values (:id, :sensorId, :level, :amount, :unit, :recordedAt)
 returning id

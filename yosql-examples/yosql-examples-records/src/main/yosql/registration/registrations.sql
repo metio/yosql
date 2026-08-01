@@ -28,6 +28,21 @@ insert into registration (tenant_id, slug, balance, registered_at)
 values (:tenantId, :slug, :balance, :registeredAt)
 ;
 
+-- name: insertTypedRegistration
+-- returning: none
+-- parameters:
+--   - name: tenantId
+--     type: wtf.metio.yosql.example.records.domain.TenantId
+--   - name: slug
+--     type: wtf.metio.yosql.example.records.domain.Slug
+--   - name: balance
+--     type: wtf.metio.yosql.example.records.domain.Cents
+--   - name: registeredAt
+--     type: java.time.Instant
+insert into registration (tenant_id, slug, balance, registered_at)
+values (:tenantId, :slug, :balance, :registeredAt)
+;
+
 -- name: findRegistration
 -- returning: single
 -- resultRowType: wtf.metio.yosql.example.records.domain.Registration

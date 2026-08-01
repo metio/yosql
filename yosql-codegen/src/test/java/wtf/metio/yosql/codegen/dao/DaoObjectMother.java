@@ -10,8 +10,13 @@ import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
+import wtf.metio.yosql.codegen.records.JavaSourceParser;
+import wtf.metio.yosql.codegen.records.ParameterConversions;
+import wtf.metio.yosql.codegen.records.RecordScanner;
+import wtf.metio.yosql.codegen.records.StatementBinders;
 import wtf.metio.yosql.internals.testing.configs.*;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
+import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 /**
@@ -56,6 +61,16 @@ public final class DaoObjectMother {
     }
 
     public static JdbcBlocks jdbcBlocks(final JavaConfiguration java) {
+        return jdbcBlocks(java, parameterConversions(FilesConfigurations.maven()));
+    }
+
+    public static ParameterConversions parameterConversions(final FilesConfiguration files) {
+        return new ParameterConversions(
+                new RecordScanner(files, new JavaSourceParser()), new StatementBinders());
+    }
+
+    public static JdbcBlocks jdbcBlocks(
+            final JavaConfiguration java, final ParameterConversions parameterConversions) {
         return new DefaultJdbcBlocks(
                 runtimeConfig(),
                 BlocksObjectMother.codeBlocks(),
@@ -65,7 +80,8 @@ public final class DaoObjectMother {
                 jdbcMethods(),
                 LoggingObjectMother.loggingGenerator(),
                 BlocksObjectMother.parameters(java),
-                BlocksObjectMother.methods(java));
+                BlocksObjectMother.methods(java),
+                parameterConversions);
     }
 
     public static ImmutableRuntimeConfiguration runtimeConfig() {

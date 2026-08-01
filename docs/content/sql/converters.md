@@ -235,6 +235,42 @@ public record SignInId(UUID id) {
 The record's component is named after the column the statement returns, so a single returned value
 needs a one-component record rather than a bare `UUID` — a result row type is always a row.
 
+## Parameters, on the way in
+
+The same types travel back. A parameter declared as a value type is unwrapped through the accessor
+its `valueOf` takes, so a repository accepts what it hands back:
+
+```sql
+-- name: insertTenant
+-- parameters:
+--   - name: tenantId
+--     type: com.example.domain.TenantId
+--   - name: registeredAt
+--     type: java.time.Instant
+insert into tenant (id, registered_at)
+values (:tenantId, :registeredAt)
+```
+
+```java
+final UUID tenantIdParameter = tenantId == null ? null : tenantId.value();
+final Timestamp registeredAtParameter = registeredAt == null ? null : Timestamp.from(registeredAt);
+```
+
+`Instant` is there for a reason of its own: PostgreSQL refuses `setObject` with one — *"Can't infer
+the SQL type to use for an instance of java.time.Instant"* — so a statement naming the type its
+domain actually uses would compile and fail at run time. `Instant`, `Currency` and enums are
+converted; everything a driver already takes is passed through untouched, so a statement whose
+parameters need nothing generates exactly what it always generated.
+
+The conversion happens once, in front of the loop that binds the parameter, so a name used twice in
+one statement is unwrapped once. Passing `null` writes SQL NULL rather than throwing.
+
+Two things this refuses, both at build time. A record that is not one value — `Money(long
+minorUnits, Currency currency)` — because a statement binds one value per parameter; declare a
+parameter per component. And a value type that is not a record, because reading one needs only the
+`valueOf` factory while writing one needs the accessor it came from, and a class does not say which
+of its methods that is.
+
 ## Map converter
 
 Without a `resultRowType` or a converter of your own, generated code returns
