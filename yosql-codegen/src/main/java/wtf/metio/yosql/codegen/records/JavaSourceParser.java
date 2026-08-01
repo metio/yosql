@@ -14,9 +14,9 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.RecordDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
-import wtf.metio.javapoet.TypeGuesser;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.TypeName;
+import wtf.metio.yosql.internals.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.exceptions.UnparsableRecordException;
 
 import java.nio.file.Path;

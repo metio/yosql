@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import com.squareup.javapoet.*;
+import com.palantir.javapoet.*;
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Strings;

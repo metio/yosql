@@ -4,7 +4,7 @@
  */
 package wtf.metio.yosql.codegen.orchestration;
 
-import com.squareup.javapoet.JavaFile;
+import com.palantir.javapoet.JavaFile;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.lifecycle.ApplicationErrors;
 import wtf.metio.yosql.codegen.lifecycle.WriteLifecycle;
@@ -37,12 +37,12 @@ public final class DefaultTypeWriter implements TypeWriter {
             logger.debug(WriteLifecycle.FILE_WRITE_FINISHED,
                     fileConfiguration.outputBaseDirectory(),
                     typeSpec.getPackageName().replace(".", "/"),
-                    typeSpec.getType().name);
+                    typeSpec.getType().name());
         } catch (final IOException exception) {
             errors.add(exception);
             logger.error(ApplicationErrors.FILE_WRITE_FAILED,
                     typeSpec.getPackageName(),
-                    typeSpec.getType().name,
+                    typeSpec.getType().name(),
                     fileConfiguration.outputBaseDirectory());
         }
     }

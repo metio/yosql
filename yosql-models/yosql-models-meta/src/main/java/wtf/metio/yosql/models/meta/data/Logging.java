@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.models.configuration.LoggingApis;
 import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;

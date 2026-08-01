@@ -4,7 +4,7 @@
  */
 package wtf.metio.yosql.codegen.exceptions;
 
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.TypeName;
 
 import java.io.Serial;
 import java.util.Collection;

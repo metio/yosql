@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.ParameterSpec;
+import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.codegen.blocks.Parameters;
 import wtf.metio.yosql.codegen.exceptions.MissingConverterAliasException;
 import wtf.metio.yosql.codegen.exceptions.MissingConverterTypeNameException;

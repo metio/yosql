@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.codegen.exceptions.MissingConverterResultTypeException;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;

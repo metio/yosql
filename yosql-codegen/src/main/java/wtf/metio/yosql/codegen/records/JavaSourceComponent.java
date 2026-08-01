@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.records;
 
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.TypeName;
 
 /**
  * One component of a record's canonical constructor: the name it was declared with and the type it

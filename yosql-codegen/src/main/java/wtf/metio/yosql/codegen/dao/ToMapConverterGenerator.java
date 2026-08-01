@@ -4,9 +4,9 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.MethodSpec;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;

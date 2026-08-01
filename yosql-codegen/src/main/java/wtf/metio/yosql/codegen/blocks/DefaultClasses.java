@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.TypeSpec;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 import javax.lang.model.element.Modifier;

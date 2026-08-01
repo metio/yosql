@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.TypeName;
 
 /**
  * Controls the generation of variables. Handles the usage of keywords like 'final' or 'var'.

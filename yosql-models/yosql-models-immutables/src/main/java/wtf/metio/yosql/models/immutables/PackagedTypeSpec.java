@@ -4,7 +4,7 @@
  */
 package wtf.metio.yosql.models.immutables;
 
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.TypeSpec;
 import org.immutables.value.Value;
 
 /**

@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.FieldSpec;
+import com.palantir.javapoet.FieldSpec;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;

@@ -192,7 +192,7 @@ class RecordConverterGeneratorTest {
             )).toList();
             assertEquals(2, generated.size());
             assertEquals(List.of("ToTenantConverter", "ToLedgerEntryConverter"),
-                    generated.stream().map(spec -> spec.getType().name).toList());
+                    generated.stream().map(spec -> spec.getType().name()).toList());
         }
 
         @Test

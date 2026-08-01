@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
-import com.squareup.javapoet.AnnotationSpec;
+import com.palantir.javapoet.AnnotationSpec;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 /**

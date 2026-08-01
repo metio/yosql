@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ParameterSpec;
+import com.palantir.javapoet.ParameterSpec;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 public interface ParameterGenerator {

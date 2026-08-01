@@ -4,7 +4,7 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.MethodSpec;
+import com.palantir.javapoet.MethodSpec;
 import wtf.metio.yosql.codegen.blocks.ControlFlows;
 import wtf.metio.yosql.codegen.blocks.Methods;
 import wtf.metio.yosql.codegen.exceptions.MissingRepositoryNameException;

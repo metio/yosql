@@ -4,8 +4,8 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.FieldSpec;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 

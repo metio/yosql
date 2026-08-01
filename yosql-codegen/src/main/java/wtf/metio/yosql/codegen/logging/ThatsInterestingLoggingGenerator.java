@@ -4,9 +4,9 @@
  */
 package wtf.metio.yosql.codegen.logging;
 
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.FieldSpec;
+import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.models.configuration.LoggingApis;
 
 import java.util.Optional;

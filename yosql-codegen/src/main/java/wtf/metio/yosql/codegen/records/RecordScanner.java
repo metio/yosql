@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.records;
 
-import com.squareup.javapoet.ClassName;
+import com.palantir.javapoet.ClassName;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 
 import java.io.IOException;

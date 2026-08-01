@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.ParameterSpec;
+import com.palantir.javapoet.TypeName;
 
 public interface Parameters {
 

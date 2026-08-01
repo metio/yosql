@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.model.generator;
 
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.TypeSpec;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import wtf.metio.yosql.models.meta.data.AllConfigurations;

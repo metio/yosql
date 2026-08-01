@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.CodeBlock;
+import com.palantir.javapoet.CodeBlock;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 public final class DefaultJdbcResultSetMetaDataMethods implements JdbcMethods.JdbcResultSetMetaDataMethods {

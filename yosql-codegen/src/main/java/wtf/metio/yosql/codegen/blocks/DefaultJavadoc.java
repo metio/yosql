@@ -6,12 +6,12 @@
 package wtf.metio.yosql.codegen.blocks;
 
 import ch.qos.cal10n.IMessageConveyor;
-import com.squareup.javapoet.ArrayTypeName;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
-import wtf.metio.javapoet.TypeGuesser;
+import com.palantir.javapoet.ArrayTypeName;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.TypeName;
+import wtf.metio.yosql.internals.javapoet.TypeGuesser;
 import wtf.metio.yosql.internals.jdk.FileNames;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
@@ -129,11 +129,11 @@ public final class DefaultJavadoc implements Javadoc {
     @Override
     public MethodSpec withSignatureTags(final MethodSpec method) {
         final var builder = method.toBuilder();
-        for (final var parameter : method.parameters) {
-            builder.addJavadoc(messages.getMessage(parameterTag(parameter.type)), parameter.name);
+        for (final var parameter : method.parameters()) {
+            builder.addJavadoc(messages.getMessage(parameterTag(parameter.type())), parameter.name());
         }
-        if (method.returnType != null && !TypeName.VOID.equals(method.returnType)) {
-            builder.addJavadoc(messages.getMessage(countsRows(method.returnType)
+        if (method.returnType() != null && !TypeName.VOID.equals(method.returnType())) {
+            builder.addJavadoc(messages.getMessage(countsRows(method.returnType())
                     ? Javadocs.RETURN_AFFECTED_ROWS
                     : Javadocs.RETURN_RESULT));
         }
@@ -154,7 +154,7 @@ public final class DefaultJavadoc implements Javadoc {
      */
     private static boolean countsRows(final TypeName type) {
         if (type instanceof final ArrayTypeName array) {
-            return array.componentType.isPrimitive();
+            return array.componentType().isPrimitive();
         }
         return type.isPrimitive();
     }

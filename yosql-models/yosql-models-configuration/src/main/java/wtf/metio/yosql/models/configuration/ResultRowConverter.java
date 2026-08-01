@@ -6,9 +6,9 @@ package wtf.metio.yosql.models.configuration;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.TypeName;
 import org.immutables.value.Value;
-import wtf.metio.javapoet.TypeGuesser;
+import wtf.metio.yosql.internals.javapoet.TypeGuesser;
 import wtf.metio.yosql.internals.jdk.Strings;
 
 import java.util.Optional;

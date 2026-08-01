@@ -5,11 +5,11 @@
 package wtf.metio.yosql.codegen.blocks;
 
 import ch.qos.cal10n.IMessageConveyor;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.TypeName;
-import wtf.metio.javapoet.TypeGuesser;
+import com.palantir.javapoet.AnnotationSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.TypeName;
+import wtf.metio.yosql.internals.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.configuration.Annotation;
 import wtf.metio.yosql.models.configuration.AnnotationMember;

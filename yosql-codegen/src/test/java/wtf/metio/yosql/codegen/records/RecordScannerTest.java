@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.records;
 
-import com.squareup.javapoet.ClassName;
+import com.palantir.javapoet.ClassName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

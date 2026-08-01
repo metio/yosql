@@ -4,7 +4,7 @@
  */
 package wtf.metio.yosql.internals.javapoet;
 
-import com.squareup.javapoet.*;
+import com.palantir.javapoet.*;
 
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
@@ -35,10 +35,10 @@ public final class TypicalTypes {
     public static final TypeName ARRAY_OF_INTS = ArrayTypeName.of(int.class);
 
     public static final TypeName MAP_OF_STRING_AND_ARRAY_OF_INTS = mapOf(ClassName.get(String.class), ARRAY_OF_INTS);
-    public static final TypeName MAP_OF_STRING_AND_OBJECTS = mapOf(ClassName.get(String.class), TypeName.OBJECT);
+    public static final TypeName MAP_OF_STRING_AND_OBJECTS = mapOf(ClassName.get(String.class), ClassName.OBJECT);
     public static final TypeName MAP_OF_STRING_AND_STRINGS = mapOf(ClassName.get(String.class), ClassName.get(String.class));
     public static final TypeName MAP_OF_STRING_AND_LONGS = mapOf(ClassName.get(String.class), ClassName.get(Long.class));
-    public static final TypeName LINKED_MAP_OF_STRING_AND_OBJECTS = linkedMapOf(ClassName.get(String.class), TypeName.OBJECT);
+    public static final TypeName LINKED_MAP_OF_STRING_AND_OBJECTS = linkedMapOf(ClassName.get(String.class), ClassName.OBJECT);
 
     public static ParameterizedTypeName mapOf(final TypeName key, final TypeName value) {
         return ParameterizedTypeName.get(ClassName.get(Map.class), key, value);

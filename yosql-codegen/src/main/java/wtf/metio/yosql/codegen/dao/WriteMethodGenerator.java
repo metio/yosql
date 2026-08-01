@@ -4,7 +4,7 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.MethodSpec;
+import com.palantir.javapoet.MethodSpec;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 

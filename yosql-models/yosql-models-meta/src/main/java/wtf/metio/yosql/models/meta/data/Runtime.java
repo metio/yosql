@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import com.squareup.javapoet.CodeBlock;
+import com.palantir.javapoet.CodeBlock;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;

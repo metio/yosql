@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.sql.SQLException;

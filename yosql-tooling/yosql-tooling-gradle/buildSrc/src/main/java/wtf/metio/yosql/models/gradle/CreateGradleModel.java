@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.models.gradle;
 
-import com.squareup.javapoet.JavaFile;
+import com.palantir.javapoet.JavaFile;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import wtf.metio.yosql.model.generator.ModelGenerator;

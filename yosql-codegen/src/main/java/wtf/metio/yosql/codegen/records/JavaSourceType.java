@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.codegen.records;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.TypeName;
 
 import java.util.List;
 

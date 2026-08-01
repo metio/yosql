@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.files;
 
-import com.squareup.javapoet.ClassName;
+import com.palantir.javapoet.ClassName;
 import wtf.metio.yosql.codegen.exceptions.MissingConverterSourceException;
 import wtf.metio.yosql.codegen.exceptions.UnusableConverterException;
 import wtf.metio.yosql.codegen.records.RecordConverterNames;

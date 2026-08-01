@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import com.squareup.javapoet.*;
+import com.palantir.javapoet.*;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.meta.ConfigurationExample;

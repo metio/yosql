@@ -4,10 +4,10 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.ParameterizedTypeName;
+import com.palantir.javapoet.TypeSpec;
 import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.codegen.exceptions.*;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
@@ -338,7 +338,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     private CodeBlock.Builder prepareReturnList(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
         final var template = CodeBlock.of("new $T()", ParameterizedTypeName.get(
-                ClassName.get(ArrayList.class), listOfResults.typeArguments.get(0)));
+                ClassName.get(ArrayList.class), listOfResults.typeArguments().get(0)));
         return CodeBlock.builder()
                 .addStatement(variables.inline(listOfResults, names.list(), template))
                 .add(controlFlows.whileHasNext())

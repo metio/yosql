@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ArrayTypeName;
-import com.squareup.javapoet.ParameterSpec;
+import com.palantir.javapoet.ArrayTypeName;
+import com.palantir.javapoet.ParameterSpec;
 import wtf.metio.yosql.codegen.blocks.Parameters;
 import wtf.metio.yosql.codegen.exceptions.MissingParameterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingParameterTypeNameException;

@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
-import com.squareup.javapoet.CodeBlock;
+import com.palantir.javapoet.CodeBlock;
 import wtf.metio.yosql.codegen.exceptions.MissingConverterAliasException;
 import wtf.metio.yosql.codegen.exceptions.MissingConverterTypeNameException;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;

@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.models.meta.data;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.MethodSpec;
+import com.palantir.javapoet.AnnotationSpec;
+import com.palantir.javapoet.MethodSpec;
 import org.immutables.value.Value;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;

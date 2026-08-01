@@ -5,9 +5,9 @@
 
 package wtf.metio.yosql.codegen.records;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.codegen.exceptions.NonRecordValueTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnbindableParameterException;
 import wtf.metio.yosql.models.configuration.SqlParameter;

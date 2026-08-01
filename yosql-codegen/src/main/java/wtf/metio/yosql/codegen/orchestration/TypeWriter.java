@@ -8,7 +8,7 @@ package wtf.metio.yosql.codegen.orchestration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 
 /**
- * Writes a single {@link com.squareup.javapoet.TypeSpec type} into a directory.
+ * Writes a single {@link com.palantir.javapoet.TypeSpec type} into a directory.
  */
 public interface TypeWriter {
 

@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.records;
 
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.TypeName;
 
 /**
  * A method that turns a result set row into something, as declared in a source file.

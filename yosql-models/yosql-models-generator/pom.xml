@@ -54,12 +54,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.squareup</groupId>
+            <groupId>com.palantir.javapoet</groupId>
             <artifactId>javapoet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>wtf.metio.javapoet</groupId>
-            <artifactId>javapoet-type-guesser</artifactId>
         </dependency>
 
         <dependency>

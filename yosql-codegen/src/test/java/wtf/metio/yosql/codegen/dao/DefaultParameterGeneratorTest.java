@@ -5,9 +5,9 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.ArrayTypeName;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.ArrayTypeName;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.TypeName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,10 +40,10 @@ class DefaultParameterGeneratorTest {
         final var parameterSpecs = generator.asParameterSpecs(configuration);
         assertAll(
                 () -> assertEquals(2, parameterSpecs.size()),
-                () -> assertEquals("test", parameterSpecs.get(0).name, "first name"),
-                () -> assertEquals(TypeName.OBJECT, parameterSpecs.get(0).type, "first type"),
-                () -> assertEquals("id", parameterSpecs.get(1).name, "second name"),
-                () -> assertEquals(TypeName.INT, parameterSpecs.get(1).type, "second type"));
+                () -> assertEquals("test", parameterSpecs.get(0).name(), "first name"),
+                () -> assertEquals(ClassName.OBJECT, parameterSpecs.get(0).type(), "first type"),
+                () -> assertEquals("id", parameterSpecs.get(1).name(), "second name"),
+                () -> assertEquals(TypeName.INT, parameterSpecs.get(1).type(), "second type"));
     }
 
     @Test
@@ -53,12 +53,12 @@ class DefaultParameterGeneratorTest {
         final var parameterSpecs = generator.asParameterSpecs(configuration);
         assertAll(
                 () -> assertEquals(3, parameterSpecs.size()),
-                () -> assertEquals("connection", parameterSpecs.get(0).name, "connection name"),
-                () -> assertEquals(ClassName.get(Connection.class), parameterSpecs.get(0).type, "connection type"),
-                () -> assertEquals("test", parameterSpecs.get(1).name, "first name"),
-                () -> assertEquals(TypeName.OBJECT, parameterSpecs.get(1).type, "first type"),
-                () -> assertEquals("id", parameterSpecs.get(2).name, "second name"),
-                () -> assertEquals(TypeName.INT, parameterSpecs.get(2).type, "second type"));
+                () -> assertEquals("connection", parameterSpecs.get(0).name(), "connection name"),
+                () -> assertEquals(ClassName.get(Connection.class), parameterSpecs.get(0).type(), "connection type"),
+                () -> assertEquals("test", parameterSpecs.get(1).name(), "first name"),
+                () -> assertEquals(ClassName.OBJECT, parameterSpecs.get(1).type(), "first type"),
+                () -> assertEquals("id", parameterSpecs.get(2).name(), "second name"),
+                () -> assertEquals(TypeName.INT, parameterSpecs.get(2).type(), "second type"));
     }
 
     @Test
@@ -67,10 +67,10 @@ class DefaultParameterGeneratorTest {
         final var parameterSpecs = generator.asParameterSpecsForInterfaces(configuration);
         assertAll(
                 () -> assertEquals(2, parameterSpecs.size()),
-                () -> assertEquals("test", parameterSpecs.get(0).name, "first name"),
-                () -> assertEquals(TypeName.OBJECT, parameterSpecs.get(0).type, "first type"),
-                () -> assertEquals("id", parameterSpecs.get(1).name, "second name"),
-                () -> assertEquals(TypeName.INT, parameterSpecs.get(1).type, "second type"));
+                () -> assertEquals("test", parameterSpecs.get(0).name(), "first name"),
+                () -> assertEquals(ClassName.OBJECT, parameterSpecs.get(0).type(), "first type"),
+                () -> assertEquals("id", parameterSpecs.get(1).name(), "second name"),
+                () -> assertEquals(TypeName.INT, parameterSpecs.get(1).type(), "second type"));
     }
 
     @Test
@@ -80,12 +80,12 @@ class DefaultParameterGeneratorTest {
         final var parameterSpecs = generator.asParameterSpecsForInterfaces(configuration);
         assertAll(
                 () -> assertEquals(3, parameterSpecs.size()),
-                () -> assertEquals("connection", parameterSpecs.get(0).name, "connection name"),
-                () -> assertEquals(ClassName.get(Connection.class), parameterSpecs.get(0).type, "connection type"),
-                () -> assertEquals("test", parameterSpecs.get(1).name, "first name"),
-                () -> assertEquals(TypeName.OBJECT, parameterSpecs.get(1).type, "first type"),
-                () -> assertEquals("id", parameterSpecs.get(2).name, "second name"),
-                () -> assertEquals(TypeName.INT, parameterSpecs.get(2).type, "second type"));
+                () -> assertEquals("connection", parameterSpecs.get(0).name(), "connection name"),
+                () -> assertEquals(ClassName.get(Connection.class), parameterSpecs.get(0).type(), "connection type"),
+                () -> assertEquals("test", parameterSpecs.get(1).name(), "first name"),
+                () -> assertEquals(ClassName.OBJECT, parameterSpecs.get(1).type(), "first type"),
+                () -> assertEquals("id", parameterSpecs.get(2).name(), "second name"),
+                () -> assertEquals(TypeName.INT, parameterSpecs.get(2).type(), "second type"));
     }
 
     @Test
@@ -94,10 +94,10 @@ class DefaultParameterGeneratorTest {
         final var parameterSpecs = generator.asBatchParameterSpecs(configuration);
         assertAll(
                 () -> assertEquals(2, parameterSpecs.size()),
-                () -> assertEquals("test", parameterSpecs.get(0).name, "first name"),
-                () -> assertEquals(ArrayTypeName.of(TypeName.OBJECT), parameterSpecs.get(0).type, "first type"),
-                () -> assertEquals("id", parameterSpecs.get(1).name, "second name"),
-                () -> assertEquals(ArrayTypeName.of(TypeName.INT), parameterSpecs.get(1).type, "second type"));
+                () -> assertEquals("test", parameterSpecs.get(0).name(), "first name"),
+                () -> assertEquals(ArrayTypeName.of(ClassName.OBJECT), parameterSpecs.get(0).type(), "first type"),
+                () -> assertEquals("id", parameterSpecs.get(1).name(), "second name"),
+                () -> assertEquals(ArrayTypeName.of(TypeName.INT), parameterSpecs.get(1).type(), "second type"));
     }
 
     @Test
@@ -107,12 +107,12 @@ class DefaultParameterGeneratorTest {
         final var parameterSpecs = generator.asBatchParameterSpecs(configuration);
         assertAll(
                 () -> assertEquals(3, parameterSpecs.size()),
-                () -> assertEquals("connection", parameterSpecs.get(0).name, "connection name"),
-                () -> assertEquals(ClassName.get(Connection.class), parameterSpecs.get(0).type, "connection type"),
-                () -> assertEquals("test", parameterSpecs.get(1).name, "first name"),
-                () -> assertEquals(ArrayTypeName.of(TypeName.OBJECT), parameterSpecs.get(1).type, "first type"),
-                () -> assertEquals("id", parameterSpecs.get(2).name, "second name"),
-                () -> assertEquals(ArrayTypeName.of(TypeName.INT), parameterSpecs.get(2).type, "second type"));
+                () -> assertEquals("connection", parameterSpecs.get(0).name(), "connection name"),
+                () -> assertEquals(ClassName.get(Connection.class), parameterSpecs.get(0).type(), "connection type"),
+                () -> assertEquals("test", parameterSpecs.get(1).name(), "first name"),
+                () -> assertEquals(ArrayTypeName.of(ClassName.OBJECT), parameterSpecs.get(1).type(), "first type"),
+                () -> assertEquals("id", parameterSpecs.get(2).name(), "second name"),
+                () -> assertEquals(ArrayTypeName.of(TypeName.INT), parameterSpecs.get(2).type(), "second type"));
     }
 
     @Test
@@ -121,10 +121,10 @@ class DefaultParameterGeneratorTest {
         final var parameterSpecs = generator.asBatchParameterSpecsForInterfaces(configuration);
         assertAll(
                 () -> assertEquals(2, parameterSpecs.size()),
-                () -> assertEquals("test", parameterSpecs.get(0).name, "first name"),
-                () -> assertEquals(ArrayTypeName.of(TypeName.OBJECT), parameterSpecs.get(0).type, "first type"),
-                () -> assertEquals("id", parameterSpecs.get(1).name, "second name"),
-                () -> assertEquals(ArrayTypeName.of(TypeName.INT), parameterSpecs.get(1).type, "second type"));
+                () -> assertEquals("test", parameterSpecs.get(0).name(), "first name"),
+                () -> assertEquals(ArrayTypeName.of(ClassName.OBJECT), parameterSpecs.get(0).type(), "first type"),
+                () -> assertEquals("id", parameterSpecs.get(1).name(), "second name"),
+                () -> assertEquals(ArrayTypeName.of(TypeName.INT), parameterSpecs.get(1).type(), "second type"));
     }
 
     @Test
@@ -134,12 +134,12 @@ class DefaultParameterGeneratorTest {
         final var parameterSpecs = generator.asBatchParameterSpecsForInterfaces(configuration);
         assertAll(
                 () -> assertEquals(3, parameterSpecs.size()),
-                () -> assertEquals("connection", parameterSpecs.get(0).name, "connection name"),
-                () -> assertEquals(ClassName.get(Connection.class), parameterSpecs.get(0).type, "connection type"),
-                () -> assertEquals("test", parameterSpecs.get(1).name, "first name"),
-                () -> assertEquals(ArrayTypeName.of(TypeName.OBJECT), parameterSpecs.get(1).type, "first type"),
-                () -> assertEquals("id", parameterSpecs.get(2).name, "second name"),
-                () -> assertEquals(ArrayTypeName.of(TypeName.INT), parameterSpecs.get(2).type, "second type"));
+                () -> assertEquals("connection", parameterSpecs.get(0).name(), "connection name"),
+                () -> assertEquals(ClassName.get(Connection.class), parameterSpecs.get(0).type(), "connection type"),
+                () -> assertEquals("test", parameterSpecs.get(1).name(), "first name"),
+                () -> assertEquals(ArrayTypeName.of(ClassName.OBJECT), parameterSpecs.get(1).type(), "first type"),
+                () -> assertEquals("id", parameterSpecs.get(2).name(), "second name"),
+                () -> assertEquals(ArrayTypeName.of(TypeName.INT), parameterSpecs.get(2).type(), "second type"));
     }
 
 }

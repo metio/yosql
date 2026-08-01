@@ -5,7 +5,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
-import com.squareup.javapoet.CodeBlock;
+import com.palantir.javapoet.CodeBlock;
 
 /**
  * Entry point for methods of the JDBC API. Nested interfaces are used to distinguish the source of the methods.
