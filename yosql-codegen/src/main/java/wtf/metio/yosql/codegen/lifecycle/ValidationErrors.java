@@ -29,4 +29,10 @@ public enum ValidationErrors {
      */
     UNKNOWN_PARAMETER,
 
+    /**
+     * Signals that a statement's kind could be worked out neither from its name nor from its
+     * configuration, which would leave it generating nothing at all.
+     */
+    UNKNOWN_STATEMENT_TYPE,
+
 }
