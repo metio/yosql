@@ -80,29 +80,22 @@ public final class JavaSourceParser {
             if (!expected.simpleName().equals(declaration.group(2))) {
                 continue;
             }
+            final var members = directMembers(text, declaration.end());
             return switch (declaration.group(1)) {
                 case "record" -> JavaSourceType.record(expected,
                         components(text, declaration.end(), location, expected, packageName, imports),
-                        valueOfParameters(text, expected, packageName, imports),
-                        resultSetMethods(text, packageName, imports));
+                        valueOfParameters(members, expected, packageName, imports),
+                        resultSetMethods(members, packageName, imports));
                 case "enum" -> JavaSourceType.enumeration(expected);
                 default -> JavaSourceType.other(expected,
-                        valueOfParameters(text, expected, packageName, imports),
-                        resultSetMethods(text, packageName, imports));
+                        valueOfParameters(members, expected, packageName, imports),
+                        resultSetMethods(members, packageName, imports));
             };
         }
         throw new UnparsableRecordException(location, expected,
                 "no type named '%s' is declared in it".formatted(expected.simpleName()));
     }
 
-
-    /**
-     * The parameter types of every {@code static <Type> valueOf(single argument)} the file declares.
-     *
-     * <p>Read as text like everything else here: a factory is recognised by returning the type it is
-     * declared in and taking one argument. Several overloads are kept rather than picked between,
-     * because choosing silently is worse than saying they are ambiguous.</p>
-     */
 
     /**
      * The public instance methods that take a single {@link java.sql.ResultSet}.
@@ -131,6 +124,13 @@ public final class JavaSourceParser {
         return methods;
     }
 
+    /**
+     * The parameter types of every {@code static <Type> valueOf(single argument)} the file declares.
+     *
+     * <p>Read as text like everything else here: a factory is recognised by returning the type it is
+     * declared in and taking one argument. Several overloads are kept rather than picked between,
+     * because choosing silently is worse than saying they are ambiguous.</p>
+     */
     private List<TypeName> valueOfParameters(
             final String text,
             final ClassName owner,
@@ -380,6 +380,43 @@ public final class JavaSourceParser {
      * word {@code record} inside one cannot be mistaken for syntax. Lengths are preserved so
      * offsets still line up with the original.
      */
+    /**
+     * What the type declares itself, with everything inside a further pair of braces blanked out.
+     *
+     * <p>A converter's method and a value type's factory are both recognised by their shape, and the
+     * same shape occurring in a nested class, an anonymous class or a method body belongs to
+     * something else. Keeping only what sits directly in the type's own body is what makes "the one
+     * public method taking a ResultSet" mean the type's own, and stops a private helper class from
+     * being reported as a second candidate.</p>
+     *
+     * <p>Positions are not preserved, so this is for shape matching only — a diagnostic that has to
+     * name a place works from the full text.</p>
+     */
+    private static String directMembers(final String text, final int declarationEnd) {
+        final var open = text.indexOf('{', declarationEnd);
+        if (open < 0) {
+            return "";
+        }
+        final var members = new StringBuilder();
+        var depth = 0;
+        for (var index = open + 1; index < text.length(); index++) {
+            final var character = text.charAt(index);
+            if (character == '{') {
+                depth++;
+                members.append(' ');
+            } else if (character == '}') {
+                if (depth == 0) {
+                    break;
+                }
+                depth--;
+                members.append(' ');
+            } else {
+                members.append(depth == 0 || character == '\n' ? character : ' ');
+            }
+        }
+        return members.toString();
+    }
+
     private static String strip(final String source) {
         final var result = new StringBuilder(source);
         var index = 0;

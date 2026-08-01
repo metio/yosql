@@ -671,6 +671,25 @@ class JavaSourceParserTest {
         }
 
         @Test
+        @DisplayName("a factory declared in a nested type belongs to that type")
+        void ignoresFactoryInNestedType() {
+            final var type = parse("""
+                    package com.example;
+
+                    import java.util.UUID;
+
+                    public record Tenant(UUID value) {
+                        public static Tenant valueOf(UUID value) { return new Tenant(value); }
+                        record Other(UUID v) {
+                            static Tenant valueOf(String slug) { return null; }
+                        }
+                    }
+                    """);
+
+            assertIterableEquals(List.of(ClassName.get(java.util.UUID.class)), type.valueOfParameters());
+        }
+
+        @Test
         @DisplayName("says a record has none when it declares none")
         void plainRecordHasNoFactory() {
             final var type = parse("""
@@ -927,6 +946,56 @@ class JavaSourceParserTest {
                         private static final String DOC = "public String read(ResultSet resultSet)";
                     }
                     """).isEmpty());
+        }
+
+        @Test
+        @DisplayName("a method declared in a nested class belongs to that class")
+        void ignoresMethodInNestedClass() {
+            assertIterableEquals(List.of("asUserType"), methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public final class Tenant {
+                        public String asUserType(ResultSet resultSet) { return null; }
+                        private static final class Helper {
+                            public Integer read(ResultSet resultSet) { return null; }
+                        }
+                    }
+                    """));
+        }
+
+        @Test
+        @DisplayName("a method declared in an anonymous class is not the converter's")
+        void ignoresMethodInAnonymousClass() {
+            assertIterableEquals(List.of("asUserType"), methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public final class Tenant {
+                        public String asUserType(ResultSet resultSet) { return null; }
+                        private final Object helper = new Object() {
+                            public Integer read(ResultSet resultSet) { return null; }
+                        };
+                    }
+                    """));
+        }
+
+        @Test
+        @DisplayName("a call written inside a method body is not a declaration")
+        void ignoresMethodBodies() {
+            assertIterableEquals(List.of("asUserType"), methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public final class Tenant {
+                        public String asUserType(ResultSet resultSet) {
+                            return delegate.read(ResultSet resultSet);
+                        }
+                    }
+                    """));
         }
 
         @Test
