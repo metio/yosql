@@ -97,6 +97,7 @@ public final class DaoObjectMother {
 
     public static MethodsGenerator delegatingMethodsGenerator(final JavaConfiguration java) {
         return new DefaultMethodsGenerator(
+                BlocksObjectMother.javadoc(),
                 constructorGenerator(java),
                 readMethodGenerator(java),
                 writeMethodGenerator(java),

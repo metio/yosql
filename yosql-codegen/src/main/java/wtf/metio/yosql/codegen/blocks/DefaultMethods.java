@@ -77,6 +77,7 @@ public final class DefaultMethods implements Methods {
     public MethodSpec.Builder constructor() {
         return MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
+                .addJavadoc(javadoc.constructorJavadoc())
                 .addAnnotations(annotations.generatedMethod())
                 .addAnnotations(annotations.generatedConstructor());
     }

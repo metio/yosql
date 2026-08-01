@@ -57,6 +57,7 @@ public final class RecordConverterGenerator {
     private final RecordScanner scanner;
     private final RecordConverterNames names;
     private final ResultSetReaders readers;
+    private final String resultSet;
     private final Annotations annotations;
     private final Classes classes;
     private final Methods methods;
@@ -77,6 +78,7 @@ public final class RecordConverterGenerator {
         this.scanner = scanner;
         this.names = names;
         this.readers = new ResultSetReaders(namesConfiguration.resultSet());
+        this.resultSet = namesConfiguration.resultSet();
         this.annotations = annotations;
         this.classes = classes;
         this.methods = methods;
@@ -210,6 +212,9 @@ public final class RecordConverterGenerator {
                 .map(parameter -> readers.readFirstColumnVia(scalar.type(), parameter, "value", "the result"))
                 .orElseGet(() -> readers.readFirstColumn(scalar.type(), scalar.enumeration(), "value", "the result"));
         final var method = methods.publicMethod(names.methodName())
+                .addJavadoc("Reads a $T from the first column of the current row.\n", scalar.type())
+                .addJavadoc("\n@param $L The result set, positioned on the row to read.", resultSet)
+                .addJavadoc("\n@return The value the first column holds.")
                 .addParameters(jdbcParameters.toMapConverterParameterSpecs())
                 .addException(exceptions.thrownException())
                 .returns(scalar.type())
@@ -288,6 +293,9 @@ public final class RecordConverterGenerator {
         final var construction = build(record, List.of(), body, taken,
                 new LinkedHashSet<>(List.of(record.type())), overrides);
         return methods.publicMethod(names.methodName())
+                .addJavadoc("Builds $T from the current row.\n", record.type())
+                .addJavadoc("\n@param $L The result set, positioned on the row to build from.", resultSet)
+                .addJavadoc("\n@return The row, as $T.", record.type())
                 .addParameters(jdbcParameters.toMapConverterParameterSpecs())
                 .addException(exceptions.thrownException())
                 .returns(record.type())

@@ -6,7 +6,11 @@
 package wtf.metio.yosql.codegen.blocks;
 
 import ch.qos.cal10n.IMessageConveyor;
+import com.squareup.javapoet.ArrayTypeName;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import wtf.metio.javapoet.TypeGuesser;
 import wtf.metio.yosql.internals.jdk.FileNames;
 import wtf.metio.yosql.internals.jdk.Strings;
@@ -17,10 +21,20 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static java.util.function.Predicate.not;
 
 public final class DefaultJavadoc implements Javadoc {
+
+    private static final ClassName CONNECTION = ClassName.get("java.sql", "Connection");
+    private static final ClassName DATA_SOURCE = ClassName.get("javax.sql", "DataSource");
+
+    /**
+     * An {@code @} that starts a line, which javadoc reads as a block tag wherever it sits —
+     * being inside {@code <pre>} does not protect it.
+     */
+    private static final Pattern LEADING_TAG = Pattern.compile("(?m)^(\\s*)@");
 
     private final FilesConfiguration files;
     private final IMessageConveyor messages;
@@ -63,7 +77,7 @@ public final class DefaultJavadoc implements Javadoc {
                 .map(SqlStatement::getConfiguration)
                 .flatMap(config -> config.description().stream())
                 .filter(not(Strings::isBlank))
-                .forEach(description -> builder.add(messages.getMessage(Javadocs.DESCRIPTION), description));
+                .forEach(description -> builder.add(messages.getMessage(Javadocs.DESCRIPTION), escape(description)));
         if (statements.size() > 1) {
             builder.add(messages.getMessage(Javadocs.EXECUTED_STATEMENTS));
         } else {
@@ -73,13 +87,13 @@ public final class DefaultJavadoc implements Javadoc {
             statement.getConfiguration().vendor()
                     .filter(not(Strings::isBlank))
                     .ifPresentOrElse(vendor ->
-                                    builder.add(messages.getMessage(Javadocs.VENDOR), vendor),
+                                    builder.add(messages.getMessage(Javadocs.VENDOR), escape(vendor)),
                             () -> {
                                 if (statements.size() > 1) {
                                     builder.add(messages.getMessage(Javadocs.FALLBACK));
                                 }
                             });
-            builder.add(messages.getMessage(Javadocs.STATEMENT), statement.getRawStatement());
+            builder.add(messages.getMessage(Javadocs.STATEMENT), escape(statement.getRawStatement()));
         }
         builder.add(messages.getMessage(Javadocs.USED_FILES_METHOD))
                 .add(messages.getMessage(Javadocs.LIST_START));
@@ -105,6 +119,63 @@ public final class DefaultJavadoc implements Javadoc {
                 .filter(type -> !type.isBoxedPrimitive())
                 .forEach(type -> builder.add(messages.getMessage(Javadocs.SEE), type));
         return builder.build();
+    }
+
+    @Override
+    public CodeBlock constructorJavadoc() {
+        return CodeBlock.builder().add(messages.getMessage(Javadocs.CONSTRUCTOR)).build();
+    }
+
+    @Override
+    public MethodSpec withSignatureTags(final MethodSpec method) {
+        final var builder = method.toBuilder();
+        for (final var parameter : method.parameters) {
+            builder.addJavadoc(messages.getMessage(parameterTag(parameter.type)), parameter.name);
+        }
+        if (method.returnType != null && !TypeName.VOID.equals(method.returnType)) {
+            builder.addJavadoc(messages.getMessage(countsRows(method.returnType)
+                    ? Javadocs.RETURN_AFFECTED_ROWS
+                    : Javadocs.RETURN_RESULT));
+        }
+        return builder.build();
+    }
+
+    private static Javadocs parameterTag(final TypeName type) {
+        if (CONNECTION.equals(type)) {
+            return Javadocs.CONNECTION_PARAMETER;
+        }
+        return DATA_SOURCE.equals(type) ? Javadocs.DATA_SOURCE_PARAMETER : Javadocs.PARAMETER;
+    }
+
+    /**
+     * A write answers with a count and everything else answers with what it selected, so the shape
+     * of the result says which: a bare number is the only thing a repository returns that is not a
+     * row.
+     */
+    private static boolean countsRows(final TypeName type) {
+        if (type instanceof final ArrayTypeName array) {
+            return array.componentType.isPrimitive();
+        }
+        return type.isPrimitive();
+    }
+
+    /**
+     * Renders text taken from a user's SQL file so that it survives being read as javadoc.
+     *
+     * <p>The statement is shown as written, and what a user writes is under no obligation to be
+     * HTML: a {@code <} opens a tag, an {@code &} opens an entity, a {@code *}{@code /} ends the
+     * comment and takes the rest of the file with it, and an {@code @} in the first column starts a
+     * block tag. Escaping them is what keeps the generated file compiling and its javadoc run
+     * quiet, both of which happen in a build that is not ours.</p>
+     */
+    private static String escape(final String text) {
+        final var escaped = text
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("*/", "*&#47;")
+                .replace("{@", "&#123;@");
+        return LEADING_TAG.matcher(escaped).replaceAll("$1&#64;");
     }
 
 }

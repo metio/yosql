@@ -84,7 +84,37 @@ public enum Javadocs {
     /**
      * Shows all related types.
      */
-    SEE
+    SEE,
+
+    /**
+     * Documents the connection a statement runs on.
+     */
+    CONNECTION_PARAMETER,
+
+    /**
+     * Documents a value bound to a named parameter of a statement.
+     */
+    PARAMETER,
+
+    /**
+     * Documents the rows a write statement affected.
+     */
+    RETURN_AFFECTED_ROWS,
+
+    /**
+     * Documents what a statement produced.
+     */
+    RETURN_RESULT,
+
+    /**
+     * Describes a generated repository constructor.
+     */
+    CONSTRUCTOR,
+
+    /**
+     * Documents the data source a repository takes.
+     */
+    DATA_SOURCE_PARAMETER
 
 }
 

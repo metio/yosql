@@ -54,12 +54,14 @@ public class DefaultDaoModule {
     @Provides
     @Singleton
     MethodsGenerator provideMethodsGenerator(
+            final Javadoc javadoc,
             final ConstructorGenerator constructor,
             final ReadMethodGenerator readMethods,
             final WriteMethodGenerator writeMethods,
             final CallMethodGenerator callMethods,
             @Generator final LocLogger logger) {
         return new DefaultMethodsGenerator(
+                javadoc,
                 constructor,
                 readMethods,
                 writeMethods,

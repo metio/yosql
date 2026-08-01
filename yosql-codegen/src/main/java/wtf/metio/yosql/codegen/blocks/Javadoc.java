@@ -5,6 +5,7 @@
 package wtf.metio.yosql.codegen.blocks;
 
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.MethodSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
@@ -30,6 +31,24 @@ public interface Javadoc {
      * @return The javadoc for a single method based on the given statements.
      */
     CodeBlock methodJavadoc(List<SqlStatement> statements, String configuration);
+
+    /**
+     * @return The description a generated repository's constructor carries.
+     */
+    CodeBlock constructorJavadoc();
+
+    /**
+     * Documents a finished method's signature.
+     *
+     * <p>Generated code lands in a build that is not ours, and a javadoc run configured to treat
+     * warnings as errors will not accept a documented method whose parameters and result are not.
+     * The tags are written from the method itself, so they cannot describe a signature it does not
+     * have.</p>
+     *
+     * @param method The method to document.
+     * @return The same method, carrying a tag for every parameter and for its result.
+     */
+    MethodSpec withSignatureTags(MethodSpec method);
 
     /**
      * Creates typical javadoc documentation for generated fields.

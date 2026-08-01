@@ -8,7 +8,6 @@ package wtf.metio.yosql.tooling.gradle;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.ProjectLayout;
-import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
@@ -22,17 +21,16 @@ public class YoSqlPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         final var extension = project.getExtensions().create("yosql", YoSqlExtension.class);
-        configureConventions(extension, project.getLayout(), project.getObjects());
+        configureConventions(extension, project.getLayout());
         registerTask(project, extension);
         configureSourceSets(project, extension);
     }
 
     private static void configureConventions(
             final YoSqlExtension extension,
-            final ProjectLayout layout,
-            final ObjectFactory objects) {
+            final ProjectLayout layout) {
         extension.getAnnotations().configureConventions();
-        extension.getConverter().configureConventions(objects);
+        extension.getConverter().configureConventions();
         extension.getFiles().configureConventions(layout);
         extension.getJava().configureConventions();
         extension.getLogging().configureConventions();

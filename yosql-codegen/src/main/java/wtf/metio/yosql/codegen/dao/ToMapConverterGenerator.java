@@ -73,6 +73,9 @@ public final class ToMapConverterGenerator {
 
     private MethodSpec toMapMethod() {
         return methods.publicMethod(converters.mapConverterMethod())
+                .addJavadoc("Reads the current row into a map from column name to value.\n")
+                .addJavadoc("\n@param $L The result set, positioned on the row to read.", names.resultSet())
+                .addJavadoc("\n@return The row, keyed by column name.")
                 .addParameters(jdbcParameters.toMapConverterParameterSpecs())
                 .addException(exceptions.thrownException())
                 .returns(TypicalTypes.MAP_OF_STRING_AND_OBJECTS)

@@ -6,6 +6,7 @@ package wtf.metio.yosql.codegen.dao;
 
 import com.squareup.javapoet.MethodSpec;
 import org.slf4j.cal10n.LocLogger;
+import wtf.metio.yosql.codegen.blocks.Javadoc;
 import wtf.metio.yosql.codegen.lifecycle.ApplicationWarnings;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
  */
 public final class DefaultMethodsGenerator implements MethodsGenerator {
 
+    private final Javadoc javadoc;
     private final ConstructorGenerator constructor;
     private final ReadMethodGenerator readMethods;
     private final WriteMethodGenerator writeMethods;
@@ -30,6 +32,7 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
     private final LocLogger logger;
 
     /**
+     * @param javadoc        The javadoc generator to use.
      * @param constructor    The constructor generator to use.
      * @param readMethods    The read methods generator to use.
      * @param writeMethods   The write methods generator to use.
@@ -37,11 +40,13 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
      * @param logger         The logger to use.
      */
     public DefaultMethodsGenerator(
+            final Javadoc javadoc,
             final ConstructorGenerator constructor,
             final ReadMethodGenerator readMethods,
             final WriteMethodGenerator writeMethods,
             final CallMethodGenerator callingMethods,
             final LocLogger logger) {
+        this.javadoc = javadoc;
         this.constructor = constructor;
         this.readMethods = readMethods;
         this.writeMethods = writeMethods;
@@ -59,7 +64,7 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 writeMethods::writeMethodDeclaration,
                 writeMethods::batchWriteMethodDeclaration));
 
-        return methods;
+        return documented(methods);
     }
 
     @Override
@@ -74,7 +79,16 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 writeMethods::batchWriteMethod));
         warnAboutIgnoredStatements(statements);
 
-        return methods;
+        return documented(methods);
+    }
+
+    /**
+     * Every method a repository publishes is documented here rather than by whichever generator
+     * built it, because the tags describe the finished signature — which only exists once the
+     * generator is done adding to it.
+     */
+    private List<MethodSpec> documented(final List<MethodSpec> methods) {
+        return methods.stream().map(javadoc::withSignatureTags).toList();
     }
 
     private static List<MethodSpec> asMethods(
