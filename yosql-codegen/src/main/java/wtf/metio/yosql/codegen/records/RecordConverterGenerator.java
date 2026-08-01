@@ -20,6 +20,8 @@ import wtf.metio.yosql.codegen.exceptions.ConflictingColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingRecordSourceException;
 import wtf.metio.yosql.codegen.exceptions.RecursiveRecordException;
+import wtf.metio.yosql.codegen.exceptions.ScalarResultColumnsException;
+import wtf.metio.yosql.codegen.exceptions.UnreadableResultRowTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnmappedColumnsException;
 import wtf.metio.yosql.codegen.exceptions.UnparsableRecordException;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
@@ -89,24 +91,35 @@ public final class RecordConverterGenerator {
         // Two passes, because a column override belongs to the result row type rather than to one
         // query: every statement naming that type shares one set, so the set has to be complete
         // before any statement can be checked against it.
+        final var scalars = new LinkedHashMap<ClassName, Scalar>();
         final var declaring = new ArrayList<SqlStatement>();
         for (final var statement : statements) {
             final var declared = statement.getConfiguration().resultRowType();
             if (declared.isEmpty()) {
                 continue;
             }
-            final var type = ClassName.bestGuess(declared.get().strip());
+            final var type = resultRowType(declared.get(), statement);
+            final var single = scalars.containsKey(type) ? Optional.of(scalars.get(type)) : scalar(type);
+            if (single.isPresent()) {
+                scalars.putIfAbsent(type, single.get());
+                verifyScalar(statement, single.get());
+                continue;
+            }
             byType.computeIfAbsent(type, key -> read(key, statement));
             mergeOverrides(type, statement, columnsByType);
             declaring.add(statement);
         }
-        rejectCollidingNames(byType.keySet());
+        final var everyType = new LinkedHashSet<>(byType.keySet());
+        everyType.addAll(scalars.keySet());
+        rejectCollidingNames(everyType);
         for (final var statement : declaring) {
             final var type = ClassName.bestGuess(statement.getConfiguration().resultRowType().orElseThrow().strip());
             verify(statement, byType.get(type), columnsByType.getOrDefault(type, Map.of()));
         }
-        return byType.values().stream()
-                .map(record -> generateConverterClass(record, columnsByType.getOrDefault(record.type(), Map.of())));
+        return Stream.concat(
+                byType.values().stream()
+                        .map(record -> generateConverterClass(record, columnsByType.getOrDefault(record.type(), Map.of()))),
+                scalars.values().stream().map(this::generateScalarConverter));
     }
 
     /**
@@ -114,6 +127,17 @@ public final class RecordConverterGenerator {
      * to different columns is a contradiction rather than a precedence question — there is one
      * converter, and it cannot read both.
      */
+    private static ClassName resultRowType(final String declared, final SqlStatement statement) {
+        final var name = declared.strip();
+        try {
+            return ClassName.bestGuess(name);
+        } catch (final IllegalArgumentException exception) {
+            throw new UnreadableResultRowTypeException(statement.getName(), name,
+                    "is not a type a result can be built into. A primitive cannot be the result of a "
+                            + "statement that may return no row — name its wrapper instead.");
+        }
+    }
+
     private static void mergeOverrides(
             final ClassName type,
             final SqlStatement statement,
@@ -156,6 +180,65 @@ public final class RecordConverterGenerator {
                             + "which columns to read");
         }
         return source;
+    }
+
+    /**
+     * Whether a result row type holds one value rather than a row of them.
+     *
+     * <p>True for anything a column can hold directly, for an enum, and for a type that says how to
+     * build itself from one — the same rule that decides it at component level, applied to the type
+     * naming the whole result. So `resultRowType: java.lang.Long` reads a count, and a value type
+     * reads the column it wraps rather than becoming a row of one.</p>
+     */
+    private Optional<Scalar> scalar(final ClassName type) {
+        final var enumeration = isEnum(type);
+        if (readers.supports(type, enumeration) && !isRecordWithoutFactory(type)) {
+            return Optional.of(new Scalar(type, enumeration, Optional.empty()));
+        }
+        return scanner.scan(type)
+                .filter(JavaSourceType::hasValueOf)
+                .map(source -> new Scalar(type, false, valueOfParameter(type, List.of("value"))));
+    }
+
+    private boolean isRecordWithoutFactory(final ClassName type) {
+        return scanner.scan(type).map(source -> source.isRecord() && !source.hasValueOf()).orElse(Boolean.FALSE);
+    }
+
+    private PackagedTypeSpec generateScalarConverter(final Scalar scalar) {
+        final var converterClass = names.converterClass(scalar.type());
+        final var body = scalar.valueOf()
+                .map(parameter -> readers.readFirstColumnVia(scalar.type(), parameter, "value", "the result"))
+                .orElseGet(() -> readers.readFirstColumn(scalar.type(), scalar.enumeration(), "value", "the result"));
+        final var method = methods.publicMethod(names.methodName())
+                .addParameters(jdbcParameters.toMapConverterParameterSpecs())
+                .addException(exceptions.thrownException())
+                .returns(scalar.type())
+                .addCode(body)
+                .addStatement("return $N", "value")
+                .build();
+        final var type = classes.publicClass(converterClass)
+                .addJavadoc("Reads a $T from the first column of a result set row.\n", scalar.type())
+                .addAnnotations(annotations.generatedClass())
+                .addMethod(method)
+                .build();
+        logger.debug(CodegenLifecycle.TYPE_GENERATED, converterClass.packageName(), converterClass.simpleName());
+        return PackagedTypeSpec.of(type, converterClass.packageName());
+    }
+
+    /**
+     * A single value read from one column is only unambiguous when the statement selects one. When
+     * the select list cannot be enumerated — `count(*)` names nothing — there is nothing to check.
+     */
+    private static void verifyScalar(final SqlStatement statement, final Scalar scalar) {
+        SelectedColumns.of(statement.getRawStatement())
+                .filter(columns -> columns.size() != 1)
+                .ifPresent(columns -> {
+                    throw new ScalarResultColumnsException(statement.getSourcePath(), statement.getName(),
+                            scalar.type().toString(), columns);
+                });
+    }
+
+    private record Scalar(ClassName type, boolean enumeration, Optional<TypeName> valueOf) {
     }
 
     private void verify(

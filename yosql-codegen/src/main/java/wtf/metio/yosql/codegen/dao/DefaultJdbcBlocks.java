@@ -375,7 +375,11 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .addStatement("throw new $T()", IllegalStateException.class)
                     .endControlFlow();
         }
-        return builder.addStatement("return $N.size() > 0 ? $T.of($N.get(0)) : $T.empty()",
+        // ofNullable, not of: a statement whose result is a single value can select a row holding
+        // SQL NULL, and Optional.of would answer that with a NullPointerException from inside
+        // generated code. A converter that builds a record never returns null, so nothing else
+        // changes.
+        return builder.addStatement("return $N.size() > 0 ? $T.ofNullable($N.get(0)) : $T.empty()",
                         names.list(), Optional.class, names.list(), Optional.class)
                 .build();
     }

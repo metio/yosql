@@ -16,6 +16,8 @@ import wtf.metio.yosql.codegen.exceptions.ConflictingColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingRecordSourceException;
 import wtf.metio.yosql.codegen.exceptions.RecursiveRecordException;
+import wtf.metio.yosql.codegen.exceptions.ScalarResultColumnsException;
+import wtf.metio.yosql.codegen.exceptions.UnreadableResultRowTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnmappedColumnsException;
 import wtf.metio.yosql.codegen.exceptions.UnparsableRecordException;
 import wtf.metio.yosql.codegen.exceptions.UnsupportedComponentTypeException;
@@ -496,6 +498,130 @@ class RecordConverterGeneratorTest {
                     generator().generateConverterClasses(List.of(statement("findTenant", DOMAIN + ".Tenant",
                             "select address from tenant"))).toList());
             assertTrue(exception.getMessage().contains("static Address valueOf"), exception.getMessage());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("results that are one value")
+    class Scalars {
+
+        @Test
+        @DisplayName("reads a boxed primitive from the first column")
+        void boxedPrimitive() {
+            final var code = generateOne(List.of(statement("countTenants", "java.lang.Long",
+                    "select count(*) from tenant")));
+            assertTrue(code.contains("resultSet.getObject(1, java.lang.Long.class)"), code);
+            assertTrue(code.contains("java.lang.Long asUserType"), code);
+        }
+
+        @Test
+        @DisplayName("reads a String, a UUID and a BigDecimal the same way")
+        void otherSupportedTypes() {
+            assertTrue(generateOne(List.of(statement("findSlug", "java.lang.String",
+                    "select slug from tenant"))).contains("resultSet.getString(1)"));
+            assertTrue(generateOne(List.of(statement("findId", "java.util.UUID",
+                    "select id from tenant"))).contains("resultSet.getObject(1, java.util.UUID.class)"));
+            assertTrue(generateOne(List.of(statement("findPrice", "java.math.BigDecimal",
+                    "select price from tenant"))).contains("resultSet.getBigDecimal(1)"));
+        }
+
+        @Test
+        @DisplayName("reads an Instant from the first column, null-safely")
+        void instant() {
+            final var code = generateOne(List.of(statement("findCreatedAt", "java.time.Instant",
+                    "select created_at from tenant")));
+            assertTrue(code.contains("resultSet.getTimestamp(1)"), code);
+            assertTrue(code.contains("== null ? null :"), code);
+        }
+
+        @Test
+        @DisplayName("reads an enum from the first column")
+        void enums() {
+            write("OrderState", """
+                    package com.example.domain;
+
+                    public enum OrderState {
+                        DRAFT,
+                        ACTIVE
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findState", DOMAIN + ".OrderState",
+                    "select state from placed_order")));
+            assertTrue(code.contains("resultSet.getString(1)"), code);
+            assertTrue(code.contains("com.example.domain.OrderState.valueOf"), code);
+        }
+
+        @Test
+        @DisplayName("builds a value type from the first column instead of treating it as a row")
+        void valueType() {
+            write("TenantId", """
+                    package com.example.domain;
+
+                    import java.util.UUID;
+
+                    public record TenantId(UUID value) {
+                        public static TenantId valueOf(final UUID value) {
+                            return new TenantId(value);
+                        }
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findId", DOMAIN + ".TenantId",
+                    "select id from tenant")));
+            assertTrue(code.contains("resultSet.getObject(1, java.util.UUID.class)"), code);
+            assertTrue(code.contains("com.example.domain.TenantId.valueOf"), code);
+            assertFalse(code.contains("getObject(\"value\""), "a factory means one column, not a row");
+        }
+
+        @Test
+        @DisplayName("still treats a one-component record without a factory as a row")
+        void recordWithoutFactoryStaysARow() {
+            write("ReadingId", """
+                    package com.example.domain;
+
+                    import java.util.UUID;
+
+                    public record ReadingId(UUID id) {
+                    }
+                    """);
+            assertTrue(generateOne(List.of(statement("findId", DOMAIN + ".ReadingId",
+                    "select id from reading"))).contains("getObject(\"id\""));
+        }
+
+        @Test
+        @DisplayName("refuses a statement selecting more than one column")
+        void tooManyColumns() {
+            final var exception = assertThrows(ScalarResultColumnsException.class, () ->
+                    generator().generateConverterClasses(List.of(statement("findBoth", "java.lang.Long",
+                            "select id, tenant_id from tenant"))).toList());
+            assertTrue(exception.getMessage().contains("selects 2 columns"), exception.getMessage());
+            assertTrue(exception.getMessage().contains("id, tenant_id"), exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("says nothing about a select list it cannot enumerate")
+        void unenumerableSelectList() {
+            assertTrue(generateOne(List.of(statement("countTenants", "java.lang.Long",
+                    "select count(*) from tenant"))).contains("getObject(1"));
+        }
+
+        @Test
+        @DisplayName("refuses a primitive, which cannot answer an absent row")
+        void primitivesAreRefused() {
+            final var exception = assertThrows(UnreadableResultRowTypeException.class, () ->
+                    generator().generateConverterClasses(List.of(statement("countTenants", "long",
+                            "select count(*) from tenant"))).toList());
+            assertTrue(exception.getMessage().contains("wrapper"), exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("writes one converter per scalar type, however many statements use it")
+        void oneConverterPerType() {
+            final var generated = generator().generateConverterClasses(List.of(
+                    statement("countTenants", "java.lang.Long", "select count(*) from tenant"),
+                    statement("countOrders", "java.lang.Long", "select count(*) from placed_order")
+            )).toList();
+            assertEquals(1, generated.size());
         }
 
     }

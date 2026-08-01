@@ -235,6 +235,47 @@ public record SignInId(UUID id) {
 The record's component is named after the column the statement returns, so a single returned value
 needs a one-component record rather than a bare `UUID` — a result row type is always a row.
 
+## Results that are one value
+
+A statement answering with a single value names that value's type, and needs no record around it:
+
+```sql
+-- name: countTenants
+-- type: reading
+-- returning: single
+-- resultRowType: java.lang.Long
+select count(*)
+from tenant
+```
+
+```java
+Optional<Long> countTenants()
+```
+
+The value is read from the **first column** by position, not by name, because a value has no name to
+go by — `count(*)` names nothing, and requiring an alias for it would be a rule about SQL style
+rather than about mapping. When the select list can be enumerated and holds more than one column,
+that is a build error: one value cannot hold two columns.
+
+Anything a column can hold works — `String`, `UUID`, `Instant`, `BigDecimal`, the wrappers — as does
+an enum, and so does a type that builds itself:
+
+```sql
+-- name: findTenantIdentity
+-- returning: single
+-- resultRowType: com.example.domain.TenantId
+select id from tenant where slug = :slug
+```
+
+A `valueOf` factory means one column here exactly as it does for a component, so `TenantId` reads the
+column rather than becoming a row of one. A one-component record *without* a factory is still a row,
+and reads the column its component names — which is what `insert … returning id` uses.
+
+A primitive is refused: a statement that may return no row answers `Optional`, and `Optional<long>`
+is not a type. Name the wrapper.
+
+A row holding SQL NULL answers `Optional.empty()` rather than throwing.
+
 ## Parameters, on the way in
 
 The same types travel back. A parameter declared as a value type is unwrapped through the accessor
