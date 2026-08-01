@@ -33,16 +33,17 @@
         let
           # The generator emits sources for its consumers to compile, so the JDK
           # it runs on is also the oldest JDK those sources have to be valid for.
-          # Consumers baseline on 17; running Maven on 17 keeps the toolchain
+          # Consumers baseline on 25; running Maven on 25 keeps the toolchain
           # honest, because a newer JDK would happily accept generator sources
           # the parent POM's `<release>` setting is meant to reject.
-          jdk = pkgs.jdk17;
+          jdk = pkgs.jdk25;
           maven = pkgs.maven.override { jdk_headless = jdk; };
           # The version the native-image gate runs the generated repository
           # against. Tests start their own throwaway cluster from this binary, so
           # "works locally" and "works in CI" mean the same Postgres — and no
           # test needs a daemon, a container runtime, or the network.
           postgres = pkgs.postgresql_18;
+          graalvm = pkgs.graalvmPackages.graalvm-ce;
         in
         {
           default = devshell.lib.mkDevShell {
@@ -60,7 +61,7 @@
             ];
             env.JAVA_HOME = "${jdk}";
             menu = ''
-              echo "YoSQL — JDK 17 + Maven + Hugo."
+              echo "YoSQL — JDK 25 + Maven + Hugo."
               echo "  nix develop --command mvn verify              # full gate"
               echo "  nix develop --command hugo --source yosql-website"
               echo "  nix develop --command hugo server --source yosql-website"
@@ -76,19 +77,17 @@
           native = devshell.lib.mkDevShell {
             inherit pkgs;
             packages = [
-              # Maven still runs on 17 here, for the same reason it does in the
-              # default shell: this reactor compiles the generator and runs it.
-              # GraalVM is reached only through GRAALVM_HOME, by native-image.
-              jdk
-              maven
-              pkgs.graalvmPackages.graalvm-ce
+              # GraalVM is itself a JDK of the baseline version, so it builds the
+              # reactor and the image both — no second toolchain to keep in step.
+              graalvm
+              (pkgs.maven.override { jdk_headless = graalvm; })
               # The proof runs a generated repository against a real database,
               # inside a native image. Without one, the gate could only show that
               # the image links — not that a query returns rows.
               postgres
             ];
-            env.JAVA_HOME = "${jdk}";
-            env.GRAALVM_HOME = "${pkgs.graalvmPackages.graalvm-ce}";
+            env.JAVA_HOME = "${graalvm}";
+            env.GRAALVM_HOME = "${graalvm}";
             menu = ''
               echo "YoSQL — GraalVM native image."
               echo "  nix develop .#native --command mvn -Pnative-image verify"

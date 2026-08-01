@@ -70,16 +70,27 @@
              1980-2099 range the reproducible-build plugins accept. -->
         <project.build.outputTimestamp>2024-01-01T00:00:00Z</project.build.outputTimestamp>
 
+        <!-- The baseline for everything: the JDK this builds on, the bytecode it
+             emits, and the oldest JDK generated code has to run on. -->
+        <global.jdkVersion>25</global.jdkVersion>
+
+        <!-- Since JDK 23 javac ignores annotation processors it finds on the class
+             path unless asked to run them, and it says nothing when it skips them.
+             This build is largely written by processors — Immutables and Dagger —
+             so without this the generated types simply are not there, and the first
+             sign of it is a compile error about a class nobody wrote. -->
+        <maven.compiler.proc>full</maven.compiler.proc>
+
         <!-- Dependency versions. The parent POM manages plugins but no libraries,
              so every third-party version a module uses is declared here and
              maintained by Renovate. -->
         <version.ant>1.10.14</version.ant>
         <version.cal10n>0.8.1</version.cal10n>
-        <version.dagger>2.50</version.dagger>
+        <version.dagger>2.60.1</version.dagger>
         <version.graal-sdk>23.1.1</version.graal-sdk>
         <version.h2>2.2.224</version.h2>
         <version.hikaricp>5.1.0</version.hikaricp>
-        <version.immutables>2.10.0</version.immutables>
+        <version.immutables>2.12.2</version.immutables>
         <version.jackson>2.16.1</version.jackson>
         <version.javaparser>3.28.2</version.javaparser>
         <version.javapoet>1.13.0</version.javapoet>
@@ -88,11 +99,11 @@
         <version.jmh>1.37</version.jmh>
         <version.jspecify>0.3.0</version.jspecify>
         <version.junit>5.10.1</version.junit>
-        <version.kotlin>1.9.22</version.kotlin>
+        <version.kotlin>2.3.21</version.kotlin>
         <version.log4j>2.22.1</version.log4j>
         <version.logback>1.4.14</version.logback>
         <version.maven>3.9.6</version.maven>
-        <version.maven-plugin-tools>3.11.0</version.maven-plugin-tools>
+        <version.maven-plugin-tools>3.15.2</version.maven-plugin-tools>
         <version.maven-shared-utils>3.4.2</version.maven-shared-utils>
         <version.mustache>0.9.11</version.mustache>
         <version.picocli>4.7.5</version.picocli>
@@ -104,7 +115,7 @@
         <version.tinylog>2.7.0-M3</version.tinylog>
 
         <!-- Plugin versions the parent POM does not manage. -->
-        <version.m-plugin-p>3.11.0</version.m-plugin-p>
+        <version.m-plugin-p>3.15.2</version.m-plugin-p>
     </properties>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
