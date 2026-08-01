@@ -76,14 +76,19 @@
           native = devshell.lib.mkDevShell {
             inherit pkgs;
             packages = [
+              # Maven still runs on 17 here, for the same reason it does in the
+              # default shell: this reactor compiles the generator and runs it.
+              # GraalVM is reached only through GRAALVM_HOME, by native-image.
+              jdk
+              maven
               pkgs.graalvmPackages.graalvm-ce
-              (pkgs.maven.override { jdk_headless = pkgs.graalvmPackages.graalvm-ce; })
               # The proof runs a generated repository against a real database,
               # inside a native image. Without one, the gate could only show that
               # the image links — not that a query returns rows.
               postgres
             ];
-            env.JAVA_HOME = "${pkgs.graalvmPackages.graalvm-ce}";
+            env.JAVA_HOME = "${jdk}";
+            env.GRAALVM_HOME = "${pkgs.graalvmPackages.graalvm-ce}";
             menu = ''
               echo "YoSQL — GraalVM native image."
               echo "  nix develop .#native --command mvn -Pnative-image verify"

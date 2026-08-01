@@ -65,8 +65,10 @@
     <properties>
         <!-- A fixed value keeps jar entry timestamps out of the artifact bytes, so
              two builds of the same source produce byte-identical jars. The release
-             overrides it with the timestamp of the release commit. -->
-        <project.build.outputTimestamp>2017</project.build.outputTimestamp>
+             overrides it with the timestamp of the release commit. Must be ISO-8601:
+             a bare number is read as seconds since the epoch, which lands outside the
+             1980-2099 range the reproducible-build plugins accept. -->
+        <project.build.outputTimestamp>2024-01-01T00:00:00Z</project.build.outputTimestamp>
 
         <!-- Dependency versions. The parent POM manages plugins but no libraries,
              so every third-party version a module uses is declared here and
