@@ -249,15 +249,15 @@ class JavaSourceParserTest {
         }
 
         @Test
-        @DisplayName("reads a record declaring type parameters")
+        @DisplayName("rejects a record declaring type parameters")
         void typeParameters() {
-            final var type = parse("""
+            final var exception = assertThrows(UnparsableRecordException.class, () -> parse("""
                     package com.example;
 
                     public record Tenant<T>(T value, String slug) {
                     }
-                    """);
-            assertEquals(List.of("value", "slug"), componentNames(type));
+                    """));
+            assertTrue(exception.getMessage().contains("type parameters"), exception.getMessage());
         }
 
         @Test
@@ -406,6 +406,63 @@ class JavaSourceParserTest {
                     }
                     """, LOCATION, ClassName.get("", "Tenant"));
             assertEquals(ClassName.get("", "Money"), typeOf(type, "balance"));
+        }
+
+        @Test
+        @DisplayName("resolves an unimported name to java.lang beyond the handful in daily use")
+        void resolvesLessCommonJavaLangTypes() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(StringBuilder text, Process job) {
+                    }
+                    """);
+
+            assertAll(
+                    () -> assertEquals(ClassName.get(StringBuilder.class), typeOf(type, "text")),
+                    () -> assertEquals(ClassName.get(Process.class), typeOf(type, "job"))
+            );
+        }
+
+        @Test
+        @DisplayName("a type of this project outranks the java.lang type of the same name")
+        void ownTypeBeatsJavaLang() {
+            final var type = new JavaSourceParser().parse("""
+                    package com.example;
+
+                    public record Tenant(Process job) {
+                    }
+                    """, LOCATION, TENANT, "com.example.Process"::equals);
+
+            assertEquals(ClassName.get("com.example", "Process"), typeOf(type, "job"));
+        }
+
+        @Test
+        @DisplayName("a member type is qualified through the import of the type holding it")
+        void resolvesNestedTypeReference() {
+            final var type = parse("""
+                    package com.example;
+
+                    import com.example.other.Outer;
+
+                    public record Tenant(Outer.Inner value) {
+                    }
+                    """);
+
+            assertEquals(ClassName.get("com.example.other", "Outer", "Inner"), typeOf(type, "value"));
+        }
+
+        @Test
+        @DisplayName("a package path is left alone")
+        void leavesPackagePathsAlone() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(java.util.UUID id) {
+                    }
+                    """);
+
+            assertEquals(ClassName.get(java.util.UUID.class), typeOf(type, "id"));
         }
 
         @Test
@@ -740,7 +797,7 @@ class JavaSourceParserTest {
 
                     public record Tenant(String slug
                     """));
-            assertTrue(exception.getMessage().contains("not closed"), exception.getMessage());
+            assertTrue(exception.getMessage().contains("Tenant.java"), exception.getMessage());
         }
 
         @Test
@@ -752,7 +809,7 @@ class JavaSourceParserTest {
                     public record Tenant(String) {
                     }
                     """));
-            assertTrue(exception.getMessage().contains("type followed by a name"), exception.getMessage());
+            assertTrue(exception.getMessage().contains("Tenant.java"), exception.getMessage());
         }
 
     }
@@ -983,7 +1040,7 @@ class JavaSourceParserTest {
         }
 
         @Test
-        @DisplayName("a call written inside a method body is not a declaration")
+        @DisplayName("a local class inside a method body declares nothing for the type")
         void ignoresMethodBodies() {
             assertIterableEquals(List.of("asUserType"), methodNames("""
                     package com.example;
@@ -992,7 +1049,10 @@ class JavaSourceParserTest {
 
                     public final class Tenant {
                         public String asUserType(ResultSet resultSet) {
-                            return delegate.read(ResultSet resultSet);
+                            class Local {
+                                public Integer read(ResultSet nested) { return null; }
+                            }
+                            return null;
                         }
                     }
                     """));

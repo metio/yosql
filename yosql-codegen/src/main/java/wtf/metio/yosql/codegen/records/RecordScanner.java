@@ -53,13 +53,26 @@ public final class RecordScanner {
         return directory.resolve(topLevel.simpleName() + ".java");
     }
 
+    /**
+     * Whether a name written without a package means a type of this project rather than one of the
+     * JDK's. Only a file next to it can say so, which is why the parser asks rather than guesses.
+     */
+    private boolean hasSource(final String qualifiedName) {
+        try {
+            return Files.isRegularFile(locationOf(ClassName.bestGuess(qualifiedName)));
+        } catch (final IllegalArgumentException exception) {
+            return false;
+        }
+    }
+
     private Optional<JavaSourceType> read(final ClassName type) {
         final var location = locationOf(type);
         if (!Files.isRegularFile(location)) {
             return Optional.empty();
         }
         try {
-            return Optional.of(parser.parse(Files.readString(location, StandardCharsets.UTF_8), location, type));
+            return Optional.of(parser.parse(
+                    Files.readString(location, StandardCharsets.UTF_8), location, type, this::hasSource));
         } catch (final IOException exception) {
             throw new UncheckedIOException(exception);
         }

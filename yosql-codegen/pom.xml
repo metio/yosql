@@ -35,6 +35,13 @@
 
     <dependencies>
         <dependency>
+            <!-- Reads the records and converters a user names, so the generator works from a real
+                 syntax tree rather than from a guess at what the source says. -->
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>wtf.metio.yosql.internals</groupId>
             <artifactId>yosql-internals-jdk-utils</artifactId>
             <version>${project.version}</version>

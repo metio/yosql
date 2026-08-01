@@ -81,6 +81,7 @@
         <version.hikaricp>5.1.0</version.hikaricp>
         <version.immutables>2.10.0</version.immutables>
         <version.jackson>2.16.1</version.jackson>
+        <version.javaparser>3.28.2</version.javaparser>
         <version.javapoet>1.13.0</version.javapoet>
         <version.javapoet-type-guesser>2024.1.9</version.javapoet-type-guesser>
         <version.javax-inject>1</version.javax-inject>
@@ -267,6 +268,11 @@
                 <groupId>org.graalvm.sdk</groupId>
                 <artifactId>graal-sdk</artifactId>
                 <version>${version.graal-sdk}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.javaparser</groupId>
+                <artifactId>javaparser-core</artifactId>
+                <version>${version.javaparser}</version>
             </dependency>
             <dependency>
                 <groupId>org.immutables</groupId>

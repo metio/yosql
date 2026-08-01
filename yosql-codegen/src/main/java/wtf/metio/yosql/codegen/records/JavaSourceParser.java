@@ -5,6 +5,15 @@
 
 package wtf.metio.yosql.codegen.records;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.RecordDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import wtf.metio.javapoet.TypeGuesser;
@@ -15,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,77 +33,168 @@ import java.util.regex.Pattern;
  *
  * <p>A record named as the result row type of a statement is user code that has not been compiled
  * yet — code generation runs before compilation, and the record usually lives in the very module
- * being generated for. So its components are read from the source text rather than by loading the
- * class, which also means nothing about the mapping needs to survive to runtime.</p>
+ * being generated for. So it is read from the source text rather than by loading the class, which
+ * also means nothing about the mapping needs to survive to runtime.</p>
  *
- * <p>What is understood is the canonical constructor of a record declaration: its component names,
- * and their types resolved against the file's package and imports. Anything else about the file —
- * bodies, compact constructors, nested types, members — is not read, because a converter needs
- * none of it.</p>
+ * <p>Parsing is JavaParser's job. Ours is only to say what the names in the file mean, which no
+ * parser can answer without a compiled classpath — see {@link Scope}. Everything read is scoped to
+ * the type's own declaration, so a nested helper class, an anonymous class or a method body
+ * contributes nothing.</p>
  */
 public final class JavaSourceParser {
 
-    private static final Pattern PACKAGE = Pattern.compile("(?m)^\\s*package\\s+([\\w.]+)\\s*;");
-    private static final Pattern IMPORT = Pattern.compile("(?m)^\\s*import\\s+(?!static\\s)([\\w.]+(?:\\.\\*)?)\\s*;");
-    private static final Pattern DECLARATION = Pattern.compile(
-            "\\b(record|enum|class|interface)\\s+([A-Za-z_$][\\w$]*)");
+    private static final ClassName RESULT_SET = ClassName.get("java.sql", "ResultSet");
+    private static final String VALUE_OF = "valueOf";
+
+    /**
+     * Splits a written-out type into the names inside it, so that both halves of a
+     * {@code Map<String, UUID>} are resolved rather than the whole thing treated as one name.
+     */
     private static final Pattern TYPE_REFERENCE = Pattern.compile(
             "[A-Za-z_$][\\w$]*(?:\\s*\\.\\s*[A-Za-z_$][\\w$]*)*");
-    private static final Pattern ANNOTATION = Pattern.compile("^@\\s*[\\w.$]+");
-    /**
-     * A method taking one ResultSet and nothing else. The modifier run in front of it is captured
-     * so that a static factory or a non-public helper of the same shape can be told apart.
-     */
-    private static final Pattern RESULT_SET_METHOD = Pattern.compile(
-            "((?:\\b(?:public|protected|private|static|final|synchronized|native|strictfp|abstract|default)\\b\\s+)*)"
-                    + "([\\w.$]+(?:\\s*<[^>()]*>)?(?:\\s*\\[\\s*\\])*)\\s+"
-                    + "([A-Za-z_$][\\w$]*)\\s*\\(\\s*(?:final\\s+)?"
-                    + "(?:java\\s*\\.\\s*sql\\s*\\.\\s*)?ResultSet\\s+[A-Za-z_$][\\w$]*\\s*\\)");
 
     private static final Set<String> PRIMITIVES = Set.of(
             "boolean", "byte", "char", "double", "float", "int", "long", "short", "void", "var");
 
     /**
-     * The subset of {@code java.lang} a persistence type plausibly uses. An unlisted simple name
-     * falls back to the file's own package, which is where a domain type sitting next to the record
-     * lives.
+     * The public types of {@code java.lang}, which are in scope in every file without an import.
+     *
+     * <p>Listed rather than looked up because the generator runs ahead of compilation and inside a
+     * native image, where asking the runtime what a name means is not available. The list is stable:
+     * {@code java.lang} does not lose types.</p>
      */
     private static final Set<String> JAVA_LANG = Set.of(
-            "Boolean", "Byte", "Character", "CharSequence", "Comparable", "Double", "Enum", "Float",
-            "Integer", "Iterable", "Long", "Number", "Object", "Record", "Short", "String", "Void");
+            "Appendable", "AutoCloseable", "Boolean", "Byte", "Character", "CharSequence", "Class",
+            "ClassLoader", "ClassValue", "Cloneable", "Comparable", "Double", "Enum", "Float",
+            "InheritableThreadLocal", "Integer", "Iterable", "Long", "Math", "Module", "ModuleLayer",
+            "Number", "Object", "Package", "Process", "ProcessBuilder", "ProcessHandle", "Readable",
+            "Record", "Runnable", "Runtime", "RuntimePermission", "SecurityManager", "Short",
+            "StackTraceElement", "StackWalker", "StrictMath", "String", "StringBuffer",
+            "StringBuilder", "System", "Thread", "ThreadGroup", "ThreadLocal", "Throwable", "Void",
+            "ArithmeticException", "ArrayIndexOutOfBoundsException", "ArrayStoreException",
+            "ClassCastException", "ClassNotFoundException", "CloneNotSupportedException", "Exception",
+            "IllegalAccessException", "IllegalArgumentException", "IllegalCallerException",
+            "IllegalMonitorStateException", "IllegalStateException", "IllegalThreadStateException",
+            "IndexOutOfBoundsException", "InstantiationException", "InterruptedException",
+            "LayerInstantiationException", "NegativeArraySizeException", "NoSuchFieldException",
+            "NoSuchMethodException", "NullPointerException", "NumberFormatException",
+            "ReflectiveOperationException", "RuntimeException", "SecurityException",
+            "StringIndexOutOfBoundsException", "UnsupportedOperationException",
+            "AbstractMethodError", "AssertionError", "BootstrapMethodError", "ClassCircularityError",
+            "ClassFormatError", "Error", "ExceptionInInitializerError", "IllegalAccessError",
+            "IncompatibleClassChangeError", "InstantiationError", "InternalError", "LinkageError",
+            "NoClassDefFoundError", "NoSuchFieldError", "NoSuchMethodError", "OutOfMemoryError",
+            "StackOverflowError", "ThreadDeath", "UnknownError", "UnsatisfiedLinkError",
+            "UnsupportedClassVersionError", "VerifyError", "VirtualMachineError",
+            "Deprecated", "FunctionalInterface", "Override", "SafeVarargs", "SuppressWarnings");
 
     /**
-     * @param source the file's text
+     * Whether a type is one this run can read the source of.
+     *
+     * <p>A name written without a package can mean a type sitting next to the file or a type from
+     * {@code java.lang}, and the language resolves the neighbour first. Finding its source is the
+     * only way to tell, so a domain record called {@code Process} or {@code Record} keeps its own
+     * meaning instead of quietly becoming the JDK's.</p>
+     */
+    @FunctionalInterface
+    public interface KnownTypes {
+
+        boolean hasSource(String qualifiedName);
+
+    }
+
+    private static final KnownTypes NOTHING_KNOWN = qualifiedName -> false;
+
+    private final JavaParser parser = new JavaParser(new ParserConfiguration()
+            .setLanguageLevel(ParserConfiguration.LanguageLevel.CURRENT));
+
+    /**
+     * @param source   the file's text
      * @param location the file it came from, named in diagnostics
      * @param expected the type the caller went looking for
      * @return the declaration matching {@code expected}
      */
     public JavaSourceType parse(final String source, final Path location, final ClassName expected) {
-        final var text = strip(source);
-        final var packageName = find(PACKAGE, text).orElse("");
-        final var imports = imports(text);
-
-        final var declaration = DECLARATION.matcher(text);
-        while (declaration.find()) {
-            if (!expected.simpleName().equals(declaration.group(2))) {
-                continue;
-            }
-            final var members = directMembers(text, declaration.end());
-            return switch (declaration.group(1)) {
-                case "record" -> JavaSourceType.record(expected,
-                        components(text, declaration.end(), location, expected, packageName, imports),
-                        valueOfParameters(members, expected, packageName, imports),
-                        resultSetMethods(members, packageName, imports));
-                case "enum" -> JavaSourceType.enumeration(expected);
-                default -> JavaSourceType.other(expected,
-                        valueOfParameters(members, expected, packageName, imports),
-                        resultSetMethods(members, packageName, imports));
-            };
-        }
-        throw new UnparsableRecordException(location, expected,
-                "no type named '%s' is declared in it".formatted(expected.simpleName()));
+        return parse(source, location, expected, NOTHING_KNOWN);
     }
 
+    /**
+     * @param source   the file's text
+     * @param location the file it came from, named in diagnostics
+     * @param expected the type the caller went looking for
+     * @param known    what this run can find the source of, which decides what an unqualified name means
+     * @return the declaration matching {@code expected}
+     */
+    public JavaSourceType parse(
+            final String source, final Path location, final ClassName expected, final KnownTypes known) {
+        final var unit = compilationUnit(source, location, expected);
+        final var scope = new Scope(packageOf(unit), importsOf(unit), known);
+        final var declaration = unit.findAll(TypeDeclaration.class).stream()
+                .filter(type -> expected.simpleName().equals(type.getNameAsString()))
+                .findFirst()
+                .orElseThrow(() -> new UnparsableRecordException(location, expected,
+                        "no type named '%s' is declared in it".formatted(expected.simpleName())));
+        rejectTypeParameters(declaration, location, expected);
+        if (declaration instanceof final RecordDeclaration record) {
+            return JavaSourceType.record(expected,
+                    components(record, location, expected, scope),
+                    valueOfParameters(declaration, expected, scope),
+                    resultSetMethods(declaration, scope));
+        }
+        if (declaration instanceof EnumDeclaration) {
+            return JavaSourceType.enumeration(expected);
+        }
+        return JavaSourceType.other(expected,
+                valueOfParameters(declaration, expected, scope),
+                resultSetMethods(declaration, scope));
+    }
+
+    private CompilationUnit compilationUnit(
+            final String source, final Path location, final ClassName expected) {
+        final var result = parser.parse(source);
+        if (!result.isSuccessful()) {
+            throw new UnparsableRecordException(location, expected, result.getProblems().isEmpty()
+                    ? "it is not valid Java"
+                    : result.getProblem(0).getMessage());
+        }
+        return result.getResult().orElseThrow(() ->
+                new UnparsableRecordException(location, expected, "it is not valid Java"));
+    }
+
+    /**
+     * The components of the record's canonical constructor, in the order they are written.
+     */
+    private static List<JavaSourceComponent> components(
+            final RecordDeclaration record,
+            final Path location,
+            final ClassName owner,
+            final Scope scope) {
+        if (record.getParameters().isEmpty()) {
+            throw new UnparsableRecordException(location, owner, "it declares no components");
+        }
+        return record.getParameters().stream()
+                .map(parameter -> new JavaSourceComponent(parameter.getNameAsString(),
+                        TypeGuesser.guessTypeName(scope.qualify(writtenType(parameter)))))
+                .toList();
+    }
+
+    /**
+     * The parameter types of every {@code static <Type> valueOf(single argument)} the type declares.
+     *
+     * <p>A factory is recognised by returning the type it is declared in and taking one argument.
+     * Several overloads are kept rather than picked between, because choosing silently is worse than
+     * saying they are ambiguous.</p>
+     */
+    private static List<TypeName> valueOfParameters(
+            final TypeDeclaration<?> declaration, final ClassName owner, final Scope scope) {
+        return declaration.getMethods().stream()
+                .filter(MethodDeclaration::isStatic)
+                .filter(method -> VALUE_OF.equals(method.getNameAsString()))
+                .filter(method -> method.getParameters().size() == 1)
+                .filter(method -> owner.toString().equals(scope.qualify(method.getType().asString())))
+                .map(method -> TypeGuesser.guessTypeName(scope.qualify(writtenType(method.getParameter(0)))))
+                .toList();
+    }
 
     /**
      * The public instance methods that take a single {@link java.sql.ResultSet}.
@@ -105,162 +204,59 @@ public final class JavaSourceParser {
      * what the repository calls and its return type is what the statement produces, both already
      * written down in Java.</p>
      */
-    public List<JavaSourceMethod> resultSetMethods(
-            final String strippedSource, final String packageName, final Map<String, String> imports) {
-        final var matcher = RESULT_SET_METHOD.matcher(strippedSource);
-        final var methods = new ArrayList<JavaSourceMethod>();
-        while (matcher.find()) {
-            final var modifiers = matcher.group(1);
-            if (!modifiers.contains("public") || modifiers.contains("static")) {
-                continue;
-            }
-            final var returned = matcher.group(2).strip();
-            if (returned.equals("new") || returned.equals("return")) {
-                continue;
-            }
-            methods.add(new JavaSourceMethod(matcher.group(3),
-                    TypeGuesser.guessTypeName(qualify(returned, packageName, imports))));
-        }
-        return methods;
+    private static List<JavaSourceMethod> resultSetMethods(
+            final TypeDeclaration<?> declaration, final Scope scope) {
+        return declaration.getMethods().stream()
+                .filter(MethodDeclaration::isPublic)
+                .filter(method -> !method.isStatic())
+                .filter(method -> method.getParameters().size() == 1)
+                .filter(method -> RESULT_SET.toString()
+                        .equals(scope.qualify(writtenType(method.getParameter(0)))))
+                .map(method -> new JavaSourceMethod(method.getNameAsString(),
+                        TypeGuesser.guessTypeName(scope.qualify(method.getType().asString()))))
+                .toList();
     }
 
     /**
-     * The parameter types of every {@code static <Type> valueOf(single argument)} the file declares.
-     *
-     * <p>Read as text like everything else here: a factory is recognised by returning the type it is
-     * declared in and taking one argument. Several overloads are kept rather than picked between,
-     * because choosing silently is worse than saying they are ambiguous.</p>
+     * A type declaring type parameters has no fixed shape, and a statement says nothing about what
+     * to substitute — so there is no converter to write and no result type to return.
      */
-    private List<TypeName> valueOfParameters(
-            final String text,
-            final ClassName owner,
-            final String packageName,
-            final Map<String, String> imports) {
-        final var factory = Pattern.compile(
-                "\\bstatic\\b[^;{}()]{0,120}?\\b(?:" + Pattern.quote(owner.simpleName())
-                        + "|" + Pattern.quote(owner.toString()) + ")\\s+valueOf\\s*\\(([^)]*)\\)");
-        final var matcher = factory.matcher(text);
-        final var parameters = new ArrayList<TypeName>();
-        while (matcher.find()) {
-            final var arguments = matcher.group(1).strip();
-            if (arguments.isEmpty()) {
-                continue;
-            }
-            final var split = splitTopLevel(arguments);
-            if (split.size() != 1) {
-                continue;
-            }
-            var declaration = stripAnnotations(split.get(0)).strip();
-            // `final` is a modifier on a parameter, not part of its type.
-            if (declaration.startsWith("final ")) {
-                declaration = declaration.substring("final ".length()).stripLeading();
-            }
-            final var space = lastTopLevelSpace(declaration);
-            if (space < 0) {
-                continue;
-            }
-            parameters.add(TypeGuesser.guessTypeName(
-                    qualify(declaration.substring(0, space).strip(), packageName, imports)));
-        }
-        return parameters;
-    }
-
-    private List<JavaSourceComponent> components(
-            final String text,
-            final int afterName,
-            final Path location,
-            final ClassName owner,
-            final String packageName,
-            final Map<String, String> imports) {
-        final var open = openingParenthesis(text, afterName, location, owner);
-        final var close = matching(text, open, '(', ')', location, owner);
-        final var inside = text.substring(open + 1, close).strip();
-        if (inside.isBlank()) {
-            throw new UnparsableRecordException(location, owner, "it declares no components");
-        }
-        final var components = new ArrayList<JavaSourceComponent>();
-        for (final var part : splitTopLevel(inside)) {
-            components.add(component(part, location, owner, packageName, imports));
-        }
-        return components;
-    }
-
-    private JavaSourceComponent component(
-            final String declaration,
-            final Path location,
-            final ClassName owner,
-            final String packageName,
-            final Map<String, String> imports) {
-        var rest = stripAnnotations(declaration).strip();
-        // A trailing `...` belongs to the type, not to the name.
-        final var varargs = rest.contains("...");
-        rest = rest.replace("...", " ").strip();
-
-        final var split = lastTopLevelSpace(rest);
-        if (split < 0) {
+    private static void rejectTypeParameters(
+            final TypeDeclaration<?> declaration, final Path location, final ClassName owner) {
+        if (declaration instanceof final NodeWithTypeParameters<?> generic
+                && !generic.getTypeParameters().isEmpty()) {
             throw new UnparsableRecordException(location, owner,
-                    "component '%s' is not a type followed by a name".formatted(declaration.strip()));
+                    "it declares type parameters, and a generic type cannot be mapped to a result row");
         }
-        var type = rest.substring(0, split).strip();
-        var name = rest.substring(split + 1).strip();
-        // `String names[]` declares an array just as `String[] names` does.
-        while (name.endsWith("[]")) {
-            name = name.substring(0, name.length() - 2).strip();
-            type = type + "[]";
-        }
-        if (varargs) {
-            type = type + "[]";
-        }
-        if (name.isEmpty()) {
-            throw new UnparsableRecordException(location, owner,
-                    "component '%s' has no name".formatted(declaration.strip()));
-        }
-        return new JavaSourceComponent(name, TypeGuesser.guessTypeName(qualify(type, packageName, imports)));
     }
 
     /**
-     * Rewrites every simple type name in {@code type} to a fully-qualified one, so the result reads
-     * the same whether the source wrote {@code UUID} or {@code java.util.UUID}.
+     * A parameter's type as written, with varargs read as the array they are.
      */
-    private String qualify(final String type, final String packageName, final Map<String, String> imports) {
-        final var matcher = TYPE_REFERENCE.matcher(type);
-        final var result = new StringBuilder();
-        while (matcher.find()) {
-            final var reference = matcher.group().replaceAll("\\s+", "");
-            matcher.appendReplacement(result, Matcher.quoteReplacement(
-                    reference.contains(".") || PRIMITIVES.contains(reference)
-                            ? reference
-                            : resolve(reference, packageName, imports)));
-        }
-        matcher.appendTail(result);
-        return result.toString().replaceAll("\\s+", "");
+    private static String writtenType(final Parameter parameter) {
+        return parameter.isVarArgs()
+                ? parameter.getType().asString() + "[]"
+                : parameter.getType().asString();
     }
 
-    private String resolve(final String simpleName, final String packageName, final Map<String, String> imports) {
-        final var imported = imports.get(simpleName);
-        if (imported != null) {
-            return imported;
-        }
-        if (JAVA_LANG.contains(simpleName)) {
-            return "java.lang." + simpleName;
-        }
-        final var onDemand = imports.get("*");
-        if (onDemand != null) {
-            return onDemand + "." + simpleName;
-        }
-        return packageName.isEmpty() ? simpleName : packageName + "." + simpleName;
+    private static String packageOf(final CompilationUnit unit) {
+        return unit.getPackageDeclaration()
+                .map(declaration -> declaration.getNameAsString())
+                .orElse("");
     }
 
-    private Map<String, String> imports(final String text) {
+    private static Map<String, String> importsOf(final CompilationUnit unit) {
         final var imports = new HashMap<String, String>();
         final var onDemand = new ArrayList<String>();
-        final var matcher = IMPORT.matcher(text);
-        while (matcher.find()) {
-            final var value = matcher.group(1);
-            if (value.endsWith(".*")) {
-                onDemand.add(value.substring(0, value.length() - 2));
+        for (final var declaration : unit.getImports()) {
+            if (declaration.isStatic()) {
+                continue;
+            }
+            final var name = declaration.getNameAsString();
+            if (declaration.isAsterisk()) {
+                onDemand.add(name);
             } else {
-                imports.put(value.substring(value.lastIndexOf('.') + 1), value);
+                imports.put(name.substring(name.lastIndexOf('.') + 1), name);
             }
         }
         // A single on-demand import can stand in for the package a name came from. Several cannot
@@ -271,209 +267,58 @@ public final class JavaSourceParser {
         return imports;
     }
 
-    private static Optional<String> find(final Pattern pattern, final String text) {
-        final var matcher = pattern.matcher(text);
-        return matcher.find() ? Optional.of(matcher.group(1)) : Optional.empty();
-    }
-
-    private static int openingParenthesis(
-            final String text, final int from, final Path location, final ClassName owner) {
-        var index = from;
-        var depth = 0;
-        while (index < text.length()) {
-            final var character = text.charAt(index);
-            if (character == '<') {
-                depth++;
-            } else if (character == '>') {
-                depth--;
-            } else if (character == '(' && depth == 0) {
-                return index;
-            } else if (!Character.isWhitespace(character) && depth == 0) {
-                break;
-            }
-            index++;
-        }
-        throw new UnparsableRecordException(location, owner, "its component list could not be found");
-    }
-
-    private static int matching(
-            final String text, final int open, final char opening, final char closing,
-            final Path location, final ClassName owner) {
-        var depth = 0;
-        for (var index = open; index < text.length(); index++) {
-            final var character = text.charAt(index);
-            if (character == opening) {
-                depth++;
-            } else if (character == closing && --depth == 0) {
-                return index;
-            }
-        }
-        throw new UnparsableRecordException(location, owner, "its component list is not closed");
-    }
-
-    private static List<String> splitTopLevel(final String text) {
-        final var parts = new ArrayList<String>();
-        final var current = new StringBuilder();
-        var depth = 0;
-        for (final var character : text.toCharArray()) {
-            if (character == '<' || character == '(' || character == '[') {
-                depth++;
-            } else if (character == '>' || character == ')' || character == ']') {
-                depth--;
-            }
-            if (character == ',' && depth == 0) {
-                parts.add(current.toString());
-                current.setLength(0);
-            } else {
-                current.append(character);
-            }
-        }
-        if (!current.isEmpty()) {
-            parts.add(current.toString());
-        }
-        return parts;
-    }
-
-    private static int lastTopLevelSpace(final String text) {
-        var depth = 0;
-        var last = -1;
-        for (var index = 0; index < text.length(); index++) {
-            final var character = text.charAt(index);
-            if (character == '<' || character == '[') {
-                depth++;
-            } else if (character == '>' || character == ']') {
-                depth--;
-            } else if (Character.isWhitespace(character) && depth == 0) {
-                last = index;
-            }
-        }
-        return last;
-    }
-
-    private static String stripAnnotations(final String declaration) {
-        var rest = declaration.strip();
-        while (true) {
-            final var matcher = ANNOTATION.matcher(rest);
-            if (!matcher.find()) {
-                return rest;
-            }
-            rest = rest.substring(matcher.end()).stripLeading();
-            if (rest.startsWith("(")) {
-                var depth = 0;
-                var index = 0;
-                for (; index < rest.length(); index++) {
-                    final var character = rest.charAt(index);
-                    if (character == '(') {
-                        depth++;
-                    } else if (character == ')' && --depth == 0) {
-                        index++;
-                        break;
-                    }
-                }
-                rest = rest.substring(index).stripLeading();
-            }
-        }
-    }
-
     /**
-     * Blanks out comments and string, text-block and character literals, so a brace, a comma or the
-     * word {@code record} inside one cannot be mistaken for syntax. Lengths are preserved so
-     * offsets still line up with the original.
-     */
-    /**
-     * What the type declares itself, with everything inside a further pair of braces blanked out.
+     * What the names written in one file mean.
      *
-     * <p>A converter's method and a value type's factory are both recognised by their shape, and the
-     * same shape occurring in a nested class, an anonymous class or a method body belongs to
-     * something else. Keeping only what sits directly in the type's own body is what makes "the one
-     * public method taking a ResultSet" mean the type's own, and stops a private helper class from
-     * being reported as a second candidate.</p>
-     *
-     * <p>Positions are not preserved, so this is for shape matching only — a diagnostic that has to
-     * name a place works from the full text.</p>
+     * <p>Resolution follows the language: an explicit import first, then a type sitting next to the
+     * file, then {@code java.lang}, then a lone on-demand import. Only the neighbour needs looking
+     * up, and only its source can answer, which is what {@code known} is for.</p>
      */
-    private static String directMembers(final String text, final int declarationEnd) {
-        final var open = text.indexOf('{', declarationEnd);
-        if (open < 0) {
-            return "";
-        }
-        final var members = new StringBuilder();
-        var depth = 0;
-        for (var index = open + 1; index < text.length(); index++) {
-            final var character = text.charAt(index);
-            if (character == '{') {
-                depth++;
-                members.append(' ');
-            } else if (character == '}') {
-                if (depth == 0) {
-                    break;
-                }
-                depth--;
-                members.append(' ');
-            } else {
-                members.append(depth == 0 || character == '\n' ? character : ' ');
-            }
-        }
-        return members.toString();
-    }
+    private record Scope(String packageName, Map<String, String> imports, KnownTypes known) {
 
-    private static String strip(final String source) {
-        final var result = new StringBuilder(source);
-        var index = 0;
-        while (index < source.length()) {
-            final var character = source.charAt(index);
-            final var next = index + 1 < source.length() ? source.charAt(index + 1) : '\0';
-            if (character == '/' && next == '/') {
-                index = blankUntil(result, source, index, "\n", false);
-            } else if (character == '/' && next == '*') {
-                index = blankUntil(result, source, index + 2, "*/", true);
-            } else if (character == '"' && next == '"' && index + 2 < source.length() && source.charAt(index + 2) == '"') {
-                index = blankUntil(result, source, index + 3, "\"\"\"", true);
-            } else if (character == '"') {
-                index = blankLiteral(result, source, index, '"');
-            } else if (character == '\'') {
-                index = blankLiteral(result, source, index, '\'');
-            } else {
-                index++;
+        String qualify(final String type) {
+            final var matcher = TYPE_REFERENCE.matcher(type);
+            final var result = new StringBuilder();
+            while (matcher.find()) {
+                final var reference = matcher.group().replaceAll("\\s+", "");
+                matcher.appendReplacement(result, Matcher.quoteReplacement(qualifyReference(reference)));
             }
+            matcher.appendTail(result);
+            return result.toString().replaceAll("\\s+", "");
         }
-        return result.toString();
-    }
 
-    private static int blankUntil(
-            final StringBuilder result, final String source, final int from,
-            final String terminator, final boolean includeTerminator) {
-        final var end = source.indexOf(terminator, from);
-        final var stop = end < 0 ? source.length() : (includeTerminator ? end + terminator.length() : end);
-        blank(result, from, stop);
-        return stop;
-    }
-
-    private static int blankLiteral(
-            final StringBuilder result, final String source, final int start, final char quote) {
-        var index = start + 1;
-        while (index < source.length()) {
-            final var character = source.charAt(index);
-            if (character == '\\') {
-                index += 2;
-                continue;
+        private String qualifyReference(final String reference) {
+            if (PRIMITIVES.contains(reference)) {
+                return reference;
             }
-            if (character == quote || character == '\n') {
-                index++;
-                break;
+            final var dot = reference.indexOf('.');
+            if (dot < 0) {
+                return resolve(reference);
             }
-            index++;
+            // A dotted name is already qualified unless it starts with a type: `java.util.UUID` is a
+            // package path, `Outer.Inner` is a member of a type whose own name still has to be found.
+            final var head = reference.substring(0, dot);
+            return Character.isUpperCase(head.charAt(0))
+                    ? resolve(head) + reference.substring(dot)
+                    : reference;
         }
-        blank(result, start + 1, Math.min(index, source.length()));
-        return index;
-    }
 
-    private static void blank(final StringBuilder result, final int from, final int to) {
-        for (var index = from; index < to && index < result.length(); index++) {
-            if (result.charAt(index) != '\n') {
-                result.setCharAt(index, ' ');
+        private String resolve(final String simpleName) {
+            final var imported = imports.get(simpleName);
+            if (imported != null) {
+                return imported;
             }
+            final var neighbour = packageName.isEmpty() ? simpleName : packageName + "." + simpleName;
+            if (known.hasSource(neighbour)) {
+                return neighbour;
+            }
+            if (JAVA_LANG.contains(simpleName)) {
+                return "java.lang." + simpleName;
+            }
+            final var onDemand = imports.get("*");
+            return onDemand != null ? onDemand + "." + simpleName : neighbour;
         }
+
     }
 
 }
