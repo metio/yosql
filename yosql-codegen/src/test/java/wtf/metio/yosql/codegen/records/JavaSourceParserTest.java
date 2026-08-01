@@ -17,7 +17,9 @@ import wtf.metio.yosql.codegen.exceptions.UnparsableRecordException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -732,6 +734,213 @@ class JavaSourceParserTest {
                     }
                     """));
             assertTrue(exception.getMessage().contains("type followed by a name"), exception.getMessage());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("converter methods")
+    class ConverterMethods {
+
+        private List<String> methodNames(final String source) {
+            return parse(source).resultSetMethods().stream().map(JavaSourceMethod::name).toList();
+        }
+
+        @Test
+        @DisplayName("finds a public method taking a ResultSet")
+        void findsConverterMethod() {
+            final var type = parse("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public class Tenant {
+                        public String asUserType(ResultSet resultSet) {
+                            return null;
+                        }
+                    }
+                    """);
+
+            assertAll(
+                    () -> assertEquals(1, type.resultSetMethods().size()),
+                    () -> assertEquals("asUserType", type.resultSetMethods().get(0).name()),
+                    () -> assertEquals(ClassName.get(String.class), type.resultSetMethods().get(0).returnType())
+            );
+        }
+
+        @Test
+        @DisplayName("a final parameter is the same parameter")
+        void acceptsFinalParameter() {
+            assertIterableEquals(List.of("read"), methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public class Tenant {
+                        public String read(final ResultSet resultSet) { return null; }
+                    }
+                    """));
+        }
+
+        @Test
+        @DisplayName("a fully-qualified ResultSet is the same type")
+        void acceptsQualifiedParameter() {
+            assertIterableEquals(List.of("read"), methodNames("""
+                    package com.example;
+
+                    public class Tenant {
+                        public String read(java.sql.ResultSet resultSet) { return null; }
+                    }
+                    """));
+        }
+
+        @Test
+        @DisplayName("throws clauses do not hide the method")
+        void acceptsThrowsClause() {
+            assertIterableEquals(List.of("read"), methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+                    import java.sql.SQLException;
+
+                    public class Tenant {
+                        public String read(ResultSet resultSet) throws SQLException { return null; }
+                    }
+                    """));
+        }
+
+        @Test
+        @DisplayName("a static method is not called on an instance")
+        void skipsStaticMethods() {
+            assertTrue(methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public class Tenant {
+                        public static Tenant of(ResultSet resultSet) { return null; }
+                    }
+                    """).isEmpty());
+        }
+
+        @Test
+        @DisplayName("a method the repository cannot reach is not a candidate")
+        void skipsNonPublicMethods() {
+            assertTrue(methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public class Tenant {
+                        String packagePrivate(ResultSet resultSet) { return null; }
+                        private String hidden(ResultSet resultSet) { return null; }
+                        protected String shielded(ResultSet resultSet) { return null; }
+                    }
+                    """).isEmpty());
+        }
+
+        @Test
+        @DisplayName("a method taking something else is not a candidate")
+        void skipsOtherParameters() {
+            assertTrue(methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public class Tenant {
+                        public String read(String notAResultSet) { return null; }
+                        public String readTwo(ResultSet resultSet, int column) { return null; }
+                    }
+                    """).isEmpty());
+        }
+
+        @Test
+        @DisplayName("reports every candidate so an ambiguous class can be named")
+        void findsSeveralMethods() {
+            assertIterableEquals(List.of("readName", "readAge"), methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public class Tenant {
+                        public String readName(ResultSet resultSet) { return null; }
+                        public Integer readAge(ResultSet resultSet) { return null; }
+                    }
+                    """));
+        }
+
+        @Test
+        @DisplayName("an import decides what an unqualified return type means")
+        void qualifiesReturnTypeFromImports() {
+            final var type = parse("""
+                    package com.example;
+
+                    import com.example.domain.Item;
+
+                    import java.sql.ResultSet;
+
+                    public class Tenant {
+                        public Item read(ResultSet resultSet) { return null; }
+                    }
+                    """);
+
+            assertEquals(ClassName.get("com.example.domain", "Item"), type.resultSetMethods().get(0).returnType());
+        }
+
+        @Test
+        @DisplayName("a generic return type keeps its arguments")
+        void keepsTypeArguments() {
+            final var type = parse("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+                    import java.util.List;
+
+                    public class Tenant {
+                        public List<String> read(ResultSet resultSet) { return null; }
+                    }
+                    """);
+
+            assertEquals("java.util.List<java.lang.String>", type.resultSetMethods().get(0).returnType().toString());
+        }
+
+        @Test
+        @DisplayName("a ResultSet named in a comment is not a method")
+        void ignoresComments() {
+            assertTrue(methodNames("""
+                    package com.example;
+
+                    public class Tenant {
+                        // public String read(ResultSet resultSet)
+                        /* public String other(ResultSet resultSet) */
+                    }
+                    """).isEmpty());
+        }
+
+        @Test
+        @DisplayName("a ResultSet named in a string literal is not a method")
+        void ignoresStringLiterals() {
+            assertTrue(methodNames("""
+                    package com.example;
+
+                    public class Tenant {
+                        private static final String DOC = "public String read(ResultSet resultSet)";
+                    }
+                    """).isEmpty());
+        }
+
+        @Test
+        @DisplayName("a record can carry its own converter method")
+        void findsMethodOnRecord() {
+            assertIterableEquals(List.of("read"), methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public record Tenant(String slug) {
+                        public Tenant read(ResultSet resultSet) { return null; }
+                    }
+                    """));
         }
 
     }

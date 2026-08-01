@@ -8,7 +8,9 @@ package wtf.metio.yosql.codegen.files;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
+import wtf.metio.yosql.codegen.records.JavaSourceParser;
 import wtf.metio.yosql.codegen.records.RecordConverterNames;
+import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 
@@ -44,7 +46,8 @@ public final class FilesObjectMother {
     }
 
     public static MethodResultRowConverterConfigurer methodConverterConfigurer(final ConverterConfiguration converter) {
-        return new DefaultMethodResultRowConverterConfigurer(converter, new RecordConverterNames(converter));
+        return new DefaultMethodResultRowConverterConfigurer(converter, new RecordConverterNames(converter),
+                new RecordScanner(FilesConfigurations.defaults(), new JavaSourceParser()));
     }
 
     public static RepositoryNameConfigurer repositoryNameConfigurer(final RepositoriesConfiguration repositories) {

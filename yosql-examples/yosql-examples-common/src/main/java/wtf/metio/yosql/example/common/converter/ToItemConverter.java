@@ -2,9 +2,9 @@
  * SPDX-FileCopyrightText: The yosql Authors
  * SPDX-License-Identifier: 0BSD
  */
-package wtf.metio.yosql.example.maven.jdbc.converter;
+package wtf.metio.yosql.example.common.converter;
 
-import wtf.metio.yosql.example.maven.jdbc.model.Item;
+import wtf.metio.yosql.example.common.model.Item;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -6,35 +6,51 @@
 package wtf.metio.yosql.codegen.files;
 
 import com.squareup.javapoet.ClassName;
+import wtf.metio.yosql.codegen.exceptions.MissingConverterSourceException;
+import wtf.metio.yosql.codegen.exceptions.UnusableConverterException;
 import wtf.metio.yosql.codegen.records.RecordConverterNames;
+import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
+import java.util.Locale;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+/**
+ * Resolves the converter a statement is generated against.
+ *
+ * <p>A statement either names a converter class, names a record to have one written for it, or
+ * names neither and takes the build's default. Whichever it is, the generator needs all four parts
+ * of a {@link ResultRowConverter}, and only one of them — the class — is ever configured. The rest
+ * is read back out of that class, so what the repository calls is what the converter actually
+ * declares.</p>
+ */
 public final class DefaultMethodResultRowConverterConfigurer implements MethodResultRowConverterConfigurer {
 
     private final ConverterConfiguration converters;
     private final RecordConverterNames recordConverters;
+    private final RecordScanner scanner;
 
     public DefaultMethodResultRowConverterConfigurer(
             final ConverterConfiguration converters,
-            final RecordConverterNames recordConverters) {
+            final RecordConverterNames recordConverters,
+            final RecordScanner scanner) {
         this.converters = converters;
         this.recordConverters = recordConverters;
+        this.scanner = scanner;
     }
 
     @Override
     public SqlConfiguration configureResultRowConverter(final SqlConfiguration configuration) {
+        final var origin = "Statement '%s'".formatted(configuration.name().orElse("<unnamed>"));
         return SqlConfiguration.copyOf(configuration)
                 .withResultRowConverter(configuration.resultRowConverter()
-                        .map(this::setMissingValuesFromRuntimeConfig)
-                        .filter(DefaultMethodResultRowConverterConfigurer::ensureConverterIsFullyConfigured)
+                        .map(converter -> resolve(converter, origin))
                         .or(() -> generatedRecordConverter(configuration))
-                        .or(this::getDefaultRowConverter));
+                        .or(this::defaultConverter));
     }
 
     /**
@@ -58,76 +74,71 @@ public final class DefaultMethodResultRowConverterConfigurer implements MethodRe
                         .build());
     }
 
-    private static boolean ensureConverterIsFullyConfigured(final ResultRowConverter converter) {
+    private Optional<ResultRowConverter> defaultConverter() {
+        return converters.defaultConverter()
+                .map(converter -> resolve(converter, "The 'defaultConverter' configuration option"));
+    }
+
+    /**
+     * Fills in everything the generator needs from the converter's own source.
+     *
+     * <p>A converter that already carries all four parts is passed through untouched: that is the
+     * generated ToMap converter, which has no source to read because it does not exist yet.</p>
+     */
+    private ResultRowConverter resolve(final ResultRowConverter converter, final String origin) {
+        if (isFullyConfigured(converter)) {
+            return converter;
+        }
+        final var type = converterType(converter, origin);
+        final var location = scanner.locationOf(type);
+        final var source = scanner.scan(type)
+                .orElseThrow(() -> new MissingConverterSourceException(type, location, origin));
+        final var methods = source.resultSetMethods();
+        if (methods.isEmpty()) {
+            throw new UnusableConverterException(origin, location,
+                    "'%s' declares no public method taking a 'java.sql.ResultSet'".formatted(type));
+        }
+        if (methods.size() > 1) {
+            throw new UnusableConverterException(origin, location,
+                    "'%s' declares %d of them: %s".formatted(type, methods.size(), methods.stream()
+                            .map(method -> method.name() + "(ResultSet)")
+                            .collect(Collectors.joining(", "))));
+        }
+        final var method = methods.get(0);
+        return ResultRowConverter.builder()
+                .setAlias(alias(type))
+                .setConverterType(type.toString())
+                .setMethodName(method.name())
+                .setResultType(method.returnType().toString())
+                .build();
+    }
+
+    private static ClassName converterType(final ResultRowConverter converter, final String origin) {
+        final var name = converter.converterType()
+                .map(String::strip)
+                .filter(Predicate.not(String::isEmpty))
+                .orElseThrow(() -> new UnusableConverterException(origin, "no class name was given"));
+        try {
+            return ClassName.bestGuess(name);
+        } catch (final IllegalArgumentException exception) {
+            throw new UnusableConverterException(origin, "'%s' is not a class name".formatted(name));
+        }
+    }
+
+    /**
+     * The field a repository injects the converter into, named after the converter's own class so
+     * that reading the repository tells you which converter runs.
+     */
+    private static String alias(final ClassName type) {
+        final var simpleName = type.simpleName();
+        return simpleName.substring(0, 1).toLowerCase(Locale.ROOT) + simpleName.substring(1);
+    }
+
+    private static boolean isFullyConfigured(final ResultRowConverter converter) {
         return converter.alias().isPresent()
                 && converter.converterType().isPresent()
                 && converter.methodName().isPresent()
                 && converter.resultType().isPresent();
-    }
-
-    private ResultRowConverter setMissingValuesFromRuntimeConfig(final ResultRowConverter original) {
-        return ResultRowConverter.builder()
-                .setAlias(original.alias().or(() -> getAliasFromRuntimeConfig(original)))
-                .setConverterType(original.converterType().or(() -> getConverterTypeFromRuntimeConfig(original)))
-                .setMethodName(original.methodName().or(() -> getMethodNameFromRuntimeConfig(original)))
-                .setResultType(original.resultType().or(() -> getResultTypeFromRuntimeConfig(original)))
-                .build();
-    }
-
-    private Optional<ResultRowConverter> getDefaultRowConverter() {
-        final var defaultConverter = converters.defaultConverter();
-        return converters.rowConverters().stream()
-                .filter(converter -> defaultConverter.isEmpty() || defaultConverter.get().equals(converter))
-                .findFirst()
-                .or(() -> defaultConverter);
-    }
-
-    private Optional<String> getAliasFromRuntimeConfig(final ResultRowConverter resultConverter) {
-        return getConverterFieldFromRuntimeConfig(
-                converter -> converterTypeMatches(resultConverter, converter),
-                ResultRowConverter::alias);
-    }
-
-    private Optional<String> getConverterTypeFromRuntimeConfig(final ResultRowConverter resultConverter) {
-        return getConverterFieldFromRuntimeConfig(
-                converter -> aliasMatches(resultConverter, converter),
-                ResultRowConverter::converterType);
-    }
-
-    private Optional<String> getResultTypeFromRuntimeConfig(final ResultRowConverter resultConverter) {
-        return getConverterFieldFromRuntimeConfig(
-                converter -> aliasMatches(resultConverter, converter)
-                        || converterTypeMatches(resultConverter, converter),
-                ResultRowConverter::resultType);
-    }
-
-    private Optional<String> getMethodNameFromRuntimeConfig(final ResultRowConverter resultConverter) {
-        return getConverterFieldFromRuntimeConfig(
-                converter -> aliasMatches(resultConverter, converter)
-                        || converterTypeMatches(resultConverter, converter),
-                ResultRowConverter::methodName);
-    }
-
-    private Optional<String> getConverterFieldFromRuntimeConfig(
-            final Predicate<ResultRowConverter> predicate,
-            final Function<ResultRowConverter, Optional<String>> mapper) {
-        return converters.rowConverters().stream()
-                .filter(predicate)
-                .map(mapper)
-                .flatMap(Optional::stream)
-                .findFirst();
-    }
-
-    private static boolean aliasMatches(
-            final ResultRowConverter resultConverter,
-            final ResultRowConverter converter) {
-        return converter.alias().equals(resultConverter.alias());
-    }
-
-    private static boolean converterTypeMatches(
-            final ResultRowConverter resultConverter,
-            final ResultRowConverter converter) {
-        return converter.converterType().equals(resultConverter.converterType());
     }
 
 }

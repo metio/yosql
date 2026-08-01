@@ -66,14 +66,9 @@
                                 <yosql>
                                     <files inputBaseDirectory="../yosql-examples-common/src/main/yosql"
                                            outputBaseDirectory="${project.build.directory}/first"
-                                           skipLines="4"/>
+                                           skipLines="4"
+                                           sourceDirectory="../yosql-examples-common/src/main/java"/>
                                     <repositories generateInterfaces="true"/>
-                                    <converter>
-                                        <rowConverters alias="itemConverter"
-                                                       converterType="wtf.metio.yosql.example.ant.converter.ToItemConverter"
-                                                       methodName="asUserType"
-                                                       resultType="wtf.metio.yosql.example.ant.model.Item"/>
-                                    </converter>
                                 </yosql>
                             </target>
                         </configuration>

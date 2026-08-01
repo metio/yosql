@@ -8,8 +8,6 @@ package wtf.metio.yosql.internals.testing.configs;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 
-import java.util.List;
-
 /**
  * Object mother for {@link ConverterConfiguration}s.
  */
@@ -19,10 +17,21 @@ public final class ConverterConfigurations {
         return ConverterConfiguration.builder().build();
     }
 
+    /**
+     * A configuration whose default converter is already fully resolved, the way the generated
+     * ToMap converter arrives from every frontend.
+     */
     public static ConverterConfiguration withConverters() {
         return ConverterConfiguration.copyOf(withoutConverters())
-                .withDefaultConverter(toMapConverter())
-                .withRowConverters(List.of(itemConverter()));
+                .withDefaultConverter(toMapConverter());
+    }
+
+    /**
+     * A converter as a user names one: a class and nothing else.
+     */
+    public static ConverterConfiguration namingConverter(final String converterClass) {
+        return ConverterConfiguration.copyOf(withoutConverters())
+                .withDefaultConverter(ResultRowConverter.fromClassName(converterClass));
     }
 
     public static ResultRowConverter toMapConverter() {

@@ -42,6 +42,15 @@ public final class JavaSourceParser {
     private static final Pattern TYPE_REFERENCE = Pattern.compile(
             "[A-Za-z_$][\\w$]*(?:\\s*\\.\\s*[A-Za-z_$][\\w$]*)*");
     private static final Pattern ANNOTATION = Pattern.compile("^@\\s*[\\w.$]+");
+    /**
+     * A method taking one ResultSet and nothing else. The modifier run in front of it is captured
+     * so that a static factory or a non-public helper of the same shape can be told apart.
+     */
+    private static final Pattern RESULT_SET_METHOD = Pattern.compile(
+            "((?:\\b(?:public|protected|private|static|final|synchronized|native|strictfp|abstract|default)\\b\\s+)*)"
+                    + "([\\w.$]+(?:\\s*<[^>()]*>)?(?:\\s*\\[\\s*\\])*)\\s+"
+                    + "([A-Za-z_$][\\w$]*)\\s*\\(\\s*(?:final\\s+)?"
+                    + "(?:java\\s*\\.\\s*sql\\s*\\.\\s*)?ResultSet\\s+[A-Za-z_$][\\w$]*\\s*\\)");
 
     private static final Set<String> PRIMITIVES = Set.of(
             "boolean", "byte", "char", "double", "float", "int", "long", "short", "void", "var");
@@ -74,10 +83,12 @@ public final class JavaSourceParser {
             return switch (declaration.group(1)) {
                 case "record" -> JavaSourceType.record(expected,
                         components(text, declaration.end(), location, expected, packageName, imports),
-                        valueOfParameters(text, expected, packageName, imports));
+                        valueOfParameters(text, expected, packageName, imports),
+                        resultSetMethods(text, packageName, imports));
                 case "enum" -> JavaSourceType.enumeration(expected);
                 default -> JavaSourceType.other(expected,
-                        valueOfParameters(text, expected, packageName, imports));
+                        valueOfParameters(text, expected, packageName, imports),
+                        resultSetMethods(text, packageName, imports));
             };
         }
         throw new UnparsableRecordException(location, expected,
@@ -92,6 +103,34 @@ public final class JavaSourceParser {
      * declared in and taking one argument. Several overloads are kept rather than picked between,
      * because choosing silently is worse than saying they are ambiguous.</p>
      */
+
+    /**
+     * The public instance methods that take a single {@link java.sql.ResultSet}.
+     *
+     * <p>What makes a hand-written converter a converter is its shape, so that is what identifies
+     * it. A class holding exactly one such method needs to say nothing else: the method's name is
+     * what the repository calls and its return type is what the statement produces, both already
+     * written down in Java.</p>
+     */
+    public List<JavaSourceMethod> resultSetMethods(
+            final String strippedSource, final String packageName, final Map<String, String> imports) {
+        final var matcher = RESULT_SET_METHOD.matcher(strippedSource);
+        final var methods = new ArrayList<JavaSourceMethod>();
+        while (matcher.find()) {
+            final var modifiers = matcher.group(1);
+            if (!modifiers.contains("public") || modifiers.contains("static")) {
+                continue;
+            }
+            final var returned = matcher.group(2).strip();
+            if (returned.equals("new") || returned.equals("return")) {
+                continue;
+            }
+            methods.add(new JavaSourceMethod(matcher.group(3),
+                    TypeGuesser.guessTypeName(qualify(returned, packageName, imports))));
+        }
+        return methods;
+    }
+
     private List<TypeName> valueOfParameters(
             final String text,
             final ClassName owner,

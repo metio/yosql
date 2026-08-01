@@ -36,12 +36,7 @@ An example build.xml file could look like this:
     <files inputBaseDirectory="/path/to/your/sql/files"
            outputBaseDirectory="/path/for/writing/java/code"/>
     <repositories generateInterfaces="true"/>
-    <converter>
-      <rowConverters alias="yourConverter"
-                     converterType="com.example.YourConverter"
-                     methodName="yourCustomMethod"
-                     resultType="com.example.YourDomainObject"/>
-    </converter>
+    <converter defaultConverter="com.example.YourConverter"/>
   </yosql>
 </project>
 ```

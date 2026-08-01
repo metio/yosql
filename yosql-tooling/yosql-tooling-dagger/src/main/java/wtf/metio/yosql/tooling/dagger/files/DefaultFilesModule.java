@@ -12,6 +12,7 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.files.*;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.codegen.records.RecordConverterNames;
+import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.Parser;
 import wtf.metio.yosql.tooling.dagger.annotations.Reader;
@@ -72,8 +73,10 @@ public class DefaultFilesModule {
     @Singleton
     MethodResultRowConverterConfigurer provideMethodConverterConfigurer(
             final RuntimeConfiguration runtimeConfiguration,
-            final RecordConverterNames recordConverterNames) {
-        return new DefaultMethodResultRowConverterConfigurer(runtimeConfiguration.converter(), recordConverterNames);
+            final RecordConverterNames recordConverterNames,
+            final RecordScanner recordScanner) {
+        return new DefaultMethodResultRowConverterConfigurer(
+                runtimeConfiguration.converter(), recordConverterNames, recordScanner);
     }
 
     @Provides

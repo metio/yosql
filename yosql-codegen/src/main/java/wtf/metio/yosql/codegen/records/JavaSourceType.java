@@ -25,7 +25,8 @@ public record JavaSourceType(
         ClassName type,
         Kind kind,
         List<JavaSourceComponent> components,
-        List<TypeName> valueOfParameters) {
+        List<TypeName> valueOfParameters,
+        List<JavaSourceMethod> resultSetMethods) {
 
     public enum Kind {
         RECORD,
@@ -36,16 +37,22 @@ public record JavaSourceType(
     public static JavaSourceType record(
             final ClassName type,
             final List<JavaSourceComponent> components,
-            final List<TypeName> valueOfParameters) {
-        return new JavaSourceType(type, Kind.RECORD, List.copyOf(components), List.copyOf(valueOfParameters));
+            final List<TypeName> valueOfParameters,
+            final List<JavaSourceMethod> resultSetMethods) {
+        return new JavaSourceType(type, Kind.RECORD, List.copyOf(components),
+                List.copyOf(valueOfParameters), List.copyOf(resultSetMethods));
     }
 
     public static JavaSourceType enumeration(final ClassName type) {
-        return new JavaSourceType(type, Kind.ENUM, List.of(), List.of());
+        return new JavaSourceType(type, Kind.ENUM, List.of(), List.of(), List.of());
     }
 
-    public static JavaSourceType other(final ClassName type, final List<TypeName> valueOfParameters) {
-        return new JavaSourceType(type, Kind.OTHER, List.of(), List.copyOf(valueOfParameters));
+    public static JavaSourceType other(
+            final ClassName type,
+            final List<TypeName> valueOfParameters,
+            final List<JavaSourceMethod> resultSetMethods) {
+        return new JavaSourceType(type, Kind.OTHER, List.of(),
+                List.copyOf(valueOfParameters), List.copyOf(resultSetMethods));
     }
 
     public boolean isRecord() {

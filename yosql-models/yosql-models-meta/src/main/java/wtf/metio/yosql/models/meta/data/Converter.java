@@ -6,7 +6,6 @@
 package wtf.metio.yosql.models.meta.data;
 
 import com.squareup.javapoet.*;
-import org.immutables.value.Value;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.meta.ConfigurationExample;
@@ -14,11 +13,9 @@ import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 
 import javax.lang.model.element.Modifier;
-import java.util.*;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static wtf.metio.yosql.internals.javapoet.TypicalTypes.*;
 import static wtf.metio.yosql.internals.jdk.Strings.upperCase;
@@ -26,38 +23,21 @@ import static wtf.metio.yosql.internals.jdk.Strings.upperCase;
 public final class Converter extends AbstractConfigurationGroup {
 
     private static final String GROUP_NAME = Converter.class.getSimpleName();
-    private static final String ROW_CONVERTER = "RowConverterSpec";
-    private static final ClassName ANT_ROW_CONVERTER_TYPE = antType(ROW_CONVERTER);
-    private static final ClassName MAVEN_ROW_CONVERTER_TYPE = mavenType(ROW_CONVERTER);
-    private static final String AS_ROW_CONVERTER = "asRowConverter";
-    private static final String CREATE_ROW_CONVERTERS = "createRowConverters";
     private static final String CREATE_ROW_CONVERTER = "createRowConverter";
-    private static final String ROW_CONVERTERS = "rowConverters";
     private static final String MAP_CONVERTER_ALIAS = "mapConverterAlias";
     private static final String MAP_CONVERTER_METHOD = "mapConverterMethod";
     private static final String MAP_CONVERTER_CLASS = "mapConverterClass";
     private static final String RECORD_CONVERTER_METHOD = "recordConverterMethod";
     private static final String RECORD_CONVERTER_PREFIX = "recordConverterPrefix";
     private static final String RECORD_CONVERTER_SUFFIX = "recordConverterSuffix";
-    private static final String DEFAULT_ROW_CONVERTER = "DefaultRowConverter";
-    private static final ClassName GRADLE_DEFAULT_ROW_CONVERTER_TYPE = gradleType(DEFAULT_ROW_CONVERTER);
     private static final String DEFAULT_CONVERTER = "defaultConverter";
-    private static final String ALIAS = "alias";
-    private static final String CONVERTER_TYPE = "converterType";
-    private static final String METHOD_NAME = "methodName";
-    private static final String RESULT_TYPE = "resultType";
-    private static final String OBJECTS = "objects";
-    private static final String ALIAS_DESCRIPTION = "The short alias for the converter";
-    private static final String CONVERTER_TYPE_DESCRIPTION = "The fully-qualified name of the converter class";
-    private static final String METHOD_NAME_DESCRIPTION = "The name of the method to call";
-    private static final String RESULT_TYPE_DESCRIPTION = "The fully-qualified name of the result type";
+    private static final String MAP_RESULT_TYPE = "java.util.Map<String, Object>";
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
                 .setName(GROUP_NAME)
                 .setDescription("Configures converter related settings.")
                 .addSettings(defaultConverter())
-                .addSettings(rowConverters())
                 .addSettings(generateMapConverter())
                 .addSettings(mapConverterClass())
                 .addSettings(mapConverterMethod())
@@ -65,67 +45,51 @@ public final class Converter extends AbstractConfigurationGroup {
                 .addSettings(recordConverterMethod())
                 .addSettings(recordConverterPrefix())
                 .addSettings(recordConverterSuffix())
-                .addAntTypes(antRowConverterType())
-                .addAntMethods(createAntRowConverters(), createAntRowConverter())
-                .addCliMethods(createCliRowConverters(), createCliRowConverter())
-                .addGradleMethods(createGradleRowConverters(), createGradleRowConverter())
-                .addGradleTypes(gradleRowConverterType(true), gradleRowConverterType(false))
-                .addGradleConventionParameters(ParameterSpec.builder(GRADLE_OBJECTS, OBJECTS, Modifier.FINAL).build())
+                .addAntMethods(createRowConverter(Modifier.FINAL, Converter::field))
+                .addCliMethods(createRowConverter(Modifier.FINAL, Converter::field))
+                .addGradleMethods(createRowConverter(Modifier.PRIVATE, Converter::gradleAccessor))
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
-                .addImmutableMethods(uniqueConverterAliases())
                 .addImmutableAnnotations(immutableAnnotation())
-                .addMavenMethods(createMavenRowConverters(), createMavenRowConverter())
-                .addMavenTypes(mavenRowConverterType())
-                .build();
-    }
-
-    private static MethodSpec uniqueConverterAliases() {
-        return MethodSpec.methodBuilder("uniqueConverterAliases")
-                .addAnnotation(AnnotationSpec.builder(Value.Lazy.class).build())
-                .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
-                .returns(MAP_OF_STRING_AND_LONGS)
-                .addStatement("return $L().stream().map(converter -> converter.alias().orElse($S)).collect($T.groupingBy($T.identity(), $T.counting()))",
-                        ROW_CONVERTERS, "", Collectors.class, Function.class, Collectors.class)
+                .addMavenMethods(createRowConverter(Modifier.FINAL, Converter::field))
                 .build();
     }
 
     private static ConfigurationSetting defaultConverter() {
         final var name = DEFAULT_CONVERTER;
-        final var description = "The default converter to use, if no other is specified on a query itself.";
+        final var description = "The fully-qualified name of the converter to use for statements that name none.";
+        final var initializer = CodeBlock.of(".set$L($L($L))\n", upperCase(name), CREATE_ROW_CONVERTER, name);
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
-                .setAntInitializer(CodeBlock.of(".set$L($L($L))\n", upperCase(name), CREATE_ROW_CONVERTER, name))
-                .setCliInitializer(CodeBlock.of(".set$L($L($L))\n", upperCase(name), CREATE_ROW_CONVERTER, name))
-                .setGradleInitializer(CodeBlock.of(".set$L($L().get().asRowConverter())\n", upperCase(name), gradlePropertyName(name)))
-                .setMavenInitializer(CodeBlock.of(".set$L($L($L))\n", upperCase(name), CREATE_ROW_CONVERTER, name))
-                .setGradleConvention(CodeBlock.of("$L().convention($L($N))", gradlePropertyName(name), CREATE_ROW_CONVERTER, OBJECTS))
-                .addAntFields(antField(ANT_ROW_CONVERTER_TYPE, name, description))
-                .addAntMethods(antSetter(ANT_ROW_CONVERTER_TYPE, name, description))
-                .addCliFields(picocliOption(ClassName.get(String.class), GROUP_NAME, name, description, ""))
-                .addGradleMethods(gradleProperty(gradlePropertyOf(GRADLE_DEFAULT_ROW_CONVERTER_TYPE), name, description))
-                .addImmutableMethods(immutableMethod(ClassName.get(ResultRowConverter.class), name, description))
-                .addMavenFields(mavenParameter(MAVEN_ROW_CONVERTER_TYPE, name, description, "${classObject}"))
-                .build();
-    }
+                .setExplanation("""
+                        A converter is named by its class and nothing else: `YoSQL` reads the class to find its
+                        single public method taking a `ResultSet`, and that method's name and return type become
+                        the method the repository calls and the type each row becomes. The field the repository
+                        injects it into is named after the class, with a lower-case first letter.
 
-    private static ConfigurationSetting rowConverters() {
-        final var name = ROW_CONVERTERS;
-        final var description = "The converters configured by the user.";
-        return ConfigurationSetting.builder()
-                .setName(name)
-                .setDescription(description)
-                .setAntInitializer(CodeBlock.of(".addAll$L($L($L))\n", upperCase(name), CREATE_ROW_CONVERTERS, name))
-                .setCliInitializer(CodeBlock.of(".addAll$L($L($L))\n", upperCase(name), CREATE_ROW_CONVERTERS, name))
-                .setGradleInitializer(CodeBlock.of(".addAll$L($L())\n", upperCase(name), CREATE_ROW_CONVERTERS))
-                .setMavenInitializer(CodeBlock.of(".addAll$L($L($L))\n", upperCase(name), CREATE_ROW_CONVERTERS, name))
-                .addAntFields(antField(listOf(ANT_ROW_CONVERTER_TYPE), name, description, CodeBlock.of("new $T<>()", ArrayList.class)))
-                .addAntMethods(antAdder(ANT_ROW_CONVERTER_TYPE, name, description))
-                .addCliFields(picocliOption(listOf(String.class), GROUP_NAME, name, description))
-                .addGradleMethods(gradleProperty(gradleContainerOf(gradleType(ROW_CONVERTER)), name, description))
-                .addImmutableMethods(immutableMethod(listOf(ResultRowConverter.class), name, description))
-                .addMavenFields(mavenParameter(listOf(MAVEN_ROW_CONVERTER_TYPE), name, description, "", CodeBlock.of("new $T<>()", ArrayList.class)))
+                        Leave this empty and statements that name neither a converter nor a
+                        [resultRowType](../../sql/resultrowtype/) fall back to the generated
+                        [ToMap converter](../mapconverterclass/).""")
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("")
+                        .setDescription("The default value of the `defaultConverter` configuration option is empty, which leaves the generated ToMap converter in place.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("com.example.persistence.converter.ToUserConverter")
+                        .setDescription("Setting the `defaultConverter` configuration option to `com.example.persistence.converter.ToUserConverter` makes every statement that names no converter of its own return whatever that converter's `ResultSet` method returns.")
+                        .build())
+                .setAntInitializer(initializer)
+                .setCliInitializer(initializer)
+                .setGradleInitializer(CodeBlock.of(".set$L($L($L().get()))\n", upperCase(name), CREATE_ROW_CONVERTER, gradlePropertyName(name)))
+                .setMavenInitializer(initializer)
+                .setGradleConvention(CodeBlock.of("$L().convention($S)", gradlePropertyName(name), ""))
+                .addAntFields(antField(name, description, ""))
+                .addAntMethods(antSetter(ClassName.get(String.class), name, description))
+                .addCliFields(picocliOption(GROUP_NAME, name, description, ""))
+                .addGradleMethods(gradleProperty(gradlePropertyOf(ClassName.get(String.class)), name, description))
+                .addImmutableMethods(immutableMethod(ClassName.get(ResultRowConverter.class), name, description))
+                .addMavenFields(mavenParameter(name, description, ""))
                 .build();
     }
 
@@ -211,205 +175,40 @@ public final class Converter extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static MethodSpec createAntRowConverters() {
-        return MethodSpec.methodBuilder(CREATE_ROW_CONVERTERS)
-                .addModifiers(Modifier.FINAL)
-                .returns(listOf(ResultRowConverter.class))
-                .addParameter(ParameterSpec.builder(listOf(ANT_ROW_CONVERTER_TYPE), "specs", Modifier.FINAL).build())
-                .addStatement("return $T.ofNullable($L).flatMap($T::stream).map($T::$L).toList()",
-                        Stream.class, "specs", Collection.class, ANT_ROW_CONVERTER_TYPE, AS_ROW_CONVERTER)
-                .build();
-    }
-
-    private static MethodSpec createAntRowConverter() {
+    /**
+     * Turns the class name a user configured into the converter the generator consumes.
+     *
+     * <p>Every frontend hands over a plain string, so they all share this method; only how a
+     * frontend reads its own fields differs, which is what {@code accessor} supplies. An unset
+     * value leaves the generated ToMap converter in place, so a build that configures nothing
+     * still has a converter for every statement.</p>
+     */
+    private static MethodSpec createRowConverter(final Modifier modifier, final Function<String, CodeBlock> accessor) {
         return MethodSpec.methodBuilder(CREATE_ROW_CONVERTER)
-                .addModifiers(Modifier.FINAL)
+                .addModifiers(modifier)
                 .returns(ResultRowConverter.class)
-                .addParameter(ParameterSpec.builder(ANT_ROW_CONVERTER_TYPE, "spec", Modifier.FINAL).build())
+                .addParameter(ParameterSpec.builder(String.class, "converterClass", Modifier.FINAL).build())
                 .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable($L)", Optional.class, "spec")
-                        .add("\n.map($T::$L)", ANT_ROW_CONVERTER_TYPE, AS_ROW_CONVERTER)
-                        .add("\n.orElse($T.builder()", ResultRowConverter.class)
-                        .add("$>\n.setAlias($L)", MAP_CONVERTER_ALIAS)
-                        .add("\n.setConverterType($L)", MAP_CONVERTER_CLASS)
-                        .add("\n.setMethodName($L)", MAP_CONVERTER_METHOD)
-                        .add("\n.setResultType($S)", "java.util.Map<String, Object>")
-                        .add("\n.build())$<")
-                        .build())
-                .build();
-    }
-
-    private static MethodSpec createCliRowConverters() {
-        return MethodSpec.methodBuilder(CREATE_ROW_CONVERTERS)
-                .addModifiers(Modifier.FINAL)
-                .returns(listOf(ResultRowConverter.class))
-                .addParameter(ParameterSpec.builder(listOf(String.class), "specs", Modifier.FINAL).build())
-                .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable($L)", Stream.class, "specs")
-                        .add("$>$>\n.flatMap($T::stream)", List.class)
-                        .add("\n.map($T::fromString)", ResultRowConverter.class)
-                        .add("\n.filter($T::nonNull)", Objects.class)
-                        .add("\n.toList()$<$<")
-                        .build())
-                .build();
-    }
-
-    private static MethodSpec createCliRowConverter() {
-        return MethodSpec.methodBuilder(CREATE_ROW_CONVERTER)
-                .addModifiers(Modifier.FINAL)
-                .returns(ResultRowConverter.class)
-                .addParameter(ParameterSpec.builder(String.class, "spec", Modifier.FINAL).build())
-                .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable($L)", Optional.class, "spec")
+                        .add("return $T.ofNullable($L)", Optional.class, "converterClass")
                         .add("$>$>\n.map($T::strip)", String.class)
                         .add("\n.filter($T.not($T::isBlank))", Predicate.class, Strings.class)
-                        .add("\n.map($T::fromString)", ResultRowConverter.class)
-                        .add("\n.filter($T::nonNull)", Objects.class)
-                        .add("\n.orElse($T.builder()", ResultRowConverter.class)
-                        .add("$>\n.setAlias($L)", MAP_CONVERTER_ALIAS)
-                        .add("\n.setConverterType($L)", MAP_CONVERTER_CLASS)
-                        .add("\n.setMethodName($L)", MAP_CONVERTER_METHOD)
-                        .add("\n.setResultType($S)", "java.util.Map<String, Object>")
+                        .add("\n.map($T::fromClassName)", ResultRowConverter.class)
+                        .add("\n.orElseGet(() -> $T.builder()", ResultRowConverter.class)
+                        .add("$>\n.setAlias($L)", accessor.apply(MAP_CONVERTER_ALIAS))
+                        .add("\n.setConverterType($L)", accessor.apply(MAP_CONVERTER_CLASS))
+                        .add("\n.setMethodName($L)", accessor.apply(MAP_CONVERTER_METHOD))
+                        .add("\n.setResultType($S)", MAP_RESULT_TYPE)
                         .add("\n.build())$<$<$<")
                         .build())
                 .build();
     }
 
-    private static MethodSpec createGradleRowConverters() {
-        return MethodSpec.methodBuilder(CREATE_ROW_CONVERTERS)
-                .addModifiers(Modifier.PRIVATE)
-                .returns(listOf(ResultRowConverter.class))
-                .addStatement(CodeBlock.builder()
-                        .add("return get$L().stream()", upperCase(ROW_CONVERTERS))
-                        .add("$>\n.map($T::$L)", gradleType(ROW_CONVERTER), AS_ROW_CONVERTER)
-                        .add("\n.collect($T.toList())$<", Collectors.class)
-                        .build())
-                .build();
+    private static CodeBlock field(final String name) {
+        return CodeBlock.of("$L", name);
     }
 
-    private static MethodSpec createGradleRowConverter() {
-        final var defaultConverterType = GRADLE_DEFAULT_ROW_CONVERTER_TYPE;
-        return MethodSpec.methodBuilder(CREATE_ROW_CONVERTER)
-                .addModifiers(Modifier.PRIVATE)
-                .addParameter(ParameterSpec.builder(GRADLE_OBJECTS, OBJECTS, Modifier.FINAL).build())
-                .returns(defaultConverterType)
-                .addStatement("final var defaultConverter = objects.newInstance($T.class)", defaultConverterType)
-                .addStatement("defaultConverter.getAlias().set(get$L())", upperCase(MAP_CONVERTER_ALIAS))
-                .addStatement("defaultConverter.getConverterType().set(get$L())", upperCase(MAP_CONVERTER_CLASS))
-                .addStatement("defaultConverter.getMethodName().set(get$L())", upperCase(MAP_CONVERTER_METHOD))
-                .addStatement("defaultConverter.getResultType().set($S)", "java.util.Map<String, Object>")
-                .addStatement("return defaultConverter")
-                .build();
-    }
-
-    private static MethodSpec createMavenRowConverters() {
-        return MethodSpec.methodBuilder(CREATE_ROW_CONVERTERS)
-                .addModifiers(Modifier.FINAL)
-                .returns(listOf(ResultRowConverter.class))
-                .addParameter(ParameterSpec.builder(listOf(MAVEN_ROW_CONVERTER_TYPE), "specs", Modifier.FINAL).build())
-                .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable($L)", Stream.class, "specs")
-                        .add("$>$>\n.flatMap($T::stream)", List.class)
-                        .add("\n.map($T::$L)", MAVEN_ROW_CONVERTER_TYPE, AS_ROW_CONVERTER)
-                        .add("\n.filter($T::nonNull)", Objects.class)
-                        .add("\n.toList()$<$<")
-                        .build())
-                .build();
-    }
-
-    private static MethodSpec createMavenRowConverter() {
-        return MethodSpec.methodBuilder(CREATE_ROW_CONVERTER)
-                .addModifiers(Modifier.FINAL)
-                .returns(ResultRowConverter.class)
-                .addParameter(ParameterSpec.builder(MAVEN_ROW_CONVERTER_TYPE, "spec", Modifier.FINAL).build())
-                .addStatement(CodeBlock.builder()
-                        .add("return $T.ofNullable($L)", Optional.class, "spec")
-                        .add("$>$>\n.map($T::$L)", MAVEN_ROW_CONVERTER_TYPE, AS_ROW_CONVERTER)
-                        .add("\n.orElse($T.builder()", ResultRowConverter.class)
-                        .add("$>\n.setAlias($L)", MAP_CONVERTER_ALIAS)
-                        .add("\n.setConverterType($L)", MAP_CONVERTER_CLASS)
-                        .add("\n.setMethodName($L)", MAP_CONVERTER_METHOD)
-                        .add("\n.setResultType($S)", "java.util.Map<String, Object>")
-                        .add("\n.build())$<$<$<")
-                        .build())
-                .build();
-    }
-
-    private static TypeSpec antRowConverterType() {
-        return TypeSpec.classBuilder(ROW_CONVERTER)
-                .addModifiers(Modifier.PUBLIC)
-                .addField(antField(ClassName.get(String.class), ALIAS, ALIAS_DESCRIPTION))
-                .addMethod(antSetter(ClassName.get(String.class), ALIAS, ALIAS_DESCRIPTION))
-                .addField(antField(ClassName.get(String.class), CONVERTER_TYPE, CONVERTER_TYPE_DESCRIPTION))
-                .addMethod(antSetter(ClassName.get(String.class), CONVERTER_TYPE, CONVERTER_TYPE_DESCRIPTION))
-                .addField(antField(ClassName.get(String.class), METHOD_NAME, METHOD_NAME_DESCRIPTION))
-                .addMethod(antSetter(ClassName.get(String.class), METHOD_NAME, CONVERTER_TYPE_DESCRIPTION))
-                .addField(antField(ClassName.get(String.class), RESULT_TYPE, RESULT_TYPE_DESCRIPTION))
-                .addMethod(antSetter(ClassName.get(String.class), RESULT_TYPE, CONVERTER_TYPE_DESCRIPTION))
-                .addMethod(MethodSpec.methodBuilder(AS_ROW_CONVERTER)
-                        .addModifiers(Modifier.FINAL)
-                        .returns(ResultRowConverter.class)
-                        .addStatement(CodeBlock.builder()
-                                .add("return $T.builder()", ResultRowConverter.class)
-                                .add("$>\n.setAlias($L)", ALIAS)
-                                .add("\n.setConverterType($L)", CONVERTER_TYPE)
-                                .add("\n.setMethodName($L)", METHOD_NAME)
-                                .add("\n.setResultType($L)", RESULT_TYPE)
-                                .add("\n.build()$<")
-                                .build())
-                        .build())
-                .build();
-    }
-
-    private static TypeSpec mavenRowConverterType() {
-        return TypeSpec.classBuilder(ROW_CONVERTER)
-                .addModifiers(Modifier.PUBLIC)
-                .addField(mavenStringParameter(ALIAS))
-                .addField(mavenStringParameter(CONVERTER_TYPE))
-                .addField(mavenStringParameter(METHOD_NAME))
-                .addField(mavenStringParameter(RESULT_TYPE))
-                .addMethod(MethodSpec.methodBuilder(AS_ROW_CONVERTER)
-                        .addModifiers(Modifier.FINAL)
-                        .returns(ResultRowConverter.class)
-                        .addStatement(CodeBlock.builder()
-                                .add("return $T.builder()", ResultRowConverter.class)
-                                .add("$>\n.setAlias($L)", ALIAS)
-                                .add("\n.setConverterType($L)", CONVERTER_TYPE)
-                                .add("\n.setMethodName($L)", METHOD_NAME)
-                                .add("\n.setResultType($L)", RESULT_TYPE)
-                                .add("\n.build()$<")
-                                .build())
-                        .build())
-                .build();
-    }
-
-    private static TypeSpec gradleRowConverterType(boolean defaultConverter) {
-        final var className = defaultConverter ? DEFAULT_ROW_CONVERTER : ROW_CONVERTER;
-        final var classBuilder = TypeSpec.classBuilder(className)
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .addJavadoc("Configures a single ResultRowConverter.")
-                .addMethod(gradleConstructor());
-        if (defaultConverter) {
-            classBuilder.addMethod(gradleStringProperty(ALIAS, ALIAS_DESCRIPTION));
-        } else {
-            classBuilder.addSuperinterface(GRADLE_NAMED);
-        }
-        return classBuilder
-                .addMethod(gradleStringProperty(CONVERTER_TYPE, CONVERTER_TYPE_DESCRIPTION))
-                .addMethod(gradleStringProperty(METHOD_NAME, METHOD_NAME_DESCRIPTION))
-                .addMethod(gradleStringProperty(RESULT_TYPE, RESULT_TYPE_DESCRIPTION))
-                .addMethod(MethodSpec.methodBuilder(AS_ROW_CONVERTER)
-                        .returns(ResultRowConverter.class)
-                        .addStatement(CodeBlock.builder()
-                                .add("return $T.builder()$>", ResultRowConverter.class)
-                                .add(defaultConverter ? "\n.setAlias(getAlias().get())" : "\n.setAlias(getName())")
-                                .add("\n.setConverterType(getConverterType().get())")
-                                .add("\n.setMethodName(getMethodName().get())")
-                                .add("\n.setResultType(getResultType().get())")
-                                .add("\n.build()$<")
-                                .build())
-                        .build())
-                .build();
+    private static CodeBlock gradleAccessor(final String name) {
+        return CodeBlock.of("get$L().get()", upperCase(name));
     }
 
     private Converter() {

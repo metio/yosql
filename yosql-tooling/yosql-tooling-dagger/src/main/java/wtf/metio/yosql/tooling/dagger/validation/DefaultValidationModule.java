@@ -47,15 +47,6 @@ public class DefaultValidationModule {
     @IntoSet
     @Provides
     @Singleton
-    RuntimeConfigurationValidator provideConverterConfigurationValidator(
-            final ExecutionErrors errors,
-            final IMessageConveyor messages) {
-        return new ConverterConfigurationValidator(errors, messages);
-    }
-
-    @IntoSet
-    @Provides
-    @Singleton
     RuntimeConfigurationValidator provideFilesConfigurationValidator(
             final ExecutionErrors errors,
             final IMessageConveyor messages) {

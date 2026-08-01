@@ -347,7 +347,7 @@ of them at once. It points at the map converter above until you change it.
 
 Some mappings a record cannot express: a discriminator column choosing between subtypes, a column
 holding JSON you want parsed, a legacy shape you do not want in your domain. Write the converter
-yourself and register it with [rowConverters](../../configuration/converter/rowconverters/):
+yourself:
 
 ```java
 package my.own;
@@ -369,15 +369,28 @@ public class UserConverter {
 }
 ```
 
-Package, class name and method name are yours to choose. Use it as the default converter, or name
-it on a single statement as a [resultRowConverter](../../configuration/sql/resultrowconverter/) by
-alias or fully qualified name:
+Package, class name and method name are yours to choose. Name the class on a statement as its
+[resultRowConverter](../../configuration/sql/resultrowconverter/) — that is the whole configuration:
 
 ```sql
 -- resultRowConverter: my.own.UserConverter
 select id, name
 from users
 ```
+
+`YoSQL` reads the class to find the one public method taking a `ResultSet`. That method's name is
+what the repository calls, its return type is what the statement produces, and the field the
+converter is injected into is the class name with a lower-case first letter — `userConverter` here.
+Nothing about the method is repeated in configuration, so it cannot go stale when you rename it.
+
+Name the same class as [defaultConverter](../../configuration/converter/defaultconverter/) to use it
+for every statement that names none of its own.
+
+Like a record, the class is read from its **source** under
+[sourceDirectory](../../configuration/files/sourcedirectory/), and three things fail the build rather
+than the compile that follows: a class with no source there, a class declaring no public method
+taking a `ResultSet`, and a class declaring more than one — with nothing to choose between them,
+guessing would be worse than stopping.
 
 A statement naming both a `resultRowConverter` and a `resultRowType` keeps the converter: naming a
 converter names the exact code to call, and there is nothing left to infer.

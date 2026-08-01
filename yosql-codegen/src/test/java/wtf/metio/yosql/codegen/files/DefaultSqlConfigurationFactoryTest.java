@@ -95,55 +95,15 @@ class DefaultSqlConfigurationFactoryTest {
     }
 
     @Test
-    void shouldProduceExpectedReadConfigurationWithCustomRowConverter() {
+    @DisplayName("a statement that names no converter is generated against the build's default")
+    void shouldProduceExpectedReadConfigurationWithDefaultRowConverter() {
         // given
         final var source = Paths.get("Item/findItem.sql");
         final var yaml = """
                 name: findItemByName
                 parameters:
                   - name: name
-                    type: java.lang.String
-                resultRowConverter:
-                  alias: itemConverter""";
-        final Map<String, List<Integer>> indices = Map.of();
-        final var statementInFile = 1;
-        final var config = RuntimeConfiguration.builder()
-                .setConverter(ConverterConfiguration.builder()
-                        .addRowConverters(ResultRowConverter.builder()
-                                .setAlias("itemConverter")
-                                .setConverterType("com.example.ItemConverter")
-                                .setMethodName("asUserType")
-                                .setResultType("com.example.Item")
-                                .build())
-                        .build())
-                .build();
-
-        // when
-        final var configuration = factory(config).createConfiguration(source, yaml, indices, statementInFile);
-
-        // then
-        assertAll("Configuration",
-                () -> assertEquals("findItemByName", configuration.name().get(), "name"),
-                () -> assertEquals(SqlStatementType.READING, configuration.type().get(), "type"),
-                () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode().get(), "returningMode"),
-                () -> assertTrue(configuration.resultRowConverter().isPresent(), "resultRowConverter"),
-                () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias().get(), "alias"),
-                () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName().get(), "methodName"),
-                () -> assertEquals("com.example.ItemConverter", configuration.resultRowConverter().get().converterType().get(), "converterType"),
-                () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType().get(), "resultType"));
-    }
-
-    @Test
-    void shouldProduceExpectedReadConfigurationWithDefaultAndCustomRowConverter() {
-        // given
-        final var source = Paths.get("Item/findItem.sql");
-        final var yaml = """
-                name: findItemByName
-                parameters:
-                  - name: name
-                    type: java.lang.String
-                resultRowConverter:
-                  alias: itemConverter""";
+                    type: java.lang.String""";
         final Map<String, List<Integer>> indices = Map.of();
         final var statementInFile = 1;
         final var config = RuntimeConfiguration.builder()
@@ -154,12 +114,6 @@ class DefaultSqlConfigurationFactoryTest {
                                 .setMethodName("apply")
                                 .setResultType("com.example.ResultRow")
                                 .build())
-                        .addRowConverters(ResultRowConverter.builder()
-                                .setAlias("itemConverter")
-                                .setConverterType("com.example.ItemConverter")
-                                .setMethodName("asUserType")
-                                .setResultType("com.example.Item")
-                                .build())
                         .build())
                 .build();
 
@@ -172,10 +126,10 @@ class DefaultSqlConfigurationFactoryTest {
                 () -> assertEquals(SqlStatementType.READING, configuration.type().get(), "type"),
                 () -> assertEquals(ReturningMode.MULTIPLE, configuration.returningMode().get(), "returningMode"),
                 () -> assertTrue(configuration.resultRowConverter().isPresent(), "resultRowConverter"),
-                () -> assertEquals("itemConverter", configuration.resultRowConverter().get().alias().get(), "alias"),
-                () -> assertEquals("asUserType", configuration.resultRowConverter().get().methodName().get(), "methodName"),
-                () -> assertEquals("com.example.ItemConverter", configuration.resultRowConverter().get().converterType().get(), "converterType"),
-                () -> assertEquals("com.example.Item", configuration.resultRowConverter().get().resultType().get(), "resultType"));
+                () -> assertEquals("resultRow", configuration.resultRowConverter().get().alias().get(), "alias"),
+                () -> assertEquals("apply", configuration.resultRowConverter().get().methodName().get(), "methodName"),
+                () -> assertEquals("com.example.ResultRowConverter", configuration.resultRowConverter().get().converterType().get(), "converterType"),
+                () -> assertEquals("com.example.ResultRow", configuration.resultRowConverter().get().resultType().get(), "resultType"));
     }
 
     private static SqlConfigurationFactory factory() {

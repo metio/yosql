@@ -231,10 +231,22 @@ public final class Sql extends AbstractConfigurationGroup {
 
     private static ConfigurationSetting resultRowConverter() {
         final var name = RESULT_ROW_CONVERTER;
-        final var description = "The alias or fully-qualified name of the converter to use";
+        final var description = "The fully-qualified name of the converter class to use";
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
+                .setExplanation("""
+                        Name the class and nothing else. `YoSQL` reads it to find the single public method that
+                        takes a `ResultSet`; that method's name is what the repository calls, and its return type
+                        is what the statement produces. The converter is injected into a field named after the
+                        class, with a lower-case first letter.
+
+                        The class has to be visible under [sourceDirectory](../../files/sourcedirectory/), because
+                        it is read from source rather than loaded. Naming a class that is missing, that has no
+                        such method, or that has more than one, fails the build.
+
+                        To have the converter written for you instead, name a record with
+                        [resultRowType](../resultrowtype/).""")
                 .addImmutableMethods(immutableMethod(ClassName.get(ResultRowConverter.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
                 .build();

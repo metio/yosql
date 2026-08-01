@@ -58,6 +58,9 @@
                     <files>
                         <skipLines>4</skipLines>
                         <inputBaseDirectory>../../yosql-examples-common/src/main/yosql</inputBaseDirectory>
+                        <!-- Converters named in front matter are read from source, and the one this
+                             example uses is shared with the other examples that read the same SQL. -->
+                        <sourceDirectory>../../yosql-examples-common/src/main/java</sourceDirectory>
                     </files>
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.maven.jdbc.persistence</basePackageName>
@@ -67,14 +70,6 @@
                         <mapConverterClass>
                             wtf.metio.yosql.example.maven.jdbc.persistence.converter.ToMapConverter
                         </mapConverterClass>
-                        <rowConverters>
-                            <rowConverter>
-                                <alias>itemConverter</alias>
-                                <converterType>wtf.metio.yosql.example.maven.jdbc.converter.ToItemConverter</converterType>
-                                <methodName>asUserType</methodName>
-                                <resultType>wtf.metio.yosql.example.maven.jdbc.model.Item</resultType>
-                            </rowConverter>
-                        </rowConverters>
                     </converter>
                 </configuration>
             </plugin>

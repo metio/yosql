@@ -401,81 +401,38 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
-    void shouldParseResultRowConverterAlias() {
-        final var yaml = """
-                resultRowConverter:
-                  alias: converterAlias
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.resultRowConverter().isPresent());
-        assertAll(
-                () -> assertEquals("converterAlias", config.resultRowConverter().get().alias().get()),
-                () -> assertTrue(config.resultRowConverter().get().methodName().isEmpty()),
-                () -> assertTrue(config.resultRowConverter().get().converterType().isEmpty()),
-                () -> assertTrue(config.resultRowConverter().get().resultType().isEmpty()));
-    }
-
-    @Test
-    void shouldParseResultRowConverterMethodName() {
-        final var yaml = """
-                resultRowConverter:
-                  methodName: someMethod
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.resultRowConverter().isPresent());
-        assertAll(
-                () -> assertTrue(config.resultRowConverter().get().alias().isEmpty()),
-                () -> assertEquals("someMethod", config.resultRowConverter().get().methodName().get()),
-                () -> assertTrue(config.resultRowConverter().get().converterType().isEmpty()),
-                () -> assertTrue(config.resultRowConverter().get().resultType().isEmpty()));
-    }
-
-    @Test
-    void shouldParseResultRowConverterConverterType() {
-        final var yaml = """
-                resultRowConverter:
-                  converterType: com.example.MyConverter
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.resultRowConverter().isPresent());
-        assertAll(
-                () -> assertTrue(config.resultRowConverter().get().alias().isEmpty()),
-                () -> assertTrue(config.resultRowConverter().get().methodName().isEmpty()),
-                () -> assertEquals("com.example.MyConverter", config.resultRowConverter().get().converterType().get()),
-                () -> assertTrue(config.resultRowConverter().get().resultType().isEmpty()));
-    }
-
-    @Test
-    void shouldParseResultRowConverterResultType() {
-        final var yaml = """
-                resultRowConverter:
-                  resultType: com.example.MyResult
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.resultRowConverter().isPresent());
-        assertAll(
-                () -> assertTrue(config.resultRowConverter().get().alias().isEmpty()),
-                () -> assertTrue(config.resultRowConverter().get().methodName().isEmpty()),
-                () -> assertTrue(config.resultRowConverter().get().converterType().isEmpty()),
-                () -> assertEquals("com.example.MyResult", config.resultRowConverter().get().resultType().get()));
-    }
-
-    @Test
+    @DisplayName("a converter is named by its class, and the rest is resolved later")
     void shouldParseResultRowConverter() {
         final var yaml = """
-                resultRowConverter:
-                  alias: converterAlias
-                  methodName: someMethod
-                  converterType: com.example.MyConverter
-                  resultType: com.example.MyResult
+                resultRowConverter: com.example.MyConverter
                 """;
         final var config = parser.parseConfig(yaml);
         assertTrue(config.resultRowConverter().isPresent());
         assertAll(
-                () -> assertEquals("converterAlias", config.resultRowConverter().get().alias().get()),
-                () -> assertEquals("someMethod", config.resultRowConverter().get().methodName().get()),
                 () -> assertEquals("com.example.MyConverter", config.resultRowConverter().get().converterType().get()),
-                () -> assertEquals("com.example.MyResult", config.resultRowConverter().get().resultType().get()));
+                () -> assertTrue(config.resultRowConverter().get().alias().isEmpty()),
+                () -> assertTrue(config.resultRowConverter().get().methodName().isEmpty()),
+                () -> assertTrue(config.resultRowConverter().get().resultType().isEmpty()));
+    }
+
+    @Test
+    @DisplayName("a blank converter names nothing")
+    void shouldIgnoreBlankResultRowConverter() {
+        final var yaml = """
+                resultRowConverter: "   "
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertTrue(config.resultRowConverter().isEmpty());
+    }
+
+    @Test
+    @DisplayName("surrounding whitespace is not part of the class name")
+    void shouldStripResultRowConverter() {
+        final var yaml = """
+                resultRowConverter: "  com.example.MyConverter  "
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertEquals("com.example.MyConverter", config.resultRowConverter().orElseThrow().converterType().orElseThrow());
     }
 
     @Test

@@ -7,7 +7,18 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.codegen.exceptions.DuplicateConverterAliasException;
 import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
+import wtf.metio.yosql.models.configuration.ResultRowConverter;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("DefaultFieldsGenerator")
 final class DefaultFieldsGeneratorTest {
@@ -455,6 +466,35 @@ final class DefaultFieldsGeneratorTest {
                     """;
         }
 
+    }
+
+    @Test
+    @DisplayName("two converter classes sharing a simple name would share a field")
+    void rejectsCollidingConverterAliases() {
+        final var generator = DaoObjectMother.fieldsGenerator(JavaConfigurations.defaults());
+        final var statements = List.of(
+                SqlConfigurations.sqlStatement(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withResultRowConverter(converter("orders.ToItemConverter"))),
+                SqlConfigurations.sqlStatement(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                        .withResultRowConverter(converter("catalog.ToItemConverter"))));
+
+        final var exception = assertThrows(DuplicateConverterAliasException.class,
+                () -> generator.asFields(statements));
+
+        assertAll(
+                () -> assertTrue(exception.getMessage().contains("orders.ToItemConverter")),
+                () -> assertTrue(exception.getMessage().contains("catalog.ToItemConverter")),
+                () -> assertTrue(exception.getMessage().contains("toItemConverter"))
+        );
+    }
+
+    private static ResultRowConverter converter(final String converterType) {
+        return ResultRowConverter.builder()
+                .setAlias("toItemConverter")
+                .setConverterType(converterType)
+                .setMethodName("asUserType")
+                .setResultType("com.example.domain.Item")
+                .build();
     }
 
 }

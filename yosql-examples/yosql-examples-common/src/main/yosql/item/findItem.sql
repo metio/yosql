@@ -8,8 +8,7 @@
 -- parameters:
 --   - name: name
 --     type: java.lang.String
--- resultRowConverter:
---   alias: itemConverter
+-- resultRowConverter: wtf.metio.yosql.example.common.converter.ToItemConverter
 --
 select *
 from items
@@ -22,8 +21,7 @@ where name = :name
 -- parameters:
 --   - name: name
 --     type: java.lang.String
--- resultRowConverter:
---   alias: itemConverter
+-- resultRowConverter: wtf.metio.yosql.example.common.converter.ToItemConverter
 --
 select *
 from items
@@ -35,8 +33,7 @@ where name = :name
 -- parameters:
 --   - name: name
 --     type: java.lang.String
--- resultRowConverter:
---   alias: itemConverter
+-- resultRowConverter: wtf.metio.yosql.example.common.converter.ToItemConverter
 --
 select *
 from items
@@ -49,8 +46,7 @@ where name = :name
 -- parameters:
 --   - name: name_of_item
 --     type: java.lang.String
--- resultRowConverter:
---   alias: itemConverter
+-- resultRowConverter: wtf.metio.yosql.example.common.converter.ToItemConverter
 --
 select *
 from items

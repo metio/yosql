@@ -24,19 +24,13 @@ yosql {
     files {
         skipLines.set(4)
         inputBaseDirectory.set(project.file("../../yosql-examples-common/src/main/yosql"))
+        sourceDirectory.set(project.file("../../yosql-examples-common/src/main/java"))
     }
     repositories {
         basePackageName.set("${group}.persistence")
     }
     converter {
         mapConverterClass.set("${group}.converter.ToMapConverter")
-        rowConverters {
-            register("itemConverter") {
-                converterType.set("${group}.converter.ToItemConverter")
-                methodName.set("asUserType")
-                resultType.set("${group}.model.Item")
-            }
-        }
     }
 }
 

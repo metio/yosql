@@ -118,12 +118,34 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
                 repositoryFields.add(asConstantSqlParameterIndexField(statement));
             }
         }
-        SqlStatement.resultConverters(statements, converters.defaultConverter()
-                        .orElseThrow(MissingDefaultConverterException::new))
+        ensureAliasesAreUnique(SqlStatement.resultConverters(statements, defaultConverter()).toList())
+                .stream()
                 .map(this::asConverterField)
                 .forEach(repositoryFields::add);
 
         return repositoryFields;
+    }
+
+    private ResultRowConverter defaultConverter() {
+        return converters.defaultConverter().orElseThrow(MissingDefaultConverterException::new);
+    }
+
+    /**
+     * A converter's field is named after its class, so two converter classes with the same simple
+     * name would be held in one field. Saying so here beats emitting a class that cannot compile.
+     */
+    private static List<ResultRowConverter> ensureAliasesAreUnique(final List<ResultRowConverter> converters) {
+        final var byAlias = new LinkedHashMap<String, List<String>>();
+        for (final var converter : converters) {
+            byAlias.computeIfAbsent(converter.alias().orElse(""), alias -> new ArrayList<>())
+                    .add(converter.converterType().orElse(""));
+        }
+        byAlias.forEach((alias, types) -> {
+            if (types.size() > 1) {
+                throw new DuplicateConverterAliasException(alias, types);
+            }
+        });
+        return converters;
     }
 
     private FieldSpec asConstantRawSqlField(final SqlStatement sqlStatement) {
