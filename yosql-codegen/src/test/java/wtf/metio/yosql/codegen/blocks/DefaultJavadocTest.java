@@ -52,6 +52,56 @@ class DefaultJavadocTest {
                     """, generator.methodJavadoc(List.of(), "").toString());
         }
 
+        private String statementComment(final String sql) {
+            return generator.methodJavadoc(List.of(SqlStatement.builder()
+                    .setSourcePath(Paths.get("test"))
+                    .setConfiguration(SqlConfigurations.sqlConfiguration())
+                    .setRawStatement(sql)
+                    .build()), "executeOnce").toString();
+        }
+
+        @Test
+        @DisplayName("shows a statement the way javadoc shows code, so markup in it stays text")
+        void showsStatementsAsCode() {
+            final var comment = statementComment("select * from t where a < 1 and b > 2 and c & 3 = 0");
+
+            Assertions.assertAll(
+                    () -> Assertions.assertTrue(comment.contains("<pre>{@code"), comment),
+                    () -> Assertions.assertTrue(comment.contains("a < 1 and b > 2 and c & 3 = 0"), comment),
+                    () -> Assertions.assertFalse(comment.contains("&lt;"), comment));
+        }
+
+        @Test
+        @DisplayName("a JDBC escape keeps its braces, because they balance")
+        void keepsBalancedBraces() {
+            final var comment = statementComment("{call sp_do_something(?)}");
+
+            Assertions.assertAll(
+                    () -> Assertions.assertTrue(comment.contains("<pre>{@code"), comment),
+                    () -> Assertions.assertTrue(comment.contains("{call sp_do_something(?)}"), comment));
+        }
+
+        @Test
+        @DisplayName("an optimizer hint ends the comment, so it is escaped instead")
+        void escapesCommentTerminator() {
+            final var comment = statementComment("select /*+ INDEX(t idx) */ * from t");
+
+            Assertions.assertAll(
+                    () -> Assertions.assertFalse(comment.contains("{@code"), comment),
+                    () -> Assertions.assertFalse(comment.contains("*/"), comment),
+                    () -> Assertions.assertTrue(comment.contains("*&#47;"), comment));
+        }
+
+        @Test
+        @DisplayName("an unbalanced brace would close the tag early, so it is escaped instead")
+        void escapesUnbalancedBraces() {
+            final var comment = statementComment("select '}' from t where a < 1");
+
+            Assertions.assertAll(
+                    () -> Assertions.assertFalse(comment.contains("{@code"), comment),
+                    () -> Assertions.assertTrue(comment.contains("&lt;"), comment));
+        }
+
         @Test
         @DisplayName("generate class comment with statements")
         void shouldGenerateClassCommentWithStatement() {

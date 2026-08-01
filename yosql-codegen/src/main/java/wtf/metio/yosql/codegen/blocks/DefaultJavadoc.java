@@ -93,7 +93,7 @@ public final class DefaultJavadoc implements Javadoc {
                                     builder.add(messages.getMessage(Javadocs.FALLBACK));
                                 }
                             });
-            builder.add(messages.getMessage(Javadocs.STATEMENT), escape(statement.getRawStatement()));
+            addStatement(builder, statement.getRawStatement());
         }
         builder.add(messages.getMessage(Javadocs.USED_FILES_METHOD))
                 .add(messages.getMessage(Javadocs.LIST_START));
@@ -157,6 +157,40 @@ public final class DefaultJavadoc implements Javadoc {
             return array.componentType.isPrimitive();
         }
         return type.isPrimitive();
+    }
+
+    /**
+     * Shows a statement the way javadoc shows code: {@code <pre>} keeps the line breaks and
+     * indentation, and {@code {@code}} makes the content literal, so a {@code <} in the SQL is a
+     * less-than sign rather than the start of a tag. The generated file then reads as the SQL that
+     * was written, which entity escaping would not.
+     *
+     * <p>Two things that block cannot carry, so a statement containing either is escaped into a
+     * plain {@code <pre>} instead: a {@code *}{@code /} ends the comment whatever encloses it, and
+     * an unbalanced brace closes the inline tag early. Neither can be escaped inside {@code {@code}},
+     * because entity references there are shown rather than resolved.</p>
+     */
+    private void addStatement(final CodeBlock.Builder builder, final String statement) {
+        if (isLiteral(statement)) {
+            builder.add(messages.getMessage(Javadocs.STATEMENT), statement);
+        } else {
+            builder.add(messages.getMessage(Javadocs.ESCAPED_STATEMENT), escape(statement));
+        }
+    }
+
+    private static boolean isLiteral(final String statement) {
+        if (statement.contains("*/")) {
+            return false;
+        }
+        var depth = 0;
+        for (final var character : statement.toCharArray()) {
+            if (character == '{') {
+                depth++;
+            } else if (character == '}' && --depth < 0) {
+                return false;
+            }
+        }
+        return depth == 0;
     }
 
     /**

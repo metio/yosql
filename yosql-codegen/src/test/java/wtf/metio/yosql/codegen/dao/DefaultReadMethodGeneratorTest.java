@@ -26,8 +26,8 @@ class DefaultReadMethodGeneratorTest {
             return """
                     /**
                      * <p>Executes the following statement:</p>
-                     * <pre>
-                     * SELECT raw FROM table WHERE test = ? AND id = ?;</pre>
+                     * <pre>{@code
+                     * SELECT raw FROM table WHERE test = ? AND id = ?;}</pre>
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
@@ -82,8 +82,8 @@ class DefaultReadMethodGeneratorTest {
             return """
                     /**
                      * <p>Executes the following statement:</p>
-                     * <pre>
-                     * SELECT raw FROM table WHERE test = ? AND id = ?;</pre>
+                     * <pre>{@code
+                     * SELECT raw FROM table WHERE test = ? AND id = ?;}</pre>
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
@@ -138,8 +138,8 @@ class DefaultReadMethodGeneratorTest {
             return """
                     /**
                      * <p>Executes the following statement:</p>
-                     * <pre>
-                     * SELECT raw FROM table WHERE test = ? AND id = ?;</pre>
+                     * <pre>{@code
+                     * SELECT raw FROM table WHERE test = ? AND id = ?;}</pre>
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
@@ -194,8 +194,8 @@ class DefaultReadMethodGeneratorTest {
             return """
                     /**
                      * <p>Executes the following statement:</p>
-                     * <pre>
-                     * SELECT raw FROM table WHERE test = ? AND id = ?;</pre>
+                     * <pre>{@code
+                     * SELECT raw FROM table WHERE test = ? AND id = ?;}</pre>
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
@@ -250,8 +250,8 @@ class DefaultReadMethodGeneratorTest {
             return """
                     /**
                      * <p>Executes the following statement:</p>
-                     * <pre>
-                     * SELECT raw FROM table WHERE test = ? AND id = ?;</pre>
+                     * <pre>{@code
+                     * SELECT raw FROM table WHERE test = ? AND id = ?;}</pre>
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
@@ -336,8 +336,8 @@ class DefaultReadMethodGeneratorTest {
             return """
                     /**
                      * <p>Executes the following statement:</p>
-                     * <pre>
-                     * SELECT raw FROM table WHERE test = ? AND id = ?;</pre>
+                     * <pre>{@code
+                     * SELECT raw FROM table WHERE test = ? AND id = ?;}</pre>
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
@@ -420,8 +420,8 @@ class DefaultReadMethodGeneratorTest {
             return """
                     /**
                      * <p>Executes the following statement:</p>
-                     * <pre>
-                     * SELECT raw FROM table WHERE test = ? AND id = ?;</pre>
+                     * <pre>{@code
+                     * SELECT raw FROM table WHERE test = ? AND id = ?;}</pre>
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>
@@ -469,8 +469,8 @@ class DefaultReadMethodGeneratorTest {
             return """
                     /**
                      * <p>Executes the following statement:</p>
-                     * <pre>
-                     * SELECT raw FROM table WHERE test = ? AND id = ?;</pre>
+                     * <pre>{@code
+                     * SELECT raw FROM table WHERE test = ? AND id = ?;}</pre>
                      *
                      * <p>Generated based on the following file(s):</p>
                      * <ul>

@@ -67,9 +67,14 @@ public enum Javadocs {
     VENDOR,
 
     /**
-     * Shows the SQL statement itself.
+     * Shows the SQL statement itself, verbatim.
      */
     STATEMENT,
+
+    /**
+     * Shows an SQL statement that cannot be shown verbatim, with its markup escaped.
+     */
+    ESCAPED_STATEMENT,
 
     /**
      * Shows the description of an SQL statement.
