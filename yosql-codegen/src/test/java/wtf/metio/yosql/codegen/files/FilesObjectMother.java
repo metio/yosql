@@ -35,7 +35,8 @@ public final class FilesObjectMother {
         return new DefaultMethodParameterConfigurer(
                 LoggingObjectMother.logger(),
                 OrchestrationObjectMother.executionErrors(),
-                LoggingObjectMother.messages());
+                LoggingObjectMother.messages(),
+                new RecordScanner(FilesConfigurations.defaults(), new JavaSourceParser()));
     }
 
     public static MethodNameValidator methodNameValidator(final RepositoriesConfiguration repositories) {

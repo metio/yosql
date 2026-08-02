@@ -18,6 +18,8 @@ where name = :name
 --
 -- name: findPerson
 -- vendor: H2
+-- parameters:
+--   name: string
 --
 select *
 from persons
@@ -26,6 +28,8 @@ where name = :name
 
 --
 -- name: findPerson
+-- parameters:
+--   name: string
 --
 select *
 from persons

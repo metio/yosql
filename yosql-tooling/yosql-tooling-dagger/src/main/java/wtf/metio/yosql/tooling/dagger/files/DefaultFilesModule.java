@@ -65,8 +65,9 @@ public class DefaultFilesModule {
     MethodParameterConfigurer provideMethodParameterConfigurer(
             @Parser final LocLogger logger,
             final ExecutionErrors errors,
-            final IMessageConveyor messages) {
-        return new DefaultMethodParameterConfigurer(logger, errors, messages);
+            final IMessageConveyor messages,
+            final RecordScanner recordScanner) {
+        return new DefaultMethodParameterConfigurer(logger, errors, messages, recordScanner);
     }
 
     @Provides

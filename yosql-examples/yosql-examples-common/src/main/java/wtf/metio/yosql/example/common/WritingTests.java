@@ -21,17 +21,17 @@ public interface WritingTests {
 
     ToIntBiFunction<Integer, String> insertCompany();
 
-    ToIntBiFunction<Object, Object> insertPerson();
+    ToIntBiFunction<Integer, String> insertPerson();
 
     BiFunction<int[], String[], int[]> insertCompanyBatch();
 
-    BiFunction<Object[], String[], int[]> insertPersonBatch();
+    BiFunction<int[], String[], int[]> insertPersonBatch();
 
-    ToIntBiFunction<Object, Object> updateUser();
+    ToIntBiFunction<String, Integer> updateUser();
 
-    ToIntBiFunction<Object, Object> insertUser();
+    ToIntBiFunction<Integer, String> insertUser();
 
-    BiFunction<Object[], Object[], int[]> insertUserBatch();
+    BiFunction<int[], String[], int[]> insertUserBatch();
 
     ToIntBiFunction<Integer, String> insertItem();
 
@@ -58,7 +58,7 @@ public interface WritingTests {
             insertItem().applyAsInt(3, "GenericPhone 38");
 
             insertCompanyBatch().apply(new int[]{4, 5, 6}, new String[]{"three", "five", "six"});
-            insertPersonBatch().apply(new Object[]{4, 5, 6}, new String[]{"alice", "frank", "joe"});
+            insertPersonBatch().apply(new int[]{4, 5, 6}, new String[]{"alice", "frank", "joe"});
         } catch (final RuntimeException exception) {
             LOG.log(System.Logger.Level.ERROR, "Error while running WRITING tests", exception);
             System.exit(1);

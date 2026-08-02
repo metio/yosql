@@ -80,6 +80,40 @@ reading generated fields directly.
 A record declaring type parameters is refused rather than mapped, because a statement says nothing
 about what to substitute for them. Name a concrete type instead.
 
+### A parameter with no type now fails instead of becoming an Object
+
+A parameter the front matter did not type used to be bound as `java.lang.Object`. The method
+compiled, accepted anything, and offered exactly the type safety of the JDBC it replaced — silently.
+It is now a build error naming the file, the statement and every parameter still without a type.
+
+Two things fill them in. A statement naming a record with
+[resultRowType](../../configuration/sql/resultrowtype/) takes each parameter's type from the
+component of the same name, so most read statements need nothing:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug from tenant where id = :id
+```
+
+`Tenant` declares `UUID id`, so `:id` is a `UUID`. For everything else — write statements, above all
+— name the types. The front matter now takes a mapping of name to type alongside the list form:
+
+```sql
+-- parameters:
+--   id: uuid
+--   slug: string
+--   createdAt: instant
+```
+
+`uuid`, `string` and `instant` are short names for the types statements are usually written in; the
+full list is under [parameters](../../configuration/sql/parameters/). A fully-qualified class name
+still works everywhere, and the list form is unchanged for parameters that need a `sqlType`, a
+`scale` or a `variant`.
+
+Where the build fails, the message shows the front matter to add. Nothing else has to change.
+
 ### Statements that generate nothing now fail
 
 A statement whose name matches none of the configured prefixes, and which sets no explicit `type`,

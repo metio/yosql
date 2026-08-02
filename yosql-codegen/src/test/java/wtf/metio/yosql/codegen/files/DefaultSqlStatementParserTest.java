@@ -23,6 +23,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("DefaultSqlStatementParser")
 class DefaultSqlStatementParserTest {
 
+    /**
+     * The front matter every statement below needs: a parameter the generator cannot type fails the
+     * build, and nothing here names a record to take a type from.
+     */
+    private static final String TYPED_PARAMETERS = """
+            -- parameters:
+            --   id: int
+            --   name: string
+            """;
+
+    private static final String SQL = """
+            INSERT INTO example_table (id, name, id)
+            VALUES (:id, :name, :id);
+            """;
+
     private DefaultSqlStatementParser parser;
 
     @BeforeEach
@@ -101,30 +116,21 @@ class DefaultSqlStatementParserTest {
     @Test
     void parseStatement() {
         final var source = Paths.get("writeData.sql");
-        final var statement = """
-                INSERT INTO example_table (id, name, id)
-                VALUES (:id, :name, :id);
-                """;
 
         final var sqlStatement = parser.parseStatement(
-                source, statement, 1);
+                source, TYPED_PARAMETERS + SQL, 1);
 
         assertAll("statement attributes",
                 () -> assertEquals(source, sqlStatement.getSourcePath(), "source"),
-                () -> assertEquals(statement, sqlStatement.getRawStatement(), "statement"),
+                () -> assertEquals(SQL, sqlStatement.getRawStatement(), "statement"),
                 () -> assertNotNull(sqlStatement.getConfiguration(), "configuration")
         );
     }
 
     @Test
     void parseCallingStatement() {
-        final var statement = """
-                INSERT INTO example_table (id, name, id)
-                VALUES (:id, :name, :id);
-                """;
-
         final var sqlStatement = parser.parseStatement(
-                Paths.get("callData.sql"), statement, 1);
+                Paths.get("callData.sql"), TYPED_PARAMETERS + SQL, 1);
 
         assertAll("statement type",
                 () -> assertTrue(sqlStatement.isCalling(), "calling"),
@@ -135,13 +141,8 @@ class DefaultSqlStatementParserTest {
 
     @Test
     void parseReadingStatement() {
-        final var statement = """
-                INSERT INTO example_table (id, name, id)
-                VALUES (:id, :name, :id);
-                """;
-
         final var sqlStatement = parser.parseStatement(
-                Paths.get("readData.sql"), statement, 1);
+                Paths.get("readData.sql"), TYPED_PARAMETERS + SQL, 1);
 
         assertAll("statement type",
                 () -> assertFalse(sqlStatement.isCalling(), "calling"),
@@ -152,13 +153,8 @@ class DefaultSqlStatementParserTest {
 
     @Test
     void parseWritingStatement() {
-        final var statement = """
-                INSERT INTO example_table (id, name, id)
-                VALUES (:id, :name, :id);
-                """;
-
         final var sqlStatement = parser.parseStatement(
-                Paths.get("writeData.sql"), statement, 1);
+                Paths.get("writeData.sql"), TYPED_PARAMETERS + SQL, 1);
 
         assertAll("statement type",
                 () -> assertFalse(sqlStatement.isCalling(), "calling"),
@@ -169,37 +165,23 @@ class DefaultSqlStatementParserTest {
 
     @Test
     void parseStatementNameFromFile() {
-        final var statement = """
-                INSERT INTO example_table (id, name, id)
-                VALUES (:id, :name, :id);
-                """;
-
         final var sqlStatement = parser.parseStatement(
-                Paths.get("writeData.sql"), statement, 1);
+                Paths.get("writeData.sql"), TYPED_PARAMETERS + SQL, 1);
 
         assertEquals("writeData", sqlStatement.getName());
     }
 
     @Test
     void parseStatementNameFromFileWithMultipleStatementsInFile() {
-        final var statement = """
-                INSERT INTO example_table (id, name, id)
-                VALUES (:id, :name, :id);
-                """;
-
         final var sqlStatement = parser.parseStatement(
-                Paths.get("writeData.sql"), statement, 3);
+                Paths.get("writeData.sql"), TYPED_PARAMETERS + SQL, 3);
 
         assertEquals("writeData3", sqlStatement.getName());
     }
 
     @Test
     void parseStatementNameFromFrontMatter() {
-        final var statement = """
-                -- name: someName
-                INSERT INTO example_table (id, name, id)
-                VALUES (:id, :name, :id);
-                """;
+        final var statement = "-- name: someName\n" + TYPED_PARAMETERS + SQL;
 
         final var sqlStatement = parser.parseStatement(
                 Paths.get("writeData.sql"), statement, 1);

@@ -321,9 +321,81 @@ public final class Sql extends AbstractConfigurationGroup {
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
+                .setExplanation("""
+                        A statement binds its parameters by name — `:tenantId` — and each becomes a method
+                        parameter, in the order the names first appear in the statement. A name used more than
+                        once is one method parameter bound at every position it occupies.
+
+                        What `YoSQL` needs from you is the Java type of each one, and only when it cannot work it
+                        out. A statement naming a record with [resultRowType](../resultrowtype/) takes each
+                        parameter's type from the component of the same name, so a query selecting a tenant by its
+                        id needs nothing here: the record already says the id is a `UUID`.
+
+                        Where there is no such component — every write statement, for a start — name the types:
+
+                        ```sql
+                        -- parameters:
+                        --   id: uuid
+                        --   slug: string
+                        --   createdAt: instant
+                        insert into tenant (id, slug, created_at) values (:id, :slug, :createdAt)
+                        ```
+
+                        A type is a fully-qualified class name, a primitive, or one of the short names for the
+                        types statements are overwhelmingly written in: `string`, `object`, `uuid`, `instant`,
+                        `localdate`, `localdatetime`, `localtime`, `offsetdatetime`, `offsettime`,
+                        `zoneddatetime`, `duration`, `period`, `bigdecimal`, `biginteger`, `date`, `time`,
+                        `timestamp`, `array`, `blob`, `clob`, `ref`, `rowid`, `sqlxml`, `url`, `uri`, `currency`,
+                        `locale`, `zoneid`, `inputstream` and `reader`. Case does not matter, so `uuid` and
+                        `UUID` name the same type.
+
+                        A parameter that neither source settles **fails the build**, naming the file, the
+                        statement and every parameter still without a type. The alternative is binding it as
+                        `java.lang.Object`, which compiles and then accepts anything at all — exactly the type
+                        safety a generated repository exists to provide.
+
+                        A parameter needing more than a type keeps the longer form, and the two can be mixed
+                        across statements in the same file:
+
+                        ```sql
+                        -- parameters:
+                        --   - name: payload
+                        --     type: java.lang.String
+                        --     sqlType: 2005
+                        ```""")
                 .addImmutableMethods(immutableMethod(TypicalTypes.listOf(SqlParameter.class), name, description))
                 .setMergeCode(CodeBlock.of("$T.mergeParameters(first.$L(), second.$L())", SqlParameter.class, name, name))
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("a mapping of name to type")
+                        .setDescription("""
+                                The short form: one line per parameter, for the parameters that need nothing but a
+                                type.""")
+                        .setResult("""
+                                public final class SomeRepository {
+
+                                    public int insertTenant(final UUID id, final String slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                }
+                                """)
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("a list of objects")
+                        .setDescription("""
+                                The long form, for a parameter that also needs a JDBC type, a scale or a
+                                variant.""")
+                        .setResult("""
+                                public final class SomeRepository {
+
+                                    public int insertDocument(final String payload) {
+                                        // ... rest of generated code
+                                    }
+
+                                }
+                                """)
+                        .build())
                 .build();
     }
 

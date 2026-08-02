@@ -7,6 +7,8 @@ package wtf.metio.yosql.internals.javapoet;
 import com.palantir.javapoet.*;
 
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * An extension for JavaPoet's {@link ClassName#bestGuess(String)} that adds support for primitive and generic types as
@@ -21,6 +23,47 @@ public final class TypeGuesser {
     private static final String QUESTION_MARK = "?";
     private static final String EXTENDS = "extends";
     private static final String SUPER = "super";
+
+    /**
+     * The types a statement's parameters and results are overwhelmingly written in, under the name
+     * they are known by rather than the package they live in.
+     *
+     * <p>Without them a bare {@code UUID} is a class name with no package, which compiles to an
+     * import that is not there. Matching is case-insensitive, so {@code uuid} and {@code UUID} name
+     * the same type and neither can be mistaken for a class of the project: a name that resolves
+     * here has no package, and a type of the project always does.</p>
+     */
+    private static final Map<String, ClassName> ALIASES = Map.ofEntries(
+            Map.entry("string", ClassName.get(String.class)),
+            Map.entry("object", ClassName.get(Object.class)),
+            Map.entry("uuid", ClassName.get(java.util.UUID.class)),
+            Map.entry("bigdecimal", ClassName.get(java.math.BigDecimal.class)),
+            Map.entry("biginteger", ClassName.get(java.math.BigInteger.class)),
+            Map.entry("instant", ClassName.get(java.time.Instant.class)),
+            Map.entry("localdate", ClassName.get(java.time.LocalDate.class)),
+            Map.entry("localdatetime", ClassName.get(java.time.LocalDateTime.class)),
+            Map.entry("localtime", ClassName.get(java.time.LocalTime.class)),
+            Map.entry("offsetdatetime", ClassName.get(java.time.OffsetDateTime.class)),
+            Map.entry("offsettime", ClassName.get(java.time.OffsetTime.class)),
+            Map.entry("zoneddatetime", ClassName.get(java.time.ZonedDateTime.class)),
+            Map.entry("duration", ClassName.get(java.time.Duration.class)),
+            Map.entry("period", ClassName.get(java.time.Period.class)),
+            Map.entry("date", ClassName.get(java.sql.Date.class)),
+            Map.entry("time", ClassName.get(java.sql.Time.class)),
+            Map.entry("timestamp", ClassName.get(java.sql.Timestamp.class)),
+            Map.entry("array", ClassName.get(java.sql.Array.class)),
+            Map.entry("blob", ClassName.get(java.sql.Blob.class)),
+            Map.entry("clob", ClassName.get(java.sql.Clob.class)),
+            Map.entry("ref", ClassName.get(java.sql.Ref.class)),
+            Map.entry("rowid", ClassName.get(java.sql.RowId.class)),
+            Map.entry("sqlxml", ClassName.get(java.sql.SQLXML.class)),
+            Map.entry("url", ClassName.get(java.net.URL.class)),
+            Map.entry("uri", ClassName.get(java.net.URI.class)),
+            Map.entry("currency", ClassName.get(java.util.Currency.class)),
+            Map.entry("locale", ClassName.get(java.util.Locale.class)),
+            Map.entry("zoneid", ClassName.get(java.time.ZoneId.class)),
+            Map.entry("inputstream", ClassName.get(java.io.InputStream.class)),
+            Map.entry("reader", ClassName.get(java.io.Reader.class)));
 
     private TypeGuesser() {
         // utility class, call #guessTypeName() directly
@@ -67,7 +110,8 @@ public final class TypeGuesser {
         if (type.contains(OPEN_ANGLE_BRACKET)) {
             return guessGenericType(type);
         }
-        return ClassName.bestGuess(type);
+        final var alias = ALIASES.get(type.toLowerCase(Locale.ROOT));
+        return alias == null ? ClassName.bestGuess(type) : alias;
     }
 
     private static TypeName guessWildcardType(final String type) {

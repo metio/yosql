@@ -3,11 +3,17 @@
  * SPDX-License-Identifier: 0BSD
  */
 
+-- parameters:
+--   id: int
+--   name: string
 INSERT INTO users (id, name)
 VALUES (:id, :name)
 ;
 
 -- createConnection: false
+-- parameters:
+--   id: int
+--   name: string
 INSERT INTO users (id, name)
 VALUES (:id, :name)
 ;

@@ -6,6 +6,9 @@
 -- type: writing
 -- executeOnce: false
 -- executeBatch: false
+-- parameters:
+--   id: int
+--   name: string
 INSERT INTO persons (id, name)
 VALUES (:id, :name)
 ;

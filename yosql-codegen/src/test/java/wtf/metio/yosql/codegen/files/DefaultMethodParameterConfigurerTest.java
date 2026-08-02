@@ -5,20 +5,41 @@
 
 package wtf.metio.yosql.codegen.files;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import wtf.metio.yosql.codegen.exceptions.UntypedParameterException;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
-import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
+import wtf.metio.yosql.codegen.records.JavaSourceParser;
+import wtf.metio.yosql.codegen.records.RecordScanner;
+import wtf.metio.yosql.models.configuration.SqlParameter;
+import wtf.metio.yosql.models.immutables.FilesConfiguration;
+import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("DefaultMethodParameterConfigurer")
 class DefaultMethodParameterConfigurerTest {
+
+    private static final String DOMAIN = "com.example.domain";
+    private static final Path SOURCE = Path.of("src", "main", "yosql", "tenant", "findTenant.sql");
+
+    @TempDir
+    Path sources;
 
     private DefaultMethodParameterConfigurer configurer;
 
@@ -27,22 +48,215 @@ class DefaultMethodParameterConfigurerTest {
         configurer = new DefaultMethodParameterConfigurer(
                 LoggingObjectMother.logger(),
                 OrchestrationObjectMother.executionErrors(),
-                LoggingObjectMother.messages());
+                LoggingObjectMother.messages(),
+                new RecordScanner(
+                        FilesConfiguration.builder().setSourceDirectory(sources).build(),
+                        new JavaSourceParser()));
     }
 
-    @Test
-    void configureParameters() {
-        final var configuration = SqlConfigurations.simpleSqlConfiguration();
-        final var source = Paths.get("test.sql");
-        final var indices = new LinkedHashMap<String, List<Integer>>();
-        indices.put("first", List.of(1, 3));
-        indices.put("second", List.of(2, 4));
-        final var adapted = configurer.configureParameters(configuration, source, indices);
+    private void write(final String simpleName, final String body) {
+        try {
+            final var directory = sources.resolve(DOMAIN.replace('.', '/'));
+            Files.createDirectories(directory);
+            Files.writeString(directory.resolve(simpleName + ".java"), body);
+        } catch (final IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
+    }
 
-        Assertions.assertEquals(2, adapted.parameters().size());
-        Assertions.assertAll(
-                () -> Assertions.assertEquals("first", adapted.parameters().get(0).name().get()),
-                () -> Assertions.assertEquals("second", adapted.parameters().get(1).name().get()));
+    private static Map<String, List<Integer>> indices(final String... names) {
+        final var indices = new LinkedHashMap<String, List<Integer>>();
+        for (var index = 0; index < names.length; index++) {
+            indices.put(names[index], List.of(index + 1));
+        }
+        return indices;
+    }
+
+    private static SqlConfiguration statement(final SqlParameter... parameters) {
+        return SqlConfiguration.builder()
+                .setName("findTenant")
+                .addParameters(parameters)
+                .build();
+    }
+
+    private static SqlParameter parameter(final String name, final String type) {
+        return SqlParameter.builder().setName(name).setType(type).build();
+    }
+
+    private static SqlParameter untyped(final String name) {
+        return SqlParameter.builder().setName(name).build();
+    }
+
+    @Nested
+    @DisplayName("takes the type the front matter names")
+    class Declared {
+
+        @Test
+        void shouldKeepDeclaredTypes() {
+            final var configured = configurer.configureParameters(
+                    statement(parameter("id", "java.util.UUID"), parameter("slug", "java.lang.String")),
+                    SOURCE, indices("id", "slug"));
+
+            assertAll(
+                    () -> assertEquals(2, configured.parameters().size()),
+                    () -> assertEquals("java.util.UUID", configured.parameters().get(0).type().orElseThrow()),
+                    () -> assertEquals("java.lang.String", configured.parameters().get(1).type().orElseThrow()));
+        }
+
+        @Test
+        @DisplayName("the indices a parameter is bound at come from the statement")
+        void shouldAssignIndices() {
+            final var configured = configurer.configureParameters(
+                    statement(parameter("id", "java.util.UUID")), SOURCE, indices("id"));
+
+            assertAll(
+                    () -> assertTrue(configured.parameters().get(0).hasIndices()),
+                    () -> assertEquals(1, configured.parameters().get(0).indices().orElseThrow()[0]));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("takes the type of the matching component of the result row type")
+    class Inferred {
+
+        @Test
+        void shouldInferFromRecordComponent() {
+            write("Tenant", """
+                    package com.example.domain;
+
+                    import java.util.UUID;
+
+                    public record Tenant(UUID id, String slug) {
+                    }
+                    """);
+
+            final var configured = configurer.configureParameters(
+                    SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Tenant"),
+                    SOURCE, indices("id"));
+
+            assertAll(
+                    () -> assertEquals(1, configured.parameters().size()),
+                    () -> assertEquals("id", configured.parameters().get(0).name().orElseThrow()),
+                    () -> assertEquals("java.util.UUID", configured.parameters().get(0).type().orElseThrow()));
+        }
+
+        @Test
+        @DisplayName("a parameter named in the front matter without a type is inferred as well")
+        void shouldInferForDeclaredParameterWithoutType() {
+            write("Tenant", """
+                    package com.example.domain;
+
+                    import java.util.UUID;
+
+                    public record Tenant(UUID id, String slug) {
+                    }
+                    """);
+
+            final var configured = configurer.configureParameters(
+                    SqlConfiguration.copyOf(statement(untyped("slug"))).withResultRowType(DOMAIN + ".Tenant"),
+                    SOURCE, indices("slug"));
+
+            assertEquals("java.lang.String", configured.parameters().get(0).type().orElseThrow());
+        }
+
+        @Test
+        @DisplayName("what the front matter names wins over the component of the same name")
+        void shouldPreferDeclaredTypeOverComponent() {
+            write("Tenant", """
+                    package com.example.domain;
+
+                    import java.util.UUID;
+
+                    public record Tenant(UUID id, String slug) {
+                    }
+                    """);
+
+            final var configured = configurer.configureParameters(
+                    SqlConfiguration.copyOf(statement(parameter("id", "java.lang.String")))
+                            .withResultRowType(DOMAIN + ".Tenant"),
+                    SOURCE, indices("id"));
+
+            assertEquals("java.lang.String", configured.parameters().get(0).type().orElseThrow());
+        }
+
+        @Test
+        @DisplayName("a component of a nested record is not a candidate for a plain parameter name")
+        void shouldNotDescendIntoNestedRecords() {
+            write("Money", """
+                    package com.example.domain;
+
+                    public record Money(long minorUnits, String currency) {
+                    }
+                    """);
+            write("Entry", """
+                    package com.example.domain;
+
+                    public record Entry(long id, Money amount) {
+                    }
+                    """);
+
+            final var exception = assertThrows(UntypedParameterException.class,
+                    () -> configurer.configureParameters(
+                            SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Entry"),
+                            SOURCE, indices("minorUnits")));
+
+            assertTrue(exception.getMessage().contains("minorUnits"));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("fails rather than binding a parameter as Object")
+    class Untyped {
+
+        @Test
+        void shouldFailForUndeclaredParameter() {
+            final var exception = assertThrows(UntypedParameterException.class,
+                    () -> configurer.configureParameters(statement(), SOURCE, indices("id")));
+
+            assertAll(
+                    () -> assertTrue(exception.getMessage().contains("findTenant")),
+                    () -> assertTrue(exception.getMessage().contains(SOURCE.toString())),
+                    () -> assertTrue(exception.getMessage().contains("id")));
+        }
+
+        @Test
+        @DisplayName("every parameter without a type is named at once")
+        void shouldNameEveryUntypedParameter() {
+            final var exception = assertThrows(UntypedParameterException.class,
+                    () -> configurer.configureParameters(statement(), SOURCE, indices("id", "slug", "accountId")));
+
+            assertAll(
+                    () -> assertTrue(exception.getMessage().contains("id")),
+                    () -> assertTrue(exception.getMessage().contains("slug")),
+                    () -> assertTrue(exception.getMessage().contains("accountId")));
+        }
+
+        @Test
+        @DisplayName("a result row type that is not a record settles nothing")
+        void shouldFailWhenResultRowTypeIsNotARecord() {
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public class Tenant {
+                    }
+                    """);
+
+            assertThrows(UntypedParameterException.class,
+                    () -> configurer.configureParameters(
+                            SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Tenant"),
+                            SOURCE, indices("id")));
+        }
+
+        @Test
+        @DisplayName("a statement binding nothing needs no types")
+        void shouldAcceptStatementWithoutParameters() {
+            final var configured = configurer.configureParameters(statement(), SOURCE, Map.of());
+
+            assertTrue(configured.parameters().isEmpty());
+        }
+
     }
 
 }

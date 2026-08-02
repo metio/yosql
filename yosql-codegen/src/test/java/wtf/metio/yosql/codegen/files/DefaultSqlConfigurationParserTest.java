@@ -401,6 +401,71 @@ class DefaultSqlConfigurationParserTest {
     }
 
     @Test
+    @DisplayName("a parameter that needs only a type can be written as one line")
+    void shouldParseParameterShorthand() {
+        final var yaml = """
+                parameters:
+                  name: java.lang.String
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertEquals(1, config.parameters().size());
+        assertAll(
+                () -> assertEquals("name", config.parameters().get(0).name().get()),
+                () -> assertEquals("java.lang.String", config.parameters().get(0).type().get()));
+    }
+
+    @Test
+    @DisplayName("the shorthand keeps the order the parameters were written in")
+    void shouldParseParametersShorthand() {
+        final var yaml = """
+                parameters:
+                  id: uuid
+                  name: string
+                  count: int
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertEquals(3, config.parameters().size());
+        assertAll(
+                () -> assertEquals("id", config.parameters().get(0).name().get()),
+                () -> assertEquals("uuid", config.parameters().get(0).type().get()),
+                () -> assertEquals("name", config.parameters().get(1).name().get()),
+                () -> assertEquals("string", config.parameters().get(1).type().get()),
+                () -> assertEquals("count", config.parameters().get(2).name().get()),
+                () -> assertEquals("int", config.parameters().get(2).type().get()));
+    }
+
+    @Test
+    @DisplayName("a shorthand entry with no type names a parameter whose type is inferred")
+    void shouldParseParameterShorthandWithoutType() {
+        final var yaml = """
+                parameters:
+                  id:
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertEquals(1, config.parameters().size());
+        assertAll(
+                () -> assertEquals("id", config.parameters().get(0).name().get()),
+                () -> assertTrue(config.parameters().get(0).type().isEmpty()));
+    }
+
+    @Test
+    @DisplayName("the list form still carries everything a parameter can say")
+    void shouldParseParameterListFormAlongsideShorthand() {
+        final var yaml = """
+                parameters:
+                  - name: name
+                    type: java.lang.String
+                    sqlType: 12
+                """;
+        final var config = parser.parseConfig(yaml);
+        assertEquals(1, config.parameters().size());
+        assertAll(
+                () -> assertEquals("name", config.parameters().get(0).name().get()),
+                () -> assertEquals("java.lang.String", config.parameters().get(0).type().get()),
+                () -> assertEquals(12, config.parameters().get(0).sqlType().get()));
+    }
+
+    @Test
     @DisplayName("a converter is named by its class, and the rest is resolved later")
     void shouldParseResultRowConverter() {
         final var yaml = """
