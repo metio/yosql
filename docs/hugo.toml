@@ -19,10 +19,8 @@ term = ["HTML", "RSS", "ATOM"]
 [params]
 mainSections = ["installation", "tooling", "configuration", "integration", "logging", "persistence", "benchmarks", "project", "sql"]
 author = "metio.wtf"
-matrix = "#yosql:matrix.org"
 github = "metio/yosql"
 work = "yosql.projects.metio.wtf"
-calendar = "https://metio.groups.io/g/yosql/calendar"
 description = "Write more SQL"
 licenseName = "0BSD"
 licenseURL = "https://spdx.org/licenses/0BSD.html"
