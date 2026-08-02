@@ -93,8 +93,8 @@ quickest route is to read the actual value out of `target/surefire-reports/TEST-
 message holds both sides — rather than hand-editing.
 
 Watch two traps there: the expectations contain text blocks, so `"""` inside them needs escaping as
-`""\"`; and the surefire failure message is followed by a stack trace, so cut at the first `\n\tat `
-before parsing the actual value out of it.
+`""\"`; and the surefire failure message is followed by a stack trace, so cut at its first
+`\n\tat` line before parsing the actual value out of it.
 
 ## Frontends the Maven reactor does not build
 
