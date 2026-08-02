@@ -168,3 +168,7 @@ fabric.properties
 
 # htmltest writes its reference cache next to where it is run
 /tmp/
+
+# The throwaway Postgres the native gate starts, when that gate is run locally.
+pgdata/
+pg.log
