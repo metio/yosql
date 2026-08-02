@@ -3,5 +3,8 @@
  * SPDX-License-Identifier: 0BSD
  */
 
+-- parameters:
+--   parameter: string
 MY_FUNCTION
-(:parameter);
+(:parameter)
+;

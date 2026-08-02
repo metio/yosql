@@ -23,8 +23,14 @@ public interface SqlStatementParser {
 
     /**
      * The regex to extract named parameters out of SQL statements.
+     *
+     * <p>A named parameter is a colon and at least one word character. Requiring the name rules out
+     * the two things that are a colon and are not a parameter: punctuation, as in the {@code :} of a
+     * licence header the statement carries, and the second colon of PostgreSQL's {@code ::} cast.
+     * Both used to be read as parameters, and a cast took an index with it — which moved every
+     * parameter after it onto the wrong placeholder.</p>
      */
-    String NAMED_PARAMETER_REGEX = "(?<!')(:[\\w]*)(?!')";
+    String NAMED_PARAMETER_REGEX = "(?<!')(?<!:)(:\\w+)(?!')";
     String PARAMETER_REGEX = "\\?";
 
     /**

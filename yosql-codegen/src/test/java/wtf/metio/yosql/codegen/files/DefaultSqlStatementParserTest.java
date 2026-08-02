@@ -64,6 +64,38 @@ class DefaultSqlStatementParserTest {
     }
 
     @Test
+    @DisplayName("a colon with no name after it is punctuation, not a parameter")
+    void ignoreColonsThatNameNothing() {
+        final var indices = SqlStatementParser.extractParameterIndices("""
+                /*
+                 * SPDX-FileCopyrightText: The yosql Authors
+                 * SPDX-License-Identifier: 0BSD
+                 */
+                SELECT * FROM example_table WHERE id = :id;
+                """);
+
+        assertAll(
+                () -> assertIterableEquals(List.of("id"), indices.keySet()),
+                () -> assertIterableEquals(List.of(1), indices.get("id")));
+    }
+
+    @Test
+    @DisplayName("a cast is not a parameter, and does not take an index from the ones that are")
+    void ignorePostgresCasts() {
+        final var indices = SqlStatementParser.extractParameterIndices("""
+                SELECT payload::text
+                FROM document
+                WHERE tenant_id = :tenantId
+                  AND id = :id;
+                """);
+
+        assertAll(
+                () -> assertIterableEquals(List.of("tenantId", "id"), indices.keySet()),
+                () -> assertIterableEquals(List.of(1), indices.get("tenantId")),
+                () -> assertIterableEquals(List.of(2), indices.get("id")));
+    }
+
+    @Test
     void extractMultipleParameterIndices() {
         final var indices = SqlStatementParser.extractParameterIndices("""
                 INSERT INTO example_table (id, name, name)
