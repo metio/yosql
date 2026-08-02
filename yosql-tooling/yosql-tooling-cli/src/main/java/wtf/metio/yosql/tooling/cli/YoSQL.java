@@ -20,6 +20,7 @@ import picocli.CommandLine;
         versionProvider = VersionProvider.class,
         subcommands = {
                 Generate.class,
+                Init.class,
                 AutoComplete.GenerateCompletion.class
         }
 )
