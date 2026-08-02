@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Generates markdown documentation for {@link ConfigurationGroup}s.
@@ -73,9 +74,17 @@ final class MarkdownGenerator {
         scopes.put("lower", LOWER_CASE);
         scopes.put("upper", UPPER_CASE);
         scopes.put("kebab", KEBAB_CASE);
-        scopes.put("relatedSettings", relatedSettings);
+        // One line of links rather than one bullet per sibling with its description repeated: the
+        // group's own index page already carries the descriptions, and repeating them on all of a
+        // group's pages buries whatever the page is actually about.
+        scopes.put("relatedSettingsLine", relatedSettings.stream()
+                .map(related -> "[%s](../%s/)".formatted(related.name(), Strings.lowerCase(related.name())))
+                .collect(Collectors.joining(", ")));
         scopes.put("hasRelatedSettings", !relatedSettings.isEmpty());
         scopes.put("hasExplanation", setting.explanation().isPresent());
+        // A heading with nothing under it reads as a gap in the documentation rather than as a
+        // setting that takes any value at all, so the section only appears once there is one.
+        scopes.put("hasExamples", !setting.examples().isEmpty());
         return applyTemplate(settingTemplate, scopes);
     }
 

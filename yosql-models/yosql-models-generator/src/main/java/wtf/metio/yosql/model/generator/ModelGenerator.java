@@ -58,6 +58,16 @@ public final class ModelGenerator {
         forAllConfigurations(generator, type -> writer.accept(GRADLE_PACKAGE, type));
     }
 
+    public static void createJsonSchema(final String version, final Path outputDirectory) {
+        try {
+            Files.createDirectories(outputDirectory);
+            writeString(outputDirectory.resolve("frontmatter.json"),
+                    JsonSchemaGenerator.frontMatterSchema(version));
+        } catch (final IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
     public static void createMarkdownDocumentation(final String version, final Path outputDirectory) {
         final var factory = new RawTextMustacheFactory();
         final var globalGenerator = new MarkdownGenerator(factory, version, "configurationSetting.md");

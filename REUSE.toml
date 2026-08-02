@@ -32,6 +32,7 @@ path = [
   "docs/archetypes/**",
   "docs/content/**",
   "yosql-models/yosql-models-generator/src/main/resources/*.md",
+  ".claude/skills/**",
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "The yosql Authors"

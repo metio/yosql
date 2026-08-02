@@ -42,12 +42,24 @@
                 <version>${project.version}</version>
                 <executions>
                     <execution>
+                        <id>configuration-pages</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
                             <type>website</type>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>front-matter-schema</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <type>json-schema</type>
+                            <outputBaseDirectory>static/schema</outputBaseDirectory>
                         </configuration>
                     </execution>
                 </executions>

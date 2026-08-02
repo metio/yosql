@@ -22,8 +22,8 @@ generated: true
 
 {{/hasExplanation}}
 
+{{#hasExamples}}
 ## Configuration Options
-
 {{#setting.examples}}
 
 ### Option: '{{value}}'
@@ -38,14 +38,12 @@ generated: true
 
 {{/result}}
 {{/setting.examples}}
+{{/hasExamples}}
 {{#hasRelatedSettings}}
 
 ## Related Options
 
-{{#relatedSettings}}
-
-- [{{name}}](../{{#lower}}{{name}}{{/lower}}/): {{description}}
-{{/relatedSettings}}
+Also in this group: {{{relatedSettingsLine}}}.
 {{/hasRelatedSettings}}
 
 ## Tooling

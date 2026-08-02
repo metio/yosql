@@ -165,6 +165,7 @@ fabric.properties
 /docs/.hugo_build.lock
 /docs/content/configuration/*
 !/docs/content/configuration/_index.md
+/docs/static/schema
 
 # htmltest writes its reference cache next to where it is run
 /tmp/

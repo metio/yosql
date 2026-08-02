@@ -41,6 +41,7 @@ public class ModelGeneratorMojo extends AbstractMojo {
             case "cli" -> modelGenerator.createCliModel(writer);
             case "ant" -> modelGenerator.createAntModel(writer);
             case "website" -> ModelGenerator.createMarkdownDocumentation(project.getVersion(), outputDirectory);
+            case "json-schema" -> ModelGenerator.createJsonSchema(project.getVersion(), outputDirectory);
         }
     }
 
