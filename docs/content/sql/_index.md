@@ -47,3 +47,10 @@ and how to override that.
 [Converters](./converters/) — how a row becomes something other than a `Map`. Naming a record is
 usually all it takes; there is a hand-written escape hatch for mappings a record cannot express, and
 the same types work for parameters on the way in.
+
+[Transactions](./transactions/) — running several statements on one connection, with plain JDBC or
+under a framework that opens the transaction for you.
+
+[Cookbook](./cookbook/) — whole statements for the queries that need more than a name and a return
+mode: `IN` lists, optional filters, pagination, streaming, nested records, enums, JSON columns,
+batches, and one statement per database.

@@ -23,7 +23,9 @@ generated: true
 {{/hasExplanation}}
 
 {{#hasExamples}}
+
 ## Configuration Options
+
 {{#setting.examples}}
 
 ### Option: '{{value}}'

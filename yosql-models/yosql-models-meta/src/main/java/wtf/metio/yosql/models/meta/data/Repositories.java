@@ -197,6 +197,47 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Generate interfaces for all repositories";
         final var value = false;
         return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        Writes an interface next to each repository, declaring the same methods, and has the
+                        repository implement it. Depend on the interface and the class it is implemented by
+                        becomes something you can substitute — a stub in a test, a caching decorator, a fake
+                        that never touches a database.
+
+                        The interface is named by
+                        [repositoryInterfacePrefix](../repositoryinterfaceprefix/) and
+                        [repositoryInterfaceSuffix](../repositoryinterfacesuffix/), neither of which is set by
+                        default, so a `TenantRepository` implements a `TenantRepository` interface in the same
+                        package — which does not compile. Set at least one of them before turning this on.""")
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("The default. A repository is a class and nothing else:")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public final class TenantRepository {
+
+                                    // ... rest of generated code
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("With `repositoryInterfaceSuffix` set to `Api`, the repository implements an interface your code can depend on instead:")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                public interface TenantRepositoryApi {
+
+                                    Optional<Tenant> findTenant(UUID id);
+
+                                }
+
+                                public final class TenantRepository implements TenantRepositoryApi {
+
+                                    // ... rest of generated code
+
+                                }""")
+                        .build())
                 .build();
     }
 
@@ -205,7 +246,43 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Generate methods that are executed once with the given parameters";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        The ordinary method: one call, one execution, the parameters you passed. It is what you
+                        want for almost every statement, which is why it is on.
+
+                        Turning it off for a statement leaves only its batch method, which is worth doing for a
+                        statement that is never sensibly run for a single row — a bulk import, say. A statement
+                        with both turned off generates nothing, and `YoSQL` warns rather than leaving you to
+                        notice the missing method.
+
+                        The name is [executeOncePrefix](../executeonceprefix/) and
+                        [executeOnceSuffix](../executeoncesuffix/) around the statement's own, neither set by
+                        default.""")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public int insertTenant(final UUID id, final String slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("Only the batch method is generated:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public int[] insertTenantBatch(final UUID[] id, final String[] slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
                 .build();
     }
 
@@ -214,7 +291,47 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Generate methods that are executed as batch";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        A second method taking an array per parameter, adding a batch entry per element and
+                        answering with the `int[]` the driver gives back. One round trip instead of one per row,
+                        which is the difference between an import that takes a minute and one that takes an hour.
+
+                        Only writing statements get one — batching a query would have nowhere to put the results.
+                        Turn it off for a statement that is never run in bulk, if the extra method bothers you;
+                        it costs nothing to leave on.
+
+                        The name is [executeBatchPrefix](../executebatchprefix/) and
+                        [executeBatchSuffix](../executebatchsuffix/) around the statement's own, the suffix being
+                        `Batch` by default.""")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default. A batch method sits alongside the single-row one:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public int insertTenant(final UUID id, final String slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                    public int[] insertTenantBatch(final UUID[] id, final String[] slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("No batch method is generated:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public int insertTenant(final UUID id, final String slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
                 .build();
     }
 
@@ -278,7 +395,41 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Writing method which are using `ReturningMode.NONE` return the number of affected rows instead.";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        What a write answers with when it returns no rows. On, it is the number of rows the
+                        statement changed; off, the method is `void`.
+
+                        The count is worth having: an update that changed no rows is usually a bug the caller can
+                        act on, and there is nowhere else to learn that. Turn it off for a statement whose count
+                        is meaningless — a `create table`, or DDL generally.
+
+                        This applies to [returning](../../sql/returningmode/) `none` only. A write that returns
+                        rows answers with them.""")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default. The caller can see how many rows the statement changed:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public int insertTenant(final UUID id, final String slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("The count is dropped:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public void insertTenant(final UUID id, final String slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
                 .build();
     }
 
@@ -287,7 +438,43 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Throw an exception in case a statement using `ReturningMode.SINGLE` produces more than 1 result.";
         final var value = false;
         return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        What a [returning](../../sql/returningmode/) `single` statement does when the database
+                        answers with more than one row. Off, the first row is returned and the rest are dropped;
+                        on, it throws.
+
+                        A statement declared `single` is a claim that at most one row can match. Where that claim
+                        rests on a unique constraint the database enforces, the check is redundant and the
+                        default is right. Where it rests on you being sure — a lookup by something that ought to
+                        be unique but is not constrained to be — turning this on converts a silent wrong answer
+                        into a loud one.
+
+                        It costs nothing at run time beyond reading one more row.""")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("The default. A second row is ignored:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public Optional<Tenant> findTenantBySlug(final String slug) {
+                                        // ... reads every row, answers with the first
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("A second row is a defect, and says so:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public Optional<Tenant> findTenantBySlug(final String slug) {
+                                        // ... throws when the statement answers with more than one row
+                                    }
+
+                                }""")
+                        .build())
                 .build();
     }
 

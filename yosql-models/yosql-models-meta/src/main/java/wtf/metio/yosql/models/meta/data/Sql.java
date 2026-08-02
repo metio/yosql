@@ -202,8 +202,47 @@ public final class Sql extends AbstractConfigurationGroup {
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
+                .setFrontMatterExampleCode("PostgreSQL")
+                .setExplanation("""
+                        Where one query cannot be written for every database you support, write one statement per
+                        database and give them the same [name](../name/). They become a single method that picks
+                        its statement from the connection at run time.
+
+                        The value is matched against the JDBC driver's own
+                        `DatabaseMetaData.getDatabaseProductName()`, so it has to be exactly what the driver
+                        reports — `PostgreSQL`, `MySQL`, `H2`, `Microsoft SQL Server`, `Oracle`. A statement of the
+                        same name **without** a vendor is the fallback for every database not named, and a name
+                        with no fallback fails against a database none of its statements claim.
+
+                        Nothing here inspects your SQL. Naming a vendor selects a statement; it does not translate
+                        one.""")
                 .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("PostgreSQL")
+                        .setDescription("Statements sharing a name become one method that chooses between them:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public List<Tenant> findTenants() {
+                                        try (final var connection = dataSource.getConnection()) {
+                                            final var databaseMetaData = connection.getMetaData();
+                                            final var databaseProductName = databaseMetaData.getDatabaseProductName();
+                                            String query = null;
+                                            switch (databaseProductName) {
+                                              case "PostgreSQL":
+                                                query = FIND_TENANTS_POSTGRE_SQL;
+                                                break;
+                                              default:
+                                                query = FIND_TENANTS;
+                                                break;
+                                            }
+                                            // ... rest of generated code
+                                        }
+                                    }
+
+                                }""")
+                        .build())
                 .build();
     }
 
@@ -213,8 +252,63 @@ public final class Sql extends AbstractConfigurationGroup {
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
+                .setFrontMatterExampleCode("reading")
+                .setExplanation("""
+                        Whether a statement reads, writes, or calls a stored procedure. It decides what is
+                        generated for it, and it is normally not written at all: the statement's
+                        [name](../name/) settles it.
+
+                        A name beginning with one of the
+                        [read prefixes](../../repositories/allowedreadprefixes/) is `reading`, one of the
+                        [write prefixes](../../repositories/allowedwriteprefixes/) is `writing`, and one of the
+                        [call prefixes](../../repositories/allowedcallprefixes/) is `calling`. `YoSQL` does not
+                        parse your SQL to work this out, and it does not need to.
+
+                        Set it where you want a name the prefixes do not cover — a `countTenants` that reads, a
+                        `purgeTenants` that writes. A statement whose name matches no prefix and which sets no
+                        type fails the build rather than quietly generating nothing.""")
                 .addImmutableMethods(immutableMethod(ClassName.get(SqlStatementType.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("reading")
+                        .setDescription("Runs the statement as a query and maps what comes back:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public List<Tenant> countTenants() {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("writing")
+                        .setDescription("Runs the statement as an update, and generates a batch method alongside:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public int purgeTenants(final Instant before) {
+                                        // ... rest of generated code
+                                    }
+
+                                    public int[] purgeTenantsBatch(final Instant[] before) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("calling")
+                        .setDescription("Runs the statement as a `CallableStatement`, for a stored procedure:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public List<Tenant> rebuildTenantIndex() {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
                 .build();
     }
 
@@ -224,8 +318,84 @@ public final class Sql extends AbstractConfigurationGroup {
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
+                .setFrontMatterExampleCode("single")
+                .setExplanation("""
+                        How many rows the statement answers with, which decides what the generated method returns.
+                        It is written `returning` in the front matter.
+
+                        The row type comes from elsewhere — [resultRowType](../resultrowtype/) or
+                        [resultRowConverter](../resultrowconverter/), or a `Map<String, Object>` when neither is
+                        named. This setting only wraps it.
+
+                        | `returning` | You get |
+                        | --- | --- |
+                        | `none` | nothing, or the number of rows a write changed |
+                        | `single` | `Optional<T>` |
+                        | `multiple` | `List<T>` |
+                        | `cursor` | `Stream<T>`, read lazily |
+
+                        `single` is for a statement that can answer with at most one row. A second row is
+                        silently ignored unless [throwOnMultipleResults](../throwonmultipleresults/) is on, which
+                        is worth turning on wherever you believe the query really is unique.
+
+                        `cursor` reads rows as the stream is consumed, so a result larger than memory is fine —
+                        but the stream holds the `ResultSet`, the statement and, for the `DataSource` form, the
+                        connection until it is closed. Close it. Most drivers also need a fetch size and
+                        auto-commit off before they stream rather than buffer, and both are connection settings.
+
+                        `none` on a write answers with the number of rows changed unless
+                        [writesReturnUpdateCount](../writesreturnupdatecount/) says otherwise. A write that
+                        returns rows — `insert ... returning *` — takes `single` or `multiple` like a read.""")
                 .addImmutableMethods(immutableMethod(ClassName.get(ReturningMode.class), name, description, jsonProperty("returning")))
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("single")
+                        .setDescription("At most one row, so the method answers with an `Optional`:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public Optional<Tenant> findTenant(final UUID id) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("multiple")
+                        .setDescription("Every row, read into a list before the method returns:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public List<Tenant> findTenants(final UUID accountId) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("cursor")
+                        .setDescription("Rows as they are read, for a result that need not fit in memory. Close the stream:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public Stream<Tenant> findTenants(final UUID accountId) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("none")
+                        .setDescription("No rows. A write answers with the number it changed:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public int insertTenant(final UUID id, final String slug) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
                 .build();
     }
 

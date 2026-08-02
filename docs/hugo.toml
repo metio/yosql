@@ -17,7 +17,7 @@ section = ["HTML", "RSS", "ATOM"]
 term = ["HTML", "RSS", "ATOM"]
 
 [params]
-mainSections = ["installation", "tooling", "configuration", "integration", "logging", "persistence", "benchmarks", "project", "sql"]
+mainSections = ["installation", "tooling", "frameworks", "editors", "configuration", "integration", "logging", "persistence", "benchmarks", "project", "sql"]
 author = "metio.wtf"
 github = "metio/yosql"
 work = "yosql.projects.metio.wtf"

@@ -25,6 +25,18 @@ public final class Names extends AbstractConfigurationGroup {
         return ConfigurationGroup.builder()
                 .setName(GROUP_NAME)
                 .setDescription("Configures the names of variables in generated code.")
+                .setExplanation("""
+                        What the locals and fields inside a generated method are called. `connection`,
+                        `statement`, `resultSet` and the rest are ordinary Java identifiers in code nobody edits,
+                        so most projects never touch any of this.
+
+                        Two reasons to. A name here collides with something in scope — a parameter of your own
+                        called `row`, say — and renaming the generated one is easier than renaming yours. Or your
+                        house style says locals are named differently, and generated code that reads like the
+                        rest of the codebase is worth a line of configuration.
+
+                        Every setting takes a Java identifier. Nothing checks that it is a sensible one, so a
+                        value that is a Java keyword produces code that does not compile.""")
                 .addAllSettings(settings())
                 .addImmutableMethods(uniqueValueCount(settings()))
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))

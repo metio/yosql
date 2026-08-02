@@ -25,6 +25,20 @@ Each [release](https://github.com/metio/yosql/releases/latest) publishes two kin
 Unpack it and put the `yosql` binary, or the `bin/yosql` script, on your `PATH`. Both archives are
 covered by the signed `SHA256SUMS` — see [verifying a download](../../installation/#verifying-a-download).
 
+## Starting from something
+
+In a project with no statements yet, `init` writes the three files that make a first run possible —
+a statement, the record it builds, and an arguments file tying the directories together:
+
+```shell
+yosql init
+yosql generate @yosql.args
+```
+
+That leaves a `TenantRepository` with a `findTenant` and an `insertTenant` to delete or rename.
+`--package` sets the package to write in, `--directory` the project to write into, and files that
+are already there are kept unless `--force` says otherwise.
+
 ## Using it
 
 ```shell

@@ -870,19 +870,109 @@ public final class Annotations extends AbstractConfigurationGroup {
     private static ConfigurationSetting repositoryAnnotations() {
         final var name = "repositoryAnnotations";
         final var description = "The additional annotations to be placed on generated repository classes.";
-        return listOfAnnotations(name, description);
+        return ConfigurationSetting.copyOf(listOfAnnotations(name, description))
+                .withExplanation("""
+                        This is how a generated repository becomes a bean. `org.springframework.stereotype.Repository`
+                        makes component scanning find it; `jakarta.enterprise.context.ApplicationScoped` makes CDI
+                        find it. Either way constructor injection supplies the `DataSource`, and no configuration
+                        class is needed — see [Spring Boot](../../../frameworks/spring-boot/) and
+                        [Quarkus](../../../frameworks/quarkus/).
+
+                        Name annotations by their fully-qualified name; the import is written for you. The
+                        annotation has to be on the compile classpath of the project being generated for, since
+                        the generated code has to compile against it — but it is your dependency, not one of
+                        `YoSQL`'s.""")
+                .withExamples(ConfigurationExample.builder()
+                        .setValue("org.springframework.stereotype.Repository")
+                        .setDescription("Spring finds the repository by scanning, and injects the application's `DataSource`:")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                import org.springframework.stereotype.Repository;
+
+                                @Repository
+                                public final class TenantRepository {
+
+                                    // ... rest of generated code
+
+                                }""")
+                        .build(),
+                ConfigurationExample.builder()
+                        .setValue("jakarta.enterprise.context.ApplicationScoped")
+                        .setDescription("The same under CDI, so Quarkus and Jakarta EE inject it:")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                import jakarta.enterprise.context.ApplicationScoped;
+
+                                @ApplicationScoped
+                                public final class TenantRepository {
+
+                                    // ... rest of generated code
+
+                                }""")
+                        .build());
     }
 
     private static ConfigurationSetting constructorAnnotations() {
         final var name = "constructorAnnotations";
         final var description = "The additional annotations to be placed on generated constructors.";
-        return listOfAnnotations(name, description);
+        return ConfigurationSetting.copyOf(listOfAnnotations(name, description))
+                .withExplanation("""
+                        A repository has one constructor, so most containers inject through it without being
+                        told. This is for the ones that want to be told, or for a project whose style is to say
+                        so anyway — `jakarta.inject.Inject`, `org.springframework.beans.factory.annotation.Autowired`.""")
+                .withExamples(ConfigurationExample.builder()
+                        .setValue("jakarta.inject.Inject")
+                        .setDescription("Marks the constructor for injection explicitly:")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                import jakarta.inject.Inject;
+
+                                public final class TenantRepository {
+
+                                    @Inject
+                                    public TenantRepository(final DataSource dataSource) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build());
     }
 
     private static ConfigurationSetting methodAnnotations() {
         final var name = "methodAnnotations";
         final var description = "The additional annotations to be placed on generated methods.";
-        return listOfAnnotations(name, description);
+        return ConfigurationSetting.copyOf(listOfAnnotations(name, description))
+                .withExplanation("""
+                        Goes on every generated method of every repository, which limits it to annotations that
+                        make sense everywhere — a metrics `@Timed`, a `@SuppressWarnings`.
+
+                        Resist putting `@Transactional` here. It would open a transaction per statement, which is
+                        the opposite of what a transaction is for; transactions belong to the service calling
+                        several statements, and [transactions](../../../sql/transactions/) covers how a repository
+                        joins one.
+
+                        To annotate one statement rather than all of them, use
+                        [annotations](../../sql/annotations/) in its front matter.""")
+                .withExamples(ConfigurationExample.builder()
+                        .setValue("io.micrometer.core.annotation.Timed")
+                        .setDescription("Every statement is measured:")
+                        .setResult("""
+                                package com.example.persistence;
+
+                                import io.micrometer.core.annotation.Timed;
+
+                                public final class TenantRepository {
+
+                                    @Timed
+                                    public Optional<Tenant> findTenant(final UUID id) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build());
     }
 
     private static ConfigurationSetting listOfAnnotations(final String name, final String description) {

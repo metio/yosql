@@ -58,8 +58,9 @@ Run your build. You get a `TenantRepository` with a `findTenant` method returnin
 `Optional<Tenant>`, and a converter that reads each column by name and calls the constructor —
 no reflection, nothing resolved at run time.
 
-From here, [SQL files](../sql/) covers how statements are written and
-[configuration](../configuration/) covers everything you can change about the output.
+From here, the [tutorial](./tutorial/) builds a whole project — schema, statements, records and
+tests against a real database — in about half an hour. [SQL files](../sql/) covers how statements are
+written and [configuration](../configuration/) covers everything you can change about the output.
 
 ## Verifying a download
 

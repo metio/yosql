@@ -98,6 +98,33 @@ public final class Converter extends AbstractConfigurationGroup {
         final var description = "Whether the ToMap converter should be generated.";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        A statement naming neither a [resultRowType](../../sql/resultrowtype/) nor a
+                        [resultRowConverter](../../sql/resultrowconverter/) answers with a
+                        `Map<String, Object>` per row, read by a converter generated for the purpose. This decides
+                        whether that converter is written.
+
+                        Turn it off once every statement names a type of its own, and a statement that goes back
+                        to answering with maps then fails the build instead of quietly doing so — which is the
+                        point of turning it off.""")
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default. Statements naming no type answer with maps:")
+                        .setResult("""
+                                package com.example.persistence.converter;
+
+                                public final class ToMapConverter {
+
+                                    public Map<String, Object> apply(final ResultSet resultSet) throws SQLException {
+                                        // ... reads every column of the row by its label
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("No converter is written, so a statement that would need one fails the build.")
+                        .build())
                 .build();
     }
 
@@ -105,6 +132,11 @@ public final class Converter extends AbstractConfigurationGroup {
         final var description = "The fully-qualified class name of the ToMap converter.";
         final var value = "com.example.persistence.converter.ToMapConverter";
         return setting(GROUP_NAME, MAP_CONVERTER_CLASS, description, value)
+                .setExplanation("""
+                        Where the generated ToMap converter is written, and what it is called. Change it to put
+                        the converter in a package of your own — or, together with
+                        [generateMapConverter](../generatemapconverter/) set to `false`, to point repositories at a
+                        ToMap converter you wrote yourself.""")
                 .build();
     }
 
@@ -165,6 +197,13 @@ public final class Converter extends AbstractConfigurationGroup {
         final var description = "The name of the method to generate/call in the ToMap converter.";
         final var value = "apply";
         return setting(GROUP_NAME, MAP_CONVERTER_METHOD, description, value)
+                .setExplanation("""
+                        The method repositories call on the ToMap converter. It defaults to `apply`, which is what
+                        a `Function<ResultSet, Map<String, Object>>` declares — so the generated converter can be
+                        used as one.
+
+                        Where you supply the converter yourself, this is how you name the method it actually
+                        has.""")
                 .build();
     }
 
@@ -172,6 +211,10 @@ public final class Converter extends AbstractConfigurationGroup {
         final var description = "The name of the alias referencing the ToMap converter.";
         final var value = "toMap";
         return setting(GROUP_NAME, MAP_CONVERTER_ALIAS, description, value)
+                .setExplanation("""
+                        The field a repository holds the ToMap converter in. Converters generated from a record are
+                        named after their own class; this one is named here, because there is one of it and
+                        `toMapConverter` reads worse than `toMap` in the body of every method that uses it.""")
                 .build();
     }
 
