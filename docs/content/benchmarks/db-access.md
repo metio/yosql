@@ -23,21 +23,23 @@ is nothing between your query and the driver except the code you can read in
 
 Each configuration runs the same set, so the numbers are comparable across them:
 
+Eleven of them, declared as the `Read`, `Write` and `Call` interfaces in
+`yosql-benchmarks-dao`, so that an implementation either covers all of them or does not compile.
+
 ### Reading
 
-- `readComplexRelationship`: Read a complex data relationship.
+- `readSingleEntityByPrimaryKey`: Read a single entity using its primary key.
+- `readOneToManyRelation`: Reads the many part of a one-to-many relation.
 - `readManyToOneRelation`: Reads the one part of a many-to-one relation.
 - `readMultipleEntities`: Read multiple entities in one go.
 - `readMultipleEntitiesBasedOnCondition`: Read multiple entities and filter them inside the database.
-- `readOneToManyRelation`: Reads the many part of a one-to-many relation.
-- `readSingleEntityByPrimaryKey`: Read a single entity using its primary key.
 
 ### Writing
 
-- `writeMultipleEntities`: Writes multiple entities into the database.
 - `writeSingleEntity`: Writes a new entity into the database.
+- `writeMultipleEntities`: Writes several entities as one batch.
+- `updateSingleEntity`: Update every column of one entity.
 - `updateOneToManyRelation`: Update the one-to-many relationship part of an entity.
-- `updateManyToOneRelation`: Update the many-to-one relationship part of an entity.
 - `deleteSingleEntityByPrimaryKey`: Delete a single entity using its primary key.
 
 ### Calling stored procedures

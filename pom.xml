@@ -94,6 +94,7 @@
         <version.javaparser>3.28.2</version.javaparser>
         <version.javapoet>0.18.0</version.javapoet>
         <version.javax-inject>1</version.javax-inject>
+        <version.jdbi>3.54.0</version.jdbi>
         <version.jmh>1.37</version.jmh>
         <version.jspecify>1.0.1</version.jspecify>
         <version.junit>6.1.2</version.junit>
@@ -337,6 +338,11 @@
                 <groupId>org.tinylog</groupId>
                 <artifactId>tinylog-impl</artifactId>
                 <version>${version.tinylog}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi3-core</artifactId>
+                <version>${version.jdbi}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

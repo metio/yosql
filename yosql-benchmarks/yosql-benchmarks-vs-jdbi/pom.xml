@@ -32,5 +32,80 @@
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- https://maven.apache.org/pom.html#More_Project_Information -->
     <name>YoSQL :: Benchmarks :: JDBI Shootout</name>
+    <description>
+        The same eleven scenarios written twice — once against repositories YoSQL generated, once
+        against JDBI — measured in one JMH run so that the two numbers are comparable.
+    </description>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!--                               DEPENDENCIES                              -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- https://maven.apache.org/pom.html#Dependencies -->
+    <dependencies>
+        <!--
+            The scenario contract and the generated repositories both come from the DAO benchmark,
+            so every statement exists exactly once. Two implementations running different SQL would
+            measure the SQL rather than the library.
+        -->
+        <dependency>
+            <groupId>wtf.metio.yosql.benchmarks</groupId>
+            <artifactId>yosql-benchmarks-dao</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>benchmarks</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.baidu.maven</groupId>
+                        <artifactId>jmh-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jmh</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <forks>1</forks>
+                            <warmupForks>1</warmupForks>
+                            <threads>1</threads>
+                            <mode>avgt</mode>
+                            <timeUnit>us</timeUnit>
+                            <measurementTime>1s</measurementTime>
+                            <warmupTime>1s</warmupTime>
+                            <resultFormat>json</resultFormat>
+                            <resultFile>yosql-benchmarks-vs-jdbi.json</resultFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
