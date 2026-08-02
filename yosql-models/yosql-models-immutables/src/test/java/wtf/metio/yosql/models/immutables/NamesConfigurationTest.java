@@ -23,7 +23,7 @@ class NamesConfigurationTest {
         final var duplicates = counts.entrySet().stream()
                 .filter(entry -> entry.getValue() > 1)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableSet());
 
         Assertions.assertTrue(duplicates.isEmpty());
     }
@@ -38,7 +38,7 @@ class NamesConfigurationTest {
         final var duplicates = counts.entrySet().stream()
                 .filter(entry -> entry.getValue() > 1)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableSet());
 
         Assertions.assertFalse(duplicates.isEmpty());
         Assertions.assertIterableEquals(Set.of("action"), duplicates);

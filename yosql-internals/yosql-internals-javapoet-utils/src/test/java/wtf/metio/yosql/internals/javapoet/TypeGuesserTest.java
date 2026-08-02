@@ -58,7 +58,7 @@ class TypeGuesserTest {
                         "java.util.Map<java.util.Map<java.lang.String, java.lang.Object>, java.util.Map<java.lang.Integer, java.lang.Double>>",
                         "com.google.common.collect.ArrayTable<java.lang.String, java.lang.Integer, java.lang.Object>",
                         "com.google.common.collect.ArrayTable<? extends java.util.Map<java.lang.String, java.util.Map<java.lang.Integer, java.lang.Double>>, char[][][][][], ? super java.util.List<? super java.lang.Number>>")
-                .map(type -> DynamicTest.dynamicTest(String.format("should parse: %s", type),
+                .map(type -> DynamicTest.dynamicTest("should parse: %s".formatted(type),
                         () -> Assertions.assertEquals(type, TypeGuesser.guessTypeName(type).toString())));
     }
 
@@ -71,7 +71,7 @@ class TypeGuesserTest {
                         "java.util.List<java.util.List<java.util.List<java.lang.Object>>",
                         "java.util.List<? extends java.util.List<? super int>>",
                         "java.util.List<? super java.util.List<? extends char>>")
-                .map(type -> DynamicTest.dynamicTest(String.format("should throw for: %s", type),
+                .map(type -> DynamicTest.dynamicTest("should throw for: %s".formatted(type),
                         () -> Assertions.assertThrows(IllegalArgumentException.class,
                                 () -> TypeGuesser.guessTypeName(type))));
     }
@@ -87,7 +87,7 @@ class TypeGuesserTest {
                         new SimpleEntry<>(" java.util.List < java.lang.Object > ", "java.util.List<java.lang.Object>"),
                         new SimpleEntry<>(" java.util.List < ? > ", "java.util.List<?>"))
                 .map(entry -> DynamicTest.dynamicTest(
-                        String.format("should parse [ %s ] as: %s", entry.getKey(), entry.getValue()),
+                        "should parse [ %s ] as: %s".formatted(entry.getKey(), entry.getValue()),
                         () -> Assertions.assertEquals(entry.getValue(),
                                 TypeGuesser.guessTypeName(entry.getKey()).toString())));
     }
@@ -139,7 +139,7 @@ class TypeGuesserTest {
                         "java.util.List<java.util.List<java.lang.Integer>>",
                         "java.util.Map<java.lang.String, java.lang.Object>")
                 .map(type -> DynamicTest.dynamicTest(
-                        String.format("ClassName.bestGuess does not support: %s", type),
+                        "ClassName.bestGuess does not support: %s".formatted(type),
                         () -> Assertions.assertThrows(IllegalArgumentException.class,
                                 () -> ClassName.bestGuess(type))));
     }

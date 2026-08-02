@@ -36,7 +36,7 @@ public final class NamesConfigurationValidator implements RuntimeConfigurationVa
         final var duplicates = counts.entrySet().stream()
                 .filter(entry -> entry.getValue() > 1)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableSet());
 
         if (!duplicates.isEmpty()) {
             errors.add(new InvalidNameConfigurationException(messages.getMessage(NAMES_CONFIG_INVALID, duplicates)));

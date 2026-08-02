@@ -44,7 +44,7 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
     @DisplayName("create enum for valid value")
     default Stream<DynamicTest> shouldCreateEnumForValidValue() {
         return validValues()
-                .map(value -> dynamicTest(String.format("should create [%s] from [%s]", getEnumClass().getSimpleName(), value),
+                .map(value -> dynamicTest("should create [%s] from [%s]".formatted(getEnumClass().getSimpleName(), value),
                         () -> Assertions.assertNotNull(Enum.valueOf(getEnumClass(), value))));
     }
 
@@ -55,7 +55,7 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
     @DisplayName("reject invalid values")
     default Stream<DynamicTest> shouldNotCreateEnumForInvalidValue() {
         return invalidValues()
-                .map(value -> dynamicTest(String.format("should not create [%s] from [%s]", getEnumClass().getSimpleName(), value),
+                .map(value -> dynamicTest("should not create [%s] from [%s]".formatted(getEnumClass().getSimpleName(), value),
                         () -> Assertions.assertThrows(IllegalArgumentException.class,
                                 () -> Enum.valueOf(getEnumClass(), value))));
     }
@@ -66,7 +66,7 @@ public interface EnumTCK<ENUMERATION extends Enum<ENUMERATION>> {
     @TestFactory
     @DisplayName("all enum values are checked")
     default Stream<DynamicTest> shouldVerifyAllValues() {
-        return Stream.of(dynamicTest(String.format("should verify all values of [%s]", getEnumClass().getSimpleName()),
+        return Stream.of(dynamicTest("should verify all values of [%s]".formatted(getEnumClass().getSimpleName()),
                 () -> Assertions.assertEquals(validValues().count(), getEnumClass().getEnumConstants().length)));
     }
 

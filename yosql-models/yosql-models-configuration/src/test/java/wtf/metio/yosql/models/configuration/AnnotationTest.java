@@ -77,7 +77,7 @@ class AnnotationTest {
     @Test
     void fromStringWithoutMembers() {
         final var annotationType = "com.example.MyAnnotation";
-        final var input = String.format("%s", annotationType);
+        final var input = "%s".formatted(annotationType);
         final var annotation = Annotation.fromString(input);
 
         assertNotNull(annotation);
@@ -91,7 +91,7 @@ class AnnotationTest {
         final var annotationType = "com.example.MyAnnotation";
         final var key = "some";
         final var value = "test";
-        final var input = String.format("%s:%s|%s", annotationType, key, value);
+        final var input = "%s:%s|%s".formatted(annotationType, key, value);
         final var annotation = Annotation.fromString(input);
 
         assertNotNull(annotation);
@@ -111,7 +111,7 @@ class AnnotationTest {
         final var key2 = "other";
         final var value2 = "123";
         final var type2 = "java.lang.Integer";
-        final var input = String.format("%s:%s|%s:%s|%s|%s", annotationType, key1, value1, key2, value2, type2);
+        final var input = "%s:%s|%s:%s|%s|%s".formatted(annotationType, key1, value1, key2, value2, type2);
         final var annotation = Annotation.fromString(input);
 
         assertNotNull(annotation);
@@ -134,7 +134,7 @@ class AnnotationTest {
         final var key2 = "other";
         final var value2 = "true";
         final var type2 = "boolean";
-        final var input = String.format("%s:%s|%s:%s|%s|%s", annotationType, key1, value1, key2, value2, type2);
+        final var input = "%s:%s|%s:%s|%s|%s".formatted(annotationType, key1, value1, key2, value2, type2);
         final var annotation = Annotation.fromString(input);
 
         assertNotNull(annotation);
@@ -157,7 +157,7 @@ class AnnotationTest {
         final var type1 = "boolean";
         final var key2 = "other";
         final var value2 = "true";
-        final var input = String.format("%s:%s|%s|%s:%s|%s", annotationType, key1, value1, type1, key2, value2);
+        final var input = "%s:%s|%s|%s:%s|%s".formatted(annotationType, key1, value1, type1, key2, value2);
         final var annotation = Annotation.fromString(input);
 
         assertNotNull(annotation);
