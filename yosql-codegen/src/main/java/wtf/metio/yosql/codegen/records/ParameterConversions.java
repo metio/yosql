@@ -122,7 +122,7 @@ public final class ParameterConversions {
             throw new UnbindableParameterException(name, className,
                     declaration.components().stream().map(JavaSourceComponent::name).toList());
         }
-        return Optional.of(candidates.get(0));
+        return Optional.of(candidates.getFirst());
     }
 
     private boolean isEnum(final TypeName type) {

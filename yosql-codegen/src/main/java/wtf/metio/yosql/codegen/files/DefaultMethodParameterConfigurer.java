@@ -64,11 +64,11 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
 
     private static List<SqlParameter> updateIndices(final List<SqlParameter> parameters, final Map<String, List<Integer>> indices) {
         return parameters.stream()
-                .map(parameter -> SqlParameter.copyOf(parameter)
+                .<SqlParameter>map(parameter -> SqlParameter.copyOf(parameter)
                         .withIndices(parameter.name()
                                 .map(indices::get)
                                 .map(DefaultMethodParameterConfigurer::asIntArray)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static int[] asIntArray(final List<Integer> numbers) {

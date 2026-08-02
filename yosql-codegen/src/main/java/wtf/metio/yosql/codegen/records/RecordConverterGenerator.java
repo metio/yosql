@@ -133,7 +133,7 @@ public final class RecordConverterGenerator {
         final var name = declared.strip();
         try {
             return ClassName.bestGuess(name);
-        } catch (final IllegalArgumentException exception) {
+        } catch (final IllegalArgumentException _) {
             throw new UnreadableResultRowTypeException(statement.getName(), name,
                     "is not a type a result can be built into. A primitive cannot be the result of a "
                             + "statement that may return no row — name its wrapper instead.");
@@ -432,7 +432,7 @@ public final class RecordConverterGenerator {
      * nested records do not collide.
      */
     private static String variableFor(final List<String> path, final Set<String> taken) {
-        final var name = new StringBuilder(path.get(0));
+        final var name = new StringBuilder(path.getFirst());
         for (var index = 1; index < path.size(); index++) {
             final var segment = path.get(index);
             name.append(segment.substring(0, 1).toUpperCase(Locale.ROOT)).append(segment.substring(1));

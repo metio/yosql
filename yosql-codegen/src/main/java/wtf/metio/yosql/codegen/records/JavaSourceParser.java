@@ -135,18 +135,16 @@ public final class JavaSourceParser {
                 .orElseThrow(() -> new UnparsableRecordException(location, expected,
                         "no type named '%s' is declared in it".formatted(expected.simpleName())));
         rejectTypeParameters(declaration, location, expected);
-        if (declaration instanceof final RecordDeclaration record) {
-            return JavaSourceType.record(expected,
+        return switch (declaration) {
+            case RecordDeclaration record -> JavaSourceType.record(expected,
                     components(record, location, expected, scope),
                     valueOfParameters(declaration, expected, scope),
                     resultSetMethods(declaration, scope));
-        }
-        if (declaration instanceof EnumDeclaration) {
-            return JavaSourceType.enumeration(expected);
-        }
-        return JavaSourceType.other(expected,
-                valueOfParameters(declaration, expected, scope),
-                resultSetMethods(declaration, scope));
+            case EnumDeclaration _ -> JavaSourceType.enumeration(expected);
+            default -> JavaSourceType.other(expected,
+                    valueOfParameters(declaration, expected, scope),
+                    resultSetMethods(declaration, scope));
+        };
     }
 
     private CompilationUnit compilationUnit(
@@ -262,7 +260,7 @@ public final class JavaSourceParser {
         // A single on-demand import can stand in for the package a name came from. Several cannot
         // be told apart without the classpath, so none of them is used.
         if (onDemand.size() == 1) {
-            imports.put("*", onDemand.get(0));
+            imports.put("*", onDemand.getFirst());
         }
         return imports;
     }

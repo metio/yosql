@@ -82,19 +82,19 @@ public final class Sql extends AbstractConfigurationGroup {
 
     private static List<ConfigurationSetting> stringRepositorySettings() {
         return Repositories.stringMethods().stream()
-                .map(setting -> ConfigurationSetting.copyOf(setting)
+                .<ConfigurationSetting>map(setting -> ConfigurationSetting.copyOf(setting)
                         .withImmutableMethods(immutableMethod(ClassName.get(String.class),
                                 setting.name(), setting.description())))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static List<ConfigurationSetting> booleanRepositorySettings() {
         return Repositories.booleanMethods().stream()
                 .filter(setting -> !INJECT_CONVERTERS.equals(setting.name()))
-                .map(setting -> ConfigurationSetting.copyOf(setting)
+                .<ConfigurationSetting>map(setting -> ConfigurationSetting.copyOf(setting)
                         .withImmutableMethods(immutableMethod(ClassName.get(Boolean.class),
                                 setting.name(), setting.description())))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static List<? extends ConfigurationSetting> withExtraAnnotations(final List<ConfigurationSetting> settings) {

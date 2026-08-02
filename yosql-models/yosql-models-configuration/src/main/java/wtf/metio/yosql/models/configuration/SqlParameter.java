@@ -56,9 +56,9 @@ public interface SqlParameter {
         if (first == null || first.isEmpty()) {
             return second;
         }
-        return Stream.concat(copyAttributes(first, second), copyAttributes(second, first))
+        return Stream.<SqlParameter>concat(copyAttributes(first, second), copyAttributes(second, first))
                 .filter(Buckets.distinctByKey(SqlParameter::name))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static Stream<ImmutableSqlParameter> copyAttributes(final List<SqlParameter> first, final List<SqlParameter> second) {

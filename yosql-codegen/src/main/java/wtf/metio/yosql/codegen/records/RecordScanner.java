@@ -60,7 +60,7 @@ public final class RecordScanner {
     private boolean hasSource(final String qualifiedName) {
         try {
             return Files.isRegularFile(locationOf(ClassName.bestGuess(qualifiedName)));
-        } catch (final IllegalArgumentException exception) {
+        } catch (final IllegalArgumentException _) {
             return false;
         }
     }

@@ -219,7 +219,7 @@ class DefaultJdbcBlocksTest {
                     while (resultSet.next()) {
                       list.add(toMap.apply(resultSet));
                     }
-                    return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
+                    return list.isEmpty() ? java.util.Optional.empty() : java.util.Optional.ofNullable(list.getFirst());
                     """;
         }
 
@@ -233,7 +233,7 @@ class DefaultJdbcBlocksTest {
                     if (list.size() > 1) {
                       throw new java.lang.IllegalStateException();
                     }
-                    return list.size() > 0 ? java.util.Optional.ofNullable(list.get(0)) : java.util.Optional.empty();
+                    return list.isEmpty() ? java.util.Optional.empty() : java.util.Optional.ofNullable(list.getFirst());
                     """;
         }
 

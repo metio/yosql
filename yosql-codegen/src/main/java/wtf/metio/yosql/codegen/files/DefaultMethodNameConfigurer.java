@@ -68,9 +68,9 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
 
     private String generateName(final SqlStatementType type) {
         final var prefix = switch (type) {
-            case READING -> repositories.allowedReadPrefixes().get(0);
-            case WRITING -> repositories.allowedWritePrefixes().get(0);
-            case CALLING -> repositories.allowedCallPrefixes().get(0);
+            case READING -> repositories.allowedReadPrefixes().getFirst();
+            case WRITING -> repositories.allowedWritePrefixes().getFirst();
+            case CALLING -> repositories.allowedCallPrefixes().getFirst();
         };
         return prefix + "NameWasChanged";
     }

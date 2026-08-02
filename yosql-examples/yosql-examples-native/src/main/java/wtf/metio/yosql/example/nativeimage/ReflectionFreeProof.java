@@ -70,7 +70,7 @@ public final class ReflectionFreeProof {
 
         final var bySensor = repository.findReadingsBySensor("boiler-1");
         check("row count", 2, bySensor.size());
-        check("first row", CLEARED, bySensor.get(0).id());
+        check("first row", CLEARED, bySensor.getFirst().id());
         check("second row", OPEN, bySensor.get(1).id());
 
         System.out.println("generated mapping produced " + bySensor.size()

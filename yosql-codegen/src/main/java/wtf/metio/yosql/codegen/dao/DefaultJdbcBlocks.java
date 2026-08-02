@@ -203,7 +203,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 code("int $N = 0; $N < $N.length; $N++",
                         names.batch(),
                         names.batch(),
-                        config.parameters().get(0).name().orElseThrow(MissingParameterNameException::new),
+                        config.parameters().getFirst().name().orElseThrow(MissingParameterNameException::new),
                         names.batch()),
                 CodeBlock.builder()
                         .add(setBatchParameters(config))
@@ -252,7 +252,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
             builder.endControlFlow();
         } else {
-            final var config = sqlStatements.get(0).getConfiguration();
+            final var config = sqlStatements.getFirst().getConfiguration();
             final var query = fields.constantSqlStatementFieldName(config);
             builder.addStatement(variables.inline(String.class, names.query(), "$N", query))
                     .add(logging.queryPicked(query));
@@ -338,7 +338,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     private CodeBlock.Builder prepareReturnList(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {
         final var template = CodeBlock.of("new $T()", ParameterizedTypeName.get(
-                ClassName.get(ArrayList.class), listOfResults.typeArguments().get(0)));
+                ClassName.get(ArrayList.class), listOfResults.typeArguments().getFirst()));
         return CodeBlock.builder()
                 .addStatement(variables.inline(listOfResults, names.list(), template))
                 .add(controlFlows.whileHasNext())
@@ -373,8 +373,8 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         // SQL NULL, and Optional.of would answer that with a NullPointerException from inside
         // generated code. A converter that builds a record never returns null, so nothing else
         // changes.
-        return builder.addStatement("return $N.size() > 0 ? $T.ofNullable($N.get(0)) : $T.empty()",
-                        names.list(), Optional.class, names.list(), Optional.class)
+        return builder.addStatement("return $N.isEmpty() ? $T.empty() : $T.ofNullable($N.getFirst())",
+                        names.list(), Optional.class, Optional.class, names.list())
                 .build();
     }
 

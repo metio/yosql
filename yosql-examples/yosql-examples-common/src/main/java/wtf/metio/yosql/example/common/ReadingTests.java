@@ -54,7 +54,7 @@ public interface ReadingTests {
             try {
                 findCompanyByName().apply("three").ifPresent(company ->
                         LOG.log(System.Logger.Level.ERROR, "could read multiple companies with the same name"));
-            } catch (final IllegalStateException exception) {
+            } catch (final IllegalStateException _) {
                 LOG.log(System.Logger.Level.INFO, "Detected multiple companies with the same name");
             }
 

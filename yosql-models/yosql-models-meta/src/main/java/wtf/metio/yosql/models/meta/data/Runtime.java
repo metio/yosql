@@ -29,7 +29,7 @@ public final class Runtime extends AbstractConfigurationGroup {
     private static List<ConfigurationSetting> all() {
         return AllConfigurations.allConfigurationGroups()
                 .map(Runtime::single)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static ConfigurationSetting single(final ConfigurationGroup group) {

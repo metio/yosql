@@ -104,7 +104,7 @@ public final class DefaultMethodResultRowConverterConfigurer implements MethodRe
                             .map(method -> method.name() + "(ResultSet)")
                             .collect(Collectors.joining(", "))));
         }
-        final var method = methods.get(0);
+        final var method = methods.getFirst();
         return ResultRowConverter.builder()
                 .setAlias(alias(type))
                 .setConverterType(type.toString())
@@ -120,7 +120,7 @@ public final class DefaultMethodResultRowConverterConfigurer implements MethodRe
                 .orElseThrow(() -> new UnusableConverterException(origin, "no class name was given"));
         try {
             return ClassName.bestGuess(name);
-        } catch (final IllegalArgumentException exception) {
+        } catch (final IllegalArgumentException _) {
             throw new UnusableConverterException(origin, "'%s' is not a class name".formatted(name));
         }
     }

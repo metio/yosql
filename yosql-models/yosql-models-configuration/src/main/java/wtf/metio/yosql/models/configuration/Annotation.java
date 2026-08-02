@@ -76,9 +76,9 @@ public interface Annotation {
         if (first == null || first.isEmpty()) {
             return second;
         }
-        return Stream.concat(copyAttributes(first, second), copyAttributes(second, first))
+        return Stream.<Annotation>concat(copyAttributes(first, second), copyAttributes(second, first))
                 .filter(Buckets.distinctByKey(Annotation::type))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static Stream<ImmutableAnnotation> copyAttributes(
@@ -101,7 +101,7 @@ public interface Annotation {
         }
         return Stream.concat(first.stream(), second.stream())
                 .filter(Buckets.distinctByKey(AnnotationMember::key))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     //endregion
