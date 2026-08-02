@@ -10,10 +10,41 @@ tags:
   - CLI
 ---
 
-In order to use the `YoSQL` [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tooling follow these steps:
+The [command line](https://en.wikipedia.org/wiki/Command-line_interface) tool generates the same
+code as the build plugins, without being part of a build. Use it when your project builds with
+something `YoSQL` has no plugin for, or to generate code once and commit the result.
 
-1. Download the `yosql-tooling-cli` zip file from the [latest release](https://github.com/metio/yosql/releases/latest) (or any prior version).
-2. Place `bin/yosql` (or `bin/yosql.bat` on Windows) on your PATH.
-3. Write `.sql` files in a directory of your choice (e.g. `/path/to/your/sql/files`).
-4. Call `yosql --inputBaseDirectory /path/to/your/sql/files`.
-5. Adjust the [configuration](/configuration/) according to your requirements.
+## Getting it
+
+Each [release](https://github.com/metio/yosql/releases/latest) publishes two kinds of archive:
+
+- **`yosql-tooling-cli-<version>-linux.zip`** and **`-mac.zip`** — a single native binary. It starts
+  instantly and needs no Java installed at all.
+- **`yosql-tooling-cli-<version>-jvm.zip`** — scripts plus jars, for any platform with Java 25.
+
+Unpack it and put the `yosql` binary, or the `bin/yosql` script, on your `PATH`. Both archives are
+covered by the signed `SHA256SUMS` — see [verifying a download](../../installation/#verifying-a-download).
+
+## Using it
+
+```shell
+yosql generate --files-input-base-directory=/path/to/your/sql/files
+```
+
+That reads every `.sql` file under the directory and writes Java beside it. Option names follow the
+[configuration](/configuration/) groups: a setting shown there as `files.outputBaseDirectory` is
+`--files-output-base-directory` here. `yosql generate --help` lists all of them.
+
+Options can also come from a file, which is easier to keep in version control than a long command:
+
+```shell
+yosql generate @yosql.args
+```
+
+where `yosql.args` holds one option per line:
+
+```text
+--files-input-base-directory=src/main/yosql
+--files-output-base-directory=src/main/java
+--repositories-base-package-name=com.example.persistence
+```

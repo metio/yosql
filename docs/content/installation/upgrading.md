@@ -1,0 +1,92 @@
+---
+title: Upgrading
+date: 2026-08-02
+menu:
+  main:
+    parent: Installation
+categories:
+  - Installation
+tags:
+  - upgrading
+---
+
+What each release needs from you, when it needs anything. Releases not listed here are drop-in.
+
+## 2026.8.8
+
+The first release since 2023.5.3, and it changes enough to be worth reading before you bump the
+version.
+
+### Java 25 is now the minimum
+
+Both to run `YoSQL` and to compile and run what it generates. Generated code uses `var`, text
+blocks, records and sequenced collections.
+
+If your project is on an older Java release, stay on `2023.5.3` until you can move. There is no
+configuration that makes the generator emit older code — the switch that used to do that is gone,
+because it silently produced output that no longer matched what the documentation promised.
+
+### A converter is named by its class, and nothing else
+
+The four-part converter description and the registry that held it are gone. A statement that used
+to name a converter by alias:
+
+```sql
+-- resultRowConverter:
+--   alias: itemConverter
+```
+
+now names the class:
+
+```sql
+-- resultRowConverter: com.example.persistence.converter.ToItemConverter
+```
+
+and the build configuration that declared the alias goes away entirely. In Maven:
+
+```xml
+<converter>
+    <!-- delete the whole rowConverters block -->
+    <rowConverters>
+        <rowConverter>
+            <alias>itemConverter</alias>
+            <converterType>com.example.persistence.converter.ToItemConverter</converterType>
+            <methodName>asUserType</methodName>
+            <resultType>com.example.domain.Item</resultType>
+        </rowConverter>
+    </rowConverters>
+</converter>
+```
+
+The same applies to `rowConverters` in Gradle and Ant, and to `--rowConverters` on the command
+line. `defaultConverter` survives but now takes a single class name rather than the four parts.
+
+`YoSQL` reads the class to find its one public method taking a `ResultSet`. That method's name is
+what the repository calls and its return type is what the statement produces, so nothing repeats
+what the class already says. Two consequences worth knowing:
+
+- The converter has to be **visible as source** under
+  [sourceDirectory](../../configuration/files/sourcedirectory/), because it is read rather than
+  loaded. A converter that lives in a different module needs that directory pointed at it.
+- The class must declare **exactly one** public method taking a `ResultSet`. None, or more than
+  one, fails the build and names the class.
+
+The field the repository holds the converter in is now the class name with a lower-case first
+letter — `toItemConverter` rather than whatever the alias was. That only matters if you were
+reading generated fields directly.
+
+### Generic types cannot be result rows
+
+A record declaring type parameters is refused rather than mapped, because a statement says nothing
+about what to substitute for them. Name a concrete type instead.
+
+### Statements that generate nothing now fail
+
+A statement whose name matches none of the configured prefixes, and which sets no explicit `type`,
+used to be skipped without a word — so a typo removed a method from your repository and said
+nothing. It is now a build error naming the file and the statement. If a release starts failing
+here, it is reporting something that was already broken.
+
+## 2023.5.3 and earlier
+
+See the [release notes](https://github.com/metio/yosql/releases) for those versions.

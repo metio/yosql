@@ -14,8 +14,29 @@ The JDBC API has no object mapping. Something has to turn a `java.sql.ResultSet`
 of your domain, and in `YoSQL` that something is a **converter**: a plain Java class with a method
 taking a `ResultSet` and returning your type.
 
-Name a record and the converter is written for you. Write one by hand when the mapping is doing
-something a record cannot express.
+Most of the time you never write one. Name a record and it is written for you:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug, created_at from tenant where id = :id
+```
+
+That is the whole configuration. Components read the column matching their name in `snake_case`,
+so `createdAt` reads `created_at`, and a mismatch between the query and the record fails the build
+rather than surprising you at run time.
+
+The rest of this page is what to reach for when that is not enough:
+
+| You need | See |
+| --- | --- |
+| a column named something else | [which column a component reads](#which-column-a-component-reads) |
+| a type of your own around one column | [types that build themselves](#types-that-build-themselves) |
+| several columns as one value | [value objects spanning several columns](#value-objects-spanning-several-columns) |
+| one value rather than a row | [results that are one value](#results-that-are-one-value) |
+| a mapping a record cannot express | [writing one by hand](#writing-one-by-hand) |
+| your own types as parameters | [parameters, on the way in](#parameters-on-the-way-in) |
 
 ## From a record
 

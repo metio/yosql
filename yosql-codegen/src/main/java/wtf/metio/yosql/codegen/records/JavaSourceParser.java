@@ -105,8 +105,21 @@ public final class JavaSourceParser {
 
     private static final KnownTypes NOTHING_KNOWN = qualifiedName -> false;
 
+    /**
+     * Parsing without the language-level validators.
+     *
+     * <p>Validation asks whether a file is legal for a given release of Java, which is the
+     * compiler's question and not ours — we read declarations out of source the user is about to
+     * compile anyway, and a file using a feature newer than whatever level we picked is their
+     * business. Syntax errors still surface, because those come from the parser rather than from a
+     * validator.</p>
+     *
+     * <p>It also keeps this off a reflective code path: the validators walk the AST through a
+     * metamodel that reads node fields by name, which a closed-world native image has no reason to
+     * keep and therefore drops.</p>
+     */
     private final JavaParser parser = new JavaParser(new ParserConfiguration()
-            .setLanguageLevel(ParserConfiguration.LanguageLevel.CURRENT));
+            .setLanguageLevel(ParserConfiguration.LanguageLevel.RAW));
 
     /**
      * @param source   the file's text

@@ -1,0 +1,95 @@
+{
+  "bundles": [
+    {
+      "name": "application-errors",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "application-warnings",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "codegen-lifecycle",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "file-errors",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "file-lifecycle",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "javadocs",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "parse-lifecycle",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "repository-lifecycle",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "sql-configuration-lifecycle",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "timer-lifecycle",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "validation-errors",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "validation-lifecycle",
+      "locales": [
+        "en",
+        "de"
+      ]
+    },
+    {
+      "name": "write-lifecycle",
+      "locales": [
+        "en",
+        "de"
+      ]
+    }
+  ]
+}

@@ -69,8 +69,22 @@ jobs:
           nix develop .#native --command mvn --batch-mode --no-transfer-progress
           --projects yosql-tooling/yosql-tooling-cli --also-make
           --define skipNativeBuild=false verify
-      - name: Run the CLI binary
-        run: ./yosql-tooling/yosql-tooling-cli/target/yosql --help
+      - name: Generate code with the CLI binary
+        # Generating, not `--help`: starting the binary proves almost nothing,
+        # because what a closed-world image drops is whatever is reached by name
+        # rather than by call. The message bundles behind every diagnostic are
+        # exactly that, and they are only touched once generation runs.
+        run: |
+          set -euo pipefail
+          ./yosql-tooling/yosql-tooling-cli/target/yosql generate \
+            --files-input-base-directory=yosql-examples/yosql-examples-common/src/main/yosql \
+            --files-output-base-directory="$RUNNER_TEMP/cli-generated" \
+            --files-source-directory=yosql-examples/yosql-examples-common/src/main/java \
+            --files-skip-lines=4 \
+            --repositories-base-package-name=com.example.persistence
+          generated=$(find "$RUNNER_TEMP/cli-generated" -name '*.java' | wc -l)
+          echo "the CLI generated $generated files"
+          test "$generated" -gt 0
       - name: Build a native image of generated mapping code
         # --no-fallback: an image that needed an unregistered reflective lookup
         # fails here rather than quietly shipping a binary that starts a JVM.

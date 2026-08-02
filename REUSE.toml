@@ -7,9 +7,11 @@ SPDX-PackageSupplier = "Sebastian Hoß <seb@xn--ho-hia.de>"
 SPDX-PackageDownloadLocation = "https://github.com/metio/yosql"
 
 # JSON carries no comment syntax. renovate.json follows Renovate's fixed schema,
-# flake.lock is nix-generated, and the benchmark results are JMH output.
+# flake.lock is nix-generated, the benchmark results are JMH output, and the
+# native-image configuration is read by GraalVM to a fixed schema.
 [[annotations]]
-path = [".github/renovate.json", "flake.lock", "docs/content/benchmarks/results/**"]
+path = [".github/renovate.json", "flake.lock", "docs/content/benchmarks/results/**",
+        "yosql-tooling/yosql-tooling-cli/src/main/resources/META-INF/native-image/**"]
 precedence = "override"
 SPDX-FileCopyrightText = "The yosql Authors"
 SPDX-License-Identifier = "0BSD"
