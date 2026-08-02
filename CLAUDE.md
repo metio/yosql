@@ -54,6 +54,11 @@ description:
 | `cli` | `yosql-tooling-cli` | picocli options |
 | `website` | `docs` | `docs/content/configuration/**` |
 
+`yosql-models-generator` is a Maven plugin, and `maven-plugin-plugin` parses its sources with qdox
+to build the descriptor. **qdox cannot parse text blocks**, so a `"""` anywhere in that module fails
+the build with `syntax error @[line,column]` and no mention of why. Build those strings with
+concatenation. Every other module is free to use them.
+
 **So a new setting is added to `yosql-models-meta` and nowhere else.** Editing a frontend by hand
 means editing generated output. The website's configuration pages are generated too and gitignored —
 `docs` cleans and regenerates them, but `excludeDefaultDirectories` means its `target/` is *not*
