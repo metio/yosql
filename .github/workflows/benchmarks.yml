@@ -3,9 +3,13 @@
 
 name: Run Benchmarks
 
-# The website charts code-generation and DAO throughput per release. The numbers
-# come from the released code, so the run happens after the release exists, and
-# the result lands as a pull request rather than a push to main.
+# The website charts code-generation, DAO throughput, and how the DAO scenarios
+# compare against another library, per release. The numbers come from the
+# released code, so the run happens after the release exists, and the result
+# lands as a pull request rather than a push to main.
+#
+# Each matrix value is the suffix of a module under yosql-benchmarks/ and of the
+# JSON that module writes, so adding a comparison is adding a word here.
 on:
   release:
     types: [released]
@@ -22,7 +26,7 @@ jobs:
       # runs are long enough that a shared runner would skew the numbers anyway.
       max-parallel: 1
       matrix:
-        benchmark: [codegen, dao]
+        benchmark: [codegen, dao, vs-jdbi]
     permissions:
       contents: write # push the results branch
       pull-requests: write # open the pull request

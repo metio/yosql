@@ -67,12 +67,35 @@ mvn --projects yosql-benchmarks/yosql-benchmarks-dao --also-make \
 The run writes `target/benchmark/yosql-benchmarks-dao.json`, which
 [jmh.morethan.io](https://jmh.morethan.io/) will render against the published baseline.
 
-## Comparisons against other libraries
+## Against JDBI
 
-There are none, and the modules that would hold them —
-`yosql-benchmarks-vs-ebean`, `-vs-jdbi`, `-vs-jooq`, `-vs-jpa` — are empty. They are reserved rather
-than written.
+`yosql-benchmarks-vs-jdbi` runs the eleven scenarios twice — once through generated repositories,
+once through [JDBI](https://jdbi.org/) — in **one** JMH run.
 
-The [comparison of alternatives](../../community/alternatives/) is honest about the trade-offs
-without pretending to a measurement nobody has taken. If you would like to write one of these,
-[contributions are welcome](https://github.com/metio/yosql).
+That matters more than it sounds. Numbers from two runs on two machines are not comparable at all;
+numbers from one run share the JVM, the warmup, the schema and the hardware, so what is left is the
+difference between the two libraries. Both take a connection per call and give it back, both read
+rows into `Map<String, Object>`, and both send the database the same SQL — the statements come from
+this module's `.sql` files, so neither side can be measured running a query the other did not.
+
+Each implementation gets its own in-memory database, because the write scenarios insert and delete
+and a shared one would make each side's numbers depend on how often the other had already run.
+
+Both implementations are in the repository. If you suspect one was written to lose, read it — that
+is the answer a chart cannot give you.
+
+```console
+mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi --also-make \
+  --activate-profiles benchmarks verify
+```
+
+## Against an ORM
+
+There is none. `yosql-benchmarks-vs-ebean`, `-vs-jooq` and `-vs-jpa` are empty modules, reserved
+rather than written.
+
+For an ORM the comparison is harder to make honestly than it looks: read the same entity twice and
+Hibernate answers the second from its identity map, so it wins by a distance; turn that off and you
+are measuring a Hibernate nobody deploys. Whichever you choose, the number is an argument about the
+configuration. The [comparison of alternatives](../../community/alternatives/) says where an ORM is
+the better tool without pretending to a measurement.
