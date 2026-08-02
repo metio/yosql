@@ -127,14 +127,11 @@
             <artifactId>org.eclipse.sisu.inject</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.sonatype.plexus</groupId>
+            <!-- Brings its own plexus-utils rather than having it excluded: the mojo needs the
+                 Scanner that BuildContext hands out, and relying on another dependency to drag it
+                 in is how it went missing. -->
+            <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-build-api</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-utils</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

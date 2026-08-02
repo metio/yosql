@@ -106,8 +106,8 @@
         <version.maven-shared-utils>3.4.2</version.maven-shared-utils>
         <version.mustache>0.9.14</version.mustache>
         <version.picocli>4.7.7</version.picocli>
-        <version.plexus-build-api>0.0.7</version.plexus-build-api>
-        <version.plexus-sec-dispatcher>2.0</version.plexus-sec-dispatcher>
+        <version.plexus-build-api>1.2.0</version.plexus-build-api>
+        <version.plexus-sec-dispatcher>4.1.0</version.plexus-sec-dispatcher>
         <version.postgresql>42.7.13</version.postgresql>
         <version.sisu>0.9.0.M4</version.sisu>
         <version.slf4j>2.0.18</version.slf4j>
@@ -335,7 +335,7 @@
                 <version>${version.slf4j}</version>
             </dependency>
             <dependency>
-                <groupId>org.sonatype.plexus</groupId>
+                <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-build-api</artifactId>
                 <version>${version.plexus-build-api}</version>
             </dependency>
