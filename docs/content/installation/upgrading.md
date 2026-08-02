@@ -80,6 +80,20 @@ reading generated fields directly.
 A record declaring type parameters is refused rather than mapped, because a statement says nothing
 about what to substitute for them. Name a concrete type instead.
 
+### A colon with no name after it is no longer a parameter
+
+`:id` is a parameter. A bare `:` is not, and used to be read as one — which made two ordinary things
+wrong.
+
+A statement carrying a licence header picked up a parameter with no name from the colon in
+`SPDX-License-Identifier:`. And PostgreSQL's `::` cast bound two parameters, the bare colon and the
+type name, so **every parameter after a cast was bound to the wrong placeholder** — the statement
+ran and answered with the wrong rows.
+
+If you have statements using `::` casts, their generated methods change: the spurious parameters
+disappear and the real ones move to the indices they should always have had. Check any such method's
+signature after upgrading, and be glad if you never hit the bug.
+
 ### Every statement is now reachable with and without a connection
 
 Where a statement got its connection used to be decided per statement by `createConnection`, and you

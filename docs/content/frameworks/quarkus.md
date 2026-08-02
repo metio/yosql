@@ -48,7 +48,15 @@ Add the plugin next to the Quarkus one:
 ```
 
 Generated repositories become CDI beans, and the agroal `DataSource` Quarkus configures is injected
-into each one.
+into each one. A repository has exactly one constructor, which Quarkus's ArC treats as the injection
+point without being told. Under a strict CDI container that wants to be told, add it:
+
+```xml
+<annotations>
+  <repositoryAnnotations>jakarta.enterprise.context.ApplicationScoped</repositoryAnnotations>
+  <constructorAnnotations>jakarta.inject.Inject</constructorAnnotations>
+</annotations>
+```
 
 You need `quarkus-jdbc-postgresql` (or your driver's extension) and `quarkus-agroal`. You do **not**
 need `quarkus-hibernate-orm` — that is rather the point.

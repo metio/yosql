@@ -1,24 +1,41 @@
 ---
 title: Benchmarks
-date: 2019-09-27T18:51:08+02:00
+date: 2026-08-02
 menu:
   main:
     weight: 130
 ---
 
-This part of the documentation is intended for **developers** looking for information `YoSQL` itself or its generated code perform in various scenarios.
+Two things are measured: how long `YoSQL` takes to generate code, and how much the code it generates
+adds on top of JDBC.
 
-All benchmark results are computed on a free GitHub Actions account - thanks GitHub! The numbers may vary greatly between runs, depending on how much hardware is available to the runner. The numbers within one run are usually consistent and can be used to roughly measure performance. All available benchmarks can be seen at the bottom of this page. Each benchmark page explains how to run the benchmarks yourself. In case you want to make decision based on the performance of the generated code or the code generation itself, run these benchmarks on your own machine in order to see how well `YoSQL` performs against your actual hardware with actual SQL statements. The [initial setup](/tooling/) is simple enough, so that short 1 day/week/sprint spikes should be possible.
+- [Code generation](./codegen/) — reading, parsing and generating 10, 25 and 50 repositories, in each
+  logging configuration.
+- [Database access](./db-access/) — running statements through a generated repository, in each
+  logging configuration.
 
-All benchmarks are using [jmh](https://github.com/openjdk/jmh) and are part of the git repository at <https://github.com/metio/yosql>. Clone the repository if you are planning on running benchmarks yourself.
+## Reading the numbers
+
+The published results were measured on a **free GitHub Actions runner**, which is shared hardware
+with no guarantee of what else is on it. Within a single run they are consistent enough to compare
+configurations against each other; between runs, and against your own machine, they are not.
+
+Some of them carry a confidence interval wider than the score. Where that is so, the honest reading
+is "these two configurations are indistinguishable here", not "this one is faster".
+
+**Run them yourself before deciding anything.** Your hardware and your statements are the only ones
+that matter for your project, and both benchmarks take one command.
 
 ```console
 git clone https://github.com/metio/yosql
+mvn verify --activate-profiles benchmarks
 ```
 
-Benchmarks are only enabled on demand by activating the `benchmarks` profile (`mvn --activate-profiles benchmarks ...`). You are always more than welcome to improve any of the existing benchmarks or even add new ones. All currently available benchmarks make use of the fantastic [jmh-maven-plugin](https://github.com/jhunters/jmh-maven-plugin) and thus require Maven to run. In case you are working on your own persistence implementation for `YoSQL`, use these benchmarks as baseline for your actual implementation to measure the performance of your code.
+The `benchmarks` profile is off by default — a full JMH run takes far longer than the rest of the
+build put together, so it is not part of the normal gate. Each module writes its results to
+`target/benchmark/*.json`, which [jmh.morethan.io](https://jmh.morethan.io/) renders against the
+published baseline.
 
-```console
-# run all benchmarks
-$ mvn verify --activate-profiles benchmarks
-```
+Benchmarks use [jmh](https://github.com/openjdk/jmh) via the
+[jmh-maven-plugin](https://github.com/jhunters/jmh-maven-plugin). Improvements and new scenarios are
+welcome.

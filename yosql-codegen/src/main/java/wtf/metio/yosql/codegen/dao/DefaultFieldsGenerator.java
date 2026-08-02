@@ -62,20 +62,6 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
         this.fields = fields;
     }
 
-    /**
-     * Whether the repository has a method that opens its own connection.
-     *
-     * <p>With overloads generated, every statement has one however it is configured, so the field
-     * is always there. Without them, a repository whose statements all take a connection from the
-     * caller has nothing to do with a {@code DataSource} and is not given one.</p>
-     */
-    private boolean needsDataSource(final List<SqlStatement> statements) {
-        return repositories.generateConnectionOverloads() || statements.stream()
-                .map(SqlStatement::getConfiguration)
-                .flatMap(configuration -> configuration.createConnection().stream())
-                .anyMatch(Boolean.TRUE::equals);
-    }
-
     @Override
     public Optional<CodeBlock> staticInitializer(final List<SqlStatement> statements) {
         final var builder = CodeBlock.builder();
@@ -111,7 +97,7 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
         final var repositoryFields = new ArrayList<FieldSpec>(statements.size() * 2 + 2);
 
-        if (needsDataSource(statements)) {
+        if (RepositoryConnections.needsDataSource(repositories, statements)) {
             repositoryFields.add(fields.field(DataSource.class, names.dataSource()));
         }
 
