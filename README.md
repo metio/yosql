@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: The yosql Authors
 SPDX-License-Identifier: 0BSD
 -->
 
-# YoSQL [![Chat](https://img.shields.io/badge/matrix-%23talk.metio:matrix.org-brightgreen.svg?style=social&label=Matrix)](https://matrix.to/#/#talk.metio:matrix.org)
+# YoSQL
 
 Take a look at the [project website](https://yosql.projects.metio.wtf/) to read the documentation.
 
