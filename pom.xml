@@ -87,7 +87,6 @@
         <version.ant>1.10.17</version.ant>
         <version.cal10n>0.8.1</version.cal10n>
         <version.dagger>2.60.1</version.dagger>
-        <version.graal-sdk>25.2.4</version.graal-sdk>
         <version.h2>2.4.240</version.h2>
         <version.hikaricp>7.1.0</version.hikaricp>
         <version.immutables>2.12.2</version.immutables>
@@ -273,11 +272,6 @@
                 <groupId>org.eclipse.sisu</groupId>
                 <artifactId>org.eclipse.sisu.plexus</artifactId>
                 <version>${version.sisu}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.graalvm.sdk</groupId>
-                <artifactId>graal-sdk</artifactId>
-                <version>${version.graal-sdk}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.javaparser</groupId>
