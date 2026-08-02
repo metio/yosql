@@ -87,17 +87,17 @@
         <version.ant>1.10.17</version.ant>
         <version.cal10n>0.8.1</version.cal10n>
         <version.dagger>2.60.1</version.dagger>
-        <version.graal-sdk>23.1.12</version.graal-sdk>
+        <version.graal-sdk>25.2.4</version.graal-sdk>
         <version.h2>2.4.240</version.h2>
-        <version.hikaricp>5.1.0</version.hikaricp>
+        <version.hikaricp>7.1.0</version.hikaricp>
         <version.immutables>2.12.2</version.immutables>
         <version.jackson>2.22.1</version.jackson>
         <version.javaparser>3.28.2</version.javaparser>
         <version.javapoet>0.18.0</version.javapoet>
         <version.javax-inject>1</version.javax-inject>
         <version.jmh>1.37</version.jmh>
-        <version.jspecify>0.3.0</version.jspecify>
-        <version.junit>5.14.4</version.junit>
+        <version.jspecify>1.0.1</version.jspecify>
+        <version.junit>6.1.2</version.junit>
         <version.kotlin>2.4.10</version.kotlin>
         <version.log4j>2.26.1</version.log4j>
         <version.logback>1.6.1</version.logback>
@@ -109,7 +109,7 @@
         <version.plexus-build-api>1.2.0</version.plexus-build-api>
         <version.plexus-sec-dispatcher>4.1.0</version.plexus-sec-dispatcher>
         <version.postgresql>42.7.13</version.postgresql>
-        <version.sisu>0.9.0.M4</version.sisu>
+        <version.sisu>1.1.0</version.sisu>
         <version.slf4j>2.0.18</version.slf4j>
         <version.tinylog>2.7.0</version.tinylog>
 
