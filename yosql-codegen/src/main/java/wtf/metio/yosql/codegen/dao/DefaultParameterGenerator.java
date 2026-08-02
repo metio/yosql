@@ -7,6 +7,7 @@ package wtf.metio.yosql.codegen.dao;
 
 import com.palantir.javapoet.ArrayTypeName;
 import com.palantir.javapoet.ParameterSpec;
+import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.codegen.blocks.Parameters;
 import wtf.metio.yosql.codegen.exceptions.MissingParameterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingParameterTypeNameException;
@@ -17,6 +18,7 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import java.sql.Connection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class DefaultParameterGenerator implements ParameterGenerator {
@@ -31,7 +33,7 @@ public class DefaultParameterGenerator implements ParameterGenerator {
 
     @Override
     public List<ParameterSpec> asParameterSpecs(final SqlConfiguration configuration) {
-        return asParameterSpecs(configuration, this::ofSqlParameter);
+        return asParameterSpecs(configuration, this::ofSqlParameter, this::connection);
     }
 
     private ParameterSpec ofSqlParameter(final SqlParameter parameter) {
@@ -42,7 +44,7 @@ public class DefaultParameterGenerator implements ParameterGenerator {
 
     @Override
     public List<ParameterSpec> asParameterSpecsForInterfaces(final SqlConfiguration configuration) {
-        return asParameterSpecs(configuration, this::ofSqlParameterForInterfaces);
+        return asParameterSpecs(configuration, this::ofSqlParameterForInterfaces, this::connectionForInterfaces);
     }
 
     private ParameterSpec ofSqlParameterForInterfaces(final SqlParameter parameter) {
@@ -53,7 +55,7 @@ public class DefaultParameterGenerator implements ParameterGenerator {
 
     @Override
     public List<ParameterSpec> asBatchParameterSpecs(final SqlConfiguration configuration) {
-        return asParameterSpecs(configuration, this::batchOfSqlParameter);
+        return asParameterSpecs(configuration, this::batchOfSqlParameter, this::connection);
     }
 
     private ParameterSpec batchOfSqlParameter(final SqlParameter parameter) {
@@ -64,7 +66,7 @@ public class DefaultParameterGenerator implements ParameterGenerator {
 
     @Override
     public List<ParameterSpec> asBatchParameterSpecsForInterfaces(final SqlConfiguration configuration) {
-        return asParameterSpecs(configuration, this::batchOfSqlParameterForInterfaces);
+        return asParameterSpecs(configuration, this::batchOfSqlParameterForInterfaces, this::connectionForInterfaces);
     }
 
     private ParameterSpec batchOfSqlParameterForInterfaces(final SqlParameter parameter) {
@@ -73,13 +75,27 @@ public class DefaultParameterGenerator implements ParameterGenerator {
                 parameter.name().orElseThrow(MissingParameterNameException::new));
     }
 
+    private ParameterSpec connection() {
+        return parameters.parameter(Connection.class, names.connection());
+    }
+
+    private ParameterSpec connectionForInterfaces() {
+        return parameters.parameterForInterfaces(TypeName.get(Connection.class), names.connection());
+    }
+
+    /**
+     * The connection a statement runs on comes first, so that a repository's two overloads of a
+     * name read as one signature with a connection in front of it rather than as two unrelated
+     * methods.
+     */
     private List<ParameterSpec> asParameterSpecs(
             final SqlConfiguration configuration,
-            final Function<SqlParameter, ParameterSpec> asParameter) {
+            final Function<SqlParameter, ParameterSpec> asParameter,
+            final Supplier<ParameterSpec> asConnection) {
         return Stream.concat(
                         configuration.createConnection()
                                 .filter(Boolean.FALSE::equals)
-                                .map(value -> parameters.parameter(Connection.class, names.connection()))
+                                .map(value -> asConnection.get())
                                 .stream(),
                         configuration.parameters().stream().map(asParameter))
                 .toList();

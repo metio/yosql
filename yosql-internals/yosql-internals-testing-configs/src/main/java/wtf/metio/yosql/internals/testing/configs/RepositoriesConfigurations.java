@@ -21,6 +21,15 @@ public final class RepositoriesConfigurations {
                 .withValidateMethodNamePrefixes(true);
     }
 
+    /**
+     * One method per statement, in whichever shape {@code createConnection} asks for, so that a test
+     * about that setting sees only what it configures.
+     */
+    public static RepositoriesConfiguration withoutConnectionOverloads() {
+        return RepositoriesConfiguration.copyOf(defaults())
+                .withGenerateConnectionOverloads(false);
+    }
+
     private RepositoriesConfigurations() {
         // factory class
     }

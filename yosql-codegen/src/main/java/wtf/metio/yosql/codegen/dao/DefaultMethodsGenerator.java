@@ -8,6 +8,7 @@ import com.palantir.javapoet.MethodSpec;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.blocks.Javadoc;
 import wtf.metio.yosql.codegen.lifecycle.ApplicationWarnings;
+import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -29,6 +30,7 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
     private final ReadMethodGenerator readMethods;
     private final WriteMethodGenerator writeMethods;
     private final CallMethodGenerator callingMethods;
+    private final RepositoriesConfiguration repositories;
     private final LocLogger logger;
 
     /**
@@ -37,6 +39,7 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
      * @param readMethods    The read methods generator to use.
      * @param writeMethods   The write methods generator to use.
      * @param callingMethods The call methods generator to use.
+     * @param repositories   The repository configuration to use.
      * @param logger         The logger to use.
      */
     public DefaultMethodsGenerator(
@@ -45,12 +48,14 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
             final ReadMethodGenerator readMethods,
             final WriteMethodGenerator writeMethods,
             final CallMethodGenerator callingMethods,
+            final RepositoriesConfiguration repositories,
             final LocLogger logger) {
         this.javadoc = javadoc;
         this.constructor = constructor;
         this.readMethods = readMethods;
         this.writeMethods = writeMethods;
         this.callingMethods = callingMethods;
+        this.repositories = repositories;
         this.logger = logger;
     }
 
@@ -65,6 +70,21 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 writeMethods::batchWriteMethodDeclaration));
 
         return documented(methods);
+    }
+
+    /**
+     * The connection shapes a statement is generated in.
+     *
+     * <p>Where a statement gets its connection is a property of the call site rather than of the
+     * statement: the same query is read on its own by one caller and inside a transaction another
+     * caller already opened by the next. Both shapes are therefore generated as overloads of one
+     * name, and {@code createConnection} only decides which one exists when that is turned off.</p>
+     */
+    private List<Boolean> connectionShapes(final SqlConfiguration configuration) {
+        if (repositories.generateConnectionOverloads()) {
+            return List.of(Boolean.TRUE, Boolean.FALSE);
+        }
+        return List.of(configuration.createConnection().orElse(Boolean.TRUE));
     }
 
     @Override
@@ -91,7 +111,7 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
         return methods.stream().map(javadoc::withSignatureTags).toList();
     }
 
-    private static List<MethodSpec> asMethods(
+    private List<MethodSpec> asMethods(
             final List<SqlStatement> statements,
             final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> call,
             final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> read,
@@ -106,7 +126,7 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 .toList();
     }
 
-    private static List<MethodSpec> asMethods(
+    private List<MethodSpec> asMethods(
             final List<SqlStatement> statements,
             final Predicate<SqlStatement> filter,
             final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> generator) {
@@ -115,8 +135,13 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
                 .collect(Collectors.groupingBy(SqlStatement::getName))
                 .values()
                 .stream()
-                .map(statementsWithSameName -> generator.apply(
-                        SqlConfiguration.fromStatements(statementsWithSameName), statementsWithSameName))
+                .flatMap(statementsWithSameName -> {
+                    final var configuration = SqlConfiguration.fromStatements(statementsWithSameName);
+                    return connectionShapes(configuration).stream()
+                            .map(createConnection -> generator.apply(
+                                    SqlConfiguration.copyOf(configuration).withCreateConnection(createConnection),
+                                    statementsWithSameName));
+                })
                 .toList();
     }
 

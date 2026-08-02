@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterAliasException;
 import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -30,6 +31,12 @@ final class DefaultFieldsGeneratorTest {
         @Override
         FieldsGenerator generator() {
             return DaoObjectMother.fieldsGenerator(JavaConfigurations.defaults());
+        }
+
+        @Override
+        FieldsGenerator generatorWithoutConnectionOverloads() {
+            return DaoObjectMother.fieldsGenerator(JavaConfigurations.defaults(),
+                    RepositoriesConfigurations.withoutConnectionOverloads());
         }
 
         @Override

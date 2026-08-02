@@ -23,6 +23,13 @@ public abstract class FieldsGeneratorTCK {
 
     abstract FieldsGenerator generator();
 
+    /**
+     * @return A {@link FieldsGenerator} that generates one method per statement, so that a
+     *         repository whose statements all take a given connection has no {@code DataSource}
+     *         field.
+     */
+    abstract FieldsGenerator generatorWithoutConnectionOverloads();
+
     abstract String staticInitializerExpectation();
 
     abstract String asFieldsExpectations();
@@ -86,8 +93,9 @@ public abstract class FieldsGeneratorTCK {
     final void asFieldsWithGivenConnections() {
         assertFields(
                 asFieldsWithGivenConnectionsExpectations(),
-                generator().asFields(List.of(SqlConfigurations.sqlStatement(SqlConfiguration.copyOf(
-                        SqlConfigurations.sqlConfiguration()).withCreateConnection(false)))));
+                generatorWithoutConnectionOverloads().asFields(List.of(SqlConfigurations.sqlStatement(
+                        SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                                .withCreateConnection(false)))));
     }
 
     private static void assertFields(final String expectedValue, final Iterable<FieldSpec> fields) {

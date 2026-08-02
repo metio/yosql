@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: The yosql Authors
  * SPDX-License-Identifier: 0BSD
  */
-
 --
 -- parameters:
 --   - name: name
@@ -12,17 +11,4 @@
 --
 select *
 from companies
-where name = :name
-;
-
--- createConnection: false
--- parameters:
---   - name: name
---     type: java.lang.String
--- returning: single
--- throwOnMultipleResults: true
---
-select *
-from companies
-where name = :name
-;
+where name = :name;

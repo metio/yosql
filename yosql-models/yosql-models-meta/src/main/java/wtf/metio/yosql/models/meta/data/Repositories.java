@@ -74,7 +74,8 @@ public final class Repositories extends AbstractConfigurationGroup {
                 catchAndRethrow(),
                 writesReturnUpdateCount(),
                 throwOnMultipleResults(),
-                createConnection());
+                createConnection(),
+                generateConnectionOverloads());
     }
 
     private static ConfigurationSetting basePackageName() {
@@ -295,7 +296,97 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Controls whether the generated code should create/open connection itself or use a given connection.";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        A method either takes a connection from the repository's `DataSource` and closes it when it
+                        is done, or takes a `java.sql.Connection` as its first parameter and leaves it open for
+                        whoever passed it in.
+
+                        With [generateConnectionOverloads](../generateconnectionoverloads/) left on — it is on by
+                        default — you get both and this setting decides nothing you have to think about. It matters
+                        when you turn overloads off and want one shape rather than the other.""")
                 .addTags(Tags.FRONT_MATTER)
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default. The method opens a connection and closes it:")
+                        .setResult("""
+                                public final class SomeRepository {
+
+                                    public List<Tenant> findTenants() {
+                                        try (final var connection = dataSource.getConnection()) {
+                                            // ... rest of generated code
+                                        }
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("The connection comes from the caller, so the statement can join work already in progress:")
+                        .setResult("""
+                                public final class SomeRepository {
+
+                                    public List<Tenant> findTenants(final Connection connection) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .build();
+    }
+
+    private static ConfigurationSetting generateConnectionOverloads() {
+        final var name = "generateConnectionOverloads";
+        final var description = "Generate both a DataSource-based method and a Connection-taking overload for every statement.";
+        final var value = true;
+        return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        Whether a statement gets its connection from the repository's `DataSource` or from the
+                        caller is not a property of the statement — it is what the call site needs. One caller
+                        reads a tenant on its own; another reads it as part of a transaction it already opened. So
+                        every statement generates both, as overloads of one name:
+
+                        ```java
+                        Optional<Tenant> findTenant(UUID id);
+                        Optional<Tenant> findTenant(Connection connection, UUID id);
+                        ```
+
+                        The `Connection` overload runs the statement on the connection it is given and does not
+                        close it, which is what lets several statements share a transaction — see
+                        [transactions](../../../sql/transactions/).
+
+                        Turning this off generates only the shape
+                        [createConnection](../createconnection/) selects, one method per statement.""")
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("true")
+                        .setDescription("The default. Each statement is reachable both ways:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public Optional<Tenant> findTenant(final UUID id) {
+                                        try (final var connection = dataSource.getConnection()) {
+                                            return findTenant(connection, id);
+                                        }
+                                        // ... rest of generated code
+                                    }
+
+                                    public Optional<Tenant> findTenant(final Connection connection, final UUID id) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("false")
+                        .setDescription("Only the shape `createConnection` asks for is generated:")
+                        .setResult("""
+                                public final class TenantRepository {
+
+                                    public Optional<Tenant> findTenant(final UUID id) {
+                                        // ... rest of generated code
+                                    }
+
+                                }""")
+                        .build())
                 .build();
     }
 

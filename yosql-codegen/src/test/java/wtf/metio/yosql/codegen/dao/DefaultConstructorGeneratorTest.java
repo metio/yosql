@@ -8,6 +8,7 @@ package wtf.metio.yosql.codegen.dao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
+import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
 
 @DisplayName("DefaultConstructorGenerator")
 final class DefaultConstructorGeneratorTest {
@@ -19,6 +20,12 @@ final class DefaultConstructorGeneratorTest {
         @Override
         ConstructorGenerator generator() {
             return DaoObjectMother.constructorGenerator(JavaConfigurations.defaults());
+        }
+
+        @Override
+        ConstructorGenerator generatorWithoutConnectionOverloads() {
+            return DaoObjectMother.constructorGenerator(JavaConfigurations.defaults(),
+                    RepositoriesConfigurations.withoutConnectionOverloads());
         }
 
         @Override

@@ -59,6 +59,7 @@ public class DefaultDaoModule {
             final ReadMethodGenerator readMethods,
             final WriteMethodGenerator writeMethods,
             final CallMethodGenerator callMethods,
+            final RuntimeConfiguration runtimeConfiguration,
             @Generator final LocLogger logger) {
         return new DefaultMethodsGenerator(
                 javadoc,
@@ -66,6 +67,7 @@ public class DefaultDaoModule {
                 readMethods,
                 writeMethods,
                 callMethods,
+                runtimeConfiguration.repositories(),
                 logger);
     }
 
@@ -94,6 +96,7 @@ public class DefaultDaoModule {
             final RuntimeConfiguration runtimeConfiguration) {
         return new DefaultFieldsGenerator(
                 runtimeConfiguration.converter(),
+                runtimeConfiguration.repositories(),
                 runtimeConfiguration.names(),
                 logging,
                 javadoc,

@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: The yosql Authors
  * SPDX-License-Identifier: 0BSD
  */
-
 --
 -- parameters:
 --   - name: userId
@@ -13,18 +12,4 @@
 select *
 from users
 where id = :userId
-  and name = :name
-;
-
--- createConnection: false
--- parameters:
---   - name: userId
---     type: int
---   - name: name
---     type: java.lang.String
---
-select *
-from users
-where id = :userId
-  and name = :name
-;
+  and name = :name;

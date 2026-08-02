@@ -23,6 +23,13 @@ public abstract class ConstructorTCK {
     abstract ConstructorGenerator generator();
 
     /**
+     * @return A {@link ConstructorGenerator} that generates one method per statement, so that a
+     *         repository whose statements all take a given connection has nothing to do with a
+     *         {@code DataSource}.
+     */
+    abstract ConstructorGenerator generatorWithoutConnectionOverloads();
+
+    /**
      * @return The expected generated code for a repository constructor.
      */
     abstract String forRepositoryExpectation();
@@ -70,8 +77,9 @@ public abstract class ConstructorTCK {
     final void forRepositoryWithGivenConnections() {
         Assertions.assertEquals(
                 forRepositoryWithGivenConnectionsExpectation(),
-                generator().repository(List.of(SqlConfigurations.sqlStatement(SqlConfiguration.copyOf(
-                        SqlConfigurations.sqlConfiguration()).withCreateConnection(false)))).toString(),
+                generatorWithoutConnectionOverloads().repository(List.of(SqlConfigurations.sqlStatement(
+                        SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                                .withCreateConnection(false)))).toString(),
                 "The generated constructor does not match expectation");
     }
 

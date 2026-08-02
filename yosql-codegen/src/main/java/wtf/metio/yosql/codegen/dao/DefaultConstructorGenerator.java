@@ -52,14 +52,10 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
         final var builder = CodeBlock.builder();
         final var constructor = methods.constructor();
 
-        statements.stream()
-                .map(SqlStatement::getConfiguration)
-                .flatMap(configuration -> configuration.createConnection().stream())
-                .filter(Boolean.TRUE::equals)
-                .findAny()
-                .ifPresent(createConnection -> constructor
-                        .addParameter(jdbcParameters.dataSource())
-                        .addCode(blocks.initializeFieldToSelf(names.dataSource())));
+        if (needsDataSource(statements)) {
+            constructor.addParameter(jdbcParameters.dataSource())
+                    .addCode(blocks.initializeFieldToSelf(names.dataSource()));
+        }
 
         if (repositories.injectConverters()) {
             resultConverters(statements).forEach(converter -> {
@@ -74,6 +70,17 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
         return constructor
                 .addCode(builder.build())
                 .build();
+    }
+
+    /**
+     * Whether the repository has a method that opens its own connection, and therefore something to
+     * do with a {@code DataSource}. With overloads generated every statement has one, so it does.
+     */
+    private boolean needsDataSource(final List<SqlStatement> statements) {
+        return repositories.generateConnectionOverloads() || statements.stream()
+                .map(SqlStatement::getConfiguration)
+                .flatMap(configuration -> configuration.createConnection().stream())
+                .anyMatch(Boolean.TRUE::equals);
     }
 
     private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {

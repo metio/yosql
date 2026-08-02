@@ -80,6 +80,31 @@ reading generated fields directly.
 A record declaring type parameters is refused rather than mapped, because a statement says nothing
 about what to substitute for them. Name a concrete type instead.
 
+### Every statement is now reachable with and without a connection
+
+Where a statement got its connection used to be decided per statement by `createConnection`, and you
+got one method. It is now decided by the caller, and you get two:
+
+```java
+Optional<Tenant> findTenant(UUID id);
+Optional<Tenant> findTenant(Connection connection, UUID id);
+```
+
+The first opens a connection from the repository's `DataSource` and closes it; the second runs on
+the one it is given. That is what lets several statements share a transaction — see
+[transactions](../../sql/transactions/).
+
+Nothing you call today changes name or signature, so existing code keeps compiling, with one
+exception: **a repository whose statements all set `createConnection: false` used to have a no-arg
+constructor** and now takes a `DataSource`, because it now also has methods that need one. Pass it
+one, or set
+[generateConnectionOverloads](../../configuration/repositories/generateconnectionoverloads/) to
+`false` to keep one method per statement.
+
+If you wrote a statement twice in a file — once plain and once with `createConnection: false` — to
+get both shapes, delete the second one. It now generates a method with a `2` in its name for no
+reason.
+
 ### A parameter with no type now fails instead of becoming an Object
 
 A parameter the front matter did not type used to be bound as `java.lang.Object`. The method

@@ -19,6 +19,7 @@ import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
+import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -40,6 +41,7 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
 
     private final ConverterConfiguration converters;
+    private final RepositoriesConfiguration repositories;
     private final NamesConfiguration names;
     private final LoggingGenerator logging;
     private final Javadoc javadoc;
@@ -47,15 +49,31 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
 
     public DefaultFieldsGenerator(
             final ConverterConfiguration converters,
+            final RepositoriesConfiguration repositories,
             final NamesConfiguration names,
             final LoggingGenerator logging,
             final Javadoc javadoc,
             final Fields fields) {
         this.converters = converters;
+        this.repositories = repositories;
         this.names = names;
         this.logging = logging;
         this.javadoc = javadoc;
         this.fields = fields;
+    }
+
+    /**
+     * Whether the repository has a method that opens its own connection.
+     *
+     * <p>With overloads generated, every statement has one however it is configured, so the field
+     * is always there. Without them, a repository whose statements all take a connection from the
+     * caller has nothing to do with a {@code DataSource} and is not given one.</p>
+     */
+    private boolean needsDataSource(final List<SqlStatement> statements) {
+        return repositories.generateConnectionOverloads() || statements.stream()
+                .map(SqlStatement::getConfiguration)
+                .flatMap(configuration -> configuration.createConnection().stream())
+                .anyMatch(Boolean.TRUE::equals);
     }
 
     @Override
@@ -93,13 +111,9 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     public Iterable<FieldSpec> asFields(final List<SqlStatement> statements) {
         final var repositoryFields = new ArrayList<FieldSpec>(statements.size() * 2 + 2);
 
-        statements.stream()
-                .map(SqlStatement::getConfiguration)
-                .flatMap(configuration -> configuration.createConnection().stream())
-                .filter(Boolean.TRUE::equals)
-                .findAny()
-                .ifPresent(createConnection -> repositoryFields.add(
-                        fields.field(DataSource.class, names.dataSource())));
+        if (needsDataSource(statements)) {
+            repositoryFields.add(fields.field(DataSource.class, names.dataSource()));
+        }
 
         if (logging.isEnabled()) {
             statements.stream()

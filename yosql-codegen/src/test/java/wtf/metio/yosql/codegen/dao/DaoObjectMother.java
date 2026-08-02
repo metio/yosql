@@ -15,6 +15,7 @@ import wtf.metio.yosql.codegen.records.ParameterConversions;
 import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.codegen.records.StatementBinders;
 import wtf.metio.yosql.internals.testing.configs.*;
+import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.JavaConfiguration;
@@ -38,8 +39,15 @@ public final class DaoObjectMother {
     }
 
     public static FieldsGenerator fieldsGenerator(final JavaConfiguration java) {
+        return fieldsGenerator(java, RepositoriesConfigurations.defaults());
+    }
+
+    public static FieldsGenerator fieldsGenerator(
+            final JavaConfiguration java,
+            final RepositoriesConfiguration repositories) {
         return new DefaultFieldsGenerator(
                 ConverterConfigurations.withConverters(),
+                repositories,
                 NamesConfigurations.defaults(),
                 LoggingObjectMother.loggingGenerator(),
                 BlocksObjectMother.javadoc(),
@@ -47,12 +55,18 @@ public final class DaoObjectMother {
     }
 
     public static ConstructorGenerator constructorGenerator(final JavaConfiguration java) {
+        return constructorGenerator(java, RepositoriesConfigurations.defaults());
+    }
+
+    public static ConstructorGenerator constructorGenerator(
+            final JavaConfiguration java,
+            final RepositoriesConfiguration repositories) {
         return new DefaultConstructorGenerator(
                 BlocksObjectMother.codeBlocks(),
                 BlocksObjectMother.methods(java),
                 NamesConfigurations.defaults(),
                 jdbcParameter(java),
-                RepositoriesConfigurations.defaults(),
+                repositories,
                 ConverterConfigurations.withConverters());
     }
 
@@ -96,12 +110,19 @@ public final class DaoObjectMother {
     }
 
     public static MethodsGenerator delegatingMethodsGenerator(final JavaConfiguration java) {
+        return delegatingMethodsGenerator(java, RepositoriesConfigurations.defaults());
+    }
+
+    public static MethodsGenerator delegatingMethodsGenerator(
+            final JavaConfiguration java,
+            final RepositoriesConfiguration repositories) {
         return new DefaultMethodsGenerator(
                 BlocksObjectMother.javadoc(),
                 constructorGenerator(java),
                 readMethodGenerator(java),
                 writeMethodGenerator(java),
                 callMethodGenerator(java),
+                repositories,
                 LoggingObjectMother.logger());
     }
 
