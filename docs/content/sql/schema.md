@@ -135,6 +135,43 @@ the parameter can be null; a `not null` column gives the primitive.
 What you write always wins. Naming a type in the front matter is how you use a type of your own —
 a `TenantId` wrapping a `UUID` — and how you settle anything this gets wrong.
 
+## Records come free too
+
+A result row type is usually a record whose components repeat, one by one, what the `select` list
+already says. Set `generateResultRowType` and `YoSQL` writes it:
+
+```sql
+-- name: findTenantSummary
+-- returning: multiple
+-- resultRowType: com.example.domain.TenantSummary
+-- generateResultRowType: true
+select id, slug, created_at from tenant where account_id = :accountId
+```
+
+which produces
+
+```java
+public record TenantSummary(UUID id, String slug, Instant createdAt) {
+}
+```
+
+next to its converter, in the package the type name gives. Aliases decide the component names, so
+`select amount_cents as minor_units` gives a `minorUnits`; a nullable column gives the boxed type.
+
+It is per statement, and off unless you ask. A `resultRowType` naming a record that is not there is
+far more often a typo than a request, and quietly writing a new record for a misspelled name would
+replace a build error with a mystery.
+
+The record has to be describable in full. A computed expression, a subquery or a column no `create
+table` mentions leaves `YoSQL` with nothing to write, and it says so rather than guessing:
+
+```text
+Statement 'findTenantSummary' asks YoSQL to write 'com.example.domain.TenantSummary', but the
+schema does not describe every column it selects.
+```
+
+Write that one by hand — everything else about it stays the same.
+
 ## More than one database
 
 `YoSQL` [picks a statement by vendor at run time](../sql-files/), and the schema follows the same

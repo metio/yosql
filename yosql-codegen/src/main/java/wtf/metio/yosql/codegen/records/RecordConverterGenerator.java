@@ -19,6 +19,7 @@ import wtf.metio.yosql.codegen.exceptions.AmbiguousValueOfException;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingRecordSourceException;
+import wtf.metio.yosql.codegen.exceptions.UnknownRecordShapeException;
 import wtf.metio.yosql.codegen.exceptions.RecursiveRecordException;
 import wtf.metio.yosql.codegen.exceptions.ScalarResultColumnsException;
 import wtf.metio.yosql.codegen.exceptions.UnreadableResultRowTypeException;
@@ -63,6 +64,7 @@ public final class RecordConverterGenerator {
     private final Methods methods;
     private final JdbcParameters jdbcParameters;
     private final MethodExceptionHandler exceptions;
+    private final SchemaRecords schemaRecords;
 
     public RecordConverterGenerator(
             final LocLogger logger,
@@ -73,7 +75,8 @@ public final class RecordConverterGenerator {
             final Classes classes,
             final Methods methods,
             final JdbcParameters jdbcParameters,
-            final MethodExceptionHandler exceptions) {
+            final MethodExceptionHandler exceptions,
+            final SchemaRecords schemaRecords) {
         this.logger = logger;
         this.scanner = scanner;
         this.names = names;
@@ -84,10 +87,14 @@ public final class RecordConverterGenerator {
         this.methods = methods;
         this.jdbcParameters = jdbcParameters;
         this.exceptions = exceptions;
+        this.schemaRecords = schemaRecords;
     }
 
     public Stream<PackagedTypeSpec> generateConverterClasses(final List<SqlStatement> statements) {
         final var byType = new LinkedHashMap<ClassName, JavaSourceType>();
+        // The shapes this generated rather than read. Their records have to be written too, or the
+        // converters reference a type nobody declared.
+        final var written = new LinkedHashMap<ClassName, JavaSourceType>();
         final var columnsByType = new LinkedHashMap<ClassName, Map<String, String>>();
 
         // Two passes, because a column override belongs to the result row type rather than to one
@@ -107,7 +114,15 @@ public final class RecordConverterGenerator {
                 verifyScalar(statement, single.get());
                 continue;
             }
-            byType.computeIfAbsent(type, key -> read(key, statement));
+            byType.computeIfAbsent(type, key -> {
+                if (writesItsOwnRecord(statement)) {
+                    final var shape = schemaRecords.shapeOf(key, statement)
+                            .orElseThrow(() -> new UnknownRecordShapeException(key, statement.getName()));
+                    written.put(key, shape);
+                    return shape;
+                }
+                return read(key, statement);
+            });
             mergeOverrides(type, statement, columnsByType);
             declaring.add(statement);
         }
@@ -119,8 +134,11 @@ public final class RecordConverterGenerator {
             verify(statement, byType.get(type), columnsByType.getOrDefault(type, Map.of()));
         }
         return Stream.concat(
-                byType.values().stream()
-                        .map(record -> generateConverterClass(record, columnsByType.getOrDefault(record.type(), Map.of()))),
+                Stream.concat(
+                        byType.values().stream()
+                                .map(record -> generateConverterClass(record,
+                                        columnsByType.getOrDefault(record.type(), Map.of()))),
+                        written.values().stream().map(schemaRecords::generateRecord)),
                 scalars.values().stream().map(this::generateScalarConverter));
     }
 
@@ -171,6 +189,12 @@ public final class RecordConverterGenerator {
                 throw new DuplicateConverterNameException(names.converterClass(type), previous, type);
             }
         }
+    }
+
+    private static boolean writesItsOwnRecord(final SqlStatement statement) {
+        return statement.getConfiguration().generateResultRowType()
+                .map(Boolean.TRUE::equals)
+                .orElse(Boolean.FALSE);
     }
 
     private JavaSourceType read(final ClassName type, final SqlStatement statement) {

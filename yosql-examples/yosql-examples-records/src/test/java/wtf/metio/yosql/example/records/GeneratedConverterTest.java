@@ -100,6 +100,19 @@ class GeneratedConverterTest {
     }
 
     @Test
+    @DisplayName("a record nobody wrote is read from the schema and used like any other")
+    void writesTheRecordItself() {
+        final var summaries = tenants.findTenantSummary(ACCOUNT);
+        assertAll(
+                () -> assertEquals(2, summaries.size()),
+                () -> assertEquals(TENANT, summaries.get(0).id(), "uuid reads into UUID"),
+                () -> assertEquals("acme", summaries.get(0).slug(), "varchar reads into String"),
+                () -> assertEquals(CREATED, summaries.get(0).createdAt(),
+                        "created_at reads into an Instant named createdAt"),
+                () -> assertEquals("zenith", summaries.get(1).slug()));
+    }
+
+    @Test
     @DisplayName("a value object is assembled from several columns of the same row")
     void assemblesNestedValueObject() {
         final var entries = ledger.findLedgerEntries(TENANT);

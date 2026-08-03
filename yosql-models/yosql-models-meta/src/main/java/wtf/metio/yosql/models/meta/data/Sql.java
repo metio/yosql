@@ -71,6 +71,7 @@ public final class Sql extends AbstractConfigurationGroup {
                 name(),
                 description(),
                 validateSchema(),
+                generateResultRowType(),
                 vendor(),
                 type(),
                 returningMode(),
@@ -163,6 +164,42 @@ public final class Sql extends AbstractConfigurationGroup {
                                 }
                                 """)
                         .build())
+                .build();
+    }
+
+    private static ConfigurationSetting generateResultRowType() {
+        final var name = "generateResultRowType";
+        final var description = "Write the record this statement builds its rows into.";
+        return ConfigurationSetting.builder()
+                .setName(name)
+                .setDescription(description)
+                .setFrontMatterExampleCode("true")
+                .setExplanation("""
+                        Everything the record needs is already known — which columns the statement selects, what
+                        each one holds, whether it can be null — so naming a record that does not exist yet and
+                        setting this writes it for you, next to the converter that builds it.
+
+                        ```sql
+                        -- name: findTenant
+                        -- returning: single
+                        -- resultRowType: com.example.domain.Tenant
+                        -- generateResultRowType: true
+                        select id, slug, created_at from tenant
+                        ```
+
+                        Opt in per statement rather than whenever the record is missing. A `resultRowType` naming
+                        a record that is not there is far more often a typo than a request, and writing a new
+                        record for a misspelled name would replace a build error with a mystery.
+
+                        It needs a [schema](../../schema/validation/) it can read, and it needs every selected
+                        column to be one the catalog describes with a type it maps. Where any of that is missing
+                        the record is not written, and the statement fails as it would have before — because half
+                        a record is worse than none.
+
+                        The record it writes is yours to take over: copy it into your own sources, drop the
+                        setting, and nothing else changes.""")
+                .addImmutableMethods(immutableMethod(ClassName.get(Boolean.class), name, description))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 

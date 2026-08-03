@@ -11,6 +11,7 @@ import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.codegen.dao.*;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.codegen.records.*;
+import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.Converter;
 import wtf.metio.yosql.tooling.dagger.annotations.Delegating;
@@ -168,7 +169,8 @@ public class DefaultDaoModule {
             final Classes classes,
             final Methods methods,
             final JdbcParameters jdbcParameters,
-            final MethodExceptionHandler exceptions) {
+            final MethodExceptionHandler exceptions,
+            final Schemas schemas) {
         return new RecordConverterGenerator(
                 logger,
                 scanner,
@@ -178,7 +180,8 @@ public class DefaultDaoModule {
                 classes,
                 methods,
                 jdbcParameters,
-                exceptions);
+                exceptions,
+                new SchemaRecords(schemas, annotations));
     }
 
     @Provides

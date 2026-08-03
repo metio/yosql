@@ -19,9 +19,11 @@ import wtf.metio.yosql.codegen.exceptions.RecursiveRecordException;
 import wtf.metio.yosql.codegen.exceptions.ScalarResultColumnsException;
 import wtf.metio.yosql.codegen.exceptions.UnreadableResultRowTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnmappedColumnsException;
+import wtf.metio.yosql.codegen.exceptions.UnknownRecordShapeException;
 import wtf.metio.yosql.codegen.exceptions.UnparsableRecordException;
 import wtf.metio.yosql.codegen.exceptions.UnsupportedComponentTypeException;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
+import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.internals.testing.configs.ConverterConfigurations;
 import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
@@ -41,6 +43,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -76,7 +79,8 @@ class RecordConverterGeneratorTest {
                 BlocksObjectMother.classes(java),
                 BlocksObjectMother.methods(java),
                 DaoObjectMother.jdbcParameter(java),
-                DaoObjectMother.jdbcMethodExceptionHandler());
+                DaoObjectMother.jdbcMethodExceptionHandler(),
+                new SchemaRecords(Schemas.empty(), BlocksObjectMother.annotationGenerator()));
     }
 
     private static SqlStatement statement(final String name, final String resultRowType, final String sql) {
@@ -106,6 +110,21 @@ class RecordConverterGeneratorTest {
                         .setResultRowColumns(columns)
                         .build())
                 .setRawStatement(sql)
+                .build();
+    }
+
+    private static SqlStatement writesItsOwnRecord() {
+        return SqlStatement.builder()
+                .setSourcePath(Path.of("src", "main", "yosql", "tenant", "findTenantSummary.sql"))
+                .setConfiguration(SqlConfiguration.builder()
+                        .setName("findTenantSummary")
+                        .setType(SqlStatementType.READING)
+                        .setReturningMode(ReturningMode.MULTIPLE)
+                        .setRepository("com.example.persistence.TenantRepository")
+                        .setResultRowType("com.example.domain.TenantSummary")
+                        .setGenerateResultRowType(Boolean.TRUE)
+                        .build())
+                .setRawStatement("select id, slug from tenant")
                 .build();
     }
 
@@ -612,6 +631,18 @@ class RecordConverterGeneratorTest {
                     generator().generateConverterClasses(List.of(statement("countTenants", "long",
                             "select count(*) from tenant"))).toList());
             assertTrue(exception.getMessage().contains("wrapper"), exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("does not send the author looking for a file that is not supposed to exist")
+        void writesItsOwnRecordWithoutASchema() {
+            final var exception = assertThrows(UnknownRecordShapeException.class, () ->
+                    generator().generateConverterClasses(List.of(writesItsOwnRecord())).toList());
+            assertAll(
+                    () -> assertTrue(exception.getMessage().contains("does not describe every column"),
+                            exception.getMessage()),
+                    () -> assertFalse(exception.getMessage().contains("no source file"),
+                            exception.getMessage()));
         }
 
         @Test
