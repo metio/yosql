@@ -40,25 +40,34 @@ public interface WritingTests {
     @Value.Lazy
     default void runWritingTests() {
         try {
-            insertCompany().applyAsInt(1, "one");
-            insertCompany().applyAsInt(2, "two");
-            insertCompany().applyAsInt(3, "three");
+            // A write returns the rows it changed, so the update count is the statement reporting
+            // that it did what it was asked. Discarding it is how a write that silently matched
+            // nothing goes unnoticed.
+            Verify.equal(1, insertCompany().applyAsInt(1, "one"), "insert company one");
+            Verify.equal(1, insertCompany().applyAsInt(2, "two"), "insert company two");
+            Verify.equal(1, insertCompany().applyAsInt(3, "three"), "insert company three");
 
-            insertPerson().applyAsInt(1, "eve");
-            insertPerson().applyAsInt(2, "adam");
-            insertPerson().applyAsInt(3, "bob");
+            Verify.equal(1, insertPerson().applyAsInt(1, "eve"), "insert person eve");
+            Verify.equal(1, insertPerson().applyAsInt(2, "adam"), "insert person adam");
+            Verify.equal(1, insertPerson().applyAsInt(3, "bob"), "insert person bob");
 
-            insertUser().applyAsInt(-1, "special user");
-            insertUser().applyAsInt(1, "admin");
-            insertUser().applyAsInt(2, "not-an-admin");
-            insertUser().applyAsInt(3, "regular-user");
+            Verify.equal(1, insertUser().applyAsInt(-1, "special user"), "insert special user");
+            Verify.equal(1, insertUser().applyAsInt(1, "admin"), "insert admin user");
+            Verify.equal(1, insertUser().applyAsInt(2, "not-an-admin"), "insert non-admin user");
+            Verify.equal(1, insertUser().applyAsInt(3, "regular-user"), "insert regular user");
 
-            insertItem().applyAsInt(1, "iPhone 47 eXtreme");
-            insertItem().applyAsInt(2, "Android 49");
-            insertItem().applyAsInt(3, "GenericPhone 38");
+            Verify.equal(1, insertItem().applyAsInt(1, "iPhone 47 eXtreme"), "insert first item");
+            Verify.equal(1, insertItem().applyAsInt(2, "Android 49"), "insert second item");
+            Verify.equal(1, insertItem().applyAsInt(3, "GenericPhone 38"), "insert third item");
 
-            insertCompanyBatch().apply(new int[]{4, 5, 6}, new String[]{"three", "five", "six"});
-            insertPersonBatch().apply(new int[]{4, 5, 6}, new String[]{"alice", "frank", "joe"});
+            // A batch answers with one count per element, which is the only way to see that every
+            // element of the array reached the database rather than just the first.
+            Verify.equal(3, insertCompanyBatch()
+                    .apply(new int[]{4, 5, 6}, new String[]{"three", "five", "six"}).length,
+                    "company batch counts");
+            Verify.equal(3, insertPersonBatch()
+                    .apply(new int[]{4, 5, 6}, new String[]{"alice", "frank", "joe"}).length,
+                    "person batch counts");
         } catch (final RuntimeException exception) {
             LOG.log(System.Logger.Level.ERROR, "Error while running WRITING tests", exception);
             System.exit(1);

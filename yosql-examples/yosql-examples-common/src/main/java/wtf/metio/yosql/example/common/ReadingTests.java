@@ -47,36 +47,35 @@ public interface ReadingTests {
     @Value.Lazy
     default void runReadingTests() {
         try {
-            queryAllCompanies().get().forEach(ReadingTests::print);
-            findCompanyByName().apply("two").ifPresentOrElse(ReadingTests::print,
-                    () -> LOG.log(System.Logger.Level.INFO, "Could not find company named 'two'"));
-            findCompanies().apply(2, 5).forEach(ReadingTests::print);
-            try {
-                findCompanyByName().apply("three").ifPresent(company ->
-                        LOG.log(System.Logger.Level.ERROR, "could read multiple companies with the same name"));
-            } catch (final IllegalStateException _) {
-                LOG.log(System.Logger.Level.INFO, "Detected multiple companies with the same name");
-            }
+            // The writing tests put six companies, six persons, four users and three items in.
+            // Reading them back is what proves the generated code round-trips, which printing the
+            // rows and hoping somebody looks at them never did.
+            Verify.equal(6, queryAllCompanies().get().size(), "companies read back");
 
-            findPerson().apply("alice").forEach(ReadingTests::print);
+            final var two = findCompanyByName().apply("two");
+            Verify.that(two.isPresent(), "company 'two' found");
+            Verify.equal("two", two.orElseThrow().get("NAME"), "the company found is the one asked for");
+
+            // Two companies are called 'three', and a statement returning one row is supposed to
+            // refuse rather than pick one.
+            Verify.throwsException(() -> findCompanyByName().apply("three"),
+                    "reading one row from a query that finds several");
+
+            Verify.equal(1, findPerson().apply("alice").size(), "person 'alice' read back");
             try (final var persons = findPersons().get()) {
-                persons.forEach(ReadingTests::print);
+                Verify.equal(6L, persons.count(), "persons read back through a cursor");
             }
 
-            findItemByAllNames().apply("Android 49").forEach(result -> LOG.log(System.Logger.Level.INFO, result));
-            findItemByName().apply("iPhone 47 eXtreme").forEach(result -> LOG.log(System.Logger.Level.INFO, result));
+            Verify.equal(1, findItemByAllNames().apply("Android 49").size(), "item read through its converter");
+            Verify.equal(1, findItemByName().apply("iPhone 47 eXtreme").size(), "item read by name");
 
-            queryAllUsers().get().forEach(ReadingTests::print);
-            querySpecialUserWithConstantId().get().ifPresentOrElse(ReadingTests::print,
-                    () -> LOG.log(System.Logger.Level.INFO, "Could not find user with constant ID"));
+            Verify.equal(4, queryAllUsers().get().size(), "users read back");
+            Verify.that(querySpecialUserWithConstantId().get().isPresent(),
+                    "the user a constant in the statement selects");
         } catch (final RuntimeException exception) {
             LOG.log(System.Logger.Level.ERROR, "Error while running READING tests", exception);
             System.exit(1);
         }
-    }
-
-    private static void print(final Map<String, Object> result) {
-        LOG.log(System.Logger.Level.INFO, result);
     }
 
 }

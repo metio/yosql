@@ -27,7 +27,7 @@
 
     <groupId>wtf.metio.yosql.examples.ant</groupId>
     <artifactId>yosql-examples-ant</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!--                               INFORMATION                               -->
@@ -41,6 +41,15 @@
             <artifactId>yosql-tooling-ant</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>wtf.metio.yosql.examples</groupId>
+            <artifactId>yosql-examples-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -50,8 +59,8 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>first</id>
-                        <phase>verify</phase>
+                        <id>generate</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -65,11 +74,54 @@
 
                                 <yosql>
                                     <files inputBaseDirectory="../yosql-examples-common/src/main/yosql"
-                                           outputBaseDirectory="${project.build.directory}/first"
+                                           outputBaseDirectory="${project.build.directory}/generated-sources/yosql"
                                            sourceDirectory="../yosql-examples-common/src/main/java"/>
-                                    <repositories generateInterfaces="true"/>
+                                    <repositories basePackageName="wtf.metio.yosql.example.ant.persistence"
+                                                  generateInterfaces="true"/>
                                 </yosql>
                             </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/yosql</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Generating proves the Ant task runs. Running what it generated is what proves the
+                 code it wrote works, and it is the same assertions every other frontend is held
+                 to. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>run-generated-code</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>wtf.metio.yosql.example.ant.ExampleApp</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
