@@ -15,6 +15,8 @@ import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.codegen.records.JavaSourceParser;
 import wtf.metio.yosql.codegen.records.RecordScanner;
+import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
+import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -36,6 +38,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DefaultMethodParameterConfigurerTest {
 
     private static final String DOMAIN = "com.example.domain";
+    /** These tests are about the front matter and the record, not about reading the statement. */
+    private static final String NO_SQL = "";
+
     private static final Path SOURCE = Path.of("src", "main", "yosql", "tenant", "findTenant.sql");
 
     @TempDir
@@ -51,7 +56,8 @@ class DefaultMethodParameterConfigurerTest {
                 LoggingObjectMother.messages(),
                 new RecordScanner(
                         FilesConfiguration.builder().setSourceDirectory(sources).build(),
-                        new JavaSourceParser()));
+                        new JavaSourceParser()),
+                Schemas.empty());
     }
 
     private void write(final String simpleName, final String body) {
@@ -94,8 +100,7 @@ class DefaultMethodParameterConfigurerTest {
         @Test
         void shouldKeepDeclaredTypes() {
             final var configured = configurer.configureParameters(
-                    statement(parameter("id", "java.util.UUID"), parameter("slug", "java.lang.String")),
-                    SOURCE, indices("id", "slug"));
+                    statement(parameter("id", "java.util.UUID"), parameter("slug", "java.lang.String")), SOURCE, NO_SQL, indices("id", "slug"));
 
             assertAll(
                     () -> assertEquals(2, configured.parameters().size()),
@@ -107,7 +112,7 @@ class DefaultMethodParameterConfigurerTest {
         @DisplayName("the indices a parameter is bound at come from the statement")
         void shouldAssignIndices() {
             final var configured = configurer.configureParameters(
-                    statement(parameter("id", "java.util.UUID")), SOURCE, indices("id"));
+                    statement(parameter("id", "java.util.UUID")), SOURCE, NO_SQL, indices("id"));
 
             assertAll(
                     () -> assertTrue(configured.parameters().get(0).hasIndices()),
@@ -132,8 +137,7 @@ class DefaultMethodParameterConfigurerTest {
                     """);
 
             final var configured = configurer.configureParameters(
-                    SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Tenant"),
-                    SOURCE, indices("id"));
+                    SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Tenant"), SOURCE, NO_SQL, indices("id"));
 
             assertAll(
                     () -> assertEquals(1, configured.parameters().size()),
@@ -154,8 +158,7 @@ class DefaultMethodParameterConfigurerTest {
                     """);
 
             final var configured = configurer.configureParameters(
-                    SqlConfiguration.copyOf(statement(untyped("slug"))).withResultRowType(DOMAIN + ".Tenant"),
-                    SOURCE, indices("slug"));
+                    SqlConfiguration.copyOf(statement(untyped("slug"))).withResultRowType(DOMAIN + ".Tenant"), SOURCE, NO_SQL, indices("slug"));
 
             assertEquals("java.lang.String", configured.parameters().get(0).type().orElseThrow());
         }
@@ -174,8 +177,7 @@ class DefaultMethodParameterConfigurerTest {
 
             final var configured = configurer.configureParameters(
                     SqlConfiguration.copyOf(statement(parameter("id", "java.lang.String")))
-                            .withResultRowType(DOMAIN + ".Tenant"),
-                    SOURCE, indices("id"));
+                            .withResultRowType(DOMAIN + ".Tenant"), SOURCE, NO_SQL, indices("id"));
 
             assertEquals("java.lang.String", configured.parameters().get(0).type().orElseThrow());
         }
@@ -198,10 +200,117 @@ class DefaultMethodParameterConfigurerTest {
 
             final var exception = assertThrows(UntypedParameterException.class,
                     () -> configurer.configureParameters(
-                            SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Entry"),
-                            SOURCE, indices("minorUnits")));
+                            SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Entry"), SOURCE, NO_SQL, indices("minorUnits")));
 
             assertTrue(exception.getMessage().contains("minorUnits"));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("takes the type of the column the parameter is named after")
+    class FromSchema {
+
+        private DefaultMethodParameterConfigurer withSchema(final String... ddl) {
+            return new DefaultMethodParameterConfigurer(
+                    LoggingObjectMother.logger(),
+                    OrchestrationObjectMother.executionErrors(),
+                    LoggingObjectMother.messages(),
+                    new RecordScanner(
+                            FilesConfiguration.builder().setSourceDirectory(sources).build(),
+                            new JavaSourceParser()),
+                    Schemas.of(java.util.Arrays.stream(ddl)
+                            .map(sql -> new Schemas.VendorStatement(java.util.Optional.empty(), sql))
+                            .toList()));
+        }
+
+        private DefaultMethodParameterConfigurer withVendorSchemas(
+                final String postgresDdl, final String mysqlDdl) {
+            return new DefaultMethodParameterConfigurer(
+                    LoggingObjectMother.logger(),
+                    OrchestrationObjectMother.executionErrors(),
+                    LoggingObjectMother.messages(),
+                    new RecordScanner(
+                            FilesConfiguration.builder().setSourceDirectory(sources).build(),
+                            new JavaSourceParser()),
+                    Schemas.of(List.of(
+                            new Schemas.VendorStatement(java.util.Optional.of("PostgreSQL"), postgresDdl),
+                            new Schemas.VendorStatement(java.util.Optional.of("MySQL"), mysqlDdl))));
+        }
+
+        @Test
+        @DisplayName("a write statement needs no parameters block at all")
+        void shouldTypeAWriteFromTheSchema() {
+            final var configured = withSchema("""
+                    create table tenant (id uuid not null primary key, slug varchar(64) not null)""")
+                    .configureParameters(statement(), SOURCE,
+                            "insert into tenant (id, slug) values (:id, :slug)", indices("id", "slug"));
+
+            assertAll(
+                    () -> assertEquals("java.util.UUID", configured.parameters().get(0).type().orElseThrow()),
+                    () -> assertEquals("java.lang.String", configured.parameters().get(1).type().orElseThrow()));
+        }
+
+        @Test
+        @DisplayName("a nullable column gives a type that can hold a null")
+        void shouldBoxNullableColumns() {
+            final var configured = withSchema("create table tenant (id uuid not null, rank bigint)")
+                    .configureParameters(statement(), SOURCE,
+                            "update tenant set rank = :rank where id = :id", indices("rank", "id"));
+
+            assertEquals("java.lang.Long", configured.parameters().get(0).type().orElseThrow());
+        }
+
+        @Test
+        @DisplayName("what the front matter names still wins")
+        void shouldPreferTheDeclaredType() {
+            final var configured = withSchema("create table tenant (id uuid not null primary key)")
+                    .configureParameters(statement(parameter("id", "com.example.domain.TenantId")), SOURCE,
+                            "select id from tenant where id = :id", indices("id"));
+
+            assertEquals("com.example.domain.TenantId", configured.parameters().get(0).type().orElseThrow());
+        }
+
+        @Test
+        @DisplayName("dialects that spell a type differently still agree, so nothing is reported")
+        void shouldAcceptDialectsThatMeetInJava() {
+            final var configured = withVendorSchemas(
+                    "create table tenant (id bigserial primary key)",
+                    "create table tenant (id bigint not null)")
+                    .configureParameters(statement(), SOURCE,
+                            "select id from tenant where id = :id", indices("id"));
+
+            assertEquals("long", configured.parameters().get(0).type().orElseThrow());
+        }
+
+        @Test
+        @DisplayName("dialects that genuinely disagree cannot both be the one signature")
+        void shouldReportADisagreementAcrossVendors() {
+            final var exception = assertThrows(ConflictingColumnTypeException.class, () ->
+                    withVendorSchemas(
+                            "create table tenant (id uuid not null primary key)",
+                            "create table tenant (id varchar(36) not null primary key)")
+                            .configureParameters(statement(), SOURCE,
+                                    "select id from tenant where id = :id", indices("id")));
+
+            assertAll(
+                    () -> assertTrue(exception.getMessage().contains("java.util.UUID")),
+                    () -> assertTrue(exception.getMessage().contains("java.lang.String")),
+                    () -> assertTrue(exception.getMessage().contains("front matter")));
+        }
+
+        @Test
+        @DisplayName("a statement naming a vendor answers to that vendor alone")
+        void shouldNotReportADisagreementForAVendorStatement() {
+            final var forPostgres = SqlConfiguration.copyOf(statement()).withVendor("PostgreSQL");
+
+            final var configured = withVendorSchemas(
+                    "create table tenant (id uuid not null primary key)",
+                    "create table tenant (id varchar(36) not null primary key)")
+                    .configureParameters(forPostgres, SOURCE,
+                            "select id from tenant where id = :id", indices("id"));
+
+            assertEquals("java.util.UUID", configured.parameters().get(0).type().orElseThrow());
         }
 
     }
@@ -213,7 +322,7 @@ class DefaultMethodParameterConfigurerTest {
         @Test
         void shouldFailForUndeclaredParameter() {
             final var exception = assertThrows(UntypedParameterException.class,
-                    () -> configurer.configureParameters(statement(), SOURCE, indices("id")));
+                    () -> configurer.configureParameters(statement(), SOURCE, NO_SQL, indices("id")));
 
             assertAll(
                     () -> assertTrue(exception.getMessage().contains("findTenant")),
@@ -225,7 +334,7 @@ class DefaultMethodParameterConfigurerTest {
         @DisplayName("every parameter without a type is named at once")
         void shouldNameEveryUntypedParameter() {
             final var exception = assertThrows(UntypedParameterException.class,
-                    () -> configurer.configureParameters(statement(), SOURCE, indices("id", "slug", "accountId")));
+                    () -> configurer.configureParameters(statement(), SOURCE, NO_SQL, indices("id", "slug", "accountId")));
 
             assertAll(
                     () -> assertTrue(exception.getMessage().contains("id")),
@@ -245,14 +354,13 @@ class DefaultMethodParameterConfigurerTest {
 
             assertThrows(UntypedParameterException.class,
                     () -> configurer.configureParameters(
-                            SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Tenant"),
-                            SOURCE, indices("id")));
+                            SqlConfiguration.copyOf(statement()).withResultRowType(DOMAIN + ".Tenant"), SOURCE, NO_SQL, indices("id")));
         }
 
         @Test
         @DisplayName("a statement binding nothing needs no types")
         void shouldAcceptStatementWithoutParameters() {
-            final var configured = configurer.configureParameters(statement(), SOURCE, Map.of());
+            final var configured = configurer.configureParameters(statement(), SOURCE, NO_SQL, Map.of());
 
             assertTrue(configured.parameters().isEmpty());
         }

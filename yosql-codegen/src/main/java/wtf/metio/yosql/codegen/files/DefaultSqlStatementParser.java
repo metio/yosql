@@ -106,7 +106,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         logger.trace(ParseLifecycle.STATEMENT_PARSED, rawSqlStatement);
 
         final var parameterIndices = SqlStatementParser.extractParameterIndices(rawSqlStatement);
-        final var configuration = factory.createConfiguration(source, rawYaml,
+        final var configuration = factory.createConfiguration(source, rawYaml, rawSqlStatement,
                 parameterIndices, statementInFile);
         logger.debug(ParseLifecycle.STATEMENT_PARSING_FINISHED, source, configuration.name().orElse("unknown name"));
 

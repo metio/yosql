@@ -13,6 +13,9 @@ import wtf.metio.yosql.codegen.files.*;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.codegen.records.RecordConverterNames;
 import wtf.metio.yosql.codegen.records.RecordScanner;
+import wtf.metio.yosql.codegen.schema.SchemaFiles;
+import wtf.metio.yosql.codegen.schema.SchemaValidator;
+import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.Parser;
 import wtf.metio.yosql.tooling.dagger.annotations.Reader;
@@ -66,8 +69,29 @@ public class DefaultFilesModule {
             @Parser final LocLogger logger,
             final ExecutionErrors errors,
             final IMessageConveyor messages,
-            final RecordScanner recordScanner) {
-        return new DefaultMethodParameterConfigurer(logger, errors, messages, recordScanner);
+            final RecordScanner recordScanner,
+            final Schemas schemas) {
+        return new DefaultMethodParameterConfigurer(logger, errors, messages, recordScanner, schemas);
+    }
+
+    /**
+     * Read once and shared: the DDL does not change while a build runs, and reading it per statement
+     * would read every schema file for every statement in the project.
+     */
+    @Provides
+    @Singleton
+    Schemas provideSchemas(final RuntimeConfiguration runtimeConfiguration) {
+        return Schemas.of(new SchemaFiles(runtimeConfiguration.files(), runtimeConfiguration.schema()).read());
+    }
+
+    @Provides
+    @Singleton
+    SchemaValidator provideSchemaValidator(
+            final Schemas schemas,
+            final RuntimeConfiguration runtimeConfiguration,
+            final RecordScanner recordScanner,
+            @Parser final LocLogger logger) {
+        return new SchemaValidator(schemas, runtimeConfiguration.schema(), recordScanner, logger);
     }
 
     @Provides

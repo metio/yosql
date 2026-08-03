@@ -25,6 +25,6 @@ public interface MethodParameterConfigurer {
      * @param configuration The original configuration to adapt.
      * @return An adapted version of the original.
      */
-    SqlConfiguration configureParameters(SqlConfiguration configuration, Path source, Map<String, List<Integer>> parameterIndices);
+    SqlConfiguration configureParameters(SqlConfiguration configuration, Path source, String sql, Map<String, List<Integer>> parameterIndices);
 
 }

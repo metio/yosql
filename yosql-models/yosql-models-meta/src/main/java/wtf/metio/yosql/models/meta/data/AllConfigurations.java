@@ -23,7 +23,8 @@ public final class AllConfigurations {
                 Logging.configurationGroup(),
                 Names.configurationGroup(),
                 Repositories.configurationGroup(),
-                Resources.configurationGroup());
+                Resources.configurationGroup(),
+                Schema.configurationGroup());
     }
 
     private AllConfigurations() {

@@ -26,6 +26,7 @@ public interface SqlConfigurationFactory {
     SqlConfiguration createConfiguration(
             Path source,
             String yaml,
+            String sql,
             Map<String, List<Integer>> parameterIndices,
             int statementInFile);
 

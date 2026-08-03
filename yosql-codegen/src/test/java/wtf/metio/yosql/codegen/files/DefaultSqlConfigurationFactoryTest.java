@@ -32,7 +32,7 @@ class DefaultSqlConfigurationFactoryTest {
         final var statementInFile = 1;
 
         // when
-        final var configuration = factory().createConfiguration(source, yaml, indices, statementInFile);
+        final var configuration = factory().createConfiguration(source, yaml, "", indices, statementInFile);
 
         // then
         assertNotNull(configuration);
@@ -47,7 +47,7 @@ class DefaultSqlConfigurationFactoryTest {
         final var statementInFile = 1;
 
         // when
-        final var configuration = factory().createConfiguration(source, yaml, indices, statementInFile);
+        final var configuration = factory().createConfiguration(source, yaml, "", indices, statementInFile);
 
         // then
         assertAll("Configuration",
@@ -66,7 +66,7 @@ class DefaultSqlConfigurationFactoryTest {
         final var statementInFile = 1;
 
         // when
-        final var configuration = factory().createConfiguration(source, yaml, indices, statementInFile);
+        final var configuration = factory().createConfiguration(source, yaml, "", indices, statementInFile);
 
         // then
         assertAll("Configuration",
@@ -85,7 +85,7 @@ class DefaultSqlConfigurationFactoryTest {
         final var statementInFile = 1;
 
         // when
-        final var configuration = factory().createConfiguration(source, yaml, indices, statementInFile);
+        final var configuration = factory().createConfiguration(source, yaml, "", indices, statementInFile);
 
         // then
         assertAll("Configuration",
@@ -118,7 +118,7 @@ class DefaultSqlConfigurationFactoryTest {
                 .build();
 
         // when
-        final var configuration = factory(config).createConfiguration(source, yaml, indices, statementInFile);
+        final var configuration = factory(config).createConfiguration(source, yaml, "", indices, statementInFile);
 
         // then
         assertAll("Configuration",

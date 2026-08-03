@@ -1,0 +1,266 @@
+/*
+ * SPDX-FileCopyrightText: The yosql Authors
+ * SPDX-License-Identifier: 0BSD
+ */
+
+package wtf.metio.yosql.codegen.schema;
+
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.TypeName;
+import org.slf4j.cal10n.LocLogger;
+import wtf.metio.yosql.codegen.exceptions.SchemaMismatchException;
+import wtf.metio.yosql.codegen.records.RecordScanner;
+import wtf.metio.yosql.codegen.records.SelectedColumns;
+import wtf.metio.yosql.models.configuration.SchemaValidation;
+import wtf.metio.yosql.models.configuration.SqlParameter;
+import wtf.metio.yosql.models.immutables.SchemaConfiguration;
+import wtf.metio.yosql.models.immutables.SqlStatement;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+
+/**
+ * Checks a statement against the schema it runs against.
+ *
+ * <p>Three things are checked, and each is skipped the moment anything it depends on is unknown: a
+ * column no table in scope declares, a result row component that cannot hold what its column can
+ * contain, and a parameter whose declared type disagrees with the column it is compared against.</p>
+ *
+ * <p>A statement is checked against every catalog it could run against — one when it names a
+ * vendor, all of them when it does not, because a statement naming no vendor is the fallback for
+ * every database not named. A disagreement in any of them is a disagreement.</p>
+ */
+public final class SchemaValidator {
+
+    private final Schemas schemas;
+    private final SchemaConfiguration configuration;
+    private final RecordScanner scanner;
+    private final LocLogger logger;
+
+    public SchemaValidator(
+            final Schemas schemas,
+            final SchemaConfiguration configuration,
+            final RecordScanner scanner,
+            final LocLogger logger) {
+        this.schemas = schemas;
+        this.configuration = configuration;
+        this.scanner = scanner;
+        this.logger = logger;
+    }
+
+    public void validate(final List<SqlStatement> statements) {
+        if (configuration.validation() == SchemaValidation.OFF || schemas.isEmpty()) {
+            return;
+        }
+        statements.forEach(this::validate);
+    }
+
+    private void validate(final SqlStatement statement) {
+        final var config = statement.getConfiguration();
+        if (config.validateSchema().map(Boolean.FALSE::equals).orElse(Boolean.FALSE)) {
+            return;
+        }
+        final var sql = statement.getRawStatement();
+        final var scope = TableScope.of(sql);
+        if (!scope.exhaustive()) {
+            // A subquery, a CTE, or SQL nothing here could parse. Any of those can produce a column
+            // the catalog never saw, so nothing said about this statement would be evidence.
+            return;
+        }
+        final var complaints = new ArrayList<String>();
+        for (final var catalog : schemas.applicableTo(config.vendor())) {
+            complaints.addAll(unknownColumns(sql, scope, catalog));
+            complaints.addAll(disagreeingParameters(config.parameters(), scope, catalog, config.vendor()));
+            complaints.addAll(disagreeingComponents(config.resultRowType(), sql, scope, catalog, config.vendor()));
+        }
+        if (complaints.isEmpty()) {
+            return;
+        }
+        final var name = config.name().orElse("<unnamed>");
+        if (configuration.validation() == SchemaValidation.WARN) {
+            complaints.stream().distinct().forEach(complaint ->
+                    logger.warn("Statement '{}' in {}: {}", name, statement.getSourcePath(), complaint));
+            return;
+        }
+        throw new SchemaMismatchException(statement.getSourcePath(), name, complaints.stream().distinct().toList());
+    }
+
+    /**
+     * A selected column that no table in scope declares. The select list has to be enumerable for
+     * this to say anything — {@code select *} and an unaliased expression both name nothing.
+     */
+    private List<String> unknownColumns(final String sql, final TableScope scope, final Catalog catalog) {
+        final var selected = SelectedColumns.of(sql);
+        if (selected.isEmpty() || !knowsEveryTable(scope, catalog)) {
+            return List.of();
+        }
+        final var complaints = new ArrayList<String>();
+        for (final var column : selected.get()) {
+            final var qualifier = qualifierOf(column);
+            final var bare = unqualified(column);
+            if (qualifier.isPresent()) {
+                final var table = scope.resolve(qualifier.get()).flatMap(catalog::table);
+                if (table.isPresent() && table.get().column(bare).isEmpty()) {
+                    complaints.add("no column '%s' in '%s'".formatted(bare, table.get().name()));
+                }
+            } else if (declaringTable(bare, scope, catalog).isEmpty()) {
+                complaints.add("no column '%s' in %s".formatted(bare, tableList(scope)));
+            }
+        }
+        return complaints;
+    }
+
+    /**
+     * A parameter whose declared type is not the one its column reads into. Only a parameter that
+     * shares a column's name is checked: which column a parameter is compared against is a question
+     * about the where clause, and answering it wrongly would produce complaints nobody could act on.
+     */
+    private List<String> disagreeingParameters(
+            final List<SqlParameter> parameters,
+            final TableScope scope,
+            final Catalog catalog,
+            final Optional<String> vendor) {
+        final var complaints = new ArrayList<String>();
+        for (final var parameter : parameters) {
+            final var name = parameter.name().orElse("");
+            final var declared = parameter.typeName();
+            if (name.isBlank() || declared.isEmpty()) {
+                continue;
+            }
+            declaringTable(name, scope, catalog)
+                    .flatMap(table -> table.column(name))
+                    .flatMap(column -> SqlTypes.javaType(column, vendor))
+                    .filter(expected -> !compatible(expected, declared.get()))
+                    .ifPresent(expected -> complaints.add(
+                            "parameter '%s' is declared %s but the column it names reads as %s"
+                                    .formatted(name, declared.get(), expected)));
+        }
+        return complaints;
+    }
+
+    /**
+     * A result row component that cannot hold what its column can. The one that matters is a
+     * nullable column read into a primitive: it compiles, and throws on the first row that has a
+     * null in it.
+     */
+    private List<String> disagreeingComponents(
+            final Optional<String> resultRowType,
+            final String sql,
+            final TableScope scope,
+            final Catalog catalog,
+            final Optional<String> vendor) {
+        final var type = resultRowType.map(String::strip).filter(Predicate.not(String::isEmpty));
+        final var selected = SelectedColumns.of(sql);
+        if (type.isEmpty() || selected.isEmpty()) {
+            return List.of();
+        }
+        final var record = className(type.get()).flatMap(scanner::scan).filter(it -> it.isRecord());
+        if (record.isEmpty()) {
+            return List.of();
+        }
+        final var complaints = new ArrayList<String>();
+        for (final var component : record.get().components()) {
+            final var column = columnFor(component.name(), selected.get(), scope, catalog);
+            if (column.isEmpty()) {
+                continue;
+            }
+            if (column.get().nullable() && component.type().isPrimitive()) {
+                complaints.add("component '%s' is %s but column '%s' is nullable"
+                        .formatted(component.name(), component.type(), column.get().name()));
+                continue;
+            }
+            SqlTypes.javaType(column.get(), vendor)
+                    .filter(expected -> !compatible(expected, component.type()))
+                    .ifPresent(expected -> complaints.add(
+                            "component '%s' is %s but column '%s' reads as %s"
+                                    .formatted(component.name(), component.type(), column.get().name(), expected)));
+        }
+        return complaints;
+    }
+
+    /**
+     * The column a component reads: the one whose name it matches, read as {@code snake_case}, and
+     * only when the query actually selects it.
+     */
+    private Optional<Column> columnFor(
+            final String component,
+            final List<String> selected,
+            final TableScope scope,
+            final Catalog catalog) {
+        final var columnName = snakeCase(component);
+        if (selected.stream().noneMatch(name -> Catalog.normalize(unqualified(name)).equals(columnName))) {
+            return Optional.empty();
+        }
+        return declaringTable(columnName, scope, catalog).flatMap(table -> table.column(columnName));
+    }
+
+    /**
+     * Whether a component's or parameter's declared type can stand for what the column reads as.
+     *
+     * <p>Generous on purpose. A type of the reader's own — a {@code TenantId} wrapping a
+     * {@code UUID}, an enum written as text — is the point of the converter machinery, and
+     * complaining about one would make this useless. Only a disagreement between two types the
+     * generator itself knows how to read is worth reporting.</p>
+     */
+    private static boolean compatible(final TypeName expected, final TypeName declared) {
+        if (expected.equals(declared) || expected.box().equals(declared.box())) {
+            return true;
+        }
+        // Anything the type map never produces is a type of the caller's own, and its converter
+        // decides what it reads from.
+        return !PRODUCED_BY_THE_TYPE_MAP.contains(declared.box().toString());
+    }
+
+    private static final List<String> PRODUCED_BY_THE_TYPE_MAP = List.of(
+            "java.lang.String", "java.lang.Short", "java.lang.Integer", "java.lang.Long",
+            "java.lang.Boolean", "java.lang.Float", "java.lang.Double", "java.lang.Byte",
+            "java.math.BigDecimal", "java.time.Instant", "java.time.LocalDate", "java.time.LocalTime",
+            "java.time.LocalDateTime", "java.util.UUID", "byte[]");
+
+    /**
+     * Checks only run when the catalog knows every table the statement reads from. A statement
+     * touching one table the catalog never saw could take any of its columns from there.
+     */
+    private static boolean knowsEveryTable(final TableScope scope, final Catalog catalog) {
+        return !scope.tables().isEmpty()
+                && scope.tables().stream().allMatch(table -> catalog.table(table).isPresent());
+    }
+
+    private static Optional<Table> declaringTable(
+            final String column, final TableScope scope, final Catalog catalog) {
+        return scope.tables().stream()
+                .map(catalog::table)
+                .flatMap(Optional::stream)
+                .filter(table -> table.column(column).isPresent())
+                .findFirst();
+    }
+
+    private static String tableList(final TableScope scope) {
+        return "'" + String.join("', '", scope.tables()) + "'";
+    }
+
+    private static Optional<String> qualifierOf(final String column) {
+        final var dot = column.indexOf('.');
+        return dot < 0 ? Optional.empty() : Optional.of(column.substring(0, dot));
+    }
+
+    private static String unqualified(final String column) {
+        final var dot = column.lastIndexOf('.');
+        return dot < 0 ? column : column.substring(dot + 1);
+    }
+
+    private static String snakeCase(final String component) {
+        return component.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toLowerCase(java.util.Locale.ROOT);
+    }
+
+    private static Optional<ClassName> className(final String type) {
+        try {
+            return Optional.of(ClassName.bestGuess(type));
+        } catch (final IllegalArgumentException _) {
+            return Optional.empty();
+        }
+    }
+
+}

@@ -11,8 +11,13 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.exceptions.UntypedParameterException;
 import wtf.metio.yosql.codegen.lifecycle.ValidationErrors;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
+import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
 import wtf.metio.yosql.codegen.records.JavaSourceComponent;
 import wtf.metio.yosql.codegen.records.RecordScanner;
+import wtf.metio.yosql.codegen.schema.Catalog;
+import wtf.metio.yosql.codegen.schema.Schemas;
+import wtf.metio.yosql.codegen.schema.SqlTypes;
+import wtf.metio.yosql.codegen.schema.TableScope;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
@@ -20,8 +25,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -42,29 +49,33 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
     private final ExecutionErrors errors;
     private final IMessageConveyor messages;
     private final RecordScanner scanner;
+    private final Schemas schemas;
 
     public DefaultMethodParameterConfigurer(
             final LocLogger logger,
             final ExecutionErrors errors,
             final IMessageConveyor messages,
-            final RecordScanner scanner) {
+            final RecordScanner scanner,
+            final Schemas schemas) {
         this.logger = logger;
         this.errors = errors;
         this.messages = messages;
         this.scanner = scanner;
+        this.schemas = schemas;
     }
 
     @Override
     public SqlConfiguration configureParameters(
             final SqlConfiguration configuration,
             final Path source,
+            final String sql,
             final Map<String, List<Integer>> parameterIndices) {
         if (!parametersAreValid(source, parameterIndices, configuration)) {
             return configuration;
         }
         final var declared = updateIndices(configuration.parameters(), parameterIndices);
         final var all = addMissingParameters(declared, parameterIndices);
-        final var typed = inferTypes(all, configuration, source);
+        final var typed = inferTypes(all, configuration, source, sql);
         return SqlConfiguration.copyOf(configuration).withParameters(typed);
     }
 
@@ -92,11 +103,13 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
     private List<SqlParameter> inferTypes(
             final List<SqlParameter> parameters,
             final SqlConfiguration configuration,
-            final Path source) {
+            final Path source,
+            final String sql) {
         if (parameters.stream().allMatch(DefaultMethodParameterConfigurer::hasType)) {
             return parameters;
         }
         final var components = componentTypes(configuration);
+        final var columns = columnTypes(configuration, sql, source);
         final var typed = new ArrayList<SqlParameter>(parameters.size());
         final var untyped = new ArrayList<String>();
         for (final var parameter : parameters) {
@@ -105,18 +118,65 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
                 continue;
             }
             final var name = parameter.name().orElse("<unnamed>");
-            final var inferred = components.get(name);
-            if (inferred == null) {
-                untyped.add(name);
+            final var fromComponent = components.get(name);
+            final var fromColumn = columns.get(Catalog.normalize(name));
+            if (fromComponent != null) {
+                logger.debug("Parameter '{}' takes the type of the matching component: {}", name, fromComponent);
+                typed.add(SqlParameter.copyOf(parameter).withType(fromComponent));
+            } else if (fromColumn != null) {
+                logger.debug("Parameter '{}' takes the type of the matching column: {}", name, fromColumn);
+                typed.add(SqlParameter.copyOf(parameter).withType(fromColumn));
             } else {
-                logger.debug("Parameter '{}' takes the type of the matching component: {}", name, inferred);
-                typed.add(SqlParameter.copyOf(parameter).withType(inferred));
+                untyped.add(name);
             }
         }
         if (!untyped.isEmpty()) {
             throw new UntypedParameterException(source, configuration.name().orElse("<unnamed>"), untyped);
         }
         return typed;
+    }
+
+    /**
+     * The type of every column a parameter could be named after, from the schema the statement runs
+     * against.
+     *
+     * <p>A statement that names no vendor is the fallback for every database not named, so it is
+     * looked up in all of them. Where those disagree — a column that is a {@code uuid} on one and a
+     * {@code varchar} on another — there is no answer: the method has one signature and cannot have
+     * both types. That is reported rather than resolved by picking one, and naming the type in the
+     * front matter settles it.</p>
+     */
+    private Map<String, String> columnTypes(
+            final SqlConfiguration configuration,
+            final String sql,
+            final Path source) {
+        if (schemas.isEmpty()) {
+            return Map.of();
+        }
+        final var scope = TableScope.of(sql);
+        if (!scope.exhaustive()) {
+            return Map.of();
+        }
+        final var vendor = configuration.vendor();
+        final var types = new LinkedHashMap<String, String>();
+        final var disagreements = new LinkedHashMap<String, Set<String>>();
+        for (final var catalog : schemas.applicableTo(vendor)) {
+            for (final var table : scope.tables()) {
+                catalog.table(table).ifPresent(known -> known.columns().forEach((name, column) ->
+                        SqlTypes.javaType(column, vendor).ifPresent(type -> {
+                            final var previous = types.put(name, type.toString());
+                            if (previous != null && !previous.equals(type.toString())) {
+                                disagreements.computeIfAbsent(name, _ -> new LinkedHashSet<>())
+                                        .addAll(List.of(previous, type.toString()));
+                            }
+                        })));
+            }
+        }
+        if (!disagreements.isEmpty()) {
+            throw new ConflictingColumnTypeException(source, configuration.name().orElse("<unnamed>"),
+                    disagreements);
+        }
+        return types;
     }
 
     /**

@@ -47,7 +47,7 @@ public final class Catalog {
      * write them in. Everything is compared lower-cased so that {@code TENANT}, {@code Tenant} and
      * {@code tenant} are one table.
      */
-    static String normalize(final String identifier) {
+    public static String normalize(final String identifier) {
         return identifier.strip().toLowerCase(Locale.ROOT);
     }
 

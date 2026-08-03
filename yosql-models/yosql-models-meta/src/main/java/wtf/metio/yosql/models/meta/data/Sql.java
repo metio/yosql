@@ -70,6 +70,7 @@ public final class Sql extends AbstractConfigurationGroup {
                 repositoryInterface(),
                 name(),
                 description(),
+                validateSchema(),
                 vendor(),
                 type(),
                 returningMode(),
@@ -162,6 +163,25 @@ public final class Sql extends AbstractConfigurationGroup {
                                 }
                                 """)
                         .build())
+                .build();
+    }
+
+    private static ConfigurationSetting validateSchema() {
+        final var name = "validateSchema";
+        final var description = "Whether this statement is checked against the schema.";
+        return ConfigurationSetting.builder()
+                .setName(name)
+                .setDescription(description)
+                .setFrontMatterExampleCode("false")
+                .setExplanation("""
+                        Schema validation reads what it can and says nothing about the rest, so a statement it
+                        cannot parse costs you nothing already. This is for the other case: a statement it *can*
+                        read and gets wrong, or one whose schema lives somewhere `YoSQL` was never told about.
+
+                        Set it to `false` and this statement is generated without any of the checks
+                        [validation](../../schema/validation/) turns on. Nothing else changes about it.""")
+                .addImmutableMethods(immutableMethod(ClassName.get(Boolean.class), name, description))
+                .addTags(Tags.FRONT_MATTER)
                 .build();
     }
 

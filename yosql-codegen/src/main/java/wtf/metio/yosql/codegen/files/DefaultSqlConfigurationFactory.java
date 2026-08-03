@@ -62,6 +62,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     /**
      * @param source           The source file of the statement.
      * @param yaml             The YAML front matter of the statement.
+     * @param sql              The statement itself, which says what it reads from.
      * @param parameterIndices The parameter indices (if any) of the statement.
      * @param statementInFile  The counter for statements with the same name in the same source file.
      * @return The resulting configuration.
@@ -70,6 +71,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
     public SqlConfiguration createConfiguration(
             final Path source,
             final String yaml,
+            final String sql,
             final Map<String, List<Integer>> parameterIndices,
             final int statementInFile) {
         var configuration = configParser.parseConfig(yaml);
@@ -78,7 +80,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
         configuration = methodSettings.configureSettings(configuration);
         configuration = methodApis.configureApis(configuration);
         configuration = repositoryName.configureNames(configuration, source);
-        configuration = methodParameters.configureParameters(configuration, source, parameterIndices);
+        configuration = methodParameters.configureParameters(configuration, source, sql, parameterIndices);
         configuration = methodConverter.configureResultRowConverter(configuration);
         logger.debug("SQL configuration: {}", configuration);
         methodNameValidator.validateNames(configuration, source);

@@ -10,6 +10,7 @@ import wtf.metio.yosql.codegen.files.FileParser;
 import wtf.metio.yosql.codegen.lifecycle.*;
 import wtf.metio.yosql.codegen.validation.RuntimeValidator;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
+import wtf.metio.yosql.codegen.schema.SchemaValidator;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public final class DefaultYoSQL implements YoSQL {
     private final TypeWriter typeWriter;
     private final ExecutionErrors errors;
     private final RuntimeValidator validator;
+    private final SchemaValidator schemaValidator;
 
     public DefaultYoSQL(
             final FileParser fileParser,
@@ -43,7 +45,8 @@ public final class DefaultYoSQL implements YoSQL {
             final IMessageConveyor messages,
             final TypeWriter typeWriter,
             final ExecutionErrors errors,
-            final RuntimeValidator validator) {
+            final RuntimeValidator validator,
+            final SchemaValidator schemaValidator) {
         this.fileParser = fileParser;
         this.codeGenerator = codeGenerator;
         this.pool = pool;
@@ -52,6 +55,7 @@ public final class DefaultYoSQL implements YoSQL {
         this.typeWriter = typeWriter;
         this.errors = errors;
         this.validator = validator;
+        this.schemaValidator = schemaValidator;
     }
 
     @Override
@@ -62,6 +66,7 @@ public final class DefaultYoSQL implements YoSQL {
             errors.runtimeException(messages.getMessage(ApplicationErrors.RUNTIME_INVALID));
         }
         supplyAsync(this::parseFiles, pool)
+                .thenApplyAsync(this::validateAgainstSchema, pool)
                 .thenApplyAsync(this::generateCode, pool)
                 .thenAcceptAsync(this::writeIntoFiles, pool)
                 .thenRunAsync(timer::printTimings, pool)
@@ -79,6 +84,17 @@ public final class DefaultYoSQL implements YoSQL {
         if (errors.hasErrors()) {
             errors.sqlFileParsingException(messages.getMessage(ApplicationErrors.PARSE_FILES_FAILED));
         }
+        return statements;
+    }
+
+    /**
+     * Runs after parsing because the schema is read from the same files, and before generating
+     * because a statement that disagrees with its schema should not reach the point of producing
+     * code somebody compiles.
+     */
+    private List<SqlStatement> validateAgainstSchema(final List<SqlStatement> statements) {
+        timer.timed(messages.getMessage(ValidationLifecycle.VALIDATE_CONFIGURATION),
+                () -> schemaValidator.validate(statements));
         return statements;
     }
 

@@ -36,7 +36,8 @@ public final class FilesObjectMother {
                 LoggingObjectMother.logger(),
                 OrchestrationObjectMother.executionErrors(),
                 LoggingObjectMother.messages(),
-                new RecordScanner(FilesConfigurations.defaults(), new JavaSourceParser()));
+                new RecordScanner(FilesConfigurations.defaults(), new JavaSourceParser()),
+                wtf.metio.yosql.codegen.schema.Schemas.empty());
     }
 
     public static MethodNameValidator methodNameValidator(final RepositoriesConfiguration repositories) {
