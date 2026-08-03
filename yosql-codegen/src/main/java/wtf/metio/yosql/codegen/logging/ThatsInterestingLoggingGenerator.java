@@ -23,7 +23,7 @@ public final class ThatsInterestingLoggingGenerator implements LoggingGenerator 
 
     @Override
     public boolean supports(final LoggingApis api) {
-        return LoggingApis.NONE.equals(api);
+        return LoggingApis.TI.equals(api);
     }
 
     @Override

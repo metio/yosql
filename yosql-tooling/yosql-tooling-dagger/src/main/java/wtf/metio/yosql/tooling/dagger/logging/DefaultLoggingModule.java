@@ -4,6 +4,7 @@
  */
 package wtf.metio.yosql.tooling.dagger.logging;
 
+import ch.qos.cal10n.IMessageConveyor;
 import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.logging.DelegatingLoggingGenerator;
@@ -33,8 +34,9 @@ public class DefaultLoggingModule {
     @Singleton
     LoggingGenerator provideLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
-            final Set<LoggingGenerator> loggingGenerators) {
-        return new DelegatingLoggingGenerator(runtimeConfiguration.logging(), loggingGenerators);
+            final Set<LoggingGenerator> loggingGenerators,
+            final IMessageConveyor messages) {
+        return new DelegatingLoggingGenerator(runtimeConfiguration.logging(), loggingGenerators, messages);
     }
 
 }

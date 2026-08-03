@@ -13,6 +13,7 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -132,7 +133,11 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
             final BiFunction<SqlConfiguration, List<SqlStatement>, MethodSpec> generator) {
         return statements.stream()
                 .filter(filter)
-                .collect(Collectors.groupingBy(SqlStatement::getName))
+                // Into a LinkedHashMap, because this order is the order the methods are declared in
+                // and a HashMap's is whatever the hashes happened to be. Generated files are read in
+                // diffs and compared byte for byte between builds; methods that move around between
+                // JVMs make both useless.
+                .collect(Collectors.groupingBy(SqlStatement::getName, LinkedHashMap::new, Collectors.toList()))
                 .values()
                 .stream()
                 .flatMap(statementsWithSameName -> {

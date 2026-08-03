@@ -4,10 +4,12 @@
  */
 package wtf.metio.yosql.codegen.logging;
 
+import ch.qos.cal10n.IMessageConveyor;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.codegen.exceptions.CodeGenerationException;
+import wtf.metio.yosql.codegen.lifecycle.ApplicationErrors;
 import wtf.metio.yosql.models.configuration.LoggingApis;
 import wtf.metio.yosql.models.immutables.LoggingConfiguration;
 
@@ -21,12 +23,15 @@ public final class DelegatingLoggingGenerator implements LoggingGenerator {
 
     private final LoggingConfiguration loggingConfiguration;
     private final Set<LoggingGenerator> generators;
+    private final IMessageConveyor messages;
 
     public DelegatingLoggingGenerator(
             final LoggingConfiguration loggingConfiguration,
-            final Set<LoggingGenerator> generators) {
+            final Set<LoggingGenerator> generators,
+            final IMessageConveyor messages) {
         this.loggingConfiguration = loggingConfiguration;
         this.generators = generators;
+        this.messages = messages;
     }
 
     @Override
@@ -88,7 +93,8 @@ public final class DelegatingLoggingGenerator implements LoggingGenerator {
         return generators.stream()
                 .filter(generator -> generator.supports(loggingConfiguration.api()))
                 .findFirst()
-                .orElseThrow(() -> new CodeGenerationException("TODO: add error message for missing support for " + loggingConfiguration.api()));
+                .orElseThrow(() -> new CodeGenerationException(
+                        messages.getMessage(ApplicationErrors.UNSUPPORTED_LOGGING_API, loggingConfiguration.api())));
     }
 
 }

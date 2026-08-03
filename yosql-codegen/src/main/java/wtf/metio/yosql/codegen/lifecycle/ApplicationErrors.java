@@ -51,4 +51,9 @@ public enum ApplicationErrors {
      */
     NAMES_CONFIG_INVALID,
 
+    /**
+     * Signals that no generator claims the configured logging API.
+     */
+    UNSUPPORTED_LOGGING_API,
+
 }

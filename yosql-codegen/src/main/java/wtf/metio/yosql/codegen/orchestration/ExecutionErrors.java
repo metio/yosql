@@ -8,7 +8,7 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.exceptions.CodeGenerationException;
 import wtf.metio.yosql.codegen.exceptions.SqlFileParsingException;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -19,7 +19,13 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ExecutionErrors {
 
-    private final List<Throwable> errors = new ArrayList<>();
+    /**
+     * Written from several threads at once: the file walk is parallel, and so is writing the types
+     * out. A plain ArrayList loses entries under concurrent add, and a lost error is worse than a
+     * noisy one — the stage boundary asks whether anything failed, and an answer of "no" lets the
+     * build write files from input that did not parse.
+     */
+    private final List<Throwable> errors = new CopyOnWriteArrayList<>();
     private final LocLogger logger;
 
     /**
@@ -48,6 +54,15 @@ public final class ExecutionErrors {
      */
     public boolean hasErrors() {
         return !errors.isEmpty();
+    }
+
+    /**
+     * @return how many {@link Throwable}s were recorded. Distinct from {@link #hasErrors()} because
+     *         "some errors arrived" and "every error arrived" are different questions, and the
+     *         second one is the one that says whether this is safe to write to from several threads.
+     */
+    public int count() {
+        return errors.size();
     }
 
     /**

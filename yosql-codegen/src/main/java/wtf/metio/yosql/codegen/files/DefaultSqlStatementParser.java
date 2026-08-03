@@ -58,14 +58,21 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
             final var charset = files.sqlFilesCharset();
             final var rawText = Files.readString(source, charset);
             final var skippedText = skipLines(rawText);
-            final var counter = new AtomicInteger(1);
             final var splitter = getStatementSplitter(rawText);
+            // Sequential, and deliberately so. The index counts a statement's position in its file,
+            // and a method's name is built from it when several share a name — so which statement
+            // gets which number decides what the generated method is called. In parallel the
+            // scheduler decides that, and the same file produces `getX2` for one statement body on
+            // one run and for another on the next. The work per file is a string split; the walk
+            // over files is already parallel, and that is where the parallelism belongs.
+            final var counter = new AtomicInteger(1);
             return splitter.splitAsStream(skippedText)
-                    .parallel()
                     .map(String::strip)
                     .filter(not(String::isBlank))
                     .filter(line -> !line.startsWith(YOSQL_PRAGMA))
-                    .map(statement -> parseStatement(source, statement, counter.getAndIncrement()));
+                    .map(statement -> parseStatement(source, statement, counter.getAndIncrement()))
+                    .toList()
+                    .stream();
         } catch (final IOException exception) {
             errors.add(exception);
             logger.debug(ApplicationErrors.FILE_PARSING_FAILED, source);

@@ -34,7 +34,7 @@ public final class LoggingObjectMother {
         generators.add(new SystemLoggingGenerator(names, fields));
         generators.add(new ThatsInterestingLoggingGenerator());
         generators.add(new NoOpLoggingGenerator());
-        return new DelegatingLoggingGenerator(LoggingConfigurations.jul(), generators);
+        return new DelegatingLoggingGenerator(LoggingConfigurations.jul(), generators, messages());
     }
 
     /**
