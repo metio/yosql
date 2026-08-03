@@ -5,8 +5,8 @@
 
 package wtf.metio.yosql.codegen.blocks;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.CodeBlock;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.sql.SQLException;
@@ -17,13 +17,10 @@ import static wtf.metio.yosql.codegen.blocks.CodeBlocks.code;
 public final class DefaultControlFlows implements ControlFlows {
 
     private final Variables variables;
-    private final NamesConfiguration names;
 
     public DefaultControlFlows(
-            final Variables variables,
-            final NamesConfiguration names) {
+            final Variables variables) {
         this.variables = variables;
-        this.names = names;
     }
 
     @Override
@@ -35,7 +32,7 @@ public final class DefaultControlFlows implements ControlFlows {
 
     @Override
     public CodeBlock catchAndDo(final CodeBlock statement) {
-        final var catchDeclaration = variables.inline(SQLException.class, names.exception());
+        final var catchDeclaration = variables.inline(SQLException.class, GeneratedNames.EXCEPTION);
         return CodeBlock.builder()
                 .beginControlFlow("catch ($L)", catchDeclaration)
                 .addStatement(statement)
@@ -45,7 +42,7 @@ public final class DefaultControlFlows implements ControlFlows {
 
     @Override
     public CodeBlock catchAndRethrow() {
-        return catchAndDo(code("throw new $T($N)", RuntimeException.class, names.exception()));
+        return catchAndDo(code("throw new $T($N)", RuntimeException.class, GeneratedNames.EXCEPTION));
     }
 
     @Override
@@ -101,7 +98,7 @@ public final class DefaultControlFlows implements ControlFlows {
     @Override
     public CodeBlock ifHasNext() {
         return CodeBlock.builder()
-                .beginControlFlow("if ($N.next())", names.resultSet())
+                .beginControlFlow("if ($N.next())", GeneratedNames.RESULT_SET)
                 .build();
     }
 
@@ -113,7 +110,7 @@ public final class DefaultControlFlows implements ControlFlows {
     @Override
     public CodeBlock whileHasNext() {
         return CodeBlock.builder()
-                .beginControlFlow("while ($N.next())", names.resultSet())
+                .beginControlFlow("while ($N.next())", GeneratedNames.RESULT_SET)
                 .build();
     }
 

@@ -4,6 +4,7 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.TypeName;
@@ -17,7 +18,6 @@ import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
 import wtf.metio.yosql.models.configuration.LoggingApis;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -42,7 +42,6 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     private final RuntimeConfiguration runtimeConfiguration;
     private final CodeBlocks blocks;
     private final ControlFlows controlFlows;
-    private final NamesConfiguration names;
     private final Variables variables;
     private final JdbcMethods jdbcMethods;
     private final LoggingGenerator logging;
@@ -64,7 +63,6 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             final ParameterConversions parameterConversions) {
         this.runtimeConfiguration = runtimeConfiguration;
         this.blocks = blocks;
-        this.names = runtimeConfiguration.names();
         this.variables = variables;
         this.controlFlows = controlFlows;
         this.fields = fields;
@@ -77,51 +75,51 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock getConnectionInline() {
-        return variables.inline(Connection.class, names.connection(), jdbcMethods.dataSource().getConnection());
+        return variables.inline(Connection.class, GeneratedNames.CONNECTION, jdbcMethods.dataSource().getConnection());
     }
 
     @Override
     public CodeBlock getConnection(final SqlConfiguration configuration) {
         return configuration.createConnection()
                 .filter(Boolean.TRUE::equals)
-                .map(value -> variables.statement(Connection.class, names.connection(),
+                .map(value -> variables.statement(Connection.class, GeneratedNames.CONNECTION,
                         jdbcMethods.dataSource().getConnection()))
                 .orElseGet(() -> CodeBlock.builder().build());
     }
 
     @Override
     public CodeBlock prepareStatementInline() {
-        return variables.inline(PreparedStatement.class, names.statement(),
+        return variables.inline(PreparedStatement.class, GeneratedNames.STATEMENT,
                 jdbcMethods.connection().prepareStatement());
     }
 
     @Override
     public CodeBlock prepareCallInline() {
-        return variables.inline(CallableStatement.class, names.statement(),
+        return variables.inline(CallableStatement.class, GeneratedNames.STATEMENT,
                 jdbcMethods.connection().prepareCall());
     }
 
     @Override
     public CodeBlock getMetaDataStatement() {
-        return variables.statement(ResultSetMetaData.class, names.resultSetMetaData(),
+        return variables.statement(ResultSetMetaData.class, GeneratedNames.RESULT_SET_META_DATA,
                 jdbcMethods.resultSet().getMetaData());
     }
 
     @Override
     public CodeBlock executeQueryInline() {
-        return variables.inline(ResultSet.class, names.resultSet(),
+        return variables.inline(ResultSet.class, GeneratedNames.RESULT_SET,
                 jdbcMethods.statement().executeQuery());
     }
 
     @Override
     public CodeBlock executeQueryStatement() {
-        return variables.statement(ResultSet.class, names.resultSet(),
+        return variables.statement(ResultSet.class, GeneratedNames.RESULT_SET,
                 jdbcMethods.statement().executeQuery());
     }
 
     @Override
     public CodeBlock getResultSet() {
-        return controlFlows.tryWithResource(variables.inline(ResultSet.class, names.resultSet(),
+        return controlFlows.tryWithResource(variables.inline(ResultSet.class, GeneratedNames.RESULT_SET,
                 jdbcMethods.statement().getResultSet()));
     }
 
@@ -147,19 +145,19 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock closeResultSet() {
-        return blocks.close(names.resultSet());
+        return blocks.close(GeneratedNames.RESULT_SET);
     }
 
     @Override
     public CodeBlock closePrepareStatement() {
-        return blocks.close(names.statement());
+        return blocks.close(GeneratedNames.STATEMENT);
     }
 
     @Override
     public CodeBlock closeConnection(final SqlConfiguration configuration) {
         return configuration.createConnection()
                 .filter(Boolean.TRUE::equals)
-                .map(value -> blocks.close(names.connection()))
+                .map(value -> blocks.close(GeneratedNames.CONNECTION))
                 .orElseGet(() -> CodeBlock.builder().build());
     }
 
@@ -172,7 +170,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     private CodeBlock executeStatementQueryInline() {
-        return variables.inline(ResultSet.class, names.resultSet(),
+        return variables.inline(ResultSet.class, GeneratedNames.RESULT_SET,
                 jdbcMethods.statement().executeGivenQuery());
     }
 
@@ -208,7 +206,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     private CodeBlock statementInline() {
-        return variables.inline(Statement.class, names.statement(),
+        return variables.inline(Statement.class, GeneratedNames.STATEMENT,
                 jdbcMethods.connection().createStatement());
     }
 
@@ -216,10 +214,10 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     public CodeBlock prepareBatch(final SqlConfiguration config) {
         return controlFlows.forLoop(
                 code("int $N = 0; $N < $N.length; $N++",
-                        names.batch(),
-                        names.batch(),
+                        GeneratedNames.BATCH,
+                        GeneratedNames.BATCH,
                         config.parameters().getFirst().name().orElseThrow(MissingParameterNameException::new),
-                        names.batch()),
+                        GeneratedNames.BATCH),
                 CodeBlock.builder()
                         .add(setBatchParameters(config))
                         .addStatement(jdbcMethods.statement().addBatch())
@@ -243,24 +241,24 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                                         .flatMap(SqlParameter::name)
                                         .orElseThrow(MissingParameterNameException::new));
                     });
-            builder.addStatement(variables.inline(DatabaseMetaData.class, names.databaseMetaData(),
+            builder.addStatement(variables.inline(DatabaseMetaData.class, GeneratedNames.DATABASE_META_DATA,
                     jdbcMethods.connection().getMetaData()));
-            builder.addStatement(variables.inline(String.class, names.databaseProductName(),
+            builder.addStatement(variables.inline(String.class, GeneratedNames.DATABASE_PRODUCT_NAME,
                             jdbcMethods.databaseMetaData().getDatabaseProductName()))
                     .add(logging.vendorDetected());
             if (logging.isEnabled()) {
-                builder.addStatement("$T $N = null", String.class, names.rawQuery());
+                builder.addStatement("$T $N = null", String.class, GeneratedNames.RAW_QUERY);
             }
-            builder.addStatement("$T $N = null", String.class, names.query())
-                    .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, names.indexVariable())
-                    .beginControlFlow("switch ($N)", names.databaseProductName());
+            builder.addStatement("$T $N = null", String.class, GeneratedNames.QUERY)
+                    .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, GeneratedNames.INDEX)
+                    .beginControlFlow("switch ($N)", GeneratedNames.DATABASE_PRODUCT_NAME);
             sqlStatements.stream()
                     .map(SqlStatement::getConfiguration)
                     .filter(config -> config.vendor().isPresent())
                     .forEach(config -> {
                         final var query = fields.constantSqlStatementFieldName(config);
                         builder.add("case $S:\n", config.vendor().orElseThrow(MissingSqlConfigurationVendorException::new))
-                                .addStatement("$>$N = $N", names.query(), query)
+                                .addStatement("$>$N = $N", GeneratedNames.QUERY, query)
                                 .add(logging.vendorQueryPicked(query));
                         finalizeCase(builder, config);
                     });
@@ -271,12 +269,12 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .ifPresentOrElse(config -> {
                         final var query = fields.constantSqlStatementFieldName(config);
                         builder.add("default:\n")
-                                .addStatement("$>$N = $N", names.query(), query)
+                                .addStatement("$>$N = $N", GeneratedNames.QUERY, query)
                                 .add(logging.vendorQueryPicked(query));
                         finalizeCase(builder, config);
                     }, () -> builder.add("default:\n")
                             .addStatement("$>throw new $T($T.format($S, $N))$<", IllegalStateException.class, String.class,
-                                    "No suitable query defined for vendor [%s]", names.databaseProductName()));
+                                    "No suitable query defined for vendor [%s]", GeneratedNames.DATABASE_PRODUCT_NAME));
 
             builder.endControlFlow();
         } else {
@@ -285,16 +283,16 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             if (InLists.anyExpands(config)) {
                 return expandedQuery(sqlStatements.getFirst(), query);
             }
-            builder.addStatement(variables.inline(String.class, names.query(), "$N", query))
+            builder.addStatement(variables.inline(String.class, GeneratedNames.QUERY, "$N", query))
                     .add(logging.queryPicked(query));
             if (logging.isEnabled()) {
                 final var rawQuery = fields.constantRawSqlStatementFieldName(config);
-                builder.addStatement(variables.inline(String.class, names.rawQuery(), "$N", rawQuery));
+                builder.addStatement(variables.inline(String.class, GeneratedNames.RAW_QUERY, "$N", rawQuery));
             }
             if (Buckets.hasEntries(config.parameters())) {
                 final var indexFieldName = fields.constantSqlStatementParameterIndexFieldName(config);
                 builder.addStatement(variables.inline(TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS,
-                                names.indexVariable(), "$N", indexFieldName))
+                                GeneratedNames.INDEX, "$N", indexFieldName))
                         .add(logging.indexPicked(indexFieldName));
             }
         }
@@ -304,11 +302,11 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     private void finalizeCase(final CodeBlock.Builder builder, final SqlConfiguration config) {
         if (logging.isEnabled()) {
             final var rawQuery = fields.constantRawSqlStatementFieldName(config);
-            builder.addStatement("$N = $N", names.rawQuery(), rawQuery);
+            builder.addStatement("$N = $N", GeneratedNames.RAW_QUERY, rawQuery);
         }
         if (Buckets.hasEntries(config.parameters())) {
             final var indexName = fields.constantSqlStatementParameterIndexFieldName(config);
-            builder.addStatement("$N = $N", names.indexVariable(), indexName)
+            builder.addStatement("$N = $N", GeneratedNames.INDEX, indexName)
                     .add(logging.vendorIndexPicked(indexName));
         }
         builder.addStatement("break$<");
@@ -339,7 +337,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             return builder.build();
         }
         builder.beginControlFlow("if ($L)", logging.shouldLog());
-        builder.add(variables.inline(String.class, names.executedQuery(), "$N", names.rawQuery()));
+        builder.add(variables.inline(String.class, GeneratedNames.EXECUTED_QUERY, "$N", GeneratedNames.RAW_QUERY));
         sqlConfiguration.parameters().forEach(parameter -> {
             final var type = parameter.typeName().orElseThrow(MissingParameterTypeNameException::new);
             final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
@@ -371,13 +369,13 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         final var template = CodeBlock.of("new $T()", ParameterizedTypeName.get(
                 ClassName.get(ArrayList.class), listOfResults.typeArguments().getFirst()));
         return CodeBlock.builder()
-                .addStatement(variables.inline(listOfResults, names.list(), template))
+                .addStatement(variables.inline(listOfResults, GeneratedNames.LIST, template))
                 .add(controlFlows.whileHasNext())
                 .addStatement("$N.add($N.$N($N))",
-                        names.list(),
+                        GeneratedNames.LIST,
                         converter.alias().orElseThrow(MissingConverterAliasException::new),
                         converter.methodName().orElseThrow(MissingConverterMethodNameException::new),
-                        names.resultSet())
+                        GeneratedNames.RESULT_SET)
                 .endControlFlow();
     }
 
@@ -385,7 +383,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     public CodeBlock returnAsMultiple(final ResultRowConverter converter) {
         return prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()
                 .orElseThrow(MissingConverterResultTypeException::new)), converter)
-                .addStatement("return $N", names.list())
+                .addStatement("return $N", GeneratedNames.LIST)
                 .build();
     }
 
@@ -396,7 +394,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         final var builder = prepareReturnList(TypicalTypes.listOf(converter.resultTypeName()
                 .orElseThrow(MissingConverterResultTypeException::new)), converter);
         if (configuration.throwOnMultipleResults().orElse(Boolean.FALSE)) {
-            builder.beginControlFlow("if ($N.size() > 1)", names.list())
+            builder.beginControlFlow("if ($N.size() > 1)", GeneratedNames.LIST)
                     .addStatement("throw new $T()", IllegalStateException.class)
                     .endControlFlow();
         }
@@ -405,7 +403,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         // generated code. A converter that builds a record never returns null, so nothing else
         // changes.
         return builder.addStatement("return $N.isEmpty() ? $T.empty() : $T.ofNullable($N.getFirst())",
-                        names.list(), Optional.class, Optional.class, names.list())
+                        GeneratedNames.LIST, Optional.class, Optional.class, GeneratedNames.LIST)
                 .build();
     }
 
@@ -432,14 +430,14 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 .anonymousClassBuilder("$T.MAX_VALUE, $T.ORDERED", Long.class, Spliterator.class)
                 .addSuperinterface(superinterface)
                 .addMethod(methods.implementation("tryAdvance")
-                        .addParameter(params.parameter(consumerType, names.action()))
+                        .addParameter(params.parameter(consumerType, GeneratedNames.ACTION))
                         .returns(boolean.class)
                         .addCode(controlFlows.startTryBlock())
                         .addCode(controlFlows.ifHasNext())
-                        .addStatement("$N.accept($N.$N($N))", names.action(), converter.alias()
+                        .addStatement("$N.accept($N.$N($N))", GeneratedNames.ACTION, converter.alias()
                                         .orElseThrow(MissingConverterAliasException::new),
                                 converter.methodName().orElseThrow(MissingConverterMethodNameException::new),
-                                names.resultSet())
+                                GeneratedNames.RESULT_SET)
                         .addCode(blocks.returnTrue())
                         .addCode(controlFlows.endIf())
                         .addCode(blocks.returnFalse())
@@ -490,7 +488,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     constant,
                     index + 1);
         }
-        return builder.addStatement(variables.inline(String.class, names.query(), "$L", expression.build()))
+        return builder.addStatement(variables.inline(String.class, GeneratedNames.QUERY, "$L", expression.build()))
                 .add(logging.queryPicked(constant))
                 .build();
     }
@@ -528,19 +526,19 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     .map(converted -> CodeBlock.of("$N", converted.boundName()))
                     .orElseGet(() -> CodeBlock.of("$N", name)));
         }
-        builder.addStatement("$T $N = 1", TypeName.INT, names.jdbcIndexVariable());
+        builder.addStatement("$T $N = 1", TypeName.INT, GeneratedNames.JDBC_INDEX);
         for (final var parameter : InLists.placeholderOrder(config)) {
             final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
             if (InLists.expands(parameter)) {
                 builder.add(controlFlows.forLoop(
                         code("final var $N : $N", name + ELEMENT_SUFFIX, name),
                         CodeBlock.builder()
-                                .addStatement("$N.setObject($N++, $N)", names.statement(),
-                                        names.jdbcIndexVariable(), name + ELEMENT_SUFFIX)
+                                .addStatement("$N.setObject($N++, $N)", GeneratedNames.STATEMENT,
+                                        GeneratedNames.JDBC_INDEX, name + ELEMENT_SUFFIX)
                                 .build()));
             } else {
-                builder.addStatement("$N.setObject($N++, $L)", names.statement(),
-                        names.jdbcIndexVariable(), bound.get(name));
+                builder.addStatement("$N.setObject($N++, $L)", GeneratedNames.STATEMENT,
+                        GeneratedNames.JDBC_INDEX, bound.get(name));
             }
         }
         return builder.build();
@@ -549,7 +547,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     @Override
     public CodeBlock setBatchParameters(final SqlConfiguration config) {
         return parameterAssignment(config, parameter -> CodeBlock.of("$N[$N]",
-                parameter.name().orElseThrow(MissingParameterNameException::new), names.batch()));
+                parameter.name().orElseThrow(MissingParameterNameException::new), GeneratedNames.BATCH));
     }
 
     /**
@@ -574,12 +572,12 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             conversion.ifPresent(converted -> builder.add(converted.declarations()));
             builder.add(controlFlows.forLoop(
                     code("final int $N : $N.get($S)",
-                            names.jdbcIndexVariable(),
-                            names.indexVariable(),
+                            GeneratedNames.JDBC_INDEX,
+                            GeneratedNames.INDEX,
                             name),
                     CodeBlock.builder()
                             .addStatement("$N.setObject($N, $L)",
-                                    names.statement(), names.jdbcIndexVariable(), bound)
+                                    GeneratedNames.STATEMENT, GeneratedNames.JDBC_INDEX, bound)
                             .build()));
         });
 

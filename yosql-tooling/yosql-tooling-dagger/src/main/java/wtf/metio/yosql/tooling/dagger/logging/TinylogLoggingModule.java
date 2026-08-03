@@ -26,7 +26,7 @@ public class TinylogLoggingModule {
     @Provides
     @Singleton
     LoggingGenerator provideJdkLoggingGenerator(final RuntimeConfiguration runtimeConfiguration) {
-        return new TinylogLoggingGenerator(runtimeConfiguration.names());
+        return new TinylogLoggingGenerator();
     }
 
 }

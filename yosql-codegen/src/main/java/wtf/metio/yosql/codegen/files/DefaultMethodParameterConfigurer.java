@@ -18,6 +18,8 @@ import wtf.metio.yosql.codegen.schema.Catalog;
 import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.codegen.schema.SqlTypes;
 import wtf.metio.yosql.codegen.schema.TableScope;
+import wtf.metio.yosql.codegen.exceptions.ReservedParameterNameException;
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
@@ -73,10 +75,27 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
         if (!parametersAreValid(source, parameterIndices, configuration)) {
             return configuration;
         }
+        rejectReservedNames(source, configuration, parameterIndices.keySet());
         final var declared = updateIndices(configuration.parameters(), parameterIndices);
         final var all = addMissingParameters(declared, parameterIndices);
         final var typed = inferTypes(all, configuration, source, sql);
         return SqlConfiguration.copyOf(configuration).withParameters(typed);
+    }
+
+    /**
+     * Every name the statement binds, declared or not: a parameter YoSQL only learns about from the
+     * SQL becomes a method parameter too, and collides just the same.
+     */
+    private static void rejectReservedNames(
+            final Path source,
+            final SqlConfiguration configuration,
+            final Set<String> bound) {
+        for (final var name : bound) {
+            if (GeneratedNames.TAKEN.contains(name)) {
+                throw new ReservedParameterNameException(source,
+                        configuration.name().orElse("<unnamed>"), name);
+            }
+        }
     }
 
     private boolean parametersAreValid(

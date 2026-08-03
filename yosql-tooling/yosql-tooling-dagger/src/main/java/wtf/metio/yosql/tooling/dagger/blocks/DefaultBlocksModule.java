@@ -43,7 +43,7 @@ public class DefaultBlocksModule {
     ControlFlows provideControlFlows(
             final RuntimeConfiguration runtimeConfiguration,
             final Variables variables) {
-        return new DefaultControlFlows(variables, runtimeConfiguration.names());
+        return new DefaultControlFlows(variables);
     }
 
     @Provides
@@ -51,7 +51,7 @@ public class DefaultBlocksModule {
     Fields provideFields(
             final RuntimeConfiguration runtimeConfiguration,
             final Annotations annotations) {
-        return new DefaultFields(annotations, runtimeConfiguration.names());
+        return new DefaultFields(annotations);
     }
 
     @Provides

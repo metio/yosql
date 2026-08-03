@@ -7,14 +7,13 @@ package wtf.metio.yosql.codegen.logging;
 
 import org.junit.jupiter.api.DisplayName;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
-import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 
 @DisplayName("SystemLoggingGenerator")
 class SystemLoggingGeneratorTest implements LoggingGeneratorTCK {
 
     @Override
     public LoggingGenerator generator() {
-        return new SystemLoggingGenerator(NamesConfigurations.defaults(), BlocksObjectMother.fields());
+        return new SystemLoggingGenerator(BlocksObjectMother.fields());
     }
 
     @Override

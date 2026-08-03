@@ -5,6 +5,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.MethodSpec;
 import wtf.metio.yosql.codegen.blocks.CodeBlocks;
@@ -13,7 +14,6 @@ import wtf.metio.yosql.codegen.exceptions.MissingConverterAliasException;
 import wtf.metio.yosql.codegen.exceptions.MissingDefaultConverterException;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -27,7 +27,6 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
 
     private final CodeBlocks blocks;
     private final Methods methods;
-    private final NamesConfiguration names;
     private final JdbcParameters jdbcParameters;
     private final RepositoriesConfiguration repositories;
     private final ConverterConfiguration converters;
@@ -35,13 +34,11 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
     public DefaultConstructorGenerator(
             final CodeBlocks blocks,
             final Methods methods,
-            final NamesConfiguration names,
             final JdbcParameters jdbcParameters,
             final RepositoriesConfiguration repositories,
             final ConverterConfiguration converters) {
         this.blocks = blocks;
         this.methods = methods;
-        this.names = names;
         this.jdbcParameters = jdbcParameters;
         this.repositories = repositories;
         this.converters = converters;
@@ -54,7 +51,7 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
 
         if (RepositoryConnections.needsDataSource(repositories, statements)) {
             constructor.addParameter(jdbcParameters.dataSource())
-                    .addCode(blocks.initializeFieldToSelf(names.dataSource()));
+                    .addCode(blocks.initializeFieldToSelf(GeneratedNames.DATA_SOURCE));
         }
 
         if (repositories.injectConverters()) {

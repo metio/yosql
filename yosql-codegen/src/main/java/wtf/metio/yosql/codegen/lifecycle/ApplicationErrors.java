@@ -48,8 +48,6 @@ public enum ApplicationErrors {
 
     /**
      * Signals that names configuration is invalid.
-     */
-    NAMES_CONFIG_INVALID,
 
     /**
      * Signals that no generator claims the configured logging API.

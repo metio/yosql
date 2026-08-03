@@ -6,14 +6,13 @@
 package wtf.metio.yosql.codegen.logging;
 
 import org.junit.jupiter.api.DisplayName;
-import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 
 @DisplayName("TinylogLoggingGenerator")
 class TinylogLoggingGeneratorTest implements LoggingGeneratorTCK {
 
     @Override
     public LoggingGenerator generator() {
-        return new TinylogLoggingGenerator(NamesConfigurations.defaults());
+        return new TinylogLoggingGenerator();
     }
 
     @Override

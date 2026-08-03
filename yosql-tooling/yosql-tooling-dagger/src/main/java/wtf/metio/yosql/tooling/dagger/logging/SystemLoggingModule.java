@@ -29,7 +29,7 @@ public class SystemLoggingModule {
     LoggingGenerator provideNoOpLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Fields fields) {
-        return new SystemLoggingGenerator(runtimeConfiguration.names(), fields);
+        return new SystemLoggingGenerator(fields);
     }
 
 }

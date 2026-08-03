@@ -5,6 +5,7 @@
 
 package wtf.metio.yosql.codegen.dao;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.ArrayTypeName;
 import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.TypeName;
@@ -12,7 +13,6 @@ import wtf.metio.yosql.codegen.blocks.Parameters;
 import wtf.metio.yosql.codegen.exceptions.MissingParameterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingParameterTypeNameException;
 import wtf.metio.yosql.models.configuration.SqlParameter;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.sql.Connection;
@@ -24,11 +24,9 @@ import java.util.stream.Stream;
 public class DefaultParameterGenerator implements ParameterGenerator {
 
     private final Parameters parameters;
-    private final NamesConfiguration names;
 
-    public DefaultParameterGenerator(final Parameters parameters, final NamesConfiguration names) {
+    public DefaultParameterGenerator(final Parameters parameters) {
         this.parameters = parameters;
-        this.names = names;
     }
 
     @Override
@@ -76,11 +74,11 @@ public class DefaultParameterGenerator implements ParameterGenerator {
     }
 
     private ParameterSpec connection() {
-        return parameters.parameter(Connection.class, names.connection());
+        return parameters.parameter(Connection.class, GeneratedNames.CONNECTION);
     }
 
     private ParameterSpec connectionForInterfaces() {
-        return parameters.parameterForInterfaces(TypeName.get(Connection.class), names.connection());
+        return parameters.parameterForInterfaces(TypeName.get(Connection.class), GeneratedNames.CONNECTION);
     }
 
     /**

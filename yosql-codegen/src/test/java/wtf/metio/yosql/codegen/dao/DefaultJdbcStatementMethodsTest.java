@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 
 @DisplayName("DefaultJdbcStatementMethods")
 class DefaultJdbcStatementMethodsTest {
@@ -18,7 +17,7 @@ class DefaultJdbcStatementMethodsTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcStatementMethods(NamesConfigurations.defaults());
+        generator = new DefaultJdbcStatementMethods();
     }
 
     @Test

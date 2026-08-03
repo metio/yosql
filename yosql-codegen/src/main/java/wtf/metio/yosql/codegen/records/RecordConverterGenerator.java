@@ -11,6 +11,7 @@ import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.TypeName;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.blocks.Annotations;
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import wtf.metio.yosql.codegen.blocks.Classes;
 import wtf.metio.yosql.codegen.blocks.Methods;
 import wtf.metio.yosql.codegen.dao.JdbcParameters;
@@ -26,7 +27,6 @@ import wtf.metio.yosql.codegen.exceptions.UnreadableResultRowTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnmappedColumnsException;
 import wtf.metio.yosql.codegen.exceptions.UnparsableRecordException;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -70,7 +70,6 @@ public final class RecordConverterGenerator {
             final LocLogger logger,
             final RecordScanner scanner,
             final RecordConverterNames names,
-            final NamesConfiguration namesConfiguration,
             final Annotations annotations,
             final Classes classes,
             final Methods methods,
@@ -80,8 +79,8 @@ public final class RecordConverterGenerator {
         this.logger = logger;
         this.scanner = scanner;
         this.names = names;
-        this.readers = new ResultSetReaders(namesConfiguration.resultSet());
-        this.resultSet = namesConfiguration.resultSet();
+        this.readers = new ResultSetReaders(GeneratedNames.RESULT_SET);
+        this.resultSet = GeneratedNames.RESULT_SET;
         this.annotations = annotations;
         this.classes = classes;
         this.methods = methods;

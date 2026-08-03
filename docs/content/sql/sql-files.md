@@ -47,6 +47,19 @@ WHERE   id = :userId
 
 While parsing your `.sql` files, `YoSQL` will strip the SQL comment prefix (`--`) and read the remaining text as a YAML object. The available configuration options that can be used in the front matter, are listed under [SQL statement configuration](/configuration/sql/).
 
+### Names a parameter cannot have
+
+A generated method declares a few variables of its own — the `Connection`, the `PreparedStatement`,
+the `ResultSet`, the query, the loop counters — and a parameter cannot be called after one of them,
+because both become identifiers in the same method. The full list is `LOG`, `query`, `rawQuery`,
+`executedQuery`, `databaseProductName`, `action`, `exception`, `dataSource`, `connection`,
+`statement`, `resultSetMetaData`, `databaseMetaData`, `resultSet`, `columnCount`, `columnLabel`,
+`batch`, `list`, `jdbcIndex`, `index` and `row`.
+
+`YoSQL` says so with the file, the statement and the parameter rather than letting Java complain
+about a variable already defined. Rename it in the SQL — the name reaches no further than the
+method's signature.
+
 ## Lists of values
 
 A prepared statement has one placeholder per value, and how many values there are is only known when

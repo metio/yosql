@@ -4,6 +4,7 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.ArrayTypeName;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
@@ -19,7 +20,6 @@ import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -43,7 +43,6 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
 
     private final ConverterConfiguration converters;
     private final RepositoriesConfiguration repositories;
-    private final NamesConfiguration names;
     private final LoggingGenerator logging;
     private final Javadoc javadoc;
     private final Fields fields;
@@ -51,13 +50,11 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     public DefaultFieldsGenerator(
             final ConverterConfiguration converters,
             final RepositoriesConfiguration repositories,
-            final NamesConfiguration names,
             final LoggingGenerator logging,
             final Javadoc javadoc,
             final Fields fields) {
         this.converters = converters;
         this.repositories = repositories;
-        this.names = names;
         this.logging = logging;
         this.javadoc = javadoc;
         this.fields = fields;
@@ -100,7 +97,7 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
         final var repositoryFields = new ArrayList<FieldSpec>(statements.size() * 2 + 2);
 
         if (RepositoryConnections.needsDataSource(repositories, statements)) {
-            repositoryFields.add(fields.field(DataSource.class, names.dataSource()));
+            repositoryFields.add(fields.field(DataSource.class, GeneratedNames.DATA_SOURCE));
         }
 
         if (logging.isEnabled()) {
@@ -222,12 +219,12 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
 
     @Override
     public String constantRawSqlStatementFieldName(final SqlConfiguration configuration) {
-        return constantSqlStatementFieldName(configuration) + names.rawSuffix();
+        return constantSqlStatementFieldName(configuration) + GeneratedNames.RAW_SUFFIX;
     }
 
     @Override
     public String constantSqlStatementParameterIndexFieldName(final SqlConfiguration configuration) {
-        return constantSqlStatementFieldName(configuration) + names.indexSuffix();
+        return constantSqlStatementFieldName(configuration) + GeneratedNames.INDEX_SUFFIX;
     }
 
     private static String vendorSuffix(final SqlConfiguration configuration) {

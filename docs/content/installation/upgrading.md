@@ -197,6 +197,25 @@ Ant fail on an unknown element, so this one is not optional. Nothing about the g
 changes unless you had turned one of them off, in which case the output gains the `final` keywords
 it describes.
 
+### The `names` configuration group is gone
+
+Its twenty-two settings renamed the variables inside generated methods — the `Connection`, the
+`ResultSet`, the loop counter. None of them is part of a repository's API, so none of them was a
+decision worth making: a name nobody outside the method can see cannot fit a codebase better or
+worse. They also had to be kept distinct from each other, which is why a whole validator existed to
+check they were.
+
+Remove the block if your build has one — a `<names>` element in a `pom.xml`, a `names { }` block in
+a `build.gradle`, a `<names>` element in an Ant task, or the matching command-line options. Maven and
+Ant fail on an unknown element, so this one is not optional. Generated code is unchanged unless you
+had renamed something, in which case it goes back to the default name.
+
+The one thing those settings could rescue was a statement whose own parameter is called `connection`,
+`statement`, `resultSet`, `index` or another name a generated method already uses. That is now a
+build error naming the file, the statement and the parameter, instead of a Java error about a
+variable already defined in a file you did not write. Rename the parameter in the SQL — the name
+reaches no further than the method's signature.
+
 ## 2023.5.3 and earlier
 
 See the [release notes](https://github.com/metio/yosql/releases) for those versions.

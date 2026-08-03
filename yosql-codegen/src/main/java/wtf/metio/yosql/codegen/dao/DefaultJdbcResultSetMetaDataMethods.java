@@ -5,21 +5,19 @@
 
 package wtf.metio.yosql.codegen.dao;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.CodeBlock;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 public final class DefaultJdbcResultSetMetaDataMethods implements JdbcMethods.JdbcResultSetMetaDataMethods {
 
-    private final NamesConfiguration names;
 
-    public DefaultJdbcResultSetMetaDataMethods(final NamesConfiguration names) {
-        this.names = names;
+    public DefaultJdbcResultSetMetaDataMethods() {
     }
 
     @Override
     public CodeBlock getColumnCount() {
         return CodeBlock.builder()
-                .add("$N.getColumnCount()", names.resultSetMetaData())
+                .add("$N.getColumnCount()", GeneratedNames.RESULT_SET_META_DATA)
                 .build();
     }
 

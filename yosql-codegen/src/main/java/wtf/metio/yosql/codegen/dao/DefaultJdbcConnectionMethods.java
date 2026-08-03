@@ -5,42 +5,40 @@
 
 package wtf.metio.yosql.codegen.dao;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.CodeBlock;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 public final class DefaultJdbcConnectionMethods implements JdbcMethods.JdbcConnectionMethods {
 
-    private final NamesConfiguration names;
 
-    public DefaultJdbcConnectionMethods(final NamesConfiguration names) {
-        this.names = names;
+    public DefaultJdbcConnectionMethods() {
     }
 
     @Override
     public CodeBlock createStatement() {
         return CodeBlock.builder()
-                .add("$N.createStatement()", names.connection())
+                .add("$N.createStatement()", GeneratedNames.CONNECTION)
                 .build();
     }
 
     @Override
     public CodeBlock prepareStatement() {
         return CodeBlock.builder()
-                .add("$N.prepareStatement($N)", names.connection(), names.query())
+                .add("$N.prepareStatement($N)", GeneratedNames.CONNECTION, GeneratedNames.QUERY)
                 .build();
     }
 
     @Override
     public CodeBlock prepareCall() {
         return CodeBlock.builder()
-                .add("$N.prepareCall($N)", names.connection(), names.query())
+                .add("$N.prepareCall($N)", GeneratedNames.CONNECTION, GeneratedNames.QUERY)
                 .build();
     }
 
     @Override
     public CodeBlock getMetaData() {
         return CodeBlock.builder()
-                .add("$N.getMetaData()", names.connection())
+                .add("$N.getMetaData()", GeneratedNames.CONNECTION)
                 .build();
     }
 

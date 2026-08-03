@@ -82,7 +82,6 @@ public class DefaultDaoModule {
         return new DefaultConstructorGenerator(
                 blocks,
                 methods,
-                runtimeConfiguration.names(),
                 jdbcParameters,
                 runtimeConfiguration.repositories(),
                 runtimeConfiguration.converter());
@@ -98,7 +97,6 @@ public class DefaultDaoModule {
         return new DefaultFieldsGenerator(
                 runtimeConfiguration.converter(),
                 runtimeConfiguration.repositories(),
-                runtimeConfiguration.names(),
                 logging,
                 javadoc,
                 fields);
@@ -109,7 +107,7 @@ public class DefaultDaoModule {
     ParameterGenerator provideParameterGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Parameters parameters) {
-        return new DefaultParameterGenerator(parameters, runtimeConfiguration.names());
+        return new DefaultParameterGenerator(parameters);
     }
 
     @Provides
@@ -175,7 +173,6 @@ public class DefaultDaoModule {
                 logger,
                 scanner,
                 names,
-                runtimeConfiguration.names(),
                 annotations,
                 classes,
                 methods,
@@ -293,43 +290,43 @@ public class DefaultDaoModule {
     JdbcParameters provideJdbcParameters(
             final RuntimeConfiguration runtimeConfiguration,
             final Parameters parameters) {
-        return new DefaultJdbcParameters(parameters, runtimeConfiguration.names());
+        return new DefaultJdbcParameters(parameters);
     }
 
     @Provides
     @Singleton
     JdbcMethods.JdbcDataSourceMethods provideDataSource(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcDataSourceMethods(runtimeConfiguration.names());
+        return new DefaultJdbcDataSourceMethods();
     }
 
     @Provides
     @Singleton
     JdbcMethods.JdbcConnectionMethods provideConnection(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcConnectionMethods(runtimeConfiguration.names());
+        return new DefaultJdbcConnectionMethods();
     }
 
     @Provides
     @Singleton
     JdbcMethods.JdbcResultSetMethods provideResultSet(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcResultSetMethods(runtimeConfiguration.names());
+        return new DefaultJdbcResultSetMethods();
     }
 
     @Provides
     @Singleton
     JdbcMethods.JdbcResultSetMetaDataMethods provideMetaData(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcResultSetMetaDataMethods(runtimeConfiguration.names());
+        return new DefaultJdbcResultSetMetaDataMethods();
     }
 
     @Provides
     @Singleton
     JdbcMethods.JdbcStatementMethods provideStatement(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcStatementMethods(runtimeConfiguration.names());
+        return new DefaultJdbcStatementMethods();
     }
 
     @Provides
     @Singleton
     JdbcMethods.JdbcDatabaseMetaDataMethods provideDatabaseMetaData(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultJdbcDatabaseMetaDataMethods(runtimeConfiguration.names());
+        return new DefaultJdbcDatabaseMetaDataMethods();
     }
 
     @Provides

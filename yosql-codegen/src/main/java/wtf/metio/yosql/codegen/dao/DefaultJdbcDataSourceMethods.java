@@ -5,21 +5,19 @@
 
 package wtf.metio.yosql.codegen.dao;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.CodeBlock;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 public final class DefaultJdbcDataSourceMethods implements JdbcMethods.JdbcDataSourceMethods {
 
-    private final NamesConfiguration names;
 
-    public DefaultJdbcDataSourceMethods(final NamesConfiguration names) {
-        this.names = names;
+    public DefaultJdbcDataSourceMethods() {
     }
 
     @Override
     public CodeBlock getConnection() {
         return CodeBlock.builder()
-                .add("$N.getConnection()", names.dataSource())
+                .add("$N.getConnection()", GeneratedNames.DATA_SOURCE)
                 .build();
     }
 

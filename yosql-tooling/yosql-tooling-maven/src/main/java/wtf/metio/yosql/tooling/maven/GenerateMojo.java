@@ -35,9 +35,6 @@ public class GenerateMojo extends AbstractMojo {
     Logging logging;
 
     @Parameter(required = true, defaultValue = "${classObject}")
-    Names names;
-
-    @Parameter(required = true, defaultValue = "${classObject}")
     Repositories repositories;
 
     @Parameter(required = true, defaultValue = "${classObject}")
@@ -85,7 +82,6 @@ public class GenerateMojo extends AbstractMojo {
                 .setFiles(files.asConfiguration(project.getBasedir().toPath()))
                 .setAnnotations(annotations.asConfiguration())
                 .setLogging(logging.asConfiguration())
-                .setNames(names.asConfiguration())
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
                 .setConverter(converter.asConfiguration())

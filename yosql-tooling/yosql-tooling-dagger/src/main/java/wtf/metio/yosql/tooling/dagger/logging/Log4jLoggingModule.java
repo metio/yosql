@@ -29,7 +29,7 @@ public class Log4jLoggingModule {
     LoggingGenerator provideLog4jLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Fields fields) {
-        return new Log4jLoggingGenerator(runtimeConfiguration.names(), fields);
+        return new Log4jLoggingGenerator(fields);
     }
 
 }

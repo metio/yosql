@@ -20,7 +20,6 @@ public final class AllConfigurations {
                 Converter.configurationGroup(),
                 Files.configurationGroup(),
                 Logging.configurationGroup(),
-                Names.configurationGroup(),
                 Repositories.configurationGroup(),
                 Resources.configurationGroup(),
                 Schema.configurationGroup());

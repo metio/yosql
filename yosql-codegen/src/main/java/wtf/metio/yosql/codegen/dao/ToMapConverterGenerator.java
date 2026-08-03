@@ -4,6 +4,7 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.MethodSpec;
@@ -12,7 +13,6 @@ import wtf.metio.yosql.codegen.blocks.*;
 import wtf.metio.yosql.codegen.lifecycle.CodegenLifecycle;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
@@ -25,7 +25,6 @@ public final class ToMapConverterGenerator {
 
     private final LocLogger logger;
     private final ConverterConfiguration converters;
-    private final NamesConfiguration names;
     private final Annotations annotations;
     private final Classes classes;
     private final Methods methods;
@@ -48,7 +47,6 @@ public final class ToMapConverterGenerator {
             final MethodExceptionHandler exceptions) {
         this.logger = logger;
         this.converters = runtimeConfiguration.converter();
-        this.names = runtimeConfiguration.names();
         this.annotations = annotations;
         this.classes = classes;
         this.methods = methods;
@@ -74,7 +72,7 @@ public final class ToMapConverterGenerator {
     private MethodSpec toMapMethod() {
         return methods.publicMethod(converters.mapConverterMethod())
                 .addJavadoc("Reads the current row into a map from column name to value.\n")
-                .addJavadoc("\n@param $L The result set, positioned on the row to read.", names.resultSet())
+                .addJavadoc("\n@param $L The result set, positioned on the row to read.", GeneratedNames.RESULT_SET)
                 .addJavadoc("\n@return The row, keyed by column name.")
                 .addParameters(jdbcParameters.toMapConverterParameterSpecs())
                 .addException(exceptions.thrownException())
@@ -82,25 +80,25 @@ public final class ToMapConverterGenerator {
                 .addCode(jdbcBlocks.getMetaDataStatement())
                 .addStatement(variables.inline(
                         TypicalTypes.MAP_OF_STRING_AND_OBJECTS,
-                        names.row(),
+                        GeneratedNames.ROW,
                         "new $T($N.getColumnCount())",
                         TypicalTypes.LINKED_MAP_OF_STRING_AND_OBJECTS,
-                        names.resultSetMetaData()))
+                        GeneratedNames.RESULT_SET_META_DATA))
                 .addCode(controlFlows.forLoop(
                         code("int $N = 1; $N <= $N.getColumnCount(); $N++",
-                                names.indexVariable(),
-                                names.indexVariable(),
-                                names.resultSetMetaData(),
-                                names.indexVariable()),
+                                GeneratedNames.INDEX,
+                                GeneratedNames.INDEX,
+                                GeneratedNames.RESULT_SET_META_DATA,
+                                GeneratedNames.INDEX),
                         CodeBlock.builder()
                                 .addStatement("$N.put($N.getColumnName($N), $N.getObject($N))",
-                                        names.row(),
-                                        names.resultSetMetaData(),
-                                        names.indexVariable(),
-                                        names.resultSet(),
-                                        names.indexVariable())
+                                        GeneratedNames.ROW,
+                                        GeneratedNames.RESULT_SET_META_DATA,
+                                        GeneratedNames.INDEX,
+                                        GeneratedNames.RESULT_SET,
+                                        GeneratedNames.INDEX)
                                 .build()))
-                .addStatement("return $N", names.row())
+                .addStatement("return $N", GeneratedNames.ROW)
                 .build();
     }
 

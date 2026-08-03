@@ -9,7 +9,6 @@ import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.internals.testing.configs.AnnotationsConfigurations;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
-import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 
 /**
@@ -30,7 +29,7 @@ public final class BlocksObjectMother {
     }
 
     public static Fields fields() {
-        return new DefaultFields(annotationGenerator(), NamesConfigurations.defaults());
+        return new DefaultFields(annotationGenerator());
     }
 
     public static Variables variables() {
@@ -42,7 +41,7 @@ public final class BlocksObjectMother {
     }
 
     public static ControlFlows controlFlows() {
-        return new DefaultControlFlows(variables(), NamesConfigurations.defaults());
+        return new DefaultControlFlows(variables());
     }
 
     public static Annotations annotationGenerator() {

@@ -26,7 +26,6 @@ public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
                 .setFiles(extension.getFiles().asConfiguration())
                 .setJava(extension.getJava().asConfiguration())
                 .setLogging(extension.getLogging().asConfiguration())
-                .setNames(extension.getNames().asConfiguration())
                 .setRepositories(extension.getRepositories().asConfiguration())
                 .setResources(extension.getResources().asConfiguration())
                 .build());

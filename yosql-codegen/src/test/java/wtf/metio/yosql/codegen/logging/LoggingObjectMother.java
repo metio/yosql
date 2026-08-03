@@ -12,7 +12,6 @@ import org.slf4j.cal10n.LocLoggerFactory;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.internals.testing.configs.LoggingConfigurations;
-import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 import wtf.metio.yosql.models.configuration.LoggingApis;
 
 import java.util.LinkedHashMap;
@@ -26,13 +25,12 @@ public final class LoggingObjectMother {
      * @return Delegating logging generator with all available generators using their default config.
      */
     public static LoggingGenerator loggingGenerator() {
-        final var names = NamesConfigurations.defaults();
         final var fields = BlocksObjectMother.fields();
         final var generators = new LinkedHashMap<LoggingApis, LoggingGenerator>();
-        generators.put(LoggingApis.JUL, new JulLoggingGenerator(names, fields));
-        generators.put(LoggingApis.LOG4J, new Log4jLoggingGenerator(names, fields));
-        generators.put(LoggingApis.SLF4J, new Slf4jLoggingGenerator(names, fields));
-        generators.put(LoggingApis.SYSTEM, new SystemLoggingGenerator(names, fields));
+        generators.put(LoggingApis.JUL, new JulLoggingGenerator(fields));
+        generators.put(LoggingApis.LOG4J, new Log4jLoggingGenerator(fields));
+        generators.put(LoggingApis.SLF4J, new Slf4jLoggingGenerator(fields));
+        generators.put(LoggingApis.SYSTEM, new SystemLoggingGenerator(fields));
         generators.put(LoggingApis.TI, new ThatsInterestingLoggingGenerator());
         generators.put(LoggingApis.NONE, new NoOpLoggingGenerator());
         return new DelegatingLoggingGenerator(LoggingConfigurations.jul(), generators, messages());

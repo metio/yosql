@@ -38,15 +38,6 @@ public class DefaultValidationModule {
     @IntoSet
     @Provides
     @Singleton
-    RuntimeConfigurationValidator provideNamesConfigurationValidator(
-            final ExecutionErrors errors,
-            final IMessageConveyor messages) {
-        return new NamesConfigurationValidator(errors, messages);
-    }
-
-    @IntoSet
-    @Provides
-    @Singleton
     RuntimeConfigurationValidator provideFilesConfigurationValidator(
             final ExecutionErrors errors,
             final IMessageConveyor messages) {

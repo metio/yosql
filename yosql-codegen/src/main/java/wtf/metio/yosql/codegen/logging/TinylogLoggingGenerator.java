@@ -4,12 +4,12 @@
  */
 package wtf.metio.yosql.codegen.logging;
 
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.models.configuration.LoggingApis;
-import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 import java.util.Optional;
 
@@ -20,10 +20,8 @@ public final class TinylogLoggingGenerator implements LoggingGenerator {
 
     private static final ClassName TINY_LOG_LOGGER = ClassName.get("org.tinylog", "Logger");
 
-    private final NamesConfiguration names;
 
-    public TinylogLoggingGenerator(final NamesConfiguration names) {
-        this.names = names;
+    public TinylogLoggingGenerator() {
     }
 
     @Override
@@ -68,7 +66,7 @@ public final class TinylogLoggingGenerator implements LoggingGenerator {
     public CodeBlock vendorDetected() {
         return CodeBlock.builder()
                 .addStatement("$T.info(() -> $T.format($S, $N))", TINY_LOG_LOGGER, String.class,
-                        "Detected database vendor [%s]", names.databaseProductName())
+                        "Detected database vendor [%s]", GeneratedNames.DATABASE_PRODUCT_NAME)
                 .build();
     }
 
@@ -76,7 +74,7 @@ public final class TinylogLoggingGenerator implements LoggingGenerator {
     public CodeBlock executingQuery() {
         return CodeBlock.builder()
                 .addStatement("$T.info(() -> $T.format($S, $N))", TINY_LOG_LOGGER, String.class,
-                        "Executing query [%s]", names.executedQuery())
+                        "Executing query [%s]", GeneratedNames.EXECUTED_QUERY)
                 .build();
     }
 

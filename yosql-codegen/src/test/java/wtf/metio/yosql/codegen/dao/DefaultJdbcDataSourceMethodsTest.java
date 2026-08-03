@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 
 @DisplayName("DefaultJdbcDataSourceMethods")
 class DefaultJdbcDataSourceMethodsTest {
@@ -18,7 +17,7 @@ class DefaultJdbcDataSourceMethodsTest {
 
     @BeforeEach
     void setUp() {
-        generator = new DefaultJdbcDataSourceMethods(NamesConfigurations.defaults());
+        generator = new DefaultJdbcDataSourceMethods();
     }
 
     @Test

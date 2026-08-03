@@ -29,7 +29,7 @@ public class JulLoggingModule {
     LoggingGenerator provideJdkLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Fields fields) {
-        return new JulLoggingGenerator(runtimeConfiguration.names(), fields);
+        return new JulLoggingGenerator(fields);
     }
 
 }

@@ -29,7 +29,7 @@ public class Slf4jLoggingModule {
     LoggingGenerator provideSlf4jLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
             final Fields fields) {
-        return new Slf4jLoggingGenerator(runtimeConfiguration.names(), fields);
+        return new Slf4jLoggingGenerator(fields);
     }
 
 }

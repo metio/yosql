@@ -17,6 +17,7 @@ import wtf.metio.yosql.codegen.records.JavaSourceParser;
 import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
 import wtf.metio.yosql.codegen.schema.Schemas;
+import wtf.metio.yosql.codegen.exceptions.ReservedParameterNameException;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -91,6 +93,38 @@ class DefaultMethodParameterConfigurerTest {
 
     private static SqlParameter untyped(final String name) {
         return SqlParameter.builder().setName(name).build();
+    }
+
+    @Nested
+    @DisplayName("names a generated method already uses")
+    class Reserved {
+
+        @Test
+        @DisplayName("are refused while the SQL is still in front of us")
+        void shouldRefuseAReservedName() {
+            final var exception = assertThrows(ReservedParameterNameException.class, () ->
+                    configurer.configureParameters(
+                            statement(parameter("connection", "java.util.UUID")), SOURCE, NO_SQL,
+                            indices("connection")));
+            assertAll(
+                    () -> assertTrue(exception.getMessage().contains("findTenant"), exception.getMessage()),
+                    () -> assertTrue(exception.getMessage().contains("connection"), exception.getMessage()));
+        }
+
+        @Test
+        @DisplayName("are refused even when the front matter never mentions them")
+        void shouldRefuseANameOnlyTheSqlKnows() {
+            assertThrows(ReservedParameterNameException.class, () ->
+                    configurer.configureParameters(statement(), SOURCE, NO_SQL, indices("statement")));
+        }
+
+        @Test
+        @DisplayName("do not include the names of constants, which a parameter cannot clash with")
+        void shouldAllowConstantSuffixes() {
+            assertDoesNotThrow(() -> configurer.configureParameters(
+                    statement(parameter("index_", "java.lang.Integer")), SOURCE, NO_SQL, indices("index_")));
+        }
+
     }
 
     @Nested

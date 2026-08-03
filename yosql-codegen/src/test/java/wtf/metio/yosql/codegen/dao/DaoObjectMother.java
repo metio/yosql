@@ -27,14 +27,13 @@ import wtf.metio.yosql.models.immutables.FilesConfiguration;
 public final class DaoObjectMother {
 
     public static JdbcMethods jdbcMethods() {
-        final var names = NamesConfigurations.defaults();
         return new DefaultJdbcMethods(
-                new DefaultJdbcDataSourceMethods(names),
-                new DefaultJdbcConnectionMethods(names),
-                new DefaultJdbcDatabaseMetaDataMethods(names),
-                new DefaultJdbcResultSetMethods(names),
-                new DefaultJdbcResultSetMetaDataMethods(names),
-                new DefaultJdbcStatementMethods(names));
+                new DefaultJdbcDataSourceMethods(),
+                new DefaultJdbcConnectionMethods(),
+                new DefaultJdbcDatabaseMetaDataMethods(),
+                new DefaultJdbcResultSetMethods(),
+                new DefaultJdbcResultSetMetaDataMethods(),
+                new DefaultJdbcStatementMethods());
     }
 
     public static FieldsGenerator fieldsGenerator() {
@@ -46,7 +45,6 @@ public final class DaoObjectMother {
         return new DefaultFieldsGenerator(
                 ConverterConfigurations.withConverters(),
                 repositories,
-                NamesConfigurations.defaults(),
                 LoggingObjectMother.loggingGenerator(),
                 BlocksObjectMother.javadoc(),
                 BlocksObjectMother.fields());
@@ -61,14 +59,13 @@ public final class DaoObjectMother {
         return new DefaultConstructorGenerator(
                 BlocksObjectMother.codeBlocks(),
                 BlocksObjectMother.methods(),
-                NamesConfigurations.defaults(),
                 jdbcParameter(),
                 repositories,
                 ConverterConfigurations.withConverters());
     }
 
     public static DefaultJdbcParameters jdbcParameter() {
-        return new DefaultJdbcParameters(BlocksObjectMother.parameters(), NamesConfigurations.defaults());
+        return new DefaultJdbcParameters(BlocksObjectMother.parameters());
     }
 
     public static JdbcBlocks jdbcBlocks() {
@@ -123,7 +120,7 @@ public final class DaoObjectMother {
     }
 
     public static ParameterGenerator parameterGenerator() {
-        return new DefaultParameterGenerator(BlocksObjectMother.parameters(), NamesConfigurations.defaults());
+        return new DefaultParameterGenerator(BlocksObjectMother.parameters());
     }
 
     public static ReturnTypes returnTypes() {
