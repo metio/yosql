@@ -42,10 +42,7 @@
     <modules>
         <module>yosql-benchmarks-codegen</module>
         <module>yosql-benchmarks-dao</module>
-        <module>yosql-benchmarks-vs-ebean</module>
         <module>yosql-benchmarks-vs-jdbi</module>
-        <module>yosql-benchmarks-vs-jooq</module>
-        <module>yosql-benchmarks-vs-jpa</module>
     </modules>
 
 </project>

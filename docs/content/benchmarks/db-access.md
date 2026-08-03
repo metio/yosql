@@ -137,11 +137,14 @@ log.
 
 ## Against an ORM
 
-There is none. `yosql-benchmarks-vs-ebean`, `-vs-jooq` and `-vs-jpa` are empty modules, reserved
-rather than written.
+There is none, and there is unlikely to be one.
 
-For an ORM the comparison is harder to make honestly than it looks: read the same entity twice and
-Hibernate answers the second from its identity map, so it wins by a distance; turn that off and you
-are measuring a Hibernate nobody deploys. Whichever you choose, the number is an argument about the
-configuration. The [comparison of alternatives](../../community/alternatives/) says where an ORM is
-the better tool without pretending to a measurement.
+Read the same entity twice and Hibernate answers the second from its identity map, so it wins by a
+distance; turn that off and you are measuring a Hibernate nobody deploys. Whichever you pick, the
+number argues about the configuration rather than about the tools, and the honest version of that
+argument is prose. The [comparison of alternatives](../../community/alternatives/) says where an ORM
+is the better choice without pretending to a measurement.
+
+The JDBI result above also suggests what such a comparison would find between two SQL-first
+libraries: a fixed per-call cost, invisible the moment a real database is involved. That is worth
+knowing once. It is not worth knowing four times.
