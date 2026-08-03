@@ -27,16 +27,7 @@
     "allPublicFields": true
   },
   {
-    "name": "wtf.metio.yosql.models.configuration.GeneratedAnnotationApis",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "wtf.metio.yosql.models.configuration.GeneratedAnnotationMembers",
+    "name": "wtf.metio.yosql.models.configuration.GeneratedNames",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -252,6 +243,15 @@
     "allPublicFields": true
   },
   {
+    "name": "wtf.metio.yosql.models.configuration.SchemaValidation",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
     "name": "wtf.metio.yosql.models.configuration.SqlParameter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -324,15 +324,6 @@
     "allPublicFields": true
   },
   {
-    "name": "wtf.metio.yosql.models.immutables.ImmutableAnnotationsConfiguration$InitShim",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
     "name": "wtf.metio.yosql.models.immutables.ImmutableConverterConfiguration",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -387,33 +378,6 @@
     "allPublicFields": true
   },
   {
-    "name": "wtf.metio.yosql.models.immutables.ImmutableJavaConfiguration",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "wtf.metio.yosql.models.immutables.ImmutableJavaConfiguration$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "wtf.metio.yosql.models.immutables.ImmutableJavaConfiguration$InitShim",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
     "name": "wtf.metio.yosql.models.immutables.ImmutableLoggingConfiguration",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -424,33 +388,6 @@
   },
   {
     "name": "wtf.metio.yosql.models.immutables.ImmutableLoggingConfiguration$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "wtf.metio.yosql.models.immutables.ImmutableNamesConfiguration",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "wtf.metio.yosql.models.immutables.ImmutableNamesConfiguration$Builder",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "wtf.metio.yosql.models.immutables.ImmutableNamesConfiguration$InitShim",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -585,6 +522,33 @@
     "allPublicFields": true
   },
   {
+    "name": "wtf.metio.yosql.models.immutables.ImmutableSchemaConfiguration",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "wtf.metio.yosql.models.immutables.ImmutableSchemaConfiguration$Builder",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "wtf.metio.yosql.models.immutables.ImmutableSchemaConfiguration$InitShim",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
     "name": "wtf.metio.yosql.models.immutables.ImmutableSqlConfiguration",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -675,25 +639,7 @@
     "allPublicFields": true
   },
   {
-    "name": "wtf.metio.yosql.models.immutables.JavaConfiguration",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
     "name": "wtf.metio.yosql.models.immutables.LoggingConfiguration",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
-  },
-  {
-    "name": "wtf.metio.yosql.models.immutables.NamesConfiguration",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -730,6 +676,15 @@
   },
   {
     "name": "wtf.metio.yosql.models.immutables.RuntimeConfiguration",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
+  },
+  {
+    "name": "wtf.metio.yosql.models.immutables.SchemaConfiguration",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
