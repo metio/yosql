@@ -122,4 +122,22 @@ WHERE   id = :customerId
 
 ## License Headers
 
-In case your `.sql` files contain a license header, use the [skipLines](/configuration/files/skiplines) option to skip those initial lines. Otherwise `YoSQL` will consider those lines to be part of the first statement in your `.sql` file.
+A `.sql` file may open with a block comment, and `YoSQL` drops it:
+
+```sql
+/*
+ * SPDX-FileCopyrightText: The yosql Authors
+ * SPDX-License-Identifier: 0BSD
+ */
+
+-- name: findTenant
+select id from tenant where id = :id
+```
+
+However many lines it runs to, and there is nothing to configure. A block comment anywhere else in
+the file stays where it is, because that is where a vendor puts an optimizer hint —
+`select /*+ INDEX(tenant tenant_pkey) */ …` reaches the database intact.
+
+Write the header as a block comment rather than as `--` lines. A `--` line at the top of a file is
+front matter, and `-- SPDX-License-Identifier: 0BSD` is as good a YAML mapping as
+`-- name: findTenant` — so a licence written that way would quietly become configuration.

@@ -81,7 +81,6 @@
                 <version>${project.version}</version>
                 <configuration>
                     <files>
-                        <skipLines>4</skipLines>
                     </files>
                 </configuration>
                 <executions>

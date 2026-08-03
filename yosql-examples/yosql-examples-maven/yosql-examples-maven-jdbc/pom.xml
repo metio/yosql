@@ -56,7 +56,6 @@
                 <artifactId>yosql-tooling-maven</artifactId>
                 <configuration>
                     <files>
-                        <skipLines>4</skipLines>
                         <inputBaseDirectory>../../yosql-examples-common/src/main/yosql</inputBaseDirectory>
                         <!-- Converters named in front matter are read from source, and the one this
                              example uses is shared with the other examples that read the same SQL. -->

@@ -11,6 +11,12 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.internals.testing.configs.ConverterConfigurations;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.io.TempDir;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
 import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
 
@@ -49,6 +55,58 @@ class DefaultSqlStatementParserTest {
                         ConverterConfigurations.withConverters()),
                 FilesConfigurations.defaults(),
                 OrchestrationObjectMother.executionErrors());
+    }
+
+    @Nested
+    @DisplayName("the licence header a file opens with")
+    class Header {
+
+        @TempDir
+        Path directory;
+
+        private List<SqlStatement> parse(final String content) throws IOException {
+            final var file = directory.resolve("findTenant.sql");
+            Files.writeString(file, content);
+            return parser.parse(file).toList();
+        }
+
+        @Test
+        @DisplayName("is dropped however many lines it runs to")
+        void shouldDropABlockComment() throws IOException {
+            final var statements = parse("""
+                    /*
+                     * SPDX-FileCopyrightText: The yosql Authors
+                     * SPDX-License-Identifier: 0BSD
+                     *
+                     * A header nobody has to count the lines of.
+                     */
+
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id from tenant
+                    """);
+
+            assertAll(
+                    () -> assertEquals(1, statements.size()),
+                    () -> assertEquals("findTenant", statements.getFirst().getName()),
+                    () -> assertEquals("select id from tenant", statements.getFirst().getRawStatement().strip()));
+        }
+
+        @Test
+        @DisplayName("is left alone where it is a vendor's hint rather than a header")
+        void shouldKeepACommentInsideTheStatement() throws IOException {
+            final var statements = parse("""
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select /*+ INDEX(tenant tenant_pkey) */ id from tenant
+                    """);
+
+            assertTrue(statements.getFirst().getRawStatement().contains("/*+ INDEX(tenant tenant_pkey) */"),
+                    statements.getFirst().getRawStatement());
+        }
+
     }
 
     @Test

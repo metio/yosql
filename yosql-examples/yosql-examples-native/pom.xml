@@ -72,7 +72,6 @@
                 </executions>
                 <configuration>
                     <files>
-                        <skipLines>4</skipLines>
                     </files>
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.nativeimage.persistence</basePackageName>

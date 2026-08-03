@@ -31,6 +31,8 @@ import static java.util.function.Predicate.not;
 public final class DefaultSqlStatementParser implements SqlStatementParser {
 
     private static final String SQL_COMMENT_PREFIX = "--";
+    private static final String BLOCK_COMMENT_START = "/*";
+    private static final String BLOCK_COMMENT_END = "*/";
     private static final String NEWLINE = "\n";
     private static final String YOSQL_PRAGMA = SQL_COMMENT_PREFIX + "@yosql";
     private static final Pattern CUSTOM_SQL_STATEMENT_SEPARATOR = Pattern.compile(
@@ -59,7 +61,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         try {
             final var charset = files.sqlFilesCharset();
             final var rawText = Files.readString(source, charset);
-            final var skippedText = skipLines(rawText);
+            final var skippedText = withoutHeader(rawText);
             final var splitter = getStatementSplitter(rawText);
             // Sequential, and deliberately so. The index counts a statement's position in its file,
             // and a method's name is built from it when several share a name — so which statement
@@ -109,16 +111,28 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         }
     }
 
-    private String skipLines(final String rawText) {
-        var cut = 0;
-        for (var line = 0; line < files.skipLines(); line++) {
-            final var newline = rawText.indexOf(NEWLINE, cut);
-            if (newline < 0) {
-                return "";
+    /**
+     * Drops the licence header a file opens with.
+     *
+     * <p>Only a block comment, and only where the file starts. A {@code --} header cannot be told
+     * apart from front matter — {@code SPDX-License-Identifier: 0BSD} is as good a YAML mapping as
+     * {@code name: findTenant} — so reading one would quietly turn a licence into configuration. A
+     * block comment further in is left where it is, because that is where a vendor puts an optimizer
+     * hint.</p>
+     */
+    private static String withoutHeader(final String rawText) {
+        var text = rawText;
+        while (true) {
+            final var start = text.stripLeading();
+            if (!start.startsWith(BLOCK_COMMENT_START)) {
+                return text;
             }
-            cut = newline + 1;
+            final var end = start.indexOf(BLOCK_COMMENT_END);
+            if (end < 0) {
+                return text;
+            }
+            text = start.substring(end + BLOCK_COMMENT_END.length());
         }
-        return rawText.substring(cut);
     }
 
     // visible for testing

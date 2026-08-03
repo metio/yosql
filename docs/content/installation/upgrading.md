@@ -216,6 +216,17 @@ build error naming the file, the statement and the parameter, instead of a Java 
 variable already defined in a file you did not write. Rename the parameter in the SQL — the name
 reaches no further than the method's signature.
 
+### `skipLines` is gone, and a licence header is dropped on its own
+
+A `.sql` file that opens with a block comment has it dropped, however many lines it runs to. The
+count that used to have to match — and to be kept matching every time somebody edited the header —
+is no longer a setting.
+
+Remove `skipLines` from your build; Maven and Ant fail on an unknown element. If your headers are
+written as `--` lines rather than as a block comment, rewrite them as `/* … */`. A `--` line at the
+top of a file is front matter, and `-- SPDX-License-Identifier: 0BSD` is as good a YAML mapping as
+`-- name: findTenant`, so there is no way to tell the two apart.
+
 ## 2023.5.3 and earlier
 
 See the [release notes](https://github.com/metio/yosql/releases) for those versions.

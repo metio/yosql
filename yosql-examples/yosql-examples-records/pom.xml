@@ -65,7 +65,6 @@
                 <configuration>
                     <files>
                         <!-- Clears the SPDX header at the top of every .sql file. -->
-                        <skipLines>4</skipLines>
                         <!-- Where the records named as resultRowType are read from. This is the
                              default; stated here because it is the setting the module is about. -->
                         <sourceDirectory>src/main/java</sourceDirectory>

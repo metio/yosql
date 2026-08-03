@@ -66,7 +66,6 @@
                                 <yosql>
                                     <files inputBaseDirectory="../yosql-examples-common/src/main/yosql"
                                            outputBaseDirectory="${project.build.directory}/first"
-                                           skipLines="4"
                                            sourceDirectory="../yosql-examples-common/src/main/java"/>
                                     <repositories generateInterfaces="true"/>
                                 </yosql>

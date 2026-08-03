@@ -37,7 +37,6 @@ public final class Files extends AbstractConfigurationGroup {
                 .addSettings(sqlFilesSuffix())
                 .addSettings(sqlFilesCharset())
                 .addSettings(sqlStatementSeparator())
-                .addSettings(skipLines())
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
                 .addImmutableAnnotations(immutableAnnotation())
@@ -155,22 +154,6 @@ public final class Files extends AbstractConfigurationGroup {
                 .addExamples(ConfigurationExample.builder()
                         .setValue("/an/absolute/path")
                         .setDescription("Changing the `outputBaseDirectory` configuration option to `/an/absolute/path!` configures `YoSQL` to write into the absolute directory path `/an/absolute/path`.")
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting skipLines() {
-        final var name = "skipLines";
-        final var description = "The number of lines to skip in each file (e.g. a copyright header).";
-        final var value = 0;
-        return setting(GROUP_NAME, name, description, value)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("0")
-                        .setDescription("The default value of the `skipLines` configuration option is `0` - which does not skip any lines.")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("0")
-                        .setDescription("Changing the `skipLines` configuration option to `5` configures `YoSQL` skip the first 5 lines in each `.sql` file in encounters.")
                         .build())
                 .build();
     }
