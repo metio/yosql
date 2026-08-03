@@ -32,11 +32,10 @@ public class YoSqlPlugin implements Plugin<Project> {
         extension.getAnnotations().configureConventions();
         extension.getConverter().configureConventions();
         extension.getFiles().configureConventions(layout);
-        extension.getJava().configureConventions();
         extension.getLogging().configureConventions();
-        extension.getNames().configureConventions();
         extension.getRepositories().configureConventions();
         extension.getResources().configureConventions();
+        extension.getSchema().configureConventions();
     }
 
     private static void registerTask(final Project project, final YoSqlExtension extension) {

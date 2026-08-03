@@ -109,7 +109,7 @@ class TableScopeTest {
 
         @Test
         @DisplayName("SQL it cannot parse names nothing")
-        void shouldNotClaimToKnowUnparseableSql() {
+        void shouldNotClaimToKnowUnparsableSql() {
             final var scope = TableScope.of("CREATE ALIAS getVersion AS 'String version() { return \"1\"; }'");
 
             assertAll(

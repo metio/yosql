@@ -61,15 +61,13 @@
                             <arguments>
                                 <argument>generate</argument>
                                 <argument>--files-input-base-directory</argument>
-                                <argument>yosql-examples/yosql-examples-common/src/main/yosql</argument>
+                                <argument>${project.basedir}/../yosql-examples-common/src/main/yosql</argument>
                                 <argument>--files-output-base-directory</argument>
                                 <argument>${project.build.directory}/first</argument>
-                                <argument>--files-skip-lines</argument>
-                                <argument>4</argument>
+                                <argument>--files-source-directory</argument>
+                                <argument>${project.basedir}/../yosql-examples-common/src/main/java</argument>
                                 <argument>--repositories-base-package-name</argument>
                                 <argument>wtf.metio.yosql.example.cli</argument>
-                                <argument>--converter-row-converters</argument>
-                                <argument>itemConverter:wtf.metio.yosql.example.cli.converter.ToItemConverter:asUserType:wtf.metio.yosql.example.cli.model.Item</argument>
                                 <argument>--converter-map-converter-class</argument>
                                 <argument>wtf.metio.yosql.example.cli.converter.ToMapConverter</argument>
                             </arguments>
@@ -87,16 +85,14 @@
                             <arguments>
                                 <argument>generate</argument>
                                 <argument>--files-input-base-directory</argument>
-                                <argument>yosql-examples/yosql-examples-common/src/main/yosql</argument>
+                                <argument>${project.basedir}/../yosql-examples-common/src/main/yosql</argument>
                                 <argument>--files-output-base-directory</argument>
                                 <argument>${project.build.directory}/second</argument>
-                                <argument>--files-skip-lines</argument>
-                                <argument>4</argument>
+                                <argument>--files-source-directory</argument>
+                                <argument>${project.basedir}/../yosql-examples-common/src/main/java</argument>
                                 <argument>--repositories-base-package-name</argument>
                                 <argument>wtf.metio.yosql.example.cli</argument>
                                 <argument>--repositories-generate-interfaces</argument>
-                                <argument>--converter-row-converters</argument>
-                                <argument>itemConverter:wtf.metio.yosql.example.cli.converter.ToItemConverter:asUserType:wtf.metio.yosql.example.cli.model.Item</argument>
                             </arguments>
                         </configuration>
                     </execution>

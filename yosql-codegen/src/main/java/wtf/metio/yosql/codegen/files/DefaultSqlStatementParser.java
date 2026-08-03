@@ -115,10 +115,9 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
      * Drops the licence header a file opens with.
      *
      * <p>Only a block comment, and only where the file starts. A {@code --} header cannot be told
-     * apart from front matter — {@code SPDX-License-Identifier: 0BSD} is as good a YAML mapping as
-     * {@code name: findTenant} — so reading one would quietly turn a licence into configuration. A
-     * block comment further in is left where it is, because that is where a vendor puts an optimizer
-     * hint.</p>
+     * apart from front matter — a licence line is as good a YAML mapping as {@code name: findTenant}
+     * — so reading one would quietly turn a licence into configuration. A block comment further in
+     * is left where it is, because that is where a vendor puts an optimizer hint.</p>
      */
     private static String withoutHeader(final String rawText) {
         var text = rawText;

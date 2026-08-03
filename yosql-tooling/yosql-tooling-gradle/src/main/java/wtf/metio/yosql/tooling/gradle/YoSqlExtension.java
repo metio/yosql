@@ -32,22 +32,10 @@ public abstract class YoSqlExtension {
     public abstract Converter getConverter();
 
     /**
-     * @return The Java configuration.
-     */
-    @Nested
-    public abstract Java getJava();
-
-    /**
      * @return The API configuration.
      */
     @Nested
     public abstract Logging getLogging();
-
-    /**
-     * @return The names configuration.
-     */
-    @Nested
-    public abstract Names getNames();
 
     /**
      * @return The repository configuration.
@@ -60,6 +48,12 @@ public abstract class YoSqlExtension {
      */
     @Nested
     public abstract Resources getResources();
+
+    /**
+     * @return The schema configuration.
+     */
+    @Nested
+    public abstract Schema getSchema();
 
     /**
      * @param action The annotations config to apply.
@@ -83,24 +77,10 @@ public abstract class YoSqlExtension {
     }
 
     /**
-     * @param action The Java config to apply.
-     */
-    public void java(Action<? super Java> action) {
-        action.execute(getJava());
-    }
-
-    /**
      * @param action The logging config to apply.
      */
     public void logging(Action<? super Logging> action) {
         action.execute(getLogging());
-    }
-
-    /**
-     * @param action The names config to apply.
-     */
-    public void names(Action<? super Names> action) {
-        action.execute(getNames());
     }
 
     /**
@@ -115,6 +95,13 @@ public abstract class YoSqlExtension {
      */
     public void resources(Action<? super Resources> action) {
         action.execute(getResources());
+    }
+
+    /**
+     * @param action The schema config to apply.
+     */
+    public void schema(Action<? super Schema> action) {
+        action.execute(getSchema());
     }
 
 }

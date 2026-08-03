@@ -33,6 +33,14 @@ jobs:
           path: ~/.m2/repository
           key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-${{ runner.os }}-
+      - name: Install the generator the examples generate with
+        # `generate-sources` alone cannot resolve YoSQL's own Maven plugin: the
+        # examples ask for it by version and nothing has put it in the local
+        # repository yet. Installing first is what makes the two runs below
+        # reach the code generator at all.
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --define maven.test.skip=true install
       - name: Generate once
         # `clean` on both runs, so the two are compared from the same starting
         # state. Without it the first run can carry directories an earlier phase
@@ -127,7 +135,6 @@ jobs:
             --files-input-base-directory=yosql-examples/yosql-examples-common/src/main/yosql \
             --files-output-base-directory="$RUNNER_TEMP/cli-generated" \
             --files-source-directory=yosql-examples/yosql-examples-common/src/main/java \
-            --files-skip-lines=4 \
             --repositories-base-package-name=com.example.persistence
           generated=$(find "$RUNNER_TEMP/cli-generated" -name '*.java' | wc -l)
           echo "the CLI generated $generated files"

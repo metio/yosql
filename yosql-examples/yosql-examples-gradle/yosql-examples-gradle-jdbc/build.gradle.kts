@@ -22,7 +22,6 @@ application {
 
 yosql {
     files {
-        skipLines.set(4)
         inputBaseDirectory.set(project.file("../../yosql-examples-common/src/main/yosql"))
         sourceDirectory.set(project.file("../../yosql-examples-common/src/main/java"))
     }

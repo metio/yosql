@@ -24,10 +24,10 @@ public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
                 .setAnnotations(extension.getAnnotations().asConfiguration())
                 .setConverter(extension.getConverter().asConfiguration())
                 .setFiles(extension.getFiles().asConfiguration())
-                .setJava(extension.getJava().asConfiguration())
                 .setLogging(extension.getLogging().asConfiguration())
                 .setRepositories(extension.getRepositories().asConfiguration())
                 .setResources(extension.getResources().asConfiguration())
+                .setSchema(extension.getSchema().asConfiguration())
                 .build());
     }
 

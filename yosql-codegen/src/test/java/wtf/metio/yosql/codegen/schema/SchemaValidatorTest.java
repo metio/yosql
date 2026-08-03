@@ -199,7 +199,7 @@ class SchemaValidatorTest {
 
         @Test
         @DisplayName("SQL it cannot parse")
-        void shouldSkipUnparseableSql() {
+        void shouldSkipUnparsableSql() {
             assertDoesNotThrow(() -> validator(SchemaValidation.ERROR, TENANT_DDL)
                     .validate(List.of(statement("CREATE ALIAS x AS 'not sql at all'"))));
         }
