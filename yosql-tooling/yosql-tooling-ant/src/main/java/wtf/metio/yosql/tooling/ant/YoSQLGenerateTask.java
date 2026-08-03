@@ -19,6 +19,7 @@ public class YoSQLGenerateTask extends Task {
 
     private Annotations annotations = new Annotations();
     private Converter converter = new Converter();
+    private Schema schema = new Schema();
     private Files files = new Files();
     private Logging logging = new Logging();
     private Repositories repositories = new Repositories();
@@ -49,6 +50,7 @@ public class YoSQLGenerateTask extends Task {
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
                 .setConverter(converter.asConfiguration())
+                .setSchema(schema.asConfiguration())
                 .build();
     }
 
@@ -60,6 +62,10 @@ public class YoSQLGenerateTask extends Task {
 
     public void addConfiguredConverter(final Converter converter) {
         this.converter = converter;
+    }
+
+    public void addConfiguredSchema(final Schema schema) {
+        this.schema = schema;
     }
 
     public void addConfiguredFiles(final Files files) {

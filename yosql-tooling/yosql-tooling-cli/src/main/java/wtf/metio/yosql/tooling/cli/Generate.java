@@ -43,6 +43,9 @@ public class Generate implements Callable<Integer> {
     @CommandLine.Mixin
     public Resources resources;
 
+    @CommandLine.Mixin
+    public Schema schema;
+
     @Override
     public Integer call() {
         buildYoSQL().generateCode();
@@ -65,6 +68,7 @@ public class Generate implements Callable<Integer> {
                 .setLogging(logging.asConfiguration())
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
+                .setSchema(schema.asConfiguration())
                 .build();
     }
 

@@ -43,6 +43,9 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "${classObject}")
     Converter converter;
 
+    @Parameter(required = true, defaultValue = "${classObject}")
+    Schema schema;
+
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     MavenProject project;
 
@@ -85,6 +88,7 @@ public class GenerateMojo extends AbstractMojo {
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
                 .setConverter(converter.asConfiguration())
+                .setSchema(schema.asConfiguration())
                 .build();
     }
 
