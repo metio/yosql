@@ -43,7 +43,6 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
             final int statementInFile) {
         var adapted = configuration;
         adapted = baseName(adapted, fileName, statementInFile);
-        adapted = affixes(adapted);
         return adapted;
     }
 
@@ -87,60 +86,6 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
             throw new MissingPrefixConfigurationException(setting);
         }
         return prefixes.getFirst();
-    }
-
-    // visible for testing
-    SqlConfiguration affixes(final SqlConfiguration configuration) {
-        var adapted = configuration;
-        adapted = executeOncePrefix(adapted);
-        adapted = executeOnceSuffix(adapted);
-        adapted = executeBatchPrefix(adapted);
-        adapted = executeBatchSuffix(adapted);
-        return adapted;
-    }
-
-    // visible for testing
-    SqlConfiguration executeOncePrefix(final SqlConfiguration configuration) {
-        return configuration.executeOncePrefix()
-                .filter(not(Strings::isBlank))
-                .map(prefix -> configuration)
-                .orElseGet(() -> {
-                    logger.debug(SqlConfigurationLifecycle.EXECUTE_ONCE_PREFIX_CHANGED, repositories.executeOncePrefix());
-                    return SqlConfiguration.copyOf(configuration).withExecuteOncePrefix(repositories.executeOncePrefix());
-                });
-    }
-
-    // visible for testing
-    SqlConfiguration executeOnceSuffix(final SqlConfiguration configuration) {
-        return configuration.executeOnceSuffix()
-                .filter(not(Strings::isBlank))
-                .map(suffix -> configuration)
-                .orElseGet(() -> {
-                    logger.debug(SqlConfigurationLifecycle.EXECUTE_ONCE_SUFFIX_CHANGED, repositories.executeOnceSuffix());
-                    return SqlConfiguration.copyOf(configuration).withExecuteOnceSuffix(repositories.executeOnceSuffix());
-                });
-    }
-
-    // visible for testing
-    SqlConfiguration executeBatchPrefix(final SqlConfiguration configuration) {
-        return configuration.executeBatchPrefix()
-                .filter(not(Strings::isBlank))
-                .map(prefix -> configuration)
-                .orElseGet(() -> {
-                    logger.debug(SqlConfigurationLifecycle.EXECUTE_BATCH_PREFIX_CHANGED, repositories.executeBatchPrefix());
-                    return SqlConfiguration.copyOf(configuration).withExecuteBatchPrefix(repositories.executeBatchPrefix());
-                });
-    }
-
-    // visible for testing
-    SqlConfiguration executeBatchSuffix(final SqlConfiguration configuration) {
-        return configuration.executeBatchSuffix()
-                .filter(not(Strings::isBlank))
-                .map(suffix -> configuration)
-                .orElseGet(() -> {
-                    logger.debug(SqlConfigurationLifecycle.EXECUTE_BATCH_SUFFIX_CHANGED, repositories.executeBatchSuffix());
-                    return SqlConfiguration.copyOf(configuration).withExecuteBatchSuffix(repositories.executeBatchSuffix());
-                });
     }
 
 }

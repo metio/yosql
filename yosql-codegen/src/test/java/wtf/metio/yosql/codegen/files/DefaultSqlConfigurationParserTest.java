@@ -324,45 +324,9 @@ class DefaultSqlConfigurationParserTest {
         assertFalse(config.usePreparedStatement().get());
     }
 
-    @Test
-    void shouldParseExecuteOncePrefix() {
-        final var yaml = """
-                executeOncePrefix: prefix
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.executeOncePrefix().isPresent());
-        assertEquals("prefix", config.executeOncePrefix().get());
-    }
 
-    @Test
-    void shouldParseExecuteOnceSuffix() {
-        final var yaml = """
-                executeOnceSuffix: suffix
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.executeOnceSuffix().isPresent());
-        assertEquals("suffix", config.executeOnceSuffix().get());
-    }
 
-    @Test
-    void shouldParseExecuteBatchPrefix() {
-        final var yaml = """
-                executeBatchPrefix: prefix
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.executeBatchPrefix().isPresent());
-        assertEquals("prefix", config.executeBatchPrefix().get());
-    }
 
-    @Test
-    void shouldParseExecuteBatchSuffix() {
-        final var yaml = """
-                executeBatchSuffix: suffix
-                """;
-        final var config = parser.parseConfig(yaml);
-        assertTrue(config.executeBatchSuffix().isPresent());
-        assertEquals("suffix", config.executeBatchSuffix().get());
-    }
 
     @Test
     void shouldParseParameter() {

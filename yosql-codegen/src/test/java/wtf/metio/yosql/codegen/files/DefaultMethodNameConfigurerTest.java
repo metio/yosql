@@ -28,102 +28,15 @@ class DefaultMethodNameConfigurerTest {
         configurer = new DefaultMethodNameConfigurer(LoggingObjectMother.logger(), repositories);
     }
 
-    @Test
-    void executeOncePrefixKeep() {
-        final var original = SqlConfiguration.builder().setExecuteOncePrefix("prefix").build();
-        final var adapted = configurer.executeOncePrefix(original);
-        assertEquals(original.executeOncePrefix(), adapted.executeOncePrefix());
-    }
 
-    @Test
-    void executeOncePrefixChange() {
-        final var original = SqlConfiguration.builder().setExecuteOncePrefix(" ").build();
-        final var adapted = configurer.executeOncePrefix(original);
-        assertTrue(adapted.executeOncePrefix().isPresent());
-        assertEquals(repositories.executeOncePrefix(), adapted.executeOncePrefix().get());
-    }
 
-    @Test
-    void executeOnceSuffixKeep() {
-        final var original = SqlConfiguration.builder().setExecuteOnceSuffix("suffix").build();
-        final var adapted = configurer.executeOnceSuffix(original);
-        assertEquals(original.executeOnceSuffix(), adapted.executeOnceSuffix());
-    }
 
-    @Test
-    void executeOnceSuffixChange() {
-        final var original = SqlConfiguration.builder().setExecuteOnceSuffix(" ").build();
-        final var adapted = configurer.executeOnceSuffix(original);
-        assertTrue(adapted.executeOnceSuffix().isPresent());
-        assertEquals(repositories.executeOnceSuffix(), adapted.executeOnceSuffix().get());
-    }
 
-    @Test
-    void executeBatchPrefixKeep() {
-        final var original = SqlConfiguration.builder().setExecuteBatchPrefix("prefix").build();
-        final var adapted = configurer.executeBatchPrefix(original);
-        assertEquals(original.executeBatchPrefix(), adapted.executeBatchPrefix());
-    }
 
-    @Test
-    void executeBatchPrefixChange() {
-        final var original = SqlConfiguration.builder().setExecuteBatchPrefix(" ").build();
-        final var adapted = configurer.executeBatchPrefix(original);
-        assertTrue(adapted.executeBatchPrefix().isPresent());
-        assertEquals(repositories.executeBatchPrefix(), adapted.executeBatchPrefix().get());
-    }
 
-    @Test
-    void executeBatchSuffixKeep() {
-        final var original = SqlConfiguration.builder().setExecuteBatchSuffix("suffix").build();
-        final var adapted = configurer.executeBatchSuffix(original);
-        assertEquals(original.executeBatchSuffix(), adapted.executeBatchSuffix());
-    }
 
-    @Test
-    void executeBatchSuffixChange() {
-        final var original = SqlConfiguration.builder().setExecuteBatchSuffix(" ").build();
-        final var adapted = configurer.executeBatchSuffix(original);
-        assertTrue(adapted.executeBatchSuffix().isPresent());
-        assertEquals(repositories.executeBatchSuffix(), adapted.executeBatchSuffix().get());
-    }
 
-    @Test
-    void affixesKeep() {
-        final var original = SqlConfiguration.builder()
-                .setExecuteOncePrefix("prefix")
-                .setExecuteOnceSuffix("suffix")
-                .setExecuteBatchPrefix("prefix")
-                .setExecuteBatchSuffix("suffix")
-                .build();
-        final var adapted = configurer.affixes(original);
-        assertAll(
-                () -> assertEquals(original.executeOncePrefix(), adapted.executeOncePrefix()),
-                () -> assertEquals(original.executeOnceSuffix(), adapted.executeOnceSuffix()),
-                () -> assertEquals(original.executeBatchPrefix(), adapted.executeBatchPrefix()),
-                () -> assertEquals(original.executeBatchSuffix(), adapted.executeBatchSuffix()));
-    }
 
-    @Test
-    void affixesChange() {
-        final var original = SqlConfiguration.builder()
-                .setExecuteOncePrefix(" ")
-                .setExecuteOnceSuffix(" ")
-                .setExecuteBatchPrefix(" ")
-                .setExecuteBatchSuffix(" ")
-                .build();
-        final var adapted = configurer.affixes(original);
-        assertAll(
-                () -> assertTrue(adapted.executeOncePrefix().isPresent()),
-                () -> assertTrue(adapted.executeOnceSuffix().isPresent()),
-                () -> assertTrue(adapted.executeBatchPrefix().isPresent()),
-                () -> assertTrue(adapted.executeBatchSuffix().isPresent()));
-        assertAll(
-                () -> assertEquals(repositories.executeOncePrefix(), adapted.executeOncePrefix().get()),
-                () -> assertEquals(repositories.executeOnceSuffix(), adapted.executeOnceSuffix().get()),
-                () -> assertEquals(repositories.executeBatchPrefix(), adapted.executeBatchPrefix().get()),
-                () -> assertEquals(repositories.executeBatchSuffix(), adapted.executeBatchSuffix().get()));
-    }
 
     @Test
     void baseNameKeep() {

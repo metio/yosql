@@ -82,7 +82,7 @@ where id in (:ids)
 The method takes a `List<UUID>`, and the query it runs has as many placeholders between the brackets
 as the caller passed. Every other parameter still lands on the placeholder the statement wrote it on,
 however long the list is. `List`, `Set`, `Collection` and `Iterable` all work; an array does not,
-because an array parameter is how a [batch statement](/configuration/sql/executebatchprefix/) passes
+because an array parameter is how a [batch statement](/configuration/sql/executebatch/) passes
 one value per execution.
 
 An **empty** collection matches no row, which is what `in` on an empty set means. Negated it is not:

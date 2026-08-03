@@ -38,13 +38,8 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .addSettings(allowedWritePrefixes())
                 .addSettings(basePackageName())
                 .addSettings(generateInterfaces())
-                .addSettings(repositoryInterfacePrefix())
-                .addSettings(repositoryInterfaceSuffix())
-                .addSettings(repositoryNamePrefix())
-                .addSettings(repositoryNameSuffix())
                 .addSettings(validateMethodNamePrefixes())
                 .addSettings(injectConverters())
-                .addAllSettings(stringMethods())
                 .addAllSettings(booleanMethods())
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
@@ -56,11 +51,7 @@ public final class Repositories extends AbstractConfigurationGroup {
      * @return String configuration settings that can be set on repository or method level.
      */
     public static List<ConfigurationSetting> stringMethods() {
-        return List.of(
-                executeOncePrefix(),
-                executeOnceSuffix(),
-                executeBatchPrefix(),
-                executeBatchSuffix());
+        return List.of();
     }
 
     /**
@@ -110,88 +101,6 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .build();
     }
 
-    private static ConfigurationSetting repositoryInterfacePrefix() {
-        final var name = "repositoryInterfacePrefix";
-        final var description = "The repository interface name prefix to use.";
-        final var value = "";
-        return setting(GROUP_NAME, name, description, value)
-                .build();
-    }
-
-    private static ConfigurationSetting repositoryInterfaceSuffix() {
-        final var name = "repositoryInterfaceSuffix";
-        final var description = "The repository interface name suffix to use.";
-        final var value = "";
-        return setting(GROUP_NAME, name, description, value)
-                .build();
-    }
-
-    private static ConfigurationSetting repositoryNamePrefix() {
-        final var name = "repositoryNamePrefix";
-        final var description = "The repository name prefix to use.";
-        final var value = "";
-        return setting(GROUP_NAME, name, description, value)
-                .setExplanation("In case the repository name already contains the configured prefix, it will not be added twice.")
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(value)
-                        .setDescription("The default value of the `repositoryNamePrefix` configuration option is the empty string. Setting the option to `` therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    // ... rest of generated code
-
-                                }""")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("Database")
-                        .setDescription("Changing the `repositoryNamePrefix` configuration option to `Database` generates the following code instead:")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class DatabaseSomeRepo {
-
-                                    // ... rest of generated code (same as above)
-
-                                }""")
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting repositoryNameSuffix() {
-        final var name = "repositoryNameSuffix";
-        final var description = "The repository name suffix to use.";
-        final var value = "Repository";
-        return setting(GROUP_NAME, name, description, value)
-                .setExplanation("In case the repository name already contains the configured suffix, it will not be added twice.")
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(value)
-                        .setDescription("The default value of the `repositoryNameSuffix` configuration option is `Repository`. Setting the option to `Repository` therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    // ... rest of generated code
-
-                                }""")
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("Repo")
-                        .setDescription("Changing the `repositoryNameSuffix` configuration option to `Repo` generates the following code instead:")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepo {
-
-                                    // ... rest of generated code (same as above)
-
-                                }""")
-                        .build())
-                .build();
-    }
-
     private static ConfigurationSetting generateInterfaces() {
         final var name = "generateInterfaces";
         final var description = "Generate interfaces for all repositories";
@@ -203,11 +112,10 @@ public final class Repositories extends AbstractConfigurationGroup {
                         becomes something you can substitute — a stub in a test, a caching decorator, a fake
                         that never touches a database.
 
-                        The interface is named by
-                        [repositoryInterfacePrefix](../repositoryinterfaceprefix/) and
-                        [repositoryInterfaceSuffix](../repositoryinterfacesuffix/), neither of which is set by
-                        default, so a `TenantRepository` implements a `TenantRepository` interface in the same
-                        package — which does not compile. Set at least one of them before turning this on.""")
+                        The interface is the repository without the `Repository` that made it one, so a
+                        `TenantRepository` implements a `Tenant`. Where there is no suffix to drop — a
+                        repository you named yourself — the interface takes an `I` in front instead, which is
+                        what keeps the two names apart.""")
                 .addExamples(ConfigurationExample.builder()
                         .setValue("false")
                         .setDescription("The default. A repository is a class and nothing else:")
@@ -222,11 +130,11 @@ public final class Repositories extends AbstractConfigurationGroup {
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("true")
-                        .setDescription("With `repositoryInterfaceSuffix` set to `Api`, the repository implements an interface your code can depend on instead:")
+                        .setDescription("The repository implements an interface your code can depend on instead:")
                         .setResult("""
                                 package com.example.persistence;
 
-                                public interface TenantRepositoryApi {
+                                public interface Tenant {
 
                                     Optional<Tenant> findTenant(UUID id);
 
@@ -255,9 +163,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                         with both turned off generates nothing, and `YoSQL` warns rather than leaving you to
                         notice the missing method.
 
-                        The name is [executeOncePrefix](../executeonceprefix/) and
-                        [executeOnceSuffix](../executeoncesuffix/) around the statement's own, neither set by
-                        default.""")
+                        The method is called what the statement is called.""")
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("true")
@@ -300,9 +206,8 @@ public final class Repositories extends AbstractConfigurationGroup {
                         Turn it off for a statement that is never run in bulk, if the extra method bothers you;
                         it costs nothing to leave on.
 
-                        The name is [executeBatchPrefix](../executebatchprefix/) and
-                        [executeBatchSuffix](../executebatchsuffix/) around the statement's own, the suffix being
-                        `Batch` by default.""")
+                        The method is called what the statement is called plus `Batch`, which is what lets
+                        `insertTenant` and `insertTenantBatch` sit in the same repository.""")
                 .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue("true")
@@ -616,178 +521,6 @@ public final class Repositories extends AbstractConfigurationGroup {
                                     public SomeRepository(final DataSource dataSource, final ToMapConverter toMap) {
                                         this.dataSource = dataSource;
                                         this.toMap = toMap;
-                                    }
-
-                                    // ... rest of generated code
-
-                                }
-                                """)
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting executeOncePrefix() {
-        final var name = "executeOncePrefix";
-        final var description = "The method prefix to use for generated methods that execute once.";
-        final var value = "";
-        return setting(GROUP_NAME, name, description, value)
-                .addTags(Tags.FRONT_MATTER)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(value)
-                        .setDescription("The default value for `executeOncePrefix` is the empty string. It does not add any prefix in front of methods that are executed once.")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    public void writeSome() {
-                                        // ... some code
-                                    }
-
-                                    // ... rest of generated code
-
-                                }
-                                """)
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("myPrefix")
-                        .setDescription("In case you want to prefix methods that execute once with something, set the `executeOncePrefix` option.")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    public void myPrefixWriteSome() {
-                                        // ... some code
-                                    }
-
-                                    // ... rest of generated code
-
-                                }
-                                """)
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting executeOnceSuffix() {
-        final var name = "executeOnceSuffix";
-        final var description = "The method suffix to use for generated methods that execute once.";
-        final var value = "";
-        return setting(GROUP_NAME, name, description, value)
-                .addTags(Tags.FRONT_MATTER)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(value)
-                        .setDescription("The default value for `executeOnceSuffix` is the empty string. It does not add any suffix after methods that execute once.")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    public void writeSome() {
-                                        // ... some code
-                                    }
-
-                                    // ... rest of generated code
-
-                                }
-                                """)
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("mySuffix")
-                        .setDescription("In case you want to suffix methods that execute once with something, set the `executeOnceSuffix` option.")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    public void writeSomeMySuffix() {
-                                        // ... some code
-                                    }
-
-                                    // ... rest of generated code
-
-                                }
-                                """)
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting executeBatchPrefix() {
-        final var name = "executeBatchPrefix";
-        final var description = "The method prefix to use for generated methods that execute in a batch.";
-        final var value = "";
-        return setting(GROUP_NAME, name, description, value)
-                .addTags(Tags.FRONT_MATTER)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(value)
-                        .setDescription("The default value for `executeBatchPrefix` is the empty string. It does not add any prefix in front of batch methods.")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    public void writeSomeBatch() {
-                                        // ... some code
-                                    }
-
-                                    // ... rest of generated code
-
-                                }
-                                """)
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("myPrefix")
-                        .setDescription("In case you want to prefix batch methods with something, set the `executeBatchPrefix` option.")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    public void myPrefixWriteSomeBatch() {
-                                        // ... some code
-                                    }
-
-                                    // ... rest of generated code
-
-                                }
-                                """)
-                        .build())
-                .build();
-    }
-
-    private static ConfigurationSetting executeBatchSuffix() {
-        final var name = "executeBatchSuffix";
-        final var description = "The method suffix to use for generated methods that execute in a batch.";
-        final var value = "Batch";
-        return setting(GROUP_NAME, name, description, value)
-                .addTags(Tags.FRONT_MATTER)
-                .addExamples(ConfigurationExample.builder()
-                        .setValue(value)
-                        .setDescription("The default value for `executeBatchSuffix` is 'Batch'. It adds the word 'Batch' after each batch method.")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    public void writeSomeBatch() {
-                                        // ... some code
-                                    }
-
-                                    // ... rest of generated code
-
-                                }
-                                """)
-                        .build())
-                .addExamples(ConfigurationExample.builder()
-                        .setValue("Other")
-                        .setDescription("In case you want to suffix batch methods with something else, set the `executeBatchSuffix` option.")
-                        .setResult("""
-                                package com.example.persistence;
-
-                                public class SomeRepository {
-
-                                    public void writeSomeOther() {
-                                        // ... some code
                                     }
 
                                     // ... rest of generated code

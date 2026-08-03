@@ -23,6 +23,14 @@ import java.util.stream.Stream;
 
 public final class DefaultRepositoryNameConfigurer implements RepositoryNameConfigurer {
 
+    /**
+     * What a repository is called after the directory its statements sit in. Fixed, because the name
+     * only has to tell a reader that {@code TenantRepository} is where the tenant statements went —
+     * and an interface generated alongside it takes the same name without the suffix, which is what
+     * keeps the two apart.
+     */
+    private static final String NAME_SUFFIX = "Repository";
+
     private final LocLogger logger;
     private final FilesConfiguration files;
     private final RepositoriesConfiguration repositories;
@@ -54,7 +62,6 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
     // visible for testing
     Optional<String> userDefinedRepository(final SqlConfiguration configuration) {
         return configuration.repository()
-                .map(this::repositoryClassWithNamePrefix)
                 .map(this::repositoryWithNameSuffix)
                 .map(this::repositoryInBasePackage);
     }
@@ -73,7 +80,7 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
         logger.debug(RepositoryLifecycle.REPOSITORY_NAME_CALC_UPPER, upperCaseName);
         final var qualifiedRepository = repositoryInBasePackage(upperCaseName);
         logger.debug(RepositoryLifecycle.REPOSITORY_NAME_CALC_QUALIFIED, qualifiedRepository);
-        return repositoryClassWithNamePrefix(repositoryWithNameSuffix(qualifiedRepository));
+        return repositoryWithNameSuffix(qualifiedRepository);
     }
 
     // visible for testing
@@ -81,7 +88,7 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
         return Optional.ofNullable(source.getParent())
                 .map(Path::toString)
                 .filter(Predicate.not(path -> path.endsWith("..")))
-                .orElseGet(() -> repositories.repositoryNamePrefix() + repositories.repositoryNameSuffix());
+                .orElseGet(() -> NAME_SUFFIX);
     }
 
     /**
@@ -102,13 +109,8 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
     }
 
     // visible for testing
-    String repositoryClassWithNamePrefix(final String repositoryClass) {
-        return classWithPrefix(repositoryClass, repositories.repositoryNamePrefix());
-    }
-
-    // visible for testing
     String repositoryWithNameSuffix(final String name) {
-        return classWithSuffix(name, repositories.repositoryNameSuffix());
+        return classWithSuffix(name, NAME_SUFFIX);
     }
 
     // visible for testing
@@ -144,35 +146,14 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
     // visible for testing
     String interfaceName(final String repositoryClass) {
         logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_CALC_SOURCE, repositoryClass);
-        final var rawName = cleanupClassAffixes(repositoryClass);
+        final var rawName = classWithoutSuffix(repositoryClass, NAME_SUFFIX);
         logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_CALC_RAW, rawName);
-        final var prefixedName = classWithPrefix(rawName, repositories.repositoryInterfacePrefix());
-        logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_CALC_PREFIXED, prefixedName);
-        final var suffixedName = classWithSuffix(prefixedName, repositories.repositoryInterfaceSuffix());
-        logger.debug(RepositoryLifecycle.REPOSITORY_INTERFACE_CALC_SUFFIXED, suffixedName);
 
-        return repositoryClass.equals(suffixedName)
-                ? modifyClassName(suffixedName, name -> "I" + name)
-                : suffixedName;
-    }
-
-    private String cleanupClassAffixes(final String repositoryClass) {
-        final var withoutPrefix = classWithoutPrefix(repositoryClass, repositories.repositoryNamePrefix());
-        return classWithoutSuffix(withoutPrefix, repositories.repositoryNameSuffix());
-    }
-
-    private static String classWithPrefix(final String name, final String prefix) {
-        return modifyClassName(name, className -> className.startsWith(prefix)
-                ? className
-                : prefix + className);
-    }
-
-    private static String classWithoutPrefix(final String name, final String prefix) {
-        // substring, not replaceFirst: the prefix is a configured name, and replaceFirst would
-        // read it as a regular expression. startsWith has already proven where it ends.
-        return modifyClassName(name, className -> className.startsWith(prefix)
-                ? className.substring(prefix.length())
-                : className);
+        // A repository the author named themselves may not end in the suffix, and then the interface
+        // would be the class. Prefixing is what keeps the two names apart in that one case.
+        return repositoryClass.equals(rawName)
+                ? modifyClassName(rawName, name -> "I" + name)
+                : rawName;
     }
 
     private static String classWithSuffix(final String name, final String suffix) {
@@ -181,8 +162,12 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
                 : className + suffix);
     }
 
+    /**
+     * Drops the suffix, unless the suffix is the whole name. A repository somebody called
+     * {@code Repository} would otherwise leave a package and no class behind.
+     */
     private static String classWithoutSuffix(final String name, final String suffix) {
-        return modifyClassName(name, className -> className.endsWith(suffix)
+        return modifyClassName(name, className -> className.endsWith(suffix) && !className.equals(suffix)
                 ? Strings.replaceLast(className, suffix, "")
                 : className);
     }

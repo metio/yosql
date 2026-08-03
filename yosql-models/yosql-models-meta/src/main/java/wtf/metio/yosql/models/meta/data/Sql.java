@@ -31,6 +31,12 @@ import static wtf.metio.yosql.models.meta.data.Repositories.INJECT_CONVERTERS;
 
 public final class Sql extends AbstractConfigurationGroup {
 
+    /**
+     * What tells a batch method apart from the one that runs a statement once. Both are generated
+     * from the same statement, so they cannot both be called what the statement is called.
+     */
+    private static final String BATCH_SUFFIX = "Batch";
+
     private static final String GROUP_NAME = Sql.class.getSimpleName();
     private static final String MERGE = "merge";
     private static final String RESULT_ROW_CONVERTER = "resultRowConverter";
@@ -119,10 +125,9 @@ public final class Sql extends AbstractConfigurationGroup {
                 .setExplanation("""
                         In order to overwrite the target repository of a single SQL statement, use the `repository` option.
                         You can specify the fully qualified name of the repository that should contain your statement, or
-                        you can just specify the name of the class and `YoSQL` will automatically add the
-                        [base package name](../../repositories/basepackagename/) as well as the
-                        [repositoryNamePrefix](../../repositories/repositorynameprefix/) and
-                        [repositoryNameSuffix](../../repositories/repositorynamesuffix/) for you.""")
+                        you can just specify the name of the class and `YoSQL` will add the
+                        [base package name](../../repositories/basepackagename/) and the `Repository` suffix
+                        for you.""")
                 .addTags(Tags.FRONT_MATTER)
                 .addImmutableMethods(immutableMethod(ClassName.get(String.class), name, description))
                 .build();
@@ -782,8 +787,7 @@ public final class Sql extends AbstractConfigurationGroup {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
-                        "executeOncePrefix", "", "name", "", "executeOnceSuffix", "")
+                .addStatement("return $L().orElse($S)", "name", "")
                 .build();
     }
 
@@ -792,8 +796,7 @@ public final class Sql extends AbstractConfigurationGroup {
                 .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
                 .returns(String.class)
                 .addAnnotation(Value.Lazy.class)
-                .addStatement("return joinMethodNameParts($L().orElse($S), $L().orElse($S), $L().orElse($S))",
-                        "executeBatchPrefix", "", "name", "", "executeBatchSuffix", "")
+                .addStatement("return $L().map(value -> joinMethodNameParts(value, $S)).orElse($S)", "name", BATCH_SUFFIX, "")
                 .build();
     }
 

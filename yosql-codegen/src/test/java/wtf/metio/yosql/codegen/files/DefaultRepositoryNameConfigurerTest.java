@@ -36,40 +36,35 @@ class DefaultRepositoryNameConfigurerTest {
         configurer = new DefaultRepositoryNameConfigurer(
                 LoggingObjectMother.logger(),
                 files,
-                RepositoriesConfiguration.builder()
-                        .setRepositoryNamePrefix("Prefix")
-                        .setRepositoryNameSuffix("Suffix")
-                        .setRepositoryInterfacePrefix("Inter")
-                        .setRepositoryInterfaceSuffix("Face")
-                        .build());
+                RepositoriesConfiguration.builder().build());
     }
 
     @Test
     void repositoryName() {
         final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, inputBaseDirectory.resolve("test.sql"));
-        assertEquals("com.example.persistence.PrefixSuffix", name);
+        assertEquals("com.example.persistence.Repository", name);
     }
 
     @Test
     void repositoryNameInSubdirectory() {
         final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, inputBaseDirectory.resolve("sub/test.sql"));
-        assertEquals("com.example.persistence.PrefixSubSuffix", name);
+        assertEquals("com.example.persistence.SubRepository", name);
     }
 
     @Test
     void repositoryNameInSubSubdirectory() {
         final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, inputBaseDirectory.resolve("foo/bar/test.sql"));
-        assertEquals("com.example.persistence.foo.PrefixBarSuffix", name);
+        assertEquals("com.example.persistence.foo.BarRepository", name);
     }
 
     @Test
     void repositoryNameWithoutParent() {
         final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, Paths.get("test.sql"));
-        assertEquals("com.example.persistence.PrefixSuffix", name);
+        assertEquals("com.example.persistence.Repository", name);
     }
 
     @Test
@@ -98,51 +93,31 @@ class DefaultRepositoryNameConfigurerTest {
 
     @Test
     void repositoryWithNameSuffix() {
-        assertEquals("TestSuffix",
+        assertEquals("TestRepository",
                 configurer.repositoryWithNameSuffix("Test"));
     }
 
     @Test
     void repositoryWithNameSuffixUsingExistingSuffix() {
-        assertEquals("TestSuffix",
-                configurer.repositoryWithNameSuffix("TestSuffix"));
+        assertEquals("TestRepository",
+                configurer.repositoryWithNameSuffix("TestRepository"));
     }
 
     @Test
     void repositoryWithNameSuffixUsingPackage() {
-        assertEquals("com.example.TestSuffix",
-                configurer.repositoryWithNameSuffix("com.example.TestSuffix"));
+        assertEquals("com.example.TestRepository",
+                configurer.repositoryWithNameSuffix("com.example.TestRepository"));
     }
 
     @Test
     void repositoryWithNameSuffixUsingLowerCaseSuffix() {
-        assertEquals("TestsuffixSuffix",
+        assertEquals("TestsuffixRepository",
                 configurer.repositoryWithNameSuffix("Testsuffix"));
     }
 
-    @Test
-    void repositoryWithNamePrefix() {
-        assertEquals("PrefixTest",
-                configurer.repositoryClassWithNamePrefix("Test"));
-    }
 
-    @Test
-    void repositoryWithNamePrefixUsingExistingPrefix() {
-        assertEquals("PrefixRepository",
-                configurer.repositoryClassWithNamePrefix("PrefixRepository"));
-    }
 
-    @Test
-    void repositoryWithNamePrefixUsingPackage() {
-        assertEquals("com.example.PrefixRepository",
-                configurer.repositoryClassWithNamePrefix("com.example.PrefixRepository"));
-    }
 
-    @Test
-    void repositoryWithNamePrefixUsingLowerCasePrefix() {
-        assertEquals("PrefixprefixTest",
-                configurer.repositoryClassWithNamePrefix("prefixTest"));
-    }
 
     @Test
     void repositoryInBasePackage() {
@@ -168,10 +143,6 @@ class DefaultRepositoryNameConfigurerTest {
                 LoggingObjectMother.logger(),
                 files,
                 RepositoriesConfiguration.builder()
-                        .setRepositoryNamePrefix("Prefix")
-                        .setRepositoryNameSuffix("Suffix")
-                        .setRepositoryInterfacePrefix("Inter")
-                        .setRepositoryInterfaceSuffix("Face")
                         .setBasePackageName("")
                         .build());
 
@@ -185,10 +156,6 @@ class DefaultRepositoryNameConfigurerTest {
                 LoggingObjectMother.logger(),
                 files,
                 RepositoriesConfiguration.builder()
-                        .setRepositoryNamePrefix("Prefix")
-                        .setRepositoryNameSuffix("Suffix")
-                        .setRepositoryInterfacePrefix("Inter")
-                        .setRepositoryInterfaceSuffix("Face")
                         .setBasePackageName("")
                         .build());
 
@@ -198,7 +165,7 @@ class DefaultRepositoryNameConfigurerTest {
 
     @Test
     void extractRawRepositoryName() {
-        assertEquals("PrefixSuffix",
+        assertEquals("Repository",
                 configurer.extractRawRepositoryName(Paths.get("test.sql")));
     }
 
@@ -269,97 +236,35 @@ class DefaultRepositoryNameConfigurerTest {
         final var config = SqlConfiguration.builder().build();
         final var altered = configurer.configureNames(config,
                 inputBaseDirectory.resolve("test.sql"));
-        assertEquals("com.example.persistence.PrefixSuffix",
+        assertEquals("com.example.persistence.Repository",
                 altered.repository().orElseThrow());
     }
 
+
     @Test
-    void shouldHandleConfiguredAffixes() {
+    @DisplayName("an interface is the repository without the suffix that made it a repository")
+    void shouldNameTheInterfaceAfterTheRepository() {
+        configurer = new DefaultRepositoryNameConfigurer(
+                LoggingObjectMother.logger(), files, RepositoriesConfiguration.builder().build());
+
         assertAll(
-                () -> assertEquals("com.example.prefix.suffix.InterRepositoryFace",
-                        configurer.interfaceName("com.example.prefix.suffix.PrefixRepositorySuffix")),
-                () -> assertEquals("com.example.prefix.suffix.InterRepositoryFace",
-                        configurer.interfaceName("com.example.prefix.suffix.RepositorySuffix")),
-                () -> assertEquals("com.example.prefix.suffix.InterRepositoryFace",
-                        configurer.interfaceName("com.example.prefix.suffix.PrefixRepository")),
-                () -> assertEquals("com.example.prefix.suffix.InterRepositoryFace",
-                        configurer.interfaceName("com.example.prefix.suffix.Repository"))
-        );
+                () -> assertEquals("com.example.persistence.Tenant",
+                        configurer.interfaceName("com.example.persistence.TenantRepository")),
+                () -> assertEquals("com.example.persistence.Order",
+                        configurer.interfaceName("com.example.persistence.OrderRepository")));
     }
 
     @Test
-    void shouldHandleEmptyNameAffixes() {
-        final var config = RepositoriesConfiguration.builder()
-                .setRepositoryNamePrefix("")
-                .setRepositoryNameSuffix("")
-                .setRepositoryInterfacePrefix("Inter")
-                .setRepositoryInterfaceSuffix("Face")
-                .build();
+    @DisplayName("a repository not named after the suffix keeps the two apart with an I")
+    void shouldPrefixWhenThereIsNothingToStrip() {
         configurer = new DefaultRepositoryNameConfigurer(
-                LoggingObjectMother.logger(),
-                files,
-                config);
+                LoggingObjectMother.logger(), files, RepositoriesConfiguration.builder().build());
 
         assertAll(
-                () -> assertEquals("com.example.prefix.suffix.InterPrefixRepositorySuffixFace",
-                        configurer.interfaceName("com.example.prefix.suffix.PrefixRepositorySuffix")),
-                () -> assertEquals("com.example.prefix.suffix.InterRepositorySuffixFace",
-                        configurer.interfaceName("com.example.prefix.suffix.RepositorySuffix")),
-                () -> assertEquals("com.example.prefix.suffix.InterPrefixRepositoryFace",
-                        configurer.interfaceName("com.example.prefix.suffix.PrefixRepository")),
-                () -> assertEquals("com.example.prefix.suffix.InterRepositoryFace",
-                        configurer.interfaceName("com.example.prefix.suffix.Repository")),
-                () -> assertEquals("com.example.prefix.suffix.InterRepositoryFace",
-                        configurer.interfaceName("com.example.prefix.suffix.InterRepository")),
-                () -> assertEquals("com.example.prefix.suffix.IInterRepositoryFace",
-                        configurer.interfaceName("com.example.prefix.suffix.InterRepositoryFace"))
-        );
-    }
-
-    @Test
-    void shouldHandleConfiguredEmptyInterfaceAffixes() {
-        final var config = RepositoriesConfiguration.builder()
-                .setRepositoryNamePrefix("Prefix")
-                .setRepositoryNameSuffix("Suffix")
-                .setRepositoryInterfacePrefix("")
-                .setRepositoryInterfaceSuffix("")
-                .build();
-        configurer = new DefaultRepositoryNameConfigurer(
-                LoggingObjectMother.logger(),
-                files,
-                config);
-
-        assertAll(
-                () -> assertEquals("com.example.prefix.suffix.Repository",
-                        configurer.interfaceName("com.example.prefix.suffix.PrefixRepositorySuffix")),
-                () -> assertEquals("com.example.prefix.suffix.Repository",
-                        configurer.interfaceName("com.example.prefix.suffix.RepositorySuffix")),
-                () -> assertEquals("com.example.prefix.suffix.Repository",
-                        configurer.interfaceName("com.example.prefix.suffix.PrefixRepository")),
-                () -> assertEquals("com.example.prefix.suffix.IRepository",
-                        configurer.interfaceName("com.example.prefix.suffix.Repository"))
-        );
-    }
-
-    @Test
-    void shouldHandleConfiguredEmptyAffixes() {
-        final var config = RepositoriesConfiguration.builder()
-                .setRepositoryNamePrefix("")
-                .setRepositoryNameSuffix("")
-                .setRepositoryInterfacePrefix("")
-                .setRepositoryInterfaceSuffix("")
-                .build();
-        configurer = new DefaultRepositoryNameConfigurer(
-                LoggingObjectMother.logger(),
-                files,
-                config);
-
-        assertAll(
-                () -> assertEquals("com.example.prefix.suffix.IRepository",
-                        configurer.interfaceName("com.example.prefix.suffix.Repository")),
-                () -> assertEquals("com.example.prefix.suffix.IIslands",
-                        configurer.interfaceName("com.example.prefix.suffix.Islands"))
-        );
+                () -> assertEquals("com.example.persistence.ITenants",
+                        configurer.interfaceName("com.example.persistence.Tenants")),
+                () -> assertEquals("com.example.persistence.IRepository",
+                        configurer.interfaceName("com.example.persistence.Repository")));
     }
 
 }
