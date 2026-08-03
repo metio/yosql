@@ -166,6 +166,7 @@ fabric.properties
 /docs/content/configuration/*
 !/docs/content/configuration/_index.md
 /docs/static/schema
+/docs/static/claude
 
 # htmltest writes its reference cache next to where it is run
 /tmp/

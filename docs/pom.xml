@@ -85,6 +85,25 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <!-- The skill is served from the same domain as the page describing it, and
+                         copied rather than duplicated: two files saying different things about the
+                         same generator is the failure this is meant to avoid. -->
+                    <execution>
+                        <id>copy-claude-skill</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/static/claude</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/../.claude/skills/yosql</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -104,6 +123,10 @@
                             <excludes>
                                 <exclude>_index.md</exclude>
                             </excludes>
+                        </fileset>
+                        <fileset>
+                            <directory>${basedir}/static/claude</directory>
+                            <followSymlinks>false</followSymlinks>
                         </fileset>
                     </filesets>
                 </configuration>
