@@ -20,11 +20,13 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Currency;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -110,6 +112,45 @@ class GeneratedConverterTest {
                 () -> assertEquals(CREATED, summaries.get(0).createdAt(),
                         "created_at reads into an Instant named createdAt"),
                 () -> assertEquals("zenith", summaries.get(1).slug()));
+    }
+
+    @Test
+    @DisplayName("a collection parameter binds one placeholder per value")
+    void expandsACollectionIntoAnInList() {
+        assertAll(
+                () -> assertEquals(2, tenants.findTenantsByIds(List.of(TENANT, OTHER_TENANT), ACCOUNT).size()),
+                () -> assertEquals(1, tenants.findTenantsByIds(List.of(OTHER_TENANT), ACCOUNT).size()),
+                () -> assertEquals("zenith",
+                        tenants.findTenantsByIds(List.of(OTHER_TENANT), ACCOUNT).getFirst().slug()),
+                () -> assertEquals(1, tenants.findTenantsByIds(List.of(TENANT, UUID.randomUUID()), ACCOUNT).size(),
+                        "a value matching no row narrows nothing"));
+    }
+
+    @Test
+    @DisplayName("an empty collection matches no row, which is what an empty set means")
+    void expandsAnEmptyCollection() {
+        assertTrue(tenants.findTenantsByIds(List.of(), ACCOUNT).isEmpty());
+    }
+
+    @Test
+    @DisplayName("the values keep their order in the statement, whatever the parameter order is")
+    void bindsInPlaceholderOrder() {
+        // `accountId` is declared second and bound second, but only because the statement writes it
+        // after the collection — and how many placeholders the collection took is known only here.
+        assertTrue(tenants.findTenantsByIds(List.of(TENANT, OTHER_TENANT), UUID.randomUUID()).isEmpty(),
+                "a wrong account matches nothing, so the second parameter reached the right placeholder");
+    }
+
+    @Test
+    @DisplayName("a negated list says so rather than quietly matching nothing")
+    void refusesAnEmptyNegatedCollection() {
+        assertAll(
+                () -> assertEquals(1, tenants.findTenantsExcept(List.of(TENANT), ACCOUNT).size()),
+                () -> assertEquals("zenith",
+                        tenants.findTenantsExcept(List.of(TENANT), ACCOUNT).getFirst().slug()),
+                () -> assertThrows(IllegalArgumentException.class,
+                        () -> tenants.findTenantsExcept(List.of(), ACCOUNT),
+                        "excluding nothing matches every row, which a list of placeholders cannot say"));
     }
 
     @Test

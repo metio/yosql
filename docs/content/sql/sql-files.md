@@ -47,6 +47,40 @@ WHERE   id = :userId
 
 While parsing your `.sql` files, `YoSQL` will strip the SQL comment prefix (`--`) and read the remaining text as a YAML object. The available configuration options that can be used in the front matter, are listed under [SQL statement configuration](/configuration/sql/).
 
+## Lists of values
+
+A prepared statement has one placeholder per value, and how many values there are is only known when
+the method is called. Declare a parameter as a collection and `YoSQL` builds the placeholders for it:
+
+```sql
+-- name: findTenantsByIds
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   - name: ids
+--     type: java.util.List<java.util.UUID>
+--   - name: accountId
+--     type: java.util.UUID
+select id, slug from tenant
+where id in (:ids)
+  and account_id = :accountId
+```
+
+The method takes a `List<UUID>`, and the query it runs has as many placeholders between the brackets
+as the caller passed. Every other parameter still lands on the placeholder the statement wrote it on,
+however long the list is. `List`, `Set`, `Collection` and `Iterable` all work; an array does not,
+because an array parameter is how a [batch statement](/configuration/sql/executebatchprefix/) passes
+one value per execution.
+
+An **empty** collection matches no row, which is what `in` on an empty set means. Negated it is not:
+`not in` on an empty set matches *every* row, and no list of placeholders can say that — so a
+statement that would hit it throws instead of quietly returning nothing.
+
+A statement written once per database cannot expand a collection. Each vendor's SQL may place its
+parameters differently, one method binds all of them, and it can only count placeholders in one
+order — so that combination stops the build rather than binding the wrong values on the second
+database.
+
 ## File Extension
 
 By default, `YoSQL` only considers files that end in `.sql`, but this can be configured using the [sqlFilesSuffix](/configuration/files/sqlfilessuffix) option. Lots of editors have built-in syntax support for SQL and they auto-enable that once you open an `.sql` file, so we recommend to stick to the default and only change if it necessary.

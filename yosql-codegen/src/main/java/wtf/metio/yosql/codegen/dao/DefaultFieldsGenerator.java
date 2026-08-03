@@ -4,6 +4,7 @@
  */
 package wtf.metio.yosql.codegen.dao;
 
+import com.palantir.javapoet.ArrayTypeName;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
@@ -68,6 +69,7 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
         statements.stream()
                 .map(SqlStatement::getConfiguration)
                 .filter(config -> Buckets.hasEntries(config.parameters()))
+                .filter(not(InLists::anyExpands))
                 .forEach(config -> config.parameters().stream()
                         .filter(SqlParameter::hasIndices)
                         .forEach(parameter -> addIndexArray(builder, parameter, config)));
@@ -114,7 +116,10 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
                 repositoryFields.add(asConstantRawSqlField(statement));
             }
             repositoryFields.add(asConstantSqlField(statement));
-            if (Buckets.hasEntries(statement.getConfiguration().parameters())) {
+            // A statement that expands a collection counts its placeholders as it binds them, so the
+            // fixed indices would only be a constant nothing reads.
+            if (Buckets.hasEntries(statement.getConfiguration().parameters())
+                    && !InLists.anyExpands(statement.getConfiguration())) {
                 repositoryFields.add(asConstantSqlParameterIndexField(statement));
             }
         }
@@ -160,9 +165,30 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     private FieldSpec asConstantSqlField(final SqlStatement sqlStatement) {
         final var configuration = sqlStatement.getConfiguration();
         final var rawStatement = sqlStatement.getRawStatement();
+        if (InLists.anyExpands(configuration)) {
+            return asConstantSqlPartsField(sqlStatement, rawStatement);
+        }
         final var statement = replaceNamedParameters(rawStatement);
         return fields.prepareConstant(String.class, constantSqlStatementFieldName(configuration))
                 .initializer(fields.initialize(statement))
+                .addJavadoc(javadoc.fieldJavaDoc(sqlStatement))
+                .build();
+    }
+
+    /**
+     * The query either side of each collection, so that the placeholders the caller's values need can
+     * be put between them.
+     */
+    private FieldSpec asConstantSqlPartsField(final SqlStatement sqlStatement, final String rawStatement) {
+        final var configuration = sqlStatement.getConfiguration();
+        final var parts = InLists.queryParts(configuration, rawStatement);
+        final var initializer = CodeBlock.builder().add("{");
+        for (var index = 0; index < parts.size(); index++) {
+            initializer.add(index == 0 ? "\n" : ",\n").add(fields.initialize(parts.get(index)));
+        }
+        return fields.prepareConstant(ArrayTypeName.of(String.class),
+                        constantSqlStatementFieldName(configuration))
+                .initializer(initializer.add("}").build())
                 .addJavadoc(javadoc.fieldJavaDoc(sqlStatement))
                 .build();
     }

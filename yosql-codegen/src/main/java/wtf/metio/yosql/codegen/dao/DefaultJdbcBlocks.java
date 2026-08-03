@@ -33,6 +33,12 @@ import static wtf.metio.yosql.codegen.blocks.CodeBlocks.code;
 
 public final class DefaultJdbcBlocks implements JdbcBlocks {
 
+    /**
+     * Names the local a collection's values are bound through. Suffixed rather than plain, so
+     * that a statement binding both a collection and a scalar of a related name keeps them apart.
+     */
+    private static final String ELEMENT_SUFFIX = "Element";
+
     private final RuntimeConfiguration runtimeConfiguration;
     private final CodeBlocks blocks;
     private final ControlFlows controlFlows;
@@ -224,6 +230,19 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     public CodeBlock pickVendorQuery(final List<SqlStatement> sqlStatements) {
         final var builder = CodeBlock.builder();
         if (sqlStatements.size() > 1) {
+            sqlStatements.stream()
+                    .map(SqlStatement::getConfiguration)
+                    .filter(InLists::anyExpands)
+                    .findFirst()
+                    .ifPresent(config -> {
+                        throw new UnexpandableParameterException(
+                                config.name().orElseThrow(MissingSqlConfigurationNameException::new),
+                                config.parameters().stream()
+                                        .filter(InLists::expands)
+                                        .findFirst()
+                                        .flatMap(SqlParameter::name)
+                                        .orElseThrow(MissingParameterNameException::new));
+                    });
             builder.addStatement(variables.inline(DatabaseMetaData.class, names.databaseMetaData(),
                     jdbcMethods.connection().getMetaData()));
             builder.addStatement(variables.inline(String.class, names.databaseProductName(),
@@ -263,6 +282,9 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         } else {
             final var config = sqlStatements.getFirst().getConfiguration();
             final var query = fields.constantSqlStatementFieldName(config);
+            if (InLists.anyExpands(config)) {
+                return expandedQuery(sqlStatements.getFirst(), query);
+            }
             builder.addStatement(variables.inline(String.class, names.query(), "$N", query))
                     .add(logging.queryPicked(query));
             if (logging.isEnabled()) {
@@ -442,10 +464,86 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 .build();
     }
 
+    /**
+     * The query with one placeholder per value the caller passed, instead of the one placeholder the
+     * author wrote.
+     */
+    private CodeBlock expandedQuery(final SqlStatement statement, final String constant) {
+        final var config = statement.getConfiguration();
+        final var builder = CodeBlock.builder();
+        final var expanded = InLists.placeholderOrder(config).stream().filter(InLists::expands).toList();
+        for (final var parameter : expanded) {
+            final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
+            if (InLists.isNegated(statement.getRawStatement(), name)) {
+                builder.beginControlFlow("if ($N.isEmpty())", name)
+                        .addStatement("throw new $T($S)", IllegalArgumentException.class,
+                                ("'" + name + "' must not be empty: 'not in' on an empty set matches every "
+                                        + "row, and that cannot be written as a list of placeholders."))
+                        .endControlFlow();
+            }
+        }
+        final var expression = CodeBlock.builder().add("$N[0]", constant);
+        for (var index = 0; index < expanded.size(); index++) {
+            expression.add(" + $N($N.size()) + $N[$L]",
+                    InLists.EXPANSION_METHOD,
+                    expanded.get(index).name().orElseThrow(MissingParameterNameException::new),
+                    constant,
+                    index + 1);
+        }
+        return builder.addStatement(variables.inline(String.class, names.query(), "$L", expression.build()))
+                .add(logging.queryPicked(constant))
+                .build();
+    }
+
     @Override
     public CodeBlock setParameters(final SqlConfiguration config) {
+        if (InLists.anyExpands(config)) {
+            return expandedParameterAssignment(config);
+        }
         return parameterAssignment(config, parameter -> CodeBlock.of("$N",
                 parameter.name().orElseThrow(MissingParameterNameException::new)));
+    }
+
+    /**
+     * Binds by counting rather than by looking an index up.
+     *
+     * <p>The fixed indices a statement is normally bound by say where each parameter sits in the
+     * query, which stops being true the moment a collection turns one placeholder into as many as it
+     * holds. Walking the placeholders in the order the statement writes them and counting along the
+     * way needs no such table, and lands on the same indices when no collection is involved.</p>
+     */
+    private CodeBlock expandedParameterAssignment(final SqlConfiguration config) {
+        final var builder = CodeBlock.builder();
+        // Hoisted, and once per parameter rather than once per placeholder: a parameter named twice
+        // is bound twice, and converting it twice would declare the same local twice.
+        final var bound = new LinkedHashMap<String, CodeBlock>();
+        for (final var parameter : config.parameters()) {
+            final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
+            if (InLists.expands(parameter)) {
+                continue;
+            }
+            final var conversion = parameterConversions.convert(parameter, CodeBlock.of("$N", name));
+            conversion.ifPresent(converted -> builder.add(converted.declarations()));
+            bound.put(name, conversion
+                    .map(converted -> CodeBlock.of("$N", converted.boundName()))
+                    .orElseGet(() -> CodeBlock.of("$N", name)));
+        }
+        builder.addStatement("$T $N = 1", TypeName.INT, names.jdbcIndexVariable());
+        for (final var parameter : InLists.placeholderOrder(config)) {
+            final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
+            if (InLists.expands(parameter)) {
+                builder.add(controlFlows.forLoop(
+                        code("final var $N : $N", name + ELEMENT_SUFFIX, name),
+                        CodeBlock.builder()
+                                .addStatement("$N.setObject($N++, $N)", names.statement(),
+                                        names.jdbcIndexVariable(), name + ELEMENT_SUFFIX)
+                                .build()));
+            } else {
+                builder.addStatement("$N.setObject($N++, $L)", names.statement(),
+                        names.jdbcIndexVariable(), bound.get(name));
+            }
+        }
+        return builder.build();
     }
 
     @Override

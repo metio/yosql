@@ -11,6 +11,7 @@ import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.exceptions.SchemaMismatchException;
 import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.models.configuration.SchemaValidation;
+import wtf.metio.yosql.codegen.dao.InLists;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.SchemaConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
@@ -127,7 +128,9 @@ public final class SchemaValidator {
         final var complaints = new ArrayList<String>();
         for (final var parameter : parameters) {
             final var name = parameter.name().orElse("");
-            final var declared = parameter.typeName();
+            // A collection binds one value per placeholder, so what its column has to agree
+            // with is what it holds rather than the collection itself.
+            final var declared = InLists.elementType(parameter);
             if (name.isBlank() || declared.isEmpty()) {
                 continue;
             }

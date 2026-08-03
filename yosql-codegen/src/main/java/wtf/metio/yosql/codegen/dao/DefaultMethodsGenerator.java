@@ -93,6 +93,9 @@ public final class DefaultMethodsGenerator implements MethodsGenerator {
         final var methods = new ArrayList<MethodSpec>(statements.size());
 
         methods.add(constructor.repository(statements));
+        if (statements.stream().map(SqlStatement::getConfiguration).anyMatch(InLists::anyExpands)) {
+            methods.add(InLists.expansion());
+        }
         methods.addAll(asMethods(statements,
                 callingMethods::callMethod,
                 readMethods::readMethod,
