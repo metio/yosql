@@ -87,18 +87,19 @@ public final class SchemaValidator {
     }
 
     /**
-     * A selected column that no table in scope declares. The select list has to be enumerable for
-     * this to say anything — {@code select *} and an unaliased expression both name nothing.
+     * A column the statement reads that no table in scope declares.
+     *
+     * <p>What is checked is the column an item <em>reads</em>, never the name it gives the result:
+     * {@code amount_cents as minor_units} reads {@code amount_cents}, and complaining that no table
+     * has a {@code minor_units} would report every aliased query as a mistake.</p>
      */
     private List<String> unknownColumns(final String sql, final TableScope scope, final Catalog catalog) {
-        // A star expands to what the tables declare, so a statement using one is checked like any
-        // other rather than skipped.
-        final var selected = ExpandedColumns.of(sql, scope, catalog);
+        final var selected = SelectItems.of(sql, scope, catalog);
         if (selected.isEmpty() || !knowsEveryTable(scope, catalog)) {
             return List.of();
         }
         final var complaints = new ArrayList<String>();
-        for (final var column : selected.get()) {
+        for (final var column : selected.get().sourceColumns()) {
             final var qualifier = qualifierOf(column);
             final var bare = unqualified(column);
             if (qualifier.isPresent()) {
@@ -153,7 +154,7 @@ public final class SchemaValidator {
             final Catalog catalog,
             final Optional<String> vendor) {
         final var type = resultRowType.map(String::strip).filter(Predicate.not(String::isEmpty));
-        final var selected = ExpandedColumns.of(sql, scope, catalog);
+        final var selected = SelectItems.of(sql, scope, catalog);
         if (type.isEmpty() || selected.isEmpty()) {
             return List.of();
         }
@@ -187,13 +188,17 @@ public final class SchemaValidator {
      */
     private Optional<Column> columnFor(
             final String component,
-            final List<String> selected,
+            final SelectItems selected,
             final TableScope scope,
             final Catalog catalog) {
-        final var columnName = snakeCase(component);
-        if (selected.stream().noneMatch(name -> Catalog.normalize(unqualified(name)).equals(columnName))) {
+        // A component matches the name the row carries, and then the column behind that name is
+        // what says whether it can hold it. For `created_at as at` those are different words.
+        final var resultName = snakeCase(component);
+        final var source = selected.sourceOf(resultName);
+        if (source.isEmpty()) {
             return Optional.empty();
         }
+        final var columnName = unqualified(source.get());
         return declaringTable(columnName, scope, catalog).flatMap(table -> table.column(columnName));
     }
 

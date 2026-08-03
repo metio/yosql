@@ -18,19 +18,23 @@ the file and the statement, instead of an exception on whichever request reached
 
 It also answers a question you used to have to answer yourself: what type a parameter is.
 
-## Turn it on
+## Turning it up
+
+`WARN` is the default: disagreements are reported and nothing stops. **No build that passed before
+fails because of this.**
+
+Move it to `ERROR` once you have dealt with what it reports, so nothing new gets in:
 
 ```xml
 <schema>
-  <validation>WARN</validation>
+  <validation>ERROR</validation>
 </schema>
 ```
 
-Start at `WARN`. Turning this on in an existing project is a migration rather than a switch — the
-first run finds everything at once, and a build that fails on all of it is a build nobody can
-bisect. Fix what it reports, then move to `ERROR` so nothing new gets in.
+`ERROR` from a standing start is the wrong order. The first run finds everything at once, and a
+build that fails on all of it is a build nobody can bisect.
 
-It is `OFF` by default, so upgrading changes nothing until you ask it to.
+To hear nothing at all, `OFF`.
 
 ## Where the schema comes from
 
@@ -67,8 +71,10 @@ request:
 select id, slgu from tenant
 ```
 
-> Statement 'findTenant' in tenant/findTenant.sql does not match the schema:
->   no column 'slgu' in 'tenant'.
+```text
+Statement 'findTenant' in tenant/findTenant.sql does not match the schema:
+  no column 'slgu' in 'tenant'.
+```
 
 **A parameter that disagrees with its column.** `id` is a `uuid`, so declaring it a `Long` is wrong
 now rather than at run time.
@@ -81,7 +87,9 @@ into a primitive** compiles and then throws on the first row that has a null in 
 select id, nickname from tenant
 ```
 
-> component 'nickname' is int but column 'nickname' is nullable.
+```text
+component 'nickname' is int but column 'nickname' is nullable.
+```
 
 **`select *` is checked too.** With a catalog the star expands to the columns the table declares, in
 declaration order, so a record built from one is checked like any other.
@@ -149,7 +157,9 @@ Where two databases genuinely disagree — a `uuid` on one and a `varchar(36)` o
 statement naming no vendor cannot be generated, because it is the fallback for both and one method
 cannot have two signatures. That is reported rather than resolved by picking one:
 
-> Statement 'findTenant' runs against databases that disagree about what a column holds:
->   'id' reads as java.util.UUID and java.lang.String.
+```text
+Statement 'findTenant' runs against databases that disagree about what a column holds:
+  'id' reads as java.util.UUID and java.lang.String.
+```
 
 Name the type in the front matter to settle it, or write a statement per vendor.

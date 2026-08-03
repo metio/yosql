@@ -48,24 +48,24 @@ public final class Schema extends AbstractConfigurationGroup {
         final var name = "validation";
         final var description = "What to do about a statement that disagrees with the schema.";
         final var type = TypeName.get(SchemaValidation.class);
-        final var value = SchemaValidation.OFF;
+        final var value = SchemaValidation.WARN;
         return enumSetting(GROUP_NAME, name, description, value, type)
                 .setExplanation("""
-                        Turning this on in an existing project is a migration rather than a switch: the first run
-                        finds everything at once, and a build that fails on all of it at the same time is a build
-                        nobody can bisect. Start at `WARN`, fix what it reports, then move to `ERROR` so that
-                        nothing new gets in.
+                        `WARN` is the default, so upgrading adds warnings and never a failure. Turning it up to
+                        `ERROR` in an existing project is a migration rather than a switch: the first run finds
+                        everything at once, and a build that fails on all of it is a build nobody can bisect. Deal
+                        with what `WARN` reports first, then move up so that nothing new gets in.
 
                         A single statement can opt out with
                         [validateSchema](../../sql/validateschema/) in its front matter, for the query this cannot
                         read and you do not want to argue with.""")
                 .addExamples(ConfigurationExample.builder()
                         .setValue(SchemaValidation.OFF.name())
-                        .setDescription("The default. Statements are generated exactly as they were before any of this existed.")
+                        .setDescription("Says nothing at all. Statements are generated exactly as they were before any of this existed.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue(SchemaValidation.WARN.name())
-                        .setDescription("Every disagreement is reported and the build carries on. This is what to turn on first.")
+                        .setDescription("The default. Every disagreement is reported and the build carries on, so nothing that passed before starts failing.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue(SchemaValidation.ERROR.name())

@@ -80,23 +80,26 @@ reading generated fields directly.
 A record declaring type parameters is refused rather than mapped, because a statement says nothing
 about what to substitute for them. Name a concrete type instead.
 
-### YoSQL can read your schema
+### YoSQL reads your schema now
 
-New, and off unless you turn it on, so this release changes nothing here by itself.
+If your project keeps `create table` statements where `YoSQL` can see them, this release starts
+holding the rest of your SQL to them: a column that does not exist, a parameter whose type disagrees
+with its column, a nullable column read into a primitive. Nothing connects to a database, so it
+works in a checkout with no services running.
 
-Point it at the `create table` statements your project already keeps and it holds the rest of your
-SQL to them: a column that does not exist, a parameter whose type disagrees with its column, a
-nullable column read into a primitive. Nothing connects to a database, so it works in a checkout
-with no services running.
+**It reports and does not stop.** The default is `WARN`, so no build that passed before fails
+because of this — expect new warnings, not new failures. Read them; they are the queries that would
+have failed on whichever request reached them first.
+
+Once you have dealt with them, turn it up so nothing new gets in:
 
 ```xml
 <schema>
-  <validation>WARN</validation>
+  <validation>ERROR</validation>
 </schema>
 ```
 
-Start at `WARN` rather than `ERROR`. The first run reports everything at once, which is a list to
-work through rather than a build to fix in one sitting.
+To hear nothing at all, set it to `OFF`.
 
 It also settles what a parameter's type is, which removes the `parameters` block from write
 statements entirely — see [schema validation](../../sql/schema/).

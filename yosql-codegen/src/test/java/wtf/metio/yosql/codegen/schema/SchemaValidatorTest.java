@@ -123,6 +123,46 @@ class SchemaValidatorTest {
         }
 
         @Test
+        @DisplayName("an alias is a new name for a column, not a claim that the table has one")
+        void shouldCheckTheColumnAnItemReadsNotTheNameItGivesIt() {
+            assertDoesNotThrow(() -> validator(SchemaValidation.ERROR, TENANT_DDL)
+                    .validate(List.of(statement("select slug as handle, created_at as at from tenant"))));
+        }
+
+        @Test
+        @DisplayName("the column behind an alias is still checked")
+        void shouldStillCheckTheSourceOfAnAlias() {
+            final var exception = assertThrows(SchemaMismatchException.class, () ->
+                    validator(SchemaValidation.ERROR, TENANT_DDL)
+                            .validate(List.of(statement("select slgu as handle from tenant"))));
+
+            assertTrue(exception.getMessage().contains("slgu"));
+        }
+
+        @Test
+        @DisplayName("a component matches the row's name, and is checked against the column behind it")
+        void shouldResolveComponentsThroughAliases() {
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(java.util.UUID id, int at) {
+                    }
+                    """);
+            final var intoRecord = SqlConfiguration.builder()
+                    .setName("findTenant")
+                    .setResultRowType("com.example.domain.Tenant")
+                    .build();
+
+            // `at` is created_at, which is `not null`, so a primitive is fine — but it is a
+            // timestamp, and an int cannot hold one.
+            final var exception = assertThrows(SchemaMismatchException.class, () ->
+                    validator(SchemaValidation.ERROR, TENANT_DDL).validate(List.of(
+                            statement("select id, created_at as at from tenant", intoRecord))));
+
+            assertTrue(exception.getMessage().contains("java.time.Instant"), exception.getMessage());
+        }
+
+        @Test
         @DisplayName("a qualified column is checked against the table its alias names")
         void shouldResolveAliases() {
             assertThrows(SchemaMismatchException.class, () ->
