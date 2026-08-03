@@ -12,7 +12,7 @@ adds on top of JDBC.
 - [Code generation](./codegen/) — reading, parsing and generating 10, 25 and 50 repositories, in each
   logging configuration.
 - [Database access](./db-access/) — running statements through a generated repository, in each
-  logging configuration.
+  logging configuration, and the same statements through [JDBI](https://jdbi.org/) for comparison.
 
 ## Reading the numbers
 

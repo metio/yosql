@@ -84,10 +84,56 @@ and a shared one would make each side's numbers depend on how often the other ha
 Both implementations are in the repository. If you suspect one was written to lose, read it — that
 is the answer a chart cannot give you.
 
+### What it measures
+
+µs per operation, lower is better. JDK 25, H2 in process, one fork, three warmup and five
+measurement iterations, on an otherwise idle 16-core machine.
+
+| Scenario | `YoSQL` | JDBI | Difference |
+| --- | --- | --- | --- |
+| `callStoredProcedure` | 7.07 ± 0.44 | 17.63 ± 5.81 | +10.56 |
+| `readManyToOneRelation` | 7.85 ± 0.68 | 18.62 ± 2.52 | +10.77 |
+| `readMultipleEntitiesBasedOnCondition` | 7.87 ± 0.67 | 18.17 ± 3.98 | +10.30 |
+| `deleteSingleEntityByPrimaryKey` | 7.87 ± 1.28 | 17.85 ± 7.13 | +9.98 |
+| `readOneToManyRelation` | 8.00 ± 0.74 | 17.40 ± 1.10 | +9.40 |
+| `readSingleEntityByPrimaryKey` | 8.03 ± 1.19 | 17.62 ± 2.32 | +9.59 |
+| `updateOneToManyRelation` | 8.06 ± 1.14 | 18.57 ± 4.09 | +10.51 |
+| `readMultipleEntities` | 8.07 ± 0.79 | 16.39 ± 1.50 | +8.32 |
+| `writeSingleEntity` | 12.15 ± 1.36 | 21.54 ± 4.81 | +9.39 |
+| `updateSingleEntity` | 13.60 ± 2.05 | 22.11 ± 5.96 | +8.52 |
+| `writeMultipleEntities` | 56.47 ± 12.96 | 60.72 ± 6.61 | +4.25 |
+
+### What it means, and what it does not
+
+The ratios run from 1.08× to 2.49×, and quoting any of them would be misleading. Read the last
+column instead: the difference is about **9.6 µs on every scenario**, whatever that scenario does.
+A fixed cost per call, not a proportional one — JDBI builds a `Handle`, with its configuration and
+its mapper registry, every time you ask for one. Generated code has no such step because it has
+nothing to configure.
+
+`writeMultipleEntities` is the one that proves it. It does roughly 50 µs of real database work, and
+there the two are **indistinguishable**: +4.25 µs with error bars that overlap. Once actual work
+dominates, the constant disappears into it.
+
+So the honest claim is narrow: **JDBI's per-call machinery costs around 10 µs, and `YoSQL` has no
+per-call machinery.** Whether that matters to you is arithmetic. Against an in-process H2, where a
+query costs 8 µs, it doubles your time. Against a database on the other side of a socket, where a
+query costs hundreds of microseconds or milliseconds, 10 µs is a rounding error you will never
+measure — which is the same reason this page opens by saying it measures what the layer costs and
+not what your application will do.
+
+Two caveats worth keeping in view. JDBI's error bars are wide — ±5.81 µs on one scenario — so no
+single row settles anything; it is the same result appearing in all eleven that carries it. And this
+is one fork on one machine.
+
 ```console
-mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi --also-make \
+mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi \
   --activate-profiles benchmarks verify
 ```
+
+Leave `--also-make` off once the dependencies are installed. With it, the DAO benchmarks run too —
+including the variant that logs every statement — which takes far longer and writes a very large
+log.
 
 ## Against an ORM
 
