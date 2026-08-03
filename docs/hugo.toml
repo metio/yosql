@@ -12,12 +12,17 @@ enableRobotsTXT = true
 DefaultContentLanguage = "en"
 
 [outputs]
-home = ["HTML", "RSS", "ATOM", "HUMANS", "FOAF"]
+# LLMSINDEX writes /llms.txt and LLMS writes /llms-full.txt, both from the theme. The
+# footer links them only when the site asks for them, which is what these two do.
+home = ["HTML", "RSS", "ATOM", "HUMANS", "FOAF", "LLMS", "LLMSINDEX"]
 section = ["HTML", "RSS", "ATOM"]
 term = ["HTML", "RSS", "ATOM"]
 
 [params]
-mainSections = ["installation", "tooling", "frameworks", "editors", "configuration", "integration", "logging", "persistence", "benchmarks", "project", "sql"]
+# Every entry has to name a section that exists: the llms.txt templates look each one up, and a
+# name with no section of its own resolves to whatever else matches — "logging" found
+# configuration/logging.
+mainSections = ["installation", "tooling", "frameworks", "editors", "configuration", "benchmarks", "sql"]
 author = "metio.wtf"
 github = "metio/yosql"
 work = "yosql.projects.metio.wtf"
