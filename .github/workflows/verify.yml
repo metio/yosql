@@ -16,6 +16,53 @@ jobs:
     # the projects that consume them.
     name: Maven
     uses: metio/ci/.github/workflows/maven.yml@0b7421952e03e7be2aab6ea5ea10721609d12aac # 2026.8.2070928
+  reproducible:
+    # Generated .java files land in users' repositories, build caches and CI
+    # diffs, so the same input has to produce the same bytes. Two defects made it
+    # not: statement positions handed out by a parallel stream, and methods
+    # ordered by a HashMap's iteration. Both survived months of green builds
+    # because nothing compared one run against another. This does.
+    name: Reproducible output
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      - name: Generate once
+        # `clean` on both runs, so the two are compared from the same starting
+        # state. Without it the first run can carry directories an earlier phase
+        # left behind, and the diff reports those rather than anything generated.
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --define maven.test.skip=true clean generate-sources
+      - name: Keep what was generated
+        run: |
+          set -euo pipefail
+          mkdir --parents /tmp/first
+          # Only the trees YoSQL itself writes. The model generator's output is
+          # covered too, since it emits the frontends and the reference pages.
+          find . -type d -path '*/target/generated-sources/*' -prune -print0 \
+            | xargs --null --no-run-if-empty --replace={} \
+              cp --parents --recursive {} /tmp/first/
+      - name: Generate again
+        run: >
+          nix develop --command mvn --batch-mode --no-transfer-progress
+          --define maven.test.skip=true clean generate-sources
+      - name: Compare the two runs
+        run: |
+          set -euo pipefail
+          mkdir --parents /tmp/second
+          find . -type d -path '*/target/generated-sources/*' -prune -print0 \
+            | xargs --null --no-run-if-empty --replace={} \
+              cp --parents --recursive {} /tmp/second/
+          # --brief: the point is whether anything differs, and a diff of
+          # generated sources is unreadable anyway.
+          diff --recursive --brief /tmp/first /tmp/second
   gradle:
     # The Gradle example is not a Maven module, so the reactor never reaches it.
     # Building it is the only check that the Gradle plugin's DSL still matches
@@ -203,7 +250,7 @@ jobs:
     # Single required check covering every job above: mark only this one
     # required in branch protection and new jobs are covered automatically.
     name: Verify
-    needs: [maven, gradle, native, reuse, yaml, github-actions, markdown, typos, website, dco, policy]
+    needs: [maven, gradle, reproducible, native, reuse, yaml, github-actions, markdown, typos, website, dco, policy]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
