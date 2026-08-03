@@ -95,6 +95,7 @@
         <version.javapoet>0.18.0</version.javapoet>
         <version.javax-inject>1</version.javax-inject>
         <version.jdbi>3.54.0</version.jdbi>
+        <version.jsqlparser>5.3</version.jsqlparser>
         <version.jmh>1.37</version.jmh>
         <version.jspecify>1.0.1</version.jspecify>
         <version.junit>6.1.2</version.junit>
@@ -343,6 +344,14 @@
                 <groupId>org.jdbi</groupId>
                 <artifactId>jdbi3-core</artifactId>
                 <version>${version.jdbi}</version>
+            </dependency>
+            <!-- Dual-licensed LGPL-2.1 or Apache-2.0; taken under Apache-2.0. Build-time only:
+                 it reads the project's DDL and statements, and nothing it does reaches generated
+                 code or the runtime classpath of anyone using YoSQL. -->
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${version.jsqlparser}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -63,6 +63,10 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.palantir.javapoet</groupId>
             <artifactId>javapoet</artifactId>
         </dependency>
