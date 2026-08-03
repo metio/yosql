@@ -52,13 +52,19 @@
                     <execution>
                         <id>first</id>
                         <goals>
-                            <goal>java</goal>
+                            <goal>exec</goal>
                         </goals>
                         <phase>verify</phase>
                         <configuration>
-                            <mainClass>wtf.metio.yosql.tooling.cli.YoSQL</mainClass>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                            <!-- exec rather than java: the CLI ends with System.exit, and the
+                                 java goal runs it inside Maven's own JVM, where that would take
+                                 Maven down with it. A forked process reports the same failure as
+                                 a non-zero exit, which is what fails this build. -->
+                            <executable>java</executable>
                             <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>wtf.metio.yosql.tooling.cli.YoSQL</argument>
                                 <argument>generate</argument>
                                 <argument>--files-input-base-directory</argument>
                                 <argument>${project.basedir}/../yosql-examples-common/src/main/yosql</argument>
@@ -76,13 +82,19 @@
                     <execution>
                         <id>second</id>
                         <goals>
-                            <goal>java</goal>
+                            <goal>exec</goal>
                         </goals>
                         <phase>verify</phase>
                         <configuration>
-                            <mainClass>wtf.metio.yosql.tooling.cli.YoSQL</mainClass>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                            <!-- exec rather than java: the CLI ends with System.exit, and the
+                                 java goal runs it inside Maven's own JVM, where that would take
+                                 Maven down with it. A forked process reports the same failure as
+                                 a non-zero exit, which is what fails this build. -->
+                            <executable>java</executable>
                             <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>wtf.metio.yosql.tooling.cli.YoSQL</argument>
                                 <argument>generate</argument>
                                 <argument>--files-input-base-directory</argument>
                                 <argument>${project.basedir}/../yosql-examples-common/src/main/yosql</argument>

@@ -30,10 +30,17 @@ public final class YoSQL implements Runnable {
     CommandLine.Model.CommandSpec spec;
 
     /**
+     * Runs a command and exits with what it answered.
+     *
+     * <p>The exit code is the only thing a shell, a build or a pipeline can read. Dropping it made
+     * every failure — a statement that cannot be generated, an option that does not exist — look
+     * like a success to whatever ran YoSQL, which is how the CLI example stopped generating anything
+     * without a single red build.</p>
+     *
      * @param arguments The CLI arguments.
      */
     public static void main(final String... arguments) {
-        commandLine().execute(arguments);
+        System.exit(commandLine().execute(arguments));
     }
 
     // visible for testing
