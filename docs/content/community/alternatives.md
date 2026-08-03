@@ -43,10 +43,17 @@ anything or working out what a DSL emitted.
 parameter whose type nothing gives — each fails the build naming the file and the statement, rather
 than throwing on the first request that reaches it.
 
+**Your schema is checked, without a database.** `YoSQL` reads the `create table` statements your
+project already keeps and holds your queries to them: a column that does not exist, a parameter
+whose type disagrees with its column, a nullable column read into a primitive. Nothing connects to
+anything, so it works in a checkout with no services running — see
+[schema validation](../../sql/schema/).
+
 ## Where the others win
 
-**[jOOQ](https://www.jooq.org/) knows your schema.** It generates from the database, so it type-checks
-the query itself: a renamed column breaks compilation. Its DSL composes — building a query from
+**[jOOQ](https://www.jooq.org/) knows your schema more thoroughly.** It generates from a live
+database, so it type-checks the whole query — expressions, functions, joins — where `YoSQL`
+[reads your DDL](../../sql/schema/) and checks columns, parameter types and result rows. Its DSL composes — building a query from
 conditions decided at runtime is natural, where `YoSQL` would have you write the variants out. If
 your queries are assembled rather than written, jOOQ is the better tool. Its commercial licence for
 non-open-source databases is the trade.
@@ -75,9 +82,6 @@ than any amount of generated code.
 These are things `YoSQL` does not do today, so you can rule it out quickly rather than discover them
 later:
 
-- **The schema is not read.** `YoSQL` never parses your SQL and never connects to your database, so
-  it cannot tell you a column does not exist or that a parameter's type is wrong. It checks the
-  query against the record you named, not against the database.
 - **No dynamic SQL.** A statement is fixed at build time. See the
   [cookbook](../../sql/cookbook/) for how optional filters and `IN` lists are handled.
 - **Java 25 or later**, both to run the generator and to compile what it emits.

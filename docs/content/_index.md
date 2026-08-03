@@ -69,6 +69,11 @@ A column no component of your record reads, a component no column supplies, a pa
 nothing gives, a statement whose name means it would generate nothing — each of these fails the
 build, naming the file and the statement. None of them waits for the request that happens to hit it.
 
+Point `YoSQL` at the `create table` statements you already keep and it holds your queries to those
+too: a column that does not exist, a parameter whose type disagrees with its column, a nullable
+column read into a primitive. No database connection is involved — see
+[schema validation](./sql/schema/).
+
 ### developer friendly
 
 No magic involved - `YoSQL` generates code that is easy to read and debug. Step-through in case you

@@ -48,6 +48,11 @@ and how to override that.
 usually all it takes; there is a hand-written escape hatch for mappings a record cannot express, and
 the same types work for parameters on the way in.
 
+[Schema validation](./schema/) — holding your statements to the `create table` statements your
+project already keeps, so a column that does not exist fails the build rather than the request. It
+also settles what a parameter's type is, which is most of the front matter a write statement used to
+need.
+
 [Transactions](./transactions/) — running several statements on one connection, with plain JDBC or
 under a framework that opens the transaction for you.
 

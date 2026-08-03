@@ -101,6 +101,28 @@ class SchemaValidatorTest {
         }
 
         @Test
+        @DisplayName("a star expands, so a record built from one is checked like any other")
+        void shouldCheckRecordsAgainstAnExpandedStar() {
+            write("Tenant", """
+                    package com.example.domain;
+
+                    public record Tenant(java.util.UUID id, String slug, int nickname,
+                            java.time.Instant createdAt) {
+                    }
+                    """);
+            final var intoRecord = SqlConfiguration.builder()
+                    .setName("findTenant")
+                    .setResultRowType("com.example.domain.Tenant")
+                    .build();
+
+            final var exception = assertThrows(SchemaMismatchException.class, () ->
+                    validator(SchemaValidation.ERROR, TENANT_DDL)
+                            .validate(List.of(statement("select * from tenant", intoRecord))));
+
+            assertTrue(exception.getMessage().contains("nullable"), exception.getMessage());
+        }
+
+        @Test
         @DisplayName("a qualified column is checked against the table its alias names")
         void shouldResolveAliases() {
             assertThrows(SchemaMismatchException.class, () ->
@@ -115,10 +137,10 @@ class SchemaValidatorTest {
     class Quiet {
 
         @Test
-        @DisplayName("select * names nothing it could check")
-        void shouldSkipSelectStar() {
+        @DisplayName("a star over a table the catalog never saw could be anything")
+        void shouldSkipStarOverUnknownTables() {
             assertDoesNotThrow(() -> validator(SchemaValidation.ERROR, TENANT_DDL)
-                    .validate(List.of(statement("select * from tenant"))));
+                    .validate(List.of(statement("select * from some_view"))));
         }
 
         @Test

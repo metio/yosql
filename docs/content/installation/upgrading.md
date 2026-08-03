@@ -80,6 +80,27 @@ reading generated fields directly.
 A record declaring type parameters is refused rather than mapped, because a statement says nothing
 about what to substitute for them. Name a concrete type instead.
 
+### YoSQL can read your schema
+
+New, and off unless you turn it on, so this release changes nothing here by itself.
+
+Point it at the `create table` statements your project already keeps and it holds the rest of your
+SQL to them: a column that does not exist, a parameter whose type disagrees with its column, a
+nullable column read into a primitive. Nothing connects to a database, so it works in a checkout
+with no services running.
+
+```xml
+<schema>
+  <validation>WARN</validation>
+</schema>
+```
+
+Start at `WARN` rather than `ERROR`. The first run reports everything at once, which is a list to
+work through rather than a build to fix in one sitting.
+
+It also settles what a parameter's type is, which removes the `parameters` block from write
+statements entirely — see [schema validation](../../sql/schema/).
+
 ### A colon with no name after it is no longer a parameter
 
 `:id` is a parameter. A bare `:` is not, and used to be read as one — which made two ordinary things

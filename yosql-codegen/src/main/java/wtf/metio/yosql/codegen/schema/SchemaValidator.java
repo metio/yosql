@@ -10,7 +10,6 @@ import com.palantir.javapoet.TypeName;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.exceptions.SchemaMismatchException;
 import wtf.metio.yosql.codegen.records.RecordScanner;
-import wtf.metio.yosql.codegen.records.SelectedColumns;
 import wtf.metio.yosql.models.configuration.SchemaValidation;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.SchemaConfiguration;
@@ -92,7 +91,9 @@ public final class SchemaValidator {
      * this to say anything — {@code select *} and an unaliased expression both name nothing.
      */
     private List<String> unknownColumns(final String sql, final TableScope scope, final Catalog catalog) {
-        final var selected = SelectedColumns.of(sql);
+        // A star expands to what the tables declare, so a statement using one is checked like any
+        // other rather than skipped.
+        final var selected = ExpandedColumns.of(sql, scope, catalog);
         if (selected.isEmpty() || !knowsEveryTable(scope, catalog)) {
             return List.of();
         }
@@ -152,7 +153,7 @@ public final class SchemaValidator {
             final Catalog catalog,
             final Optional<String> vendor) {
         final var type = resultRowType.map(String::strip).filter(Predicate.not(String::isEmpty));
-        final var selected = SelectedColumns.of(sql);
+        final var selected = ExpandedColumns.of(sql, scope, catalog);
         if (type.isEmpty() || selected.isEmpty()) {
             return List.of();
         }
