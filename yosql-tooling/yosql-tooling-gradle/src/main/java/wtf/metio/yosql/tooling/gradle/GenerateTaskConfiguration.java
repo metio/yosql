@@ -18,6 +18,8 @@ public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
 
     @Override
     public void execute(final GenerateCodeTask task) {
+        task.getInputDirectory().set(extension.getFiles().getInputBaseDirectory());
+        task.getOutputDirectory().set(extension.getFiles().getOutputBaseDirectory());
         task.getRuntimeConfiguration().set(RuntimeConfiguration.builder()
                 .setAnnotations(extension.getAnnotations().asConfiguration())
                 .setConverter(extension.getConverter().asConfiguration())

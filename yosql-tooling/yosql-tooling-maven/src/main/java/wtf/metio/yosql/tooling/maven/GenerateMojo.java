@@ -58,13 +58,20 @@ public class GenerateMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         try {
+            final var configuration = createConfiguration();
+            // Registered whether or not anything is generated this run: an incremental build skips
+            // generation when nothing changed, and the sources from the previous run still have to
+            // be compiled. Doing this only inside the delta check makes the second build of an
+            // unchanged project compile nothing.
+            project.addCompileSourceRoot(configuration.files().outputBaseDirectory().toString());
             if (buildContext.hasDelta(files.inputBaseDirectory)) {
-                final var configuration = createConfiguration();
                 buildYoSQL(configuration).generateCode();
                 buildContext.refresh(configuration.files().outputBaseDirectory().toFile());
             }
-        } catch (final Throwable throwable) {
-            throw new MojoExecutionException("Failure to generate code", throwable);
+        } catch (final Exception exception) {
+            // Deliberately not Throwable: an OutOfMemoryError or a StackOverflowError says the JVM
+            // is in trouble, and rewrapping it as "failure to generate code" hides that.
+            throw new MojoExecutionException("Failure to generate code", exception);
         }
     }
 

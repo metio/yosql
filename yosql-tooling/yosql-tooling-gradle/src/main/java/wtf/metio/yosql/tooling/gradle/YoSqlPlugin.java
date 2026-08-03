@@ -42,8 +42,11 @@ public class YoSqlPlugin implements Plugin<Project> {
     private static void registerTask(final Project project, final YoSqlExtension extension) {
         final var generate = project.getTasks().register("generateJavaCode",
                 GenerateCodeTask.class, new GenerateTaskConfiguration(extension));
-        project.getTasks().withType(JavaCompile.class, task -> task.doFirst("yosql",
-                new GenerateCodeAction(generate)));
+        // A dependency, not a doFirst that reaches in and calls the task. Running it through the
+        // task graph is what gives it up-to-date checks, build-cache entries, and a place in
+        // `gradle tasks` and `--dry-run` — and it is why a project whose SQL has not changed no
+        // longer regenerates on every build.
+        project.getTasks().withType(JavaCompile.class, task -> task.dependsOn(generate));
     }
 
     private static void configureSourceSets(final Project project, final YoSqlExtension extension) {

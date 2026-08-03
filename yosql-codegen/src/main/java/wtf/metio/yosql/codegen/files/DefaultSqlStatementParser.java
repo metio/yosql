@@ -5,6 +5,7 @@
 package wtf.metio.yosql.codegen.files;
 
 import org.slf4j.cal10n.LocLogger;
+import wtf.metio.yosql.codegen.exceptions.UnusableStatementSeparatorException;
 import wtf.metio.yosql.codegen.lifecycle.ApplicationErrors;
 import wtf.metio.yosql.codegen.lifecycle.ParseLifecycle;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
@@ -19,6 +20,7 @@ import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Stream;
 
 import static java.util.function.Predicate.not;
@@ -45,7 +47,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
             final SqlConfigurationFactory factory,
             final FilesConfiguration files,
             final ExecutionErrors errors) {
-        defaultStatementSplitter = Pattern.compile(files.sqlStatementSeparator());
+        defaultStatementSplitter = splitter(files.sqlStatementSeparator(), "files.sqlStatementSeparator");
         this.logger = logger;
         this.factory = factory;
         this.files = files;
@@ -83,17 +85,40 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
     // visible for testing
     Pattern getStatementSplitter(final String text) {
         final var customStatementSeparator = CUSTOM_SQL_STATEMENT_SEPARATOR.matcher(text);
-        return customStatementSeparator.find() ?
-                Pattern.compile(customStatementSeparator.group(1))
+        return customStatementSeparator.find()
+                ? splitter(customStatementSeparator.group(1), "the @yosql sqlStatementSeparator pragma")
                 : defaultStatementSplitter;
     }
 
-    private String skipLines(final String rawText) {
-        final var builder = new StringBuilder(rawText);
-        for (int index = 0; index < files.skipLines(); index++) {
-            builder.delete(0, builder.indexOf(NEWLINE) + 1);
+    /**
+     * Drops the configured number of leading lines — a licence header, usually.
+     *
+     * <p>Walks to the cut point and takes one substring. Deleting from the front of a builder per
+     * line shifts everything after it each time, which is quadratic in the file for no reason.</p>
+     */
+    /**
+     * The separator is a regular expression, and a mistyped one otherwise arrives as a bare
+     * {@link java.util.regex.PatternSyntaxException} from somewhere in the parser, naming neither
+     * the setting nor the value.
+     */
+    private static Pattern splitter(final String separator, final String setting) {
+        try {
+            return Pattern.compile(separator);
+        } catch (final PatternSyntaxException cause) {
+            throw new UnusableStatementSeparatorException(setting, separator, cause);
         }
-        return builder.toString();
+    }
+
+    private String skipLines(final String rawText) {
+        var cut = 0;
+        for (var line = 0; line < files.skipLines(); line++) {
+            final var newline = rawText.indexOf(NEWLINE, cut);
+            if (newline < 0) {
+                return "";
+            }
+            cut = newline + 1;
+        }
+        return rawText.substring(cut);
     }
 
     // visible for testing

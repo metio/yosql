@@ -31,7 +31,17 @@ public final class FileNames {
      * @return The string representation of the path using slashes
      */
     public static String toSlashes(final Path path) {
-        return path.toString().replace("\\", "/");
+        // Joining the path's own segments rather than replacing backslashes in its string: on a
+        // Unix filesystem a backslash is an ordinary character in a filename, and replacing it
+        // invents a directory boundary that was never there.
+        final var joined = new StringBuilder();
+        for (final var segment : path) {
+            if (!joined.isEmpty()) {
+                joined.append('/');
+            }
+            joined.append(segment);
+        }
+        return path.isAbsolute() ? "/" + joined : joined.toString();
     }
 
     private FileNames() {

@@ -35,20 +35,25 @@ public final class FilesConfigurationValidator implements RuntimeConfigurationVa
         directoryIsWritable(files.outputBaseDirectory());
     }
 
+    /**
+     * Each check stops at the first thing that is wrong.
+     *
+     * <p>A directory that does not exist is also not a directory and also not readable, and saying
+     * all three is three problems in the build log where the developer has one. The first answer is
+     * the actionable one; the rest follow from it.</p>
+     */
     private void directoryIsWritable(final Path directory) {
         if (Files.notExists(directory)) {
             try {
-                if (Files.createDirectories(directory) == null) {
-                    errors.illegalState(messages.getMessage(FileErrors.CANNOT_CREATE_DIRECTORY, directory));
-                }
+                Files.createDirectories(directory);
             } catch (final IOException cause) {
                 errors.illegalState(cause, messages.getMessage(FileErrors.DIRECTORY_CREATION_FAILED, directory));
+                return;
             }
         }
         if (!Files.isDirectory(directory)) {
             errors.illegalState(messages.getMessage(FileErrors.NOT_A_DIRECTORY, directory));
-        }
-        if (!Files.isWritable(directory)) {
+        } else if (!Files.isWritable(directory)) {
             errors.illegalState(messages.getMessage(FileErrors.NO_WRITE_PERMISSION, directory));
         }
     }
@@ -56,11 +61,9 @@ public final class FilesConfigurationValidator implements RuntimeConfigurationVa
     private void directoryIsReadable(final Path directory) {
         if (Files.notExists(directory)) {
             errors.illegalState(messages.getMessage(FileErrors.NOT_EXISTS, directory));
-        }
-        if (!Files.isDirectory(directory)) {
+        } else if (!Files.isDirectory(directory)) {
             errors.illegalState(messages.getMessage(FileErrors.NOT_A_DIRECTORY, directory));
-        }
-        if (!Files.isReadable(directory)) {
+        } else if (!Files.isReadable(directory)) {
             errors.illegalState(messages.getMessage(FileErrors.NO_READ_PERMISSION, directory));
         }
     }

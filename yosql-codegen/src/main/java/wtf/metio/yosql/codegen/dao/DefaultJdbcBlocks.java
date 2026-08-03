@@ -6,6 +6,7 @@ package wtf.metio.yosql.codegen.dao;
 
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeSpec;
 import wtf.metio.yosql.codegen.blocks.*;
@@ -26,6 +27,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
+import java.util.function.BiFunction;
 
 import static wtf.metio.yosql.codegen.blocks.CodeBlocks.code;
 
@@ -180,6 +182,13 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
+    public int connectionFlows(final SqlConfiguration configuration) {
+        final var opensConnection = configuration.createConnection().filter(Boolean.TRUE::equals).isPresent();
+        final var catchesAndRethrows = configuration.catchAndRethrow().filter(Boolean.TRUE::equals).isPresent();
+        return opensConnection || catchesAndRethrows ? 1 : 0;
+    }
+
+    @Override
     public CodeBlock tryPrepareCallable() {
         return controlFlows.tryWithResource(prepareCallInline());
     }
@@ -285,55 +294,55 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock logExecutedQuery(final SqlConfiguration sqlConfiguration) {
-        final var builder = CodeBlock.builder();
-        if (LoggingApis.NONE != runtimeConfiguration.logging().api()) {
-            builder.beginControlFlow("if ($L)", logging.shouldLog());
-            builder.add(variables.inline(String.class, names.executedQuery(), "$N", names.rawQuery()));
-            sqlConfiguration.parameters()
-                    .forEach(parameter -> {
-                        final var type = parameter.typeName()
-                                .orElseThrow(MissingParameterTypeNameException::new);
-                        final var name = parameter.name()
-                                .orElseThrow(MissingParameterNameException::new);
-                        if (type.isPrimitive()) {
-                            builder.add("\n$>.replace($S, $T.valueOf($N))$<", ":" + name,
-                                    String.class, name);
-                        } else {
-                            builder.add("\n$>.replace($S, $N == null ? $S : $N.toString())$<",
-                                    ":" + name, name, "null", name);
-                        }
-                    });
-            builder.add(";\n");
-            builder.add(logging.executingQuery());
-            builder.endControlFlow();
-        }
-        return builder.build();
+        return logQuery(sqlConfiguration, DefaultJdbcBlocks::singleValue);
     }
 
     @Override
     public CodeBlock logExecutedBatchQuery(final SqlConfiguration sqlConfiguration) {
+        return logQuery(sqlConfiguration, DefaultJdbcBlocks::arrayOfValues);
+    }
+
+    /**
+     * Builds the statement that fills a query's placeholders in for the log.
+     *
+     * <p>The single-row and batch variants differ in one thing: how a parameter's value is turned
+     * into text. Everything around it — the guard, the local, the terminating semicolon — is the
+     * same, and was the same twice.</p>
+     */
+    private CodeBlock logQuery(
+            final SqlConfiguration sqlConfiguration,
+            final BiFunction<TypeName, String, CodeBlock> asText) {
         final var builder = CodeBlock.builder();
-        if (LoggingApis.NONE != runtimeConfiguration.logging().api()) {
-            builder.beginControlFlow("if ($L)", logging.shouldLog());
-            builder.add(variables.inline(String.class, names.executedQuery(), "$N", names.rawQuery()));
-            sqlConfiguration.parameters()
-                    .forEach(parameter -> {
-                        final var type = parameter.typeName()
-                                .orElseThrow(MissingParameterTypeNameException::new);
-                        final var name = parameter.name()
-                                .orElseThrow(MissingParameterNameException::new);
-                        if (type.isPrimitive()) {
-                            builder.add("\n$>.replace($S, $T.toString($N))$<", ":" + name, Arrays.class, name);
-                        } else {
-                            builder.add("\n$>.replace($S, $N == null ? $S : $T.toString($N))$<",
-                                    ":" + name, name, "null", Arrays.class, name);
-                        }
-                    });
-            builder.add(";\n");
-            builder.add(logging.executingQuery());
-            builder.endControlFlow();
+        if (LoggingApis.NONE == runtimeConfiguration.logging().api()) {
+            return builder.build();
         }
+        builder.beginControlFlow("if ($L)", logging.shouldLog());
+        builder.add(variables.inline(String.class, names.executedQuery(), "$N", names.rawQuery()));
+        sqlConfiguration.parameters().forEach(parameter -> {
+            final var type = parameter.typeName().orElseThrow(MissingParameterTypeNameException::new);
+            final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
+            builder.add("\n$>.replace($S, $L)$<", ":" + name, asText.apply(type, name));
+        });
+        builder.add(";\n");
+        builder.add(logging.executingQuery());
+        builder.endControlFlow();
         return builder.build();
+    }
+
+    /**
+     * A primitive cannot be null, so it needs no guard; anything else does, or the log line throws
+     * where the query would have succeeded.
+     */
+    private static CodeBlock singleValue(final TypeName type, final String name) {
+        return type.isPrimitive()
+                ? CodeBlock.of("$T.valueOf($N)", String.class, name)
+                : CodeBlock.of("$N == null ? $S : $N.toString()", name, "null", name);
+    }
+
+    private static CodeBlock arrayOfValues(final TypeName type, final String name) {
+        return type.isPrimitive()
+                ? CodeBlock.of("$T.toString($N)", Arrays.class, name)
+                : CodeBlock.of("$N == null ? $S : $T.toString($N)", name, "null", Arrays.class, name);
     }
 
     private CodeBlock.Builder prepareReturnList(final ParameterizedTypeName listOfResults, final ResultRowConverter converter) {

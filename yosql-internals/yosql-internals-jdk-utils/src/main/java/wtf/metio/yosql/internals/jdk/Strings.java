@@ -27,6 +27,9 @@ public final class Strings {
      * @return The transformed value.
      */
     public static String upperCase(final String value) {
+        if (value == null || value.isEmpty()) {
+            return value;
+        }
         return value.substring(0, 1).toUpperCase(Locale.ROOT) + value.substring(1);
     }
 

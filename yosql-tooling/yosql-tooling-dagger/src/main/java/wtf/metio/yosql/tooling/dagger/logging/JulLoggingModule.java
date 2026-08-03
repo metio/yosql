@@ -6,7 +6,9 @@ package wtf.metio.yosql.tooling.dagger.logging;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.multibindings.IntoSet;
+import dagger.multibindings.IntoMap;
+import wtf.metio.yosql.models.configuration.LoggingApis;
+import wtf.metio.yosql.tooling.dagger.logging.LoggingApiKey;
 import wtf.metio.yosql.codegen.blocks.Fields;
 import wtf.metio.yosql.codegen.logging.JulLoggingGenerator;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
@@ -20,7 +22,8 @@ import javax.inject.Singleton;
 @Module
 public class JulLoggingModule {
 
-    @IntoSet
+    @IntoMap
+    @LoggingApiKey(LoggingApis.JUL)
     @Provides
     @Singleton
     LoggingGenerator provideJdkLoggingGenerator(

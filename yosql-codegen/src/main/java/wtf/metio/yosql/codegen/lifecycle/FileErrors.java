@@ -44,9 +44,5 @@ public enum FileErrors {
      */
     DIRECTORY_CREATION_FAILED,
 
-    /**
-     * Signals that we cannot create a directory.
-     */
-    CANNOT_CREATE_DIRECTORY,
 
 }

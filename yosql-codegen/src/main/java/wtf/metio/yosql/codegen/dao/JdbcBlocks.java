@@ -46,6 +46,14 @@ public interface JdbcBlocks {
 
     CodeBlock openConnection(SqlConfiguration configuration);
 
+    /**
+     * @return how many control flows {@link #openConnection(SqlConfiguration)} opened for this
+     *         statement — one for a try-with-resources around the connection, one for the plain try
+     *         that catch-and-rethrow needs, and none when the statement does neither. Whoever closes
+     *         those flows has to ask, because a fixed count is right for two of those three cases.
+     */
+    int connectionFlows(SqlConfiguration configuration);
+
     CodeBlock tryPrepareCallable();
 
     CodeBlock executeStatement(SqlConfiguration configuration);

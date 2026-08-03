@@ -84,9 +84,16 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
                 .orElseGet(() -> repositories.repositoryNamePrefix() + repositories.repositoryNameSuffix());
     }
 
+    /**
+     * Joins a relative path's segments with dots.
+     *
+     * <p>Asking the path for its segments rather than splitting its string on {@link File#separator}:
+     * the separator is the running platform's, and a path from another {@link java.nio.file.FileSystem}
+     * — a zip, a test double — uses its own.</p>
+     */
     // visible for testing
     String dottedRepositoryName(final String rawRepositoryName) {
-        return rawRepositoryName.replace(File.separator, ".");
+        return rawRepositoryName.replace(File.separatorChar, '.').replace('/', '.');
     }
 
     // visible for testing
@@ -161,8 +168,10 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
     }
 
     private static String classWithoutPrefix(final String name, final String prefix) {
+        // substring, not replaceFirst: the prefix is a configured name, and replaceFirst would
+        // read it as a regular expression. startsWith has already proven where it ends.
         return modifyClassName(name, className -> className.startsWith(prefix)
-                ? className.replaceFirst(prefix, "")
+                ? className.substring(prefix.length())
                 : className);
     }
 

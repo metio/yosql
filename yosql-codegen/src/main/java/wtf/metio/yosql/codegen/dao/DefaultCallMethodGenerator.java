@@ -28,6 +28,7 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
     private final MethodExceptionHandler exceptions;
     private final ConverterConfiguration converters;
     private final ReturnTypes returnTypes;
+    private final MethodAssembly assembly;
 
     public DefaultCallMethodGenerator(
             final ControlFlows controlFlows,
@@ -46,6 +47,7 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
         this.parameters = parameters;
         this.converters = converters;
         this.returnTypes = returnTypes;
+        this.assembly = new MethodAssembly(controlFlows, methods, logging, jdbc, exceptions);
     }
 
     @Override
@@ -86,41 +88,33 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
 
     private MethodSpec callSingle(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
-        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
-                .returns(returnTypes.singleResultType(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration))
-                .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection(configuration))
-                .addCode(jdbc.pickVendorQuery(statements))
+        final var builder = assembly
+                .start(configuration, statements, name, Constants.EXECUTE_ONCE,
+                        parameters.asParameterSpecs(configuration))
+                .returns(returnTypes.singleResultType(configuration));
+        assembly.openConnection(builder, configuration, statements)
                 .addCode(jdbc.tryPrepareCallable())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement(configuration))
-                .addCode(jdbc.returnAsSingle(configuration))
-                .addCode(controlFlows.endTryBlock(3))
-                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
-                .build();
+                .addCode(jdbc.returnAsSingle(configuration));
+        return assembly.close(builder, configuration, 2);
     }
 
     private MethodSpec callMultiple(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
-                .returns(returnTypes.multiResultType(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration))
-                .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection(configuration))
-                .addCode(jdbc.pickVendorQuery(statements))
+        final var builder = assembly
+                .start(configuration, statements, name, Constants.EXECUTE_ONCE,
+                        parameters.asParameterSpecs(configuration))
+                .returns(returnTypes.multiResultType(configuration));
+        assembly.openConnection(builder, configuration, statements)
                 .addCode(jdbc.tryPrepareCallable())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addCode(jdbc.executeStatement(configuration))
-                .addCode(jdbc.returnAsMultiple(converter))
-                .addCode(controlFlows.endTryBlock(3))
-                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
-                .build();
+                .addCode(jdbc.returnAsMultiple(converter));
+        return assembly.close(builder, configuration, 2);
     }
 
     private MethodSpec callCursor(final SqlConfiguration configuration, final List<SqlStatement> statements) {

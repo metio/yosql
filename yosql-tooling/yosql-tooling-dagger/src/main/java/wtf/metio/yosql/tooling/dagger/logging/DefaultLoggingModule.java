@@ -9,11 +9,12 @@ import dagger.Module;
 import dagger.Provides;
 import wtf.metio.yosql.codegen.logging.DelegatingLoggingGenerator;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
+import wtf.metio.yosql.models.configuration.LoggingApis;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.annotations.Delegating;
 
 import javax.inject.Singleton;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Dagger module for the logging API.
@@ -34,7 +35,7 @@ public class DefaultLoggingModule {
     @Singleton
     LoggingGenerator provideLoggingGenerator(
             final RuntimeConfiguration runtimeConfiguration,
-            final Set<LoggingGenerator> loggingGenerators,
+            final Map<LoggingApis, LoggingGenerator> loggingGenerators,
             final IMessageConveyor messages) {
         return new DelegatingLoggingGenerator(runtimeConfiguration.logging(), loggingGenerators, messages);
     }

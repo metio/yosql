@@ -30,8 +30,8 @@ public class YoSQLGenerateTask extends Task {
     public void execute() {
         try {
             buildYoSQL().generateCode();
-        } catch (final Throwable throwable) {
-            throw new BuildException("Failure to generate code", throwable);
+        } catch (final Exception exception) {
+            throw new BuildException("Failure to generate code", exception);
         }
     }
 

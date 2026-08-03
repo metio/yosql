@@ -14,7 +14,7 @@ import wtf.metio.yosql.models.configuration.LoggingApis;
 import wtf.metio.yosql.models.immutables.LoggingConfiguration;
 
 import java.util.Optional;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Delegates logging statement generation to a set of {@link LoggingGenerator}s.
@@ -22,12 +22,12 @@ import java.util.Set;
 public final class DelegatingLoggingGenerator implements LoggingGenerator {
 
     private final LoggingConfiguration loggingConfiguration;
-    private final Set<LoggingGenerator> generators;
+    private final Map<LoggingApis, LoggingGenerator> generators;
     private final IMessageConveyor messages;
 
     public DelegatingLoggingGenerator(
             final LoggingConfiguration loggingConfiguration,
-            final Set<LoggingGenerator> generators,
+            final Map<LoggingApis, LoggingGenerator> generators,
             final IMessageConveyor messages) {
         this.loggingConfiguration = loggingConfiguration;
         this.generators = generators;
@@ -36,7 +36,7 @@ public final class DelegatingLoggingGenerator implements LoggingGenerator {
 
     @Override
     public boolean supports(final LoggingApis api) {
-        return generators.stream().anyMatch(generator -> generator.supports(api));
+        return generators.containsKey(api);
     }
 
     @Override
@@ -89,12 +89,18 @@ public final class DelegatingLoggingGenerator implements LoggingGenerator {
         return log().entering(repository, method);
     }
 
+    /**
+     * A lookup rather than a scan. Which generator serves an API is now a fact of the binding rather
+     * than of iteration order, and two generators claiming the same API is a duplicate map key that
+     * Dagger refuses to compile instead of one silently shadowing the other.
+     */
     private LoggingGenerator log() {
-        return generators.stream()
-                .filter(generator -> generator.supports(loggingConfiguration.api()))
-                .findFirst()
-                .orElseThrow(() -> new CodeGenerationException(
-                        messages.getMessage(ApplicationErrors.UNSUPPORTED_LOGGING_API, loggingConfiguration.api())));
+        final var generator = generators.get(loggingConfiguration.api());
+        if (generator == null) {
+            throw new CodeGenerationException(
+                    messages.getMessage(ApplicationErrors.UNSUPPORTED_LOGGING_API, loggingConfiguration.api()));
+        }
+        return generator;
     }
 
 }

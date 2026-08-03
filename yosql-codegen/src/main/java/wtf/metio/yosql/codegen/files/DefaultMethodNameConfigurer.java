@@ -8,12 +8,14 @@ package wtf.metio.yosql.codegen.files;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.lifecycle.SqlConfigurationLifecycle;
 import wtf.metio.yosql.internals.jdk.Strings;
+import wtf.metio.yosql.codegen.exceptions.MissingPrefixConfigurationException;
 import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import javax.lang.model.SourceVersion;
 import java.util.Optional;
+import java.util.List;
 
 import static java.util.function.Predicate.not;
 
@@ -68,11 +70,23 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
 
     private String generateName(final SqlStatementType type) {
         final var prefix = switch (type) {
-            case READING -> repositories.allowedReadPrefixes().getFirst();
-            case WRITING -> repositories.allowedWritePrefixes().getFirst();
-            case CALLING -> repositories.allowedCallPrefixes().getFirst();
+            case READING -> firstPrefix(repositories.allowedReadPrefixes(), "allowedReadPrefixes");
+            case WRITING -> firstPrefix(repositories.allowedWritePrefixes(), "allowedWritePrefixes");
+            case CALLING -> firstPrefix(repositories.allowedCallPrefixes(), "allowedCallPrefixes");
         };
         return prefix + "NameWasChanged";
+    }
+
+    /**
+     * @return the first configured prefix, or a build error naming the setting that was emptied.
+     *         An empty list is a misconfiguration, and an {@code IndexOutOfBoundsException} from
+     *         inside the generator does not say which setting caused it.
+     */
+    private static String firstPrefix(final List<String> prefixes, final String setting) {
+        if (prefixes.isEmpty()) {
+            throw new MissingPrefixConfigurationException(setting);
+        }
+        return prefixes.getFirst();
     }
 
     // visible for testing

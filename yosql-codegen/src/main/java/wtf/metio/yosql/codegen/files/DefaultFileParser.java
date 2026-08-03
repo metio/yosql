@@ -13,7 +13,6 @@ import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.io.IOException;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -45,7 +44,9 @@ public final class DefaultFileParser implements FileParser {
         final var source = fileConfiguration.inputBaseDirectory();
         logger.trace(FileLifecycle.READ_FILES, source);
 
-        try (final var files = Files.walk(source, FileVisitOption.FOLLOW_LINKS).parallel()) {
+        // Not FOLLOW_LINKS: a symlink pointing at one of its own parents makes the walk
+        // never finish, and a build that hangs says less than one that misses a linked directory.
+        try (final var files = Files.walk(source).parallel()) {
             return files.peek(path -> logger.trace(FileLifecycle.ENCOUNTER_FILE, path))
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(fileConfiguration.sqlFilesSuffix()))

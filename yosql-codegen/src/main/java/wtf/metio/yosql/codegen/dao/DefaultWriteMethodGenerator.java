@@ -29,6 +29,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     private final MethodExceptionHandler exceptions;
     private final ConverterConfiguration converters;
     private final ReturnTypes returnTypes;
+    private final MethodAssembly assembly;
 
     public DefaultWriteMethodGenerator(
             final ControlFlows controlFlows,
@@ -47,6 +48,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
         this.parameters = parameters;
         this.converters = converters;
         this.returnTypes = returnTypes;
+        this.assembly = new MethodAssembly(controlFlows, methods, logging, jdbc, exceptions);
     }
 
     @Override
@@ -72,42 +74,34 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
-        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
-                .returns(returnTypes.noneResultType(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration))
-                .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection(configuration))
-                .addCode(jdbc.pickVendorQuery(statements))
+        final var builder = assembly
+                .start(configuration, statements, name, Constants.EXECUTE_ONCE,
+                        parameters.asParameterSpecs(configuration))
+                .returns(returnTypes.noneResultType(configuration));
+        assembly.openConnection(builder, configuration, statements)
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addCode(jdbc.returnExecuteUpdate(configuration))
-                .addCode(controlFlows.endTryBlock(2))
-                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
-                .build();
+                .addCode(jdbc.returnExecuteUpdate(configuration));
+        return assembly.close(builder, configuration, 1);
     }
 
     private MethodSpec writeReturningSingle(
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
-        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
-                .returns(returnTypes.singleResultType(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration))
-                .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection(configuration))
-                .addCode(jdbc.pickVendorQuery(statements))
+        final var builder = assembly
+                .start(configuration, statements, name, Constants.EXECUTE_ONCE,
+                        parameters.asParameterSpecs(configuration))
+                .returns(returnTypes.singleResultType(configuration));
+        assembly.openConnection(builder, configuration, statements)
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning())
                 .addCode(jdbc.getResultSet())
-                .addCode(jdbc.returnAsSingle(configuration))
-                .addCode(controlFlows.endTryBlock(3))
-                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
-                .build();
+                .addCode(jdbc.returnAsSingle(configuration));
+        return assembly.close(builder, configuration, 2);
     }
 
     private MethodSpec writeReturningMultiple(
@@ -115,22 +109,18 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
             final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
         final var converter = configuration.converter(converters::defaultConverter);
-        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
-                .returns(returnTypes.multiResultType(configuration))
-                .addParameters(parameters.asParameterSpecs(configuration))
-                .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection(configuration))
-                .addCode(jdbc.pickVendorQuery(statements))
+        final var builder = assembly
+                .start(configuration, statements, name, Constants.EXECUTE_ONCE,
+                        parameters.asParameterSpecs(configuration))
+                .returns(returnTypes.multiResultType(configuration));
+        assembly.openConnection(builder, configuration, statements)
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning())
                 .addCode(jdbc.getResultSet())
-                .addCode(jdbc.returnAsMultiple(converter))
-                .addCode(controlFlows.endTryBlock(3))
-                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
-                .build();
+                .addCode(jdbc.returnAsMultiple(converter));
+        return assembly.close(builder, configuration, 2);
     }
 
     private MethodSpec writeReturningCursor(
@@ -167,20 +157,16 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
     @Override
     public MethodSpec batchWriteMethod(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var name = configuration.executeBatchName();
-        return methods.publicMethod(name, statements, Constants.EXECUTE_BATCH)
-                .returns(TypicalTypes.ARRAY_OF_INTS)
-                .addParameters(parameters.asBatchParameterSpecs(configuration))
-                .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection(configuration))
-                .addCode(jdbc.pickVendorQuery(statements))
+        final var builder = assembly
+                .start(configuration, statements, name, Constants.EXECUTE_BATCH,
+                        parameters.asBatchParameterSpecs(configuration))
+                .returns(TypicalTypes.ARRAY_OF_INTS);
+        assembly.openConnection(builder, configuration, statements)
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.prepareBatch(configuration))
                 .addCode(jdbc.logExecutedBatchQuery(configuration))
-                .addCode(jdbc.executeBatch())
-                .addCode(controlFlows.endTryBlock(2))
-                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
-                .build();
+                .addCode(jdbc.executeBatch());
+        return assembly.close(builder, configuration, 1);
     }
 
 }
