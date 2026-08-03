@@ -51,6 +51,7 @@ That generates `Optional<Tenant> findTenant(UUID id)` on `TenantRepository`, plu
 | `name` | The method name. Defaults to the file name; required when a file holds several statements. |
 | `returning` | `none`, `single` (`Optional<T>`), `multiple` (`List<T>`) or `cursor` (lazy `Stream<T>`). |
 | `resultRowType` | A record to build each row into. The converter is generated from it. |
+| `generateResultRowType` | Write that record too, from the schema, instead of reading one you wrote. |
 | `resultRowConverter` | A converter class you wrote yourself. Use instead of `resultRowType`. |
 | `parameters` | Parameter types, when they cannot be inferred. |
 | `type` | `reading`, `writing` or `calling`. Usually inferred from the name prefix. |
@@ -68,8 +69,8 @@ all** — name it accordingly, or set `type` explicitly.
 
 Named parameters are written `:name` and become method parameters in the order they first appear.
 
-The generator needs a Java type for each one. It takes it from the front matter, or from the
-component of the same name on the `resultRowType` record:
+The generator needs a Java type for each one. It takes it from the front matter, from the component
+of the same name on the `resultRowType` record, or from the column the parameter is named after:
 
 ```sql
 -- name: findTenant
@@ -78,8 +79,22 @@ component of the same name on the `resultRowType` record:
 select id, slug from tenant where id = :id
 ```
 
-`Tenant` declares `UUID id`, so `:id` is a `UUID` and nothing needs saying. Where there is no such
-component — every write statement, for a start — name the types:
+`Tenant` declares `UUID id`, so `:id` is a `UUID` and nothing needs saying.
+
+Where the project keeps its `create table` statements somewhere `YoSQL` reads them, the schema
+answers the same question, so a write statement usually needs no `parameters` block either:
+
+```sql
+-- name: insertTenant
+-- returning: none
+insert into tenant (id, slug, created_at) values (:id, :slug, :createdAt)
+```
+
+`uuid`, `varchar` and `timestamp` columns give `UUID`, `String` and `Instant`; a nullable column
+gives the boxed type. Check whether a schema is being read before writing types out by hand — look
+for `create table` statements among the `.sql` files, or a `schema.sqlStatementsDirectory`.
+
+Where neither answers — no schema, no matching component — name the types:
 
 ```sql
 -- name: insertTenant
@@ -108,6 +123,36 @@ The longer list form is still there when a parameter needs more than a type:
 --     sqlType: 2005
 ```
 
+### Names a parameter cannot have
+
+A generated method declares variables of its own, and a parameter cannot be called after one of
+them: `LOG`, `query`, `rawQuery`, `executedQuery`, `databaseProductName`, `action`, `exception`,
+`dataSource`, `connection`, `statement`, `resultSetMetaData`, `databaseMetaData`, `resultSet`,
+`columnCount`, `columnLabel`, `batch`, `list`, `jdbcIndex`, `index`, `row`. The build says so
+naming the file and the parameter. Rename it in the SQL — the name reaches no further than the
+method signature.
+
+### A list of values
+
+A prepared statement has one placeholder per value, so `in (:ids)` only works if the query is built
+around the list. Declare the parameter as a collection and that happens:
+
+```sql
+-- name: findTenantsByIds
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   - name: ids
+--     type: java.util.List<java.util.UUID>
+select id, slug from tenant where id in (:ids)
+```
+
+`List`, `Set`, `Collection` and `Iterable` all work; an array does not, because an array parameter
+is how a batch statement passes one value per execution. An empty collection matches no row, which
+is what `in` on an empty set means — but an empty collection in a `not in` throws, because that
+should match every row and no list of placeholders can say so. A statement written once per vendor
+cannot expand a collection at all.
+
 ## Result records
 
 Name a record and the converter is written for you. The record must exist under
@@ -132,6 +177,31 @@ public record Tenant(UUID id, UUID accountId, String slug, Instant createdAt) {
   a value wrapped around a column rather than a nesting.
 - **A column no component claims, or a component no column supplies, fails the build.** Keep the
   select list and the record in step.
+
+### Letting the schema write the record
+
+A record whose components only repeat what the `select` list already says does not have to be
+written at all. Add `generateResultRowType` and the schema writes it:
+
+```sql
+-- name: findTenantSummary
+-- returning: multiple
+-- resultRowType: com.example.domain.TenantSummary
+-- generateResultRowType: true
+select id, slug, created_at from tenant where account_id = :accountId
+```
+
+That produces `record TenantSummary(UUID id, String slug, Instant createdAt)` next to its converter.
+Aliases decide the component names, and a nullable column gives the boxed type.
+
+It is opt-in per statement on purpose: a `resultRowType` naming a record that is not there is far
+more often a typo than a request. Reach for it when the record has no behaviour of its own and
+exists only to carry a row; write the record by hand when it has a value object, an enum or a nested
+record in it, because the schema can only describe columns.
+
+The build stops if the schema cannot describe every column selected — a computed expression, a
+subquery, a table no `create table` mentions. That is a different message from the missing-source
+one, and it means *write this one yourself*.
 
 ## Writing statements
 
@@ -177,15 +247,35 @@ methods join the ambient `@Transactional` transaction with no `Connection` threa
 - Every statement's name starts with a configured prefix, or sets `type` explicitly.
 - Every `:parameter` has a type, from the front matter or a matching record component.
 - Every column the select lists has a component, and every component has a column.
-- Every `resultRowType` names a record that exists under `files.sourceDirectory`.
+- Every `resultRowType` names a record that exists under `files.sourceDirectory`, unless the
+  statement sets `generateResultRowType`.
+- No parameter is named after one of the variables a generated method already declares.
 - Run the build. `YoSQL` reports these as build failures naming the file and the statement, so a
   green build is the check.
+
+## Licence headers
+
+A `.sql` file may open with a block comment and `YoSQL` drops it, however long it is:
+
+```sql
+/*
+ * SPDX-FileCopyrightText: ...
+ */
+
+-- name: findTenant
+select id from tenant where id = :id
+```
+
+Write it as `/* ... */`, never as `--` lines. A `--` line at the top of a file **is** front matter,
+so a licence written that way is read as configuration. A block comment further down is left alone,
+because that is where a vendor puts an optimizer hint.
 
 ## Anti-patterns
 
 - **Do not edit generated code.** It lives under `target/generated-sources/yosql` (or the configured
   output directory) and is rewritten every build. Change the statement or the record instead.
-- **Do not add `parameters` entries that repeat a record component's type.** They are inferred.
+- **Do not add `parameters` entries that repeat a record component's type, or a column's.** They are
+  inferred from both.
 - **Do not reach for `resultRowColumns` first.** Alias the column in the query — the mapping belongs
   next to the column being renamed.
 - **Do not build SQL by string concatenation around a statement.** A statement is fixed at build
