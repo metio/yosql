@@ -22,8 +22,7 @@ Copy the skill into your own project:
 
 ```shell
 mkdir -p .claude/skills/yosql
-curl -o .claude/skills/yosql/SKILL.md \
-  https://raw.githubusercontent.com/metio/yosql/main/.claude/skills/yosql/SKILL.md
+curl -o .claude/skills/yosql/SKILL.md https://yosql.projects.metio.wtf/claude/SKILL.md
 ```
 
 Commit it, and every contributor gets the same behaviour. Claude loads it when it notices `.sql`
@@ -40,9 +39,14 @@ machine.
 - The front matter keys that matter, and which ones are usually inferred rather than written.
 - That a statement's kind comes from its name prefix, and that a name matching none of them silently
   produces no code — the mistake most likely to waste an afternoon.
-- How parameter types are found: from the front matter, or from the component of the same name on
-  the result row type. Including the short names, so it writes `uuid` rather than
-  `java.util.UUID`.
+- How parameter types are found: from the front matter, from the component of the same name on the
+  result row type, or from the column the parameter is named after. Including the short names, so it
+  writes `uuid` rather than `java.util.UUID`.
+- When to let the schema write the result record instead of writing one, and when a record has to be
+  written by hand because it carries more than columns.
+- That a collection parameter becomes an `in (...)` list, and which names a parameter cannot have.
+- That a licence header belongs in a block comment, because `--` lines at the top of a file are
+  front matter.
 - How a record maps to a result row, when to alias a column in the query instead of reaching for
   [resultRowColumns](../../configuration/sql/resultrowcolumns/), and what makes a build fail.
 - Running several statements in one transaction.
@@ -50,8 +54,10 @@ machine.
 
 ## Keeping it honest
 
-The skill is [in the repository](https://github.com/metio/yosql/blob/main/.claude/skills/yosql/SKILL.md)
-and changes with the generator, so re-fetch it when you upgrade. It describes behaviour, not
+The file served above is the one
+[in the repository](https://github.com/metio/yosql/blob/main/.claude/skills/yosql/SKILL.md), copied
+in when the site is built, so the two cannot disagree. It changes with the generator, so re-fetch it
+when you upgrade. It describes behaviour, not
 version numbers; if you find it saying something that is no longer true,
 [open an issue](https://github.com/metio/yosql/issues/new) — a skill that lies is worse than no
 skill.
