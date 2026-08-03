@@ -7,7 +7,6 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultJdbcBlocks")
 class DefaultJdbcBlocksTest {
@@ -18,7 +17,7 @@ class DefaultJdbcBlocksTest {
 
         @Override
         JdbcBlocks generator() {
-            return DaoObjectMother.jdbcBlocks(JavaConfigurations.defaults());
+            return DaoObjectMother.jdbcBlocks();
         }
 
         @Override

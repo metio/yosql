@@ -7,7 +7,6 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultWriteMethodGenerator")
 class DefaultWriteMethodGeneratorTest {
@@ -18,7 +17,7 @@ class DefaultWriteMethodGeneratorTest {
 
         @Override
         WriteMethodGenerator generator() {
-            return DaoObjectMother.writeMethodGenerator(JavaConfigurations.defaults());
+            return DaoObjectMother.writeMethodGenerator();
         }
 
         @Override

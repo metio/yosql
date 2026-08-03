@@ -9,7 +9,6 @@ import com.palantir.javapoet.TypeName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultParameters")
 class DefaultParametersTest {
@@ -18,7 +17,7 @@ class DefaultParametersTest {
     @DisplayName("generates parameter")
     void shouldGenerateParameter() {
         // given
-        final var generator = new DefaultParameters(JavaConfigurations.defaults());
+        final var generator = new DefaultParameters();
 
         // when
         final var parameter = generator.parameter(String.class, "test");
@@ -32,7 +31,7 @@ class DefaultParametersTest {
     @DisplayName("generates parameter with TypeName")
     void shouldGenerateParameterWithTypeName() {
         // given
-        final var generator = new DefaultParameters(JavaConfigurations.defaults());
+        final var generator = new DefaultParameters();
 
         // when
         final var parameter = generator.parameter(TypeName.BOOLEAN, "test");

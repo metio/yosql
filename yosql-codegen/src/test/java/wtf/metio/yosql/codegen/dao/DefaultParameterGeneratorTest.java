@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -30,7 +29,7 @@ class DefaultParameterGeneratorTest {
     @BeforeEach
     void setUp() {
         generator = new DefaultParameterGenerator(
-                BlocksObjectMother.parameters(JavaConfigurations.defaults()),
+                BlocksObjectMother.parameters(),
                 NamesConfigurations.defaults());
     }
 

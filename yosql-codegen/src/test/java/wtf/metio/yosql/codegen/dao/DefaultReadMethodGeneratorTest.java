@@ -7,7 +7,6 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultReadMethodGenerator")
 class DefaultReadMethodGeneratorTest {
@@ -18,7 +17,7 @@ class DefaultReadMethodGeneratorTest {
 
         @Override
         ReadMethodGenerator generator() {
-            return DaoObjectMother.readMethodGenerator(JavaConfigurations.defaults());
+            return DaoObjectMother.readMethodGenerator();
         }
 
         @Override

@@ -35,9 +35,6 @@ public class Generate implements Callable<Integer> {
     public Files files;
 
     @CommandLine.Mixin
-    public Java java;
-
-    @CommandLine.Mixin
     public Logging logging;
 
     @CommandLine.Mixin
@@ -68,7 +65,6 @@ public class Generate implements Callable<Integer> {
                 .setAnnotations(annotations.asConfiguration())
                 .setConverter(converter.asConfiguration())
                 .setFiles(files.asConfiguration(Paths.get(System.getProperty("user.dir"))))
-                .setJava(java.asConfiguration())
                 .setLogging(logging.asConfiguration())
                 .setNames(names.asConfiguration())
                 .setRepositories(repositories.asConfiguration())

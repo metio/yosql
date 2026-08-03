@@ -7,7 +7,6 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultRepositoryGenerator")
 class DefaultRepositoryGeneratorTest {
@@ -18,7 +17,7 @@ class DefaultRepositoryGeneratorTest {
 
         @Override
         RepositoryGenerator generator() {
-            return DaoObjectMother.defaultRepositoryGenerator(JavaConfigurations.defaults());
+            return DaoObjectMother.defaultRepositoryGenerator();
         }
 
         @Override

@@ -7,7 +7,6 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 
 @DisplayName("DefaultCallMethodGenerator")
 class DefaultCallMethodGeneratorTest {
@@ -18,7 +17,7 @@ class DefaultCallMethodGeneratorTest {
 
         @Override
         CallMethodGenerator generator() {
-            return DaoObjectMother.callMethodGenerator(JavaConfigurations.defaults());
+            return DaoObjectMother.callMethodGenerator();
         }
 
         @Override

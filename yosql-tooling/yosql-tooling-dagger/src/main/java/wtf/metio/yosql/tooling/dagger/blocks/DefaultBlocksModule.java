@@ -35,7 +35,7 @@ public class DefaultBlocksModule {
     @Provides
     @Singleton
     Classes provideClasses(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultClasses(runtimeConfiguration.java());
+        return new DefaultClasses();
     }
 
     @Provides
@@ -51,7 +51,7 @@ public class DefaultBlocksModule {
     Fields provideFields(
             final RuntimeConfiguration runtimeConfiguration,
             final Annotations annotations) {
-        return new DefaultFields(annotations, runtimeConfiguration.java(), runtimeConfiguration.names());
+        return new DefaultFields(annotations, runtimeConfiguration.names());
     }
 
     @Provides
@@ -66,19 +66,19 @@ public class DefaultBlocksModule {
             final RuntimeConfiguration runtimeConfiguration,
             final Annotations annotations,
             final Javadoc javadoc) {
-        return new DefaultMethods(annotations, javadoc, runtimeConfiguration.java());
+        return new DefaultMethods(annotations, javadoc);
     }
 
     @Provides
     @Singleton
     Parameters provideParameters(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultParameters(runtimeConfiguration.java());
+        return new DefaultParameters();
     }
 
     @Provides
     @Singleton
     Variables provideVariables(final RuntimeConfiguration runtimeConfiguration) {
-        return new DefaultVariables(runtimeConfiguration.java());
+        return new DefaultVariables();
     }
 
 }

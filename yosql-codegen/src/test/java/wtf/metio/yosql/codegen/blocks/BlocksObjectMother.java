@@ -9,50 +9,40 @@ import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.internals.testing.configs.AnnotationsConfigurations;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
-import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 /**
  * Object mother for types in the codegen package.
  */
 public final class BlocksObjectMother {
 
-    public static Classes classes(final JavaConfiguration java) {
-        return new DefaultClasses(java);
+    public static Classes classes() {
+        return new DefaultClasses();
     }
 
     public static Parameters parameters() {
-        return parameters(JavaConfigurations.defaults());
+        return new DefaultParameters();
     }
 
-    public static Parameters parameters(final JavaConfiguration java) {
-        return new DefaultParameters(java);
-    }
-
-    public static Methods methods(final JavaConfiguration java) {
-        return new DefaultMethods(annotationGenerator(), javadoc(), java);
+    public static Methods methods() {
+        return new DefaultMethods(annotationGenerator(), javadoc());
     }
 
     public static Fields fields() {
-        return fields(JavaConfigurations.defaults());
+        return new DefaultFields(annotationGenerator(), NamesConfigurations.defaults());
     }
 
-    public static Fields fields(final JavaConfiguration java) {
-        return new DefaultFields(annotationGenerator(), java, NamesConfigurations.defaults());
-    }
-
-    public static Variables variables(final JavaConfiguration java) {
-        return new DefaultVariables(java);
+    public static Variables variables() {
+        return new DefaultVariables();
     }
 
     public static CodeBlocks codeBlocks() {
         return new DefaultCodeBlocks();
     }
 
-    public static ControlFlows controlFlows(final JavaConfiguration java) {
-        return new DefaultControlFlows(variables(java), NamesConfigurations.defaults());
+    public static ControlFlows controlFlows() {
+        return new DefaultControlFlows(variables(), NamesConfigurations.defaults());
     }
 
     public static Annotations annotationGenerator() {

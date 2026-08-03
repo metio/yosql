@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterAliasException;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
@@ -30,13 +29,12 @@ final class DefaultFieldsGeneratorTest {
 
         @Override
         FieldsGenerator generator() {
-            return DaoObjectMother.fieldsGenerator(JavaConfigurations.defaults());
+            return DaoObjectMother.fieldsGenerator();
         }
 
         @Override
         FieldsGenerator generatorWithoutConnectionOverloads() {
-            return DaoObjectMother.fieldsGenerator(JavaConfigurations.defaults(),
-                    RepositoriesConfigurations.withoutConnectionOverloads());
+            return DaoObjectMother.fieldsGenerator(                    RepositoriesConfigurations.withoutConnectionOverloads());
         }
 
         @Override
@@ -478,7 +476,7 @@ final class DefaultFieldsGeneratorTest {
     @Test
     @DisplayName("two converter classes sharing a simple name would share a field")
     void rejectsCollidingConverterAliases() {
-        final var generator = DaoObjectMother.fieldsGenerator(JavaConfigurations.defaults());
+        final var generator = DaoObjectMother.fieldsGenerator();
         final var statements = List.of(
                 SqlConfigurations.sqlStatement(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
                         .withResultRowConverter(converter("orders.ToItemConverter"))),

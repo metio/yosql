@@ -8,7 +8,6 @@ package wtf.metio.yosql.codegen.blocks;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.TypeName;
-import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.models.immutables.NamesConfiguration;
 
 import javax.lang.model.element.Modifier;
@@ -20,15 +19,12 @@ public final class DefaultFields implements Fields {
     private static final String NAME_REPLACEMENT = "$1_$2";
 
     private final Annotations annotations;
-    private final JavaConfiguration java;
     private final NamesConfiguration names;
 
     public DefaultFields(
             final Annotations annotations,
-            final JavaConfiguration java,
             final NamesConfiguration names) {
         this.annotations = annotations;
-        this.java = java;
         this.names = names;
     }
 
@@ -40,9 +36,7 @@ public final class DefaultFields implements Fields {
     @Override
     public FieldSpec field(final TypeName type, final String name) {
         final var builder = builder(type, name).addModifiers(Modifier.PRIVATE);
-        if (java.useFinalFields()) {
-            builder.addModifiers(Modifier.FINAL);
-        }
+        builder.addModifiers(Modifier.FINAL);
         return builder.build();
     }
 

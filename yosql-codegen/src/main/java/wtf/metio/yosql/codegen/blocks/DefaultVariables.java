@@ -7,30 +7,23 @@ package wtf.metio.yosql.codegen.blocks;
 
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.TypeName;
-import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 
 /**
- * Default implementation of the {@link Variables} interface. Uses {@link JavaConfiguration} to determine whether to
- * use keywords like 'final' or 'var'.
+ * Default implementation of the {@link Variables} interface. Declares every local {@code final var}:
+ * a generated method reassigns nothing, and saying so is what lets a reader stop tracking it.
  */
 public final class DefaultVariables implements Variables {
 
-    private final JavaConfiguration java;
-
-    public DefaultVariables(final JavaConfiguration java) {
-        this.java = java;
+    public DefaultVariables() {
     }
 
     @Override
     public CodeBlock inline(final Class<?> variableClass, final String name) {
-        if (java.useFinalVariables()) {
-            return CodeBlock.builder().add("final $T $N", variableClass, name).build();
-        }
-        return CodeBlock.builder().add("$T $N", variableClass, name).build();
+        return CodeBlock.builder().add("final $T $N", variableClass, name).build();
     }
 
     @Override
@@ -78,9 +71,7 @@ public final class DefaultVariables implements Variables {
 
     private StringJoiner leftHandSide(final String closer) {
         final var code = new StringJoiner(" ");
-        if (java.useFinalVariables()) {
-            code.add("final");
-        }
+        code.add("final");
         code.add("var");
         code.add(closer);
         return code;

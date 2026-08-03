@@ -7,16 +7,13 @@ package wtf.metio.yosql.codegen.blocks;
 
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.TypeSpec;
-import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 import javax.lang.model.element.Modifier;
 
 public final class DefaultClasses implements Classes {
 
-    private final JavaConfiguration java;
 
-    public DefaultClasses(final JavaConfiguration java) {
-        this.java = java;
+    public DefaultClasses() {
     }
 
     @Override
@@ -29,9 +26,7 @@ public final class DefaultClasses implements Classes {
     public TypeSpec.Builder publicClass(final ClassName name) {
         final var builder = TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC);
-        if (java.useFinalClasses()) {
-            builder.addModifiers(Modifier.FINAL);
-        }
+        builder.addModifiers(Modifier.FINAL);
         return builder;
     }
 

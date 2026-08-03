@@ -8,9 +8,7 @@ package wtf.metio.yosql.codegen.dao;
 import org.junit.jupiter.api.*;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 import wtf.metio.yosql.internals.testing.configs.RuntimeConfigurations;
-import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 @DisplayName("ToMapConverterGenerator")
 final class ToMapConverterGeneratorTest {
@@ -23,7 +21,7 @@ final class ToMapConverterGeneratorTest {
 
         @BeforeEach
         void setUp() {
-            generator = generator(JavaConfigurations.defaults());
+            generator = generator();
         }
 
         @Test
@@ -62,17 +60,17 @@ final class ToMapConverterGeneratorTest {
 
     }
 
-    static ToMapConverterGenerator generator(final JavaConfiguration java) {
+    static ToMapConverterGenerator generator() {
         return new ToMapConverterGenerator(
                 LoggingObjectMother.logger(),
                 RuntimeConfigurations.defaults(),
                 BlocksObjectMother.annotationGenerator(),
-                BlocksObjectMother.classes(java),
-                BlocksObjectMother.methods(java),
-                BlocksObjectMother.variables(java),
-                BlocksObjectMother.controlFlows(java),
-                DaoObjectMother.jdbcParameter(java),
-                DaoObjectMother.jdbcBlocks(java),
+                BlocksObjectMother.classes(),
+                BlocksObjectMother.methods(),
+                BlocksObjectMother.variables(),
+                BlocksObjectMother.controlFlows(),
+                DaoObjectMother.jdbcParameter(),
+                DaoObjectMother.jdbcBlocks(),
                 DaoObjectMother.jdbcMethodExceptionHandler());
     }
 

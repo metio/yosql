@@ -184,6 +184,19 @@ used to be skipped without a word — so a typo removed a method from your repos
 nothing. It is now a build error naming the file and the statement. If a release starts failing
 here, it is reporting something that was already broken.
 
+### The `java` configuration group is gone
+
+Its six switches decided whether generated classes, fields, methods, parameters and locals were
+declared `final`. Generated code reassigns none of them, so they all are now, which is what the
+defaults already said. One of them, `useSealedInterfaces`, was documented in every frontend and did
+nothing at all.
+
+Remove the block if your build has one — a `<java>` element in a `pom.xml`, a `java { }` block in a
+`build.gradle`, a `<java>` element in an Ant task, or `--use-final-*` on the command line. Maven and
+Ant fail on an unknown element, so this one is not optional. Nothing about the generated code
+changes unless you had turned one of them off, in which case the output gains the `final` keywords
+it describes.
+
 ## 2023.5.3 and earlier
 
 See the [release notes](https://github.com/metio/yosql/releases) for those versions.

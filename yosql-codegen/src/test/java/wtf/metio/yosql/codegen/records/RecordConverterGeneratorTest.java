@@ -25,7 +25,6 @@ import wtf.metio.yosql.codegen.exceptions.UnsupportedComponentTypeException;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
 import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.internals.testing.configs.ConverterConfigurations;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 import wtf.metio.yosql.internals.testing.configs.NamesConfigurations;
 import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.configuration.SqlStatementType;
@@ -66,7 +65,6 @@ class RecordConverterGeneratorTest {
     }
 
     private RecordConverterGenerator generator() {
-        final var java = JavaConfigurations.defaults();
         final var converters = ConverterConfigurations.withConverters();
         return new RecordConverterGenerator(
                 LoggingObjectMother.logger(),
@@ -76,9 +74,9 @@ class RecordConverterGeneratorTest {
                 new RecordConverterNames(converters),
                 NamesConfigurations.defaults(),
                 BlocksObjectMother.annotationGenerator(),
-                BlocksObjectMother.classes(java),
-                BlocksObjectMother.methods(java),
-                DaoObjectMother.jdbcParameter(java),
+                BlocksObjectMother.classes(),
+                BlocksObjectMother.methods(),
+                DaoObjectMother.jdbcParameter(),
                 DaoObjectMother.jdbcMethodExceptionHandler(),
                 new SchemaRecords(Schemas.empty(), BlocksObjectMother.annotationGenerator()));
     }

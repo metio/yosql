@@ -19,7 +19,6 @@ public final class AllConfigurations {
                 Annotations.configurationGroup(),
                 Converter.configurationGroup(),
                 Files.configurationGroup(),
-                Java.configurationGroup(),
                 Logging.configurationGroup(),
                 Names.configurationGroup(),
                 Repositories.configurationGroup(),

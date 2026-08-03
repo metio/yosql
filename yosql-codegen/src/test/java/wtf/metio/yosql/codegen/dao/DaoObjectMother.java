@@ -18,7 +18,6 @@ import wtf.metio.yosql.internals.testing.configs.*;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
-import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 /**
  * Object mother for DAO related classes.
@@ -38,12 +37,11 @@ public final class DaoObjectMother {
                 new DefaultJdbcStatementMethods(names));
     }
 
-    public static FieldsGenerator fieldsGenerator(final JavaConfiguration java) {
-        return fieldsGenerator(java, RepositoriesConfigurations.defaults());
+    public static FieldsGenerator fieldsGenerator() {
+        return fieldsGenerator(RepositoriesConfigurations.defaults());
     }
 
     public static FieldsGenerator fieldsGenerator(
-            final JavaConfiguration java,
             final RepositoriesConfiguration repositories) {
         return new DefaultFieldsGenerator(
                 ConverterConfigurations.withConverters(),
@@ -51,31 +49,30 @@ public final class DaoObjectMother {
                 NamesConfigurations.defaults(),
                 LoggingObjectMother.loggingGenerator(),
                 BlocksObjectMother.javadoc(),
-                BlocksObjectMother.fields(java));
+                BlocksObjectMother.fields());
     }
 
-    public static ConstructorGenerator constructorGenerator(final JavaConfiguration java) {
-        return constructorGenerator(java, RepositoriesConfigurations.defaults());
+    public static ConstructorGenerator constructorGenerator() {
+        return constructorGenerator(RepositoriesConfigurations.defaults());
     }
 
     public static ConstructorGenerator constructorGenerator(
-            final JavaConfiguration java,
             final RepositoriesConfiguration repositories) {
         return new DefaultConstructorGenerator(
                 BlocksObjectMother.codeBlocks(),
-                BlocksObjectMother.methods(java),
+                BlocksObjectMother.methods(),
                 NamesConfigurations.defaults(),
-                jdbcParameter(java),
+                jdbcParameter(),
                 repositories,
                 ConverterConfigurations.withConverters());
     }
 
-    public static DefaultJdbcParameters jdbcParameter(final JavaConfiguration java) {
-        return new DefaultJdbcParameters(BlocksObjectMother.parameters(java), NamesConfigurations.defaults());
+    public static DefaultJdbcParameters jdbcParameter() {
+        return new DefaultJdbcParameters(BlocksObjectMother.parameters(), NamesConfigurations.defaults());
     }
 
-    public static JdbcBlocks jdbcBlocks(final JavaConfiguration java) {
-        return jdbcBlocks(java, parameterConversions(FilesConfigurations.maven()));
+    public static JdbcBlocks jdbcBlocks() {
+        return jdbcBlocks(parameterConversions(FilesConfigurations.maven()));
     }
 
     public static ParameterConversions parameterConversions(final FilesConfiguration files) {
@@ -84,17 +81,17 @@ public final class DaoObjectMother {
     }
 
     public static JdbcBlocks jdbcBlocks(
-            final JavaConfiguration java, final ParameterConversions parameterConversions) {
+            final ParameterConversions parameterConversions) {
         return new DefaultJdbcBlocks(
                 runtimeConfig(),
                 BlocksObjectMother.codeBlocks(),
-                BlocksObjectMother.controlFlows(java),
-                BlocksObjectMother.variables(java),
-                fieldsGenerator(java),
+                BlocksObjectMother.controlFlows(),
+                BlocksObjectMother.variables(),
+                fieldsGenerator(),
                 jdbcMethods(),
                 LoggingObjectMother.loggingGenerator(),
-                BlocksObjectMother.parameters(java),
-                BlocksObjectMother.methods(java),
+                BlocksObjectMother.parameters(),
+                BlocksObjectMother.methods(),
                 parameterConversions);
     }
 
@@ -109,75 +106,74 @@ public final class DaoObjectMother {
         return new DefaultMethodExceptionHandler();
     }
 
-    public static MethodsGenerator delegatingMethodsGenerator(final JavaConfiguration java) {
-        return delegatingMethodsGenerator(java, RepositoriesConfigurations.defaults());
+    public static MethodsGenerator delegatingMethodsGenerator() {
+        return delegatingMethodsGenerator(RepositoriesConfigurations.defaults());
     }
 
     public static MethodsGenerator delegatingMethodsGenerator(
-            final JavaConfiguration java,
             final RepositoriesConfiguration repositories) {
         return new DefaultMethodsGenerator(
                 BlocksObjectMother.javadoc(),
-                constructorGenerator(java),
-                readMethodGenerator(java),
-                writeMethodGenerator(java),
-                callMethodGenerator(java),
+                constructorGenerator(),
+                readMethodGenerator(),
+                writeMethodGenerator(),
+                callMethodGenerator(),
                 repositories,
                 LoggingObjectMother.logger());
     }
 
-    public static ParameterGenerator parameterGenerator(final JavaConfiguration java) {
-        return new DefaultParameterGenerator(BlocksObjectMother.parameters(java), NamesConfigurations.defaults());
+    public static ParameterGenerator parameterGenerator() {
+        return new DefaultParameterGenerator(BlocksObjectMother.parameters(), NamesConfigurations.defaults());
     }
 
     public static ReturnTypes returnTypes() {
         return new DefaultReturnTypes(ConverterConfigurations.withConverters());
     }
 
-    public static ReadMethodGenerator readMethodGenerator(final JavaConfiguration java) {
+    public static ReadMethodGenerator readMethodGenerator() {
         return new DefaultReadMethodGenerator(
-                BlocksObjectMother.controlFlows(java),
-                BlocksObjectMother.methods(java),
-                parameterGenerator(java),
+                BlocksObjectMother.controlFlows(),
+                BlocksObjectMother.methods(),
+                parameterGenerator(),
                 LoggingObjectMother.loggingGenerator(),
-                jdbcBlocks(java),
+                jdbcBlocks(),
                 jdbcMethodExceptionHandler(),
                 ConverterConfigurations.withConverters(),
                 returnTypes());
     }
 
-    public static WriteMethodGenerator writeMethodGenerator(final JavaConfiguration java) {
+    public static WriteMethodGenerator writeMethodGenerator() {
         return new DefaultWriteMethodGenerator(
-                BlocksObjectMother.controlFlows(java),
-                BlocksObjectMother.methods(java),
-                parameterGenerator(java),
+                BlocksObjectMother.controlFlows(),
+                BlocksObjectMother.methods(),
+                parameterGenerator(),
                 LoggingObjectMother.loggingGenerator(),
-                jdbcBlocks(java),
+                jdbcBlocks(),
                 jdbcMethodExceptionHandler(),
                 ConverterConfigurations.withConverters(),
                 returnTypes());
     }
 
-    public static CallMethodGenerator callMethodGenerator(final JavaConfiguration java) {
+    public static CallMethodGenerator callMethodGenerator() {
         return new DefaultCallMethodGenerator(
-                BlocksObjectMother.controlFlows(java),
-                BlocksObjectMother.methods(java),
-                parameterGenerator(java),
+                BlocksObjectMother.controlFlows(),
+                BlocksObjectMother.methods(),
+                parameterGenerator(),
                 LoggingObjectMother.loggingGenerator(),
-                jdbcBlocks(java),
+                jdbcBlocks(),
                 jdbcMethodExceptionHandler(),
                 ConverterConfigurations.withConverters(),
                 returnTypes());
     }
 
-    public static RepositoryGenerator defaultRepositoryGenerator(final JavaConfiguration java) {
+    public static RepositoryGenerator defaultRepositoryGenerator() {
         return new DefaultRepositoryGenerator(
                 new LocLoggerFactory(new MessageConveyor(SupportedLocales.ENGLISH)).getLocLogger("yosql.test"),
                 BlocksObjectMother.annotationGenerator(),
-                BlocksObjectMother.classes(java),
+                BlocksObjectMother.classes(),
                 BlocksObjectMother.javadoc(),
-                DaoObjectMother.fieldsGenerator(java),
-                DaoObjectMother.delegatingMethodsGenerator(java));
+                DaoObjectMother.fieldsGenerator(),
+                DaoObjectMother.delegatingMethodsGenerator());
     }
 
     private DaoObjectMother() {

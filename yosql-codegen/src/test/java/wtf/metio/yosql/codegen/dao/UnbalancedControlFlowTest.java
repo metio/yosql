@@ -7,7 +7,6 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -49,7 +48,7 @@ class UnbalancedControlFlowTest {
     @Test
     @DisplayName("a read closes exactly what it opened")
     void shouldBalanceReads() {
-        final var generator = DaoObjectMother.readMethodGenerator(JavaConfigurations.defaults());
+        final var generator = DaoObjectMother.readMethodGenerator();
 
         assertAll(
                 () -> assertDoesNotThrow(() -> {
@@ -65,7 +64,7 @@ class UnbalancedControlFlowTest {
     @Test
     @DisplayName("a write closes exactly what it opened")
     void shouldBalanceWrites() {
-        final var generator = DaoObjectMother.writeMethodGenerator(JavaConfigurations.defaults());
+        final var generator = DaoObjectMother.writeMethodGenerator();
 
         assertAll(
                 () -> assertDoesNotThrow(() -> {
@@ -85,7 +84,7 @@ class UnbalancedControlFlowTest {
     @Test
     @DisplayName("a stored procedure call closes exactly what it opened")
     void shouldBalanceCalls() {
-        final var generator = DaoObjectMother.callMethodGenerator(JavaConfigurations.defaults());
+        final var generator = DaoObjectMother.callMethodGenerator();
 
         assertAll(
                 () -> assertDoesNotThrow(() -> {

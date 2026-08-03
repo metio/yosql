@@ -6,7 +6,6 @@
 package wtf.metio.yosql.codegen.blocks;
 
 import com.palantir.javapoet.MethodSpec;
-import wtf.metio.yosql.models.immutables.JavaConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -17,21 +16,16 @@ public final class DefaultMethods implements Methods {
 
     private final Annotations annotations;
     private final Javadoc javadoc;
-    private final JavaConfiguration java;
 
-    public DefaultMethods(final Annotations annotations, final Javadoc javadoc, final JavaConfiguration java) {
+    public DefaultMethods(final Annotations annotations, final Javadoc javadoc) {
         this.annotations = annotations;
         this.javadoc = javadoc;
-        this.java = java;
     }
 
     @Override
     public MethodSpec.Builder publicMethod(final String name) {
-        final var modifiers = java.useFinalMethods()
-                ? List.of(Modifier.PUBLIC, Modifier.FINAL)
-                : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
-                .addModifiers(modifiers)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addAnnotations(annotations.generatedMethod());
     }
 
@@ -40,11 +34,8 @@ public final class DefaultMethods implements Methods {
             final String name,
             final List<SqlStatement> statements,
             final String configuration) {
-        final var modifiers = java.useFinalMethods()
-                ? List.of(Modifier.PUBLIC, Modifier.FINAL)
-                : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
-                .addModifiers(modifiers)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addAnnotations(annotations.generatedMethod())
                 .addAnnotations(annotations.generatedMethod(SqlConfiguration.fromStatements(statements)))
                 .addJavadoc(javadoc.methodJavadoc(statements, configuration));
@@ -64,11 +55,8 @@ public final class DefaultMethods implements Methods {
 
     @Override
     public MethodSpec.Builder implementation(final String name) {
-        final var modifiers = java.useFinalMethods()
-                ? List.of(Modifier.PUBLIC, Modifier.FINAL)
-                : List.of(Modifier.PUBLIC);
         return MethodSpec.methodBuilder(name)
-                .addModifiers(modifiers)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addAnnotation(Override.class)
                 .addAnnotations(annotations.generatedMethod());
     }

@@ -8,18 +8,15 @@ package wtf.metio.yosql.codegen.blocks;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.TypeName;
-import wtf.metio.yosql.models.immutables.JavaConfiguration;
 
 import javax.lang.model.element.Modifier;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class DefaultParameters implements Parameters {
 
-    private final JavaConfiguration java;
     private final ConcurrentHashMap<TypeName, Integer> args = new ConcurrentHashMap<>();
 
-    public DefaultParameters(final JavaConfiguration java) {
-        this.java = java;
+    public DefaultParameters() {
     }
 
     @Override
@@ -29,9 +26,7 @@ public final class DefaultParameters implements Parameters {
 
     @Override
     public ParameterSpec parameter(final TypeName type, final String name) {
-        return java.useFinalParameters()
-                ? buildParameter(type, name, Modifier.FINAL)
-                : buildParameter(type, name);
+        return buildParameter(type, name, Modifier.FINAL);
     }
 
     @Override

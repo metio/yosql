@@ -9,7 +9,6 @@ import com.palantir.javapoet.MethodSpec;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import wtf.metio.yosql.internals.testing.configs.JavaConfigurations;
 import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DefaultMethodsGeneratorTest {
 
     private static MethodsGenerator generator(final RepositoriesConfiguration repositories) {
-        return DaoObjectMother.delegatingMethodsGenerator(JavaConfigurations.defaults(), repositories);
+        return DaoObjectMother.delegatingMethodsGenerator(repositories);
     }
 
     private static List<MethodSpec> methodsOf(

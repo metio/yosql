@@ -20,7 +20,6 @@ public class YoSQLGenerateTask extends Task {
     private Annotations annotations = new Annotations();
     private Converter converter = new Converter();
     private Files files = new Files();
-    private Java java = new Java();
     private Logging logging = new Logging();
     private Names names = new Names();
     private Repositories repositories = new Repositories();
@@ -47,7 +46,6 @@ public class YoSQLGenerateTask extends Task {
         return RuntimeConfiguration.builder()
                 .setFiles(files.asConfiguration(getProject().getBaseDir().toPath()))
                 .setAnnotations(annotations.asConfiguration())
-                .setJava(java.asConfiguration())
                 .setLogging(logging.asConfiguration())
                 .setNames(names.asConfiguration())
                 .setRepositories(repositories.asConfiguration())
@@ -68,10 +66,6 @@ public class YoSQLGenerateTask extends Task {
 
     public void addConfiguredFiles(final Files files) {
         this.files = files;
-    }
-
-    public void addConfiguredJava(final Java java) {
-        this.java = java;
     }
 
     public void addConfiguredLogging(final Logging logging) {
