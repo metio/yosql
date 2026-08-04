@@ -101,10 +101,7 @@ class GeneratorFuzzTest {
 
     @Provide
     Arbitrary<LoggingConfiguration> loggingApis() {
-        return Arbitraries.of(
-                LoggingConfigurations.defaults(), LoggingConfigurations.jul(),
-                LoggingConfigurations.log4j(), LoggingConfigurations.slf4j(),
-                LoggingConfigurations.system(), LoggingConfigurations.tiny());
+        return Arbitraries.of(LoggingConfigurations.all());
     }
 
     @Property(tries = 400)

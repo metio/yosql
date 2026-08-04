@@ -39,7 +39,6 @@ public final class LoggingObjectMother {
         generators.put(LoggingApis.LOG4J, new Log4jLoggingGenerator(fields));
         generators.put(LoggingApis.SLF4J, new Slf4jLoggingGenerator(fields));
         generators.put(LoggingApis.SYSTEM, new SystemLoggingGenerator(fields));
-        generators.put(LoggingApis.TI, new ThatsInterestingLoggingGenerator());
         generators.put(LoggingApis.TINYLOG, new TinylogLoggingGenerator());
         generators.put(LoggingApis.NONE, new NoOpLoggingGenerator());
         return new DelegatingLoggingGenerator(logging, generators, messages());

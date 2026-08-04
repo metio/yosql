@@ -19,7 +19,7 @@ final class LoggingApisTest implements EnumTCK<LoggingApis> {
 
     @Override
     public Stream<String> validValues() {
-        return Stream.of("NONE", "JUL", "SYSTEM", "LOG4J", "SLF4J", "TI", "TINYLOG");
+        return Stream.of("NONE", "JUL", "SYSTEM", "LOG4J", "SLF4J", "TINYLOG");
     }
 
 }

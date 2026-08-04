@@ -35,11 +35,6 @@ public enum LoggingApis {
     SLF4J,
 
     /**
-     * Uses thats-interesting in the generated code.
-     */
-    TI,
-
-    /**
      * Uses tinylog in the generated code.
      */
     TINYLOG

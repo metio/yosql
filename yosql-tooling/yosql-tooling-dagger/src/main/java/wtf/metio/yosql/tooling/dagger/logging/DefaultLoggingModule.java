@@ -26,7 +26,6 @@ import java.util.Map;
         Slf4jLoggingModule.class,
         TinylogLoggingModule.class,
         SystemLoggingModule.class,
-        ThatsInterestingLoggingModule.class,
 })
 public class DefaultLoggingModule {
 

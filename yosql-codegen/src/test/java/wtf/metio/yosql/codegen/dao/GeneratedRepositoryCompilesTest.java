@@ -88,13 +88,10 @@ class GeneratedRepositoryCompilesTest {
     }
 
     private static List<LoggingConfiguration> loggingApis() {
-        return List.of(
-                LoggingConfigurations.defaults(),
-                LoggingConfigurations.jul(),
-                LoggingConfigurations.log4j(),
-                LoggingConfigurations.slf4j(),
-                LoggingConfigurations.system(),
-                LoggingConfigurations.tiny());
+        final var apis = new ArrayList<LoggingConfiguration>();
+        apis.add(LoggingConfigurations.defaults());
+        apis.addAll(LoggingConfigurations.all());
+        return apis;
     }
 
     @ParameterizedTest(name = "{0}")
