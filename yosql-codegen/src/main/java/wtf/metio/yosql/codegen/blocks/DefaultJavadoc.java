@@ -165,10 +165,12 @@ public final class DefaultJavadoc implements Javadoc {
      * less-than sign rather than the start of a tag. The generated file then reads as the SQL that
      * was written, which entity escaping would not.
      *
-     * <p>Two things that block cannot carry, so a statement containing either is escaped into a
-     * plain {@code <pre>} instead: a {@code *}{@code /} ends the comment whatever encloses it, and
-     * an unbalanced brace closes the inline tag early. Neither can be escaped inside {@code {@code}},
-     * because entity references there are shown rather than resolved.</p>
+     * <p>Three things that block cannot carry, so a statement containing any of them is escaped into
+     * a plain {@code <pre>} instead: a {@code *}{@code /} ends the comment whatever encloses it, an
+     * unbalanced brace closes the inline tag early, and an {@code @} starting a line is read as a
+     * block tag wherever it sits — a MySQL statement assigning {@code @rownum} is enough. None can be
+     * escaped inside {@code {@code}}, because entity references there are shown rather than
+     * resolved.</p>
      */
     private void addStatement(final CodeBlock.Builder builder, final String statement) {
         if (isLiteral(statement)) {
@@ -179,7 +181,7 @@ public final class DefaultJavadoc implements Javadoc {
     }
 
     private static boolean isLiteral(final String statement) {
-        if (statement.contains("*/")) {
+        if (statement.contains("*/") || LEADING_TAG.matcher(statement).find()) {
             return false;
         }
         var depth = 0;

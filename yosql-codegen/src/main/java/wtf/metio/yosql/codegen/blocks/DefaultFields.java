@@ -11,6 +11,8 @@ import com.palantir.javapoet.TypeName;
 
 import javax.lang.model.element.Modifier;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public final class DefaultFields implements Fields {
 
@@ -50,9 +52,42 @@ public final class DefaultFields implements Fields {
     public CodeBlock initialize(final String statement) {
         return CodeBlock.builder()
                 .add("\"\"\"")
-                .add("$>$>\n$L", statement)
+                .add("$>$>\n$L", forTextBlock(statement))
                 .add("\"\"\"$<$<")
                 .build();
+    }
+
+    /**
+     * The statement as a text block reads it back.
+     *
+     * <p>SQL is dropped into a text block so that the constant stays readable, but a text block is
+     * still Java source: a backslash starts an escape sequence there. A regular expression such as
+     * {@code '\d+'} is not a legal one and stops the user's compile; {@code '\s+'} is legal and
+     * means a single space, so the constant silently becomes a different query than the one written.
+     * Trailing whitespace is stripped by the text block itself, which matters when it falls inside a
+     * string literal the statement spans two lines.</p>
+     */
+    private static String forTextBlock(final String statement) {
+        final var escaped = statement.replace("\\", "\\\\").replace("\"\"\"", "\"\"\\\"");
+        return Arrays.stream(escaped.split("\n", -1))
+                .map(DefaultFields::keepTrailingWhitespace)
+                .collect(Collectors.joining("\n"));
+    }
+
+    private static String keepTrailingWhitespace(final String line) {
+        final var kept = line.stripTrailing();
+        if (kept.length() == line.length()) {
+            return line;
+        }
+        final var escaped = new StringBuilder(kept);
+        line.substring(kept.length()).chars().forEach(character -> escaped.append(switch (character) {
+            case ' ' -> "\\s";
+            case '\t' -> "\\t";
+            case '\r' -> "\\r";
+            case '\f' -> "\\f";
+            default -> String.valueOf((char) character);
+        }));
+        return escaped.toString();
     }
 
     private FieldSpec.Builder builder(final TypeName type, final String name) {

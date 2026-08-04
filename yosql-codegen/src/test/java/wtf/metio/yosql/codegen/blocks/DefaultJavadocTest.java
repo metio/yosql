@@ -103,6 +103,17 @@ class DefaultJavadocTest {
         }
 
         @Test
+        @DisplayName("a variable starting a line reads as a block tag, so it is escaped instead")
+        void escapesLeadingAtSign() {
+            final var comment = statementComment("select\n@rownum := @rownum + 1 as position\nfrom players");
+
+            Assertions.assertAll(
+                    () -> Assertions.assertFalse(comment.contains("{@code"), comment),
+                    () -> Assertions.assertFalse(comment.contains("\n@rownum"), comment),
+                    () -> Assertions.assertTrue(comment.contains("&#64;rownum"), comment));
+        }
+
+        @Test
         @DisplayName("generate class comment with statements")
         void shouldGenerateClassCommentWithStatement() {
             // given

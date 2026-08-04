@@ -10,6 +10,7 @@ import com.palantir.javapoet.TypeName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("DefaultFields")
@@ -44,6 +45,51 @@ class DefaultFieldsTest {
                 )
                 private final boolean test;
                 """.replace("${version}", YoSqlVersion.VERSION), generator.field(TypeName.BOOLEAN, "test").toString());
+    }
+
+    @Nested
+    @DisplayName("puts a statement into a text block")
+    class Initializer {
+
+        @Test
+        @DisplayName("so that a backslash stays a backslash")
+        void escapesBackslashes() {
+            final var initialized = generator.initialize("select * from t where digits ~ '\\d+'").toString();
+            Assertions.assertTrue(initialized.contains("'\\\\d+'"),
+                    () -> "a lone backslash is an escape sequence in a text block: " + initialized);
+        }
+
+        @Test
+        @DisplayName("so that a legal escape does not quietly change the query")
+        void escapesLegalEscapeSequences() {
+            final var initialized = generator.initialize("select * from t where s ~ '\\s+'").toString();
+            Assertions.assertTrue(initialized.contains("'\\\\s+'"),
+                    () -> "\\s is a space in a text block, so the query would change: " + initialized);
+        }
+
+        @Test
+        @DisplayName("so that three quotes do not end it early")
+        void escapesTripleQuotes() {
+            final var initialized = generator.initialize("select \"\"\" from t").toString();
+            Assertions.assertTrue(initialized.contains("\"\"\\\""),
+                    () -> "three quotes close the block: " + initialized);
+        }
+
+        @Test
+        @DisplayName("so that whitespace inside a literal survives the line ending")
+        void keepsTrailingWhitespace() {
+            final var initialized = generator.initialize("select 'two  \nlines' from t").toString();
+            Assertions.assertTrue(initialized.contains("'two\\s\\s"),
+                    () -> "a text block strips trailing whitespace, literal or not: " + initialized);
+        }
+
+        @Test
+        @DisplayName("and leaves a statement needing none of that alone")
+        void leavesPlainStatementsAlone() {
+            final var statement = "SELECT raw FROM table WHERE test = ? AND id = ?;";
+            Assertions.assertTrue(generator.initialize(statement).toString().contains(statement));
+        }
+
     }
 
 }
