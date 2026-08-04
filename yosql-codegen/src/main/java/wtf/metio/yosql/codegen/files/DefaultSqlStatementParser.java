@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +35,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
     private static final String BLOCK_COMMENT_START = "/*";
     private static final String BLOCK_COMMENT_END = "*/";
     private static final String NEWLINE = "\n";
+    private static final char BYTE_ORDER_MARK = '\uFEFF';
     private static final String YOSQL_PRAGMA = SQL_COMMENT_PREFIX + "@yosql";
     private static final Pattern CUSTOM_SQL_STATEMENT_SEPARATOR = Pattern.compile(
             YOSQL_PRAGMA + " sqlStatementSeparator: ([^\\n]*)");
@@ -62,7 +62,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
     public Stream<SqlStatement> parse(final Path source) {
         try {
             final var charset = files.sqlFilesCharset();
-            final var rawText = Files.readString(source, charset);
+            final var rawText = withoutByteOrderMark(Files.readString(source, charset));
             final var skippedText = withoutPragmas(withoutHeader(rawText));
             final var splitter = getStatementSplitter(rawText);
             // Sequential, and deliberately so. The index counts a statement's position in its file,
@@ -110,28 +110,40 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
     // visible for testing
     Pattern getStatementSplitter(final String text) {
         final var customStatementSeparator = CUSTOM_SQL_STATEMENT_SEPARATOR.matcher(text);
+        // Stripped because the pragma runs to the end of the line, and on a file with CRLF endings
+        // that is a trailing carriage return — which, matched literally, is part of the separator.
         return customStatementSeparator.find()
-                ? splitter(customStatementSeparator.group(1), "the @yosql sqlStatementSeparator pragma")
+                ? splitter(customStatementSeparator.group(1).strip(), "the @yosql sqlStatementSeparator pragma")
                 : defaultStatementSplitter;
     }
 
     /**
-     * Drops the configured number of leading lines — a licence header, usually.
+     * The separator is the text it says it is, not a pattern.
      *
-     * <p>Walks to the cut point and takes one substring. Deleting from the front of a builder per
-     * line shifts everything after it each time, which is quadratic in the file for no reason.</p>
-     */
-    /**
-     * The separator is a regular expression, and a mistyped one otherwise arrives as a bare
-     * {@link java.util.regex.PatternSyntaxException} from somewhere in the parser, naming neither
-     * the setting nor the value.
+     * <p>Every character anyone reaches for as a separator — {@code |}, {@code ;}, {@code .},
+     * {@code /} — is a regular expression metacharacter, and the documented {@code |} example is the
+     * worst of them: as a pattern it matches the empty string between every pair of characters, so a
+     * file splits into one statement per character. Quoting the value makes the setting mean what its
+     * name and its documentation say.</p>
      */
     private static Pattern splitter(final String separator, final String setting) {
-        try {
-            return Pattern.compile(separator);
-        } catch (final PatternSyntaxException cause) {
-            throw new UnusableStatementSeparatorException(setting, separator, cause);
+        if (separator == null || separator.isEmpty()) {
+            // Nothing to find, so the split would either never fire or fire everywhere.
+            throw new UnusableStatementSeparatorException(setting, separator);
         }
+        return Pattern.compile(Pattern.quote(separator));
+    }
+
+    /**
+     * Drops the byte order mark an editor may have written at the start of the file.
+     *
+     * <p>Java's UTF-8 decoder hands it over as a character rather than eating it, and it lands in
+     * front of the first line — so {@code -- name: findTenant} no longer starts with {@code --}, the
+     * front matter is read as SQL, and the mark itself ends up inside the generated query
+     * constant.</p>
+     */
+    private static String withoutByteOrderMark(final String rawText) {
+        return rawText.isEmpty() || rawText.charAt(0) != BYTE_ORDER_MARK ? rawText : rawText.substring(1);
     }
 
     /**

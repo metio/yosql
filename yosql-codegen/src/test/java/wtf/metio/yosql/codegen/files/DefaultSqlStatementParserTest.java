@@ -29,6 +29,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("DefaultSqlStatementParser")
 class DefaultSqlStatementParserTest {
 
+    /** What an editor writes at the head of a UTF-8 file when told to. */
+    private static final String BYTE_ORDER_MARK = "\uFEFF";
+
     /**
      * The front matter every statement below needs: a parameter the generator cannot type fails the
      * build, and nothing here names a record to take a type from.
@@ -100,6 +103,48 @@ class DefaultSqlStatementParserTest {
                     () -> assertEquals(1, statements.size(), () -> "cut into " + statements.size() + " statements"),
                     () -> assertEquals("select id /* one; two */ from tenant",
                             statements.getFirst().getRawStatement().strip()));
+        }
+
+        @Test
+        @DisplayName("is the text it says it is, not a pattern")
+        void shouldTreatTheSeparatorLiterally() throws IOException {
+            final var statements = parse("""
+                    --@yosql sqlStatementSeparator: |
+
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id from tenant|
+
+                    -- name: findAccount
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id from account|
+                    """);
+
+            assertAll(
+                    () -> assertEquals(2, statements.size(),
+                            () -> "as a pattern '|' matches everywhere and cuts every character apart, "
+                                    + "giving " + statements.size() + " statements"),
+                    () -> assertEquals("select id from tenant", statements.getFirst().getRawStatement().strip()),
+                    () -> assertEquals("select id from account", statements.getLast().getRawStatement().strip()));
+        }
+
+        @Test
+        @DisplayName("a byte order mark is not the first character of the front matter")
+        void shouldDropAByteOrderMark() throws IOException {
+            final var statements = parse(BYTE_ORDER_MARK + """
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id from tenant
+                    """);
+
+            assertAll(
+                    () -> assertEquals(1, statements.size()),
+                    () -> assertEquals("findTenant", statements.getFirst().getName(),
+                            "with the mark in front, '-- name:' no longer opens a comment"),
+                    () -> assertEquals("select id from tenant", statements.getFirst().getRawStatement().strip()));
         }
 
         @Test

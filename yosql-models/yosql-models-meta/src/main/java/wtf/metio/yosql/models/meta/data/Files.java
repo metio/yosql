@@ -210,11 +210,11 @@ public final class Files extends AbstractConfigurationGroup {
         return setting(GROUP_NAME, name, description, value)
                 .addExamples(ConfigurationExample.builder()
                         .setValue(value)
-                        .setDescription("The default value of the `sqlStatementSeparator` configuration option is `.sql`. It matches all files that end with `.sql`.")
+                        .setDescription("The default value of the `sqlStatementSeparator` configuration option is `;`, so a `.sql` file holds one statement per `;` the way it would be written for a database client. The separator is matched literally, and it is never a separator inside a string literal or a comment.")
                         .build())
                 .addExamples(ConfigurationExample.builder()
                         .setValue("|")
-                        .setDescription("Changing the `sqlStatementSeparator` configuration option to `|` configures `YoSQL` split `.sql` files using the `|` character.")
+                        .setDescription("Changing the `sqlStatementSeparator` configuration option to `|` configures `YoSQL` to split `.sql` files on the `|` character.")
                         .build())
                 .build();
     }
