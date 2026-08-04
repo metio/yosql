@@ -97,4 +97,35 @@ class StaleOutputTest {
                         + "somebody wrote there would be far worse than leaving a stale one");
     }
 
+    @Test
+    @DisplayName("is still cleaned up when a stranger in the directory is not UTF-8")
+    void survivesAFileItCannotDecodeAsUtf8() throws IOException {
+        final var latin1 = fileFor("Latin1");
+        Files.createDirectories(latin1.getParent());
+        // 0xFF is not a valid UTF-8 sequence, so reading it as UTF-8 strictly is an error rather
+        // than a replacement character.
+        Files.write(latin1, new byte[]{'/', '/', ' ', (byte) 0xFF, '\n'});
+
+        final var first = writer();
+        first.writeType(type("TenantRepository"));
+        first.writeType(type("AccountRepository"));
+        first.removeStaleOutput();
+
+        final var errors = OrchestrationObjectMother.executionErrors();
+        final var second = new DefaultTypeWriter(
+                LoggingObjectMother.logger(),
+                FilesConfiguration.builder().setOutputBaseDirectory(output).build(),
+                errors);
+        second.writeType(type("TenantRepository"));
+        second.removeStaleOutput();
+
+        Assertions.assertAll(
+                () -> Assertions.assertFalse(errors.hasErrors(),
+                        "one file nobody can decode is not a reason to fail a run that has already "
+                                + "written its output"),
+                () -> Assertions.assertTrue(Files.isRegularFile(latin1), "and not a reason to delete it"),
+                () -> Assertions.assertFalse(Files.exists(fileFor("AccountRepository")),
+                        "the walk still reaches the stale file behind it"));
+    }
+
 }

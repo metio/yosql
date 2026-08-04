@@ -114,6 +114,27 @@ class DefaultJavadocTest {
         }
 
         @Test
+        @DisplayName("a unicode escape is resolved before javac even lexes, so it is escaped instead")
+        void escapesUnicodeEscapes() {
+            final var comment = statementComment("select * from t where path = 'C:\\usr\\bin'");
+
+            Assertions.assertAll(
+                    () -> Assertions.assertFalse(comment.contains("{@code"), comment),
+                    () -> Assertions.assertFalse(comment.contains("\\u"),
+                            () -> "javac resolves this inside a comment too, and reports "
+                                    + "'illegal unicode escape' in a file the author never wrote:\n" + comment),
+                    () -> Assertions.assertTrue(comment.contains("&#92;u"), comment));
+        }
+
+        @Test
+        @DisplayName("a backslash that starts nothing is left alone")
+        void keepsOrdinaryBackslashes() {
+            final var comment = statementComment("select * from t where digits ~ '\\d+'");
+
+            Assertions.assertTrue(comment.contains("\\d"), comment);
+        }
+
+        @Test
         @DisplayName("generate class comment with statements")
         void shouldGenerateClassCommentWithStatement() {
             // given

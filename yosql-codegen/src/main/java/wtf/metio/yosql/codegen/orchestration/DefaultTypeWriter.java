@@ -14,7 +14,6 @@ import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.configuration.GeneratedNames;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -102,12 +101,21 @@ public final class DefaultTypeWriter implements TypeWriter {
      * Whether the file says YoSQL wrote it. Read rather than assumed from where it sits: the output
      * directory is whatever the project pointed it at, and deleting somebody's own source because
      * they share a directory with the generator would be far worse than leaving a stale class.
+     *
+     * <p>Read as ISO-8859-1, which decodes any byte sequence rather than refusing one. The marker is
+     * ASCII, so it is found in a file of any encoding that agrees with ASCII — and a file that does
+     * not is not one we wrote. Decoding strictly as UTF-8 instead meant that a single Latin-1 source
+     * sharing the output directory failed the whole run, after the generated types were already on
+     * disk; the CLI and Ant frontends default that directory to the project root, so the stranger
+     * file does not have to be anywhere unusual.</p>
      */
     private static boolean wasGeneratedByUs(final Path file) {
         try {
-            return Files.readString(file, StandardCharsets.UTF_8).contains(MARKER);
+            return Files.readString(file, StandardCharsets.ISO_8859_1).contains(MARKER);
         } catch (final IOException exception) {
-            throw new UncheckedIOException(exception);
+            // Unreadable is not a reason to delete, nor a reason to stop: the file stays, and so does
+            // everything this run has already written.
+            return false;
         }
     }
 

@@ -36,6 +36,13 @@ public final class DefaultJavadoc implements Javadoc {
      */
     private static final Pattern LEADING_TAG = Pattern.compile("(?m)^(\\s*)@");
 
+    /**
+     * What starts a unicode escape. Java resolves these everywhere in a source file, comments
+     * included, so this is the one sequence a statement cannot carry into javadoc as it was written —
+     * not even inside {@code {@code}}, where an entity would be shown rather than resolved.
+     */
+    private static final String UNICODE_ESCAPE = "\\u";
+
     private final FilesConfiguration files;
     private final IMessageConveyor messages;
 
@@ -181,7 +188,8 @@ public final class DefaultJavadoc implements Javadoc {
     }
 
     private static boolean isLiteral(final String statement) {
-        if (statement.contains("*/") || LEADING_TAG.matcher(statement).find()) {
+        if (statement.contains("*/") || statement.contains(UNICODE_ESCAPE)
+                || LEADING_TAG.matcher(statement).find()) {
             return false;
         }
         var depth = 0;
@@ -210,7 +218,13 @@ public final class DefaultJavadoc implements Javadoc {
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
                 .replace("*/", "*&#47;")
-                .replace("{@", "&#123;@");
+                .replace("{@", "&#123;@")
+                // A unicode escape is resolved before the file is even lexed, comments included, so a
+                // Windows path in a statement — a backslash followed by a u — is an "illegal unicode
+                // escape" in a file the author never wrote. Writing that backslash as an entity leaves
+                // nothing for that pass to find, and a <pre> block renders it back as a backslash.
+                // (This comment cannot show the sequence for the very same reason.)
+                .replace(UNICODE_ESCAPE, "&#92;u");
         return LEADING_TAG.matcher(escaped).replaceAll("$1&#64;");
     }
 
