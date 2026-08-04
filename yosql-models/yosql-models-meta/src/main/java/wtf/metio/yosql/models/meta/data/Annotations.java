@@ -298,7 +298,7 @@ public final class Annotations extends AbstractConfigurationGroup {
     private static TypeSpec gradleAnnotationSpecType() {
         return TypeSpec.classBuilder(ANNOTATION_SPEC)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .addJavadoc("Configures a single Annotation.")
+                .addJavadoc("$L", "Configures a single Annotation.")
                 .addSuperinterface(TypicalTypes.GRADLE_NAMED)
                 .addMethod(gradleConstructor())
                 .addMethod(gradleNamedProperty(GRADLE_MEMBER_TYPE, MEMBERS, "The annotation members"))
@@ -319,7 +319,7 @@ public final class Annotations extends AbstractConfigurationGroup {
     private static TypeSpec gradleAnnotationMemberSpecType() {
         return TypeSpec.classBuilder(ANNOTATION_MEMBER_SPEC)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .addJavadoc("Configures a single AnnotationMember.")
+                .addJavadoc("$L", "Configures a single AnnotationMember.")
                 .addSuperinterface(TypicalTypes.GRADLE_NAMED)
                 .addMethod(gradleConstructor())
                 .addMethod(gradleStringProperty(VALUE, "The value of the annotation member"))

@@ -12,6 +12,7 @@ import com.palantir.javapoet.MethodSpec;
 import org.immutables.value.Value;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -175,6 +176,56 @@ public interface ConfigurationSetting {
     @Value.Default
     default boolean generateDocs() {
         return true;
+    }
+
+    /**
+     * The key this setting is written under in a file, which is not always its name:
+     * {@code returningMode} is written {@code returning}, because that is the name Jackson binds the
+     * model from. Anything telling a reader — or a schema — what to write has to say this one.
+     *
+     * @return the {@code JsonProperty} name, or the setting's own when it carries none
+     */
+    @Value.Derived
+    default String frontMatterKey() {
+        return immutableMethods().stream()
+                .flatMap(method -> method.annotations().stream())
+                .filter(annotation -> JSON_PROPERTY.equals(annotation.type().toString()))
+                .map(annotation -> annotation.members().get("value"))
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .map(Object::toString)
+                .map(ConfigurationSetting::unquote)
+                .findFirst()
+                .orElseGet(this::name);
+    }
+
+    /**
+     * What to show a reader who is about to copy the example.
+     *
+     * <p>A setting that names no example falls back to a placeholder, and a placeholder that cannot
+     * be bound is worse than none: {@code executeOnce: configValue} is a page telling the reader to
+     * write something the parser rejects. A boolean has only two values, so the placeholder can be
+     * one of them.</p>
+     */
+    @Value.Derived
+    default String frontMatterExample() {
+        return frontMatterExampleCode().orElseGet(() -> isBoolean() ? "true" : "configValue");
+    }
+
+    private boolean isBoolean() {
+        return immutableMethods().stream()
+                .map(method -> method.returnType().toString())
+                .anyMatch(type -> "boolean".equals(type) || type.endsWith("Boolean")
+                        || type.endsWith("Boolean>"));
+    }
+
+    String JSON_PROPERTY = "com.fasterxml.jackson.annotation.JsonProperty";
+
+    private static String unquote(final String literal) {
+        if (literal.length() > 1 && literal.startsWith("\"") && literal.endsWith("\"")) {
+            return literal.substring(1, literal.length() - 1);
+        }
+        return literal;
     }
 
     //endregion

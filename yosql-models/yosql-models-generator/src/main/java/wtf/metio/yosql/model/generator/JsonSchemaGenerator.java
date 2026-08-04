@@ -6,15 +6,20 @@
 package wtf.metio.yosql.model.generator;
 
 import com.palantir.javapoet.MethodSpec;
+import wtf.metio.yosql.internals.jdk.Strings;
+import wtf.metio.yosql.models.configuration.ReturningMode;
+import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
 import wtf.metio.yosql.models.meta.data.AllConfigurations;
 import wtf.metio.yosql.models.meta.data.Sql;
 import wtf.metio.yosql.models.meta.data.Tags;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -37,7 +42,7 @@ final class JsonSchemaGenerator {
 
     static String frontMatterSchema(final String version) {
         final var properties = new TreeMap<String, String>();
-        frontMatterSettings().forEach(setting -> properties.putIfAbsent(key(setting), property(setting)));
+        frontMatterSettings().forEach(setting -> properties.putIfAbsent(setting.frontMatterKey(), property(setting)));
 
         final var schema = new StringBuilder();
         schema.append("{\n");
@@ -65,35 +70,12 @@ final class JsonSchemaGenerator {
         final var type = schemaType(setting)
                 .map(",\n      "::concat)
                 .orElse("");
-        return "    \"" + key(setting) + "\": {\n"
+        return "    \"" + setting.frontMatterKey() + "\": {\n"
                 + "      \"description\": \"" + escape(setting.description()) + "\"" + type + "\n"
                 + "    }";
     }
 
-    /**
-     * The key a setting is written under in a file, which is the name the model is bound from rather
-     * than the name of the setting: {@code returningMode} is written {@code returning}. A schema that
-     * refuses everything it does not list has to agree with the parser about all of them.
-     */
-    private static String key(final ConfigurationSetting setting) {
-        return setting.immutableMethods().stream()
-                .flatMap(method -> method.annotations().stream())
-                .filter(annotation -> JSON_PROPERTY.equals(annotation.type().toString()))
-                .map(annotation -> annotation.members().get("value"))
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
-                .map(Object::toString)
-                .map(JsonSchemaGenerator::unquote)
-                .findFirst()
-                .orElseGet(setting::name);
-    }
 
-    private static String unquote(final String literal) {
-        if (literal.length() > 1 && literal.startsWith("\"") && literal.endsWith("\"")) {
-            return literal.substring(1, literal.length() - 1);
-        }
-        return literal;
-    }
 
     /**
      * The JSON type a value is written as, taken from the type the generator reads it into.
@@ -116,11 +98,28 @@ final class JsonSchemaGenerator {
             case "java.lang.Boolean", "boolean" -> Optional.of("\"type\": \"boolean\"");
             case "java.lang.Integer", "int", "java.lang.Long", "long" -> Optional.of("\"type\": \"integer\"");
             case "wtf.metio.yosql.models.configuration.ReturningMode" ->
-                    Optional.of("\"enum\": [\"none\", \"single\", \"multiple\", \"cursor\"]");
+                    Optional.of(enumValues(ReturningMode.class));
             case "wtf.metio.yosql.models.configuration.SqlStatementType" ->
-                    Optional.of("\"enum\": [\"reading\", \"writing\", \"calling\"]");
+                    Optional.of(enumValues(SqlStatementType.class));
             default -> Optional.empty();
         };
+    }
+
+    /**
+     * Every constant, in both spellings the parser takes.
+     *
+     * <p>Read from the enum rather than written out here, so that adding a constant cannot leave the
+     * schema rejecting front matter the build accepts. Both spellings, because the parser enables
+     * case-insensitive enums and YoSQL's own statements are written in upper case — a schema listing
+     * only one of them flags valid files in the reader's editor.</p>
+     */
+    private static String enumValues(final Class<? extends Enum<?>> type) {
+        return Arrays.stream(type.getEnumConstants())
+                .map(Enum::name)
+                .flatMap(name -> Stream.of(Strings.lowerCase(name), name))
+                .distinct()
+                .map(value -> "\"" + value + "\"")
+                .collect(Collectors.joining(", ", "\"enum\": [", "]"));
     }
 
     private static String unwrapOptional(final String returnType) {

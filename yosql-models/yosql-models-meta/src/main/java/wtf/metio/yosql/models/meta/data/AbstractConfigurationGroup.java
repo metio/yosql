@@ -62,7 +62,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String description,
             final String value) {
         return FieldSpec.builder(type, name)
-                .addJavadoc(description)
+                .addJavadoc("$L", description)
                 .addAnnotation(mavenParameterAnnotation(value))
                 .build();
     }
@@ -95,7 +95,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String value,
             final CodeBlock initializer) {
         return FieldSpec.builder(type, name)
-                .addJavadoc(description)
+                .addJavadoc("$L", description)
                 .addAnnotation(mavenParameterAnnotation(value))
                 .initializer(initializer)
                 .build();
@@ -173,7 +173,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String description,
             final CodeBlock returnCode) {
         return MethodSpec.methodBuilder(settingName)
-                .addJavadoc(description)
+                .addJavadoc("$L", description)
                 .addAnnotation(immutableDefault())
                 .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
                 .returns(type)
@@ -187,7 +187,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String description,
             final AnnotationSpec... annotations) {
         return MethodSpec.methodBuilder(settingName)
-                .addJavadoc(description)
+                .addJavadoc("$L", description)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addAnnotations(Arrays.asList(annotations))
                 .returns(type.toString().startsWith("java.util.List") ? type : TypicalTypes.optionalOf(type))
@@ -299,7 +299,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String settingName,
             final String description) {
         return FieldSpec.builder(type, settingName, Modifier.PRIVATE)
-                .addJavadoc(description)
+                .addJavadoc("$L", description)
                 .build();
     }
 
@@ -330,7 +330,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String description,
             final CodeBlock initializer) {
         return FieldSpec.builder(type, name, Modifier.PRIVATE)
-                .addJavadoc(description)
+                .addJavadoc("$L", description)
                 .initializer(initializer)
                 .build();
     }
@@ -340,7 +340,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String settingName,
             final String description) {
         return MethodSpec.methodBuilder("set" + upperCase(settingName))
-                .addJavadoc(description)
+                .addJavadoc("$L", description)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(type, settingName, Modifier.FINAL)
                 .addStatement(CodeBlock.of("this.$L = $L", settingName, settingName))
@@ -352,7 +352,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String settingName,
             final String description) {
         return MethodSpec.methodBuilder("addConfigured" + upperCase(settingName))
-                .addJavadoc(description)
+                .addJavadoc("$L", description)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(type, settingName, Modifier.FINAL)
                 .addStatement(CodeBlock.of("this.$L.add($L)", settingName, settingName))
@@ -361,7 +361,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
 
     protected static MethodSpec gradleConstructor() {
         return MethodSpec.constructorBuilder()
-                .addJavadoc("Required by Gradle")
+                .addJavadoc("$L", "Required by Gradle")
                 .addAnnotation(TypicalTypes.INJECT)
                 .addModifiers(Modifier.PUBLIC)
                 .build();
@@ -385,7 +385,7 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final String description,
             final ClassName annotation) {
         return MethodSpec.methodBuilder(gradlePropertyName(name))
-                .addJavadoc("@return " + description)
+                .addJavadoc("@return $L", description)
                 .addAnnotation(annotation)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(type)
@@ -403,13 +403,13 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
             final Enum<?> value,
             final TypeName type) {
         return settingBuilder(name, description)
-                .setGradleConvention(CodeBlock.of("$L().convention($T.$L)", gradlePropertyName(name), value.getClass(), value.name()))
-                .addAntFields(antField(type, name, description, CodeBlock.of("$T.$L", value.getClass(), value.name())))
+                .setGradleConvention(CodeBlock.of("$L().convention($T.$L)", gradlePropertyName(name), value.getDeclaringClass(), value.name()))
+                .addAntFields(antField(type, name, description, CodeBlock.of("$T.$L", value.getDeclaringClass(), value.name())))
                 .addAntMethods(antSetter(type, name, description))
                 .addCliFields(picocliOption(type, group, name, description, value.name()))
                 .addGradleMethods(gradleProperty(gradlePropertyOf(type), name, description))
-                .addImmutableMethods(immutableMethod(type, name, description, CodeBlock.of("$T.$L", value.getClass(), value.name())))
-                .addMavenFields(mavenParameter(type, name, description, value.name(), CodeBlock.of("$T.$L", value.getClass(), value.name())));
+                .addImmutableMethods(immutableMethod(type, name, description, CodeBlock.of("$T.$L", value.getDeclaringClass(), value.name())))
+                .addMavenFields(mavenParameter(type, name, description, value.name(), CodeBlock.of("$T.$L", value.getDeclaringClass(), value.name())));
     }
 
     protected static ImmutableConfigurationSetting.BuildFinal setting(

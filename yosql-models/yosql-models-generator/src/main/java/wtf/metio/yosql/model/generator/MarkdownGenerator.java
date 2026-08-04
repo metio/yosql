@@ -68,7 +68,8 @@ final class MarkdownGenerator {
         final var scopes = new HashMap<String, Object>();
         scopes.put("group", group);
         scopes.put("setting", setting);
-        scopes.put("frontMatterExampleCode", setting.frontMatterExampleCode().orElse("configValue"));
+        scopes.put("frontMatterExampleCode", setting.frontMatterExample());
+        scopes.put("frontMatterKey", setting.frontMatterKey());
         scopes.put("yosqlVersion", yosqlVersion);
         scopes.put("currentDate", LocalDate.now(ZoneOffset.UTC).toString());
         scopes.put("lower", LOWER_CASE);

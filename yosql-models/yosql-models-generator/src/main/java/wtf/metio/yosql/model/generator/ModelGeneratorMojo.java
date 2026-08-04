@@ -41,6 +41,8 @@ public class ModelGeneratorMojo extends AbstractMojo {
     public void execute() {
         final var modelGenerator = new ModelGenerator();
         final var outputDirectory = Paths.get(project.getBasedir().getAbsolutePath(), outputBaseDirectory);
+        // Before anything is discarded, so that an unrecognised type costs nothing.
+        requireKnown(type);
         discardPreviousOutput(outputDirectory);
         final var writer = typeWriter(outputDirectory);
         switch (type) {
@@ -48,9 +50,31 @@ public class ModelGeneratorMojo extends AbstractMojo {
             case "maven" -> modelGenerator.createMavenModel(writer);
             case "cli" -> modelGenerator.createCliModel(writer);
             case "ant" -> modelGenerator.createAntModel(writer);
+            case "gradle" -> modelGenerator.createGradleModel(writer);
             case "website" -> ModelGenerator.createMarkdownDocumentation(project.getVersion(), outputDirectory);
             case "json-schema" -> ModelGenerator.createJsonSchema(project.getVersion(), outputDirectory);
+            default -> throw new IllegalStateException(unknownType(type));
         }
+    }
+
+    /**
+     * The types this plugin can generate.
+     *
+     * <p>A misspelling used to fall through the switch and generate nothing, having already emptied
+     * the output directory — so the build failed much later at compile time, complaining about a
+     * class nobody had removed.</p>
+     */
+    private static final List<String> KNOWN_TYPES = List.of(
+            "immutables", "maven", "cli", "ant", "gradle", "website", "json-schema");
+
+    private static void requireKnown(final String type) {
+        if (!KNOWN_TYPES.contains(type)) {
+            throw new IllegalArgumentException(unknownType(type));
+        }
+    }
+
+    private static String unknownType(final String type) {
+        return "Unknown model type '%s'. Expected one of %s.".formatted(type, String.join(", ", KNOWN_TYPES));
     }
 
     /**

@@ -431,6 +431,7 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Generate both a DataSource-based method and a Connection-taking overload for every statement.";
         final var value = true;
         return setting(GROUP_NAME, name, description, value)
+                .addTags(Tags.FRONT_MATTER)
                 .setExplanation("""
                         Whether a statement gets its connection from the repository's `DataSource` or from the
                         caller is not a property of the statement — it is what the call site needs. One caller
@@ -486,7 +487,6 @@ public final class Repositories extends AbstractConfigurationGroup {
         final var description = "Toggles whether converters should be injected as constructor parameters.";
         final var value = false;
         return setting(GROUP_NAME, INJECT_CONVERTERS, description, value)
-                .addTags(Tags.FRONT_MATTER)
                 .addExamples(ConfigurationExample.builder()
                         .setValue(String.valueOf(value))
                         .setDescription("The default value of the `injectConverters` configuration option is `false`. It produces code similar to this:")

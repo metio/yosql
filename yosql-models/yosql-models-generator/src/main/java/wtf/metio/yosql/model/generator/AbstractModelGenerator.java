@@ -56,7 +56,7 @@ abstract class AbstractModelGenerator implements Function<ConfigurationGroup, St
         return configurationGroupClassBuilder(group)
                 .addModifiers(configurationGroupClassModifiers())
                 .addAnnotations(annotationsFor(group))
-                .addJavadoc(group.description())
+                .addJavadoc("$L", group.description())
                 .addFields(fieldsFor(group))
                 .addFields(fieldsForSettingsIn(group))
                 .addMethods(methodsFor(group))

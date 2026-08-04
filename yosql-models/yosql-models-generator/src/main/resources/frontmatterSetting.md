@@ -53,7 +53,7 @@ Also in this group: {{{relatedSettingsLine}}}.
 In order to configure this option, place the following code in the front matter of your SQL statement:
 
 ```sql
--- {{setting.name}}: {{frontMatterExampleCode}}
+-- {{frontMatterKey}}: {{frontMatterExampleCode}}
 SELECT  something
 FROM    your_database_schema
 WHERE   some_column = :some_value
