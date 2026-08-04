@@ -283,6 +283,21 @@ something, the generated names change back — name the repository with
 [repository](../../configuration/sql/repository/) in the front matter, which still decides it
 outright.
 
+### `sqlStatementsDirectory` is relative to your project, not to where the build was started
+
+[sqlStatementsDirectory](../../configuration/schema/sqlstatementsdirectory/) says where the DDL
+describing your schema lives. Written as a relative path, Maven and Ant used to resolve it against
+whatever directory the build was launched from rather than against the module being built — so in a
+multi-module project, `mvn verify` from the root looked for the schema under the root and `mvn
+verify` inside the module found it. It is resolved against the project now, the same as every other
+directory setting.
+
+Nothing reports the difference, which is what makes it worth checking: a schema directory that
+resolves to nothing is indistinguishable from a schema that raises no complaints, because reading
+the schema is designed never to fail a build. If you set this to a relative path, confirm it is
+relative to the module's own directory. An absolute path is unaffected, and so are the CLI and
+Gradle, which resolved against the working directory before and still do.
+
 ### Ant can set the method name prefixes and the annotations
 
 Ant builds an attribute setter only for a type it can make out of a string, and
