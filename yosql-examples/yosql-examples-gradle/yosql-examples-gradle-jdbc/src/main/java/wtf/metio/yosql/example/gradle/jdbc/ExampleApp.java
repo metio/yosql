@@ -67,6 +67,18 @@ public final class ExampleApp {
                     .callNames(callcenterRepository::callNames)
                     .build()
                     .runCallingTests();
+
+            ReturningModeTests.builder()
+                    .queryCompaniesWithoutResult(companyRepository::queryCompaniesWithoutResult)
+                    .callRandomNumberWithoutResult(callcenterRepository::callRandomNumberWithoutResult)
+                    .callNamesAsList(callcenterRepository::callNamesAsList)
+                    .callNamesAsStream(callcenterRepository::callNamesAsStream)
+                    .insertCompanyReturningRow(companyRepository::insertCompanyReturningRow)
+                    .insertCompanyReturningRows(companyRepository::insertCompanyReturningRows)
+                    .insertCompanyReturningStream(companyRepository::insertCompanyReturningStream)
+                    .queryAllCompanies(companyRepository::queryAllCompanies)
+                    .build()
+                    .runReturningModeTests();
         }
     }
 
