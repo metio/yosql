@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import wtf.metio.yosql.codegen.exceptions.MissingConverterSourceException;
+import wtf.metio.yosql.codegen.exceptions.UnreadableResultRowTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnusableConverterException;
 import wtf.metio.yosql.codegen.records.JavaSourceParser;
 import wtf.metio.yosql.codegen.records.RecordConverterNames;
@@ -191,6 +192,22 @@ class DefaultMethodResultRowConverterConfigurerTest {
     @Nested
     @DisplayName("failing the build rather than the compile")
     class Failures {
+
+        @Test
+        @DisplayName("a resultRowType that is not a class name names the statement that declared it")
+        void unreadableResultRowType() {
+            final var configuration = SqlConfiguration.builder()
+                    .setName("findTenant")
+                    .setResultRowType("com.example.domain.Tenant<T>")
+                    .build();
+
+            final var thrown = assertThrows(UnreadableResultRowTypeException.class,
+                    () -> configurer().configureResultRowConverter(configuration));
+            assertAll(
+                    () -> assertTrue(thrown.getMessage().contains("findTenant"), thrown::getMessage),
+                    () -> assertTrue(thrown.getMessage().contains("com.example.domain.Tenant<T>"),
+                            thrown::getMessage));
+        }
 
         @Test
         @DisplayName("a converter with no source cannot be read")

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import wtf.metio.yosql.codegen.logging.LoggingObjectMother;
+import wtf.metio.yosql.codegen.exceptions.UnusableRepositoryNameException;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
@@ -21,6 +22,8 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("DefaultRepositoryNameConfigurer")
 class DefaultRepositoryNameConfigurerTest {
@@ -51,6 +54,30 @@ class DefaultRepositoryNameConfigurerTest {
         final var config = SqlConfiguration.builder().build();
         final var name = configurer.repositoryClassName(config, inputBaseDirectory.resolve("sub/test.sql"));
         assertEquals("com.example.persistence.SubRepository", name);
+    }
+
+    @Test
+    @DisplayName("a directory that is not a Java name is refused while the path is still in view")
+    void repositoryNameFromUnusableDirectory() {
+        final var config = SqlConfiguration.builder().build();
+        final var source = inputBaseDirectory.resolve("user-accounts/test.sql");
+
+        final var thrown = assertThrows(UnusableRepositoryNameException.class,
+                () -> configurer.repositoryClassName(config, source));
+        assertAll(
+                () -> assertTrue(thrown.getMessage().contains("user-accounts"), thrown::getMessage),
+                () -> assertTrue(thrown.getMessage().contains("repository:"),
+                        () -> "the message has to say how to get past it: " + thrown.getMessage()));
+    }
+
+    @Test
+    @DisplayName("and so is one that is a Java keyword")
+    void repositoryNameFromKeywordDirectory() {
+        final var config = SqlConfiguration.builder().build();
+        final var source = inputBaseDirectory.resolve("package/test.sql");
+
+        assertThrows(UnusableRepositoryNameException.class,
+                () -> configurer.repositoryClassName(config, source));
     }
 
     @Test

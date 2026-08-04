@@ -6,12 +6,14 @@
 package wtf.metio.yosql.codegen.files;
 
 import org.slf4j.cal10n.LocLogger;
+import wtf.metio.yosql.codegen.exceptions.UnusableRepositoryNameException;
 import wtf.metio.yosql.codegen.lifecycle.RepositoryLifecycle;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
+import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -76,6 +78,7 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
         logger.debug(RepositoryLifecycle.REPOSITORY_NAME_CALC_RAW, rawRepositoryName);
         final var dottedRepositoryName = dottedRepositoryName(rawRepositoryName);
         logger.debug(RepositoryLifecycle.REPOSITORY_NAME_CALC_DOTTED, dottedRepositoryName);
+        requireJavaName(dottedRepositoryName, source);
         final var upperCaseName = upperCaseClassName(dottedRepositoryName);
         logger.debug(RepositoryLifecycle.REPOSITORY_NAME_CALC_UPPER, upperCaseName);
         final var qualifiedRepository = repositoryInBasePackage(upperCaseName);
@@ -101,6 +104,21 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
     // visible for testing
     String dottedRepositoryName(final String rawRepositoryName) {
         return rawRepositoryName.replace(File.separatorChar, '.').replace('/', '.');
+    }
+
+    /**
+     * A directory only has to be a directory; the class named after it has to be a Java name. The
+     * method-name path checks the same thing about a file name, and for the same reason: without it
+     * the first complaint comes from JavaPoet, or from the user's compiler, about a name nobody
+     * chose.
+     */
+    // visible for testing
+    static void requireJavaName(final String dottedName, final Path source) {
+        for (final var segment : dottedName.split("\\.", -1)) {
+            if (segment.isEmpty() || !SourceVersion.isIdentifier(segment) || SourceVersion.isKeyword(segment)) {
+                throw new UnusableRepositoryNameException(source, segment);
+            }
+        }
     }
 
     // visible for testing

@@ -6,6 +6,8 @@
 package wtf.metio.yosql.codegen.files;
 
 import com.palantir.javapoet.ClassName;
+import wtf.metio.yosql.codegen.exceptions.MissingSqlConfigurationNameException;
+import wtf.metio.yosql.codegen.exceptions.UnreadableResultRowTypeException;
 import wtf.metio.yosql.codegen.exceptions.MissingConverterSourceException;
 import wtf.metio.yosql.codegen.exceptions.UnusableConverterException;
 import wtf.metio.yosql.codegen.records.RecordConverterNames;
@@ -65,13 +67,30 @@ public final class DefaultMethodResultRowConverterConfigurer implements MethodRe
         return configuration.resultRowType()
                 .map(String::strip)
                 .filter(Predicate.not(String::isEmpty))
-                .map(ClassName::bestGuess)
+                .map(declared -> resultRowType(declared, configuration))
                 .map(type -> ResultRowConverter.builder()
                         .setAlias(recordConverters.alias(type))
                         .setConverterType(recordConverters.converterClass(type).toString())
                         .setMethodName(recordConverters.methodName())
                         .setResultType(type.toString())
                         .build());
+    }
+
+    /**
+     * The two other places that read a {@code resultRowType} already say which statement declared an
+     * unusable one; without this, the same typo arrived here as a bare
+     * {@link IllegalArgumentException} from JavaPoet naming neither.
+     */
+    private static ClassName resultRowType(final String declared, final SqlConfiguration configuration) {
+        try {
+            return ClassName.bestGuess(declared);
+        } catch (final IllegalArgumentException _) {
+            throw new UnreadableResultRowTypeException(
+                    configuration.name().orElseThrow(MissingSqlConfigurationNameException::new),
+                    declared,
+                    "is not a type a result can be built into. Name a class, with or without its "
+                            + "package — 'com.example.domain.Tenant' or 'Tenant'.");
+        }
     }
 
     private Optional<ResultRowConverter> defaultConverter() {
