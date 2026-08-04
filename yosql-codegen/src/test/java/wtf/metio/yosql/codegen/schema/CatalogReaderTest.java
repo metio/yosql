@@ -83,6 +83,38 @@ class CatalogReaderTest {
         }
 
         @Test
+        @DisplayName("a quoted identifier is known by the name inside the quotes")
+        void shouldReadQuotedIdentifiers() {
+            final var catalog = read("""
+                    create table "user" (
+                        "firstName" varchar(64) not null,
+                        id          bigint      primary key
+                    )
+                    """);
+
+            final var table = catalog.table("user").orElseThrow();
+            assertAll(
+                    () -> assertIterableEquals(List.of("firstname", "id"), table.columnNames()),
+                    () -> assertTrue(table.column("firstName").isPresent(),
+                            "a query spelling it bare reads the same column"),
+                    () -> assertTrue(table.column("\"firstName\"").isPresent(),
+                            "as does a query quoting it"),
+                    () -> assertEquals("firstName", table.column("firstName").orElseThrow().name(),
+                            "the reported name is the identifier, which is what a record component is named after"));
+        }
+
+        @Test
+        @DisplayName("a backticked table is known the same way, so mysqldump DDL is not skipped")
+        void shouldReadBacktickedIdentifiers() {
+            final var catalog = read("create table `orders` (`id` bigint not null, `total` int)");
+
+            final var orders = catalog.table("orders").orElseThrow();
+            assertAll(
+                    () -> assertIterableEquals(List.of("id", "total"), orders.columnNames()),
+                    () -> assertTrue(orders.column("total").isPresent()));
+        }
+
+        @Test
         @DisplayName("a schema-qualified table is known by its own name")
         void shouldStripSchemaQualifier() {
             final var catalog = read("create table public.tenant (id uuid not null)");

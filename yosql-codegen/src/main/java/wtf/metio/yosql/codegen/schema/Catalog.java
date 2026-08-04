@@ -48,7 +48,38 @@ public final class Catalog {
      * {@code tenant} are one table.
      */
     public static String normalize(final String identifier) {
-        return identifier.strip().toLowerCase(Locale.ROOT);
+        return unquote(identifier).toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Drops the quotes a dialect wraps an identifier in.
+     *
+     * <p>Every side of a comparison has to agree about this or none of them meet: a parser hands back
+     * {@code "firstName"} with its quotes for quoted DDL, and the query reading it may spell the same
+     * column bare. Unquoting in one place keeps the catalog's keys and the names it reports in terms
+     * of the identifier itself, which is also the only spelling a generated record component can be
+     * named after.</p>
+     *
+     * <p>Covers the two pairs the parser understands — {@code "..."} in standard SQL and
+     * {@code `...`} in MySQL — and undoes the doubling that escapes the quote inside one. SQL
+     * Server's {@code [...]} is absent because DDL written that way does not parse as a
+     * {@code create table} at all, so no such identifier ever reaches a catalog.</p>
+     */
+    public static String unquote(final String identifier) {
+        final var stripped = identifier.strip();
+        if (stripped.length() < 2) {
+            return stripped;
+        }
+        final var first = stripped.charAt(0);
+        final var last = stripped.charAt(stripped.length() - 1);
+        final var inner = stripped.substring(1, stripped.length() - 1);
+        if (first == '"' && last == '"') {
+            return inner.replace("\"\"", "\"");
+        }
+        if (first == '`' && last == '`') {
+            return inner.replace("``", "`");
+        }
+        return stripped;
     }
 
     /**

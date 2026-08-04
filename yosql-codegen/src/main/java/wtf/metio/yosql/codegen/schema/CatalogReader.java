@@ -85,13 +85,15 @@ public final class CatalogReader {
         final var columns = new LinkedHashMap<String, Column>(definitions.size());
         for (final var definition : definitions) {
             final var column = column(definition);
-            columns.put(column.name(), column);
+            // Keyed the way the constraints below and the query side both spell it: a table-level
+            // `primary key ("id")` has to find the column that `"id" bigint` declared.
+            columns.put(Catalog.normalize(column.name()), column);
         }
         for (final var key : primaryKeyColumns(created)) {
             columns.computeIfPresent(key, (name, column) ->
                     new Column(column.name(), column.sqlType(), false));
         }
-        return Optional.of(new Table(created.getTable().getName(), columns));
+        return Optional.of(new Table(Catalog.unquote(created.getTable().getName()), columns));
     }
 
     /**
@@ -114,22 +116,10 @@ public final class CatalogReader {
                 .map(Index::getColumnsNames)
                 .filter(Objects::nonNull)
                 .flatMap(List::stream)
-                .map(CatalogReader::withoutQuotes)
+                .map(Catalog::normalize)
                 .toList();
     }
 
-    /**
-     * A constraint may name a column the way the DDL quoted it, while the definition that declared
-     * it did not.
-     */
-    private static String withoutQuotes(final String column) {
-        final var stripped = column.strip();
-        if (stripped.length() > 1 && (stripped.startsWith("\"") && stripped.endsWith("\"")
-                || stripped.startsWith("`") && stripped.endsWith("`"))) {
-            return stripped.substring(1, stripped.length() - 1);
-        }
-        return stripped;
-    }
 
     private static void addColumns(final Alter altered, final LinkedHashMap<String, Table> tables) {
         final var name = Catalog.normalize(altered.getTable().getName());
@@ -147,16 +137,14 @@ public final class CatalogReader {
                 continue;
             }
             for (final var definition : added) {
-                table = table.with(new Column(definition.getColumnName(),
-                        String.valueOf(definition.getColDataType()),
-                        nullable(definition.getColumnSpecs())));
+                table = table.with(column(definition));
             }
         }
         tables.put(name, table);
     }
 
     private static Column column(final ColumnDefinition definition) {
-        return new Column(definition.getColumnName(),
+        return new Column(Catalog.unquote(definition.getColumnName()),
                 String.valueOf(definition.getColDataType()),
                 nullable(definition.getColumnSpecs()));
     }

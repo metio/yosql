@@ -54,9 +54,9 @@ public record SelectItems(List<Item> items) {
         final var items = new ArrayList<Item>();
         for (final var selectItem : parsed.get().getSelectItems()) {
             final var expression = selectItem.getExpression();
-            final var alias = Optional.ofNullable(selectItem.getAlias()).map(it -> it.getName().replace("\"", ""));
+            final var alias = Optional.ofNullable(selectItem.getAlias()).map(it -> Catalog.unquote(it.getName()));
             if (expression instanceof Column column) {
-                final var name = column.getColumnName().replace("\"", "");
+                final var name = Catalog.unquote(column.getColumnName());
                 items.add(new Item(alias.orElse(name), Optional.of(qualified(column, name))));
             } else if (alias.isPresent()) {
                 // An expression with a name: the row carries it, but no column produced it.
