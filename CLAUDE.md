@@ -60,9 +60,15 @@ the build with `syntax error @[line,column]` and no mention of why. Build those 
 concatenation. Every other module is free to use them.
 
 **So a new setting is added to `yosql-models-meta` and nowhere else.** Editing a frontend by hand
-means editing generated output. The website's configuration pages are generated too and gitignored —
-`docs` cleans and regenerates them, but `excludeDefaultDirectories` means its `target/` is *not*
-cleaned, so a removed setting can leave a stale page behind locally.
+means editing generated output. The website's configuration pages are generated too, and gitignored.
+
+*Removing* a setting used to be the dangerous direction. `target/` survives an incremental build, so
+the interface for a deleted configuration group stayed on disk and kept compiling: the build passed
+while a fresh checkout would not have. The generator now deletes what it wrote before writing again,
+and `docs` clears the reference pages while generating rather than only on `mvn clean`, so an
+incremental build sees what CI sees. What still has to be kept in step by hand is the wiring each
+frontend declares per group — `FrontendCoverageTest` fails when a group reaches only some of them —
+and `reflect-config.json`, which lists the model classes a native image needs.
 
 ## How generation runs
 

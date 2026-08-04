@@ -110,6 +110,23 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.5.0</version>
+                <!-- Also on an ordinary build, not only on `mvn clean`. The reference pages are
+                     copied in rather than written in place, and a copy cannot remove the page of a
+                     setting that no longer exists — so without this the site keeps documenting it
+                     until somebody happens to run a clean build.
+
+                     `initialize`, because plugins bound to the same phase run in the order the POM
+                     declares them: at `generate-sources` this would run after the copy and delete
+                     the pages it had just written. -->
+                <executions>
+                    <execution>
+                        <id>discard-previous-reference</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <excludeDefaultDirectories>true</excludeDefaultDirectories>
                     <filesets>
