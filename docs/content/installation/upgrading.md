@@ -184,6 +184,16 @@ used to be skipped without a word — so a typo removed a method from your repos
 nothing. It is now a build error naming the file and the statement. If a release starts failing
 here, it is reporting something that was already broken.
 
+### The `TI` logging API is gone
+
+`logging.api` no longer accepts `TI`. The generator behind it was never written: it answered every
+question with an empty block while reporting that logging was off, and the repositories it produced
+did not compile — a bare `if () {` reading a variable nothing declared.
+
+If your build sets it — `<api>TI</api>` in a `pom.xml`, `api = 'TI'` in a `build.gradle`, or
+`--logging-api=TI` on the command line — pick one of `NONE`, `JUL`, `SYSTEM`, `LOG4J`, `SLF4J` or
+`TINYLOG`. `NONE` is the closest to what `TI` actually did, which was nothing.
+
 ### The `java` configuration group is gone
 
 Its six switches decided whether generated classes, fields, methods, parameters and locals were
