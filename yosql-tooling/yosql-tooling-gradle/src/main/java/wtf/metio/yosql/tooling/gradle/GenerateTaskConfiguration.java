@@ -9,6 +9,7 @@ import org.gradle.api.Action;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
 
@@ -32,6 +33,13 @@ public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
         // What the record scanner reads. Not a directory property, because it may well point
         // outside this project — the examples point it at a sibling module.
         task.getSourceDirectories().from(extension.getFiles().getSourceDirectory());
+        // The DDL, when it is kept somewhere other than among the statements. A file collection for
+        // the same reason, and because the setting is empty by default: a DirectoryProperty would
+        // have to point somewhere.
+        task.getSchemaDirectories().from(extension.getSchema().getSqlStatementsDirectory()
+                .map(directory -> directory.isBlank()
+                        ? List.of()
+                        : List.of(projectDirectory.resolve(directory).toFile())));
         task.getRuntimeConfiguration().set(RuntimeConfiguration.builder()
                 .setAnnotations(extension.getAnnotations().asConfiguration())
                 .setConverter(extension.getConverter().asConfiguration())

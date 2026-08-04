@@ -14,6 +14,9 @@ import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The 'generate' goal generates Java code based on SQL files.
  */
@@ -65,7 +68,7 @@ public class GenerateMojo extends AbstractMojo {
             // be compiled. Doing this only inside the delta check makes the second build of an
             // unchanged project compile nothing.
             project.addCompileSourceRoot(configuration.files().outputBaseDirectory().toString());
-            if (buildContext.hasDelta(files.inputBaseDirectory)) {
+            if (buildContext.hasDelta(regeneratingInputs())) {
                 buildYoSQL(configuration).generateCode();
                 buildContext.refresh(configuration.files().outputBaseDirectory().toFile());
             }
@@ -74,6 +77,24 @@ public class GenerateMojo extends AbstractMojo {
             // is in trouble, and rewrapping it as "failure to generate code" hides that.
             throw new MojoExecutionException("Failure to generate code", exception);
         }
+    }
+
+    /**
+     * Everything an edit to which changes what is generated.
+     *
+     * <p>The statements are the obvious one, and were the only one asked about — but the records the
+     * converter generator reads decide a converter's shape, and the DDL decides what a generated
+     * result row type holds. An incremental build that asks only about the SQL leaves both stale, and
+     * this plugin opts into incremental builds explicitly, so IDEs take it at its word.</p>
+     */
+    private List<String> regeneratingInputs() {
+        final var inputs = new ArrayList<String>();
+        inputs.add(files.inputBaseDirectory);
+        inputs.add(files.sourceDirectory);
+        if (schema.sqlStatementsDirectory != null && !schema.sqlStatementsDirectory.isBlank()) {
+            inputs.add(schema.sqlStatementsDirectory);
+        }
+        return inputs;
     }
 
     private static YoSQL buildYoSQL(final RuntimeConfiguration configuration) {

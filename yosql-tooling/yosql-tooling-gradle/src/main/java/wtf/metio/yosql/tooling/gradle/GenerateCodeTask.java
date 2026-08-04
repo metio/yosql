@@ -82,6 +82,20 @@ public abstract class GenerateCodeTask extends DefaultTask {
     public abstract ConfigurableFileCollection getSourceDirectories();
 
     /**
+     * @return the DDL the schema is read from, when it lives somewhere other than among the
+     *         statements. Empty unless {@code schema.sqlStatementsDirectory} is set.
+     *
+     *         <p>An input for the same reason the source directories are: the DDL decides what is
+     *         generated. A column added by a migration changes a generated record's components, and
+     *         without this the task stays up to date across that edit — and, being a
+     *         {@code CacheableTask}, hands out a cache entry keyed on a schema it never read.</p>
+     */
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    @IgnoreEmptyDirectories
+    public abstract ConfigurableFileCollection getSchemaDirectories();
+
+    /**
      * @return where the `.sql` files are read from. RELATIVE path sensitivity: moving the whole
      *         project should not invalidate the result, but moving a file within it should.
      */

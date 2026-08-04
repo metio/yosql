@@ -602,7 +602,11 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .setGradleConvention(CodeBlock.of("$L().convention($T.of($L))", gradlePropertyName(name), List.class, prefixesInCode))
                 .addAntFields(antField(type, name, description, CodeBlock.of("$T.of($L)", List.class, prefixesInCode)))
                 .addAntMethods(antListSetter(name, description))
-                .addCliFields(picocliOption(type, GROUP_NAME, name, description, prefixesInDocs, ", "))
+                // picocli reads `split` as a regular expression, so a literal ", " accepted only the
+                // spelling the default value happens to use: `--...=fetch,find` arrived as the single
+                // element "fetch,find", after which no statement classified as reading. Ant splits the
+                // same setting on "," and the documentation writes it that way.
+                .addCliFields(picocliOption(type, GROUP_NAME, name, description, prefixesInDocs, "\\s*,\\s*"))
                 .addGradleMethods(gradleProperty(gradleListPropertyOf(ClassName.get(String.class)), name, description))
                 .addImmutableMethods(immutableMethod(type, name, description, CodeBlock.of("$T.of($L)", List.class, prefixesInCode)))
                 .addMavenFields(mavenParameter(type, name, description, prefixesInDocs, CodeBlock.of("$T.of($L)", List.class, prefixesInCode)));
