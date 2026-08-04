@@ -155,15 +155,17 @@ that builds one is testing your SQL rather than your wiring.
 ## Substituting a repository
 
 Generated classes are `final`, so mocking them is not on offer. Turn on
-[generateInterfaces](../../configuration/repositories/generateinterfaces/) with an interface suffix,
-depend on the interface, and substitute whatever you like:
+[generateInterfaces](../../configuration/repositories/generateinterfaces/), depend on the interface,
+and substitute whatever you like:
 
 ```xml
 <repositories>
   <generateInterfaces>true</generateInterfaces>
-  <repositoryInterfaceSuffix>Api</repositoryInterfaceSuffix>
 </repositories>
 ```
+
+The interface is the repository without the `Repository` that made it one, so `TenantRepository`
+implements `Tenant`.
 
 Consider whether you want to. A repository whose whole content is SQL is a poor thing to mock — a
 test that fakes it asserts that your code calls a method, not that your query is right.

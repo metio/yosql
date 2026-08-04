@@ -123,11 +123,6 @@ A component reads the column its own name implies, `camelCase` as `snake_case` â
 ```sql
 -- name: insertTenant
 -- returning: none
--- parameters:
---   id: uuid
---   accountId: uuid
---   slug: string
---   createdAt: instant
 insert into tenant (id, account_id, slug, created_at)
 values (:id, :accountId, :slug, :createdAt)
 ;
@@ -152,9 +147,10 @@ order by slug
 
 Three things worth noticing:
 
-- **`insertTenant` names its parameter types; the reads do not.** A read naming `Tenant` as its
-  result row type takes `:id` and `:accountId` from the components of the same name. The insert has
-  no such source, so it says.
+- **Nothing names a parameter type.** `:id` and `:accountId` on the reads come from the components
+  of the record they build; on the insert they come from the columns they are named after, because
+  the `create table` in step 2 is a statement `YoSQL` reads like any other. Write the types out only
+  where neither can answer.
 - **The file is `tenants.sql` under `tenant/`, so all three land in `TenantRepository`.** The
   directory decides the repository, not the file.
 - **Every name starts with `insert` or `find`.** A name matching none of the configured prefixes

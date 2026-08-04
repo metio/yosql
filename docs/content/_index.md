@@ -28,8 +28,25 @@ public record Tenant(UUID id, String slug, Instant createdAt) {
 ```
 
 and you get `Optional<Tenant> findTenant(UUID id)`, backed by a mapper that reads each column by
-name and calls the constructor. The record says `id` is a `UUID`, so `:id` is one too and the front
-matter has nothing to add. No reflection, no proxies, no annotations on your domain types.
+name and calls the constructor. Nothing says what `:id` is: the record has an `id` component, and
+your `create table` has an `id` column — either answers. No reflection, no proxies, no annotations
+on your domain types.
+
+Or don't write the record. Where it would only repeat what the `select` list already says, add
+`generateResultRowType: true` and it is written from your schema:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+-- generateResultRowType: true
+select id, slug, created_at
+from tenant
+where id = :id
+```
+
+Write it yourself when it carries more than columns — a value object, an enum, a nested record —
+because those are things a schema cannot describe.
 
 Needs [Java 25](./installation/). Ready in about a minute — see [installation](./installation/).
 

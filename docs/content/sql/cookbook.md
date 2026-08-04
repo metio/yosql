@@ -16,11 +16,36 @@ and adapt.
 
 ## A list of values in an IN clause
 
-A parameter is bound at fixed positions, so `in (:ids)` cannot expand to a different number of
-placeholders per call. On a database with array types, don't expand it — compare against an array:
+Declare the parameter as a collection and the query is built around it — one placeholder per value
+the caller passed:
 
 ```sql
 -- name: findTenantsByIds
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   - name: ids
+--     type: java.util.List<java.util.UUID>
+select id, slug, created_at
+from tenant
+where id in (:ids)
+```
+
+```java
+final var found = tenants.findTenantsByIds(List.of(first, second, third));
+```
+
+`List`, `Set`, `Collection` and `Iterable` all work. An empty one matches no row, which is what `in`
+on an empty set means — but an empty collection in a `not in` throws, because that should match
+every row and no list of placeholders can say so. See
+[lists of values](../sql-files/#lists-of-values) for the rest of the rules.
+
+On a database with array types there is a second option, and on a busy statement it is the better
+one: comparing against an array keeps the SQL the same length whatever the caller passes, so the
+database can reuse one plan rather than preparing a new statement per size.
+
+```sql
+-- name: findTenantsByIdArray
 -- returning: multiple
 -- resultRowType: com.example.domain.Tenant
 -- parameters:
@@ -36,13 +61,9 @@ where id = any(:ids)
 ```java
 try (final var connection = dataSource.getConnection()) {
     final var ids = connection.createArrayOf("uuid", tenantIds.toArray());
-    return tenants.findTenantsByIds(connection, ids);
+    return tenants.findTenantsByIdArray(connection, ids);
 }
 ```
-
-Where the database has no array type, the options are a statement per arity —
-`findTenantsBy2Ids`, `findTenantsBy3Ids` — or joining against a temporary table you fill first.
-Both are ugly; the array is worth reaching for.
 
 ## Optional filters
 

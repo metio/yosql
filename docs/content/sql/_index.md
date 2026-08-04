@@ -12,16 +12,15 @@ Statements live in `.sql` files, and a comment block above each one says what to
 -- name: findTenant
 -- returning: single
 -- resultRowType: com.example.domain.Tenant
--- parameters:
---   - name: id
---     type: java.util.UUID
 select id, slug, created_at
 from tenant
 where id = :id
 ```
 
-`name` becomes the method, `parameters` become its arguments, `:id` becomes the placeholder the
-driver binds, and `returning` decides whether you get one row, many, or a stream.
+`name` becomes the method, every `:id` becomes one of its arguments and the placeholder the driver
+binds, and `returning` decides whether you get one row, many, or a stream. Nothing says what `:id`
+is, because `Tenant` has an `id` component and the `tenant` table has an `id` column — either
+answers. Name a type only where neither can.
 
 ## What you get back
 
