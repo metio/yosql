@@ -117,9 +117,16 @@ public final class JavaSourceParser {
      * <p>It also keeps this off a reflective code path: the validators walk the AST through a
      * metamodel that reads node fields by name, which a closed-world native image has no reason to
      * keep and therefore drops.</p>
+     *
+     * <p>A parser per call, rather than one held in a field: JavaParser keeps a single mutable
+     * parser inside each instance and resets it per invocation, so one instance cannot serve two
+     * threads — and files are parsed from a parallel stream. Constructing one costs nothing beside
+     * reading and parsing the file it is built for.</p>
      */
-    private final JavaParser parser = new JavaParser(new ParserConfiguration()
-            .setLanguageLevel(ParserConfiguration.LanguageLevel.RAW));
+    private static JavaParser parser() {
+        return new JavaParser(new ParserConfiguration()
+                .setLanguageLevel(ParserConfiguration.LanguageLevel.RAW));
+    }
 
     /**
      * @param source   the file's text
@@ -162,7 +169,7 @@ public final class JavaSourceParser {
 
     private CompilationUnit compilationUnit(
             final String source, final Path location, final ClassName expected) {
-        final var result = parser.parse(source);
+        final var result = parser().parse(source);
         if (!result.isSuccessful()) {
             throw new UnparsableRecordException(location, expected, result.getProblems().isEmpty()
                     ? "it is not valid Java"

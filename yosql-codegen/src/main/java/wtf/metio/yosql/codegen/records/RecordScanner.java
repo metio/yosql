@@ -13,7 +13,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,7 +27,12 @@ public final class RecordScanner {
 
     private final Path sourceDirectory;
     private final JavaSourceParser parser;
-    private final Map<ClassName, Optional<JavaSourceType>> scanned = new HashMap<>();
+    /**
+     * Concurrent, because a run reaches this from parallel streams twice over — once while the
+     * statements are configured, once while their repositories are generated. A plain map loses
+     * entries or throws when two threads compute at the same time.
+     */
+    private final Map<ClassName, Optional<JavaSourceType>> scanned = new ConcurrentHashMap<>();
 
     public RecordScanner(final FilesConfiguration files, final JavaSourceParser parser) {
         this.sourceDirectory = files.sourceDirectory();
