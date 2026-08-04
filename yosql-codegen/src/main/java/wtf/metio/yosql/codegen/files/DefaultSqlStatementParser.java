@@ -33,6 +33,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
 
     private static final String SQL_COMMENT_PREFIX = "--";
     private static final String BLOCK_COMMENT_START = "/*";
+    private static final String OPTIMIZER_HINT_START = "/*+";
     private static final String BLOCK_COMMENT_END = "*/";
     private static final String NEWLINE = "\n";
     private static final char BYTE_ORDER_MARK = '\uFEFF';
@@ -169,11 +170,15 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
      * — so reading one would quietly turn a licence into configuration. A block comment further in
      * is left where it is, because that is where a vendor puts an optimizer hint.</p>
      */
-    private static String withoutHeader(final String rawText) {
+    // visible for testing
+    static String withoutHeader(final String rawText) {
         var text = rawText;
         while (true) {
             final var start = text.stripLeading();
-            if (!start.startsWith(BLOCK_COMMENT_START)) {
+            // `/*+` is a hint rather than a comment: it is addressed to the database and belongs to
+            // the statement it opens, which is what the paragraph above promises and what dropping
+            // every leading block comment took away.
+            if (!start.startsWith(BLOCK_COMMENT_START) || start.startsWith(OPTIMIZER_HINT_START)) {
                 return text;
             }
             final var end = start.indexOf(BLOCK_COMMENT_END);
@@ -212,32 +217,44 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
                 .build();
     }
 
+    /**
+     * Front matter is the section a statement opens with, not every {@code --} line in it.
+     *
+     * <p>Once the SQL has started, a {@code --} line is a comment the author wrote about the query.
+     * Reading those as configuration too meant that a note in the middle of a statement was either
+     * invalid YAML — failing the build with a complaint about the note rather than about the
+     * statement — or, worse, valid: {@code -- vendor: MySQL} written as a remark quietly became the
+     * setting, and the line disappeared from the SQL either way.</p>
+     */
     private void splitUpYamlAndSql(
             final String rawStatement,
             final Consumer<String> yaml,
             final Consumer<String> sql) {
         try (final var reader = new StringReader(rawStatement);
              final var buffer = new BufferedReader(reader)) {
-            buffer.lines()
-                    .filter(line -> !line.isBlank())
-                    .filter(line -> !SQL_COMMENT_PREFIX.equals(line.strip()))
-                    .filter(line -> !line.startsWith(YOSQL_PRAGMA))
-                    .forEach(line -> split(yaml, sql, line));
+            var inFrontMatter = true;
+            for (final var line : buffer.lines().toList()) {
+                if (line.isBlank() || line.startsWith(YOSQL_PRAGMA)) {
+                    continue;
+                }
+                final var isComment = line.startsWith(SQL_COMMENT_PREFIX);
+                if (!isComment) {
+                    inFrontMatter = false;
+                }
+                if (isComment && SQL_COMMENT_PREFIX.equals(line.strip())) {
+                    // An empty comment line: no YAML, and nothing a reader loses from the SQL.
+                    continue;
+                }
+                if (isComment && inFrontMatter) {
+                    yaml.accept(line.substring(2));
+                    yaml.accept(NEWLINE);
+                } else {
+                    sql.accept(line);
+                    sql.accept(NEWLINE);
+                }
+            }
         } catch (final IOException exception) {
             errors.add(exception);
-        }
-    }
-
-    private static void split(
-            final Consumer<String> yaml,
-            final Consumer<String> sql,
-            final String line) {
-        if (line.startsWith(SQL_COMMENT_PREFIX)) {
-            yaml.accept(line.substring(2));
-            yaml.accept(NEWLINE);
-        } else {
-            sql.accept(line);
-            sql.accept(NEWLINE);
         }
     }
 

@@ -254,8 +254,21 @@ public final class CatalogReader {
         if (columnSpecs == null || columnSpecs.isEmpty()) {
             return true;
         }
-        final var specs = String.join(" ", columnSpecs).toLowerCase(Locale.ROOT);
-        return !specs.contains("not null") && !specs.contains("primary key");
+        // Read as the tokens the parser produced rather than as one joined string. A quoted value is
+        // a single token, so `comment 'set when not null elsewhere'` no longer reads as a NOT NULL
+        // constraint and turn a nullable column into a primitive — which is the silent-zero-for-NULL
+        // this class exists to prevent.
+        return !says(columnSpecs, "not", "null") && !says(columnSpecs, "primary", "key");
+    }
+
+    private static boolean says(final List<String> columnSpecs, final String first, final String second) {
+        for (var index = 0; index < columnSpecs.size() - 1; index++) {
+            if (first.equalsIgnoreCase(columnSpecs.get(index))
+                    && second.equalsIgnoreCase(columnSpecs.get(index + 1))) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

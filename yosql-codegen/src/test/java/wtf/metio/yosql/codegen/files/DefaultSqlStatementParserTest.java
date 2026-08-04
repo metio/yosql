@@ -16,6 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
 import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
@@ -244,6 +245,62 @@ class DefaultSqlStatementParserTest {
 
             assertTrue(statements.getFirst().getRawStatement().contains("/*+ INDEX(tenant tenant_pkey) */"),
                     statements.getFirst().getRawStatement());
+        }
+
+        @Test
+        @DisplayName("is not dropped when the hint is what the statement opens with")
+        void shouldKeepALeadingHint() throws IOException {
+            // Checked on the header scan itself: a `--` line stops it, so a statement that opens with
+            // a hint is one with no front matter at all, and that in turn takes its repository name
+            // from where the file sits — which is more setup than the question needs.
+            final var text = """
+                    /*
+                     * SPDX-FileCopyrightText: The yosql Authors
+                     */
+
+                    /*+ INDEX(tenant tenant_pkey) */ select id from tenant
+                    """;
+
+            assertTrue(DefaultSqlStatementParser.withoutHeader(text).contains("/*+ INDEX(tenant tenant_pkey) */"),
+                    () -> "a hint is addressed to the database, not a licence to drop:\n"
+                            + DefaultSqlStatementParser.withoutHeader(text));
+        }
+
+        @Test
+        @DisplayName("is dropped when it really is a licence")
+        void shouldStillDropALicence() {
+            final var text = """
+                    /*
+                     * SPDX-FileCopyrightText: The yosql Authors
+                     */
+
+                    select id from tenant
+                    """;
+
+            assertEquals("select id from tenant", DefaultSqlStatementParser.withoutHeader(text).strip());
+        }
+
+        @Test
+        @DisplayName("a comment inside the statement stays in the SQL rather than becoming configuration")
+        void shouldKeepAMidStatementComment() throws IOException {
+            final var statements = parse("""
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id
+                    -- vendor: MySQL
+                    from tenant
+                    """);
+
+            assertAll(
+                    () -> assertEquals(1, statements.size()),
+                    () -> assertTrue(statements.getFirst().getConfiguration().vendor().isEmpty(),
+                            () -> "a remark below the SQL is not front matter, and reading it as such "
+                                    + "silently set the vendor to "
+                                    + statements.getFirst().getConfiguration().vendor().orElse("")),
+                    () -> assertTrue(statements.getFirst().getRawStatement().contains("-- vendor: MySQL"),
+                            () -> "and the line belongs to the statement:\n"
+                                    + statements.getFirst().getRawStatement()));
         }
 
     }

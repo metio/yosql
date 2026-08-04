@@ -150,6 +150,17 @@ class CatalogReaderTest {
         }
 
         @Test
+        @DisplayName("a comment mentioning not null does not make a column primitive")
+        void shouldNotReadConstraintsOutOfAComment() {
+            final var catalog = read(
+                    "create table tenant (slug varchar(64) comment 'left not null on purpose')");
+
+            assertTrue(catalog.table("tenant").orElseThrow().column("slug").orElseThrow().nullable(),
+                    "reading it as NOT NULL makes the component a primitive, and a NULL row then "
+                            + "arrives as a silent zero — the failure this class exists to prevent");
+        }
+
+        @Test
         @DisplayName("a primary key written beneath the table is not nullable either")
         void shouldTreatTableLevelPrimaryKeyAsNotNullable() {
             final var catalog = read("create table t (id bigint, name varchar(64), primary key (id))");

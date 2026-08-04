@@ -49,9 +49,13 @@ class SelectedColumnsTest {
         }
 
         @Test
-        @DisplayName("takes a quoted alias verbatim")
+        @DisplayName("reads a quoted alias the way every other name here is read")
         void quotedAlias() {
-            assertEquals(List.of("minorUnits"),
+            // Lower case, like the unquoted aliases above. A component's column comes from
+            // ColumnNames.columnFor, which always answers lower case, so a name kept verbatim could
+            // never match one — the record a statement selects into would be rejected against the
+            // very statement that describes it.
+            assertEquals(List.of("minorunits"),
                     SelectedColumns.of("select amount_cents as \"minorUnits\" from ledger").orElseThrow());
         }
 

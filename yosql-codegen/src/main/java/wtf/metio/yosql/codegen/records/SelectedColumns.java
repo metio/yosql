@@ -55,7 +55,12 @@ public final class SelectedColumns {
     private static Optional<String> nameOf(final String item) {
         final var quoted = QUOTED_ALIAS.matcher(item);
         if (quoted.find()) {
-            return Optional.of(quoted.group(1));
+            // Lower-cased like every other name here. A component's column is derived by
+            // ColumnNames.columnFor, which always answers lower case, so a quoted alias kept
+            // verbatim could never match one — and the check that compares them rejected records
+            // this generator had just written. JDBC looks a column up case-insensitively, so the
+            // label the database returns is still found.
+            return Optional.of(quoted.group(1).toLowerCase(Locale.ROOT));
         }
         final var alias = ALIAS.matcher(item);
         if (alias.find()) {
