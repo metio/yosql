@@ -187,7 +187,6 @@
                              the tests nor the native job could see, since both use the default. -->
                         <buildArg>-H:+AddAllCharsets</buildArg>
                     </buildArgs>
-                    <skipNativeBuild>${skipNativeBuild}</skipNativeBuild>
                 </configuration>
             </plugin>
             <plugin>
