@@ -46,6 +46,22 @@ class DefaultMethodNameConfigurerTest {
     }
 
     @Test
+    @DisplayName("a qualified name is not a method name, however valid a type name it would be")
+    void baseNameRejectsQualifiedName() {
+        final var original = SqlConfiguration.builder().setName("com.example.findTenant").build();
+        final var adapted = configurer.baseName(original, "filename", 0);
+        assertEquals("filename", adapted.name().orElseThrow());
+    }
+
+    @Test
+    @DisplayName("a file name carrying a dot does not become a method name with a dot in it")
+    void baseNameRejectsQualifiedFileName() {
+        final var original = SqlConfiguration.builder().build();
+        final var adapted = configurer.baseName(original, "findTenant.v2", 0);
+        assertTrue(adapted.name().isEmpty());
+    }
+
+    @Test
     void baseNameInvalidNameUnknownType() {
         final var original = SqlConfiguration.builder()
                 .setName("!@#$%")

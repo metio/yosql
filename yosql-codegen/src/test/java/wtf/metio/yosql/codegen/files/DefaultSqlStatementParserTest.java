@@ -154,6 +154,44 @@ class DefaultSqlStatementParserTest {
     }
 
     @Test
+    @DisplayName("a colon inside a string literal is part of the string")
+    void ignoreColonsInsideStringLiterals() {
+        final var indices = SqlStatementParser.extractParameterIndices("""
+                SELECT to_char(created_at, 'YYYY-MM-DD HH24:MI:SS')
+                FROM document
+                WHERE id = :id;
+                """);
+
+        assertAll(
+                () -> assertIterableEquals(List.of("id"), indices.keySet()),
+                () -> assertIterableEquals(List.of(1), indices.get("id")));
+    }
+
+    @Test
+    @DisplayName("a question mark inside a string literal is part of the string")
+    void ignoreQuestionMarksInsideStringLiterals() {
+        final var indices = SqlStatementParser.extractParameterIndices("""
+                SELECT * FROM document WHERE title = 'why?' AND id = :id;
+                """);
+
+        assertAll(
+                () -> assertIterableEquals(List.of("id"), indices.keySet()),
+                () -> assertIterableEquals(List.of(1), indices.get("id")));
+    }
+
+    @Test
+    @DisplayName("both spellings of a placeholder share one sequence of indices")
+    void numberEverySpellingTogether() {
+        final var indices = SqlStatementParser.extractParameterIndices("""
+                SELECT * FROM example_table WHERE a = ? AND b = :b AND c = ?;
+                """);
+
+        assertAll(
+                () -> assertIterableEquals(List.of(1, 3), indices.get(SqlStatementParser.UNNAMED_PARAMETERS)),
+                () -> assertIterableEquals(List.of(2), indices.get("b")));
+    }
+
+    @Test
     void extractMultipleParameterIndices() {
         final var indices = SqlStatementParser.extractParameterIndices("""
                 INSERT INTO example_table (id, name, name)

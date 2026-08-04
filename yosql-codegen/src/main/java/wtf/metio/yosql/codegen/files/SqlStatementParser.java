@@ -25,19 +25,33 @@ public interface SqlStatementParser {
      * The regex to extract named parameters out of SQL statements.
      *
      * <p>A named parameter is a colon and at least one word character. Requiring the name rules out
-     * the two things that are a colon and are not a parameter: punctuation, as in the {@code :} of a
-     * licence header the statement carries, and the second colon of PostgreSQL's {@code ::} cast.
-     * Both used to be read as parameters, and a cast took an index with it — which moved every
-     * parameter after it onto the wrong placeholder.</p>
+     * punctuation, as in the {@code :} of a licence header the statement carries, and the lookbehind
+     * rules out the second colon of PostgreSQL's {@code ::} cast. Both used to be read as parameters,
+     * and a cast took an index with it — which moved every parameter after it onto the wrong
+     * placeholder.</p>
+     *
+     * <p>A colon inside a string literal is not ruled out here, because a regular expression cannot
+     * see where a literal begins. Match it against {@link SqlText#maskLiteralsAndComments(String)}
+     * instead, which is what every caller does — the offsets are the same either way.</p>
      */
-    String NAMED_PARAMETER_REGEX = "(?<!')(?<!:)(:\\w+)(?!')";
+    String NAMED_PARAMETER_REGEX = "(?<!:)(:\\w+)";
     String PARAMETER_REGEX = "\\?";
+
+    /**
+     * Names the parameters written as a bare {@code ?}, which have no name of their own.
+     */
+    String UNNAMED_PARAMETERS = "unnamedParameters";
 
     /**
      * The pattern to extract named parameters out of SQL statements
      */
     Pattern NAMED_PARAMETER_PATTERN = Pattern.compile(NAMED_PARAMETER_REGEX);
     Pattern PARAMETER_PATTERN = Pattern.compile(PARAMETER_REGEX);
+
+    /**
+     * Either spelling of a placeholder, so that both can be counted in the order they appear.
+     */
+    Pattern PLACEHOLDER_PATTERN = Pattern.compile(NAMED_PARAMETER_REGEX + "|" + PARAMETER_REGEX);
 
     /**
      * Parses SQL statements from a file.
@@ -53,29 +67,21 @@ public interface SqlStatementParser {
      * @param sqlStatement The raw SQL statement to parse.
      * @return Extracted parameters and their indices.
      */
+    /**
+     * <p>Both spellings are counted in one pass, because the number a placeholder is bound by is its
+     * position among <em>all</em> of them. Counting each spelling from one separately gives a
+     * statement mixing {@code ?} and {@code :name} two parameters bound to index 1 and nothing bound
+     * to index 2.</p>
+     */
     static Map<String, List<Integer>> extractParameterIndices(final String sqlStatement) {
-        final var indices = parseNamedParameters(sqlStatement);
-        indices.putAll(parseUnnamedParameters(sqlStatement));
-        return indices;
-    }
-
-    private static Map<String, List<Integer>> parseNamedParameters(final String sqlStatement) {
         final Map<String, List<Integer>> indices = new LinkedHashMap<>();
-        final Matcher matcher = NAMED_PARAMETER_PATTERN.matcher(sqlStatement);
+        final Matcher matcher = PLACEHOLDER_PATTERN.matcher(SqlText.maskLiteralsAndComments(sqlStatement));
         int counter = 1;
         while (matcher.find()) {
-            final String parameterName = matcher.group().substring(1);
+            final String parameterName = matcher.group().startsWith("?")
+                    ? UNNAMED_PARAMETERS
+                    : sqlStatement.substring(matcher.start() + 1, matcher.end());
             indices.computeIfAbsent(parameterName, string -> new ArrayList<>(3)).add(counter++);
-        }
-        return indices;
-    }
-
-    private static Map<String, List<Integer>> parseUnnamedParameters(final String sqlStatement) {
-        final Map<String, List<Integer>> indices = new LinkedHashMap<>();
-        final Matcher matcher = PARAMETER_PATTERN.matcher(sqlStatement);
-        int counter = 1;
-        while (matcher.find()) {
-            indices.computeIfAbsent("unnamedParameters", string -> new ArrayList<>(3)).add(counter++);
         }
         return indices;
     }

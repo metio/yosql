@@ -138,6 +138,30 @@ class DefaultRepositoryNameConfigurerTest {
     }
 
     @Test
+    void repositoryInBasePackageWithFullyQualifiedName() {
+        assertEquals("com.example.persistence.YourRepository",
+                configurer.repositoryInBasePackage("com.example.persistence.YourRepository"));
+    }
+
+    @Test
+    void repositoryInBasePackageWithFullyQualifiedNameAndSubpackage() {
+        assertEquals("com.example.persistence.tenant.TenantRepository",
+                configurer.repositoryInBasePackage("com.example.persistence.tenant.TenantRepository"));
+    }
+
+    @Test
+    void repositoryInBasePackageWithSubpackageRepeatingABaseSegment() {
+        assertEquals("com.example.persistence.example.Test",
+                configurer.repositoryInBasePackage("example.Test"));
+    }
+
+    @Test
+    void repositoryInBasePackageWithUnrelatedPackage() {
+        assertEquals("com.example.persistence.org.other.Test",
+                configurer.repositoryInBasePackage("org.other.Test"));
+    }
+
+    @Test
     void repositoryInBasePackageWithEmptyBasePackage() {
         configurer = new DefaultRepositoryNameConfigurer(
                 LoggingObjectMother.logger(),

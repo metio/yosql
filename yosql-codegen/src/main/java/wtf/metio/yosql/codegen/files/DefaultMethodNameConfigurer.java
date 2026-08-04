@@ -50,17 +50,29 @@ public final class DefaultMethodNameConfigurer implements MethodNameConfigurer {
     SqlConfiguration baseName(final SqlConfiguration configuration, final String fileName, final int statementInFile) {
         return SqlConfiguration.copyOf(configuration)
                 .withName(configuration.name()
-                        .filter(SourceVersion::isName)
+                        .filter(DefaultMethodNameConfigurer::isMethodName)
                         .or(() -> configuration.type()
                                 .map(type -> validName(type, fileName))
                                 .map(name -> calculateName(name, statementInFile)))
                         .or(() -> Optional.of(fileName)
-                                .filter(SourceVersion::isName)
+                                .filter(DefaultMethodNameConfigurer::isMethodName)
                                 .map(name -> calculateName(name, statementInFile))));
     }
 
+    /**
+     * A method has one name rather than a qualified one.
+     *
+     * <p>{@link SourceVersion#isName(CharSequence)} answers for a <em>type</em> name and so accepts
+     * the dots between packages. A file called {@code findTenant.v2.sql} passes it and becomes a
+     * method literally called {@code findTenant.v2}, which JavaPoet writes out as readily as it was
+     * given — the first complaint comes from the user's compiler.</p>
+     */
+    private static boolean isMethodName(final String name) {
+        return SourceVersion.isIdentifier(name) && !SourceVersion.isKeyword(name);
+    }
+
     private String validName(final SqlStatementType type, final String fileName) {
-        return SourceVersion.isName(fileName) ? fileName : generateName(type);
+        return isMethodName(fileName) ? fileName : generateName(type);
     }
 
     private static String calculateName(final String name, final int statementInFile) {

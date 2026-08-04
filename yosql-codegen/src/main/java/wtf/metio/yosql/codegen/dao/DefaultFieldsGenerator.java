@@ -13,6 +13,7 @@ import wtf.metio.yosql.codegen.blocks.Fields;
 import wtf.metio.yosql.codegen.blocks.Javadoc;
 import wtf.metio.yosql.codegen.exceptions.*;
 import wtf.metio.yosql.codegen.files.SqlStatementParser;
+import wtf.metio.yosql.codegen.files.SqlText;
 import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.internals.jdk.Buckets;
@@ -190,8 +191,21 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
                 .build();
     }
 
+    /**
+     * Turns the names the author wrote into the placeholders a driver understands — but only the
+     * ones outside string literals and comments, which is why the matching runs over the mask and
+     * the rewriting over the statement itself.
+     */
     private static String replaceNamedParameters(final String rawSqlStatement) {
-        return rawSqlStatement.replaceAll(SqlStatementParser.NAMED_PARAMETER_PATTERN.pattern(), "?");
+        final var matcher = SqlStatementParser.NAMED_PARAMETER_PATTERN
+                .matcher(SqlText.maskLiteralsAndComments(rawSqlStatement));
+        final var statement = new StringBuilder();
+        var last = 0;
+        while (matcher.find()) {
+            statement.append(rawSqlStatement, last, matcher.start()).append('?');
+            last = matcher.end();
+        }
+        return statement.append(rawSqlStatement.substring(last)).toString();
     }
 
     private FieldSpec asConstantSqlParameterIndexField(final SqlStatement sqlStatement) {

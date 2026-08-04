@@ -9,6 +9,7 @@ import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.codegen.files.SqlStatementParser;
+import wtf.metio.yosql.codegen.files.SqlText;
 import wtf.metio.yosql.internals.javapoet.TypeGuesser;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -131,7 +132,8 @@ public final class InLists {
         final var expanding = expandingNames(configuration);
         final var parts = new ArrayList<String>();
         final var part = new StringBuilder();
-        final var matcher = SqlStatementParser.NAMED_PARAMETER_PATTERN.matcher(rawStatement);
+        final var matcher = SqlStatementParser.NAMED_PARAMETER_PATTERN
+                .matcher(SqlText.maskLiteralsAndComments(rawStatement));
         var last = 0;
         while (matcher.find()) {
             part.append(rawStatement, last, matcher.start());

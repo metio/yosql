@@ -113,16 +113,27 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
         return classWithSuffix(name, NAME_SUFFIX);
     }
 
+    /**
+     * Puts a repository under the base package, without repeating what the two already share.
+     *
+     * <p>A name can arrive already carrying part of the base package — a mirrored directory layout
+     * produces one, and so does a {@code repository:} written out in full. What they share is a
+     * <em>run</em>: the tail of the base package against the head of the name, matched as one
+     * sequence. Counting positions that happen to agree instead finds an overlap of one wherever the
+     * two packages share a segment anywhere, which is how a fully qualified name came back doubled.</p>
+     */
     // visible for testing
     String repositoryInBasePackage(final String repositoryName) {
         final var basePackages = repositories.basePackageName().split("\\.");
         final var repositoryPackages = repositoryName.split("\\.");
-        final var iterationLength = Math.min(basePackages.length, repositoryPackages.length);
+        // The last segment is the class itself, which is never part of the shared package run.
+        final var longestPossible = Math.min(basePackages.length, repositoryPackages.length - 1);
 
-        int overlappingPackages = 0;
-        for (int index = 0; index < iterationLength - 1; index++) {
-            if (basePackages[basePackages.length - 1 - index].equals(repositoryPackages[index])) {
-                overlappingPackages++;
+        var overlappingPackages = 0;
+        for (var length = longestPossible; length > 0; length--) {
+            if (sharesRun(basePackages, repositoryPackages, length)) {
+                overlappingPackages = length;
+                break;
             }
         }
 
@@ -130,6 +141,22 @@ public final class DefaultRepositoryNameConfigurer implements RepositoryNameConf
                         .skip(overlappingPackages))
                 .filter(Predicate.not(String::isBlank))
                 .collect(Collectors.joining("."));
+    }
+
+    /**
+     * Whether the last {@code length} segments of the base package are the first {@code length} of
+     * the repository's name, in order.
+     */
+    private static boolean sharesRun(
+            final String[] basePackages,
+            final String[] repositoryPackages,
+            final int length) {
+        for (var index = 0; index < length; index++) {
+            if (!basePackages[basePackages.length - length + index].equals(repositoryPackages[index])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Optional<String> repositoryInterfaceName(final SqlConfiguration configuration, final Path source) {
