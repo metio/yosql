@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Claude on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/claude/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/claude/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/claude/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/claude/</id><entry><title type="html">Claude skill</title><link href="https://yosql.projects.metio.wtf/editors/claude/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/editors/claude/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p><a href="https://claude.com/claude-code">Claude Code</a>
+ writing a statement for you needs to know things that
+are not visible in the file it is editing: that a result row type is read from <em>source</em> rather than
+from the classpath, that a name matching no configured prefix generates nothing at all, that a
+parameter with no type fails the build rather than becoming an <code>Object</code>. A skill tells it.</p>
+<h2 id="installing-it">Installing it</h2>
+<p>Copy the skill into your own project:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mkdir -p .claude/skills/yosql
+</span></span><span class="line"><span class="cl">curl -o .claude/skills/yosql/SKILL.md https://yosql.projects.metio.wtf/claude/SKILL.md
+</span></span></code></pre></div><p>Commit it, and every contributor gets the same behaviour. Claude loads it when it notices <code>.sql</code>
+files under a <code>YoSQL</code> source directory, a <code>yosql-tooling-*</code> plugin in the build, or a <code>yosql.args</code>
+file — you do not have to mention it.</p>
+<p>Put it in <code>~/.claude/skills/yosql/SKILL.md</code> instead to have it available in every project on your
+machine.</p>
+<h2 id="what-it-knows">What it knows</h2>
+<ul>
+<li>Where statements and records have to live, and how the directory a <code>.sql</code> file sits in decides the
+repository it generates into.</li>
+<li>The front matter keys that matter, and which ones are usually inferred rather than written.</li>
+<li>That a statement&rsquo;s kind comes from its name prefix, and that a name matching none of them silently
+produces no code — the mistake most likely to waste an afternoon.</li>
+<li>How parameter types are found: from the front matter, from the component of the same name on the
+result row type, or from the column the parameter is named after. Including the short names, so it
+writes <code>uuid</code> rather than <code>java.util.UUID</code>.</li>
+<li>When to let the schema write the result record instead of writing one, and when a record has to be
+written by hand because it carries more than columns.</li>
+<li>That a collection parameter becomes an <code>in (...)</code> list, and which names a parameter cannot have.</li>
+<li>That a licence header belongs in a block comment, because <code>--</code> lines at the top of a file are
+front matter.</li>
+<li>How a record maps to a result row, when to alias a column in the query instead of reaching for
+<a href="../../configuration/sql/resultrowcolumns/">resultRowColumns</a>
+, and what makes a build fail.</li>
+<li>Running several statements in one transaction.</li>
+<li>What not to do — chiefly, editing generated code.</li>
+</ul>
+<h2 id="keeping-it-honest">Keeping it honest</h2>
+<p>The file served above is the one
+<a href="https://github.com/metio/yosql/blob/main/.claude/skills/yosql/SKILL.md">in the repository</a>
+, copied
+in when the site is built, so the two cannot disagree. It changes with the generator, so re-fetch it
+when you upgrade. It describes behaviour, not
+version numbers; if you find it saying something that is no longer true,
+<a href="https://github.com/metio/yosql/issues/new">open an issue</a>
+ — a skill that lies is worse than no
+skill.</p>
+<h2 id="other-agents">Other agents</h2>
+<p>The file is ordinary Markdown with a small front matter header. Tools that read <code>AGENTS.md</code>, Cursor
+rules or a similar convention can use the same content — drop the body into whatever file your tool
+reads.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/editors" term="editors" label="Editors"/><category scheme="https://yosql.projects.metio.wtf/tags/claude" term="claude" label="claude"/><category scheme="https://yosql.projects.metio.wtf/tags/agents" term="agents" label="agents"/></entry></feed>

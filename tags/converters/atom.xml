@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Converters on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/converters/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/converters/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/converters/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/converters/</id><entry><title type="html">Converters</title><link href="https://yosql.projects.metio.wtf/sql/converters/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/sql/converters/</id><published>2019-07-07T14:27:54+02:00</published><updated>2019-07-07T14:27:54+02:00</updated><content type="html"><![CDATA[<p>The JDBC API has no object mapping. Something has to turn a <code>java.sql.ResultSet</code> row into a value
+of your domain, and in <code>YoSQL</code> that something is a <strong>converter</strong>: a plain Java class with a method
+taking a <code>ResultSet</code> and returning your type.</p>
+<p>Most of the time you never write one. Name a record and it is written for you:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">id</span><span class="w">
+</span></span></span></code></pre></div><p>That is the whole configuration. Components read the column matching their name in <code>snake_case</code>,
+so <code>createdAt</code> reads <code>created_at</code>, and a mismatch between the query and the record fails the build
+rather than surprising you at run time.</p>
+<p>The rest of this page is what to reach for when that is not enough:</p>
+<table>
+	<thead>
+			<tr>
+					<th>You need</th>
+					<th>See</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>a column named something else</td>
+					<td><a href="#which-column-a-component-reads">which column a component reads</a>
+</td>
+			</tr>
+			<tr>
+					<td>a type of your own around one column</td>
+					<td><a href="#types-that-build-themselves">types that build themselves</a>
+</td>
+			</tr>
+			<tr>
+					<td>several columns as one value</td>
+					<td><a href="#value-objects-spanning-several-columns">value objects spanning several columns</a>
+</td>
+			</tr>
+			<tr>
+					<td>one value rather than a row</td>
+					<td><a href="#results-that-are-one-value">results that are one value</a>
+</td>
+			</tr>
+			<tr>
+					<td>a mapping a record cannot express</td>
+					<td><a href="#writing-one-by-hand">writing one by hand</a>
+</td>
+			</tr>
+			<tr>
+					<td>your own types as parameters</td>
+					<td><a href="#parameters-on-the-way-in">parameters, on the way in</a>
+</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="from-a-record">From a record</h2>
+<p>Point a statement at a record and <code>YoSQL</code> reads that record&rsquo;s canonical constructor and emits the
+converter:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">account_id</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">slug</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">currency</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">created_at</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">id</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.domain</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">Tenant</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">Currency</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="n">Instant</span><span class="w"> </span><span class="n">createdAt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>What comes out is one <code>resultSet.getX(...)</code> call per component and then the constructor — the same
+code you would have written:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ToTenantConverter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="n">Tenant</span><span class="w"> </span><span class="nf">asUserType</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">ResultSet</span><span class="w"> </span><span class="n">resultSet</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">SQLException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resultSet</span><span class="p">.</span><span class="na">getObject</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">accountId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resultSet</span><span class="p">.</span><span class="na">getObject</span><span class="p">(</span><span class="s">&#34;account_id&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resultSet</span><span class="p">.</span><span class="na">getString</span><span class="p">(</span><span class="s">&#34;slug&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">currencyCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resultSet</span><span class="p">.</span><span class="na">getString</span><span class="p">(</span><span class="s">&#34;currency&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">Currency</span><span class="w"> </span><span class="n">currency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">currencyCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Currency</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="n">currencyCode</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">Timestamp</span><span class="w"> </span><span class="n">createdAtTimestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resultSet</span><span class="p">.</span><span class="na">getTimestamp</span><span class="p">(</span><span class="s">&#34;created_at&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">Instant</span><span class="w"> </span><span class="n">createdAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createdAtTimestamp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">createdAtTimestamp</span><span class="p">.</span><span class="na">toInstant</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Tenant</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="n">createdAt</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Nothing is looked up by name at runtime, so the result survives a GraalVM native image without a
+reflection hint — which is the reason to reach for generated JDBC over an ORM in the first place.</p>
+<p>The record is read from its <strong>source</strong>, under <a href="../../configuration/files/sourcedirectory/">sourceDirectory</a>
+,
+because code generation runs before compilation and the record usually lives in the module being
+generated for. Nothing is loaded or executed while reading it.</p>
+<h3 id="which-column-a-component-reads">Which column a component reads</h3>
+<p>A component&rsquo;s own name, read as <code>snake_case</code>: <code>tenantId</code> reads <code>tenant_id</code>, <code>createdAt</code> reads
+<code>created_at</code>. Where the column is named something else, alias it in the query:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">amount_cents</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_units</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">currency</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">ledger_entry</span><span class="w">
+</span></span></span></code></pre></div><p>That keeps the one place the two naming schemes meet next to the column being renamed, rather than
+in configuration you would have to go and find.</p>
+<p>When the query is not yours to change — a view you do not own, or SQL generated elsewhere — name
+the column in the front matter instead. Keys are component paths from the root of the result row
+type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findLedgerEntries
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.LedgerEntry
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowColumns:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   amount.minorUnits: amount_cents
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   at: created_at
+</span></span></span></code></pre></div><p>A column override belongs to the type rather than to one query, so every statement naming the same
+result row type shares one set: overrides declared on any of them apply to all of them, and two
+statements mapping the same component to different columns fail the build.</p>
+<h3 id="value-objects-spanning-several-columns">Value objects spanning several columns</h3>
+<p>A component whose type is itself a record is built from the same flat row. Nesting groups values on
+the Java side and the query knows nothing about it, so a nested component claims the column matching
+its own name — no prefix:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">Money</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">minorUnits</span><span class="p">,</span><span class="w"> </span><span class="n">Currency</span><span class="w"> </span><span class="n">currency</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">LedgerEntry</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">Money</span><span class="w"> </span><span class="n">amount</span><span class="p">,</span><span class="w"> </span><span class="n">Reason</span><span class="w"> </span><span class="n">reason</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">reference</span><span class="p">,</span><span class="w"> </span><span class="n">Instant</span><span class="w"> </span><span class="n">at</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findLedgerEntries
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.LedgerEntry
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">amount_cents</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_units</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">currency</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">reason</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">reference</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">created_at</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">at</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">ledger_entry</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">tenant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">tenantId</span><span class="w">
+</span></span></span></code></pre></div><p><code>LedgerEntry</code> arrives with its <code>Money</code> assembled from <code>minor_units</code> and <code>currency</code>.</p>
+<h3 id="null-and-what-it-must-not-become">Null, and what it must not become</h3>
+<p><code>getLong</code> answers <code>0</code> for SQL NULL and <code>getInt</code> answers <code>0</code>, which is how a nullable column quietly
+becomes a wrong number. So:</p>
+<ul>
+<li>a <strong>primitive</strong> component reads the value and then checks <code>wasNull()</code>, failing with the column&rsquo;s
+name — a <code>long</code> cannot represent NULL and will not pretend to;</li>
+<li>a <strong>boxed or object</strong> component arrives as <code>null</code>. A <code>cancelled_at</code> that was never set is <code>null</code>,
+not the epoch.</li>
+</ul>
+<p>Make a component nullable by giving it a reference type: <code>Instant activatedAt</code> rather than a
+primitive.</p>
+<h3 id="enums">Enums</h3>
+<p>An enum component is read as text and passed to <code>valueOf</code>. A value the enum does not know raises
+<code>IllegalArgumentException</code> naming the type and the value. Failing is the point: a persistence layer
+handed a state it cannot represent should stop rather than invent a default.</p>
+<h3 id="what-fails-the-build">What fails the build</h3>
+<p>A mismatch between the query and the record is visible before anything is compiled, so it stops the
+build and names the file, the statement and the component:</p>
+<ul>
+<li>a component no selected column supplies;</li>
+<li>a selected column no component claims;</li>
+<li>two records that would need converters of the same name;</li>
+<li>a record that contains itself;</li>
+<li>a component whose type nothing can read from a result set — the error names the <code>valueOf</code>
+factory that would fix it;</li>
+<li>a type declaring more than one <code>valueOf</code> the generator could use.</li>
+</ul>
+<p>Where the select list cannot be enumerated — <code>select *</code>, or an expression without an alias — the
+first two checks are skipped rather than guessed at. Aliasing your expressions gets them back.</p>
+<h3 id="types-that-build-themselves">Types that build themselves</h3>
+<p>A type nothing above can read still works, if it says how. Give it a <code>static</code> factory called
+<code>valueOf</code> taking one value the generator does know, and a component of that type is read from a
+single column and handed to it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">TenantId</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">TenantId</span><span class="w"> </span><span class="nf">valueOf</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TenantId</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">tenantIdValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resultSet</span><span class="p">.</span><span class="na">getObject</span><span class="p">(</span><span class="s">&#34;tenant_id&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">final</span><span class="w"> </span><span class="n">TenantId</span><span class="w"> </span><span class="n">tenantId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tenantIdValue</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">TenantId</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">tenantIdValue</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>This is the same convention enums already follow — <code>OrderState.valueOf(String)</code> — extended to your
+own types, and it is the extension point for anything the built-in list cannot cover: an identifier
+wrapped around a <code>UUID</code>, a normalising short name, a column holding JSON that your factory parses.
+The mapping lives on the type it belongs to, written in Java, and the emitted call is still a
+direct one, so nothing about it needs a native-image hint.</p>
+<p>Every rule above still holds, because the column is read exactly as a bare value of the parameter&rsquo;s
+type would be: a primitive parameter refuses NULL, an object parameter accepts it, and the factory
+is only called for a value that is actually there.</p>
+<p>The factory also settles what a one-component record means. With one, <code>TenantId</code> is a value wrapped
+around a column and reads the column its <em>component in the outer record</em> names. Without one, it is
+an ordinary nested record and its component reads a column called <code>value</code>. The type says which by
+declaring the factory or not.</p>
+<p>Two <code>valueOf</code> overloads that both take a readable type is a build error rather than a coin flip —
+leave a single one taking the type the column holds.</p>
+<h3 id="types-a-component-can-have">Types a component can have</h3>
+<p><code>String</code>, <code>UUID</code>, <code>Instant</code>, <code>LocalDate</code>, <code>LocalDateTime</code>, <code>LocalTime</code>, <code>OffsetDateTime</code>,
+<code>BigDecimal</code>, <code>Currency</code>, <code>byte[]</code>, the primitives and their wrappers, any enum, any record built
+from those, and any type with a <code>valueOf</code> factory taking one of them.</p>
+<h3 id="writes-that-answer-with-a-row">Writes that answer with a row</h3>
+<p><code>insert … returning id</code> is a write that produces a result set, and Postgres will only hand it back
+through <code>executeQuery</code>. Say so with <code>type</code>, because the method name decides otherwise — anything
+starting with <code>insert</code>, <code>update</code>, <code>delete</code> and the rest of
+<a href="../../configuration/repositories/allowedwriteprefixes/">allowedWritePrefixes</a>
+ is taken for a write,
+and a write runs <code>executeUpdate</code> and throws the row away:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: insertSignIn
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- type: reading
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.SignInId
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   - name: accountId
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     type: java.util.UUID
+</span></span></span><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">sign_in</span><span class="w"> </span><span class="p">(</span><span class="n">account_id</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">values</span><span class="w"> </span><span class="p">(:</span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="n">now</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">returning</span><span class="w"> </span><span class="n">id</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">SignInId</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The record&rsquo;s component is named after the column the statement returns, so a single returned value
+needs a one-component record rather than a bare <code>UUID</code> — a result row type is always a row.</p>
+<h2 id="results-that-are-one-value">Results that are one value</h2>
+<p>A statement answering with a single value names that value&rsquo;s type, and needs no record around it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: countTenants
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- type: reading
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: java.lang.Long
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">countTenants</span><span class="p">()</span><span class="w">
+</span></span></span></code></pre></div><p>The value is read from the <strong>first column</strong> by position, not by name, because a value has no name to
+go by — <code>count(*)</code> names nothing, and requiring an alias for it would be a rule about SQL style
+rather than about mapping. When the select list can be enumerated and holds more than one column,
+that is a build error: one value cannot hold two columns.</p>
+<p>Anything a column can hold works — <code>String</code>, <code>UUID</code>, <code>Instant</code>, <code>BigDecimal</code>, the wrappers — as does
+an enum, and so does a type that builds itself:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenantIdentity
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.TenantId
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">slug</span><span class="w">
+</span></span></span></code></pre></div><p>A <code>valueOf</code> factory means one column here exactly as it does for a component, so <code>TenantId</code> reads the
+column rather than becoming a row of one. A one-component record <em>without</em> a factory is still a row,
+and reads the column its component names — which is what <code>insert … returning id</code> uses.</p>
+<p>A primitive is refused: a statement that may return no row answers <code>Optional</code>, and <code>Optional&lt;long&gt;</code>
+is not a type. Name the wrapper.</p>
+<p>A row holding SQL NULL answers <code>Optional.empty()</code> rather than throwing.</p>
+<h2 id="parameters-on-the-way-in">Parameters, on the way in</h2>
+<p>The same types travel back. A parameter declared as a value type is unwrapped through the accessor
+its <code>valueOf</code> takes, so a repository accepts what it hands back:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: insertTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   - name: tenantId
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     type: com.example.domain.TenantId
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   - name: registeredAt
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     type: java.time.Instant
+</span></span></span><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">registered_at</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">values</span><span class="w"> </span><span class="p">(:</span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">registeredAt</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">tenantIdParameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tenantId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">tenantId</span><span class="p">.</span><span class="na">value</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">final</span><span class="w"> </span><span class="n">Timestamp</span><span class="w"> </span><span class="n">registeredAtParameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registeredAt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Timestamp</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">registeredAt</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p><code>Instant</code> is there for a reason of its own: PostgreSQL refuses <code>setObject</code> with one — <em>&ldquo;Can&rsquo;t infer
+the SQL type to use for an instance of java.time.Instant&rdquo;</em> — so a statement naming the type its
+domain actually uses would compile and fail at run time. <code>Instant</code>, <code>Currency</code> and enums are
+converted; everything a driver already takes is passed through untouched, so a statement whose
+parameters need nothing generates exactly what it always generated.</p>
+<p>The conversion happens once, in front of the loop that binds the parameter, so a name used twice in
+one statement is unwrapped once. Passing <code>null</code> writes SQL NULL rather than throwing.</p>
+<p>Two things this refuses, both at build time. A record that is not one value — <code>Money(long minorUnits, Currency currency)</code> — because a statement binds one value per parameter; declare a
+parameter per component. And a value type that is not a record, because reading one needs only the
+<code>valueOf</code> factory while writing one needs the accessor it came from, and a class does not say which
+of its methods that is.</p>
+<h2 id="map-converter">Map converter</h2>
+<p>Without a <code>resultRowType</code> or a converter of your own, generated code returns
+<code>Map&lt;String, Object&gt;</code>. That converter is the <a href="../../configuration/converter/defaultconverter/">defaultConverter</a>
+
+unless you say otherwise, so freshly generated code returns maps to begin with. Turn it off with
+<a href="../../configuration/converter/generatemapconverter/">generateMapConverter</a>
+, move it with
+<a href="../../configuration/converter/mapconverterclass/">mapConverterClass</a>
+, rename its method with
+<a href="../../configuration/converter/mapconvertermethod/">mapConverterMethod</a>
+ and its alias with
+<a href="../../configuration/converter/mapconverteralias/">mapConverterAlias</a>
+. Methods using it look like:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">Stream</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span></code></pre></div><p>Generated record converters live in the same package as the map converter, so <code>mapConverterClass</code>
+decides where they all go. What they are called comes from
+<a href="../../configuration/converter/recordconverterprefix/">recordConverterPrefix</a>
+ and
+<a href="../../configuration/converter/recordconvertersuffix/">recordConverterSuffix</a>
+ — <code>To</code> and <code>Converter</code>
+by default, giving <code>ToTenantConverter</code> and a repository field named <code>tenantConverter</code>. The method
+each one declares is <a href="../../configuration/converter/recordconvertermethod/">recordConverterMethod</a>
+,
+<code>asUserType</code> by default. Set them to whatever the hand-written converters in your project already
+use, so a repository reads the same whichever kind it calls.</p>
+<h2 id="default-converter">Default converter</h2>
+<p>Every statement that does not say otherwise uses the default converter. Set
+<a href="../../configuration/converter/defaultconverter/">defaultConverter</a>
+ to change what that is for all
+of them at once. It points at the map converter above until you change it.</p>
+<h2 id="writing-one-by-hand">Writing one by hand</h2>
+<p>Some mappings a record cannot express: a discriminator column choosing between subtypes, a column
+holding JSON you want parsed, a legacy shape you do not want in your domain. Write the converter
+yourself:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">my.own</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.sql.ResultSet</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.sql.SQLException</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">my.own.User</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">UserConverter</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="n">ResultSet</span><span class="w"> </span><span class="n">resultSet</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">SQLException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">User</span><span class="w"> </span><span class="n">pojo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">User</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">pojo</span><span class="p">.</span><span class="na">setId</span><span class="p">(</span><span class="n">resultSet</span><span class="p">.</span><span class="na">getInt</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">pojo</span><span class="p">.</span><span class="na">setName</span><span class="p">(</span><span class="n">resultSet</span><span class="p">.</span><span class="na">getString</span><span class="p">(</span><span class="s">&#34;name&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pojo</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Package, class name and method name are yours to choose. Name the class on a statement as its
+<a href="../../configuration/sql/resultrowconverter/">resultRowConverter</a>
+ — that is the whole configuration:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowConverter: my.own.UserConverter
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">users</span><span class="w">
+</span></span></span></code></pre></div><p><code>YoSQL</code> reads the class to find the one public method taking a <code>ResultSet</code>. That method&rsquo;s name is
+what the repository calls, its return type is what the statement produces, and the field the
+converter is injected into is the class name with a lower-case first letter — <code>userConverter</code> here.
+Nothing about the method is repeated in configuration, so it cannot go stale when you rename it.</p>
+<p>Name the same class as <a href="../../configuration/converter/defaultconverter/">defaultConverter</a>
+ to use it
+for every statement that names none of its own.</p>
+<p>Like a record, the class is read from its <strong>source</strong> under
+<a href="../../configuration/files/sourcedirectory/">sourceDirectory</a>
+, and three things fail the build rather
+than the compile that follows: a class with no source there, a class declaring no public method
+taking a <code>ResultSet</code>, and a class declaring more than one — with nothing to choose between them,
+guessing would be worse than stopping.</p>
+<p>A statement naming both a <code>resultRowConverter</code> and a <code>resultRowType</code> keeps the converter: naming a
+converter names the exact code to call, and there is nothing left to infer.</p>
+<p>Either way, generated methods return the converter&rsquo;s result type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">Stream</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/sql" term="sql" label="SQL"/><category scheme="https://yosql.projects.metio.wtf/tags/converters" term="converters" label="converters"/></entry></feed>

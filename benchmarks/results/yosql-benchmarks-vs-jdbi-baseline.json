@@ -1,0 +1,1236 @@
+[
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiCall.callStoredProcedure",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 17.63011812531344,
+            "scoreError" : 5.81283600000993,
+            "scoreConfidence" : [
+                11.81728212530351,
+                23.44295412532337
+            ],
+            "scorePercentiles" : {
+                "0.0" : 16.071363088542505,
+                "50.0" : 17.1461703382421,
+                "90.0" : 19.736285353435687,
+                "95.0" : 19.736285353435687,
+                "99.0" : 19.736285353435687,
+                "99.9" : 19.736285353435687,
+                "99.99" : 19.736285353435687,
+                "99.999" : 19.736285353435687,
+                "99.9999" : 19.736285353435687,
+                "100.0" : 19.736285353435687
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    16.071363088542505,
+                    19.736285353435687,
+                    18.601727923672073,
+                    17.1461703382421,
+                    16.595043922674854
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiRead.readManyToOneRelation",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 18.62183391485192,
+            "scoreError" : 2.5176648407316744,
+            "scoreConfidence" : [
+                16.104169074120243,
+                21.139498755583595
+            ],
+            "scorePercentiles" : {
+                "0.0" : 18.102299549345737,
+                "50.0" : 18.346628964505182,
+                "90.0" : 19.65663386399371,
+                "95.0" : 19.65663386399371,
+                "99.0" : 19.65663386399371,
+                "99.9" : 19.65663386399371,
+                "99.99" : 19.65663386399371,
+                "99.999" : 19.65663386399371,
+                "99.9999" : 19.65663386399371,
+                "100.0" : 19.65663386399371
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    18.102299549345737,
+                    19.65663386399371,
+                    18.346628964505182,
+                    18.86559830994417,
+                    18.1380088864708
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiRead.readMultipleEntities",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 16.39000317443101,
+            "scoreError" : 1.502176740943853,
+            "scoreConfidence" : [
+                14.887826433487156,
+                17.89217991537486
+            ],
+            "scorePercentiles" : {
+                "0.0" : 15.947181413741967,
+                "50.0" : 16.29289482429989,
+                "90.0" : 16.915845049220255,
+                "95.0" : 16.915845049220255,
+                "99.0" : 16.915845049220255,
+                "99.9" : 16.915845049220255,
+                "99.99" : 16.915845049220255,
+                "99.999" : 16.915845049220255,
+                "99.9999" : 16.915845049220255,
+                "100.0" : 16.915845049220255
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    16.145437634182958,
+                    16.64865695070997,
+                    16.29289482429989,
+                    15.947181413741967,
+                    16.915845049220255
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiRead.readMultipleEntitiesBasedOnCondition",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 18.17036336012243,
+            "scoreError" : 3.983943792269648,
+            "scoreConfidence" : [
+                14.18641956785278,
+                22.15430715239208
+            ],
+            "scorePercentiles" : {
+                "0.0" : 17.27023510213949,
+                "50.0" : 17.955696917470064,
+                "90.0" : 19.884745402127447,
+                "95.0" : 19.884745402127447,
+                "99.0" : 19.884745402127447,
+                "99.9" : 19.884745402127447,
+                "99.99" : 19.884745402127447,
+                "99.999" : 19.884745402127447,
+                "99.9999" : 19.884745402127447,
+                "100.0" : 19.884745402127447
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    17.955696917470064,
+                    17.27023510213949,
+                    18.262081548434217,
+                    19.884745402127447,
+                    17.479057830440937
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiRead.readOneToManyRelation",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 17.40192654763539,
+            "scoreError" : 1.1049963437222858,
+            "scoreConfidence" : [
+                16.296930203913107,
+                18.506922891357675
+            ],
+            "scorePercentiles" : {
+                "0.0" : 17.136509809296985,
+                "50.0" : 17.33744199431385,
+                "90.0" : 17.888855801391546,
+                "95.0" : 17.888855801391546,
+                "99.0" : 17.888855801391546,
+                "99.9" : 17.888855801391546,
+                "99.99" : 17.888855801391546,
+                "99.999" : 17.888855801391546,
+                "99.9999" : 17.888855801391546,
+                "100.0" : 17.888855801391546
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    17.33744199431385,
+                    17.888855801391546,
+                    17.136509809296985,
+                    17.37518202192533,
+                    17.271643111249265
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiRead.readSingleEntityByPrimaryKey",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 17.6185674059405,
+            "scoreError" : 2.316281997336606,
+            "scoreConfidence" : [
+                15.302285408603893,
+                19.934849403277106
+            ],
+            "scorePercentiles" : {
+                "0.0" : 17.030891426138783,
+                "50.0" : 17.628260346164694,
+                "90.0" : 18.44193992587539,
+                "95.0" : 18.44193992587539,
+                "99.0" : 18.44193992587539,
+                "99.9" : 18.44193992587539,
+                "99.99" : 18.44193992587539,
+                "99.999" : 18.44193992587539,
+                "99.9999" : 18.44193992587539,
+                "100.0" : 18.44193992587539
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    18.44193992587539,
+                    17.030891426138783,
+                    17.052109642991102,
+                    17.628260346164694,
+                    17.93963568853253
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiWrite.deleteSingleEntityByPrimaryKey",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 17.852877294822015,
+            "scoreError" : 7.128776858587863,
+            "scoreConfidence" : [
+                10.724100436234153,
+                24.981654153409877
+            ],
+            "scorePercentiles" : {
+                "0.0" : 16.48122825692911,
+                "50.0" : 17.0187573256645,
+                "90.0" : 21.066844844655083,
+                "95.0" : 21.066844844655083,
+                "99.0" : 21.066844844655083,
+                "99.9" : 21.066844844655083,
+                "99.99" : 21.066844844655083,
+                "99.999" : 21.066844844655083,
+                "99.9999" : 21.066844844655083,
+                "100.0" : 21.066844844655083
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    17.732546666666668,
+                    16.48122825692911,
+                    16.96500938019473,
+                    17.0187573256645,
+                    21.066844844655083
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiWrite.updateOneToManyRelation",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 18.565984185417623,
+            "scoreError" : 4.086606908928187,
+            "scoreConfidence" : [
+                14.479377276489437,
+                22.65259109434581
+            ],
+            "scorePercentiles" : {
+                "0.0" : 17.364905632531165,
+                "50.0" : 18.56577666190202,
+                "90.0" : 20.185455516086062,
+                "95.0" : 20.185455516086062,
+                "99.0" : 20.185455516086062,
+                "99.9" : 20.185455516086062,
+                "99.99" : 20.185455516086062,
+                "99.999" : 20.185455516086062,
+                "99.9999" : 20.185455516086062,
+                "100.0" : 20.185455516086062
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    18.56577666190202,
+                    20.185455516086062,
+                    18.776733492292962,
+                    17.364905632531165,
+                    17.9370496242759
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiWrite.updateSingleEntity",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 22.111297068344506,
+            "scoreError" : 5.9551309026606365,
+            "scoreConfidence" : [
+                16.15616616568387,
+                28.06642797100514
+            ],
+            "scorePercentiles" : {
+                "0.0" : 20.850037463255987,
+                "50.0" : 21.589567173199793,
+                "90.0" : 24.565791319725886,
+                "95.0" : 24.565791319725886,
+                "99.0" : 24.565791319725886,
+                "99.9" : 24.565791319725886,
+                "99.99" : 24.565791319725886,
+                "99.999" : 24.565791319725886,
+                "99.9999" : 24.565791319725886,
+                "100.0" : 24.565791319725886
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    21.589567173199793,
+                    24.565791319725886,
+                    20.850037463255987,
+                    22.62819451106385,
+                    20.922894874476988
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiWrite.writeMultipleEntities",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 60.716278683360805,
+            "scoreError" : 6.611239123641624,
+            "scoreConfidence" : [
+                54.10503955971918,
+                67.32751780700244
+            ],
+            "scorePercentiles" : {
+                "0.0" : 58.49142616527282,
+                "50.0" : 61.22915997306232,
+                "90.0" : 62.782275249513525,
+                "95.0" : 62.782275249513525,
+                "99.0" : 62.782275249513525,
+                "99.9" : 62.782275249513525,
+                "99.99" : 62.782275249513525,
+                "99.999" : 62.782275249513525,
+                "99.9999" : 62.782275249513525,
+                "100.0" : 62.782275249513525
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    61.22915997306232,
+                    61.599266551702904,
+                    59.479265477252454,
+                    62.782275249513525,
+                    58.49142616527282
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.jdbi.JdbiWrite.writeSingleEntity",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 21.536024917545724,
+            "scoreError" : 4.807016202279204,
+            "scoreConfidence" : [
+                16.72900871526652,
+                26.343041119824928
+            ],
+            "scorePercentiles" : {
+                "0.0" : 20.531126103378906,
+                "50.0" : 21.034978736828823,
+                "90.0" : 23.697795820202355,
+                "95.0" : 23.697795820202355,
+                "99.0" : 23.697795820202355,
+                "99.9" : 23.697795820202355,
+                "99.99" : 23.697795820202355,
+                "99.999" : 23.697795820202355,
+                "99.9999" : 23.697795820202355,
+                "100.0" : 23.697795820202355
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    21.002560334327356,
+                    21.034978736828823,
+                    23.697795820202355,
+                    20.531126103378906,
+                    21.413663592991163
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlCall.callStoredProcedure",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 7.073409012749307,
+            "scoreError" : 0.43523718821108376,
+            "scoreConfidence" : [
+                6.638171824538223,
+                7.508646200960391
+            ],
+            "scorePercentiles" : {
+                "0.0" : 6.99446438762379,
+                "50.0" : 7.006633578534398,
+                "90.0" : 7.256619002009912,
+                "95.0" : 7.256619002009912,
+                "99.0" : 7.256619002009912,
+                "99.9" : 7.256619002009912,
+                "99.99" : 7.256619002009912,
+                "99.999" : 7.256619002009912,
+                "99.9999" : 7.256619002009912,
+                "100.0" : 7.256619002009912
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    7.110085191846949,
+                    7.006633578534398,
+                    6.999242903731489,
+                    7.256619002009912,
+                    6.99446438762379
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlRead.readManyToOneRelation",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 7.851901324462796,
+            "scoreError" : 0.6822539825146188,
+            "scoreConfidence" : [
+                7.169647341948178,
+                8.534155306977414
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7.592037233558025,
+                "50.0" : 7.901389342287182,
+                "90.0" : 8.058152861931159,
+                "95.0" : 8.058152861931159,
+                "99.0" : 8.058152861931159,
+                "99.9" : 8.058152861931159,
+                "99.99" : 8.058152861931159,
+                "99.999" : 8.058152861931159,
+                "99.9999" : 8.058152861931159,
+                "100.0" : 8.058152861931159
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    7.773207004290244,
+                    7.934720180247364,
+                    7.592037233558025,
+                    7.901389342287182,
+                    8.058152861931159
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlRead.readMultipleEntities",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 8.073751312685852,
+            "scoreError" : 0.7910379975176177,
+            "scoreConfidence" : [
+                7.282713315168234,
+                8.86478931020347
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7.733942372383287,
+                "50.0" : 8.122846725043214,
+                "90.0" : 8.290788008210834,
+                "95.0" : 8.290788008210834,
+                "99.0" : 8.290788008210834,
+                "99.9" : 8.290788008210834,
+                "99.99" : 8.290788008210834,
+                "99.999" : 8.290788008210834,
+                "99.9999" : 8.290788008210834,
+                "100.0" : 8.290788008210834
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    7.733942372383287,
+                    8.087068557233192,
+                    8.122846725043214,
+                    8.290788008210834,
+                    8.134110900558731
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlRead.readMultipleEntitiesBasedOnCondition",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 7.867736012986934,
+            "scoreError" : 0.6711306553075339,
+            "scoreConfidence" : [
+                7.1966053576794,
+                8.538866668294467
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7.704312170208833,
+                "50.0" : 7.790649352672659,
+                "90.0" : 8.125842303254846,
+                "95.0" : 8.125842303254846,
+                "99.0" : 8.125842303254846,
+                "99.9" : 8.125842303254846,
+                "99.99" : 8.125842303254846,
+                "99.999" : 8.125842303254846,
+                "99.9999" : 8.125842303254846,
+                "100.0" : 8.125842303254846
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    7.704312170208833,
+                    7.964022240271374,
+                    7.75385399852696,
+                    7.790649352672659,
+                    8.125842303254846
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlRead.readOneToManyRelation",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 8.002492168557666,
+            "scoreError" : 0.739368605470851,
+            "scoreConfidence" : [
+                7.263123563086815,
+                8.741860774028517
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7.722458164100505,
+                "50.0" : 8.02304899059169,
+                "90.0" : 8.248057589852706,
+                "95.0" : 8.248057589852706,
+                "99.0" : 8.248057589852706,
+                "99.9" : 8.248057589852706,
+                "99.99" : 8.248057589852706,
+                "99.999" : 8.248057589852706,
+                "99.9999" : 8.248057589852706,
+                "100.0" : 8.248057589852706
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    7.722458164100505,
+                    8.073608660203266,
+                    8.02304899059169,
+                    7.945287438040163,
+                    8.248057589852706
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlRead.readSingleEntityByPrimaryKey",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 8.028031054691596,
+            "scoreError" : 1.1900664616234913,
+            "scoreConfidence" : [
+                6.837964593068104,
+                9.218097516315087
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7.701308763283536,
+                "50.0" : 8.104872557679684,
+                "90.0" : 8.384079187834281,
+                "95.0" : 8.384079187834281,
+                "99.0" : 8.384079187834281,
+                "99.9" : 8.384079187834281,
+                "99.99" : 8.384079187834281,
+                "99.999" : 8.384079187834281,
+                "99.9999" : 8.384079187834281,
+                "100.0" : 8.384079187834281
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    8.384079187834281,
+                    8.104872557679684,
+                    7.713217048285223,
+                    7.701308763283536,
+                    8.236677716375256
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlWrite.deleteSingleEntityByPrimaryKey",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 7.87351215084894,
+            "scoreError" : 1.2763298551496902,
+            "scoreConfidence" : [
+                6.59718229569925,
+                9.14984200599863
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7.624965907878086,
+                "50.0" : 7.7583237121558835,
+                "90.0" : 8.456032076700007,
+                "95.0" : 8.456032076700007,
+                "99.0" : 8.456032076700007,
+                "99.9" : 8.456032076700007,
+                "99.99" : 8.456032076700007,
+                "99.999" : 8.456032076700007,
+                "99.9999" : 8.456032076700007,
+                "100.0" : 8.456032076700007
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    7.788132073855451,
+                    7.7583237121558835,
+                    7.624965907878086,
+                    7.7401069836552745,
+                    8.456032076700007
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlWrite.updateOneToManyRelation",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 8.058774841490752,
+            "scoreError" : 1.143498547742792,
+            "scoreConfidence" : [
+                6.915276293747961,
+                9.202273389233545
+            ],
+            "scorePercentiles" : {
+                "0.0" : 7.704870210307372,
+                "50.0" : 8.096651530484202,
+                "90.0" : 8.476326355577402,
+                "95.0" : 8.476326355577402,
+                "99.0" : 8.476326355577402,
+                "99.9" : 8.476326355577402,
+                "99.99" : 8.476326355577402,
+                "99.999" : 8.476326355577402,
+                "99.9999" : 8.476326355577402,
+                "100.0" : 8.476326355577402
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    7.704870210307372,
+                    7.855431866914866,
+                    8.096651530484202,
+                    8.160594244169918,
+                    8.476326355577402
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlWrite.updateSingleEntity",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 13.595220845626514,
+            "scoreError" : 2.049328412458557,
+            "scoreConfidence" : [
+                11.545892433167957,
+                15.644549258085071
+            ],
+            "scorePercentiles" : {
+                "0.0" : 13.107576232978152,
+                "50.0" : 13.432043003678741,
+                "90.0" : 14.419771956634566,
+                "95.0" : 14.419771956634566,
+                "99.0" : 14.419771956634566,
+                "99.9" : 14.419771956634566,
+                "99.99" : 14.419771956634566,
+                "99.999" : 14.419771956634566,
+                "99.9999" : 14.419771956634566,
+                "100.0" : 14.419771956634566
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    13.107576232978152,
+                    14.419771956634566,
+                    13.213767735883954,
+                    13.432043003678741,
+                    13.802945298957159
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlWrite.writeMultipleEntities",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 56.467040091092386,
+            "scoreError" : 12.964223767612305,
+            "scoreConfidence" : [
+                43.50281632348008,
+                69.4312638587047
+            ],
+            "scorePercentiles" : {
+                "0.0" : 52.60845992005049,
+                "50.0" : 58.09670862619808,
+                "90.0" : 59.77273848084623,
+                "95.0" : 59.77273848084623,
+                "99.0" : 59.77273848084623,
+                "99.9" : 59.77273848084623,
+                "99.99" : 59.77273848084623,
+                "99.999" : 59.77273848084623,
+                "99.9999" : 59.77273848084623,
+                "100.0" : 59.77273848084623
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    59.77273848084623,
+                    53.07481919974528,
+                    58.09670862619808,
+                    52.60845992005049,
+                    58.7824742286218
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.22",
+        "benchmark" : "wtf.metio.yosql.benchmark.jdbi.yosql.YosqlWrite.writeSingleEntity",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "/nix/store/3zlsggw3b1vq3968pcmwhqpwnv914pv7-openjdk-25.0.4+1/lib/openjdk/bin/java",
+        "jvmArgs" : [
+            "--enable-native-access=ALL-UNNAMED",
+            "-Dclassworlds.conf=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/bin/m2.conf",
+            "-Dmaven.home=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven",
+            "-Dlibrary.jansi.path=/nix/store/s37s6l2f01y7j84kplhj383sk59vl5vh-maven-3.9.16/maven/lib/jansi-native",
+            "-Dmaven.multiModuleProjectDirectory=/var/home/seb/git/github.com/metio/yosql/main"
+        ],
+        "jdkVersion" : "25.0.4",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4+1",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 12.15008894890276,
+            "scoreError" : 1.3647762639234242,
+            "scoreConfidence" : [
+                10.785312684979335,
+                13.514865212826184
+            ],
+            "scorePercentiles" : {
+                "0.0" : 11.743023928613361,
+                "50.0" : 12.191769384545998,
+                "90.0" : 12.630480867830173,
+                "95.0" : 12.630480867830173,
+                "99.0" : 12.630480867830173,
+                "99.9" : 12.630480867830173,
+                "99.99" : 12.630480867830173,
+                "99.999" : 12.630480867830173,
+                "99.9999" : 12.630480867830173,
+                "100.0" : 12.630480867830173
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    12.630480867830173,
+                    12.191769384545998,
+                    12.313546901739654,
+                    11.871623661784604,
+                    11.743023928613361
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+

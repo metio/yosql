@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Code on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/code/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/code/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/code/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/code/</id><entry><title type="html">Code Generation</title><link href="https://yosql.projects.metio.wtf/benchmarks/codegen/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/benchmarks/codegen/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p>How long <code>YoSQL</code> takes to read <code>.sql</code> files, parse them, and write the Java — which is time added to
+every build of every project that uses it.</p>
+<h2 id="what-is-measured">What is measured</h2>
+<p>Three sizes — <strong>10, 25 and 50 repositories</strong> — in each of five logging configurations:</p>
+<table>
+	<thead>
+			<tr>
+					<th>Configuration</th>
+					<th>What it generates</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>no logging</td>
+					<td>The baseline. No logging statements at all.</td>
+			</tr>
+			<tr>
+					<td><code>java.util.logging</code></td>
+					<td>Logging through the JDK&rsquo;s own API.</td>
+			</tr>
+			<tr>
+					<td><code>log4j</code></td>
+					<td>Logging through log4j.</td>
+			</tr>
+			<tr>
+					<td><code>slf4j</code></td>
+					<td>Logging through slf4j.</td>
+			</tr>
+			<tr>
+					<td><code>tinylog</code></td>
+					<td>Logging through tinylog.</td>
+			</tr>
+	</tbody>
+</table>
+<p>Every repository holds the same eight statements: a stored-procedure call and several of them, a
+write and several, a read and several, an update and several.</p>
+<h2 id="the-published-results">The published results</h2>
+<p><a href="https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-codegen-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json">The results</a>
+
+are what a shared GitHub Actions runner measured, and should be read as an order of magnitude rather
+than a measurement — see <a href="../">reading the numbers</a>
+.</p>
+<p>What they show, and what holds across machines:</p>
+<ul>
+<li><strong>Generating logging statements costs more than not generating them.</strong> Expected, since there is
+more code to write.</li>
+<li><strong>Which logging implementation makes no observable difference.</strong> They all cost about the same.</li>
+<li><strong>The whole thing is measured in milliseconds</strong>, even for 50 repositories. If your build is slow,
+this is not why.</li>
+</ul>
+<p>If code generation genuinely is on your critical path, the way out is not a setting: generate the
+repositories in one module and depend on it from the others, so the work happens once.</p>
+<h2 id="running-it">Running it</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">mvn --projects yosql-benchmarks/yosql-benchmarks-codegen --also-make \
+</span></span></span><span class="line"><span class="cl"><span class="go">  --activate-profiles benchmarks verify
+</span></span></span></code></pre></div><p>The run writes <code>target/benchmark/yosql-benchmarks-codegen.json</code>. It takes tens of minutes and wants
+a machine with nothing else on it — a laptop compiling something else in another window will produce
+numbers that mean nothing.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/benchmarks" term="benchmarks" label="Benchmarks"/><category scheme="https://yosql.projects.metio.wtf/tags/code" term="code" label="code"/><category scheme="https://yosql.projects.metio.wtf/tags/generation" term="generation" label="generation"/></entry></feed>

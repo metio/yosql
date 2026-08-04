@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Bazel on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/bazel/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/bazel/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/bazel/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/bazel/</id><entry><title type="html">Bazel</title><link href="https://yosql.projects.metio.wtf/tooling/bazel/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/bazel/</id><published>2019-06-16T18:23:45+02:00</published><updated>2019-06-16T18:23:45+02:00</updated><content type="html"><![CDATA[<p><a href="https://bazel.build/">bazel</a>
+ users can use the <a href="../cli/">yosql-tooling-cli</a>
+ in their builds by following these steps:</p>
+<ol>
+<li>Download the <code>yosql-tooling-cli</code> zip file from the <a href="https://github.com/metio/yosql/releases/latest">latest release</a>
+ (or any prior version).</li>
+<li>Use a <a href="https://bazel.build/reference/be/java#java_import">java_import</a>
+ rule to capture all <code>.jar</code> files used by <code>yosql-tooling-cli</code></li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">java_import</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">name</span> <span class="o">=</span> <span class="s2">&#34;yosql_tooling_cli&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">jars</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;lib/yosql-tooling-cli-x.y.z.jar&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;lib/yosql-codegen-x.y.z.jar&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;lib/yosql-models-immutables-x.y.z.jar&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="o">...</span> <span class="n">every</span> <span class="n">other</span> <span class="n">jar</span> <span class="n">file</span> <span class="kn">from</span> <span class="nn">the</span> <span class="s1">&#39;lib&#39;</span> <span class="n">folder</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><ol>
+<li>Use a <a href="https://bazel.build/reference/be/java#java_binary">java_binary</a>
+ rule to create a runnable binary for bazel</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">java_binary</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">name</span> <span class="o">=</span> <span class="s2">&#34;yosql&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">deps</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;:yosql_tooling_cli&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="n">main_class</span> <span class="o">=</span> <span class="s2">&#34;wtf.metio.yosql.tooling.cli.YoSQL&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><ol>
+<li>Write .sql files in a directory of your choice (e.g. <code>persistence</code>)</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">project/
+</span></span><span class="line"><span class="cl">├── WORKSPACE
+</span></span><span class="line"><span class="cl">├── BUILD
+</span></span><span class="line"><span class="cl">└── persistence/   
+</span></span><span class="line"><span class="cl">    └── user/
+</span></span><span class="line"><span class="cl">        ├── findUser.sql
+</span></span><span class="line"><span class="cl">        └── addUser.sql
+</span></span><span class="line"><span class="cl">    └── item/
+</span></span><span class="line"><span class="cl">        ├── queryAllItems.sql
+</span></span><span class="line"><span class="cl">        └── createItemTable.sql
+</span></span></code></pre></div><ol>
+<li>Declare a <a href="https://bazel.build/reference/be/general#filegroup">filegroup</a>
+ that contains all of your SQL files:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">filegroup(
+</span></span><span class="line"><span class="cl">  name = &#34;your-sql-files&#34;,
+</span></span><span class="line"><span class="cl">  srcs = glob([&#34;persistence/**/*.sql&#34;]),
+</span></span><span class="line"><span class="cl">)
+</span></span></code></pre></div><ol>
+<li>Generate Java code by calling the previously defined <code>java_binary</code>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">genrule(
+</span></span><span class="line"><span class="cl">  name = &#34;your-repositories&#34;,
+</span></span><span class="line"><span class="cl">  srcs = [&#34;:your-sql-files&#34;],
+</span></span><span class="line"><span class="cl">  outs = [
+</span></span><span class="line"><span class="cl">    &#34;com/example/persistence/UserRepository.java&#34;,
+</span></span><span class="line"><span class="cl">    &#34;com/example/persistence/ItemRepository.java&#34;,
+</span></span><span class="line"><span class="cl">    ... all of your generated code
+</span></span><span class="line"><span class="cl">  ],
+</span></span><span class="line"><span class="cl">  cmd = &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    $(location :yosql) generate
+</span></span><span class="line"><span class="cl">  &#34;&#34;&#34;,
+</span></span><span class="line"><span class="cl">  tools = [&#34;:yosql&#34;],
+</span></span><span class="line"><span class="cl">)
+</span></span></code></pre></div><ol>
+<li>Depend on the generated sources by using the target name of the generated code in the <code>srcs</code> of another rule.</li>
+</ol>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/bazel" term="bazel" label="Bazel"/></entry></feed>

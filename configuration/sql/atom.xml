@@ -1,0 +1,1134 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Sql on YoSQL</title><link href="https://yosql.projects.metio.wtf/configuration/sql/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/configuration/sql/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/configuration/sql/</id><entry><title type="html">annotations</title><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><id>https://yosql.projects.metio.wtf/configuration/sql/annotations/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The additional annotations to be placed on generated methods.</p>
+<p>This list is empty by default and thus no annotations are added to generated methods.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-yourownannotation">Option: &lsquo;your.own.Annotation&rsquo;</h3>
+<p>In order to add an annotation to the generated methods, specify its fully-qualified name.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">your.own.Annotation</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Annotation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-yourotherannotation">Option: &lsquo;your.other.Annotation&rsquo;</h3>
+<p>In order to add an annotation with some member, specify name of the annotation member, its value, and its type. The type defaults to <code>java.lang.String</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">your.other.Annotation</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Annotation</span><span class="p">(</span><span class="n">member</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;value&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- annotations: 
+</span></span></span><span class="line"><span class="cl"><span class="c1">--  - type: your.own.Annotation
+</span></span></span><span class="line"><span class="cl"><span class="c1">--    members:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--      - key: someMember
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        value: this is your value
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        type: java.lang.String
+</span></span></span><span class="line"><span class="cl"><span class="c1">--      - key: another
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        value: 5
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        type: int
+</span></span></span><span class="line"><span class="cl"><span class="c1">--  - type: your.other.Annotation
+</span></span></span><span class="line"><span class="cl"><span class="c1">--    members:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--      - key: value
+</span></span></span><span class="line"><span class="cl"><span class="c1">--        value: yep
+</span></span></span><span class="line"><span class="cl"><span class="c1">--  - type: some.annotation.WithoutMembers
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">catchAndRethrow</title><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><id>https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default value for <code>catchAndRethrow</code> is <code>true</code>. This will catch any <code>SQLException</code> that happen during SQL execution and re-throw them as <code>RuntimeExceptions</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSome</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>In case you want to handle <code>SQLException</code>s yourself, set <code>catchAndRethrow</code> to <code>false</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.sql.SQLException</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSome</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">SQLException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- catchAndRethrow: true
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">createConnection</title><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><id>https://yosql.projects.metio.wtf/configuration/sql/createconnection/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Controls whether the generated code should create/open connection itself or use a given connection.</p>
+<p>A method either takes a connection from the repository&rsquo;s <code>DataSource</code> and closes it when it
+is done, or takes a <code>java.sql.Connection</code> as its first parameter and leaves it open for
+whoever passed it in.</p>
+<p>With <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+ left on — it is on by
+default — you get both and this setting decides nothing you have to think about. It matters
+when you turn overloads off and want one shape rather than the other.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default. The method opens a connection and closes it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenants</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">.</span><span class="na">getConnection</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The connection comes from the caller, so the statement can join work already in progress:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenants</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- createConnection: true
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">description</title><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><id>https://yosql.projects.metio.wtf/configuration/sql/description/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The description for the SQL statement</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-some-random-description">Option: &lsquo;Some random description&rsquo;</h3>
+<p>In case you use the <code>description</code> option, <code>YoSQL</code> will use the supplied value as a JavaDoc comment</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Some random description
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">someMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- description: configValue
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeBatch</title><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><id>https://yosql.projects.metio.wtf/configuration/sql/executebatch/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate methods that are executed as batch</p>
+<p>A second method taking an array per parameter, adding a batch entry per element and
+answering with the <code>int[]</code> the driver gives back. One round trip instead of one per row,
+which is the difference between an import that takes a minute and one that takes an hour.</p>
+<p>Only writing statements get one — batching a query would have nowhere to put the results.
+Turn it off for a statement that is never run in bulk, if the extra method bothers you;
+it costs nothing to leave on.</p>
+<p>The method is called what the statement is called plus <code>Batch</code>, which is what lets
+<code>insertTenant</code> and <code>insertTenantBatch</code> sit in the same repository.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default. A batch method sits alongside the single-row one:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="nf">insertTenantBatch</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="o">[]</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>No batch method is generated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- executeBatch: true
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeOnce</title><link href="https://yosql.projects.metio.wtf/configuration/sql/executeonce/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/executeonce/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate methods that are executed once with the given parameters</p>
+<p>The ordinary method: one call, one execution, the parameters you passed. It is what you
+want for almost every statement, which is why it is on.</p>
+<p>Turning it off for a statement leaves only its batch method, which is worth doing for a
+statement that is never sensibly run for a single row — a bulk import, say. A statement
+with both turned off generates nothing, and <code>YoSQL</code> warns rather than leaving you to
+notice the missing method.</p>
+<p>The method is called what the statement is called.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>Only the batch method is generated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="nf">insertTenantBatch</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="o">[]</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- executeOnce: true
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">generateConnectionOverloads</title><link href="https://yosql.projects.metio.wtf/configuration/sql/generateconnectionoverloads/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/generateconnectionoverloads/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate both a DataSource-based method and a Connection-taking overload for every statement.</p>
+<p>Whether a statement gets its connection from the repository&rsquo;s <code>DataSource</code> or from the
+caller is not a property of the statement — it is what the call site needs. One caller
+reads a tenant on its own; another reads it as part of a transaction it already opened. So
+every statement generates both, as overloads of one name:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>The <code>Connection</code> overload runs the statement on the connection it is given and does not
+close it, which is what lets several statements share a transaction — see
+<a href="../../../sql/transactions/">transactions</a>
+.</p>
+<p>Turning this off generates only the shape
+<a href="../createconnection/">createConnection</a>
+ selects, one method per statement.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default. Each statement is reachable both ways:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">.</span><span class="na">getConnection</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">findTenant</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>Only the shape <code>createConnection</code> asks for is generated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- generateConnectionOverloads: true
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">generateResultRowType</title><link href="https://yosql.projects.metio.wtf/configuration/sql/generateresultrowtype/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/generateresultrowtype/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Write the record this statement builds its rows into.</p>
+<p>Everything the record needs is already known — which columns the statement selects, what
+each one holds, whether it can be null — so naming a record that does not exist yet and
+setting this writes it for you, next to the converter that builds it.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- generateResultRowType: true
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span></code></pre></div><p>Opt in per statement rather than whenever the record is missing. A <code>resultRowType</code> naming
+a record that is not there is far more often a typo than a request, and writing a new
+record for a misspelled name would replace a build error with a mystery.</p>
+<p>It needs a <a href="../../schema/validation/">schema</a>
+ it can read, and it needs every selected
+column to be one the catalog describes with a type it maps. Where any of that is missing
+the record is not written, and the statement fails as it would have before — because half
+a record is worse than none.</p>
+<p>The record it writes is yours to take over: copy it into your own sources, drop the
+setting, and nothing else changes.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- generateResultRowType: true
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">name</title><link href="https://yosql.projects.metio.wtf/configuration/sql/name/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/name/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The name of the SQL statement</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-yourspecialname">Option: &lsquo;yourSpecialName&rsquo;</h3>
+<p>In case you use the <code>name</code> option, <code>YoSQL</code> will use the supplied value as a method name</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">yourSpecialName</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: configValue
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">parameters</title><link href="https://yosql.projects.metio.wtf/configuration/sql/parameters/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/parameters/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The parameters of the SQL statement.</p>
+<p>A statement binds its parameters by name — <code>:tenantId</code> — and each becomes a method
+parameter, in the order the names first appear in the statement. A name used more than
+once is one method parameter bound at every position it occupies.</p>
+<p>What <code>YoSQL</code> needs from you is the Java type of each one, and only when it cannot work it
+out. A statement naming a record with <a href="../resultrowtype/">resultRowType</a>
+ takes each
+parameter&rsquo;s type from the component of the same name, so a query selecting a tenant by its
+id needs nothing here: the record already says the id is a <code>UUID</code>.</p>
+<p>Where there is no such component — every write statement, for a start — name the types:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   id: uuid
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   slug: string
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   createdAt: instant
+</span></span></span><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">)</span><span class="w"> </span><span class="k">values</span><span class="w"> </span><span class="p">(:</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">createdAt</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>A type is a fully-qualified class name, a primitive, or one of the short names for the
+types statements are overwhelmingly written in: <code>string</code>, <code>object</code>, <code>uuid</code>, <code>instant</code>,
+<code>localdate</code>, <code>localdatetime</code>, <code>localtime</code>, <code>offsetdatetime</code>, <code>offsettime</code>,
+<code>zoneddatetime</code>, <code>duration</code>, <code>period</code>, <code>bigdecimal</code>, <code>biginteger</code>, <code>date</code>, <code>time</code>,
+<code>timestamp</code>, <code>array</code>, <code>blob</code>, <code>clob</code>, <code>ref</code>, <code>rowid</code>, <code>sqlxml</code>, <code>url</code>, <code>uri</code>, <code>currency</code>,
+<code>locale</code>, <code>zoneid</code>, <code>inputstream</code> and <code>reader</code>. Case does not matter, so <code>uuid</code> and
+<code>UUID</code> name the same type.</p>
+<p>A parameter that neither source settles <strong>fails the build</strong>, naming the file, the
+statement and every parameter still without a type. The alternative is binding it as
+<code>java.lang.Object</code>, which compiles and then accepts anything at all — exactly the type
+safety a generated repository exists to provide.</p>
+<p>A parameter needing more than a type keeps the longer form, and the two can be mixed
+across statements in the same file:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   - name: payload
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     type: java.lang.String
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     sqlType: 2005
+</span></span></span></code></pre></div><h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-a-mapping-of-name-to-type">Option: &lsquo;a mapping of name to type&rsquo;</h3>
+<p>The short form: one line per parameter, for the parameters that need nothing but a
+type.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-a-list-of-objects">Option: &lsquo;a list of objects&rsquo;</h3>
+<p>The long form, for a parameter that also needs a JDBC type, a scale or a
+variant.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertDocument</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">payload</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- parameters: configValue
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">repository</title><link href="https://yosql.projects.metio.wtf/configuration/sql/repository/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/repository/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The fully qualified name of the target repository class.</p>
+<p>In order to overwrite the target repository of a single SQL statement, use the <code>repository</code> option.
+You can specify the fully qualified name of the repository that should contain your statement, or
+you can just specify the name of the class and <code>YoSQL</code> will add the
+<a href="../../repositories/basepackagename/">base package name</a>
+ and the <code>Repository</code> suffix
+for you.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- repository: configValue
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">resultRowColumns</title><link href="https://yosql.projects.metio.wtf/configuration/sql/resultrowcolumns/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/resultrowcolumns/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Overrides which column a component of the result row type reads</p>
+<p>A component reads the column its own name implies, <code>camelCase</code> read as <code>snake_case</code>. Where the
+two disagree, aliasing the column in the query is usually the better answer, because it puts the
+mapping next to the column being renamed. This is for when the query is not yours to change —
+a view you do not own, or SQL generated elsewhere.</p>
+<p>Keys are component paths from the root of the result row type, so a component of a nested record
+is addressed through the component holding it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowColumns:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   amount.minorUnits: amount_cents
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   at: created_at
+</span></span></span></code></pre></div><p>A column override belongs to the type rather than to one query, so every statement naming the
+same result row type shares one set: overrides declared on any of them apply to all of them, and
+two statements mapping the same component to different columns fail the build.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowColumns: configValue
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">resultRowConverter</title><link href="https://yosql.projects.metio.wtf/configuration/sql/resultrowconverter/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/resultrowconverter/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The fully-qualified name of the converter class to use</p>
+<p>Name the class and nothing else. <code>YoSQL</code> reads it to find the single public method that
+takes a <code>ResultSet</code>; that method&rsquo;s name is what the repository calls, and its return type
+is what the statement produces. The converter is injected into a field named after the
+class, with a lower-case first letter.</p>
+<p>The class has to be visible under <a href="../../files/sourcedirectory/">sourceDirectory</a>
+, because
+it is read from source rather than loaded. Naming a class that is missing, that has no
+such method, or that has more than one, fails the build.</p>
+<p>To have the converter written for you instead, name a record with
+<a href="../resultrowtype/">resultRowType</a>
+.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowConverter: configValue
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">resultRowType</title><link href="https://yosql.projects.metio.wtf/configuration/sql/resultrowtype/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/resultrowtype/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The fully-qualified name of a record to build each result row into</p>
+<p>Name a record and <code>YoSQL</code> writes the converter for you. It reads the record&rsquo;s canonical
+constructor out of its source file — under <a href="../../files/sourcedirectory/">sourceDirectory</a>
+ — and
+emits one <code>resultSet.getX(...)</code> call per component, in a class of its own. No reflection is
+involved at any point, so the result survives a GraalVM native image intact.</p>
+<p>A component takes its column from its own name, <code>camelCase</code> read as <code>snake_case</code>: <code>tenantId</code>
+reads the <code>tenant_id</code> column. When a column is named something else, alias it in the SQL —
+<code>select amount_cents as minor_units</code> — which keeps the mapping next to the query that produces
+it.</p>
+<p>Components whose own type is a record are built from the same flat row: nesting groups values
+on the Java side and the query knows nothing about it, so a nested component claims the column
+matching its own name, not a prefixed one.</p>
+<p>A type the generator cannot otherwise read works if it says how: a <code>static</code> factory called
+<code>valueOf</code>, taking one value the generator does know, is called with the column&rsquo;s value. That is
+the same convention enums follow, and it is what makes a one-component record a value wrapped
+around a column rather than a nesting.</p>
+<p>A column no component claims, or a component no column supplies, fails the build and names the
+file, the statement and the component.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowType: configValue
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">returningMode</title><link href="https://yosql.projects.metio.wtf/configuration/sql/returningmode/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/returningmode/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The returning mode of the SQL statement.</p>
+<p>How many rows the statement answers with, which decides what the generated method returns.
+It is written <code>returning</code> in the front matter.</p>
+<p>The row type comes from elsewhere — <a href="../resultrowtype/">resultRowType</a>
+ or
+<a href="../resultrowconverter/">resultRowConverter</a>
+, or a <code>Map&lt;String, Object&gt;</code> when neither is
+named. This setting only wraps it.</p>
+<table>
+	<thead>
+			<tr>
+					<th><code>returning</code></th>
+					<th>You get</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>none</code></td>
+					<td>nothing, or the number of rows a write changed</td>
+			</tr>
+			<tr>
+					<td><code>single</code></td>
+					<td><code>Optional&lt;T&gt;</code></td>
+			</tr>
+			<tr>
+					<td><code>multiple</code></td>
+					<td><code>List&lt;T&gt;</code></td>
+			</tr>
+			<tr>
+					<td><code>cursor</code></td>
+					<td><code>Stream&lt;T&gt;</code>, read lazily</td>
+			</tr>
+	</tbody>
+</table>
+<p><code>single</code> is for a statement that can answer with at most one row. A second row is
+silently ignored unless <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+ is on, which
+is worth turning on wherever you believe the query really is unique.</p>
+<p><code>cursor</code> reads rows as the stream is consumed, so a result larger than memory is fine —
+but the stream holds the <code>ResultSet</code>, the statement and, for the <code>DataSource</code> form, the
+connection until it is closed. Close it. Most drivers also need a fetch size and
+auto-commit off before they stream rather than buffer, and both are connection settings.</p>
+<p><code>none</code> on a write answers with the number of rows changed unless
+<a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+ says otherwise. A write that
+returns rows — <code>insert ... returning *</code> — takes <code>single</code> or <code>multiple</code> like a read.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-single">Option: &lsquo;single&rsquo;</h3>
+<p>At most one row, so the method answers with an <code>Optional</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-multiple">Option: &lsquo;multiple&rsquo;</h3>
+<p>Every row, read into a list before the method returns:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenants</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">accountId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-cursor">Option: &lsquo;cursor&rsquo;</h3>
+<p>Rows as they are read, for a result that need not fit in memory. Close the stream:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Stream</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenants</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">accountId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-none">Option: &rsquo;none'</h3>
+<p>No rows. A write answers with the number it changed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">throwOnMultipleResults</title><link href="https://yosql.projects.metio.wtf/configuration/sql/throwonmultipleresults/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/throwonmultipleresults/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</p>
+<p>What a <a href="../../sql/returningmode/">returning</a>
+ <code>single</code> statement does when the database
+answers with more than one row. Off, the first row is returned and the rest are dropped;
+on, it throws.</p>
+<p>A statement declared <code>single</code> is a claim that at most one row can match. Where that claim
+rests on a unique constraint the database enforces, the check is redundant and the
+default is right. Where it rests on you being sure — a lookup by something that ought to
+be unique but is not constrained to be — turning this on converts a silent wrong answer
+into a loud one.</p>
+<p>It costs nothing at run time beyond reading one more row.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The default. A second row is ignored:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenantBySlug</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... reads every row, answers with the first</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-true">Option: &rsquo;true'</h3>
+<p>A second row is a defect, and says so:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenantBySlug</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... throws when the statement answers with more than one row</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- throwOnMultipleResults: true
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">type</title><link href="https://yosql.projects.metio.wtf/configuration/sql/type/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/type/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The type of the SQL statement.</p>
+<p>Whether a statement reads, writes, or calls a stored procedure. It decides what is
+generated for it, and it is normally not written at all: the statement&rsquo;s
+<a href="../name/">name</a>
+ settles it.</p>
+<p>A name beginning with one of the
+<a href="../../repositories/allowedreadprefixes/">read prefixes</a>
+ is <code>reading</code>, one of the
+<a href="../../repositories/allowedwriteprefixes/">write prefixes</a>
+ is <code>writing</code>, and one of the
+<a href="../../repositories/allowedcallprefixes/">call prefixes</a>
+ is <code>calling</code>. <code>YoSQL</code> does not
+parse your SQL to work this out, and it does not need to.</p>
+<p>Set it where you want a name the prefixes do not cover — a <code>countTenants</code> that reads, a
+<code>purgeTenants</code> that writes. A statement whose name matches no prefix and which sets no
+type fails the build rather than quietly generating nothing.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-reading">Option: &lsquo;reading&rsquo;</h3>
+<p>Runs the statement as a query and maps what comes back:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">countTenants</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-writing">Option: &lsquo;writing&rsquo;</h3>
+<p>Runs the statement as an update, and generates a batch method alongside:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">purgeTenants</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">Instant</span><span class="w"> </span><span class="n">before</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="nf">purgeTenantsBatch</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">Instant</span><span class="o">[]</span><span class="w"> </span><span class="n">before</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-calling">Option: &lsquo;calling&rsquo;</h3>
+<p>Runs the statement as a <code>CallableStatement</code>, for a stored procedure:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">rebuildTenantIndex</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- type: reading
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">validateSchema</title><link href="https://yosql.projects.metio.wtf/configuration/sql/validateschema/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/validateschema/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Whether this statement is checked against the schema.</p>
+<p>Schema validation reads what it can and says nothing about the rest, so a statement it
+cannot parse costs you nothing already. This is for the other case: a statement it <em>can</em>
+read and gets wrong, or one whose schema lives somewhere <code>YoSQL</code> was never told about.</p>
+<p>Set it to <code>false</code> and this statement is generated without any of the checks
+<a href="../../schema/validation/">validation</a>
+ turns on. Nothing else changes about it.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../vendor/">vendor</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- validateSchema: false
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">vendor</title><link href="https://yosql.projects.metio.wtf/configuration/sql/vendor/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/vendor/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The vendor name of the database the SQL statement is intended for</p>
+<p>Where one query cannot be written for every database you support, write one statement per
+database and give them the same <a href="../name/">name</a>
+. They become a single method that picks
+its statement from the connection at run time.</p>
+<p>The value is matched against the JDBC driver&rsquo;s own
+<code>DatabaseMetaData.getDatabaseProductName()</code>, so it has to be exactly what the driver
+reports — <code>PostgreSQL</code>, <code>MySQL</code>, <code>H2</code>, <code>Microsoft SQL Server</code>, <code>Oracle</code>. A statement of the
+same name <strong>without</strong> a vendor is the fallback for every database not named, and a name
+with no fallback fails against a database none of its statements claim.</p>
+<p>Nothing here inspects your SQL. Naming a vendor selects a statement; it does not translate
+one.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-postgresql">Option: &lsquo;PostgreSQL&rsquo;</h3>
+<p>Statements sharing a name become one method that chooses between them:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenants</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">.</span><span class="na">getConnection</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">databaseMetaData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="na">getMetaData</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">databaseProductName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databaseMetaData</span><span class="p">.</span><span class="na">getDatabaseProductName</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">databaseProductName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="k">case</span><span class="w"> </span><span class="s">&#34;PostgreSQL&#34;</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FIND_TENANTS_POSTGRE_SQL</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="k">default</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FIND_TENANTS</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- vendor: PostgreSQL
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">writesReturnUpdateCount</title><link href="https://yosql.projects.metio.wtf/configuration/sql/writesreturnupdatecount/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/sql/annotations/?utm_source=atom_feed" rel="related" type="text/html" title="annotations"/><link href="https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/sql/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/sql/description/?utm_source=atom_feed" rel="related" type="text/html" title="description"/><link href="https://yosql.projects.metio.wtf/configuration/sql/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><id>https://yosql.projects.metio.wtf/configuration/sql/writesreturnupdatecount/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</p>
+<p>What a write answers with when it returns no rows. On, it is the number of rows the
+statement changed; off, the method is <code>void</code>.</p>
+<p>The count is worth having: an update that changed no rows is usually a bug the caller can
+act on, and there is nowhere else to learn that. Turn it off for a statement whose count
+is meaningless — a <code>create table</code>, or DDL generally.</p>
+<p>This applies to <a href="../../sql/returningmode/">returning</a>
+ <code>none</code> only. A write that returns
+rows answers with them.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default. The caller can see how many rows the statement changed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The count is dropped:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../annotations/">annotations</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../description/">description</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateresultrowtype/">generateResultRowType</a>
+, <a href="../name/">name</a>
+, <a href="../parameters/">parameters</a>
+, <a href="../repository/">repository</a>
+, <a href="../resultrowcolumns/">resultRowColumns</a>
+, <a href="../resultrowconverter/">resultRowConverter</a>
+, <a href="../resultrowtype/">resultRowType</a>
+, <a href="../returningmode/">returningMode</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../type/">type</a>
+, <a href="../validateschema/">validateSchema</a>
+, <a href="../vendor/">vendor</a>
+.</p>
+<h2 id="front-matter">Front Matter</h2>
+<p>In order to configure this option, place the following code in the front matter of your SQL statement:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- writesReturnUpdateCount: true
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w">  </span><span class="n">something</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w">    </span><span class="n">your_database_schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w">   </span><span class="n">some_column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">some_value</span><span class="w">
+</span></span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/sql" term="sql" label="sql"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry></feed>

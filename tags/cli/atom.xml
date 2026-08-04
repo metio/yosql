@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">CLI on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/cli/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/cli/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/cli/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/cli/</id><entry><title type="html">CLI</title><link href="https://yosql.projects.metio.wtf/tooling/cli/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/tooling/cli/</id><published>2019-06-16T18:23:45+02:00</published><updated>2019-06-16T18:23:45+02:00</updated><content type="html"><![CDATA[<p>The <a href="https://en.wikipedia.org/wiki/Command-line_interface">command line</a>
+ tool generates the same
+code as the build plugins, without being part of a build. Use it when your project builds with
+something <code>YoSQL</code> has no plugin for, or to generate code once and commit the result.</p>
+<h2 id="getting-it">Getting it</h2>
+<p>Each <a href="https://github.com/metio/yosql/releases/latest">release</a>
+ publishes two kinds of archive:</p>
+<ul>
+<li><strong><code>yosql-tooling-cli-&lt;version&gt;-linux.zip</code></strong> and <strong><code>-mac.zip</code></strong> — a single native binary. It starts
+instantly and needs no Java installed at all.</li>
+<li><strong><code>yosql-tooling-cli-&lt;version&gt;-jvm.zip</code></strong> — scripts plus jars, for any platform with Java 25.</li>
+</ul>
+<p>Unpack it and put the <code>yosql</code> binary, or the <code>bin/yosql</code> script, on your <code>PATH</code>. Both archives are
+covered by the signed <code>SHA256SUMS</code> — see <a href="../../installation/#verifying-a-download">verifying a download</a>
+.</p>
+<h2 id="starting-from-something">Starting from something</h2>
+<p>In a project with no statements yet, <code>init</code> writes the three files that make a first run possible —
+a statement, the record it builds, and an arguments file tying the directories together:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">yosql init
+</span></span><span class="line"><span class="cl">yosql generate @yosql.args
+</span></span></code></pre></div><p>That leaves a <code>TenantRepository</code> with a <code>findTenant</code> and an <code>insertTenant</code> to delete or rename.
+<code>--package</code> sets the package to write in, <code>--directory</code> the project to write into, and files that
+are already there are kept unless <code>--force</code> says otherwise.</p>
+<h2 id="using-it">Using it</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">yosql generate --files-input-base-directory<span class="o">=</span>/path/to/your/sql/files
+</span></span></code></pre></div><p>That reads every <code>.sql</code> file under the directory and writes Java beside it. Option names follow the
+<a href="/configuration/">configuration</a>
+ groups: a setting shown there as <code>files.outputBaseDirectory</code> is
+<code>--files-output-base-directory</code> here. <code>yosql generate --help</code> lists all of them.</p>
+<p>Options can also come from a file, which is easier to keep in version control than a long command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">yosql generate @yosql.args
+</span></span></code></pre></div><p>where <code>yosql.args</code> holds one option per line:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">--files-input-base-directory=src/main/yosql
+</span></span><span class="line"><span class="cl">--files-output-base-directory=src/main/java
+</span></span><span class="line"><span class="cl">--repositories-base-package-name=com.example.persistence
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/tooling" term="tooling" label="Tooling"/><category scheme="https://yosql.projects.metio.wtf/tags/cli" term="cli" label="CLI"/></entry></feed>

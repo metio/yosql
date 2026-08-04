@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Schema on YoSQL</title><link href="https://yosql.projects.metio.wtf/configuration/schema/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/configuration/schema/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/configuration/schema/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/configuration/schema/</id><entry><title type="html">sqlStatementsDirectory</title><link href="https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/schema/validation/?utm_source=atom_feed" rel="related" type="text/html" title="validation"/><link href="https://yosql.projects.metio.wtf/sql/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Schema validation"/><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Front matter schema"/><id>https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Where the DDL describing your schema lives, when it is not among your statements.</p>
+<p>Left empty — the default — the schema is read from the statements <code>YoSQL</code> already parses, so
+a project that keeps its <code>create table</code> statements alongside its queries needs no
+configuration at all.</p>
+<p>Point this at a directory to read the DDL from somewhere else: a Flyway or Liquibase
+migrations directory, most usefully. Files are read in name order, and <code>alter table</code> applies
+to whatever came before it, which is what makes <code>V1__create.sql</code> followed by
+<code>V2__add_column.sql</code> describe the schema those two migrations leave behind.</p>
+<p>DDL marked with a <a href="../../sql/vendor/">vendor</a>
+ builds that vendor&rsquo;s schema rather than the
+shared one, so a project supporting several databases describes only the tables that differ
+more than once.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../validation/">validation</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --schema-sql-statements-directory=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>sqlStatementsDirectory</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sqlStatementsDirectory</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sqlStatementsDirectory</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>sqlStatementsDirectory</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;sqlStatementsDirectory&gt;</span>configValue<span class="nt">&lt;/sqlStatementsDirectory&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/schema&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/></entry><entry><title type="html">validation</title><link href="https://yosql.projects.metio.wtf/configuration/schema/validation/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/?utm_source=atom_feed" rel="related" type="text/html" title="sqlStatementsDirectory"/><link href="https://yosql.projects.metio.wtf/sql/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Schema validation"/><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Front matter schema"/><id>https://yosql.projects.metio.wtf/configuration/schema/validation/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>What to do about a statement that disagrees with the schema.</p>
+<p><code>WARN</code> is the default, so upgrading adds warnings and never a failure. Turning it up to
+<code>ERROR</code> in an existing project is a migration rather than a switch: the first run finds
+everything at once, and a build that fails on all of it is a build nobody can bisect. Deal
+with what <code>WARN</code> reports first, then move up so that nothing new gets in.</p>
+<p>A single statement can opt out with
+<a href="../../sql/validateschema/">validateSchema</a>
+ in its front matter, for the query this cannot
+read and you do not want to argue with.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-off">Option: &lsquo;OFF&rsquo;</h3>
+<p>Says nothing at all. Statements are generated exactly as they were before any of this existed.</p>
+<h3 id="option-warn">Option: &lsquo;WARN&rsquo;</h3>
+<p>The default. Every disagreement is reported and the build carries on, so nothing that passed before starts failing.</p>
+<h3 id="option-error">Option: &lsquo;ERROR&rsquo;</h3>
+<p>A disagreement fails the build, naming the file, the statement and what it disagreed about.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../sqlstatementsdirectory/">sqlStatementsDirectory</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --schema-validation=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>validation</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">validation</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">validation</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>validation</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;validation&gt;</span>configValue<span class="nt">&lt;/validation&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/schema&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/></entry></feed>

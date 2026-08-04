@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Files on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/files/</link><description>Recent content in Files on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Tue, 04 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/files/index.xml" rel="self" type="application/rss+xml"/><item><title>Files</title><link>https://yosql.projects.metio.wtf/configuration/files/</link><pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/files/</guid><description>&lt;p&gt;Configures how files are handled.&lt;/p&gt;</description></item><item><title>inputBaseDirectory</title><link>https://yosql.projects.metio.wtf/configuration/files/inputbasedirectory/</link><pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/files/inputbasedirectory/</guid><description>&lt;p&gt;The input directory for the user written SQL files.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-"&gt;Option: &amp;lsquo;.&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;inputBaseDirectory&lt;/code&gt; configuration option used by the Ant- and CLI-tooling is &lt;code&gt;.&lt;/code&gt; - the current directory.&lt;/p&gt;
+&lt;h3 id="option-srcmainyosql"&gt;Option: &amp;lsquo;src/main/yosql&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;inputBaseDirectory&lt;/code&gt; configuration option used by the Gradle- and Maven-tooling is &lt;code&gt;src/main/yosql&lt;/code&gt; to better reflect the commonly used project structure expected by those tools.&lt;/p&gt;
+&lt;h3 id="option-someotherdirectory"&gt;Option: &amp;lsquo;some/other/directory&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;inputBaseDirectory&lt;/code&gt; configuration option to &lt;code&gt;some/other/directory!&lt;/code&gt; configures &lt;code&gt;YoSQL&lt;/code&gt; to look into the path relative directory &lt;code&gt;some/other/directory&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>outputBaseDirectory</title><link>https://yosql.projects.metio.wtf/configuration/files/outputbasedirectory/</link><pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/files/outputbasedirectory/</guid><description>&lt;p&gt;The output directory for the generated classes.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-"&gt;Option: &amp;lsquo;.&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;outputBaseDirectory&lt;/code&gt; configuration option is &lt;code&gt;.&lt;/code&gt; - the current directory. Note that tooling may change the default output base directory to better reflect a typical project structure used with such a tool.&lt;/p&gt;
+&lt;h3 id="option-someotherdirectory"&gt;Option: &amp;lsquo;some/other/directory&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;outputBaseDirectory&lt;/code&gt; configuration option to &lt;code&gt;some/other/directory!&lt;/code&gt; configures &lt;code&gt;YoSQL&lt;/code&gt; to write into the relative directory&lt;code&gt;some/other/directory&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="option-anabsolutepath"&gt;Option: &amp;lsquo;/an/absolute/path&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;outputBaseDirectory&lt;/code&gt; configuration option to &lt;code&gt;/an/absolute/path!&lt;/code&gt; configures &lt;code&gt;YoSQL&lt;/code&gt; to write into the absolute directory path &lt;code&gt;/an/absolute/path&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>sourceDirectory</title><link>https://yosql.projects.metio.wtf/configuration/files/sourcedirectory/</link><pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/files/sourcedirectory/</guid><description>&lt;p&gt;The directory holding the Java sources of types referenced by SQL statements.&lt;/p&gt;
+&lt;p&gt;Naming a record as the &lt;code&gt;resultRowType&lt;/code&gt; of a statement makes &lt;code&gt;YoSQL&lt;/code&gt; read that record&amp;rsquo;s source to
+learn its component names and types. The source is looked up under this directory, at the path
+its package implies, so a record &lt;code&gt;com.example.Tenant&lt;/code&gt; is expected in &lt;code&gt;&amp;lt;sourceDirectory&amp;gt;/com/example/Tenant.java&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Nothing is loaded or executed while reading — the record is parsed as text, at build time, before
+it has been compiled. That is what lets the generated converter be plain &lt;code&gt;resultSet.getX(...)&lt;/code&gt;
+calls with no reflection left at runtime.&lt;/p&gt;</description></item><item><title>sqlFilesCharset</title><link>https://yosql.projects.metio.wtf/configuration/files/sqlfilescharset/</link><pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/files/sqlfilescharset/</guid><description>&lt;p&gt;The charset to use while reading .sql files.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-utf-8"&gt;Option: &amp;lsquo;UTF-8&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;sqlFilesCharset&lt;/code&gt; configuration option is &lt;code&gt;UTF-8&lt;/code&gt; which should work on most systems.&lt;/p&gt;
+&lt;h3 id="option-iso-8859-1"&gt;Option: &amp;lsquo;ISO-8859-1&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;sqlFilesCharset&lt;/code&gt; configuration option to &lt;code&gt;ISO-8859-1&lt;/code&gt; configures &lt;code&gt;YoSQL&lt;/code&gt; to use the &lt;code&gt;ISO-8859-1&lt;/code&gt; charset while reading your &lt;code&gt;.sql&lt;/code&gt; files.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../inputbasedirectory/"&gt;inputBaseDirectory&lt;/a&gt;
+, &lt;a href="../outputbasedirectory/"&gt;outputBaseDirectory&lt;/a&gt;
+, &lt;a href="../sourcedirectory/"&gt;sourceDirectory&lt;/a&gt;
+, &lt;a href="../sqlfilessuffix/"&gt;sqlFilesSuffix&lt;/a&gt;
+, &lt;a href="../sqlstatementseparator/"&gt;sqlStatementSeparator&lt;/a&gt;
+.&lt;/p&gt;
+&lt;h2 id="tooling"&gt;Tooling&lt;/h2&gt;
+&lt;h3 id="ant"&gt;Ant&lt;/h3&gt;
+&lt;p&gt;In order to use &lt;code&gt;YoSQL&lt;/code&gt; together with &lt;a href="https://ant.apache.org/"&gt;Ant&lt;/a&gt;
+, take a look at the tooling &lt;a href="https://yosql.projects.metio.wtf/tooling/ant/"&gt;documentation for Ant&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>sqlFilesSuffix</title><link>https://yosql.projects.metio.wtf/configuration/files/sqlfilessuffix/</link><pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/files/sqlfilessuffix/</guid><description>&lt;p&gt;The file ending to use while searching for SQL files.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-sql"&gt;Option: &amp;lsquo;.sql&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;sqlFilesSuffix&lt;/code&gt; configuration option is &lt;code&gt;.sql&lt;/code&gt;. It matches all files that end with &lt;code&gt;.sql&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="option-other"&gt;Option: &amp;lsquo;.other&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;sqlFilesSuffix&lt;/code&gt; configuration option to &lt;code&gt;.other&lt;/code&gt; configures &lt;code&gt;YoSQL&lt;/code&gt; look for files that end in &lt;code&gt;.other&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../inputbasedirectory/"&gt;inputBaseDirectory&lt;/a&gt;
+, &lt;a href="../outputbasedirectory/"&gt;outputBaseDirectory&lt;/a&gt;
+, &lt;a href="../sourcedirectory/"&gt;sourceDirectory&lt;/a&gt;
+, &lt;a href="../sqlfilescharset/"&gt;sqlFilesCharset&lt;/a&gt;
+, &lt;a href="../sqlstatementseparator/"&gt;sqlStatementSeparator&lt;/a&gt;
+.&lt;/p&gt;
+&lt;h2 id="tooling"&gt;Tooling&lt;/h2&gt;
+&lt;h3 id="ant"&gt;Ant&lt;/h3&gt;
+&lt;p&gt;In order to use &lt;code&gt;YoSQL&lt;/code&gt; together with &lt;a href="https://ant.apache.org/"&gt;Ant&lt;/a&gt;
+, take a look at the tooling &lt;a href="https://yosql.projects.metio.wtf/tooling/ant/"&gt;documentation for Ant&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>sqlStatementSeparator</title><link>https://yosql.projects.metio.wtf/configuration/files/sqlstatementseparator/</link><pubDate>Tue, 04 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/files/sqlstatementseparator/</guid><description>&lt;p&gt;The separator to split SQL statements inside a single .sql file.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-"&gt;Option: &amp;lsquo;;&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;sqlStatementSeparator&lt;/code&gt; configuration option is &lt;code&gt;;&lt;/code&gt;, so a &lt;code&gt;.sql&lt;/code&gt; file holds one statement per &lt;code&gt;;&lt;/code&gt; the way it would be written for a database client. The separator is matched literally, and it is never a separator inside a string literal or a comment.&lt;/p&gt;
+&lt;h3 id="option--1"&gt;Option: &amp;lsquo;|&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;sqlStatementSeparator&lt;/code&gt; configuration option to &lt;code&gt;|&lt;/code&gt; configures &lt;code&gt;YoSQL&lt;/code&gt; to split &lt;code&gt;.sql&lt;/code&gt; files on the &lt;code&gt;|&lt;/code&gt; character.&lt;/p&gt;</description></item><item><title>SQL Files</title><link>https://yosql.projects.metio.wtf/sql/sql-files/</link><pubDate>Sun, 07 Jul 2019 14:27:54 +0200</pubDate><guid>https://yosql.projects.metio.wtf/sql/sql-files/</guid><description>&lt;p&gt;Writing &lt;code&gt;.sql&lt;/code&gt; files is the essential work that needs to be done in order to use &lt;code&gt;YoSQL&lt;/code&gt;. Each file can contain multiple SQL statements. Each statement has its own configuration and metadata attached to it.&lt;/p&gt;
+&lt;h2 id="statement-type"&gt;Statement Type&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;YoSQL&lt;/code&gt; supports the tree types of SQL statements and is able to generate code for them: &lt;code&gt;READING&lt;/code&gt; for SQL statements that read data, &lt;code&gt;WRITING&lt;/code&gt; for SQL statements that write data, and &lt;code&gt;CALLING&lt;/code&gt; for SQL statements that call stored procedures.&lt;/p&gt;</description></item><item><title>Structure</title><link>https://yosql.projects.metio.wtf/sql/structure/</link><pubDate>Sun, 16 Jun 2019 18:33:06 +0200</pubDate><guid>https://yosql.projects.metio.wtf/sql/structure/</guid><description>&lt;p&gt;In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. &lt;code&gt;YoSQL&lt;/code&gt; will try to detect which repository your SQL statements will end up in. Based on the &lt;a href="https://yosql.projects.metio.wtf/configuration/files/inputbasedirectory/"&gt;inputBaseDirectory&lt;/a&gt;
+ configuration option, your project structure could look like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;lt;inputBaseDirectory&amp;gt;/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└── user/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── getAllUsers.sql
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Based on the above example, &lt;code&gt;YoSQL&lt;/code&gt; will determine that you want a method called &lt;code&gt;getAllUsers&lt;/code&gt; in a repository called &lt;code&gt;UserRepository&lt;/code&gt;. Use the &lt;a href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/"&gt;basePackageName&lt;/a&gt;
+ option to change the base package name for all generated repositories. Together they will form the fully qualified name &lt;code&gt;&amp;lt;basePackageName&amp;gt;.UserRepository&lt;/code&gt;.&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,1325 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Repositories on YoSQL</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/configuration/repositories/</id><entry><title type="html">allowedCallPrefixes</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedReadPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedWritePrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/?utm_source=atom_feed" rel="related" type="text/html" title="basePackageName"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><id>https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Configures which name prefixes are allowed for statements that are calling stored procedures.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-call-execute-evaluate-eval">Option: &lsquo;call, execute, evaluate, eval&rsquo;</h3>
+<p>The default value of the <code>allowedCallPrefixes</code> configuration option is <code>call, execute, evaluate, eval</code> to allow several commonly used names for calling procedures.</p>
+<h3 id="option-do">Option: &lsquo;do&rsquo;</h3>
+<p>Changing the <code>allowedCallPrefixes</code> configuration option to <code>do</code> only allows names with the prefix <code>do</code> to call stored procedures.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-allowed-call-prefixes=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>allowedCallPrefixes</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allowedCallPrefixes</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allowedCallPrefixes</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>allowedCallPrefixes</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;allowedCallPrefixes&gt;</span>configValue<span class="nt">&lt;/allowedCallPrefixes&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/></entry><entry><title type="html">allowedReadPrefixes</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedCallPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedWritePrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/?utm_source=atom_feed" rel="related" type="text/html" title="basePackageName"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><id>https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Configures which name prefixes are allowed for statements that are reading data from your database.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-read-select-find-query-lookup-get">Option: &lsquo;read, select, find, query, lookup, get&rsquo;</h3>
+<p>The default value of the <code>allowedReadPrefixes</code> configuration option is <code>read, select, find, query, lookup, get</code> to allow several commonly used names for reading statements.</p>
+<h3 id="option-lego">Option: &rsquo;lego'</h3>
+<p>Changing the <code>allowedReadPrefixes</code> configuration option to <code>lego</code> only allows names with the prefix <code>lego</code> to read data.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-allowed-read-prefixes=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>allowedReadPrefixes</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allowedReadPrefixes</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allowedReadPrefixes</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>allowedReadPrefixes</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;allowedReadPrefixes&gt;</span>configValue<span class="nt">&lt;/allowedReadPrefixes&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/></entry><entry><title type="html">allowedWritePrefixes</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedCallPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedReadPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/?utm_source=atom_feed" rel="related" type="text/html" title="basePackageName"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><id>https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Configures which name prefixes are allowed for statements that are writing data to your database.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-update-insert-delete-create-write-add-remove-merge-drop">Option: &lsquo;update, insert, delete, create, write, add, remove, merge, drop&rsquo;</h3>
+<p>The default value of the <code>allowedWritePrefixes</code> configuration option is <code>update, insert, delete, create, write, add, remove, merge, drop</code> to allow several commonly used names for writing statements.</p>
+<h3 id="option-scribo">Option: &lsquo;scribo&rsquo;</h3>
+<p>Changing the <code>allowedWritePrefixes</code> configuration option to <code>scribo</code> only allows names with the prefix <code>scribo</code> to write data.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-allowed-write-prefixes=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>allowedWritePrefixes</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allowedWritePrefixes</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allowedWritePrefixes</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>allowedWritePrefixes</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;allowedWritePrefixes&gt;</span>configValue<span class="nt">&lt;/allowedWritePrefixes&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/></entry><entry><title type="html">basePackageName</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedCallPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedReadPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedWritePrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><id>https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The base package name for all repositories</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-comexamplepersistence">Option: &lsquo;com.example.persistence&rsquo;</h3>
+<p>The default value of the <code>basePackageName</code> configuration option is <code>com.example.persistence</code>. Setting the option to <code>com.example.persistence</code> therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-yourowndomain">Option: &lsquo;your.own.domain&rsquo;</h3>
+<p>Changing the <code>basePackageName</code> configuration option to <code>your.own.domain</code> generates the following code instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">your.own.domain</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code (same as above)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-base-package-name=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>basePackageName</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">basePackageName</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">basePackageName</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>basePackageName</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;basePackageName&gt;</span>configValue<span class="nt">&lt;/basePackageName&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/></entry><entry><title type="html">catchAndRethrow</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/?utm_source=atom_feed" rel="related" type="text/html" title="generateConnectionOverloads"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/?utm_source=atom_feed" rel="related" type="text/html" title="throwOnMultipleResults"/><id>https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Catch exceptions during SQL execution and re-throw them as RuntimeExceptions</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default value for <code>catchAndRethrow</code> is <code>true</code>. This will catch any <code>SQLException</code> that happen during SQL execution and re-throw them as <code>RuntimeExceptions</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSome</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>In case you want to handle <code>SQLException</code>s yourself, set <code>catchAndRethrow</code> to <code>false</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.sql.SQLException</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeSome</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">SQLException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... some code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-catch-and-rethrow=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>catchAndRethrow</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">catchAndRethrow</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">catchAndRethrow</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>catchAndRethrow</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;catchAndRethrow&gt;</span>configValue<span class="nt">&lt;/catchAndRethrow&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">createConnection</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/?utm_source=atom_feed" rel="related" type="text/html" title="generateConnectionOverloads"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/?utm_source=atom_feed" rel="related" type="text/html" title="throwOnMultipleResults"/><id>https://yosql.projects.metio.wtf/configuration/repositories/createconnection/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Controls whether the generated code should create/open connection itself or use a given connection.</p>
+<p>A method either takes a connection from the repository&rsquo;s <code>DataSource</code> and closes it when it
+is done, or takes a <code>java.sql.Connection</code> as its first parameter and leaves it open for
+whoever passed it in.</p>
+<p>With <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+ left on — it is on by
+default — you get both and this setting decides nothing you have to think about. It matters
+when you turn overloads off and want one shape rather than the other.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default. The method opens a connection and closes it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenants</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">.</span><span class="na">getConnection</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The connection comes from the caller, so the statement can join work already in progress:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenants</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-create-connection=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>createConnection</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">createConnection</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">createConnection</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>createConnection</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;createConnection&gt;</span>configValue<span class="nt">&lt;/createConnection&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeBatch</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/executebatch/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/?utm_source=atom_feed" rel="related" type="text/html" title="generateConnectionOverloads"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/?utm_source=atom_feed" rel="related" type="text/html" title="throwOnMultipleResults"/><id>https://yosql.projects.metio.wtf/configuration/repositories/executebatch/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate methods that are executed as batch</p>
+<p>A second method taking an array per parameter, adding a batch entry per element and
+answering with the <code>int[]</code> the driver gives back. One round trip instead of one per row,
+which is the difference between an import that takes a minute and one that takes an hour.</p>
+<p>Only writing statements get one — batching a query would have nowhere to put the results.
+Turn it off for a statement that is never run in bulk, if the extra method bothers you;
+it costs nothing to leave on.</p>
+<p>The method is called what the statement is called plus <code>Batch</code>, which is what lets
+<code>insertTenant</code> and <code>insertTenantBatch</code> sit in the same repository.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default. A batch method sits alongside the single-row one:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="nf">insertTenantBatch</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="o">[]</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>No batch method is generated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-execute-batch=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>executeBatch</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">executeBatch</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">executeBatch</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>executeBatch</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;executeBatch&gt;</span>configValue<span class="nt">&lt;/executeBatch&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">executeOnce</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/executeonce/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/?utm_source=atom_feed" rel="related" type="text/html" title="generateConnectionOverloads"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/?utm_source=atom_feed" rel="related" type="text/html" title="throwOnMultipleResults"/><id>https://yosql.projects.metio.wtf/configuration/repositories/executeonce/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate methods that are executed once with the given parameters</p>
+<p>The ordinary method: one call, one execution, the parameters you passed. It is what you
+want for almost every statement, which is why it is on.</p>
+<p>Turning it off for a statement leaves only its batch method, which is worth doing for a
+statement that is never sensibly run for a single row — a bulk import, say. A statement
+with both turned off generates nothing, and <code>YoSQL</code> warns rather than leaving you to
+notice the missing method.</p>
+<p>The method is called what the statement is called.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>Only the batch method is generated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="nf">insertTenantBatch</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="o">[]</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-execute-once=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>executeOnce</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">executeOnce</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">executeOnce</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>executeOnce</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;executeOnce&gt;</span>configValue<span class="nt">&lt;/executeOnce&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">generateConnectionOverloads</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/?utm_source=atom_feed" rel="related" type="text/html" title="throwOnMultipleResults"/><id>https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate both a DataSource-based method and a Connection-taking overload for every statement.</p>
+<p>Whether a statement gets its connection from the repository&rsquo;s <code>DataSource</code> or from the
+caller is not a property of the statement — it is what the call site needs. One caller
+reads a tenant on its own; another reads it as part of a transaction it already opened. So
+every statement generates both, as overloads of one name:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>The <code>Connection</code> overload runs the statement on the connection it is given and does not
+close it, which is what lets several statements share a transaction — see
+<a href="../../../sql/transactions/">transactions</a>
+.</p>
+<p>Turning this off generates only the shape
+<a href="../createconnection/">createConnection</a>
+ selects, one method per statement.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default. Each statement is reachable both ways:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">.</span><span class="na">getConnection</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">findTenant</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>Only the shape <code>createConnection</code> asks for is generated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-generate-connection-overloads=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>generateConnectionOverloads</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">generateConnectionOverloads</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">generateConnectionOverloads</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>generateConnectionOverloads</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;generateConnectionOverloads&gt;</span>configValue<span class="nt">&lt;/generateConnectionOverloads&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">generateInterfaces</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/generateinterfaces/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedCallPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedReadPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedWritePrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/?utm_source=atom_feed" rel="related" type="text/html" title="basePackageName"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><id>https://yosql.projects.metio.wtf/configuration/repositories/generateinterfaces/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Generate interfaces for all repositories</p>
+<p>Writes an interface next to each repository, declaring the same methods, and has the
+repository implement it. Depend on the interface and the class it is implemented by
+becomes something you can substitute — a stub in a test, a caching decorator, a fake
+that never touches a database.</p>
+<p>The interface is the repository without the <code>Repository</code> that made it one, so a
+<code>TenantRepository</code> implements a <code>Tenant</code>. Where there is no suffix to drop — a
+repository you named yourself — the interface takes an <code>I</code> in front instead, which is
+what keeps the two names apart.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The default. A repository is a class and nothing else:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The repository implements an interface your code can depend on instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">Tenant</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">TenantRepositoryApi</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-generate-interfaces=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>generateInterfaces</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">generateInterfaces</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">generateInterfaces</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>generateInterfaces</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;generateInterfaces&gt;</span>configValue<span class="nt">&lt;/generateInterfaces&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/></entry><entry><title type="html">injectConverters</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/injectconverters/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedCallPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedReadPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedWritePrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/?utm_source=atom_feed" rel="related" type="text/html" title="basePackageName"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><id>https://yosql.projects.metio.wtf/configuration/repositories/injectconverters/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Toggles whether converters should be injected as constructor parameters.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The default value of the <code>injectConverters</code> configuration option is <code>false</code>. It produces code similar to this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.example.persistence</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DataSource</span><span class="w"> </span><span class="n">dataSource</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ToMapConverter</span><span class="w"> </span><span class="n">toMap</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">SomeRepository</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">DataSource</span><span class="w"> </span><span class="n">dataSource</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">dataSource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">toMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ToMapConverter</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-true">Option: &rsquo;true'</h3>
+<p>Changing the <code>injectConverters</code> configuration option to <code>true</code> generates the following code instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">your.own.domain</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SomeRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DataSource</span><span class="w"> </span><span class="n">dataSource</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ToMapConverter</span><span class="w"> </span><span class="n">toMap</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">SomeRepository</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">DataSource</span><span class="w"> </span><span class="n">dataSource</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ToMapConverter</span><span class="w"> </span><span class="n">toMap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">dataSource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">toMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">toMap</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-inject-converters=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>injectConverters</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">injectConverters</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">injectConverters</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>injectConverters</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;injectConverters&gt;</span>configValue<span class="nt">&lt;/injectConverters&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/></entry><entry><title type="html">throwOnMultipleResults</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/?utm_source=atom_feed" rel="related" type="text/html" title="generateConnectionOverloads"/><id>https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Throw an exception in case a statement using <code>ReturningMode.SINGLE</code> produces more than 1 result.</p>
+<p>What a <a href="../../sql/returningmode/">returning</a>
+ <code>single</code> statement does when the database
+answers with more than one row. Off, the first row is returned and the rest are dropped;
+on, it throws.</p>
+<p>A statement declared <code>single</code> is a claim that at most one row can match. Where that claim
+rests on a unique constraint the database enforces, the check is redundant and the
+default is right. Where it rests on you being sure — a lookup by something that ought to
+be unique but is not constrained to be — turning this on converts a silent wrong answer
+into a loud one.</p>
+<p>It costs nothing at run time beyond reading one more row.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The default. A second row is ignored:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenantBySlug</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... reads every row, answers with the first</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-true">Option: &rsquo;true'</h3>
+<p>A second row is a defect, and says so:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenantBySlug</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... throws when the statement answers with more than one row</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-throw-on-multiple-results=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>throwOnMultipleResults</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">throwOnMultipleResults</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">throwOnMultipleResults</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>throwOnMultipleResults</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;throwOnMultipleResults&gt;</span>configValue<span class="nt">&lt;/throwOnMultipleResults&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry><entry><title type="html">validateMethodNamePrefixes</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/validatemethodnameprefixes/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedCallPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedReadPrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/?utm_source=atom_feed" rel="related" type="text/html" title="allowedWritePrefixes"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/?utm_source=atom_feed" rel="related" type="text/html" title="basePackageName"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><id>https://yosql.projects.metio.wtf/configuration/repositories/validatemethodnameprefixes/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Validate user given names against list of allowed prefixes per type.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The default value of the <code>validateMethodNamePrefixes</code> configuration option is <code>false</code> which disables the validation of names according to your configured prefixes.</p>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>Changing the <code>validateMethodNamePrefixes</code> configuration option to <code>true</code> enables the validation of method names.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../writesreturnupdatecount/">writesReturnUpdateCount</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-validate-method-name-prefixes=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>validateMethodNamePrefixes</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">validateMethodNamePrefixes</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">validateMethodNamePrefixes</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>validateMethodNamePrefixes</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;validateMethodNamePrefixes&gt;</span>configValue<span class="nt">&lt;/validateMethodNamePrefixes&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/></entry><entry><title type="html">writesReturnUpdateCount</title><link href="https://yosql.projects.metio.wtf/configuration/repositories/writesreturnupdatecount/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/?utm_source=atom_feed" rel="related" type="text/html" title="catchAndRethrow"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/createconnection/?utm_source=atom_feed" rel="related" type="text/html" title="createConnection"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executebatch/?utm_source=atom_feed" rel="related" type="text/html" title="executeBatch"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/executeonce/?utm_source=atom_feed" rel="related" type="text/html" title="executeOnce"/><link href="https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/?utm_source=atom_feed" rel="related" type="text/html" title="generateConnectionOverloads"/><id>https://yosql.projects.metio.wtf/configuration/repositories/writesreturnupdatecount/</id><published>2026-08-04T00:00:00+00:00</published><updated>2026-08-04T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Writing method which are using <code>ReturningMode.NONE</code> return the number of affected rows instead.</p>
+<p>What a write answers with when it returns no rows. On, it is the number of rows the
+statement changed; off, the method is <code>void</code>.</p>
+<p>The count is worth having: an update that changed no rows is usually a bug the caller can
+act on, and there is nowhere else to learn that. Turn it off for a statement whose count
+is meaningless — a <code>create table</code>, or DDL generally.</p>
+<p>This applies to <a href="../../sql/returningmode/">returning</a>
+ <code>none</code> only. A write that returns
+rows answers with them.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-true">Option: &rsquo;true'</h3>
+<p>The default. The caller can see how many rows the statement changed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="option-false">Option: &lsquo;false&rsquo;</h3>
+<p>The count is dropped:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantRepository</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">insertTenant</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ... rest of generated code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../allowedcallprefixes/">allowedCallPrefixes</a>
+, <a href="../allowedreadprefixes/">allowedReadPrefixes</a>
+, <a href="../allowedwriteprefixes/">allowedWritePrefixes</a>
+, <a href="../basepackagename/">basePackageName</a>
+, <a href="../catchandrethrow/">catchAndRethrow</a>
+, <a href="../createconnection/">createConnection</a>
+, <a href="../executebatch/">executeBatch</a>
+, <a href="../executeonce/">executeOnce</a>
+, <a href="../generateconnectionoverloads/">generateConnectionOverloads</a>
+, <a href="../generateinterfaces/">generateInterfaces</a>
+, <a href="../injectconverters/">injectConverters</a>
+, <a href="../throwonmultipleresults/">throwOnMultipleResults</a>
+, <a href="../validatemethodnameprefixes/">validateMethodNamePrefixes</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --repositories-writes-return-update-count=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>writesReturnUpdateCount</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">writesReturnUpdateCount</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2023.2.22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">repositories</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">writesReturnUpdateCount</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>writesReturnUpdateCount</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2023.2.22<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;writesReturnUpdateCount&gt;</span>configValue<span class="nt">&lt;/writesReturnUpdateCount&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/frontmatter" term="frontmatter" label="frontmatter"/></entry></feed>

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yosql.projects.metio.wtf/schema/frontmatter.json",
+  "title": "YoSQL statement front matter",
+  "description": "The YAML written in SQL comments above a statement. Generated from YoSQL 2023.2.22.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "annotations": {
+      "description": "The additional annotations to be placed on generated methods."
+    },
+    "catchAndRethrow": {
+      "description": "Catch exceptions during SQL execution and re-throw them as RuntimeExceptions",
+      "type": "boolean"
+    },
+    "createConnection": {
+      "description": "Controls whether the generated code should create/open connection itself or use a given connection.",
+      "type": "boolean"
+    },
+    "description": {
+      "description": "The description for the SQL statement",
+      "type": "string"
+    },
+    "executeBatch": {
+      "description": "Generate methods that are executed as batch",
+      "type": "boolean"
+    },
+    "executeOnce": {
+      "description": "Generate methods that are executed once with the given parameters",
+      "type": "boolean"
+    },
+    "generateConnectionOverloads": {
+      "description": "Generate both a DataSource-based method and a Connection-taking overload for every statement.",
+      "type": "boolean"
+    },
+    "generateResultRowType": {
+      "description": "Write the record this statement builds its rows into.",
+      "type": "boolean"
+    },
+    "name": {
+      "description": "The name of the SQL statement",
+      "type": "string"
+    },
+    "parameters": {
+      "description": "The parameters of the SQL statement."
+    },
+    "repository": {
+      "description": "The fully qualified name of the target repository class.",
+      "type": "string"
+    },
+    "resultRowColumns": {
+      "description": "Overrides which column a component of the result row type reads"
+    },
+    "resultRowConverter": {
+      "description": "The fully-qualified name of the converter class to use"
+    },
+    "resultRowType": {
+      "description": "The fully-qualified name of a record to build each result row into",
+      "type": "string"
+    },
+    "returning": {
+      "description": "The returning mode of the SQL statement.",
+      "enum": ["none", "NONE", "single", "SINGLE", "multiple", "MULTIPLE", "cursor", "CURSOR"]
+    },
+    "throwOnMultipleResults": {
+      "description": "Throw an exception in case a statement using `ReturningMode.SINGLE` produces more than 1 result.",
+      "type": "boolean"
+    },
+    "type": {
+      "description": "The type of the SQL statement.",
+      "enum": ["reading", "READING", "writing", "WRITING", "calling", "CALLING"]
+    },
+    "usePreparedStatement": {
+      "description": "Should `PreparedStatement`s be used instead of `Statement`s",
+      "type": "boolean"
+    },
+    "validateSchema": {
+      "description": "Whether this statement is checked against the schema.",
+      "type": "boolean"
+    },
+    "vendor": {
+      "description": "The vendor name of the database the SQL statement is intended for",
+      "type": "string"
+    },
+    "writesReturnUpdateCount": {
+      "description": "Writing method which are using `ReturningMode.NONE` return the number of affected rows instead.",
+      "type": "boolean"
+    }
+  }
+}

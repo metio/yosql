@@ -1,0 +1,46 @@
+# YoSQL
+
+> Write more SQL
+
+Project home: https://yosql.projects.metio.wtf/ — full text for LLMs: https://yosql.projects.metio.wtf/llms-full.txt
+
+## Installation
+
+- [Tutorial](https://yosql.projects.metio.wtf/installation/tutorial/)
+- [Upgrading](https://yosql.projects.metio.wtf/installation/upgrading/)
+
+## Tooling
+
+- [Ant](https://yosql.projects.metio.wtf/tooling/ant/)
+- [Bazel](https://yosql.projects.metio.wtf/tooling/bazel/)
+- [CLI](https://yosql.projects.metio.wtf/tooling/cli/)
+- [Gradle](https://yosql.projects.metio.wtf/tooling/gradle/)
+- [Maven](https://yosql.projects.metio.wtf/tooling/maven/)
+
+## Frameworks
+
+- [Quarkus](https://yosql.projects.metio.wtf/frameworks/quarkus/)
+- [Spring Boot](https://yosql.projects.metio.wtf/frameworks/spring-boot/)
+
+## Editors
+
+- [Claude skill](https://yosql.projects.metio.wtf/editors/claude/)
+- [Front matter schema](https://yosql.projects.metio.wtf/editors/schema/)
+
+## Configuration
+
+
+## Benchmarks
+
+- [Code Generation](https://yosql.projects.metio.wtf/benchmarks/codegen/)
+- [Database Access](https://yosql.projects.metio.wtf/benchmarks/db-access/)
+
+## SQL
+
+- [Schema validation](https://yosql.projects.metio.wtf/sql/schema/)
+- [Cookbook](https://yosql.projects.metio.wtf/sql/cookbook/)
+- [Transactions](https://yosql.projects.metio.wtf/sql/transactions/)
+- [Converters](https://yosql.projects.metio.wtf/sql/converters/)
+- [SQL Files](https://yosql.projects.metio.wtf/sql/sql-files/)
+- [Structure](https://yosql.projects.metio.wtf/sql/structure/)
+

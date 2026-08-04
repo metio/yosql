@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ant on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/ant/</link><description>Recent content in Ant on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 16 Jun 2019 18:23:45 +0200</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/ant/index.xml" rel="self" type="application/rss+xml"/><item><title>Ant</title><link>https://yosql.projects.metio.wtf/tooling/ant/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/ant/</guid><description>&lt;p&gt;In order to use the &lt;code&gt;YoSQL&lt;/code&gt; tooling for &lt;a href="https://ant.apache.org/"&gt;Ant&lt;/a&gt;
+, follow these steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Download the &lt;code&gt;yosql-tooling-ant&lt;/code&gt; task zip file from the &lt;a href="https://github.com/metio/yosql/releases/latest"&gt;latest release&lt;/a&gt;
+ (or any prior version).&lt;/li&gt;
+&lt;li&gt;Define a task in your build.xml. The &lt;code&gt;lib&lt;/code&gt; folder of the &lt;code&gt;yosql-tooling-ant&lt;/code&gt; zip file contains all jar files that are required for the task.&lt;/li&gt;
+&lt;li&gt;Write &lt;code&gt;.sql&lt;/code&gt; files in a directory of your choice (e.g. &lt;code&gt;/path/to/your/sql/files&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Adjust the &lt;a href="https://yosql.projects.metio.wtf/configuration/"&gt;configuration&lt;/a&gt;
+ of the &lt;code&gt;YoSQL&lt;/code&gt; task.&lt;/li&gt;
+&lt;li&gt;Execute the &lt;code&gt;YoSQL&lt;/code&gt; task in order to generate Java code.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;An example build.xml file could look like this:&lt;/p&gt;</description></item></channel></rss>

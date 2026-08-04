@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tooling on YoSQL</title><link>https://yosql.projects.metio.wtf/tooling/</link><description>Recent content in Tooling on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 16 Jun 2019 18:23:45 +0200</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tooling/index.xml" rel="self" type="application/rss+xml"/><item><title>Ant</title><link>https://yosql.projects.metio.wtf/tooling/ant/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/ant/</guid><description>&lt;p&gt;In order to use the &lt;code&gt;YoSQL&lt;/code&gt; tooling for &lt;a href="https://ant.apache.org/"&gt;Ant&lt;/a&gt;
+, follow these steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Download the &lt;code&gt;yosql-tooling-ant&lt;/code&gt; task zip file from the &lt;a href="https://github.com/metio/yosql/releases/latest"&gt;latest release&lt;/a&gt;
+ (or any prior version).&lt;/li&gt;
+&lt;li&gt;Define a task in your build.xml. The &lt;code&gt;lib&lt;/code&gt; folder of the &lt;code&gt;yosql-tooling-ant&lt;/code&gt; zip file contains all jar files that are required for the task.&lt;/li&gt;
+&lt;li&gt;Write &lt;code&gt;.sql&lt;/code&gt; files in a directory of your choice (e.g. &lt;code&gt;/path/to/your/sql/files&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Adjust the &lt;a href="https://yosql.projects.metio.wtf/configuration/"&gt;configuration&lt;/a&gt;
+ of the &lt;code&gt;YoSQL&lt;/code&gt; task.&lt;/li&gt;
+&lt;li&gt;Execute the &lt;code&gt;YoSQL&lt;/code&gt; task in order to generate Java code.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;An example build.xml file could look like this:&lt;/p&gt;</description></item><item><title>Bazel</title><link>https://yosql.projects.metio.wtf/tooling/bazel/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/bazel/</guid><description>&lt;p&gt;&lt;a href="https://bazel.build/"&gt;bazel&lt;/a&gt;
+ users can use the &lt;a href="../cli/"&gt;yosql-tooling-cli&lt;/a&gt;
+ in their builds by following these steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Download the &lt;code&gt;yosql-tooling-cli&lt;/code&gt; zip file from the &lt;a href="https://github.com/metio/yosql/releases/latest"&gt;latest release&lt;/a&gt;
+ (or any prior version).&lt;/li&gt;
+&lt;li&gt;Use a &lt;a href="https://bazel.build/reference/be/java#java_import"&gt;java_import&lt;/a&gt;
+ rule to capture all &lt;code&gt;.jar&lt;/code&gt; files used by &lt;code&gt;yosql-tooling-cli&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;java_import&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;yosql_tooling_cli&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;jars&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;lib/yosql-tooling-cli-x.y.z.jar&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;lib/yosql-codegen-x.y.z.jar&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;lib/yosql-models-immutables-x.y.z.jar&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;every&lt;/span&gt; &lt;span class="n"&gt;other&lt;/span&gt; &lt;span class="n"&gt;jar&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;the&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;lib&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;folder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;Use a &lt;a href="https://bazel.build/reference/be/java#java_binary"&gt;java_binary&lt;/a&gt;
+ rule to create a runnable binary for bazel&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;java_binary&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;yosql&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;deps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;:yosql_tooling_cli&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;main_class&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;wtf.metio.yosql.tooling.cli.YoSQL&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;Write .sql files in a directory of your choice (e.g. &lt;code&gt;persistence&lt;/code&gt;)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;project/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── WORKSPACE
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── BUILD
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└── persistence/ 
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── user/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├── findUser.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── addUser.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── item/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├── queryAllItems.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── createItemTable.sql
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;Declare a &lt;a href="https://bazel.build/reference/be/general#filegroup"&gt;filegroup&lt;/a&gt;
+ that contains all of your SQL files:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;filegroup(
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; name = &amp;#34;your-sql-files&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; srcs = glob([&amp;#34;persistence/**/*.sql&amp;#34;]),
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;Generate Java code by calling the previously defined &lt;code&gt;java_binary&lt;/code&gt;:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;genrule(
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; name = &amp;#34;your-repositories&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; srcs = [&amp;#34;:your-sql-files&amp;#34;],
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; outs = [
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &amp;#34;com/example/persistence/UserRepository.java&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &amp;#34;com/example/persistence/ItemRepository.java&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ... all of your generated code
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ],
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; cmd = &amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; $(location :yosql) generate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &amp;#34;&amp;#34;&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; tools = [&amp;#34;:yosql&amp;#34;],
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;Depend on the generated sources by using the target name of the generated code in the &lt;code&gt;srcs&lt;/code&gt; of another rule.&lt;/li&gt;
+&lt;/ol&gt;</description></item><item><title>CLI</title><link>https://yosql.projects.metio.wtf/tooling/cli/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/cli/</guid><description>&lt;p&gt;The &lt;a href="https://en.wikipedia.org/wiki/Command-line_interface"&gt;command line&lt;/a&gt;
+ tool generates the same
+code as the build plugins, without being part of a build. Use it when your project builds with
+something &lt;code&gt;YoSQL&lt;/code&gt; has no plugin for, or to generate code once and commit the result.&lt;/p&gt;
+&lt;h2 id="getting-it"&gt;Getting it&lt;/h2&gt;
+&lt;p&gt;Each &lt;a href="https://github.com/metio/yosql/releases/latest"&gt;release&lt;/a&gt;
+ publishes two kinds of archive:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;yosql-tooling-cli-&amp;lt;version&amp;gt;-linux.zip&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code&gt;-mac.zip&lt;/code&gt;&lt;/strong&gt; — a single native binary. It starts
+instantly and needs no Java installed at all.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;yosql-tooling-cli-&amp;lt;version&amp;gt;-jvm.zip&lt;/code&gt;&lt;/strong&gt; — scripts plus jars, for any platform with Java 25.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Unpack it and put the &lt;code&gt;yosql&lt;/code&gt; binary, or the &lt;code&gt;bin/yosql&lt;/code&gt; script, on your &lt;code&gt;PATH&lt;/code&gt;. Both archives are
+covered by the signed &lt;code&gt;SHA256SUMS&lt;/code&gt; — see &lt;a href="../../installation/#verifying-a-download"&gt;verifying a download&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>Gradle</title><link>https://yosql.projects.metio.wtf/tooling/gradle/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/gradle/</guid><description>&lt;p&gt;&lt;a href="https://gradle.org/"&gt;Gradle&lt;/a&gt;
+ projects can use the &lt;a href="https://plugins.gradle.org/plugin/wtf.metio.yosql"&gt;yosql-tooling-gradle&lt;/a&gt;
+ plugin to use &lt;code&gt;YoSQL&lt;/code&gt; in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Add the &lt;a href="https://plugins.gradle.org/plugin/wtf.metio.yosql"&gt;plugin&lt;/a&gt;
+ to your &lt;code&gt;build.gradle(.kts)&lt;/code&gt; file as describe in the Gradle plugin portal.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Add .sql files in &lt;code&gt;src/main/yosql&lt;/code&gt; and write SQL statements into them. Take a look at the various options to &lt;a href="https://yosql.projects.metio.wtf/sql/structure/"&gt;structure&lt;/a&gt;
+ your &lt;a href="https://yosql.projects.metio.wtf/sql/sql-files/"&gt;SQL files&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>Maven</title><link>https://yosql.projects.metio.wtf/tooling/maven/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/maven/</guid><description>&lt;p&gt;&lt;a href="https://maven.apache.org/"&gt;Maven&lt;/a&gt;
+ projects can use the &lt;code&gt;yosql-tooling-maven&lt;/code&gt; plugin to use &lt;code&gt;YoSQL&lt;/code&gt; in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Add the &lt;a href="https://search.maven.org/artifact/wtf.metio.yosql.tooling/yosql-tooling-maven"&gt;plugin&lt;/a&gt;
+ to your &lt;code&gt;pom.xml&lt;/code&gt;:
+
+ 
+ &lt;div class="highlight"&gt;&lt;pre class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="nt"&gt;&amp;lt;build&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;plugins&amp;gt;&lt;/span&gt;
+ ...
+ &lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;wtf.metio.yosql&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;yosql-tooling-maven&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;2023.2.22&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+ ...
+ &lt;span class="nt"&gt;&amp;lt;/plugins&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;/build&amp;gt;&lt;/span&gt;
+ &lt;/code&gt;&lt;/pre&gt;
+ &lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Add .sql files in &lt;code&gt;src/main/yosql&lt;/code&gt; and write SQL statements into them. Take a look at the various options to &lt;a href="https://yosql.projects.metio.wtf/sql/structure/"&gt;structure&lt;/a&gt;
+ your &lt;a href="https://yosql.projects.metio.wtf/sql/sql-files/"&gt;SQL files&lt;/a&gt;
+.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;lt;project_root&amp;gt;/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── pom.xml
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└── src/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── main/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── yosql/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── domainObject/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├── queryData.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── changeYourData.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── aggregateRoot/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├── findRoot.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── addData.sql
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Execute the &lt;code&gt;yosql:generate&lt;/code&gt; goal (or just run &lt;code&gt;mvn generate-sources&lt;/code&gt;) to generate the Java code.&lt;/p&gt;</description></item></channel></rss>

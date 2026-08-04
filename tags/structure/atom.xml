@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Structure on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/structure/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/structure/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/structure/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-04T20:47:20+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/structure/</id><entry><title type="html">Structure</title><link href="https://yosql.projects.metio.wtf/sql/structure/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/sql/structure/</id><published>2019-06-16T18:33:06+02:00</published><updated>2019-06-16T18:33:06+02:00</updated><content type="html"><![CDATA[<p>In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. <code>YoSQL</code> will try to detect which repository your SQL statements will end up in. Based on the <a href="/configuration/files/inputbasedirectory/">inputBaseDirectory</a>
+ configuration option, your project structure could look like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">&lt;inputBaseDirectory&gt;/
+</span></span><span class="line"><span class="cl">└── user/
+</span></span><span class="line"><span class="cl">    └── getAllUsers.sql
+</span></span></code></pre></div><p>Based on the above example, <code>YoSQL</code> will determine that you want a method called <code>getAllUsers</code> in a repository called <code>UserRepository</code>. Use the <a href="/configuration/repositories/basepackagename/">basePackageName</a>
+ option to change the base package name for all generated repositories. Together they will form the fully qualified name <code>&lt;basePackageName&gt;.UserRepository</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">&lt;inputBaseDirectory&gt;/
+</span></span><span class="line"><span class="cl">└── internal/
+</span></span><span class="line"><span class="cl">    └── user/
+</span></span><span class="line"><span class="cl">        └── getAllUsers.sql
+</span></span></code></pre></div><p>Nested package structures are supported as well - they are simply interpreted as subpackages, that are appended to the <a href="/configuration/repositories/basepackagename/">basePackageName</a>
+ option to form the fully qualified name <code>&lt;basePackageName&gt;.internal.UserRepository</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">&lt;inputBaseDirectory&gt;/
+</span></span><span class="line"><span class="cl">  └── user/
+</span></span><span class="line"><span class="cl">    └── vips/
+</span></span><span class="line"><span class="cl">        └── findSpecialUsers.sql
+</span></span><span class="line"><span class="cl">    └── getAllUsers.sql
+</span></span></code></pre></div><p>Nesting repositories within other repositories is supported as well - <code>YoSql</code> will create two repositories for the above example: <code>&lt;basePackageName&gt;.UserRepository</code> with a method called <code>getAllUsers</code> and <code>&lt;basePackageName&gt;.user.VipsRepository</code> with a method called <code>findSpecialUsers</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">&lt;inputBaseDirectory&gt;/
+</span></span><span class="line"><span class="cl">└── internal/
+</span></span><span class="line"><span class="cl">    └── user/
+</span></span><span class="line"><span class="cl">        └── getAllUsers.sql
+</span></span><span class="line"><span class="cl">└── user/
+</span></span><span class="line"><span class="cl">    └── findUser.sql
+</span></span></code></pre></div><p>Mixing nested and non-nested repositories work as well. The above example will generate the two repositories <code>&lt;basePackageName&gt;.internal.UserRepository</code> and <code>&lt;basePackageName&gt;.UserRepository</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">&lt;inputBaseDirectory&gt;/
+</span></span><span class="line"><span class="cl">└── allQueries.sql
+</span></span></code></pre></div><p>Smaller projects might just want to use a single <code>.sql</code> file that contains all of your queries. In case none of your SQL statements change their target repository in their <a href="../sql-files/">front matter</a>
+, all queries in the above structure will end up in a class called <code>&lt;basePackageName&gt;.Repository</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">&lt;inputBaseDirectory&gt;/
+</span></span><span class="line"><span class="cl">└── internal/
+</span></span><span class="line"><span class="cl">    └── user/
+</span></span><span class="line"><span class="cl">        └── vips/
+</span></span><span class="line"><span class="cl">            └── findSpecialUsers.sql
+</span></span><span class="line"><span class="cl">        └── getAllUsers.sql
+</span></span><span class="line"><span class="cl">└── user/
+</span></span><span class="line"><span class="cl">    └── findUser.sql
+</span></span><span class="line"><span class="cl">└── lotsOfQueries.sql
+</span></span></code></pre></div><p>Mixing all options is of course supported as well - we recommend using any structure that best fits to your project/team. One statement per file makes it easier to quickly find single statements, however grouping multiple statements together in one file might make sense for multiple reasons, e.g. a statement might have multiple variants based on the used database or any other set of statements that are usually changed together as a single unit.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/sql" term="sql" label="SQL"/><category scheme="https://yosql.projects.metio.wtf/tags/repositories" term="repositories" label="repositories"/><category scheme="https://yosql.projects.metio.wtf/tags/files" term="files" label="files"/><category scheme="https://yosql.projects.metio.wtf/tags/structure" term="structure" label="structure"/></entry></feed>
