@@ -54,3 +54,11 @@ path = ["**/gradle/wrapper/gradle-wrapper.jar", "**/gradle/wrapper/gradle-wrappe
 precedence = "override"
 SPDX-FileCopyrightText = "Gradle Inc."
 SPDX-License-Identifier = "Apache-2.0"
+
+# jqwik's replay cache, written beside whichever module ran a property. Not
+# source, not committed, and regenerated on the next run.
+[[annotations]]
+path = "**/.jqwik-database"
+precedence = "override"
+SPDX-FileCopyrightText = "The yosql Authors"
+SPDX-License-Identifier = "0BSD"

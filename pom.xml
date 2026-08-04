@@ -98,6 +98,7 @@
         <version.jsqlparser>5.3</version.jsqlparser>
         <version.jmh>1.37</version.jmh>
         <version.jspecify>1.0.1</version.jspecify>
+        <version.jqwik>1.10.1</version.jqwik>
         <version.junit>6.1.2</version.junit>
         <version.kotlin>2.4.10</version.kotlin>
         <version.log4j>2.26.1</version.log4j>
@@ -156,6 +157,15 @@
                 <version>${version.jackson}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!--
+                Property-based tests. Its own engine on the JUnit platform, so surefire runs it
+                beside the jupiter tests rather than instead of them.
+            -->
+            <dependency>
+                <groupId>net.jqwik</groupId>
+                <artifactId>jqwik</artifactId>
+                <version>${version.jqwik}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit</groupId>

@@ -174,3 +174,7 @@ fabric.properties
 # The throwaway Postgres the native gate starts, when that gate is run locally.
 pgdata/
 pg.log
+
+# jqwik remembers which sample last failed a property, so a rerun tries it first.
+# Per checkout, not per project.
+**/.jqwik-database

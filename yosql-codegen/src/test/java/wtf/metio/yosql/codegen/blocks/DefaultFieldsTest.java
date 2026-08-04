@@ -68,12 +68,13 @@ class DefaultFieldsTest {
         }
 
         @Test
-        @DisplayName("so that three quotes do not end it early")
-        void escapesTripleQuotes() {
+        @DisplayName("so that no run of quotes can end it early")
+        void escapesQuotes() {
             final var initialized = generator.initialize("select \"\"\" from t").toString();
-            Assertions.assertTrue(initialized.contains("\"\"\\\""),
-                    () -> "three quotes close the block: " + initialized);
+            Assertions.assertTrue(initialized.contains("\\\"\\\"\\\""),
+                    () -> "a run of quotes could close the block: " + initialized);
         }
+
 
         @Test
         @DisplayName("so that whitespace inside a literal survives the line ending")
