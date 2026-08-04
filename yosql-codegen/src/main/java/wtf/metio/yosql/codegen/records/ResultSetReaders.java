@@ -21,6 +21,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Currency;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -38,6 +39,17 @@ import java.util.UUID;
  * {@code getObject(column, Type.class)} or an explicit null check, and arrives as {@code null}.</p>
  */
 public final class ResultSetReaders {
+
+    /**
+     * What a reader appends to a component's local when it needs a second one beside it — the raw
+     * column before a factory turns it into the component's type, the timestamp before it becomes an
+     * {@code Instant}, the name or ordinal before it becomes an enum constant.
+     *
+     * <p>Public because the caller choosing the component's local is the only place that can keep
+     * these clear of each other: a record holding both {@code reason} and {@code reasonName} would
+     * otherwise declare {@code reasonName} twice, and the converter would not compile.</p>
+     */
+    public static final Set<String> DERIVED_SUFFIXES = Set.of("Value", "Timestamp", "Code", "Name");
 
     private static final ClassName UUID_TYPE = ClassName.get(UUID.class);
     private static final ClassName INSTANT_TYPE = ClassName.get(Instant.class);

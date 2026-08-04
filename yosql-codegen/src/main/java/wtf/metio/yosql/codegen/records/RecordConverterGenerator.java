@@ -312,7 +312,9 @@ public final class RecordConverterGenerator {
 
     private MethodSpec converterMethod(final JavaSourceType record, final Map<String, String> overrides) {
         final var body = CodeBlock.builder();
-        final var taken = new LinkedHashSet<String>();
+        // The method's own parameter is an identifier in the same scope, so a component named after
+        // it would declare it a second time.
+        final var taken = new LinkedHashSet<>(List.of(resultSet));
         final var construction = build(record, List.of(), body, taken,
                 new LinkedHashSet<>(List.of(record.type())), overrides);
         return methods.publicMethod(names.methodName())
@@ -453,6 +455,12 @@ public final class RecordConverterGenerator {
     /**
      * One local per leaf, named after its path so two components called {@code id} in different
      * nested records do not collide.
+     *
+     * <p>A reader may need a second local beside the one it is asked for — {@code reasonName} to hold
+     * the text before {@code reason} becomes an enum constant — so a name is only free when the names
+     * derived from it are free as well. Both orders matter: {@code reason} then {@code reasonName}
+     * collides on the second, and {@code reasonName} then {@code reason} collides on the first's
+     * derived local, which is why the check is made before either is claimed.</p>
      */
     private static String variableFor(final List<String> path, final Set<String> taken) {
         final var name = new StringBuilder(path.getFirst());
@@ -462,10 +470,18 @@ public final class RecordConverterGenerator {
         }
         var candidate = name.toString();
         var suffix = 2;
-        while (!taken.add(candidate)) {
+        while (!isFree(candidate, taken)) {
             candidate = name + String.valueOf(suffix++);
         }
-        return candidate;
+        final var chosen = candidate;
+        taken.add(chosen);
+        ResultSetReaders.DERIVED_SUFFIXES.forEach(derived -> taken.add(chosen + derived));
+        return chosen;
+    }
+
+    private static boolean isFree(final String candidate, final Set<String> taken) {
+        return !taken.contains(candidate)
+                && ResultSetReaders.DERIVED_SUFFIXES.stream().noneMatch(d -> taken.contains(candidate + d));
     }
 
     private record Leaf(String path, String column) {

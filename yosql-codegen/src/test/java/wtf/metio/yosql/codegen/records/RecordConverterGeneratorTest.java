@@ -286,6 +286,63 @@ class RecordConverterGeneratorTest {
                     code);
         }
 
+        @Test
+        @DisplayName("keeps a component clear of the local another component's reader derives")
+        void doesNotCollideWithADerivedLocal() {
+            write("Reason", """
+                    package com.example.domain;
+
+                    public enum Reason {
+                        MANUAL, AUTOMATIC
+                    }
+                    """);
+            write("Entry", """
+                    package com.example.domain;
+
+                    public record Entry(Reason reason, String reasonName) {
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findEntries", DOMAIN + ".Entry",
+                    "select reason, reason_name from entry")));
+
+            assertEquals(1, occurrences(code, "java.lang.String reasonName ="),
+                    () -> "reading the enum declares a reasonName of its own, so the component of that "
+                            + "name needs a different local or the converter declares it twice:\n" + code);
+        }
+
+        @Test
+        @DisplayName("and does so whichever order the two are declared in")
+        void doesNotCollideWhenTheDerivedNameComesFirst() {
+            write("Reason", """
+                    package com.example.domain;
+
+                    public enum Reason {
+                        MANUAL, AUTOMATIC
+                    }
+                    """);
+            write("Entry", """
+                    package com.example.domain;
+
+                    public record Entry(String reasonName, Reason reason) {
+                    }
+                    """);
+            final var code = generateOne(List.of(statement("findEntries", DOMAIN + ".Entry",
+                    "select reason_name, reason from entry")));
+
+            assertEquals(1, occurrences(code, "java.lang.String reasonName ="),
+                    () -> "the component took the name first, so the enum's reader needs another:\n" + code);
+        }
+
+        private static int occurrences(final String code, final String needle) {
+            var count = 0;
+            var index = code.indexOf(needle);
+            while (index >= 0) {
+                count++;
+                index = code.indexOf(needle, index + needle.length());
+            }
+            return count;
+        }
+
     }
 
     @Nested
