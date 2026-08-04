@@ -10,6 +10,7 @@ import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.codegen.YoSqlVersion;
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import wtf.metio.yosql.internals.javapoet.TypeGuesser;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.models.configuration.Annotation;
@@ -26,12 +27,6 @@ import static wtf.metio.yosql.codegen.lifecycle.ApplicationWarnings.CANNOT_GUESS
 public final class DefaultAnnotations implements Annotations {
 
     /**
-     * What {@code @Generated} says about the generator, by the convention its own javadoc asks for:
-     * the fully qualified name of the tool rather than a display name.
-     */
-    private static final String GENERATOR = "wtf.metio.yosql";
-
-    /**
      * The release, and a warning that editing is pointless.
      *
      * <p>No date. Two builds of the same statements produce the same code, which is a property the
@@ -43,7 +38,7 @@ public final class DefaultAnnotations implements Annotations {
 
     private static final List<AnnotationSpec> GENERATED = List.of(AnnotationSpec
             .builder(ClassName.bestGuess("javax.annotation.processing.Generated"))
-            .addMember("value", "$S", GENERATOR)
+            .addMember("value", "$S", GeneratedNames.GENERATOR)
             .addMember("comments", "$S", COMMENTS)
             .build());
 

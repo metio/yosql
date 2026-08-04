@@ -36,6 +36,7 @@ public final class Annotations extends AbstractConfigurationGroup {
     private static final String AS_ANNOTATION_MEMBER = "asAnnotationMember";
     private static final String TYPE = "type";
     private static final String MEMBERS = "members";
+    private static final String MEMBER = "member";
     private static final String KEY = "key";
     private static final String VALUE = "value";
     private static final String CREATE_ANNOTATIONS = "createAnnotations";
@@ -187,11 +188,29 @@ public final class Annotations extends AbstractConfigurationGroup {
                 .build();
     }
 
+    /**
+     * The nested element an Ant build writes an annotation as.
+     *
+     * <p>Ant configures a nested element the same way it configures a task: by looking for a setter
+     * per attribute and an {@code addConfigured}/{@code create} method per child. A class carrying
+     * only fields is instantiated and then cannot be told anything, so the element was accepted and
+     * every attribute on it refused — which made the whole annotations group unusable from Ant.</p>
+     */
     private static TypeSpec antAnnotationSpecType() {
         return TypeSpec.classBuilder(ANNOTATION_SPEC)
                 .addModifiers(Modifier.PUBLIC)
                 .addField(FieldSpec.builder(ClassName.get(String.class), TYPE).build())
-                .addField(FieldSpec.builder(TypicalTypes.listOf(ANT_MEMBER_TYPE), MEMBERS).build())
+                .addField(FieldSpec.builder(TypicalTypes.listOf(ANT_MEMBER_TYPE), MEMBERS)
+                        .initializer("new $T<>()", ArrayList.class)
+                        .build())
+                .addMethod(antSetter(ClassName.get(String.class), TYPE,
+                        "The fully qualified name of the annotation."))
+                .addMethod(MethodSpec.methodBuilder("addConfigured" + upperCase(MEMBER))
+                        .addJavadoc("$L", "One member of this annotation.")
+                        .addModifiers(Modifier.PUBLIC)
+                        .addParameter(ANT_MEMBER_TYPE, MEMBER, Modifier.FINAL)
+                        .addStatement("this.$L.add($L)", MEMBERS, MEMBER)
+                        .build())
                 .addMethod(MethodSpec.methodBuilder(AS_ANNOTATION)
                         .addModifiers(Modifier.FINAL)
                         .returns(Annotation.class)
@@ -212,6 +231,9 @@ public final class Annotations extends AbstractConfigurationGroup {
                 .addField(FieldSpec.builder(ClassName.get(String.class), TYPE).initializer("$S", "java.lang.String").build())
                 .addField(FieldSpec.builder(ClassName.get(String.class), KEY).build())
                 .addField(FieldSpec.builder(ClassName.get(String.class), VALUE).build())
+                .addMethod(antSetter(ClassName.get(String.class), TYPE, "The type of this member's value."))
+                .addMethod(antSetter(ClassName.get(String.class), KEY, "The name of this member."))
+                .addMethod(antSetter(ClassName.get(String.class), VALUE, "The value of this member."))
                 .addMethod(MethodSpec.methodBuilder(AS_ANNOTATION_MEMBER)
                         .addModifiers(Modifier.FINAL)
                         .returns(AnnotationMember.class)

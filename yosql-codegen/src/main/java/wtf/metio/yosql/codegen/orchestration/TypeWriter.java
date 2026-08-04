@@ -20,4 +20,17 @@ public interface TypeWriter {
      */
     void writeType(PackagedTypeSpec typeSpec);
 
+    /**
+     * Removes what an earlier run wrote and this one did not.
+     *
+     * <p>The output directory survives a build, so a repository whose {@code .sql} file has been
+     * deleted or renamed stays on disk, stays on the compile source root, and keeps compiling and
+     * shipping. The build stays green while a fresh checkout — every CI run, every other machine —
+     * would not have had that class at all.</p>
+     *
+     * <p>Only files carrying the {@code @Generated} annotation naming YoSQL, so a file somebody put
+     * in the output directory themselves is left alone whatever that directory is pointed at.</p>
+     */
+    void removeStaleOutput();
+
 }

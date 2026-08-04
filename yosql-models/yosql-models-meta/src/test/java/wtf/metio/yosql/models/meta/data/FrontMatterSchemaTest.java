@@ -71,6 +71,34 @@ class FrontMatterSchemaTest {
                         + "for — front matter using them fails with UnrecognizedPropertyException");
     }
 
+    /**
+     * Every repository setting a statement may override says its own wire key.
+     *
+     * <p>The annotation is what Jackson binds by, and it is added in one place for all of them. That
+     * place used to write it onto the setting, whose annotation lists nothing reads, so it reached
+     * no generated method at all — invisible while every key equals its setting's name, and a
+     * statement bound from a name Jackson never saw the moment one does not.</p>
+     */
+    @Test
+    @DisplayName("names the wire key of every repository setting a statement may override")
+    void annotatesInheritedSettings() {
+        final var inherited = Repositories.booleanMethods().stream()
+                .map(ConfigurationSetting::name)
+                .collect(Collectors.toCollection(TreeSet::new));
+        final var unannotated = Sql.configurationGroup().settings().stream()
+                .filter(setting -> inherited.contains(setting.name()))
+                .filter(setting -> setting.immutableMethods().stream()
+                        .flatMap(method -> method.annotations().stream())
+                        .noneMatch(annotation ->
+                                ConfigurationSetting.JSON_PROPERTY.equals(annotation.type().toString())))
+                .map(ConfigurationSetting::name)
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        Assertions.assertTrue(unannotated.isEmpty(),
+                () -> unannotated + " reach SqlConfiguration without a JsonProperty naming the key "
+                        + "they are bound from");
+    }
+
     @Test
     @DisplayName("lists everything a statement can be bound from")
     void listsEveryBoundSetting() {

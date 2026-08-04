@@ -106,8 +106,14 @@ public final class DefaultYoSQL implements YoSQL {
     }
 
     private void writeIntoFiles(final Stream<PackagedTypeSpec> typeSpecs) {
-        timer.timed(messages.getMessage(WriteLifecycle.WRITE_FILES),
-                () -> typeSpecs.parallel().forEach(typeWriter::writeType));
+        timer.timed(messages.getMessage(WriteLifecycle.WRITE_FILES), () -> {
+            typeSpecs.parallel().forEach(typeWriter::writeType);
+            // After writing rather than before, so that a run which fails part way through leaves
+            // the previous answers alone rather than removing them and not replacing them.
+            if (!errors.hasErrors()) {
+                typeWriter.removeStaleOutput();
+            }
+        });
     }
 
     private Void handleExceptions(final Throwable throwable) {

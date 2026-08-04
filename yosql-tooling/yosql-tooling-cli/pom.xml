@@ -180,6 +180,12 @@
                     <mainClass>${yosql.mainClass}</mainClass>
                     <buildArgs>
                         <buildArg>--no-fallback</buildArg>
+                        <!-- files.sqlFilesCharset takes any charset name, and a closed-world image
+                             ships only the standard ones unless told otherwise. Without this,
+                             sqlFilesCharset=ISO-8859-15 works with the JVM distribution and dies
+                             with UnsupportedCharsetException in the binary — a divergence neither
+                             the tests nor the native job could see, since both use the default. -->
+                        <buildArg>-H:+AddAllCharsets</buildArg>
                     </buildArgs>
                     <skipNativeBuild>${skipNativeBuild}</skipNativeBuild>
                 </configuration>

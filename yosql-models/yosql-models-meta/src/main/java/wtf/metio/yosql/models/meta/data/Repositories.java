@@ -601,7 +601,7 @@ public final class Repositories extends AbstractConfigurationGroup {
                 .setMavenInitializer(CodeBlock.of(".set$L($L)\n", upperCase(name), name))
                 .setGradleConvention(CodeBlock.of("$L().convention($T.of($L))", gradlePropertyName(name), List.class, prefixesInCode))
                 .addAntFields(antField(type, name, description, CodeBlock.of("$T.of($L)", List.class, prefixesInCode)))
-                .addAntMethods(antSetter(type, name, description))
+                .addAntMethods(antListSetter(name, description))
                 .addCliFields(picocliOption(type, GROUP_NAME, name, description, prefixesInDocs, ", "))
                 .addGradleMethods(gradleProperty(gradleListPropertyOf(ClassName.get(String.class)), name, description))
                 .addImmutableMethods(immutableMethod(type, name, description, CodeBlock.of("$T.of($L)", List.class, prefixesInCode)))

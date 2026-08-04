@@ -60,6 +60,14 @@ public final class GeneratedNames {
             COLUMN_COUNT, COLUMN_LABEL, BATCH, LIST, JDBC_INDEX, INDEX, ROW);
 
     /**
+     * What {@code @Generated} names as the tool, and therefore what marks a file as ours.
+     *
+     * <p>Read as well as written: it is how a run tells a file it wrote last time from a file
+     * somebody put in the output directory by hand.</p>
+     */
+    public static final String GENERATOR = "wtf.metio.yosql";
+
+    /**
      * Names the local a collection's values are bound through, one at a time.
      */
     public static final String ELEMENT_SUFFIX = "Element";

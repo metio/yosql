@@ -105,10 +105,23 @@ public final class Sql extends AbstractConfigurationGroup {
                 .toList();
     }
 
+    /**
+     * Names the wire key of every repository setting a statement may override.
+     *
+     * <p>On the method rather than on the setting: a setting's own annotation lists are read by
+     * nobody — the generators annotate the group and the members it declares — so this was written
+     * where it had no effect, and stayed unnoticed only because every one of these keys happens to
+     * equal its setting's name. The first one needing a different key would have been bound from a
+     * name Jackson never saw.</p>
+     */
     private static List<? extends ConfigurationSetting> withExtraAnnotations(final List<ConfigurationSetting> settings) {
         return settings.stream()
                 .map(setting -> ConfigurationSetting.copyOf(setting)
-                        .withImmutableAnnotations(jsonProperty(setting.name())))
+                        .withImmutableMethods(setting.immutableMethods().stream()
+                                .map(method -> method.toBuilder()
+                                        .addAnnotation(jsonProperty(setting.name()))
+                                        .build())
+                                .toList()))
                 .toList();
     }
 

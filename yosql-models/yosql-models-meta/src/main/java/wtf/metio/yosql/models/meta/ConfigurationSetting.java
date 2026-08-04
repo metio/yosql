@@ -5,7 +5,6 @@
 
 package wtf.metio.yosql.models.meta;
 
-import com.palantir.javapoet.AnnotationSpec;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.MethodSpec;
@@ -62,31 +61,6 @@ public interface ConfigurationSetting {
      * @return The optional list of examples for this configuration setting.
      */
     List<ConfigurationExample> examples();
-
-    /**
-     * @return Annotations for Ant models.
-     */
-    List<AnnotationSpec> antAnnotations();
-
-    /**
-     * @return Annotations for CLI models.
-     */
-    List<AnnotationSpec> cliAnnotations();
-
-    /**
-     * @return Annotations for Gradle models.
-     */
-    List<AnnotationSpec> gradleAnnotations();
-
-    /**
-     * @return Annotations for Immutables models.
-     */
-    List<AnnotationSpec> immutableAnnotations();
-
-    /**
-     * @return Annotations for Maven models.
-     */
-    List<AnnotationSpec> mavenAnnotations();
 
     /**
      * @return Methods for Ant models.

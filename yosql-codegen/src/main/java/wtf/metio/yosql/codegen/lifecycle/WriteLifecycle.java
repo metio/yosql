@@ -26,4 +26,9 @@ public enum WriteLifecycle {
      */
     FILE_WRITE_FINISHED,
 
+    /**
+     * Signals that a file an earlier run wrote was removed.
+     */
+    FILE_DELETE_FINISHED,
+
 }

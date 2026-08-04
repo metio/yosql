@@ -14,6 +14,8 @@ import wtf.metio.yosql.models.meta.ImmutableConfigurationSetting;
 
 import javax.lang.model.element.Modifier;
 import java.util.Arrays;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static wtf.metio.yosql.internals.javapoet.TypicalTypes.gradlePropertyOf;
 import static wtf.metio.yosql.internals.jdk.Strings.upperCase;
@@ -344,6 +346,29 @@ abstract class AbstractConfigurationGroup implements ToolingPackages {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(type, settingName, Modifier.FINAL)
                 .addStatement(CodeBlock.of("this.$L = $L", settingName, settingName))
+                .build();
+    }
+
+    /**
+     * An attribute for a setting that holds several values.
+     *
+     * <p>Ant builds an attribute setter by looking for one that takes a String, a primitive, an enum
+     * or a type it can construct from a String — and {@code List<String>} is none of those, so a
+     * setter taking one is not registered at all and the attribute is refused with "doesn't support
+     * the ... attribute". A comma-separated String is the spelling Ant tasks use for a list, and it
+     * is what the CLI already takes.</p>
+     */
+    protected static MethodSpec antListSetter(
+            final String settingName,
+            final String description) {
+        return MethodSpec.methodBuilder("set" + upperCase(settingName))
+                .addJavadoc("$L", description)
+                .addJavadoc("\n\n@param $L the values, separated by commas\n", settingName)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(ClassName.get(String.class), settingName, Modifier.FINAL)
+                .addStatement("this.$L = $T.of($L.split($S)).map($T::strip).filter($T.not($T::isEmpty)).toList()",
+                        settingName, Stream.class, settingName, ",", String.class,
+                        Predicate.class, String.class)
                 .build();
     }
 
