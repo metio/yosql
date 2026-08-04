@@ -66,6 +66,7 @@ public final class ResultSetReaders {
             ClassName.get(OffsetDateTime.class));
 
     private static final ClassName CURRENCY_TYPE = ClassName.get(Currency.class);
+    private static final ClassName CHARACTER_TYPE = ClassName.get(Character.class);
 
     private static final String SUPPORTED = "String, UUID, Instant, LocalDate, LocalDateTime, "
             + "LocalTime, OffsetDateTime, BigDecimal, Currency, byte[], the primitives and their wrappers";
@@ -122,6 +123,12 @@ public final class ResultSetReaders {
             return readPrimitive(type, column, described, variable, path);
         }
         if (type.isBoxedPrimitive()) {
+            if (CHARACTER_TYPE.equals(type)) {
+                // JDBC has no getter for a character and no driver implements
+                // getObject(column, Character.class), so the generated code would compile and then
+                // fail on the first row. `char` already stops the build here; this is the same type.
+                throw new UnsupportedComponentTypeException(path, type, SUPPORTED);
+            }
             return declare(type, variable, CodeBlock.of("$N.getObject($L, $T.class)", resultSet, column, type));
         }
         if (INSTANT_TYPE.equals(type)) {

@@ -12,6 +12,7 @@ import com.palantir.javapoet.TypeSpec;
 import wtf.metio.yosql.codegen.blocks.Annotations;
 import wtf.metio.yosql.codegen.exceptions.CollidingResultColumnsException;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
+import wtf.metio.yosql.codegen.exceptions.UnusableComponentNameException;
 import wtf.metio.yosql.codegen.schema.Catalog;
 import wtf.metio.yosql.codegen.schema.SelectItems;
 import wtf.metio.yosql.codegen.schema.SqlTypes;
@@ -20,6 +21,7 @@ import wtf.metio.yosql.codegen.schema.TableScope;
 import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -73,6 +75,7 @@ public final class SchemaRecords {
         }
         rejectConflictingTypes(shapes, statement);
         final var components = shapes.getFirst();
+        rejectUnusableNames(components, statement);
         rejectCollidingComponents(components, statement);
         return Optional.of(JavaSourceType.record(type, components, List.of(), List.of()));
     }
@@ -110,6 +113,22 @@ public final class SchemaRecords {
         if (!disagreements.isEmpty()) {
             throw new ConflictingColumnTypeException(
                     statement.getSourcePath(), statement.getName(), disagreements);
+        }
+    }
+
+    /**
+     * A column is under no obligation to be a Java identifier, and `select lat, long from places` is
+     * ordinary SQL. Without this, JavaPoet declares the component it can and then refuses the one it
+     * cannot, naming neither the statement nor the column.
+     */
+    private static void rejectUnusableNames(
+            final List<JavaSourceComponent> components,
+            final SqlStatement statement) {
+        for (final var component : components) {
+            if (!SourceVersion.isIdentifier(component.name()) || SourceVersion.isKeyword(component.name())) {
+                throw new UnusableComponentNameException(
+                        statement.getSourcePath(), statement.getName(), component.name());
+            }
         }
     }
 

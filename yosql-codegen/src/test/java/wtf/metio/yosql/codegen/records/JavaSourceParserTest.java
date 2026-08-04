@@ -205,6 +205,23 @@ class JavaSourceParserTest {
         }
 
         @Test
+        @DisplayName("a non-ASCII name is one name, not the fragments around its letters")
+        void readsNonAsciiTypeNames() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(Größe größe) {
+                    }
+                    """);
+
+            assertAll(
+                    () -> assertIterableEquals(List.of("größe"), componentNames(type)),
+                    () -> assertEquals(ClassName.get("com.example", "Größe"), typeOf(type, "größe"),
+                            "matching identifiers as ASCII split this into pieces and qualified each "
+                                    + "one into a type nobody declared"));
+        }
+
+        @Test
         @DisplayName("reads an array written before the name")
         void arrayBeforeName() {
             final var type = parse("""
@@ -906,6 +923,26 @@ class JavaSourceParserTest {
                     () -> assertEquals("asUserType", type.resultSetMethods().get(0).name()),
                     () -> assertEquals(ClassName.get(String.class), type.resultSetMethods().get(0).returnType())
             );
+        }
+
+        @Test
+        @DisplayName("a method returning nothing is not a converter")
+        void ignoresVoidMethods() {
+            assertIterableEquals(List.of("read"), methodNames("""
+                    package com.example;
+
+                    import java.sql.ResultSet;
+
+                    public class Tenant {
+                        public void consume(ResultSet resultSet) {
+                        }
+
+                        public String read(ResultSet resultSet) {
+                            return null;
+                        }
+                    }
+                    """), "a converter hands a row back, and asking for a type made out of 'void' "
+                    + "threw an IllegalArgumentException naming neither the class nor the method");
         }
 
         @Test

@@ -20,6 +20,7 @@ import wtf.metio.yosql.codegen.exceptions.AmbiguousValueOfException;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.DuplicateConverterNameException;
 import wtf.metio.yosql.codegen.exceptions.MissingRecordSourceException;
+import wtf.metio.yosql.codegen.exceptions.UnknownColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.UnknownRecordShapeException;
 import wtf.metio.yosql.codegen.exceptions.RecursiveRecordException;
 import wtf.metio.yosql.codegen.exceptions.ScalarResultColumnsException;
@@ -37,7 +38,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -154,6 +157,28 @@ public final class RecordConverterGenerator {
             throw new UnreadableResultRowTypeException(statement.getName(), name,
                     "is not a type a result can be built into. A primitive cannot be the result of a "
                             + "statement that may return no row — name its wrapper instead.");
+        }
+    }
+
+    /**
+     * An override whose key names no component is a typo that silently does nothing: the component it
+     * was meant for keeps reading the column named after itself.
+     */
+    private static void rejectUnknownOverrides(
+            final SqlStatement statement,
+            final JavaSourceType record,
+            final Map<String, String> overrides,
+            final List<Leaf> leaves) {
+        if (overrides.isEmpty()) {
+            return;
+        }
+        final var paths = leaves.stream().map(Leaf::path).collect(Collectors.toCollection(LinkedHashSet::new));
+        final var unknown = overrides.keySet().stream()
+                .filter(Predicate.not(paths::contains))
+                .toList();
+        if (!unknown.isEmpty()) {
+            throw new UnknownColumnOverrideException(statement.getSourcePath(), statement.getName(),
+                    record.type().toString(), unknown, paths);
         }
     }
 
@@ -280,10 +305,12 @@ public final class RecordConverterGenerator {
             logger.debug(CodegenLifecycle.TYPE_GENERATED, record.type().packageName(), record.type().simpleName());
             return;
         }
+        final var leaves = flatten(record, overrides);
+        rejectUnknownOverrides(statement, record, overrides, leaves);
         final var columns = new LinkedHashSet<>(selected.get());
         final var claimed = new LinkedHashSet<String>();
         final var missing = new ArrayList<String>();
-        for (final var leaf : flatten(record, overrides)) {
+        for (final var leaf : leaves) {
             if (columns.contains(leaf.column())) {
                 claimed.add(leaf.column());
             } else {

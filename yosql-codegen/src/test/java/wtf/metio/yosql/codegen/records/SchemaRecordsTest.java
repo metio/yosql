@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.codegen.exceptions.CollidingResultColumnsException;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
+import wtf.metio.yosql.codegen.exceptions.UnusableComponentNameException;
 import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.codegen.schema.Schemas.VendorStatement;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -176,6 +177,19 @@ class SchemaRecordsTest {
         @DisplayName("with no schema at all")
         void shouldRefuseWithoutASchema() {
             assertTrue(records().shapeOf(TENANT, statement("select id from tenant")).isEmpty());
+        }
+
+        @Test
+        @DisplayName("a column whose name is a Java keyword")
+        void shouldRefuseKeywordComponents() {
+            final var records = records("create table places (lat double precision, long double precision)");
+            final var statement = statement("select lat, long from places");
+
+            final var thrown = assertThrows(UnusableComponentNameException.class,
+                    () -> records.shapeOf(TENANT, statement));
+            assertAll(
+                    () -> assertTrue(thrown.getMessage().contains("findTenant"), thrown::getMessage),
+                    () -> assertTrue(thrown.getMessage().contains("'long'"), thrown::getMessage));
         }
 
         @Test

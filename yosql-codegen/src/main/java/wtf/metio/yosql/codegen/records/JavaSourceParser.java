@@ -50,8 +50,12 @@ public final class JavaSourceParser {
      * Splits a written-out type into the names inside it, so that both halves of a
      * {@code Map<String, UUID>} are resolved rather than the whole thing treated as one name.
      */
+    // Java identifiers are not ASCII: `Größe` and `Ünite` are names somebody writes. Matched through
+    // the same rules the compiler uses, so a non-ASCII letter does not split one name into fragments
+    // that are then qualified separately into a type nobody declared.
     private static final Pattern TYPE_REFERENCE = Pattern.compile(
-            "[A-Za-z_$][\\w$]*(?:\\s*\\.\\s*[A-Za-z_$][\\w$]*)*");
+            "[\\p{javaJavaIdentifierStart}][\\p{javaJavaIdentifierPart}]*"
+                    + "(?:\\s*\\.\\s*[\\p{javaJavaIdentifierStart}][\\p{javaJavaIdentifierPart}]*)*");
 
     private static final Set<String> PRIMITIVES = Set.of(
             "boolean", "byte", "char", "double", "float", "int", "long", "short", "void", "var");
@@ -228,6 +232,10 @@ public final class JavaSourceParser {
                 .filter(MethodDeclaration::isPublic)
                 .filter(method -> !method.isStatic())
                 .filter(method -> method.getParameters().size() == 1)
+                // A converter hands a row back; one that returns nothing cannot be called for its
+                // result, and asking TypeGuesser to make a type out of `void` throws an
+                // IllegalArgumentException that names neither the class nor the method.
+                .filter(method -> !method.getType().isVoidType())
                 .filter(method -> RESULT_SET.toString()
                         .equals(scope.qualify(writtenType(method.getParameter(0)))))
                 .map(method -> new JavaSourceMethod(method.getNameAsString(),

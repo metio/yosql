@@ -19,6 +19,7 @@ import wtf.metio.yosql.codegen.exceptions.RecursiveRecordException;
 import wtf.metio.yosql.codegen.exceptions.ScalarResultColumnsException;
 import wtf.metio.yosql.codegen.exceptions.UnreadableResultRowTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnmappedColumnsException;
+import wtf.metio.yosql.codegen.exceptions.UnknownColumnOverrideException;
 import wtf.metio.yosql.codegen.exceptions.UnknownRecordShapeException;
 import wtf.metio.yosql.codegen.exceptions.UnparsableRecordException;
 import wtf.metio.yosql.codegen.exceptions.UnsupportedComponentTypeException;
@@ -284,6 +285,22 @@ class RecordConverterGeneratorTest {
             assertTrue(code.contains("final long innerWeight = "), code);
             assertTrue(code.contains("new com.example.domain.Outer(id, new com.example.domain.Inner(innerWeight))"),
                     code);
+        }
+
+        @Test
+        @DisplayName("a Character component is refused while the build can still say so")
+        void refusesCharacterComponents() {
+            write("Flag", """
+                    package com.example.domain;
+
+                    public record Flag(Character marker) {
+                    }
+                    """);
+
+            assertThrows(UnsupportedComponentTypeException.class,
+                    () -> generateOne(List.of(statement("findFlag", DOMAIN + ".Flag", "select marker from flag"))),
+                    "no driver implements getObject(column, Character.class), so generating it would "
+                            + "compile and then fail on the first row");
         }
 
         @Test
@@ -723,6 +740,21 @@ class RecordConverterGeneratorTest {
                     Map.of("createdAt", "inserted_at"))));
             assertTrue(code.contains("getTimestamp(\"inserted_at\")"), code);
             assertFalse(code.contains("getTimestamp(\"created_at\")"), code);
+        }
+
+        @Test
+        @DisplayName("an entry naming no component is a typo that would otherwise do nothing")
+        void refusesUnknownOverride() {
+            writeTenant();
+
+            final var thrown = assertThrows(UnknownColumnOverrideException.class,
+                    () -> generateOne(List.of(statement("findTenant", DOMAIN + ".Tenant",
+                            "select id, slug, created_at from tenant",
+                            Map.of("createdAtt", "created_at")))));
+            assertAll(
+                    () -> assertTrue(thrown.getMessage().contains("createdAtt"), thrown::getMessage),
+                    () -> assertTrue(thrown.getMessage().contains("createdAt"),
+                            () -> "the message should list what it could have meant: " + thrown.getMessage()));
         }
 
         @Test
