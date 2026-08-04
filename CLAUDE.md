@@ -66,9 +66,10 @@ means editing generated output. The website's configuration pages are generated 
 the interface for a deleted configuration group stayed on disk and kept compiling: the build passed
 while a fresh checkout would not have. The generator now deletes what it wrote before writing again,
 and `docs` clears the reference pages while generating rather than only on `mvn clean`, so an
-incremental build sees what CI sees. What still has to be kept in step by hand is the wiring each
-frontend declares per group — `FrontendCoverageTest` fails when a group reaches only some of them —
-and `reflect-config.json`, which lists the model classes a native image needs.
+incremental build sees what CI sees. The two surfaces that are still written by hand — the wiring
+each frontend declares per group, and the `reflect-config.json` listing the model classes a native
+image needs — each have a test that fails when they fall behind the model: `FrontendCoverageTest`
+and `ReflectionMetadataTest`.
 
 ## How generation runs
 
@@ -124,9 +125,11 @@ cd yosql-examples/yosql-examples-gradle && nix develop ../.. --command ./gradlew
 The CLI ships as a native binary. What a closed-world image drops is whatever is reached *by name*
 rather than by call, so `yosql-tooling-cli/src/main/resources/META-INF/native-image/` registers the
 cal10n message bundles behind every diagnostic and the Jackson-bound configuration model. That list
-is enumerated from the compiled classes of `yosql-models-*`; a new model class Jackson needs will not
-be in it, and the failure appears only in the native binary. The native CI job generates real code
-with the binary rather than running `--help`, which is what catches that.
+is enumerated from the compiled classes of `yosql-models-*`, and `ReflectionMetadataTest` compares
+the file against them: a model class Jackson needs and nobody registered, or an entry left behind by
+a class that was deleted, fails there rather than only in the native binary. The native CI job still
+generates real code with the binary rather than running `--help`, because that is what catches the
+reflective lookups no list describes.
 
 ## Conventions
 
