@@ -283,6 +283,37 @@ something, the generated names change back — name the repository with
 [repository](../../configuration/sql/repository/) in the front matter, which still decides it
 outright.
 
+### Ant can set the method name prefixes and the annotations
+
+Ant builds an attribute setter only for a type it can make out of a string, and
+[allowedCallPrefixes](../../configuration/repositories/allowedcallprefixes/),
+[allowedReadPrefixes](../../configuration/repositories/allowedreadprefixes/) and
+[allowedWritePrefixes](../../configuration/repositories/allowedwriteprefixes/) are lists — so the
+task declared them and then refused them, with `doesn't support the "allowedReadPrefixes"
+attribute`. The whole [annotations](../../configuration/annotations/) group went the same way: the
+nested element could be written, and nothing inside it could be set.
+
+Both work now. The three lists are one attribute, separated by commas:
+
+```xml
+<repositories validateMethodNamePrefixes="true"
+              allowedReadPrefixes="fetch,find"/>
+```
+
+An annotation is a nested element, and each of its members is a nested element of that:
+
+```xml
+<annotations>
+    <repositoryAnnotations type="jakarta.inject.Named">
+        <member key="value" value="tenants"/>
+    </repositoryAnnotations>
+</annotations>
+```
+
+Nothing here can have broken a build: none of it could be set before. If you turned
+`validateMethodNamePrefixes` off because the prefix lists were out of reach, it is worth turning
+back on.
+
 ## 2023.5.3 and earlier
 
 See the [release notes](https://github.com/metio/yosql/releases) for those versions.
