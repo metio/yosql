@@ -8,6 +8,7 @@ package wtf.metio.yosql.codegen.schema;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.alter.Alter;
+import net.sf.jsqlparser.statement.alter.AlterExpression;
 import net.sf.jsqlparser.statement.alter.AlterOperation;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
@@ -53,7 +54,7 @@ public final class CatalogReader {
                     createTable(created).ifPresent(table ->
                             tables.put(Catalog.normalize(table.name()), table));
                 } else if (parsed instanceof Alter altered) {
-                    addColumns(altered, tables);
+                    alterTable(altered, tables);
                 }
             });
         }
@@ -121,7 +122,15 @@ public final class CatalogReader {
     }
 
 
-    private static void addColumns(final Alter altered, final LinkedHashMap<String, Table> tables) {
+    /**
+     * Applies an {@code alter table} to what is already known about it.
+     *
+     * <p>A migration that this reader can follow keeps the catalog current. One it cannot follow
+     * takes the table out of the catalog altogether, because a description known to be out of date is
+     * worse than none: it fails statements that are correct against the real schema, while an absent
+     * table only skips their checks.</p>
+     */
+    private static void alterTable(final Alter altered, final LinkedHashMap<String, Table> tables) {
         final var name = Catalog.normalize(altered.getTable().getName());
         var table = tables.get(name);
         if (table == null) {
@@ -129,18 +138,106 @@ public final class CatalogReader {
             return;
         }
         for (final var expression : altered.getAlterExpressions()) {
-            if (expression.getOperation() != AlterOperation.ADD) {
-                continue;
+            final var applied = apply(expression, table);
+            if (applied.isEmpty()) {
+                tables.remove(name);
+                return;
             }
-            final var added = expression.getColDataTypeList();
-            if (added == null) {
-                continue;
-            }
-            for (final var definition : added) {
-                table = table.with(column(definition));
-            }
+            table = applied.get();
         }
         tables.put(name, table);
+    }
+
+    /**
+     * @return the table as the expression leaves it, or empty when this reader cannot say
+     */
+    private static Optional<Table> apply(final AlterExpression expression, final Table table) {
+        return switch (expression.getOperation()) {
+            // `modify` restates a column in full, which is `with` replacing it in place.
+            case ADD, MODIFY -> Optional.of(redefine(expression, table));
+            case ALTER -> alterColumns(expression, table);
+            case CHANGE -> change(expression, table);
+            case DROP -> Optional.of(drop(expression, table));
+            // The table lives on under a name this reader was not told, so nothing it holds about
+            // the old one is true any more.
+            case RENAME_TABLE -> Optional.empty();
+            case RENAME -> rename(expression, table);
+            // Constraints, indexes, comments and table options say nothing about the columns.
+            default -> namesAColumn(expression) ? Optional.empty() : Optional.of(table);
+        };
+    }
+
+    private static Table redefine(final AlterExpression expression, final Table table) {
+        var altered = table;
+        for (final var definition : columnsOf(expression)) {
+            altered = altered.with(column(definition));
+        }
+        return altered;
+    }
+
+    /**
+     * {@code alter column} is the one form whose spellings do not restate the column, so each is read
+     * on its own terms: a new type keeps the nullability, and a nullability change keeps the type.
+     */
+    private static Optional<Table> alterColumns(final AlterExpression expression, final Table table) {
+        var altered = table;
+        for (final var definition : columnsOf(expression)) {
+            final var existing = altered.column(definition.getColumnName());
+            if (existing.isEmpty()) {
+                return Optional.empty();
+            }
+            final var specs = String.join(" ", Optional.ofNullable(definition.getColumnSpecs()).orElse(List.of()))
+                    .toLowerCase(Locale.ROOT);
+            final var type = String.valueOf(definition.getColDataType());
+            final var column = existing.get();
+            if (specs.contains("drop not null")) {
+                altered = altered.with(new Column(column.name(), column.sqlType(), true));
+            } else if (specs.contains("not null")) {
+                altered = altered.with(new Column(column.name(), column.sqlType(), false));
+            } else if (definition.getColDataType() != null && specs.isBlank()) {
+                altered = altered.with(new Column(column.name(), type, column.nullable()));
+            } else {
+                // A default, a collation, an identity — nothing this catalog holds, but nothing it
+                // can be sure leaves the column alone either.
+                return Optional.empty();
+            }
+        }
+        return Optional.of(altered);
+    }
+
+    /**
+     * MySQL's {@code change} renames a column and restates it in one go.
+     */
+    private static Optional<Table> change(final AlterExpression expression, final Table table) {
+        final var oldName = expression.getColOldName();
+        if (oldName == null) {
+            return Optional.empty();
+        }
+        return Optional.of(redefine(expression, table.without(oldName)));
+    }
+
+    private static Optional<Table> rename(final AlterExpression expression, final Table table) {
+        final var oldName = expression.getColOldName();
+        final var newName = expression.getColumnName();
+        return oldName == null || newName == null
+                ? Optional.empty()
+                : Optional.of(table.renaming(Catalog.unquote(oldName), Catalog.unquote(newName)));
+    }
+
+    private static Table drop(final AlterExpression expression, final Table table) {
+        final var dropped = expression.getColumnName();
+        // `drop constraint` and `drop index` name no column and leave the columns alone.
+        return dropped == null ? table : table.without(Catalog.unquote(dropped));
+    }
+
+    private static List<AlterExpression.ColumnDataType> columnsOf(final AlterExpression expression) {
+        return Optional.ofNullable(expression.getColDataTypeList()).orElse(List.of());
+    }
+
+    private static boolean namesAColumn(final AlterExpression expression) {
+        return expression.getColumnName() != null
+                || expression.getColOldName() != null
+                || !columnsOf(expression).isEmpty();
     }
 
     private static Column column(final ColumnDefinition definition) {

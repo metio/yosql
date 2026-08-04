@@ -37,12 +37,38 @@ public record Table(String name, Map<String, Column> columns) {
 
     /**
      * @return this table with one more column, for an {@code alter table add column} applied after
-     *         the {@code create table} that declared the rest
+     *         the {@code create table} that declared the rest. A column of that name already there is
+     *         replaced in place, which is what {@code modify} means.
      */
     public Table with(final Column column) {
         final var extended = new LinkedHashMap<>(columns);
         extended.put(Catalog.normalize(column.name()), column);
         return new Table(name, extended);
+    }
+
+    /**
+     * @return this table without that column, for an {@code alter table drop column}
+     */
+    public Table without(final String columnName) {
+        final var remaining = new LinkedHashMap<>(columns);
+        remaining.remove(Catalog.normalize(columnName));
+        return new Table(name, remaining);
+    }
+
+    /**
+     * @return this table with one column under a new name, keeping its place in the declared order
+     *         because that is the order {@code select *} expands to
+     */
+    public Table renaming(final String from, final String to) {
+        final var renamed = new LinkedHashMap<String, Column>(columns.size());
+        columns.forEach((key, column) -> {
+            if (key.equals(Catalog.normalize(from))) {
+                renamed.put(Catalog.normalize(to), new Column(to, column.sqlType(), column.nullable()));
+            } else {
+                renamed.put(key, column);
+            }
+        });
+        return new Table(name, renamed);
     }
 
 }

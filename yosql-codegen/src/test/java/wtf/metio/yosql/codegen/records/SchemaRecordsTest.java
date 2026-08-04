@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.codegen.exceptions.CollidingResultColumnsException;
+import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
 import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.codegen.schema.Schemas.VendorStatement;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -203,6 +204,60 @@ class SchemaRecordsTest {
                     () -> assertEquals(2, shape.components().size()),
                     () -> assertEquals("slug", shape.components().get(0).name()),
                     () -> assertEquals("name", shape.components().get(1).name()));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("across the databases a vendorless statement falls back to")
+    class EveryVendor {
+
+        private static SchemaRecords records(final VendorStatement... ddl) {
+            return new SchemaRecords(Schemas.of(List.of(ddl)), BlocksObjectMother.annotationGenerator());
+        }
+
+        private static VendorStatement forVendor(final String vendor, final String ddl) {
+            return new VendorStatement(Optional.of(vendor), ddl);
+        }
+
+        @Test
+        @DisplayName("a disagreement about what a column holds is reported, not resolved by picking one")
+        void shouldRefuseConflictingTypes() {
+            final var records = records(
+                    forVendor("postgresql", "create table tenant (id uuid not null primary key)"),
+                    forVendor("mysql", "create table tenant (id varchar(36) not null primary key)"));
+
+            final var thrown = assertThrows(ConflictingColumnTypeException.class,
+                    () -> records.shapeOf(TENANT, statement("select id from tenant")));
+            assertAll(
+                    () -> assertTrue(thrown.getMessage().contains("java.util.UUID"), thrown::getMessage),
+                    () -> assertTrue(thrown.getMessage().contains("java.lang.String"), thrown::getMessage),
+                    () -> assertTrue(thrown.getMessage().contains("'id'"), thrown::getMessage));
+        }
+
+        @Test
+        @DisplayName("dialect spellings that meet in Java are not a disagreement")
+        void shouldAcceptTypesThatMeetInJava() {
+            final var shape = records(
+                    forVendor("postgresql", "create table tenant (id bigserial primary key)"),
+                    forVendor("mysql", "create table tenant (id bigint auto_increment primary key)"))
+                    .shapeOf(TENANT, statement("select id from tenant"))
+                    .orElseThrow();
+
+            assertEquals("long", shape.components().getFirst().type().toString());
+        }
+
+        @Test
+        @DisplayName("the answer does not depend on which vendor's DDL was read first")
+        void shouldNotDependOnVendorOrder() {
+            final var postgres = forVendor("postgresql", "create table tenant (id uuid not null primary key)");
+            final var mysql = forVendor("mysql", "create table tenant (id varchar(36) not null primary key)");
+
+            assertAll(
+                    () -> assertThrows(ConflictingColumnTypeException.class,
+                            () -> records(postgres, mysql).shapeOf(TENANT, statement("select id from tenant"))),
+                    () -> assertThrows(ConflictingColumnTypeException.class,
+                            () -> records(mysql, postgres).shapeOf(TENANT, statement("select id from tenant"))));
         }
 
     }

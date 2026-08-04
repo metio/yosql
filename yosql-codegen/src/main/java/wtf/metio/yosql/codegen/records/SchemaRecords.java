@@ -11,6 +11,7 @@ import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.TypeSpec;
 import wtf.metio.yosql.codegen.blocks.Annotations;
 import wtf.metio.yosql.codegen.exceptions.CollidingResultColumnsException;
+import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
 import wtf.metio.yosql.codegen.schema.Catalog;
 import wtf.metio.yosql.codegen.schema.SelectItems;
 import wtf.metio.yosql.codegen.schema.SqlTypes;
@@ -22,9 +23,13 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 import javax.lang.model.element.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Writes the record a statement builds its rows into, instead of checking one somebody wrote.
@@ -59,14 +64,53 @@ public final class SchemaRecords {
         if (!scope.exhaustive()) {
             return Optional.empty();
         }
+        final var shapes = new ArrayList<List<JavaSourceComponent>>();
         for (final var catalog : schemas.applicableTo(configuration.vendor())) {
-            final var components = componentsOf(sql, scope, catalog, configuration.vendor());
-            if (components.isPresent()) {
-                rejectCollidingComponents(components.get(), statement);
-                return Optional.of(JavaSourceType.record(type, components.get(), List.of(), List.of()));
+            componentsOf(sql, scope, catalog, configuration.vendor()).ifPresent(shapes::add);
+        }
+        if (shapes.isEmpty() || !describeTheSameRow(shapes)) {
+            return Optional.empty();
+        }
+        rejectConflictingTypes(shapes, statement);
+        final var components = shapes.getFirst();
+        rejectCollidingComponents(components, statement);
+        return Optional.of(JavaSourceType.record(type, components, List.of(), List.of()));
+    }
+
+    /**
+     * A statement naming no vendor is the fallback for every database not named, so each catalog that
+     * can describe it has a say. They have to be describing the same row for the question "what does
+     * this record hold" to have one answer.
+     */
+    private static boolean describeTheSameRow(final List<List<JavaSourceComponent>> shapes) {
+        final var names = shapes.getFirst().stream().map(JavaSourceComponent::name).toList();
+        return shapes.stream()
+                .allMatch(shape -> shape.stream().map(JavaSourceComponent::name).toList().equals(names));
+    }
+
+    /**
+     * Where two databases genuinely disagree about what a column holds, one record cannot be both.
+     * Taking whichever catalog answered first would decide that silently — and, since the catalogs
+     * are only as ordered as the DDL that produced them, decide it differently on another machine.
+     */
+    private static void rejectConflictingTypes(
+            final List<List<JavaSourceComponent>> shapes,
+            final SqlStatement statement) {
+        final var reference = shapes.getFirst();
+        final var disagreements = new LinkedHashMap<String, Set<String>>();
+        for (var index = 0; index < reference.size(); index++) {
+            final var position = index;
+            final var types = shapes.stream()
+                    .map(shape -> shape.get(position).type().toString())
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+            if (types.size() > 1) {
+                disagreements.put(reference.get(position).name(), types);
             }
         }
-        return Optional.empty();
+        if (!disagreements.isEmpty()) {
+            throw new ConflictingColumnTypeException(
+                    statement.getSourcePath(), statement.getName(), disagreements);
+        }
     }
 
     /**

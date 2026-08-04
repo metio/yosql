@@ -34,8 +34,12 @@ public record Column(String name, String sqlType, boolean nullable) {
      *         {@code varchar} as far as the Java type is concerned
      */
     public String baseType() {
-        final var parenthesis = sqlType.indexOf('(');
-        return parenthesis < 0 ? sqlType : sqlType.substring(0, parenthesis).strip();
+        // Removed rather than cut at, because a standard type carries its precision in the middle:
+        // `timestamp(6) with time zone` is a timestamptz, and cutting at the parenthesis would leave
+        // a plain `timestamp` — a different Java type, and the spelling pg_dump writes.
+        return sqlType.replaceAll("\\([^)]*\\)", " ")
+                .replaceAll("\\s+", " ")
+                .strip();
     }
 
 }

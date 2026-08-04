@@ -67,6 +67,41 @@ class TableScopeTest {
         }
 
         @Test
+        @DisplayName("an update reads from more than the table it writes to")
+        void shouldReadUpdateSources() {
+            final var scope = TableScope.of("""
+                    update tenant t set slug = a.name
+                    from account a
+                    where a.id = t.account_id""");
+
+            assertAll(
+                    () -> assertTrue(scope.exhaustive()),
+                    () -> assertIterableEquals(List.of("tenant", "account"), scope.tables()),
+                    () -> assertEquals("account", scope.resolve("a").orElseThrow()));
+        }
+
+        @Test
+        @DisplayName("a multi-table update the same way")
+        void shouldReadJoinedUpdateSources() {
+            final var scope = TableScope.of(
+                    "update tenant t join account a on a.id = t.account_id set t.slug = a.name");
+
+            assertAll(
+                    () -> assertTrue(scope.exhaustive()),
+                    () -> assertIterableEquals(List.of("tenant", "account"), scope.tables()));
+        }
+
+        @Test
+        @DisplayName("a delete reads what it deletes using")
+        void shouldReadDeleteSources() {
+            final var scope = TableScope.of("delete from tenant using account where account.id = tenant.account_id");
+
+            assertAll(
+                    () -> assertTrue(scope.exhaustive()),
+                    () -> assertIterableEquals(List.of("tenant", "account"), scope.tables()));
+        }
+
+        @Test
         void shouldReadWrites() {
             assertAll(
                     () -> assertIterableEquals(List.of("tenant"),

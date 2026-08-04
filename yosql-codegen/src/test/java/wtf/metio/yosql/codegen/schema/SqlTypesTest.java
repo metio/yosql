@@ -54,6 +54,19 @@ class SqlTypesTest {
                     () -> assertEquals("java.time.LocalDate", javaType("date", false)));
         }
 
+        @Test
+        @DisplayName("a precision does not change what the type is, wherever it is written")
+        void shouldIgnorePrecisionInTheMiddle() {
+            assertAll(
+                    () -> assertEquals("java.time.Instant", javaType("timestamp(6) with time zone", false),
+                            "the spelling pg_dump writes"),
+                    () -> assertEquals("java.time.LocalDateTime", javaType("timestamp(3) without time zone", false)),
+                    () -> assertEquals("java.time.LocalTime", javaType("time(3)", false)),
+                    () -> assertEquals("java.math.BigDecimal", javaType("numeric(12,2)", false)),
+                    () -> assertEquals("<unknown>", javaType("time(3) with time zone", false),
+                            "no mapping for a zoned time, and reading it as a local one would drop the zone"));
+        }
+
     }
 
     @Nested

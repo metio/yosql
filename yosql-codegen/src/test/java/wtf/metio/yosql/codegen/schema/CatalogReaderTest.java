@@ -279,6 +279,120 @@ class CatalogReaderTest {
             assertTrue(catalog.table("nowhere").isEmpty());
         }
 
+        @Test
+        @DisplayName("a dropped column is gone")
+        void shouldApplyDropColumn() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key, slug varchar(64))",
+                    "alter table tenant drop column slug");
+
+            final var tenant = catalog.table("tenant").orElseThrow();
+            assertAll(
+                    () -> assertIterableEquals(List.of("id"), tenant.columnNames()),
+                    () -> assertTrue(tenant.column("slug").isEmpty()));
+        }
+
+        @Test
+        @DisplayName("a renamed column is known by its new name and not its old one")
+        void shouldApplyRenameColumn() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key, slug varchar(64))",
+                    "alter table tenant rename column slug to handle");
+
+            final var tenant = catalog.table("tenant").orElseThrow();
+            assertAll(
+                    () -> assertIterableEquals(List.of("id", "handle"), tenant.columnNames()),
+                    () -> assertTrue(tenant.column("slug").isEmpty()),
+                    () -> assertEquals("varchar(64)", tenant.column("handle").orElseThrow().sqlType()));
+        }
+
+        @Test
+        @DisplayName("set not null lands, and keeps the type it was declared with")
+        void shouldApplySetNotNull() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key, slug varchar(64))",
+                    "alter table tenant alter column slug set not null");
+
+            final var slug = catalog.table("tenant").orElseThrow().column("slug").orElseThrow();
+            assertAll(
+                    () -> assertFalse(slug.nullable()),
+                    () -> assertEquals("varchar(64)", slug.sqlType()));
+        }
+
+        @Test
+        @DisplayName("drop not null lands too")
+        void shouldApplyDropNotNull() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key, slug varchar(64) not null)",
+                    "alter table tenant alter column slug drop not null");
+
+            assertTrue(catalog.table("tenant").orElseThrow().column("slug").orElseThrow().nullable());
+        }
+
+        @Test
+        @DisplayName("a new type lands, and keeps the nullability it was declared with")
+        void shouldApplyAlterColumnType() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key, counter int not null)",
+                    "alter table tenant alter column counter type bigint");
+
+            final var counter = catalog.table("tenant").orElseThrow().column("counter").orElseThrow();
+            assertAll(
+                    () -> assertEquals("bigint", counter.sqlType()),
+                    () -> assertFalse(counter.nullable()));
+        }
+
+        @Test
+        @DisplayName("MySQL's modify restates a column in full")
+        void shouldApplyModify() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key, counter int)",
+                    "alter table tenant modify counter bigint not null");
+
+            final var counter = catalog.table("tenant").orElseThrow().column("counter").orElseThrow();
+            assertAll(
+                    () -> assertEquals("bigint", counter.sqlType()),
+                    () -> assertFalse(counter.nullable()));
+        }
+
+        @Test
+        @DisplayName("MySQL's change renames and restates at once")
+        void shouldApplyChange() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key, counter int)",
+                    "alter table tenant change counter total bigint");
+
+            final var tenant = catalog.table("tenant").orElseThrow();
+            assertAll(
+                    () -> assertTrue(tenant.column("counter").isEmpty()),
+                    () -> assertEquals("bigint", tenant.column("total").orElseThrow().sqlType()));
+        }
+
+        @Test
+        @DisplayName("a constraint says nothing about the columns and leaves the table alone")
+        void shouldIgnoreConstraints() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key, slug varchar(64))",
+                    "alter table tenant add constraint tenant_slug unique (slug)",
+                    "alter table tenant drop constraint tenant_slug");
+
+            assertIterableEquals(List.of("id", "slug"), catalog.table("tenant").orElseThrow().columnNames());
+        }
+
+        @Test
+        @DisplayName("a renamed table takes what was known about the old name with it")
+        void shouldForgetARenamedTable() {
+            final var catalog = read(
+                    "create table tenant (id uuid not null primary key)",
+                    "alter table tenant rename to account");
+
+            assertAll(
+                    () -> assertTrue(catalog.table("tenant").isEmpty(),
+                            "the old name describes nothing now"),
+                    () -> assertTrue(catalog.table("account").isEmpty(),
+                            "and the new one was never described"));
+        }
+
     }
 
 }

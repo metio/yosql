@@ -6,6 +6,7 @@
 package wtf.metio.yosql.codegen.schema;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,14 +55,17 @@ public final class Schemas {
         }
         final var shared = CatalogReader.read(sharedSql);
         final var byVendor = new LinkedHashMap<String, Catalog>(vendorSql.size());
-        vendorSql.forEach((vendor, sql) -> {
+        // By vendor name, so that the order does not depend on which file the walk happened to read
+        // first either. Map.copyOf would be the obvious home for these, but its iteration order is
+        // randomized per JVM run, and everywhere() is read in order.
+        vendorSql.keySet().stream().sorted().forEach(vendor -> {
             // The shared DDL applies to every database, so a vendor sees it too and then adds its
             // own on top.
             final var combined = new ArrayList<>(sharedSql);
-            combined.addAll(sql);
+            combined.addAll(vendorSql.get(vendor));
             byVendor.put(vendor, CatalogReader.read(combined));
         });
-        return new Schemas(shared, Map.copyOf(byVendor));
+        return new Schemas(shared, Collections.unmodifiableMap(byVendor));
     }
 
     /**

@@ -11,6 +11,7 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.FromItem;
+import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
@@ -62,11 +63,46 @@ public record TableScope(List<String> tables, Map<String, String> aliases, boole
     private static TableScope of(final Statement statement) {
         return switch (statement) {
             case Select select -> select(select);
-            case Update update -> single(update.getTable());
+            case Update update -> update(update);
             case Insert insert -> single(insert.getTable());
-            case Delete delete -> single(delete.getTable());
+            case Delete delete -> delete(delete);
             default -> unknown();
         };
+    }
+
+    /**
+     * {@code update t set ... from other} and its MySQL multi-table spelling read from more than the
+     * table they write to, and a parameter checked against the wrong table takes its type from the
+     * wrong column. The extra sources count, or the scope is not exhaustive.
+     */
+    private static TableScope update(final Update update) {
+        final var sources = new ArrayList<FromItem>();
+        sources.add(update.getTable());
+        if (update.getFromItem() != null) {
+            sources.add(update.getFromItem());
+        }
+        addJoined(sources, update.getStartJoins());
+        addJoined(sources, update.getJoins());
+        return scopeOf(sources);
+    }
+
+    /**
+     * {@code delete from t using other} and {@code delete t from t join other} the same way.
+     */
+    private static TableScope delete(final Delete delete) {
+        final var sources = new ArrayList<FromItem>();
+        sources.add(delete.getTable());
+        if (delete.getUsingList() != null) {
+            sources.addAll(delete.getUsingList());
+        }
+        addJoined(sources, delete.getJoins());
+        return scopeOf(sources);
+    }
+
+    private static void addJoined(final List<FromItem> sources, final List<Join> joins) {
+        if (joins != null) {
+            joins.forEach(join -> sources.add(join.getRightItem()));
+        }
     }
 
     private static TableScope select(final Select select) {
@@ -82,9 +118,15 @@ public record TableScope(List<String> tables, Map<String, String> aliases, boole
         if (plain.getFromItem() != null) {
             sources.add(plain.getFromItem());
         }
-        if (plain.getJoins() != null) {
-            plain.getJoins().forEach(join -> sources.add(join.getRightItem()));
-        }
+        addJoined(sources, plain.getJoins());
+        return scopeOf(sources);
+    }
+
+    /**
+     * @return the scope those sources make up, or unknown when any of them is not a plain table — so
+     *         that a scope either names everything the statement reads or admits that it does not
+     */
+    private static TableScope scopeOf(final List<FromItem> sources) {
         if (sources.isEmpty()) {
             return unknown();
         }
