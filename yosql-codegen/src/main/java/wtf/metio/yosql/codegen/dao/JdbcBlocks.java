@@ -30,6 +30,15 @@ public interface JdbcBlocks {
 
     CodeBlock getResultSet();
 
+    /**
+     * The result set of a statement that has already run, declared plainly rather than as a resource.
+     *
+     * <p>A method that hands the caller a lazy {@link java.util.stream.Stream} cannot close the result
+     * set when it returns — the stream still has to read from it. Ownership passes to the stream's
+     * {@code onClose}, which is why this variant exists next to {@link #getResultSet()}.</p>
+     */
+    CodeBlock getResultSetStatement();
+
     CodeBlock executeQueryStatement();
 
     CodeBlock returnExecuteUpdate(SqlConfiguration configuration);

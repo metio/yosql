@@ -71,19 +71,16 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
 
     private MethodSpec callNone(final SqlConfiguration configuration, final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
-        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
-                .addParameters(parameters.asParameterSpecs(configuration))
-                .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection(configuration))
-                .addCode(jdbc.pickVendorQuery(statements))
+        final var builder = assembly
+                .start(configuration, statements, name, Constants.EXECUTE_ONCE,
+                        parameters.asParameterSpecs(configuration));
+        assembly.openConnection(builder, configuration, statements)
                 .addCode(jdbc.tryPrepareCallable())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addCode(jdbc.executeStatement(configuration))
-                .addCode(controlFlows.endMaybeTry(configuration))
-                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
-                .build();
+                .addCode(jdbc.executeStatement(configuration));
+        // the callable statement and its result set
+        return assembly.close(builder, configuration, 2);
     }
 
     private MethodSpec callSingle(final SqlConfiguration configuration, final List<SqlStatement> statements) {
@@ -124,12 +121,13 @@ public final class DefaultCallMethodGenerator implements CallMethodGenerator {
                 .addParameters(parameters.asParameterSpecs(configuration))
                 .addExceptions(exceptions.thrownExceptions(configuration))
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(jdbc.openConnection(configuration))
+                .addCode(controlFlows.maybeTry(configuration))
+                .addCode(jdbc.getConnection(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
-                .addCode(jdbc.tryPrepareCallable())
+                .addStatement(jdbc.prepareCallInline())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addCode(jdbc.executeStatement(configuration))
+                .addCode(jdbc.executeQueryStatement())
                 .addCode(jdbc.streamStateful(configuration))
                 .addCode(controlFlows.endMaybeTry(configuration))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))

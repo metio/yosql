@@ -124,6 +124,12 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
     }
 
     @Override
+    public CodeBlock getResultSetStatement() {
+        return variables.statement(ResultSet.class, GeneratedNames.RESULT_SET,
+                jdbcMethods.statement().getResultSet());
+    }
+
+    @Override
     public CodeBlock returnExecuteUpdate(final SqlConfiguration configuration) {
         return configuration.writesReturnUpdateCount()
                 .filter(Boolean.TRUE::equals)

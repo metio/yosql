@@ -73,20 +73,16 @@ public final class DefaultReadMethodGenerator implements ReadMethodGenerator {
             final SqlConfiguration configuration,
             final List<SqlStatement> statements) {
         final var name = configuration.executeOnceName();
-        return methods.publicMethod(name, statements, Constants.EXECUTE_ONCE)
-                .addParameters(parameters.asParameterSpecs(configuration))
-                .addExceptions(exceptions.thrownExceptions(configuration))
-                .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
-                .addCode(controlFlows.maybeTry(configuration))
-                .addCode(jdbc.getConnection(configuration))
-                .addCode(jdbc.pickVendorQuery(statements))
-                .addStatement(jdbc.prepareStatementInline())
+        final var builder = assembly
+                .start(configuration, statements, name, Constants.EXECUTE_ONCE,
+                        parameters.asParameterSpecs(configuration));
+        assembly.openConnection(builder, configuration, statements)
+                .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addCode(jdbc.executeStatement(configuration))
-                .addCode(controlFlows.endMaybeTry(configuration))
-                .addCode(controlFlows.maybeCatchAndRethrow(configuration))
-                .build();
+                .addCode(jdbc.executeStatement(configuration));
+        // the statement and its result set
+        return assembly.close(builder, configuration, 2);
     }
 
     private MethodSpec readSingle(

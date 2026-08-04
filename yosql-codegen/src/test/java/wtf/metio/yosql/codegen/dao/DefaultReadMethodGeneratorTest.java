@@ -435,32 +435,33 @@ class DefaultReadMethodGeneratorTest {
                     )
                     public final void queryData(final java.lang.Object test, final int id) {
                       LOG.entering("com.example.persistence.DataRepository", "queryData");
-                      try {
-                        final var connection = dataSource.getConnection();
+                      try (final var connection = dataSource.getConnection()) {
                         final var query = QUERY_DATA;
                         LOG.finer(() -> java.lang.String.format("Picked query [%s]", "QUERY_DATA"));
                         final var rawQuery = QUERY_DATA_RAW;
                         final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
-                        final var statement = connection.prepareStatement(query);
-                        for (final int jdbcIndex : index.get("test")) {
-                          statement.setObject(jdbcIndex, test);
-                        }
-                        for (final int jdbcIndex : index.get("id")) {
-                          statement.setObject(jdbcIndex, id);
-                        }
-                        if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                          final var executedQuery = rawQuery
-                            .replace(":test", test == null ? "null" : test.toString())
-                            .replace(":id", java.lang.String.valueOf(id));
-                          LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
-                        }
-                        try (final var resultSet = statement.executeQuery()) {
-                        }
-                        catch (final java.sql.SQLException exception) {
-                          throw new java.lang.RuntimeException(exception);
+                        try (final var statement = connection.prepareStatement(query)) {
+                          for (final int jdbcIndex : index.get("test")) {
+                            statement.setObject(jdbcIndex, test);
+                          }
+                          for (final int jdbcIndex : index.get("id")) {
+                            statement.setObject(jdbcIndex, id);
+                          }
+                          if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                            final var executedQuery = rawQuery
+                              .replace(":test", test == null ? "null" : test.toString())
+                              .replace(":id", java.lang.String.valueOf(id));
+                            LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                          }
+                          try (final var resultSet = statement.executeQuery()) {
+                          }
                         }
                       }
+                      catch (final java.sql.SQLException exception) {
+                        throw new java.lang.RuntimeException(exception);
+                      }
+                    }
                     """.replace("${version}", YoSqlVersion.VERSION);
         }
 
@@ -491,25 +492,27 @@ class DefaultReadMethodGeneratorTest {
                         final var rawQuery = QUERY_DATA_RAW;
                         final var index = QUERY_DATA_INDEX;
                         LOG.finer(() -> java.lang.String.format("Picked index [%s]", "QUERY_DATA_INDEX"));
-                        final var statement = connection.prepareStatement(query);
-                        for (final int jdbcIndex : index.get("test")) {
-                          statement.setObject(jdbcIndex, test);
-                        }
-                        for (final int jdbcIndex : index.get("id")) {
-                          statement.setObject(jdbcIndex, id);
-                        }
-                        if (LOG.isLoggable(java.util.logging.Level.FINE)) {
-                          final var executedQuery = rawQuery
-                            .replace(":test", test == null ? "null" : test.toString())
-                            .replace(":id", java.lang.String.valueOf(id));
-                          LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
-                        }
-                        try (final var resultSet = statement.executeQuery()) {
-                        }
-                        catch (final java.sql.SQLException exception) {
-                          throw new java.lang.RuntimeException(exception);
+                        try (final var statement = connection.prepareStatement(query)) {
+                          for (final int jdbcIndex : index.get("test")) {
+                            statement.setObject(jdbcIndex, test);
+                          }
+                          for (final int jdbcIndex : index.get("id")) {
+                            statement.setObject(jdbcIndex, id);
+                          }
+                          if (LOG.isLoggable(java.util.logging.Level.FINE)) {
+                            final var executedQuery = rawQuery
+                              .replace(":test", test == null ? "null" : test.toString())
+                              .replace(":id", java.lang.String.valueOf(id));
+                            LOG.fine(() -> java.lang.String.format("Executing query [%s]", executedQuery));
+                          }
+                          try (final var resultSet = statement.executeQuery()) {
+                          }
                         }
                       }
+                      catch (final java.sql.SQLException exception) {
+                        throw new java.lang.RuntimeException(exception);
+                      }
+                    }
                     """.replace("${version}", YoSqlVersion.VERSION);
         }
 
