@@ -50,7 +50,7 @@ public class YoSQLGenerateTask extends Task {
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
                 .setConverter(converter.asConfiguration())
-                .setSchema(schema.asConfiguration())
+                .setSchema(schema.asConfiguration(getProject().getBaseDir().toPath()))
                 .build();
     }
 

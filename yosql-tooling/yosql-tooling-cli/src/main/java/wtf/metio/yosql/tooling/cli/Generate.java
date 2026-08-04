@@ -68,7 +68,7 @@ public class Generate implements Callable<Integer> {
                 .setLogging(logging.asConfiguration())
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
-                .setSchema(schema.asConfiguration())
+                .setSchema(schema.asConfiguration(Paths.get(System.getProperty("user.dir"))))
                 .build();
     }
 

@@ -11,6 +11,7 @@ import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 /**
@@ -22,8 +23,7 @@ public class YoSqlPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final var extension = project.getExtensions().create("yosql", YoSqlExtension.class);
         configureConventions(extension, project.getLayout());
-        registerTask(project, extension);
-        configureSourceSets(project, extension);
+        configureSourceSets(project, registerTask(project, extension));
     }
 
     private static void configureConventions(
@@ -38,7 +38,8 @@ public class YoSqlPlugin implements Plugin<Project> {
         extension.getSchema().configureConventions();
     }
 
-    private static void registerTask(final Project project, final YoSqlExtension extension) {
+    private static TaskProvider<GenerateCodeTask> registerTask(
+            final Project project, final YoSqlExtension extension) {
         final var generate = project.getTasks().register("generateJavaCode",
                 GenerateCodeTask.class, new GenerateTaskConfiguration(extension));
         // A dependency, not a doFirst that reaches in and calls the task. Running it through the
@@ -46,15 +47,27 @@ public class YoSqlPlugin implements Plugin<Project> {
         // `gradle tasks` and `--dry-run` — and it is why a project whose SQL has not changed no
         // longer regenerates on every build.
         project.getTasks().withType(JavaCompile.class, task -> task.dependsOn(generate));
+        return generate;
     }
 
-    private static void configureSourceSets(final Project project, final YoSqlExtension extension) {
+    /**
+     * Adds what the generator writes to the sources the project compiles.
+     *
+     * <p>The task's own output directory, rather than the extension's property. This runs while the
+     * plugin is being applied, which is before the build script's {@code yosql { }} block has said
+     * anything — so reading a value here freezes the convention, and a project that moves
+     * {@code outputBaseDirectory} would generate into one place and compile from another. Taking it
+     * from the task keeps it a provider Gradle resolves later, and one it can name a producer for,
+     * which is what lets it be an output directory and a source directory at once.</p>
+     */
+    private static void configureSourceSets(
+            final Project project, final TaskProvider<GenerateCodeTask> generate) {
         project.getPlugins().withType(JavaPlugin.class, plugin -> project.getExtensions()
                 .getByType(JavaPluginExtension.class)
                 .getSourceSets()
                 .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
                 .getJava()
-                .srcDir(extension.getFiles().getOutputBaseDirectory().get()));
+                .srcDir(generate.flatMap(GenerateCodeTask::getOutputDirectory)));
     }
 
 }

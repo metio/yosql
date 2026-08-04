@@ -5,11 +5,18 @@
 
 package wtf.metio.yosql.models.meta.data;
 
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.models.configuration.SchemaValidation;
 import wtf.metio.yosql.models.meta.ConfigurationExample;
 import wtf.metio.yosql.models.meta.ConfigurationGroup;
 import wtf.metio.yosql.models.meta.ConfigurationSetting;
+
+import javax.lang.model.element.Modifier;
+import java.nio.file.Path;
+
+import static wtf.metio.yosql.internals.jdk.Strings.upperCase;
 
 /**
  * Configures what `YoSQL` does with the schema your project already describes.
@@ -17,6 +24,7 @@ import wtf.metio.yosql.models.meta.ConfigurationSetting;
 public final class Schema extends AbstractConfigurationGroup {
 
     private static final String GROUP_NAME = Schema.class.getSimpleName();
+    private static final String PROJECT_BASE_DIRECTORY = "projectBaseDirectory";
 
     public static ConfigurationGroup configurationGroup() {
         return ConfigurationGroup.builder()
@@ -41,6 +49,11 @@ public final class Schema extends AbstractConfigurationGroup {
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
                 .addImmutableAnnotations(immutableAnnotation())
+                // Same as Files: a directory the user wrote is relative to their project, not to
+                // whatever directory the build happens to have been started from.
+                .addAntParameters(ParameterSpec.builder(Path.class, PROJECT_BASE_DIRECTORY, Modifier.FINAL).build())
+                .addCliParameters(ParameterSpec.builder(Path.class, PROJECT_BASE_DIRECTORY, Modifier.FINAL).build())
+                .addMavenParameters(ParameterSpec.builder(Path.class, PROJECT_BASE_DIRECTORY, Modifier.FINAL).build())
                 .build();
     }
 
@@ -78,7 +91,7 @@ public final class Schema extends AbstractConfigurationGroup {
         final var name = "sqlStatementsDirectory";
         final var description = "Where the DDL describing your schema lives, when it is not among your statements.";
         final var value = "";
-        return setting(GROUP_NAME, name, description, value)
+        final var configured = setting(GROUP_NAME, name, description, value)
                 .setExplanation("""
                         Left empty — the default — the schema is read from the statements `YoSQL` already parses, so
                         a project that keeps its `create table` statements alongside its queries needs no
@@ -93,6 +106,23 @@ public final class Schema extends AbstractConfigurationGroup {
                         shared one, so a project supporting several databases describes only the tables that differ
                         more than once.""")
                 .build();
+        // Resolved against the project rather than taken as written: every other directory setting
+        // is, and a relative one taken as written looks in whatever directory the build was started
+        // from — which, from a reactor root, is not the module's. Applied over the defaults the
+        // string helper wrote rather than beside them, because the builder takes each once.
+        return ConfigurationSetting.copyOf(configured)
+                .withAntInitializer(resolveAgainstProject(name))
+                .withCliInitializer(resolveAgainstProject(name))
+                .withMavenInitializer(resolveAgainstProject(name));
+    }
+
+    /**
+     * Leaves an unset directory alone, so that "read the schema from the statements themselves"
+     * stays the default rather than becoming the project's own root.
+     */
+    private static CodeBlock resolveAgainstProject(final String name) {
+        return CodeBlock.of(".set$L($L == null || $L.isBlank() ? $L : $L.resolve($L).toAbsolutePath().toString())\n",
+                upperCase(name), name, name, name, PROJECT_BASE_DIRECTORY, name);
     }
 
     private Schema() {

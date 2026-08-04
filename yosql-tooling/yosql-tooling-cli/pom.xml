@@ -63,6 +63,18 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        <!--
+            An SLF4J provider, without which every LocLogger the Dagger graph hands out is a no-op —
+            so the CLI, which has no other channel, generated code and reported nothing at all: not
+            its lifecycle, not a schema warning, not the errors that failed the run. Simple rather
+            than a configurable backend: this writes to stderr, needs no configuration file and
+            resolves nothing by name, which is what a closed-world image can keep.
+        -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${version.slf4j}</version>
+        </dependency>
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>

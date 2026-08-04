@@ -17,10 +17,14 @@ import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 /**
  * The 'generate' goal generates Java code based on SQL files.
  */
+/*
+ * Per-lookup, which is Maven's default and what threadSafe promises. A singleton hands one instance
+ * to every module that binds the goal, so under `mvn -T` two modules populate the same configuration
+ * fields at once and either can generate with the other's output directory and base package.
+ */
 @Mojo(
         name = "generate",
         defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-        instantiationStrategy = InstantiationStrategy.SINGLETON,
         threadSafe = true
 )
 public class GenerateMojo extends AbstractMojo {
@@ -88,7 +92,7 @@ public class GenerateMojo extends AbstractMojo {
                 .setRepositories(repositories.asConfiguration())
                 .setResources(resources.asConfiguration())
                 .setConverter(converter.asConfiguration())
-                .setSchema(schema.asConfiguration())
+                .setSchema(schema.asConfiguration(project.getBasedir().toPath()))
                 .build();
     }
 

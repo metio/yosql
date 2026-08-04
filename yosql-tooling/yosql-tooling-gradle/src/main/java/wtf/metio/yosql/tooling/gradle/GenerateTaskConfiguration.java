@@ -20,6 +20,9 @@ public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
     public void execute(final GenerateCodeTask task) {
         task.getInputDirectory().set(extension.getFiles().getInputBaseDirectory());
         task.getOutputDirectory().set(extension.getFiles().getOutputBaseDirectory());
+        // What the record scanner reads. Not a directory property, because it may well point
+        // outside this project — the examples point it at a sibling module.
+        task.getSourceDirectories().from(extension.getFiles().getSourceDirectory());
         task.getRuntimeConfiguration().set(RuntimeConfiguration.builder()
                 .setAnnotations(extension.getAnnotations().asConfiguration())
                 .setConverter(extension.getConverter().asConfiguration())
