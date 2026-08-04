@@ -8,12 +8,21 @@ package wtf.metio.yosql.tooling.gradle;
 import org.gradle.api.Action;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 
+import java.nio.file.Path;
+
 public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
 
     private final YoSqlExtension extension;
 
-    public GenerateTaskConfiguration(final YoSqlExtension extension) {
+    /**
+     * What a relative directory in the configuration is relative to. Every frontend answers this
+     * with the project rather than with whatever directory the build was started from.
+     */
+    private final Path projectDirectory;
+
+    public GenerateTaskConfiguration(final YoSqlExtension extension, final Path projectDirectory) {
         this.extension = extension;
+        this.projectDirectory = projectDirectory;
     }
 
     @Override
@@ -30,7 +39,7 @@ public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
                 .setLogging(extension.getLogging().asConfiguration())
                 .setRepositories(extension.getRepositories().asConfiguration())
                 .setResources(extension.getResources().asConfiguration())
-                .setSchema(extension.getSchema().asConfiguration())
+                .setSchema(extension.getSchema().asConfiguration(projectDirectory))
                 .build());
     }
 

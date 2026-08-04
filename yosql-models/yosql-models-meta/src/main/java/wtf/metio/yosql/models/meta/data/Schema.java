@@ -53,6 +53,7 @@ public final class Schema extends AbstractConfigurationGroup {
                 // whatever directory the build happens to have been started from.
                 .addAntParameters(ParameterSpec.builder(Path.class, PROJECT_BASE_DIRECTORY, Modifier.FINAL).build())
                 .addCliParameters(ParameterSpec.builder(Path.class, PROJECT_BASE_DIRECTORY, Modifier.FINAL).build())
+                .addGradleParameters(ParameterSpec.builder(Path.class, PROJECT_BASE_DIRECTORY, Modifier.FINAL).build())
                 .addMavenParameters(ParameterSpec.builder(Path.class, PROJECT_BASE_DIRECTORY, Modifier.FINAL).build())
                 .build();
     }
@@ -113,6 +114,7 @@ public final class Schema extends AbstractConfigurationGroup {
         return ConfigurationSetting.copyOf(configured)
                 .withAntInitializer(resolveAgainstProject(name))
                 .withCliInitializer(resolveAgainstProject(name))
+                .withGradleInitializer(resolveAgainstProjectInGradle(name))
                 .withMavenInitializer(resolveAgainstProject(name));
     }
 
@@ -123,6 +125,15 @@ public final class Schema extends AbstractConfigurationGroup {
     private static CodeBlock resolveAgainstProject(final String name) {
         return CodeBlock.of(".set$L($L == null || $L.isBlank() ? $L : $L.resolve($L).toAbsolutePath().toString())\n",
                 upperCase(name), name, name, name, PROJECT_BASE_DIRECTORY, name);
+    }
+
+    /**
+     * The same, where the value is read off a Gradle property rather than a field.
+     */
+    private static CodeBlock resolveAgainstProjectInGradle(final String name) {
+        final var value = gradlePropertyName(name) + "().get()";
+        return CodeBlock.of(".set$L($L.isBlank() ? $L : $L.resolve($L).toAbsolutePath().toString())\n",
+                upperCase(name), value, value, PROJECT_BASE_DIRECTORY, value);
     }
 
     private Schema() {
