@@ -125,6 +125,38 @@ class DefaultMethodParameterConfigurerTest {
                     statement(parameter("index_", "java.lang.Integer")), SOURCE, NO_SQL, indices("index_")));
         }
 
+        @Test
+        @DisplayName("include the local a collection's elements are bound through")
+        void shouldRefuseTheElementOfAnotherParameter() {
+            final var exception = assertThrows(ReservedParameterNameException.class, () ->
+                    configurer.configureParameters(
+                            statement(parameter("ids", "java.util.List<java.lang.String>"),
+                                    parameter("idsElement", "java.lang.String")),
+                            SOURCE, NO_SQL, indices("ids", "idsElement")));
+            assertAll(
+                    () -> assertTrue(exception.getMessage().contains("idsElement"), exception.getMessage()),
+                    () -> assertTrue(exception.getMessage().contains("ids"), exception.getMessage()));
+        }
+
+        @Test
+        @DisplayName("include the local a parameter is converted through")
+        void shouldRefuseTheConversionLocalOfAnotherParameter() {
+            assertThrows(ReservedParameterNameException.class, () ->
+                    configurer.configureParameters(
+                            statement(parameter("id", "java.util.UUID"),
+                                    parameter("idParameter", "java.lang.String")),
+                            SOURCE, NO_SQL, indices("id", "idParameter")));
+        }
+
+        @Test
+        @DisplayName("do not include a name that merely starts like another")
+        void shouldAllowUnrelatedNamesSharingAPrefix() {
+            assertDoesNotThrow(() -> configurer.configureParameters(
+                    statement(parameter("id", "java.util.UUID"),
+                            parameter("idElementary", "java.lang.String")),
+                    SOURCE, NO_SQL, indices("id", "idElementary")));
+        }
+
     }
 
     @Nested

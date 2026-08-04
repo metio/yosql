@@ -126,9 +126,14 @@ public interface JdbcMethods {
         CodeBlock executeGivenQuery();
 
         /**
-         * @see java.sql.Statement#executeUpdate(String)
+         * @see java.sql.PreparedStatement#executeUpdate()
          */
         CodeBlock executeUpdate();
+
+        /**
+         * @see java.sql.Statement#executeUpdate(String)
+         */
+        CodeBlock executeGivenUpdate();
 
         /**
          * @see java.sql.Statement#executeBatch()
@@ -136,9 +141,14 @@ public interface JdbcMethods {
         CodeBlock executeBatch();
 
         /**
-         * @see java.sql.Statement#addBatch(String)
+         * @see java.sql.PreparedStatement#addBatch()
          */
         CodeBlock addBatch();
+
+        /**
+         * @see java.sql.Statement#addBatch(String)
+         */
+        CodeBlock addGivenBatch();
 
         /**
          * @see java.sql.Statement#getResultSet()
@@ -146,9 +156,14 @@ public interface JdbcMethods {
         CodeBlock getResultSet();
 
         /**
-         * @see java.sql.Statement#execute(String)
+         * @see java.sql.PreparedStatement#execute()
          */
         CodeBlock execute();
+
+        /**
+         * @see java.sql.Statement#execute(String)
+         */
+        CodeBlock executeGiven();
 
     }
 

@@ -36,6 +36,13 @@ public final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatem
     }
 
     @Override
+    public CodeBlock executeGivenUpdate() {
+        return CodeBlock.builder()
+                .add("$N.executeUpdate($N)", GeneratedNames.STATEMENT, GeneratedNames.QUERY)
+                .build();
+    }
+
+    @Override
     public CodeBlock executeBatch() {
         return CodeBlock.builder()
                 .add("$N.executeBatch()", GeneratedNames.STATEMENT)
@@ -50,6 +57,13 @@ public final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatem
     }
 
     @Override
+    public CodeBlock addGivenBatch() {
+        return CodeBlock.builder()
+                .add("$N.addBatch($N)", GeneratedNames.STATEMENT, GeneratedNames.QUERY)
+                .build();
+    }
+
+    @Override
     public CodeBlock getResultSet() {
         return CodeBlock.builder()
                 .add("$N.getResultSet()", GeneratedNames.STATEMENT)
@@ -60,6 +74,13 @@ public final class DefaultJdbcStatementMethods implements JdbcMethods.JdbcStatem
     public CodeBlock execute() {
         return CodeBlock.builder()
                 .add("$N.execute()", GeneratedNames.STATEMENT)
+                .build();
+    }
+
+    @Override
+    public CodeBlock executeGiven() {
+        return CodeBlock.builder()
+                .add("$N.execute($N)", GeneratedNames.STATEMENT, GeneratedNames.QUERY)
                 .build();
     }
 

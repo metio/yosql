@@ -43,7 +43,7 @@ public interface JdbcBlocks {
 
     CodeBlock returnExecuteUpdate(SqlConfiguration configuration);
 
-    CodeBlock executeForReturning();
+    CodeBlock executeForReturning(SqlConfiguration configuration);
 
     CodeBlock executeBatch();
 

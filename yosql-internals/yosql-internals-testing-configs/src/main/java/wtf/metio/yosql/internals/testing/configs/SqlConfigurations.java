@@ -77,6 +77,17 @@ public final class SqlConfigurations {
                 .build();
     }
 
+    /**
+     * A parameter whose values each need a placeholder of their own.
+     */
+    public static SqlParameter collectionParameter() {
+        return SqlParameter.builder()
+                .setName("names")
+                .setType("java.util.List<java.lang.String>")
+                .setIndices(new int[]{1})
+                .build();
+    }
+
     public static SqlConfiguration simpleSqlConfiguration() {
         return SqlConfiguration.builder().setName("queryData").build();
     }

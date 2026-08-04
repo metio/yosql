@@ -26,4 +26,15 @@ public final class ReservedParameterNameException extends RuntimeException {
                 .formatted(statement, source, parameter));
     }
 
+    public ReservedParameterNameException(
+            final Path source,
+            final String statement,
+            final String parameter,
+            final String derivedFrom) {
+        super(("Statement '%s' in %s names a parameter '%s', which is also what the generated method "
+                + "calls the local it derives from the parameter '%s'. Rename either one in the SQL — "
+                + "the name reaches no further than the method's signature.")
+                .formatted(statement, source, parameter, derivedFrom));
+    }
+
 }

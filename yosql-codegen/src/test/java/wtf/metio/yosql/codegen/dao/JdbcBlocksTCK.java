@@ -7,6 +7,8 @@ package wtf.metio.yosql.codegen.dao;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.codegen.exceptions.UnbatchableStatementException;
+import wtf.metio.yosql.codegen.exceptions.UnbindableStatementException;
 import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.ResultRowConverter;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -230,8 +232,21 @@ abstract class JdbcBlocksTCK {
     final void createStatementWithoutPreparation() {
         Assertions.assertEquals(
                 createStatementWithoutPreparationExpectation(),
-                generator().createStatement(SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                generator().createStatement(SqlConfiguration.copyOf(SqlConfigurations.simpleSqlConfiguration())
                         .withUsePreparedStatement(false)).toString());
+    }
+
+    @Test
+    final void createStatementWithoutPreparationRefusesParameters() {
+        final var configuration = SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                .withUsePreparedStatement(false);
+        final var exception = Assertions.assertThrows(UnbindableStatementException.class,
+                () -> generator().createStatement(configuration),
+                "a plain statement cannot bind a value, so asking for one with parameters must fail");
+        Assertions.assertTrue(exception.getMessage().contains("queryData"),
+                () -> "names the statement: " + exception.getMessage());
+        Assertions.assertTrue(exception.getMessage().contains("test"),
+                () -> "names the parameter: " + exception.getMessage());
     }
 
     @Test
@@ -239,6 +254,27 @@ abstract class JdbcBlocksTCK {
         Assertions.assertEquals(
                 prepareBatchExpectation(),
                 generator().prepareBatch(SqlConfigurations.sqlConfiguration()).toString());
+    }
+
+    @Test
+    final void prepareBatchRefusesStatementWithoutParameters() {
+        final var configuration = SqlConfigurations.simpleSqlConfiguration();
+        final var exception = Assertions.assertThrows(UnbatchableStatementException.class,
+                () -> generator().prepareBatch(configuration),
+                "a batch iterates its parameters, so a statement without any cannot have one");
+        Assertions.assertTrue(exception.getMessage().contains("queryData"),
+                () -> "names the statement: " + exception.getMessage());
+    }
+
+    @Test
+    final void prepareBatchRefusesCollectionParameter() {
+        final var configuration = SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                .withParameters(SqlConfigurations.collectionParameter());
+        final var exception = Assertions.assertThrows(UnbatchableStatementException.class,
+                () -> generator().prepareBatch(configuration),
+                "every execution of the batch would need a query with a different placeholder count");
+        Assertions.assertTrue(exception.getMessage().contains("names"),
+                () -> "names the parameter: " + exception.getMessage());
     }
 
     @Test

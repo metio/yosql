@@ -33,12 +33,6 @@ import static wtf.metio.yosql.codegen.blocks.CodeBlocks.code;
 
 public final class DefaultJdbcBlocks implements JdbcBlocks {
 
-    /**
-     * Names the local a collection's values are bound through. Suffixed rather than plain, so
-     * that a statement binding both a collection and a scalar of a related name keeps them apart.
-     */
-    private static final String ELEMENT_SUFFIX = "Element";
-
     private final RuntimeConfiguration runtimeConfiguration;
     private final CodeBlocks blocks;
     private final ControlFlows controlFlows;
@@ -131,17 +125,22 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock returnExecuteUpdate(final SqlConfiguration configuration) {
+        final var executeUpdate = prepares(configuration)
+                ? jdbcMethods.statement().executeUpdate()
+                : jdbcMethods.statement().executeGivenUpdate();
         return configuration.writesReturnUpdateCount()
                 .filter(Boolean.TRUE::equals)
-                .map(value -> blocks.returnValue(jdbcMethods.statement().executeUpdate()))
+                .map(value -> blocks.returnValue(executeUpdate))
                 .orElseGet(() -> CodeBlock.builder()
-                        .addStatement(jdbcMethods.statement().executeUpdate())
+                        .addStatement(executeUpdate)
                         .build());
     }
 
     @Override
-    public CodeBlock executeForReturning() {
-        return jdbcMethods.statement().execute();
+    public CodeBlock executeForReturning(final SqlConfiguration configuration) {
+        return prepares(configuration)
+                ? jdbcMethods.statement().execute()
+                : jdbcMethods.statement().executeGiven();
     }
 
     @Override
@@ -205,10 +204,29 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock createStatement(final SqlConfiguration configuration) {
-        return configuration.usePreparedStatement()
-                .filter(Boolean.TRUE::equals)
-                .map(value -> controlFlows.tryWithResource(prepareStatementInline()))
-                .orElseGet(() -> controlFlows.tryWithResource(statementInline()));
+        if (prepares(configuration)) {
+            return controlFlows.tryWithResource(prepareStatementInline());
+        }
+        refuseParametersWithoutPreparedStatement(configuration);
+        return controlFlows.tryWithResource(statementInline());
+    }
+
+    private static boolean prepares(final SqlConfiguration configuration) {
+        return configuration.usePreparedStatement().filter(Boolean.TRUE::equals).isPresent();
+    }
+
+    /**
+     * A plain statement carries its query as text, so there is nowhere for a value to be bound.
+     * Emitting the binding calls anyway is how this produced a repository that does not compile.
+     */
+    private static void refuseParametersWithoutPreparedStatement(final SqlConfiguration configuration) {
+        configuration.parameters().stream()
+                .findFirst()
+                .ifPresent(parameter -> {
+                    throw new UnbindableStatementException(
+                            configuration.name().orElseThrow(MissingSqlConfigurationNameException::new),
+                            parameter.name().orElseThrow(MissingParameterNameException::new));
+                });
     }
 
     private CodeBlock statementInline() {
@@ -218,6 +236,17 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
 
     @Override
     public CodeBlock prepareBatch(final SqlConfiguration config) {
+        final var statement = config.name().orElseThrow(MissingSqlConfigurationNameException::new);
+        if (config.parameters().isEmpty()) {
+            throw UnbatchableStatementException.withoutParameters(statement);
+        }
+        config.parameters().stream()
+                .filter(InLists::expands)
+                .findFirst()
+                .ifPresent(parameter -> {
+                    throw UnbatchableStatementException.withCollection(statement,
+                            parameter.name().orElseThrow(MissingParameterNameException::new));
+                });
         return controlFlows.forLoop(
                 code("int $N = 0; $N < $N.length; $N++",
                         GeneratedNames.BATCH,
@@ -226,7 +255,9 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                         GeneratedNames.BATCH),
                 CodeBlock.builder()
                         .add(setBatchParameters(config))
-                        .addStatement(jdbcMethods.statement().addBatch())
+                        .addStatement(prepares(config)
+                                ? jdbcMethods.statement().addBatch()
+                                : jdbcMethods.statement().addGivenBatch())
                         .build());
     }
 
@@ -494,9 +525,13 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                     constant,
                     index + 1);
         }
-        return builder.addStatement(variables.inline(String.class, GeneratedNames.QUERY, "$L", expression.build()))
-                .add(logging.queryPicked(constant))
-                .build();
+        builder.addStatement(variables.inline(String.class, GeneratedNames.QUERY, "$L", expression.build()))
+                .add(logging.queryPicked(constant));
+        if (logging.isEnabled()) {
+            final var rawQuery = fields.constantRawSqlStatementFieldName(config);
+            builder.addStatement(variables.inline(String.class, GeneratedNames.RAW_QUERY, "$N", rawQuery));
+        }
+        return builder.build();
     }
 
     @Override
@@ -536,12 +571,18 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         for (final var parameter : InLists.placeholderOrder(config)) {
             final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
             if (InLists.expands(parameter)) {
+                final var element = name + GeneratedNames.ELEMENT_SUFFIX;
+                // Inside the loop, because what it converts is the element the loop is holding.
+                final var conversion = InLists.elementType(parameter).flatMap(type ->
+                        parameterConversions.convert(type, element, CodeBlock.of("$N", element)));
+                final var body = CodeBlock.builder();
+                conversion.ifPresent(converted -> body.add(converted.declarations()));
+                body.addStatement("$N.setObject($N++, $L)", GeneratedNames.STATEMENT,
+                        GeneratedNames.JDBC_INDEX, conversion
+                                .map(converted -> CodeBlock.of("$N", converted.boundName()))
+                                .orElseGet(() -> CodeBlock.of("$N", element)));
                 builder.add(controlFlows.forLoop(
-                        code("final var $N : $N", name + ELEMENT_SUFFIX, name),
-                        CodeBlock.builder()
-                                .addStatement("$N.setObject($N++, $N)", GeneratedNames.STATEMENT,
-                                        GeneratedNames.JDBC_INDEX, name + ELEMENT_SUFFIX)
-                                .build()));
+                        code("final var $N : $N", element, name), body.build()));
             } else {
                 builder.addStatement("$N.setObject($N++, $L)", GeneratedNames.STATEMENT,
                         GeneratedNames.JDBC_INDEX, bound.get(name));

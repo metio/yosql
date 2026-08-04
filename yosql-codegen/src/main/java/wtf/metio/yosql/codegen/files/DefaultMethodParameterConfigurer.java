@@ -95,6 +95,12 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
                 throw new ReservedParameterNameException(source,
                         configuration.name().orElse("<unnamed>"), name);
             }
+            for (final var other : bound) {
+                if (GeneratedNames.derivesFrom(name, other)) {
+                    throw new ReservedParameterNameException(source,
+                            configuration.name().orElse("<unnamed>"), name, other);
+                }
+            }
         }
     }
 

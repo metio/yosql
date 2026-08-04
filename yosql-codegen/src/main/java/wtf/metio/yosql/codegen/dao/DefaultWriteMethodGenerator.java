@@ -98,7 +98,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addStatement(jdbc.executeForReturning())
+                .addStatement(jdbc.executeForReturning(configuration))
                 .addCode(jdbc.getResultSet())
                 .addCode(jdbc.returnAsSingle(configuration));
         return assembly.close(builder, configuration, 2);
@@ -117,7 +117,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(jdbc.createStatement(configuration))
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addStatement(jdbc.executeForReturning())
+                .addStatement(jdbc.executeForReturning(configuration))
                 .addCode(jdbc.getResultSet())
                 .addCode(jdbc.returnAsMultiple(converter));
         return assembly.close(builder, configuration, 2);
@@ -138,7 +138,7 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addStatement(jdbc.prepareStatementInline())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
-                .addStatement(jdbc.executeForReturning())
+                .addStatement(jdbc.executeForReturning(configuration))
                 .addCode(jdbc.getResultSetStatement())
                 .addCode(jdbc.streamStateful(configuration))
                 .addCode(controlFlows.endMaybeTry(configuration))

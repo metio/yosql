@@ -10,6 +10,7 @@ import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.TypeName;
 import wtf.metio.yosql.codegen.exceptions.NonRecordValueTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnbindableParameterException;
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import wtf.metio.yosql.models.configuration.SqlParameter;
 
 import java.util.ArrayList;
@@ -45,13 +46,27 @@ public final class ParameterConversions {
      * @return the locals to declare and the name to bind, or empty when {@code source} binds as it is
      */
     public Optional<Conversion> convert(final SqlParameter parameter, final CodeBlock source) {
-        final var name = parameter.name().orElseThrow();
         final var declared = parameter.typeName();
         if (declared.isEmpty()) {
             return Optional.empty();
         }
+        return convert(declared.get(), parameter.name().orElseThrow(), source);
+    }
+
+    /**
+     * The same, for a value that is not a parameter of its own.
+     *
+     * <p>A collection binds one element per placeholder, and an element is the type the column holds
+     * rather than the type that holds the elements — so it converts exactly as the identical scalar
+     * would, through a local of its own.</p>
+     *
+     * @param declared the type of the value being bound
+     * @param name what to base the locals on
+     * @param source an expression holding the value
+     */
+    public Optional<Conversion> convert(final TypeName declared, final String name, final CodeBlock source) {
         final var steps = new ArrayList<Step>();
-        collect(declared.get(), name, source, steps, new LinkedHashSet<>());
+        collect(declared, name, source, steps, new LinkedHashSet<>());
         if (steps.isEmpty()) {
             return Optional.empty();
         }
@@ -143,7 +158,8 @@ public final class ParameterConversions {
     }
 
     private static String local(final String name, final List<Step> steps) {
-        return steps.isEmpty() ? name + "Parameter" : name + "Parameter" + (steps.size() + 1);
+        final var base = name + GeneratedNames.PARAMETER_SUFFIX;
+        return steps.isEmpty() ? base : base + (steps.size() + 1);
     }
 
     /**

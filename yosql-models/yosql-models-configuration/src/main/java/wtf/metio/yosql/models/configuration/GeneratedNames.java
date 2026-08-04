@@ -59,6 +59,35 @@ public final class GeneratedNames {
             DATA_SOURCE, CONNECTION, STATEMENT, RESULT_SET_META_DATA, DATABASE_META_DATA, RESULT_SET,
             COLUMN_COUNT, COLUMN_LABEL, BATCH, LIST, JDBC_INDEX, INDEX, ROW);
 
+    /**
+     * Names the local a collection's values are bound through, one at a time.
+     */
+    public static final String ELEMENT_SUFFIX = "Element";
+
+    /**
+     * Names the local a parameter is converted into before it is bound.
+     */
+    public static final String PARAMETER_SUFFIX = "Parameter";
+
+    /**
+     * Whether one parameter's name is a local the generated method derives from another's.
+     *
+     * <p>{@link #TAKEN} cannot hold these: they are not fixed names but names built from whatever the
+     * author called the parameter beside them, so a statement binding both {@code ids} and
+     * {@code idsElement} declares the same identifier twice.</p>
+     *
+     * <p>Checked whether or not the statement in question would actually derive the name, for the
+     * same reason {@link #TAKEN} lists every variable rather than the ones a particular shape
+     * declares: a rule that depends on the shape moves under the author's feet.</p>
+     */
+    public static boolean derivesFrom(final String candidate, final String parameter) {
+        if (candidate.length() <= parameter.length() || !candidate.startsWith(parameter)) {
+            return false;
+        }
+        final var suffix = candidate.substring(parameter.length());
+        return ELEMENT_SUFFIX.equals(suffix) || suffix.startsWith(PARAMETER_SUFFIX);
+    }
+
     private GeneratedNames() {
         // constants class
     }
