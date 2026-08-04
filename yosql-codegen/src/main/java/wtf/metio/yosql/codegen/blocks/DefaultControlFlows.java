@@ -41,6 +41,25 @@ public final class DefaultControlFlows implements ControlFlows {
     }
 
     @Override
+    public CodeBlock finallyBlock() {
+        return CodeBlock.builder().nextControlFlow("finally").build();
+    }
+
+    @Override
+    public CodeBlock closeOnFailure(final String resource) {
+        return CodeBlock.builder()
+                .nextControlFlow("catch (final $T $N)", Throwable.class, GeneratedNames.THROWABLE)
+                .beginControlFlow("try")
+                .addStatement("$N.close()", resource)
+                .nextControlFlow("catch (final $T $N)", Exception.class, GeneratedNames.SUPPRESSED)
+                .addStatement("$N.addSuppressed($N)", GeneratedNames.THROWABLE, GeneratedNames.SUPPRESSED)
+                .endControlFlow()
+                .addStatement("throw $N", GeneratedNames.THROWABLE)
+                .endControlFlow()
+                .build();
+    }
+
+    @Override
     public CodeBlock catchAndRethrow() {
         return catchAndDo(code("throw new $T($N)", RuntimeException.class, GeneratedNames.EXCEPTION));
     }

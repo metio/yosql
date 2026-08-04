@@ -91,7 +91,11 @@ public final class ToMapConverterGenerator {
                                 GeneratedNames.RESULT_SET_META_DATA,
                                 GeneratedNames.INDEX),
                         CodeBlock.builder()
-                                .addStatement("$N.put($N.getColumnName($N), $N.getObject($N))",
+                                // The label, not the name: JDBC defines the label as the alias where
+                                // one was given, so `select slug as handle` is reachable under the
+                                // name the statement chose. getColumnName answers the underlying
+                                // column, which on some drivers is the alias and on others is not.
+                                .addStatement("$N.put($N.getColumnLabel($N), $N.getObject($N))",
                                         GeneratedNames.ROW,
                                         GeneratedNames.RESULT_SET_META_DATA,
                                         GeneratedNames.INDEX,

@@ -12,6 +12,7 @@ import wtf.metio.yosql.codegen.logging.LoggingGenerator;
 import wtf.metio.yosql.internals.javapoet.TypicalTypes;
 import wtf.metio.yosql.models.configuration.Constants;
 import wtf.metio.yosql.models.immutables.ConverterConfiguration;
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
@@ -134,13 +135,19 @@ public final class DefaultWriteMethodGenerator implements WriteMethodGenerator {
                 .addCode(logging.entering(configuration.repository().orElseThrow(MissingRepositoryNameException::new), name))
                 .addCode(controlFlows.maybeTry(configuration))
                 .addCode(jdbc.getConnection(configuration))
+                .addCode(jdbc.openConnectionScope(configuration))
                 .addCode(jdbc.pickVendorQuery(statements))
                 .addStatement(jdbc.prepareStatementInline())
+                .addCode(controlFlows.startTryBlock())
                 .addCode(jdbc.setParameters(configuration))
                 .addCode(jdbc.logExecutedQuery(configuration))
                 .addStatement(jdbc.executeForReturning(configuration))
                 .addCode(jdbc.getResultSetStatement())
+                .addCode(controlFlows.startTryBlock())
                 .addCode(jdbc.streamStateful(configuration))
+                .addCode(controlFlows.closeOnFailure(GeneratedNames.RESULT_SET))
+                .addCode(controlFlows.closeOnFailure(GeneratedNames.STATEMENT))
+                .addCode(jdbc.closeConnectionOnFailure(configuration))
                 .addCode(controlFlows.endMaybeTry(configuration))
                 .addCode(controlFlows.maybeCatchAndRethrow(configuration))
                 .build();

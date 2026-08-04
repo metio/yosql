@@ -51,7 +51,7 @@ final class ToMapConverterGeneratorTest {
                     final var resultSetMetaData = resultSet.getMetaData();
                     final var row = new java.util.LinkedHashMap<java.lang.String, java.lang.Object>(resultSetMetaData.getColumnCount());
                     for (int index = 1; index <= resultSetMetaData.getColumnCount(); index++) {
-                      row.put(resultSetMetaData.getColumnName(index), resultSet.getObject(index));
+                      row.put(resultSetMetaData.getColumnLabel(index), resultSet.getObject(index));
                     }
                     return row;
                   }

@@ -267,9 +267,15 @@ class DefaultJdbcBlocksTest {
                       )
                       public final void run() {
                         try {
-                          resultSet.close();
-                          statement.close();
-                          connection.close();
+                          try {
+                            resultSet.close();
+                          } finally {
+                            try {
+                              statement.close();
+                            } finally {
+                              connection.close();
+                            }
+                          }
                         }
                         catch (final java.sql.SQLException exception) {
                           throw new java.lang.RuntimeException(exception);
@@ -309,8 +315,11 @@ class DefaultJdbcBlocksTest {
                       )
                       public final void run() {
                         try {
-                          resultSet.close();
-                          statement.close();
+                          try {
+                            resultSet.close();
+                          } finally {
+                            statement.close();
+                          }
                         }
                         catch (final java.sql.SQLException exception) {
                           throw new java.lang.RuntimeException(exception);

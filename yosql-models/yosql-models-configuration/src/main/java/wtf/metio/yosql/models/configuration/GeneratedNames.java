@@ -28,6 +28,8 @@ public final class GeneratedNames {
     public static final String DATABASE_PRODUCT_NAME = "databaseProductName";
     public static final String ACTION = "action";
     public static final String EXCEPTION = "exception";
+    public static final String THROWABLE = "throwable";
+    public static final String SUPPRESSED = "suppressed";
     public static final String RAW_SUFFIX = "_RAW";
     public static final String INDEX_SUFFIX = "_INDEX";
     public static final String DATA_SOURCE = "dataSource";
@@ -56,6 +58,7 @@ public final class GeneratedNames {
      */
     public static final Set<String> TAKEN = Set.of(
             LOGGER, QUERY, RAW_QUERY, EXECUTED_QUERY, DATABASE_PRODUCT_NAME, ACTION, EXCEPTION,
+            THROWABLE, SUPPRESSED,
             DATA_SOURCE, CONNECTION, STATEMENT, RESULT_SET_META_DATA, DATABASE_META_DATA, RESULT_SET,
             COLUMN_COUNT, COLUMN_LABEL, BATCH, LIST, JDBC_INDEX, INDEX, ROW);
 

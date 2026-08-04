@@ -83,6 +83,19 @@ public interface JdbcBlocks {
 
     CodeBlock streamStateful(SqlConfiguration configuration);
 
+    /**
+     * Opens the scope that closes the connection again if the method never hands it to a Stream.
+     *
+     * <p>Empty when the caller passed the connection in, because closing what somebody else opened is
+     * not this method's to do — the same rule {@link #closeConnection(SqlConfiguration)} follows.</p>
+     */
+    CodeBlock openConnectionScope(SqlConfiguration configuration);
+
+    /**
+     * Closes that scope. Pair with {@link #openConnectionScope(SqlConfiguration)}.
+     */
+    CodeBlock closeConnectionOnFailure(SqlConfiguration configuration);
+
     CodeBlock setParameters(SqlConfiguration configuration);
 
     CodeBlock setBatchParameters(SqlConfiguration configuration);

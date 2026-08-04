@@ -493,19 +493,64 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                 .build();
     }
 
+    @Override
+    public CodeBlock openConnectionScope(final SqlConfiguration configuration) {
+        return configuration.createConnection()
+                .filter(Boolean.TRUE::equals)
+                .map(value -> controlFlows.startTryBlock())
+                .orElseGet(() -> CodeBlock.builder().build());
+    }
+
+    @Override
+    public CodeBlock closeConnectionOnFailure(final SqlConfiguration configuration) {
+        return configuration.createConnection()
+                .filter(Boolean.TRUE::equals)
+                .map(value -> controlFlows.closeOnFailure(GeneratedNames.CONNECTION))
+                .orElseGet(() -> CodeBlock.builder().build());
+    }
+
+    /**
+     * Closes what the Stream owns, once the caller is done with it.
+     *
+     * <p>Nested rather than sequential, so that a driver throwing on {@code resultSet.close()} still
+     * leaves the connection returned to its pool. Closed in one try, the first failure skips the two
+     * closes after it, and a leaked pooled connection outlives the request that lost it.</p>
+     */
     private TypeSpec lazyStreamCloser(final SqlConfiguration configuration) {
         return TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(Runnable.class)
                 .addMethod(methods.implementation("run")
                         .returns(void.class)
                         .addCode(controlFlows.startTryBlock())
-                        .addCode(closeResultSet())
-                        .addCode(closePrepareStatement())
-                        .addCode(closeConnection(configuration))
+                        .addCode(nestedCloses(configuration))
                         .addCode(controlFlows.endTryBlock())
                         .addCode(controlFlows.catchAndRethrow())
                         .build())
                 .build();
+    }
+
+    /**
+     * Each close in the {@code finally} of the one before it, so no failure skips the closes after it.
+     */
+    private CodeBlock nestedCloses(final SqlConfiguration configuration) {
+        final var closes = new ArrayList<CodeBlock>();
+        closes.add(closeResultSet());
+        closes.add(closePrepareStatement());
+        final var connection = closeConnection(configuration);
+        if (!connection.isEmpty()) {
+            closes.add(connection);
+        }
+        final var builder = CodeBlock.builder();
+        for (var index = 0; index < closes.size() - 1; index++) {
+            builder.add(controlFlows.startTryBlock())
+                    .add(closes.get(index))
+                    .add(controlFlows.finallyBlock());
+        }
+        builder.add(closes.getLast());
+        for (var index = 0; index < closes.size() - 1; index++) {
+            builder.add(controlFlows.endTryBlock());
+        }
+        return builder.build();
     }
 
     /**
