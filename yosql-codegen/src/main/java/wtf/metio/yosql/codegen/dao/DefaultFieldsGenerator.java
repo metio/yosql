@@ -41,6 +41,7 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     private static final String NAME_REGEX = "([a-z])([A-Z])";
     private static final String NAME_REPLACEMENT = "$1_$2";
     private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
+    private static final String EMPTY_INDEX_ARRAY = "new int[] { }";
 
     private final ConverterConfiguration converters;
     private final RepositoriesConfiguration repositories;
@@ -64,24 +65,54 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
     @Override
     public Optional<CodeBlock> staticInitializer(final List<SqlStatement> statements) {
         final var builder = CodeBlock.builder();
-        statements.stream()
-                .map(SqlStatement::getConfiguration)
-                .filter(config -> Buckets.hasEntries(config.parameters()))
-                .filter(not(InLists::anyExpands))
-                .forEach(config -> config.parameters().stream()
-                        .filter(SqlParameter::hasIndices)
-                        .forEach(parameter -> addIndexArray(builder, parameter, config)));
+        groupedByName(statements).values()
+                .forEach(sameName -> addIndexArrays(builder, sameName));
         return Optional.of(builder.build());
     }
 
-    private void addIndexArray(
-            final CodeBlock.Builder builder,
-            final SqlParameter parameter,
-            final SqlConfiguration config) {
-        builder.addStatement("$N.put($S, $L)",
-                constantSqlStatementParameterIndexFieldName(config),
-                parameter.name().orElseThrow(MissingParameterNameException::new),
-                indexArray(parameter));
+    /**
+     * Vendor variants of one statement share a single generated method whose signature comes from the
+     * merged configuration - the union of every variant's parameters - while the index map it reads is
+     * picked per vendor. A variant that does not bind one of those parameters therefore still needs an
+     * entry for it: the method binds every parameter it declares, and {@code index.get(name)} would
+     * otherwise iterate null on whichever database chose that variant.
+     */
+    private void addIndexArrays(final CodeBlock.Builder builder, final List<SqlStatement> sameName) {
+        if (!needsParameterIndex(sameName)) {
+            return;
+        }
+        final var boundParameters = SqlConfiguration.fromStatements(sameName).parameters().stream()
+                .map(parameter -> parameter.name().orElseThrow(MissingParameterNameException::new))
+                .toList();
+        sameName.stream()
+                .map(SqlStatement::getConfiguration)
+                .forEach(config -> {
+                    final var indices = config.parameters().stream()
+                            .filter(SqlParameter::hasIndices)
+                            .collect(Collectors.toMap(
+                                    parameter -> parameter.name().orElseThrow(MissingParameterNameException::new),
+                                    DefaultFieldsGenerator::indexArray,
+                                    (first, second) -> first,
+                                    LinkedHashMap::new));
+                    boundParameters.forEach(parameter -> builder.addStatement("$N.put($S, $L)",
+                            constantSqlStatementParameterIndexFieldName(config),
+                            parameter,
+                            indices.getOrDefault(parameter, EMPTY_INDEX_ARRAY)));
+                });
+    }
+
+    private static Map<String, List<SqlStatement>> groupedByName(final List<SqlStatement> statements) {
+        return statements.stream()
+                .collect(Collectors.groupingBy(SqlStatement::getName, LinkedHashMap::new, Collectors.toList()));
+    }
+
+    /**
+     * A statement that expands a collection counts its placeholders as it binds them, so the fixed
+     * indices would only be a constant nothing reads.
+     */
+    static boolean needsParameterIndex(final List<SqlStatement> sameName) {
+        final var merged = SqlConfiguration.fromStatements(sameName);
+        return Buckets.hasEntries(merged.parameters()) && !InLists.anyExpands(merged);
     }
 
     private static String indexArray(final SqlParameter param) {
@@ -109,15 +140,16 @@ public final class DefaultFieldsGenerator implements FieldsGenerator {
                     .findAny()
                     .ifPresent(repositoryFields::add);
         }
+        final var byName = groupedByName(statements);
         for (final var statement : statements) {
             if (logging.isEnabled()) {
                 repositoryFields.add(asConstantRawSqlField(statement));
             }
             repositoryFields.add(asConstantSqlField(statement));
-            // A statement that expands a collection counts its placeholders as it binds them, so the
-            // fixed indices would only be a constant nothing reads.
-            if (Buckets.hasEntries(statement.getConfiguration().parameters())
-                    && !InLists.anyExpands(statement.getConfiguration())) {
+            // Whether a vendor variant gets an index map is decided for the whole group: the generated
+            // method reads one map per vendor, so a variant binding no parameter of its own still needs
+            // an (empty) map when a sibling variant binds one.
+            if (needsParameterIndex(byName.get(statement.getName()))) {
                 repositoryFields.add(asConstantSqlParameterIndexField(statement));
             }
         }

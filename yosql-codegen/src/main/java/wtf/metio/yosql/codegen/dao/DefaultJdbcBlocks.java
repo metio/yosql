@@ -286,6 +286,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
             if (logging.isEnabled()) {
                 builder.addStatement("$T $N = null", String.class, GeneratedNames.RAW_QUERY);
             }
+            final var needsIndex = DefaultFieldsGenerator.needsParameterIndex(sqlStatements);
             builder.addStatement("$T $N = null", String.class, GeneratedNames.QUERY)
                     .addStatement("$T $N = null", TypicalTypes.MAP_OF_STRING_AND_ARRAY_OF_INTS, GeneratedNames.INDEX)
                     .beginControlFlow("switch ($N)", GeneratedNames.DATABASE_PRODUCT_NAME);
@@ -297,7 +298,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                         builder.add("case $S:\n", config.vendor().orElseThrow(MissingSqlConfigurationVendorException::new))
                                 .addStatement("$>$N = $N", GeneratedNames.QUERY, query)
                                 .add(logging.vendorQueryPicked(query));
-                        finalizeCase(builder, config);
+                        finalizeCase(builder, config, needsIndex);
                     });
             sqlStatements.stream()
                     .map(SqlStatement::getConfiguration)
@@ -308,7 +309,7 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
                         builder.add("default:\n")
                                 .addStatement("$>$N = $N", GeneratedNames.QUERY, query)
                                 .add(logging.vendorQueryPicked(query));
-                        finalizeCase(builder, config);
+                        finalizeCase(builder, config, needsIndex);
                     }, () -> builder.add("default:\n")
                             .addStatement("$>throw new $T($T.format($S, $N))$<", IllegalStateException.class, String.class,
                                     "No suitable query defined for vendor [%s]", GeneratedNames.DATABASE_PRODUCT_NAME));
@@ -336,12 +337,20 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         return builder.build();
     }
 
-    private void finalizeCase(final CodeBlock.Builder builder, final SqlConfiguration config) {
+    /**
+     * The binding loops read {@code index} for every parameter of the merged configuration, so every
+     * vendor case has to assign it - including a variant that binds no parameter of its own, which
+     * otherwise leaves the local at the {@code null} it was declared with.
+     */
+    private void finalizeCase(
+            final CodeBlock.Builder builder,
+            final SqlConfiguration config,
+            final boolean needsIndex) {
         if (logging.isEnabled()) {
             final var rawQuery = fields.constantRawSqlStatementFieldName(config);
             builder.addStatement("$N = $N", GeneratedNames.RAW_QUERY, rawQuery);
         }
-        if (Buckets.hasEntries(config.parameters())) {
+        if (needsIndex) {
             final var indexName = fields.constantSqlStatementParameterIndexFieldName(config);
             builder.addStatement("$N = $N", GeneratedNames.INDEX, indexName)
                     .add(logging.vendorIndexPicked(indexName));

@@ -88,6 +88,34 @@ public final class SqlConfigurations {
                 .build();
     }
 
+    /**
+     * Two vendor variants of one statement that do not bind the same parameters: the H2 variant binds
+     * only {@code id} while the PostgreSQL variant binds {@code test} as well. Both share the single
+     * generated method, whose signature is the union of the two.
+     */
+    public static List<SqlStatement> sqlStatementsWithDifferingVendorParameters() {
+        return List.of(
+                sqlStatement(SqlConfiguration.copyOf(sqlConfiguration())
+                        .withVendor("H2")
+                        .withParameters(idParameter())),
+                sqlStatement(SqlConfiguration.copyOf(sqlConfiguration())
+                        .withVendor("PostgreSQL")
+                        .withParameters(testParameter(), idParameter())));
+    }
+
+    /**
+     * Two vendor variants of one statement where only one of them binds anything at all.
+     */
+    public static List<SqlStatement> sqlStatementsWithVendorWithoutParameters() {
+        return List.of(
+                sqlStatement(SqlConfiguration.copyOf(sqlConfiguration())
+                        .withVendor("H2")
+                        .withParameters()),
+                sqlStatement(SqlConfiguration.copyOf(sqlConfiguration())
+                        .withVendor("PostgreSQL")
+                        .withParameters(idParameter())));
+    }
+
     public static SqlConfiguration simpleSqlConfiguration() {
         return SqlConfiguration.builder().setName("queryData").build();
     }
