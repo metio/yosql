@@ -21,4 +21,9 @@ public enum ValidationLifecycle {
      */
     VALIDATE_CONFIGURATION,
 
+    /**
+     * Signals that the statements are about to be validated against the schema.
+     */
+    VALIDATE_SCHEMA,
+
 }

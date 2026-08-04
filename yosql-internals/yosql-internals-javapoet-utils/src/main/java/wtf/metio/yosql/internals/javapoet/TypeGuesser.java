@@ -157,7 +157,7 @@ public final class TypeGuesser {
             } else if (firstBeforeSecond(indexOfAngel, indexOfComma)) {
                 final var endIndex = calculateEndIndexOfGenericType(inputToParse);
                 types.add(guessTypeName(inputToParse.substring(0, endIndex)));
-                inputToParse = inputToParse.substring(Math.min(endIndex + 1, inputToParse.length()));
+                inputToParse = afterSeparator(inputToParse, endIndex);
             } else {
                 types.add(guessTypeName(inputToParse));
                 inputToParse = "";
@@ -165,6 +165,25 @@ public final class TypeGuesser {
         }
 
         return types.toArray(TypeName[]::new);
+    }
+
+    /**
+     * What is left after a nested type argument and the comma that ends it.
+     *
+     * <p>The comma does not have to sit immediately after the closing angle bracket —
+     * {@code Map<List<String> , Integer>} is as legal as it is unusual. Assuming it does consumed
+     * the space instead, left the comma at the front of the remainder, and the next round then read
+     * the empty string as a type name.</p>
+     */
+    private static String afterSeparator(final String input, final int endIndex) {
+        var index = endIndex;
+        while (index < input.length() && Character.isWhitespace(input.charAt(index))) {
+            index++;
+        }
+        if (index < input.length() && input.charAt(index) == ',') {
+            index++;
+        }
+        return input.substring(index);
     }
 
     private static boolean firstBeforeSecond(final int first, final int second) {

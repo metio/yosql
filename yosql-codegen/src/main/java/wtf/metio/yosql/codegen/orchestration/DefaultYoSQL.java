@@ -93,7 +93,9 @@ public final class DefaultYoSQL implements YoSQL {
      * code somebody compiles.
      */
     private List<SqlStatement> validateAgainstSchema(final List<SqlStatement> statements) {
-        timer.timed(messages.getMessage(ValidationLifecycle.VALIDATE_CONFIGURATION),
+        // Its own name, because the timings are a map keyed by it: sharing one with the
+        // configuration pass dropped whichever ran first out of the report and out of the total.
+        timer.timed(messages.getMessage(ValidationLifecycle.VALIDATE_SCHEMA),
                 () -> schemaValidator.validate(statements));
         return statements;
     }

@@ -62,6 +62,25 @@ class TypeGuesserTest {
                         () -> Assertions.assertEquals(type, TypeGuesser.guessTypeName(type).toString())));
     }
 
+    /**
+     * A comma does not have to sit against the closing bracket of the argument before it. Assuming
+     * it did consumed the space instead, so the comma led the remainder and the next argument was
+     * read as the empty string — which failed with javapoet's "couldn't make a guess for ", naming
+     * nothing at all.
+     */
+    @TestFactory
+    Stream<DynamicTest> shouldIgnoreWhitespaceAroundSeparators() {
+        return Stream.of(
+                        "java.util.Map<java.util.List<java.lang.String> , java.lang.Integer>",
+                        "java.util.Map<java.util.List<java.lang.String>  ,  java.lang.Integer>",
+                        "java.util.Map<java.lang.String , java.util.List<java.lang.Integer>>",
+                        "java.util.Map<java.util.List<java.lang.String> , java.util.List<java.lang.Integer>>")
+                .map(type -> DynamicTest.dynamicTest("should parse: %s".formatted(type),
+                        () -> Assertions.assertEquals(
+                                type.replaceAll("\\s*,\\s*", ", ").replaceAll("\\s+<", "<"),
+                                TypeGuesser.guessTypeName(type).toString())));
+    }
+
     @TestFactory
     Stream<DynamicTest> shouldThrowForInvalidTypes() {
         return Stream.of(

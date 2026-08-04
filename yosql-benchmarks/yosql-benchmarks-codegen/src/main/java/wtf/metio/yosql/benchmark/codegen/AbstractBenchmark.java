@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -59,8 +60,14 @@ abstract class AbstractBenchmark {
      */
     @TearDown
     public void tearDown() throws IOException {
+        // Deepest first: a walk yields a directory before its contents, so deleting in that order
+        // asks every directory to go while it is still full. File#delete then answers false, and
+        // nothing reads that — leaving one whole tree behind per run.
         try (Stream<Path> files = Files.walk(tempDirectory)) {
-            files.map(Path::toFile).forEach(File::delete);
+            final var deepestFirst = files.sorted(Comparator.reverseOrder()).toList();
+            for (final var file : deepestFirst) {
+                Files.deleteIfExists(file);
+            }
         }
     }
 
