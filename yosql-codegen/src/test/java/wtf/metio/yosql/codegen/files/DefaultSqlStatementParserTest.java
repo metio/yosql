@@ -103,6 +103,30 @@ class DefaultSqlStatementParserTest {
         }
 
         @Test
+        @DisplayName("the statement written under a pragma is still a statement")
+        void shouldKeepTheStatementBelowAPragma() throws IOException {
+            final var statements = parse("""
+                    --@yosql sqlStatementSeparator: ;;
+
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id from tenant;;
+
+                    -- name: findAccount
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id from account;;
+                    """);
+
+            assertAll(
+                    () -> assertEquals(2, statements.size(),
+                            () -> "kept " + statements.stream().map(SqlStatement::getName).toList()),
+                    () -> assertEquals("findTenant", statements.getFirst().getName()),
+                    () -> assertEquals("select id from tenant", statements.getFirst().getRawStatement().strip()));
+        }
+
+        @Test
         @DisplayName("still separates the statements it stands between")
         void shouldStillSplitOrdinaryStatements() throws IOException {
             final var statements = parse("""

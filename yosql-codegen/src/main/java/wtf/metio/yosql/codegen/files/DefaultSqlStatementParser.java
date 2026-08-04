@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.function.Predicate.not;
@@ -62,7 +63,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         try {
             final var charset = files.sqlFilesCharset();
             final var rawText = Files.readString(source, charset);
-            final var skippedText = withoutHeader(rawText);
+            final var skippedText = withoutPragmas(withoutHeader(rawText));
             final var splitter = getStatementSplitter(rawText);
             // Sequential, and deliberately so. The index counts a statement's position in its file,
             // and a method's name is built from it when several share a name — so which statement
@@ -74,7 +75,6 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
             return splitStatements(splitter, skippedText)
                     .map(String::strip)
                     .filter(not(String::isBlank))
-                    .filter(line -> !line.startsWith(YOSQL_PRAGMA))
                     .map(statement -> parseStatement(source, statement, counter.getAndIncrement()))
                     .toList()
                     .stream();
@@ -132,6 +132,21 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
         } catch (final PatternSyntaxException cause) {
             throw new UnusableStatementSeparatorException(setting, separator, cause);
         }
+    }
+
+    /**
+     * Drops the {@code --@yosql} lines.
+     *
+     * <p>A pragma configures the parse rather than being part of any statement, and it is written
+     * above the first one. Left in the text it sits at the head of that statement's chunk, and a
+     * chunk is either a statement or it is not — so the statement underneath the pragma would be
+     * discarded along with it, without a word. Whether the separator happens to cut the pragma line
+     * loose is not something a statement's fate should depend on.</p>
+     */
+    private static String withoutPragmas(final String text) {
+        return text.lines()
+                .filter(line -> !line.stripLeading().startsWith(YOSQL_PRAGMA))
+                .collect(Collectors.joining(NEWLINE));
     }
 
     /**
