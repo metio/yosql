@@ -18,6 +18,7 @@ import wtf.metio.yosql.internals.testing.configs.*;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.ImmutableRuntimeConfiguration;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
+import wtf.metio.yosql.models.immutables.LoggingConfiguration;
 
 /**
  * Object mother for DAO related classes.
@@ -171,6 +172,57 @@ public final class DaoObjectMother {
                 BlocksObjectMother.javadoc(),
                 DaoObjectMother.fieldsGenerator(),
                 DaoObjectMother.delegatingMethodsGenerator());
+    }
+
+    /**
+     * A whole repository generator wired for one logging API and one set of repository settings.
+     *
+     * <p>The logging API reaches the generated code from three places at once — the field holding
+     * the logger, the guards around each log line, and the JDBC blocks that emit them — so varying
+     * it means threading one configuration through all of them rather than swapping a generator.</p>
+     */
+    public static RepositoryGenerator repositoryGenerator(
+            final LoggingConfiguration logging,
+            final RepositoriesConfiguration repositories) {
+        final var loggingGenerator = LoggingObjectMother.loggingGenerator(logging);
+        final var fields = new DefaultFieldsGenerator(
+                ConverterConfigurations.withConverters(),
+                repositories,
+                loggingGenerator,
+                BlocksObjectMother.javadoc(),
+                BlocksObjectMother.fields());
+        final var jdbc = new DefaultJdbcBlocks(
+                ImmutableRuntimeConfiguration.copyOf(runtimeConfig()).withLogging(logging),
+                BlocksObjectMother.codeBlocks(),
+                BlocksObjectMother.controlFlows(),
+                BlocksObjectMother.variables(),
+                fields,
+                jdbcMethods(),
+                loggingGenerator,
+                BlocksObjectMother.parameters(),
+                BlocksObjectMother.methods(),
+                parameterConversions(FilesConfigurations.maven()));
+        final var methods = new DefaultMethodsGenerator(
+                BlocksObjectMother.javadoc(),
+                constructorGenerator(repositories),
+                new DefaultReadMethodGenerator(BlocksObjectMother.controlFlows(), BlocksObjectMother.methods(),
+                        parameterGenerator(), loggingGenerator, jdbc, jdbcMethodExceptionHandler(),
+                        ConverterConfigurations.withConverters(), returnTypes()),
+                new DefaultWriteMethodGenerator(BlocksObjectMother.controlFlows(), BlocksObjectMother.methods(),
+                        parameterGenerator(), loggingGenerator, jdbc, jdbcMethodExceptionHandler(),
+                        ConverterConfigurations.withConverters(), returnTypes()),
+                new DefaultCallMethodGenerator(BlocksObjectMother.controlFlows(), BlocksObjectMother.methods(),
+                        parameterGenerator(), loggingGenerator, jdbc, jdbcMethodExceptionHandler(),
+                        ConverterConfigurations.withConverters(), returnTypes()),
+                repositories,
+                LoggingObjectMother.logger());
+        return new DefaultRepositoryGenerator(
+                LoggingObjectMother.logger(),
+                BlocksObjectMother.annotationGenerator(),
+                BlocksObjectMother.classes(),
+                BlocksObjectMother.javadoc(),
+                fields,
+                methods);
     }
 
     private DaoObjectMother() {

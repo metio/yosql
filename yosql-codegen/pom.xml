@@ -99,6 +99,22 @@
             <artifactId>jspecify</artifactId>
         </dependency>
 
+        <!--
+            Only so that the compile oracle can compile what the logging generators emit. Nothing in
+            this module calls either API; the generated repositories do.
+        -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-api</artifactId>
+            <version>${version.tinylog}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>wtf.metio.yosql.internals</groupId>
             <artifactId>yosql-internals-junit5-utils</artifactId>

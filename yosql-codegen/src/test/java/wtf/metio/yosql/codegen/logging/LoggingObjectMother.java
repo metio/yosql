@@ -13,6 +13,7 @@ import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
 import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.internals.testing.configs.LoggingConfigurations;
 import wtf.metio.yosql.models.configuration.LoggingApis;
+import wtf.metio.yosql.models.immutables.LoggingConfiguration;
 
 import java.util.LinkedHashMap;
 
@@ -25,6 +26,13 @@ public final class LoggingObjectMother {
      * @return Delegating logging generator with all available generators using their default config.
      */
     public static LoggingGenerator loggingGenerator() {
+        return loggingGenerator(LoggingConfigurations.jul());
+    }
+
+    /**
+     * @param logging which API the generated repositories should log through
+     */
+    public static LoggingGenerator loggingGenerator(final LoggingConfiguration logging) {
         final var fields = BlocksObjectMother.fields();
         final var generators = new LinkedHashMap<LoggingApis, LoggingGenerator>();
         generators.put(LoggingApis.JUL, new JulLoggingGenerator(fields));
@@ -32,8 +40,9 @@ public final class LoggingObjectMother {
         generators.put(LoggingApis.SLF4J, new Slf4jLoggingGenerator(fields));
         generators.put(LoggingApis.SYSTEM, new SystemLoggingGenerator(fields));
         generators.put(LoggingApis.TI, new ThatsInterestingLoggingGenerator());
+        generators.put(LoggingApis.TINYLOG, new TinylogLoggingGenerator());
         generators.put(LoggingApis.NONE, new NoOpLoggingGenerator());
-        return new DelegatingLoggingGenerator(LoggingConfigurations.jul(), generators, messages());
+        return new DelegatingLoggingGenerator(logging, generators, messages());
     }
 
     /**
