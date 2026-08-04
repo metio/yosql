@@ -14,4 +14,10 @@ public final class MissingSqlConfigurationVendorException extends RuntimeExcepti
     @Serial
     private static final long serialVersionUID = 6387844039015540263L;
 
+    public MissingSqlConfigurationVendorException() {
+        super("A statement reached code generation without the vendor its SQL is written for. Every statement is given one while "
+                + "its file is read, so reaching this means YoSQL contradicted itself rather than the "
+                + "SQL being wrong. Please report it, with the statement that triggered it.");
+    }
+
 }

@@ -71,7 +71,7 @@ public final class SystemLoggingGenerator implements LoggingGenerator {
     @Override
     public CodeBlock vendorDetected() {
         return CodeBlock.builder()
-                .addStatement("$N.log($T.INFO, $T.format($S, $S))", GeneratedNames.LOGGER, System.Logger.Level.class,
+                .addStatement("$N.log($T.INFO, $T.format($S, $N))", GeneratedNames.LOGGER, System.Logger.Level.class,
                         String.class, "Detected database vendor [%s]", GeneratedNames.DATABASE_PRODUCT_NAME)
                 .build();
     }

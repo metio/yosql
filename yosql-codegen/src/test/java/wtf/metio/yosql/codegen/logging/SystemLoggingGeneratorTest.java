@@ -65,7 +65,7 @@ class SystemLoggingGeneratorTest implements LoggingGeneratorTCK {
     @Override
     public String vendorDetectedExpectation() {
         return """
-                LOG.log(java.lang.System.Logger.Level.INFO, java.lang.String.format("Detected database vendor [%s]", "databaseProductName"));
+                LOG.log(java.lang.System.Logger.Level.INFO, java.lang.String.format("Detected database vendor [%s]", databaseProductName));
                 """;
     }
 

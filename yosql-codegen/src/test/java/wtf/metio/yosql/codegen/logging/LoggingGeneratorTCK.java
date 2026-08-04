@@ -9,6 +9,7 @@ import com.palantir.javapoet.ClassName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.models.configuration.GeneratedNames;
 
 /**
  * Verifies that {@link LoggingGenerator}s work correctly.
@@ -132,6 +133,22 @@ public interface LoggingGeneratorTCK {
                 vendorDetectedExpectation(),
                 generator().vendorDetected().toString(),
                 "The generated code does not match expectation");
+    }
+
+    /**
+     * The line exists to say which vendor was found, so it has to read the variable holding it.
+     * Formatting the name with {@code $S} instead of {@code $N} logs the word
+     * {@code databaseProductName} on every run, and an expectation written from that output looks
+     * every bit as settled as a correct one.
+     */
+    @Test
+    default void vendorDetectedReadsTheDetectedVendor() {
+        final var generated = generator().vendorDetected().toString();
+        Assumptions.assumeFalse(generated.isBlank(), "a generator that logs nothing has nothing to read");
+        Assertions.assertFalse(generated.contains("\"" + GeneratedNames.DATABASE_PRODUCT_NAME + "\""),
+                () -> "logs the name of the variable rather than the vendor it holds: " + generated);
+        Assertions.assertTrue(generated.contains(GeneratedNames.DATABASE_PRODUCT_NAME),
+                () -> "never reads the detected vendor: " + generated);
     }
 
     @Test
