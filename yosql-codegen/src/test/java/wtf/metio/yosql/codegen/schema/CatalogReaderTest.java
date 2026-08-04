@@ -118,6 +118,31 @@ class CatalogReaderTest {
         }
 
         @Test
+        @DisplayName("a primary key written beneath the table is not nullable either")
+        void shouldTreatTableLevelPrimaryKeyAsNotNullable() {
+            final var catalog = read("create table t (id bigint, name varchar(64), primary key (id))");
+
+            final var table = catalog.table("t").orElseThrow();
+            assertAll(
+                    () -> assertFalse(table.column("id").orElseThrow().nullable(),
+                            "the constraint beneath the table says as much as one beside the column"),
+                    () -> assertTrue(table.column("name").orElseThrow().nullable()));
+        }
+
+        @Test
+        @DisplayName("every column of a composite key, which has no other spelling")
+        void shouldTreatCompositePrimaryKeyAsNotNullable() {
+            final var catalog = read(
+                    "create table t (tenant_id uuid, slug varchar(64), payload text, primary key (tenant_id, slug))");
+
+            final var table = catalog.table("t").orElseThrow();
+            assertAll(
+                    () -> assertFalse(table.column("tenant_id").orElseThrow().nullable()),
+                    () -> assertFalse(table.column("slug").orElseThrow().nullable()),
+                    () -> assertTrue(table.column("payload").orElseThrow().nullable()));
+        }
+
+        @Test
         @DisplayName("a primary key is not nullable, whether or not it says so")
         void shouldTreatPrimaryKeyAsNotNullable() {
             final var catalog = read("create table t (id bigint primary key, other bigint)");

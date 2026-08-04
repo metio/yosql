@@ -162,6 +162,49 @@ class JavaSourceParserTest {
         }
 
         @Test
+        @DisplayName("resolves a type the same file declares, rather than a sibling that does not exist")
+        void nestedTypeInTheSameFile() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(java.util.UUID id, Money balance) {
+                        public record Money(long cents) {
+                        }
+                    }
+                    """);
+            assertEquals(ClassName.get("com.example", "Tenant", "Money"), typeOf(type, "balance"));
+        }
+
+        @Test
+        @DisplayName("resolves a sibling top-level type of the same file")
+        void siblingTypeInTheSameFile() {
+            final var type = parse("""
+                    package com.example;
+
+                    public record Tenant(java.util.UUID id, Slug slug) {
+                    }
+
+                    record Slug(String value) {
+                    }
+                    """);
+            assertEquals(ClassName.get("com.example", "Slug"), typeOf(type, "slug"));
+        }
+
+        @Test
+        @DisplayName("prefers an explicit import over a type of the same name declared here")
+        void importWinsOverDeclaration() {
+            final var type = parse("""
+                    package com.example;
+
+                    import com.example.money.Money;
+
+                    public record Tenant(Money balance) {
+                    }
+                    """);
+            assertEquals(ClassName.get("com.example.money", "Money"), typeOf(type, "balance"));
+        }
+
+        @Test
         @DisplayName("reads an array written before the name")
         void arrayBeforeName() {
             final var type = parse("""
@@ -594,6 +637,27 @@ class JavaSourceParserTest {
                     """);
             assertTrue(type.hasValueOf());
             assertEquals(List.of(ClassName.get("java.util", "UUID")), type.valueOfParameters());
+        }
+
+        @Test
+        @DisplayName("finds one on a nested type, whose return type is written unqualified")
+        void findsValueOfOnANestedType() {
+            final var money = ClassName.get("com.example", "Tenant", "Money");
+            final var type = parser.parse("""
+                    package com.example;
+
+                    public record Tenant(java.util.UUID id, Money balance) {
+                        public record Money(long cents) {
+                            public static Money valueOf(final long cents) {
+                                return new Money(cents);
+                            }
+                        }
+                    }
+                    """, LOCATION, money);
+            assertAll(
+                    () -> assertTrue(type.hasValueOf(),
+                            "the factory returns Money, and inside this file Money means Tenant.Money"),
+                    () -> assertEquals(List.of(TypeName.LONG), type.valueOfParameters()));
         }
 
         @Test

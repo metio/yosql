@@ -11,10 +11,12 @@ import net.sf.jsqlparser.statement.alter.Alter;
 import net.sf.jsqlparser.statement.alter.AlterOperation;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import net.sf.jsqlparser.statement.create.table.Index;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -85,7 +87,48 @@ public final class CatalogReader {
             final var column = column(definition);
             columns.put(column.name(), column);
         }
+        for (final var key : primaryKeyColumns(created)) {
+            columns.computeIfPresent(key, (name, column) ->
+                    new Column(column.name(), column.sqlType(), false));
+        }
         return Optional.of(new Table(created.getTable().getName(), columns));
+    }
+
+    /**
+     * The columns of a table-level {@code primary key (...)} constraint.
+     *
+     * <p>A primary key can be written beside the column or beneath the whole table, and the second
+     * spelling is the only one available for a composite key. Both mean the column cannot be null,
+     * but only the first reaches the column's own specs — so reading the definitions alone made
+     * {@code id bigint, primary key (id)} nullable while {@code id bigint primary key} was not, and
+     * the generated record held a {@code Long} in one case and a {@code long} in the other.</p>
+     */
+    private static List<String> primaryKeyColumns(final CreateTable created) {
+        final var indexes = created.getIndexes();
+        if (indexes == null) {
+            return List.of();
+        }
+        return indexes.stream()
+                .filter(index -> index.getType() != null)
+                .filter(index -> index.getType().toLowerCase(Locale.ROOT).contains("primary key"))
+                .map(Index::getColumnsNames)
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .map(CatalogReader::withoutQuotes)
+                .toList();
+    }
+
+    /**
+     * A constraint may name a column the way the DDL quoted it, while the definition that declared
+     * it did not.
+     */
+    private static String withoutQuotes(final String column) {
+        final var stripped = column.strip();
+        if (stripped.length() > 1 && (stripped.startsWith("\"") && stripped.endsWith("\"")
+                || stripped.startsWith("`") && stripped.endsWith("`"))) {
+            return stripped.substring(1, stripped.length() - 1);
+        }
+        return stripped;
     }
 
     private static void addColumns(final Alter altered, final LinkedHashMap<String, Table> tables) {

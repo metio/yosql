@@ -170,6 +170,12 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
      * {@code varchar} on another — there is no answer: the method has one signature and cannot have
      * both types. That is reported rather than resolved by picking one, and naming the type in the
      * front matter settles it.</p>
+     *
+     * <p>Two tables of the <em>same</em> schema declaring a column of one name is not that. Any join
+     * of tables that both have an {@code id} does it, and the statement said which one it meant by
+     * writing {@code t.id}; the first table in scope is the reading everything else here takes for a
+     * name written bare. Comparing them as though they were vendors made a plain two-table join fail
+     * the build over a column no parameter was named after.</p>
      */
     private Map<String, String> columnTypes(
             final SqlConfiguration configuration,
@@ -186,16 +192,19 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
         final var types = new LinkedHashMap<String, String>();
         final var disagreements = new LinkedHashMap<String, Set<String>>();
         for (final var catalog : schemas.applicableTo(vendor)) {
+            final var withinCatalog = new LinkedHashMap<String, String>();
             for (final var table : scope.tables()) {
                 catalog.table(table).ifPresent(known -> known.columns().forEach((name, column) ->
-                        SqlTypes.javaType(column, vendor).ifPresent(type -> {
-                            final var previous = types.put(name, type.toString());
-                            if (previous != null && !previous.equals(type.toString())) {
-                                disagreements.computeIfAbsent(name, _ -> new LinkedHashSet<>())
-                                        .addAll(List.of(previous, type.toString()));
-                            }
-                        })));
+                        SqlTypes.javaType(column, vendor).ifPresent(type ->
+                                withinCatalog.putIfAbsent(name, type.toString()))));
             }
+            withinCatalog.forEach((name, type) -> {
+                final var previous = types.put(name, type);
+                if (previous != null && !previous.equals(type)) {
+                    disagreements.computeIfAbsent(name, _ -> new LinkedHashSet<>())
+                            .addAll(List.of(previous, type));
+                }
+            });
         }
         if (!disagreements.isEmpty()) {
             throw new ConflictingColumnTypeException(source, configuration.name().orElse("<unnamed>"),

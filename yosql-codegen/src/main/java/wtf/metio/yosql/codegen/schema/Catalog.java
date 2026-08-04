@@ -62,6 +62,35 @@ public final class Catalog {
         return tables.keySet();
     }
 
+    /**
+     * The table a column named by a statement is declared in.
+     *
+     * <p>A qualifier settles it: {@code c.id} is the {@code customers} row's id whatever
+     * {@code orders} happens to declare. Guessing instead — taking the first table in scope with a
+     * column of that name — reads the wrong type for every self-join and every pair of tables
+     * sharing a column name, which is most schemas.</p>
+     *
+     * <p>Without a qualifier the statement itself did not say, so the first table declaring the name
+     * is the only answer available; SQL would have refused an ambiguous one.</p>
+     *
+     * @param column the column as the statement writes it, qualified or not
+     * @param scope what the statement reads from
+     */
+    public Optional<Table> declaringTable(final String column, final TableScope scope) {
+        final var dot = column.lastIndexOf('.');
+        final var name = dot < 0 ? column : column.substring(dot + 1);
+        if (dot >= 0) {
+            return scope.resolve(column.substring(0, dot))
+                    .flatMap(this::table)
+                    .filter(table -> table.column(name).isPresent());
+        }
+        return scope.tables().stream()
+                .map(this::table)
+                .flatMap(Optional::stream)
+                .filter(table -> table.column(name).isPresent())
+                .findFirst();
+    }
+
     public boolean isEmpty() {
         return tables.isEmpty();
     }

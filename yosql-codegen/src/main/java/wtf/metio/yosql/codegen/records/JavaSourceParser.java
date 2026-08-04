@@ -148,7 +148,7 @@ public final class JavaSourceParser {
     public JavaSourceType parse(
             final String source, final Path location, final ClassName expected, final KnownTypes known) {
         final var unit = compilationUnit(source, location, expected);
-        final var scope = new Scope(packageOf(unit), importsOf(unit), known);
+        final var scope = new Scope(packageOf(unit), importsOf(unit), declaredIn(unit), known);
         final var declaration = unit.findAll(TypeDeclaration.class).stream()
                 .filter(type -> expected.simpleName().equals(type.getNameAsString()))
                 .findFirst()
@@ -286,13 +286,49 @@ public final class JavaSourceParser {
     }
 
     /**
+     * The types this file declares, by the simple name they are written under.
+     *
+     * <p>A record nested inside another is written {@code Money} where {@code Tenant} declares it,
+     * and it is neither imported nor a file of its own — so without this it resolved to a sibling
+     * top-level type that does not exist, and generation refused a record that is perfectly
+     * readable.</p>
+     *
+     * <p>A simple name declared twice in one file is dropped rather than guessed at: two nested
+     * types called {@code Money} under different owners cannot be told apart by the name alone, and
+     * picking one silently is worse than resolving it the way an unqualified name is resolved
+     * everywhere else.</p>
+     */
+    private static Map<String, String> declaredIn(final CompilationUnit unit) {
+        final var declared = new HashMap<String, String>();
+        final var ambiguous = new ArrayList<String>();
+        for (final TypeDeclaration<?> type : unit.findAll(TypeDeclaration.class)) {
+            final var qualified = type.getFullyQualifiedName();
+            if (qualified.isEmpty()) {
+                continue;
+            }
+            final var simpleName = type.getNameAsString();
+            final var previous = declared.putIfAbsent(simpleName, qualified.get());
+            if (previous != null && !previous.equals(qualified.get())) {
+                ambiguous.add(simpleName);
+            }
+        }
+        ambiguous.forEach(declared::remove);
+        return declared;
+    }
+
+    /**
      * What the names written in one file mean.
      *
-     * <p>Resolution follows the language: an explicit import first, then a type sitting next to the
-     * file, then {@code java.lang}, then a lone on-demand import. Only the neighbour needs looking
-     * up, and only its source can answer, which is what {@code known} is for.</p>
+     * <p>Resolution follows the language: an explicit import first, then a type the file itself
+     * declares, then a type sitting next to the file, then {@code java.lang}, then a lone on-demand
+     * import. Only the neighbour needs looking up, and only its source can answer, which is what
+     * {@code known} is for.</p>
      */
-    private record Scope(String packageName, Map<String, String> imports, KnownTypes known) {
+    private record Scope(
+            String packageName,
+            Map<String, String> imports,
+            Map<String, String> declared,
+            KnownTypes known) {
 
         String qualify(final String type) {
             final var matcher = TYPE_REFERENCE.matcher(type);
@@ -325,6 +361,10 @@ public final class JavaSourceParser {
             final var imported = imports.get(simpleName);
             if (imported != null) {
                 return imported;
+            }
+            final var here = declared.get(simpleName);
+            if (here != null) {
+                return here;
             }
             final var neighbour = packageName.isEmpty() ? simpleName : packageName + "." + simpleName;
             if (known.hasSource(neighbour)) {

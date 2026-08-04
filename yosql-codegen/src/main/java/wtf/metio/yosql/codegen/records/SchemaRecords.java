@@ -86,11 +86,9 @@ public final class SchemaRecords {
                 return Optional.empty();
             }
             final var columnName = unqualified(source.get());
-            final var column = scope.tables().stream()
-                    .map(catalog::table)
-                    .flatMap(Optional::stream)
-                    .filter(table -> table.column(columnName).isPresent())
-                    .findFirst()
+            // Through the qualifier the select item kept, so that `c.id` reads customers' id rather
+            // than whichever table in scope happens to declare an `id` first.
+            final var column = catalog.declaringTable(source.get(), scope)
                     .flatMap(table -> table.column(columnName));
             if (column.isEmpty()) {
                 return Optional.empty();
@@ -127,6 +125,10 @@ public final class SchemaRecords {
      */
     private static String camelCase(final String column) {
         final var parts = column.toLowerCase(Locale.ROOT).split("_");
+        if (parts.length == 0) {
+            // A column named with underscores alone splits into nothing at all.
+            return column;
+        }
         final var name = new StringBuilder(parts[0]);
         for (var index = 1; index < parts.length; index++) {
             if (parts[index].isEmpty()) {

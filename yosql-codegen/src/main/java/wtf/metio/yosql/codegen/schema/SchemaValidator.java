@@ -9,6 +9,7 @@ import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.TypeName;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.exceptions.SchemaMismatchException;
+import wtf.metio.yosql.codegen.records.ColumnNames;
 import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.models.configuration.SchemaValidation;
 import wtf.metio.yosql.codegen.dao.InLists;
@@ -108,7 +109,7 @@ public final class SchemaValidator {
                 if (table.isPresent() && table.get().column(bare).isEmpty()) {
                     complaints.add("no column '%s' in '%s'".formatted(bare, table.get().name()));
                 }
-            } else if (declaringTable(bare, scope, catalog).isEmpty()) {
+            } else if (catalog.declaringTable(bare, scope).isEmpty()) {
                 complaints.add("no column '%s' in %s".formatted(bare, tableList(scope)));
             }
         }
@@ -134,7 +135,7 @@ public final class SchemaValidator {
             if (name.isBlank() || declared.isEmpty()) {
                 continue;
             }
-            declaringTable(name, scope, catalog)
+            catalog.declaringTable(name, scope)
                     .flatMap(table -> table.column(name))
                     .flatMap(column -> SqlTypes.javaType(column, vendor))
                     .filter(expected -> !compatible(expected, declared.get()))
@@ -202,7 +203,7 @@ public final class SchemaValidator {
             return Optional.empty();
         }
         final var columnName = unqualified(source.get());
-        return declaringTable(columnName, scope, catalog).flatMap(table -> table.column(columnName));
+        return catalog.declaringTable(source.get(), scope).flatMap(table -> table.column(columnName));
     }
 
     /**
@@ -237,15 +238,6 @@ public final class SchemaValidator {
                 && scope.tables().stream().allMatch(table -> catalog.table(table).isPresent());
     }
 
-    private static Optional<Table> declaringTable(
-            final String column, final TableScope scope, final Catalog catalog) {
-        return scope.tables().stream()
-                .map(catalog::table)
-                .flatMap(Optional::stream)
-                .filter(table -> table.column(column).isPresent())
-                .findFirst();
-    }
-
     private static String tableList(final TableScope scope) {
         return "'" + String.join("', '", scope.tables()) + "'";
     }
@@ -260,8 +252,13 @@ public final class SchemaValidator {
         return dot < 0 ? column : column.substring(dot + 1);
     }
 
+    /**
+     * The same rule the generator reads a component by, rather than a second one that agrees with it
+     * most of the time. Where they disagreed — a run of capitals, so {@code isVATRate} — this looked
+     * up a column that does not exist, found nothing, and skipped the check it exists to make.
+     */
     private static String snakeCase(final String component) {
-        return component.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toLowerCase(java.util.Locale.ROOT);
+        return ColumnNames.columnFor(component);
     }
 
     private static Optional<ClassName> className(final String type) {

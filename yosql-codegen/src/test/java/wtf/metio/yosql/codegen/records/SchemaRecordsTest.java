@@ -106,6 +106,26 @@ class SchemaRecordsTest {
         }
 
         @Test
+        @DisplayName("a qualified column reads the table it names, not the first one in scope")
+        void shouldFollowTheQualifier() {
+            final var shape = records(
+                    "create table orders (id bigint not null primary key, customer_id uuid not null)",
+                    "create table customers (id uuid not null primary key, name varchar(64) not null)")
+                    .shapeOf(TENANT, statement("""
+                            select o.id, c.id as customer_id
+                            from orders o join customers c on c.id = o.customer_id"""))
+                    .orElseThrow();
+
+            assertAll(
+                    () -> assertEquals("id", shape.components().get(0).name()),
+                    () -> assertEquals("long", shape.components().get(0).type().toString(),
+                            "o.id is the orders id"),
+                    () -> assertEquals("customerId", shape.components().get(1).name()),
+                    () -> assertEquals("java.util.UUID", shape.components().get(1).type().toString(),
+                            "c.id is the customers id, whatever orders declares under that name"));
+        }
+
+        @Test
         @DisplayName("a star selects everything the table declares")
         void shouldExpandAStar() {
             final var shape = records(DDL).shapeOf(TENANT, statement("select * from tenant")).orElseThrow();

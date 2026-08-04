@@ -286,6 +286,33 @@ class SchemaValidatorTest {
         }
 
         @Test
+        @DisplayName("a component with a run of capitals reads the column the generator gives it")
+        void shouldReadTheSameColumnTheGeneratorDoes() {
+            write("Rate", """
+                    package com.example.domain;
+
+                    public record Rate(java.util.UUID id, boolean isVATRate) {
+                    }
+                    """);
+
+            final var exception = assertThrows(SchemaMismatchException.class, () ->
+                    validator(SchemaValidation.ERROR, """
+                            create table rate (
+                                id          uuid not null primary key,
+                                is_vat_rate boolean
+                            )""")
+                            .validate(List.of(statement("select id, is_vat_rate from rate",
+                                    SqlConfiguration.builder()
+                                            .setName("findRate")
+                                            .setResultRowType("com.example.domain.Rate")
+                                            .build()))));
+
+            assertTrue(exception.getMessage().contains("nullable"),
+                    () -> "ColumnNames reads isVATRate as is_vat_rate, so the validator has to look "
+                            + "up the same column rather than is_vatrate: " + exception.getMessage());
+        }
+
+        @Test
         @DisplayName("a nullable column read into a primitive throws on the first null row")
         void shouldFailOnPrimitiveForNullableColumn() {
             write("Tenant", """

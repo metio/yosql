@@ -350,6 +350,20 @@ class DefaultMethodParameterConfigurerTest {
         }
 
         @Test
+        @DisplayName("two joined tables sharing a column name are a join, not a disagreement")
+        void shouldNotReportAJoinAsADisagreement() {
+            final var configured = assertDoesNotThrow(() -> withSchema(
+                    "create table tenant (id uuid not null primary key, slug varchar(64) not null)",
+                    "create table account (id bigint not null primary key, tenant_id uuid not null)")
+                    .configureParameters(statement(), SOURCE,
+                            "select t.slug from tenant t join account a on a.tenant_id = t.id where t.slug = :slug",
+                            indices("slug")),
+                    "'id' is a uuid in one table and a bigint in the other, which is what a join is");
+
+            assertEquals("java.lang.String", configured.parameters().get(0).type().orElseThrow());
+        }
+
+        @Test
         @DisplayName("dialects that genuinely disagree cannot both be the one signature")
         void shouldReportADisagreementAcrossVendors() {
             final var exception = assertThrows(ConflictingColumnTypeException.class, () ->
