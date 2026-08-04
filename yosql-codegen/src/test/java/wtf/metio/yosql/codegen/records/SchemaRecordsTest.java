@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.codegen.blocks.BlocksObjectMother;
+import wtf.metio.yosql.codegen.exceptions.CollidingResultColumnsException;
 import wtf.metio.yosql.codegen.schema.Schemas;
 import wtf.metio.yosql.codegen.schema.Schemas.VendorStatement;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("SchemaRecords")
@@ -33,6 +35,16 @@ class SchemaRecordsTest {
                 slug       varchar(64) not null,
                 nickname   varchar(32),
                 created_at timestamp with time zone not null
+            )""";
+
+    /**
+     * A second table declaring an {@code id} of its own, which is what makes a star over a join
+     * ambiguous for a record.
+     */
+    private static final String ACCOUNT_DDL = """
+            create table account (
+                id   uuid not null primary key,
+                name varchar(64) not null
             )""";
 
     private static final ClassName TENANT = ClassName.get("com.example.domain", "Tenant");
@@ -163,6 +175,34 @@ class SchemaRecordsTest {
         @DisplayName("with no schema at all")
         void shouldRefuseWithoutASchema() {
             assertTrue(records().shapeOf(TENANT, statement("select id from tenant")).isEmpty());
+        }
+
+        @Test
+        @DisplayName("a star over a join where both tables declare the same column")
+        void shouldRefuseCollidingComponents() {
+            final var records = records(DDL, ACCOUNT_DDL);
+            final var statement = statement("select * from tenant join account on account.id = tenant.account_id");
+
+            final var thrown = assertThrows(CollidingResultColumnsException.class,
+                    () -> records.shapeOf(TENANT, statement));
+            assertAll(
+                    () -> assertTrue(thrown.getMessage().contains("findTenant"), thrown::getMessage),
+                    () -> assertTrue(thrown.getMessage().contains("findTenant.sql"), thrown::getMessage),
+                    () -> assertTrue(thrown.getMessage().contains("'id'"), thrown::getMessage));
+        }
+
+        @Test
+        @DisplayName("but a join whose columns do not collide is written as usual")
+        void shouldWriteAJoinWithoutCollisions() {
+            final var shape = records(DDL, ACCOUNT_DDL)
+                    .shapeOf(TENANT, statement("select tenant.slug, account.name from tenant join account "
+                            + "on account.id = tenant.account_id"))
+                    .orElseThrow();
+
+            assertAll(
+                    () -> assertEquals(2, shape.components().size()),
+                    () -> assertEquals("slug", shape.components().get(0).name()),
+                    () -> assertEquals("name", shape.components().get(1).name()));
         }
 
     }

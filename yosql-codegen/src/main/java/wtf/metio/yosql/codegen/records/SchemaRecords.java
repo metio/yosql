@@ -10,6 +10,7 @@ import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.TypeSpec;
 import wtf.metio.yosql.codegen.blocks.Annotations;
+import wtf.metio.yosql.codegen.exceptions.CollidingResultColumnsException;
 import wtf.metio.yosql.codegen.schema.Catalog;
 import wtf.metio.yosql.codegen.schema.SelectItems;
 import wtf.metio.yosql.codegen.schema.SqlTypes;
@@ -20,6 +21,7 @@ import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import javax.lang.model.element.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -60,10 +62,29 @@ public final class SchemaRecords {
         for (final var catalog : schemas.applicableTo(configuration.vendor())) {
             final var components = componentsOf(sql, scope, catalog, configuration.vendor());
             if (components.isPresent()) {
+                rejectCollidingComponents(components.get(), statement);
                 return Optional.of(JavaSourceType.record(type, components.get(), List.of(), List.of()));
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * A star over a join expands to what both tables declare, and two tables sharing a column name is
+     * the ordinary case rather than the exotic one. JavaPoet will write {@code record Row(long id,
+     * String slug, long id)} without complaint, so nothing but this stands between the reader and a
+     * javac error in a file they never wrote.
+     */
+    private static void rejectCollidingComponents(
+            final List<JavaSourceComponent> components,
+            final SqlStatement statement) {
+        final var seen = new HashSet<String>(components.size());
+        for (final var component : components) {
+            if (!seen.add(component.name())) {
+                throw new CollidingResultColumnsException(
+                        statement.getSourcePath(), statement.getName(), component.name());
+            }
+        }
     }
 
     /**
