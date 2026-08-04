@@ -291,6 +291,21 @@ abstract class JdbcBlocksTCK {
                 generator().logExecutedQuery(SqlConfigurations.sqlConfiguration()).toString());
     }
 
+    /**
+     * The replacements run in the order they are written, so a parameter whose name is the head of
+     * another has to go last or it rewrites the longer one's placeholder.
+     */
+    @Test
+    final void logExecutedQueryWithPrefixingNames() {
+        final var configuration = SqlConfiguration.copyOf(SqlConfigurations.sqlConfiguration())
+                .withParameters(SqlConfigurations.idParameter(), SqlConfigurations.idOtherParameter());
+
+        final var logged = generator().logExecutedQuery(configuration).toString();
+
+        Assertions.assertTrue(logged.indexOf(":idOther") < logged.indexOf("\":id\""),
+                () -> "':id' replaces the head of ':idOther' unless it runs after it:\n" + logged);
+    }
+
     @Test
     final void logExecutedBatchQuery() {
         Assertions.assertEquals(

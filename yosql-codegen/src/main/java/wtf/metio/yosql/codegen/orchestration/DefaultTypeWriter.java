@@ -32,10 +32,15 @@ public final class DefaultTypeWriter implements TypeWriter {
     private final Set<Path> written = ConcurrentHashMap.newKeySet();
 
     /**
-     * The text every generated file carries and nothing else does: the value {@code @Generated}
-     * names the tool by.
+     * What every generated file carries and nothing else does: the {@code @Generated} annotation and
+     * the value it names the tool by.
+     *
+     * <p>Both, rather than the value alone. The value is an ordinary string that any file is free to
+     * mention — a test fixture about this generator, a README quoted into a constant — and a file
+     * that mentions it is not one we wrote, nor one to delete.</p>
      */
     private static final String MARKER = '"' + GeneratedNames.GENERATOR + '"';
+    private static final String GENERATED_ANNOTATION = "javax.annotation.processing.Generated";
 
     public DefaultTypeWriter(
             final LocLogger logger,
@@ -111,7 +116,8 @@ public final class DefaultTypeWriter implements TypeWriter {
      */
     private static boolean wasGeneratedByUs(final Path file) {
         try {
-            return Files.readString(file, StandardCharsets.ISO_8859_1).contains(MARKER);
+            final var contents = Files.readString(file, StandardCharsets.ISO_8859_1);
+            return contents.contains(MARKER) && contents.contains(GENERATED_ANNOTATION);
         } catch (final IOException exception) {
             // Unreadable is not a reason to delete, nor a reason to stop: the file stays, and so does
             // everything this run has already written.

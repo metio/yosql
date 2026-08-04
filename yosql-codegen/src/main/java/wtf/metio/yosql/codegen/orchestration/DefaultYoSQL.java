@@ -100,9 +100,18 @@ public final class DefaultYoSQL implements YoSQL {
         return statements;
     }
 
+    /**
+     * Generation is finished here rather than left to whoever consumes the stream.
+     *
+     * <p>The generator answers lazily, so a timing around the call alone measured the making of a
+     * stream and nothing else, and every repository was in fact built while the files were being
+     * written — under the write stage's name. It also decided when a generator's complaint was
+     * recorded: after the first files were already on disk, rather than before any of them.</p>
+     */
     private Stream<PackagedTypeSpec> generateCode(final List<SqlStatement> statements) {
-        return timer.timed(messages.getMessage(CodegenLifecycle.GENERATE_REPOSITORIES),
-                () -> codeGenerator.generateCode(statements));
+        final var generated = timer.timed(messages.getMessage(CodegenLifecycle.GENERATE_REPOSITORIES),
+                () -> codeGenerator.generateCode(statements).toList());
+        return generated.stream();
     }
 
     private void writeIntoFiles(final Stream<PackagedTypeSpec> typeSpecs) {

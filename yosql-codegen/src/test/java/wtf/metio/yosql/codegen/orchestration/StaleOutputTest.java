@@ -98,6 +98,28 @@ class StaleOutputTest {
     }
 
     @Test
+    @DisplayName("is left alone when it only mentions the generator's name")
+    void keepsAFileThatMerelyNamesUs() throws IOException {
+        final var mentioning = fileFor("Mentioning");
+        Files.createDirectories(mentioning.getParent());
+        Files.writeString(mentioning, """
+                package com.example.persistence;
+
+                public class Mentioning {
+                    static final String TOOL = "wtf.metio.yosql";
+                }
+                """, StandardCharsets.UTF_8);
+
+        final var writer = writer();
+        writer.writeType(type("TenantRepository"));
+        writer.removeStaleOutput();
+
+        Assertions.assertTrue(Files.isRegularFile(mentioning),
+                "the name is an ordinary string any file may hold; what marks a file as ours is the "
+                        + "@Generated annotation carrying it");
+    }
+
+    @Test
     @DisplayName("is still cleaned up when a stranger in the directory is not UTF-8")
     void survivesAFileItCannotDecodeAsUtf8() throws IOException {
         final var latin1 = fileFor("Latin1");

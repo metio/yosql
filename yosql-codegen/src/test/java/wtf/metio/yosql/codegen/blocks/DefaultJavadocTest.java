@@ -127,6 +127,21 @@ class DefaultJavadocTest {
         }
 
         @Test
+        @DisplayName("the file's own path is escaped like anything else taken from the user")
+        void escapesTheSourcePath() {
+            final var comment = generator.repositoryJavadoc(List.of(SqlStatement.builder()
+                    .setSourcePath(Paths.get("reports*", "find-a&b.sql"))
+                    .setConfiguration(SqlConfigurations.sqlConfiguration())
+                    .setRawStatement("select 1")
+                    .build())).toString();
+
+            Assertions.assertAll(
+                    () -> Assertions.assertFalse(comment.contains("&b.sql"),
+                            () -> "an unescaped ampersand opens an entity doclint then rejects:\n" + comment),
+                    () -> Assertions.assertTrue(comment.contains("&amp;"), comment));
+        }
+
+        @Test
         @DisplayName("a backslash that starts nothing is left alone")
         void keepsOrdinaryBackslashes() {
             final var comment = statementComment("select * from t where digits ~ '\\d+'");

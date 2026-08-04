@@ -78,6 +78,18 @@ public final class SqlConfigurations {
     }
 
     /**
+     * A parameter whose name has {@link #idParameter()}'s as its head, which is what makes the order
+     * of the log line's replacements matter.
+     */
+    public static SqlParameter idOtherParameter() {
+        return SqlParameter.builder()
+                .setName("idOther")
+                .setType(int.class.getName())
+                .setIndices(new int[]{2})
+                .build();
+    }
+
+    /**
      * A parameter whose values each need a placeholder of their own.
      */
     public static SqlParameter collectionParameter() {

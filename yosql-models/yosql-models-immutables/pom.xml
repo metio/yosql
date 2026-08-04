@@ -71,26 +71,15 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>process-immutables-annotations</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <phase>process-sources</phase>
-                        <configuration>
-                            <includes>
-                                <include>${project.build.sourceDirectory/**/*.java</include>
-                                <include>${project.build.directory}/generated-sources/yosql/**/*.java</include>
-                            </includes>
-                            <proc>only</proc>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--
+                There was a `process-immutables-annotations` execution here, binding compiler:compile
+                to process-sources with `proc=only`, to run the Immutables processor over the
+                generated interfaces ahead of the real compile. It never ran over anything: one
+                include was missing the closing brace of its property, and the other gave an absolute
+                path where the pattern is matched relative to the source root, so the execution
+                matched no files and logged "Nothing to compile" while default-compile did all of the
+                work. `maven.compiler.proc=full` in the root POM is what makes that work.
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>

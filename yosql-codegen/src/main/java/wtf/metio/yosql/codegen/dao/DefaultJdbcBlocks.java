@@ -384,11 +384,18 @@ public final class DefaultJdbcBlocks implements JdbcBlocks {
         }
         builder.beginControlFlow("if ($L)", logging.shouldLog());
         builder.add(variables.inline(String.class, GeneratedNames.EXECUTED_QUERY, "$N", GeneratedNames.RAW_QUERY));
-        sqlConfiguration.parameters().forEach(parameter -> {
-            final var type = parameter.typeName().orElseThrow(MissingParameterTypeNameException::new);
-            final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
-            builder.add("\n$>.replace($S, $L)$<", ":" + name, asText.apply(type, name));
-        });
+        // Longest name first. The replacements run in the order they are written, so with `:id`
+        // before `:idOther` the shorter one rewrites the head of the longer and the log line reads
+        // `12Other` where the statement said `:idOther`. Only the log line is affected — the binding
+        // is by index — but a log line that misquotes the query is worse than none.
+        sqlConfiguration.parameters().stream()
+                .sorted(Comparator.comparingInt(
+                        (SqlParameter parameter) -> parameter.name().orElse("").length()).reversed())
+                .forEach(parameter -> {
+                    final var type = parameter.typeName().orElseThrow(MissingParameterTypeNameException::new);
+                    final var name = parameter.name().orElseThrow(MissingParameterNameException::new);
+                    builder.add("\n$>.replace($S, $L)$<", ":" + name, asText.apply(type, name));
+                });
         builder.add(";\n");
         builder.add(logging.executingQuery());
         builder.endControlFlow();
