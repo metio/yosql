@@ -58,6 +58,76 @@ class DefaultSqlStatementParserTest {
     }
 
     @Nested
+    @DisplayName("the separator between statements")
+    class Separator {
+
+        @TempDir
+        Path directory;
+
+        private List<SqlStatement> parse(final String content) throws IOException {
+            final var file = directory.resolve("findTenant.sql");
+            Files.writeString(file, content);
+            return parser.parse(file).toList();
+        }
+
+        @Test
+        @DisplayName("is not a separator inside a string literal")
+        void shouldNotSplitInsideAStringLiteral() throws IOException {
+            final var statements = parse("""
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select split_part(name, ';', 1) from tenant
+                    """);
+
+            assertAll(
+                    () -> assertEquals(1, statements.size(), () -> "cut into " + statements.size() + " statements"),
+                    () -> assertEquals("select split_part(name, ';', 1) from tenant",
+                            statements.getFirst().getRawStatement().strip()));
+        }
+
+        @Test
+        @DisplayName("is not a separator inside a block comment")
+        void shouldNotSplitInsideABlockComment() throws IOException {
+            final var statements = parse("""
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id /* one; two */ from tenant
+                    """);
+
+            assertAll(
+                    () -> assertEquals(1, statements.size(), () -> "cut into " + statements.size() + " statements"),
+                    () -> assertEquals("select id /* one; two */ from tenant",
+                            statements.getFirst().getRawStatement().strip()));
+        }
+
+        @Test
+        @DisplayName("still separates the statements it stands between")
+        void shouldStillSplitOrdinaryStatements() throws IOException {
+            final var statements = parse("""
+                    -- name: findTenant
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id from tenant;
+
+                    -- name: findAccount
+                    -- returning: multiple
+                    -- repository: com.example.persistence.TenantRepository
+                    select id from account where label = 'a;b'
+                    """);
+
+            assertAll(
+                    () -> assertEquals(2, statements.size()),
+                    () -> assertEquals("findTenant", statements.getFirst().getName()),
+                    () -> assertEquals("findAccount", statements.getLast().getName()),
+                    () -> assertEquals("select id from account where label = 'a;b'",
+                            statements.getLast().getRawStatement().strip()));
+        }
+
+    }
+
+    @Nested
     @DisplayName("the licence header a file opens with")
     class Header {
 

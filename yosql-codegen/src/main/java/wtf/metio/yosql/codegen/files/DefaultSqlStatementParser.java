@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -70,7 +71,7 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
             // one run and for another on the next. The work per file is a string split; the walk
             // over files is already parallel, and that is where the parallelism belongs.
             final var counter = new AtomicInteger(1);
-            return splitter.splitAsStream(skippedText)
+            return splitStatements(splitter, skippedText)
                     .map(String::strip)
                     .filter(not(String::isBlank))
                     .filter(line -> !line.startsWith(YOSQL_PRAGMA))
@@ -82,6 +83,28 @@ public final class DefaultSqlStatementParser implements SqlStatementParser {
             logger.debug(ApplicationErrors.FILE_PARSING_FAILED, source);
             return Stream.empty();
         }
+    }
+
+    /**
+     * Cuts a file into statements at every separator that is really a separator.
+     *
+     * <p>A {@code ;} inside a string literal or a comment is a character of that literal, not the end
+     * of a statement: {@code select split_part(x, ';', 1) from t} is one statement, and splitting the
+     * text as written turns it into two halves that are each invalid SQL. The separator is therefore
+     * matched against {@link SqlText#maskLiteralsAndComments(String)}, which blanks those stretches
+     * while keeping every offset, and the cuts are taken from the statement the author wrote.</p>
+     */
+    // visible for testing
+    static Stream<String> splitStatements(final Pattern splitter, final String text) {
+        final var matcher = splitter.matcher(SqlText.maskLiteralsAndComments(text));
+        final var statements = new ArrayList<String>();
+        var start = 0;
+        while (matcher.find()) {
+            statements.add(text.substring(start, matcher.start()));
+            start = matcher.end();
+        }
+        statements.add(text.substring(start));
+        return statements.stream();
     }
 
     // visible for testing
