@@ -406,4 +406,54 @@ class CatalogReaderTest {
 
     }
 
+    @Nested
+    @DisplayName("says what it passed over")
+    class Unfollowed {
+
+        @Test
+        @DisplayName("an alter reaching a table no create table declared")
+        void shouldRecordAnAlterWithoutItsTable() {
+            final var catalog = CatalogReader.read(List.of(
+                    "create table tenant (id uuid not null primary key)",
+                    "alter table missing_table add column whatever text"));
+
+            assertAll(
+                    () -> assertTrue(catalog.unfollowedFor("tenant").isEmpty(),
+                            "tenant was read exactly as its DDL says"),
+                    () -> assertEquals(1, catalog.unfollowedFor("missing_table").size()),
+                    () -> assertTrue(catalog.unfollowedFor("missing_table").getFirst()
+                            .contains("alter table missing_table"),
+                            () -> catalog.unfollowedFor("missing_table").toString()));
+        }
+
+        @Test
+        @DisplayName("an alter that takes its table out of the catalog says which one did it")
+        void shouldRecordAnAlterThatDropsTheTable() {
+            final var catalog = CatalogReader.read(List.of(
+                    "create table tenant (id uuid not null primary key, slug varchar(64))",
+                    "alter table tenant rename to renter"));
+
+            assertAll(
+                    () -> assertTrue(catalog.table("tenant").isEmpty(), "the table is gone, as designed"),
+                    () -> assertEquals(1, catalog.unfollowedFor("tenant").size()),
+                    () -> assertTrue(catalog.unfollowedFor("tenant").getFirst().contains("rename to renter"),
+                            () -> catalog.unfollowedFor("tenant").toString()));
+        }
+
+        @Test
+        @DisplayName("a schema it read whole has nothing to report")
+        void shouldRecordNothingForAReadableSchema() {
+            final var catalog = CatalogReader.read(List.of(
+                    "create table tenant (id uuid not null primary key)",
+                    "alter table tenant add column slug varchar(64) not null",
+                    "comment on column tenant.slug is 'the short name'"));
+
+            assertAll(
+                    () -> assertTrue(catalog.unfollowedFor("tenant").isEmpty(),
+                            () -> catalog.unfollowedFor("tenant").toString()),
+                    () -> assertTrue(catalog.table("tenant").orElseThrow().column("slug").isPresent()));
+        }
+
+    }
+
 }

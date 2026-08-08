@@ -14,11 +14,13 @@ import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 /**
  * Reads a {@link Catalog} out of the DDL a project already keeps.
@@ -48,17 +50,33 @@ public final class CatalogReader {
      */
     public static Catalog read(final List<String> statements) {
         final var tables = new LinkedHashMap<String, Table>();
+        final var unfollowed = new LinkedHashMap<String, List<String>>();
         for (final var statement : statements) {
-            parse(statement).ifPresent(parsed -> {
-                if (parsed instanceof CreateTable created) {
-                    createTable(created).ifPresent(table ->
-                            tables.put(Catalog.normalize(table.name()), table));
-                } else if (parsed instanceof Alter altered) {
-                    alterTable(altered, tables);
-                }
-            });
+            final var parsed = parse(statement);
+            if (parsed.isEmpty()) {
+                // A statement nothing here could parse says nothing about any one table, so there is
+                // no table to file it under. `alter table` is the case that matters and it parses.
+                continue;
+            }
+            if (parsed.get() instanceof CreateTable created) {
+                createTable(created).ifPresent(table ->
+                        tables.put(Catalog.normalize(table.name()), table));
+            } else if (parsed.get() instanceof Alter altered) {
+                alterTable(altered, tables, (table, why) -> unfollowed
+                        .computeIfAbsent(table, _ -> new ArrayList<>())
+                        .add("%s — %s".formatted(oneLine(statement), why)));
+            }
         }
-        return Catalog.of(tables);
+        return Catalog.of(tables, unfollowed);
+    }
+
+    /**
+     * A statement as a diagnostic can print it: one line, and short enough to recognise the
+     * migration it came from without reprinting the migration.
+     */
+    private static String oneLine(final String statement) {
+        final var collapsed = statement.strip().replaceAll("\\s+", " ");
+        return collapsed.length() <= 120 ? collapsed : collapsed.substring(0, 117) + "...";
     }
 
     /**
@@ -130,17 +148,23 @@ public final class CatalogReader {
      * worse than none: it fails statements that are correct against the real schema, while an absent
      * table only skips their checks.</p>
      */
-    private static void alterTable(final Alter altered, final LinkedHashMap<String, Table> tables) {
+    private static void alterTable(
+            final Alter altered,
+            final LinkedHashMap<String, Table> tables,
+            final BiConsumer<String, String> unfollowed) {
         final var name = Catalog.normalize(altered.getTable().getName());
         var table = tables.get(name);
         if (table == null) {
             // Altering a table this reader never understood adds nothing it could be sure of.
+            unfollowed.accept(name, "no create table for it had been read by then, so this was skipped");
             return;
         }
         for (final var expression : altered.getAlterExpressions()) {
             final var applied = apply(expression, table);
             if (applied.isEmpty()) {
                 tables.remove(name);
+                unfollowed.accept(name,
+                        "this reader cannot say what it leaves behind, so the table was dropped from the catalog");
                 return;
             }
             table = applied.get();

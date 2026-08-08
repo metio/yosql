@@ -108,8 +108,9 @@ public final class SchemaValidator {
             if (qualifier.isPresent()) {
                 final var table = scope.resolve(qualifier.get()).flatMap(catalog::table);
                 if (table.isPresent() && table.get().column(bare).isEmpty()) {
-                    complaints.add("no column '%s' in '%s', which reads as %s"
-                            .formatted(bare, table.get().name(), columnList(table.get())));
+                    complaints.add("no column '%s' in '%s', which reads as %s%s"
+                            .formatted(bare, table.get().name(), columnList(table.get()),
+                                    unfollowedNote(catalog, table.get().name())));
                 }
             } else if (catalog.declaringTable(bare, scope).isEmpty()) {
                 complaints.add("no column '%s' in %s, which read as %s".formatted(bare, tableList(scope),
@@ -242,6 +243,21 @@ public final class SchemaValidator {
     private static boolean knowsEveryTable(final TableScope scope, final Catalog catalog) {
         return !scope.tables().isEmpty()
                 && scope.tables().stream().allMatch(table -> catalog.table(table).isPresent());
+    }
+
+    /**
+     * What the reader passed over while assembling this table, said beside the column that is not
+     * there.
+     *
+     * <p>The two questions a reader has at this point are "is my query wrong" and "is the schema
+     * short", and the columns alone answer only the first. A migration this reader skipped is the
+     * commonest way the second happens, and naming it turns bisecting a migration directory into
+     * reading one line.</p>
+     */
+    private static String unfollowedNote(final Catalog catalog, final String table) {
+        final var unfollowed = catalog.unfollowedFor(table);
+        return unfollowed.isEmpty() ? "" : ". Reading the schema, this was passed over: "
+                + String.join("; ", unfollowed);
     }
 
     /**

@@ -6,6 +6,7 @@
 package wtf.metio.yosql.codegen.schema;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -28,27 +29,58 @@ public final class Catalog {
 
     private final Map<String, Table> tables;
     private final Optional<String> vendor;
+    private final Map<String, List<String>> unfollowed;
 
-    private Catalog(final Map<String, Table> tables, final Optional<String> vendor) {
+    private Catalog(
+            final Map<String, Table> tables,
+            final Optional<String> vendor,
+            final Map<String, List<String>> unfollowed) {
         this.tables = tables;
         this.vendor = vendor;
+        this.unfollowed = unfollowed;
     }
 
     public static Catalog of(final Map<String, Table> tables) {
+        return of(tables, Map.of());
+    }
+
+    /**
+     * @param unfollowed what the reader could not follow, by the table it was about — see
+     *                   {@link #unfollowedFor(String)}
+     */
+    public static Catalog of(final Map<String, Table> tables, final Map<String, List<String>> unfollowed) {
         final var byLowerCaseName = new LinkedHashMap<String, Table>(tables.size());
         tables.forEach((name, table) -> byLowerCaseName.put(normalize(name), table));
-        return new Catalog(Collections.unmodifiableMap(byLowerCaseName), Optional.empty());
+        return new Catalog(Collections.unmodifiableMap(byLowerCaseName), Optional.empty(),
+                Map.copyOf(unfollowed));
     }
 
     public static Catalog empty() {
-        return new Catalog(Map.of(), Optional.empty());
+        return new Catalog(Map.of(), Optional.empty(), Map.of());
     }
 
     /**
      * @return the same tables, marked as having been read from the DDL of that database
      */
     public Catalog describing(final String databaseVendor) {
-        return new Catalog(tables, Optional.of(databaseVendor));
+        return new Catalog(tables, Optional.of(databaseVendor), unfollowed);
+    }
+
+    /**
+     * What this reader met while assembling a table and could not act on.
+     *
+     * <p>An {@code alter table} it cannot follow is not an error — the whole design of this is that
+     * an unknown is skipped rather than failed, which is what lets a schema written in a dialect
+     * nobody anticipated pass through. But the consequence lands somewhere else entirely: a column
+     * that migration would have added is absent, and the statement using it is reported as
+     * disagreeing with a schema that is right about everything else. Nothing said where that came
+     * from, so the only way to find it was to bisect the migration directory by hand.</p>
+     *
+     * @param tableName the table as a statement spells it
+     * @return the statements this reader passed over for that table, in the order it met them
+     */
+    public List<String> unfollowedFor(final String tableName) {
+        return unfollowed.getOrDefault(normalize(tableName), List.of());
     }
 
     /**
