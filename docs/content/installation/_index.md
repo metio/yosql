@@ -76,7 +76,7 @@ cosign verify-blob SHA256SUMS \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
-Artifacts published to [Maven Central](https://central.sonatype.com/namespace/wtf.metio.yosql) are
+Artifacts published to [Maven Central](https://central.sonatype.com/namespace/wtf.metio.yosql.tooling) are
 signed with PGP instead, which your build tool checks for you.
 
 ## Releases
