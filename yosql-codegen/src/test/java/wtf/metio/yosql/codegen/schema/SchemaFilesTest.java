@@ -451,4 +451,67 @@ class SchemaFilesTest {
 
     }
 
+    @Nested
+    @DisplayName("comment lines inside a declaration")
+    class CommentLines {
+
+        private static java.util.Set<String> columnsOf(final Path directory) {
+            return Schemas.of(reading(directory).read()).forVendor(Optional.empty())
+                    .table("rate_change")
+                    .orElseThrow(() -> new AssertionError("the whole table is gone"))
+                    .columnNames();
+        }
+
+        /**
+         * A schema commented column by column is the ordinary way to write one. Dropping a comment's
+         * text and leaving its line break turned two comment lines into two blank ones, which the
+         * parser reads as the end of the statement — so the declaration they sit inside was cut in
+         * half and its table lost.
+         */
+        @Test
+        @DisplayName("two in a row do not cost the table")
+        void shouldReadPastConsecutiveComments(@TempDir final Path directory) {
+            write(directory, "V1__rate_change.sql", """
+                    create table rate_change (
+                        id     uuid primary key,
+                        -- aaa
+                        -- bbb
+                        reason text not null
+                    );""");
+
+            assertEquals(java.util.Set.of("id", "reason"), columnsOf(directory));
+        }
+
+        @Test
+        @DisplayName("nor do several, before the columns or between them")
+        void shouldReadPastCommentsAnywhere(@TempDir final Path directory) {
+            write(directory, "V1__rate_change.sql", """
+                    create table rate_change (
+                        -- what changed
+                        -- and when
+                        -- three of them, even
+                        id     uuid primary key,
+
+                        -- separated by a blank line
+                        -- and another
+                        reason text not null
+                    );""");
+
+            assertEquals(java.util.Set.of("id", "reason"), columnsOf(directory));
+        }
+
+        @Test
+        @DisplayName("a vendor marker is still read off the statement it belongs to")
+        void shouldStillFindTheVendorMarker(@TempDir final Path directory) {
+            write(directory, "V1__rate_change.sql", """
+                    -- vendor: postgresql
+                    -- and a second comment line beneath it
+                    create table rate_change (id uuid primary key);""");
+
+            assertEquals(List.of(Optional.of("postgresql")),
+                    reading(directory).read().stream().map(Schemas.VendorStatement::vendor).toList());
+        }
+
+    }
+
 }

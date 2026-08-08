@@ -38,7 +38,17 @@ public final class SchemaFiles {
     private static final Pattern VENDOR = Pattern.compile(
             "^--\\s*vendor\\s*:\\s*(.+?)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
     private static final Pattern BLOCK_COMMENT = Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL);
-    private static final Pattern FRONT_MATTER_LINE = Pattern.compile("^\\s*--.*$", Pattern.MULTILINE);
+    /**
+     * A {@code --} line, taken with the line break that ends it.
+     *
+     * <p>Dropping the text and leaving the break turns every comment line into a blank one, and two
+     * comment lines in a row into two blank lines — which the SQL parser reads as the end of the
+     * statement, so the {@code create table} they sit inside is cut in half and lost. A schema
+     * commented column by column, which is the ordinary way to write one, loses a table almost
+     * everywhere it does that.</p>
+     */
+    private static final Pattern FRONT_MATTER_LINE = Pattern.compile("^[ \\t]*--[^\\n]*\\n?",
+            Pattern.MULTILINE);
 
     /**
      * Flyway's versioned migration: {@code V}, a version of numeric segments separated by {@code .}
