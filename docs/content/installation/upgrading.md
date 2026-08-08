@@ -12,6 +12,18 @@ tags:
 
 What each release needs from you, when it needs anything. Releases not listed here are drop-in.
 
+## 2026.9.8
+
+A `schema.sqlStatementsDirectory` holding versioned migrations is now read in version order.
+Previously the files were read in name order, so `V10__` and `V12__` were applied ahead of `V2__`
+and every column added past the ninth migration was missing from the schema `YoSQL` worked from.
+
+Nothing needs changing, but two things are worth rechecking if you pointed this at a Flyway or
+Liquibase directory. Schema validation lowered to `WARN` because it reported columns that plainly
+exist can go back to `ERROR`. Parameter and result types written out by hand because inference
+"did not work" are now inferred, and the front matter still wins where the two disagree — so a type
+declared against the wrong schema stays wrong until you delete it.
+
 ## 2026.8.8
 
 The first release since 2023.5.3, and it changes enough to be worth reading before you bump the

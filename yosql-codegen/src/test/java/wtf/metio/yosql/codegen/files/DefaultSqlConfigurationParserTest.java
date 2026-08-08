@@ -8,14 +8,19 @@ package wtf.metio.yosql.codegen.files;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import wtf.metio.yosql.codegen.exceptions.UnreadableFrontMatterException;
 import wtf.metio.yosql.codegen.orchestration.OrchestrationObjectMother;
 import wtf.metio.yosql.models.configuration.ReturningMode;
 import wtf.metio.yosql.models.configuration.SqlStatementType;
+
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("DefaultSqlConfigurationParser")
 class DefaultSqlConfigurationParserTest {
+
+    private static final Path SOURCE = Path.of("src", "main", "yosql", "tenant", "findTenant.sql");
 
     private DefaultSqlConfigurationParser parser;
 
@@ -29,7 +34,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 repository: com.example.MyRepository
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.repository().isPresent());
         assertEquals("com.example.MyRepository", config.repository().get());
     }
@@ -39,7 +44,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 name: findItemByName
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.name().isPresent());
         assertEquals("findItemByName", config.name().get());
     }
@@ -49,7 +54,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 description: some descriptive message about this statement
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.description().isPresent());
         assertEquals("some descriptive message about this statement", config.description().get());
     }
@@ -59,7 +64,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 vendor: Postgres
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.vendor().isPresent());
         assertEquals("Postgres", config.vendor().get());
     }
@@ -69,7 +74,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 type: READING
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.type().isPresent());
         assertEquals(SqlStatementType.READING, config.type().get());
     }
@@ -79,7 +84,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 type: WRITING
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.type().isPresent());
         assertEquals(SqlStatementType.WRITING, config.type().get());
     }
@@ -89,7 +94,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 type: CALLING
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.type().isPresent());
         assertEquals(SqlStatementType.CALLING, config.type().get());
     }
@@ -99,7 +104,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 type: reading
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.type().isPresent());
         assertEquals(SqlStatementType.READING, config.type().get());
     }
@@ -109,7 +114,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 type: writing
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.type().isPresent());
         assertEquals(SqlStatementType.WRITING, config.type().get());
     }
@@ -119,7 +124,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 type: calling
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.type().isPresent());
         assertEquals(SqlStatementType.CALLING, config.type().get());
     }
@@ -129,7 +134,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 returning: NONE
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.returningMode().isPresent());
         assertEquals(ReturningMode.NONE, config.returningMode().get());
     }
@@ -139,7 +144,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 returning: SINGLE
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.returningMode().isPresent());
         assertEquals(ReturningMode.SINGLE, config.returningMode().get());
     }
@@ -149,7 +154,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 returning: MULTIPLE
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.returningMode().isPresent());
         assertEquals(ReturningMode.MULTIPLE, config.returningMode().get());
     }
@@ -159,7 +164,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 returning: none
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.returningMode().isPresent());
         assertEquals(ReturningMode.NONE, config.returningMode().get());
     }
@@ -169,7 +174,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 returning: single
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.returningMode().isPresent());
         assertEquals(ReturningMode.SINGLE, config.returningMode().get());
     }
@@ -179,7 +184,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 returning: multiple
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.returningMode().isPresent());
         assertEquals(ReturningMode.MULTIPLE, config.returningMode().get());
     }
@@ -189,7 +194,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 executeOnce: true
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.executeOnce().isPresent());
         assertTrue(config.executeOnce().get());
     }
@@ -199,7 +204,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 executeOnce: false
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.executeOnce().isPresent());
         assertFalse(config.executeOnce().get());
     }
@@ -209,7 +214,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 executeBatch: true
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.executeBatch().isPresent());
         assertTrue(config.executeBatch().get());
     }
@@ -219,7 +224,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 executeBatch: false
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.executeBatch().isPresent());
         assertFalse(config.executeBatch().get());
     }
@@ -229,7 +234,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 catchAndRethrow: true
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.catchAndRethrow().isPresent());
         assertTrue(config.catchAndRethrow().get());
     }
@@ -239,7 +244,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 catchAndRethrow: false
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.catchAndRethrow().isPresent());
         assertFalse(config.catchAndRethrow().get());
     }
@@ -249,7 +254,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 throwOnMultipleResults: true
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.throwOnMultipleResults().isPresent());
         assertTrue(config.throwOnMultipleResults().get());
     }
@@ -259,7 +264,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 throwOnMultipleResults: false
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.throwOnMultipleResults().isPresent());
         assertFalse(config.throwOnMultipleResults().get());
     }
@@ -269,7 +274,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 writesReturnUpdateCount: true
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.writesReturnUpdateCount().isPresent());
         assertTrue(config.writesReturnUpdateCount().get());
     }
@@ -279,7 +284,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 writesReturnUpdateCount: false
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.writesReturnUpdateCount().isPresent());
         assertFalse(config.writesReturnUpdateCount().get());
     }
@@ -289,7 +294,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 createConnection: true
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.createConnection().isPresent());
         assertTrue(config.createConnection().get());
     }
@@ -299,7 +304,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 createConnection: false
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.createConnection().isPresent());
         assertFalse(config.createConnection().get());
     }
@@ -309,7 +314,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 usePreparedStatement: true
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.usePreparedStatement().isPresent());
         assertTrue(config.usePreparedStatement().get());
     }
@@ -319,7 +324,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 usePreparedStatement: false
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.usePreparedStatement().isPresent());
         assertFalse(config.usePreparedStatement().get());
     }
@@ -335,7 +340,7 @@ class DefaultSqlConfigurationParserTest {
                   - name: name
                     type: java.lang.String
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertEquals(1, config.parameters().size());
         assertAll(
                 () -> assertEquals("name", config.parameters().get(0).name().get()),
@@ -353,7 +358,7 @@ class DefaultSqlConfigurationParserTest {
                   - name: number
                     type: int
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertEquals(3, config.parameters().size());
         assertAll(
                 () -> assertEquals("string", config.parameters().get(0).name().get()),
@@ -371,7 +376,7 @@ class DefaultSqlConfigurationParserTest {
                 parameters:
                   name: java.lang.String
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertEquals(1, config.parameters().size());
         assertAll(
                 () -> assertEquals("name", config.parameters().get(0).name().get()),
@@ -387,7 +392,7 @@ class DefaultSqlConfigurationParserTest {
                   name: string
                   count: int
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertEquals(3, config.parameters().size());
         assertAll(
                 () -> assertEquals("id", config.parameters().get(0).name().get()),
@@ -405,7 +410,7 @@ class DefaultSqlConfigurationParserTest {
                 parameters:
                   id:
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertEquals(1, config.parameters().size());
         assertAll(
                 () -> assertEquals("id", config.parameters().get(0).name().get()),
@@ -421,7 +426,7 @@ class DefaultSqlConfigurationParserTest {
                     type: java.lang.String
                     sqlType: 12
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertEquals(1, config.parameters().size());
         assertAll(
                 () -> assertEquals("name", config.parameters().get(0).name().get()),
@@ -435,7 +440,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 resultRowConverter: com.example.MyConverter
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.resultRowConverter().isPresent());
         assertAll(
                 () -> assertEquals("com.example.MyConverter", config.resultRowConverter().get().converterType().get()),
@@ -450,7 +455,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 resultRowConverter: "   "
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertTrue(config.resultRowConverter().isEmpty());
     }
 
@@ -460,7 +465,7 @@ class DefaultSqlConfigurationParserTest {
         final var yaml = """
                 resultRowConverter: "  com.example.MyConverter  "
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertEquals("com.example.MyConverter", config.resultRowConverter().orElseThrow().converterType().orElseThrow());
     }
 
@@ -474,7 +479,7 @@ class DefaultSqlConfigurationParserTest {
                         value: here
                         type: java.lang.String
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertFalse(config.annotations().isEmpty());
         assertAll("annotation",
                 () -> assertEquals("com.example.MyAnnotation", config.annotations().get(0).type()),
@@ -500,7 +505,7 @@ class DefaultSqlConfigurationParserTest {
                         value: 12345
                         type: int
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertFalse(config.annotations().isEmpty());
         assertAll("annotation",
                 () -> assertEquals("com.example.MyAnnotation", config.annotations().get(0).type()),
@@ -528,7 +533,7 @@ class DefaultSqlConfigurationParserTest {
                         value: 12345
                         type: int
                 """;
-        final var config = parser.parseConfig(yaml);
+        final var config = parser.parseConfig(SOURCE, yaml);
         assertFalse(config.annotations().isEmpty());
         assertAll("annotation",
                 () -> assertEquals("com.example.MyAnnotation", config.annotations().get(0).type()),
@@ -540,6 +545,26 @@ class DefaultSqlConfigurationParserTest {
                         () -> assertEquals("another", config.annotations().get(0).members().get(1).key()),
                         () -> assertEquals("12345", config.annotations().get(0).members().get(1).value()),
                         () -> assertEquals("int", config.annotations().get(0).members().get(1).type())));
+    }
+
+    @Test
+    @DisplayName("front matter it cannot read is reported against the file it came from")
+    void shouldNameTheFileOfUnreadableFrontMatter() {
+        final var errors = OrchestrationObjectMother.executionErrors();
+        // A description carried onto a second line: the continuation is where YAML expects the next
+        // key, and its own account of that names a line of a fragment nobody can open.
+        new DefaultSqlConfigurationParser(errors).parseConfig(SOURCE, """
+                name: findTenant
+                description: counts the tenants of an account, which is
+                a sentence that carried on
+                """);
+
+        final var thrown = assertThrows(RuntimeException.class, () -> errors.runtimeException("failed"));
+        final var reported = thrown.getSuppressed()[0];
+        assertAll(
+                () -> assertInstanceOf(UnreadableFrontMatterException.class, reported),
+                () -> assertTrue(reported.getMessage().contains("findTenant.sql"), reported::getMessage),
+                () -> assertNotNull(reported.getCause(), "the parser's own account is kept"));
     }
 
 }

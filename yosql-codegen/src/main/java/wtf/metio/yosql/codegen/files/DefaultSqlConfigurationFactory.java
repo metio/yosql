@@ -74,7 +74,7 @@ public final class DefaultSqlConfigurationFactory implements SqlConfigurationFac
             final String sql,
             final Map<String, List<Integer>> parameterIndices,
             final int statementInFile) {
-        var configuration = configParser.parseConfig(yaml);
+        var configuration = configParser.parseConfig(source, yaml);
         logger.debug("SQL configuration: {}", configuration);
         configuration = methodNames.configureNames(configuration, FileNames.withoutExtension(source), statementInFile);
         configuration = methodSettings.configureSettings(configuration);

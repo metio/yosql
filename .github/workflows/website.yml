@@ -9,6 +9,9 @@ on:
       - .github/workflows/website.yml
       - docs/**
       - yosql-models/**
+      # The site serves the skill, copied in from here while it builds. Without this the published
+      # copy keeps whatever it said the last time something under docs/ happened to change.
+      - .claude/skills/yosql/**
 permissions:
   contents: read
 jobs:

@@ -44,6 +44,15 @@ where id = :id
 That generates `Optional<Tenant> findTenant(UUID id)` on `TenantRepository`, plus a
 `ToTenantConverter` reading each column by name.
 
+**Front matter is YAML, one key to a `--` line.** A value continued on a line of its own is read as
+the next key, and the parse fails — most often on a `description` long enough to want wrapping. Keep
+each value on its line, however long:
+
+```sql
+-- name: findTenant
+-- description: Reads the tenant an account owns, including the ones marked inactive.
+```
+
 ### The keys that matter
 
 | Key | What it does |
@@ -57,6 +66,7 @@ That generates `Optional<Tenant> findTenant(UUID id)` on `TenantRepository`, plu
 | `type` | `reading`, `writing` or `calling`. Usually inferred from the name prefix. |
 | `resultRowColumns` | Which column a component reads, when aliasing in SQL is not possible. |
 | `vendor` | Marks a statement as being for one database only. |
+| `description` | Carried into the generated method's javadoc. One line. |
 
 ### Statement type comes from the name
 
@@ -92,7 +102,33 @@ insert into tenant (id, slug, created_at) values (:id, :slug, :createdAt)
 
 `uuid`, `varchar` and `timestamp` columns give `UUID`, `String` and `Instant`; a nullable column
 gives the boxed type. Check whether a schema is being read before writing types out by hand — look
-for `create table` statements among the `.sql` files, or a `schema.sqlStatementsDirectory`.
+for `create table` statements among the `.sql` files, or a `schema.sqlStatementsDirectory`. That
+directory can be a Flyway migrations directory as it stands: files are read in version order, so the
+schema is the one the migrations leave behind rather than the one the first file created.
+
+Standard SQL spellings are the ones it knows without being told which database it is looking at:
+`char`, `varchar`, `text`, `clob`, `smallint`, `int`, `bigint`, `boolean`, `real`, `double
+precision`, `numeric`, `decimal`, `date`, `time`, `timestamp`, `timestamp with time zone`, `uuid`,
+`blob`, `binary`, `varbinary`. **A vendor's own spellings are only read when the statement declares
+`vendor:`** — PostgreSQL's `bytea`, `timestamptz`, `bigserial`, `serial`, `int8`, `jsonb` and
+`citext`, MySQL's `datetime` and `longtext`. Marking the *DDL* with a vendor does not do it; the key
+is read off the statement. A column spelled that way is simply unknown, which means the parameter
+needs its type written out and `generateResultRowType` will not write the record.
+
+Where that bites most often is `bytea`, whose type is `byte[]`:
+
+```sql
+-- name: insertAttachment
+-- returning: none
+-- parameters:
+--   id: uuid
+--   payload: byte[]
+insert into attachment (id, payload) values (:id, :payload)
+```
+
+Note `byte[]`, not the `blob` short name — `blob` in front matter means `java.sql.Blob`, which is a
+different thing from the bytes a `bytea` column holds. Getting this wrong produces a compile error at
+the *call site* rather than a generation error, so it reads as unrelated to the statement.
 
 Where neither answers — no schema, no matching component — name the types:
 
@@ -127,10 +163,16 @@ The longer list form is still there when a parameter needs more than a type:
 
 A generated method declares variables of its own, and a parameter cannot be called after one of
 them: `LOG`, `query`, `rawQuery`, `executedQuery`, `databaseProductName`, `action`, `exception`,
-`dataSource`, `connection`, `statement`, `resultSetMetaData`, `databaseMetaData`, `resultSet`,
-`columnCount`, `columnLabel`, `batch`, `list`, `jdbcIndex`, `index`, `row`. The build says so
-naming the file and the parameter. Rename it in the SQL — the name reaches no further than the
-method signature.
+`throwable`, `suppressed`, `dataSource`, `connection`, `statement`, `resultSetMetaData`,
+`databaseMetaData`, `resultSet`, `columnCount`, `columnLabel`, `batch`, `list`, `jdbcIndex`,
+`index`, `row`. The build says so naming the file and the parameter. Rename it in the SQL — the
+name reaches no further than the method signature.
+
+Check these before writing the SQL rather than after: `action`, `index`, `row`, `statement` and
+`list` are ordinary column names, and `insert into audit (action) values (:action)` is the shape
+that hits it. Two parameters also cannot be named `x` and `xElement`, or `x` and `xParameter`,
+because the second is what the generator would have called a local of its own derived from the
+first.
 
 ### A list of values
 
@@ -203,6 +245,60 @@ The build stops if the schema cannot describe every column selected — a comput
 subquery, a table no `create table` mentions. That is a different message from the missing-source
 one, and it means *write this one yourself*.
 
+### Where the generated types go
+
+Repositories go in `repositories.basePackageName`. Converters do not: a converter generated from a
+record is named `<recordConverterPrefix><Record><recordConverterSuffix>` and written to the package
+of **`converter.mapConverterClass`**, which defaults to `com.example.persistence.converter`. Left
+alone it stays there however the repositories are packaged, so set it alongside `basePackageName`:
+
+```xml
+<repositories>
+  <basePackageName>com.example.store</basePackageName>
+</repositories>
+<converter>
+  <mapConverterClass>com.example.store.converter.ToMapConverter</mapConverterClass>
+</converter>
+```
+
+A record written by `generateResultRowType` goes to the package its `resultRowType` names, which is
+under your control already.
+
+## Aggregates and computed columns
+
+An aggregate is not a column, so the schema cannot say what it holds: `generateResultRowType`
+refuses a select list containing one, and no parameter type is inferred from it. Alias it and give
+the type yourself.
+
+Two things about aggregates cost real debugging time, and neither shows up at build time.
+
+**The type widens.** In PostgreSQL `sum()` over `bigint` is `numeric`, `sum()` over `int` is
+`bigint`, `count()` is `bigint`, and `avg()` is `numeric`. A component declared `Long` is read with
+`getObject(column, Long.class)`, and the PostgreSQL driver will not convert a `numeric` to a `Long`
+— `conversion to class java.lang.Long from numeric not supported`, on the first row. Cast in the
+query so the column is what the component says it is:
+
+```sql
+-- name: findTotalByCurrency
+-- returning: multiple
+-- resultRowType: com.example.domain.CurrencyTotal
+select currency, sum(amount_cents)::bigint as minor_units from ledger group by currency
+```
+
+**An aggregate over no rows still returns a row.** `select max(created_at) from tenant where ...`
+matching nothing returns one row holding null, not zero rows — so `returning: single` gives a
+*present* `Optional` wrapped around a record whose component is null. If that component is a
+primitive, the generated converter throws `SQLException` naming the column, because a primitive
+cannot hold the null. Where absence has to be distinguishable from a null result, ask for the row
+instead of the aggregate:
+
+```sql
+select created_at from tenant where account_id = :accountId order by created_at desc limit 1
+```
+
+That returns no row when nothing matches, so the `Optional` is empty. `group by` has the same
+effect: a grouped aggregate over no rows produces no groups.
+
 ## Writing statements
 
 ```sql
@@ -242,6 +338,40 @@ try (final var connection = dataSource.getConnection()) {
 Under Spring, wrap the `DataSource` in a `TransactionAwareDataSourceProxy` and the `DataSource`-based
 methods join the ambient `@Transactional` transaction with no `Connection` threading at all.
 
+## What the generator will not do for you
+
+Worth deciding early, because both change the shape of the code around the repositories.
+
+**A mapper that needs state cannot be a generated converter.** Converters are constructed with no
+arguments, so a mapper closing over a resolver, a tenant key or a clock has nowhere to take them
+from. Two ways out:
+
+- `repositories.injectConverters` makes repositories take their converters as constructor
+  parameters, so a converter you wrote can hold whatever it needs. It is one setting for the whole
+  project — every repository constructor changes at once — so in a project with dozens of them it is
+  a single large migration rather than something to reach for per statement.
+- Return a flat record straight from the schema and do the mapping in the caller. Nothing about the
+  repositories changes, and the state stays in the service that owns it. This is the one that scales
+  when only a few statements need it.
+
+**Spring's exception translation goes with Spring's execution engine.** A generated method throws
+`RuntimeException` wrapping the `SQLException` (`repositories.catchAndRethrow`, on by default), so
+code catching `DuplicateKeyException`, `EmptyResultDataAccessException` or anything else from
+`org.springframework.dao` stops firing — silently, because a catch block that never matches is not
+an error. Match on the SQLState instead:
+
+```java
+} catch (final RuntimeException exception) {
+    if (exception.getCause() instanceof SQLException sql && "23505".equals(sql.getSQLState())) {
+        // unique violation
+    }
+    throw exception;
+}
+```
+
+This is a behaviour change a migration will not notice unless a test already covered that branch.
+Go looking for `org.springframework.dao` imports before converting the statements, not after.
+
 ## Checks worth running before you finish
 
 - Every statement's name starts with a configured prefix, or sets `type` explicitly.
@@ -250,6 +380,9 @@ methods join the ambient `@Transactional` transaction with no `Connection` threa
 - Every `resultRowType` names a record that exists under `files.sourceDirectory`, unless the
   statement sets `generateResultRowType`.
 - No parameter is named after one of the variables a generated method already declares.
+- Every front matter value is on one line.
+- Every aggregate is aliased, cast to the type its component declares, and — where an empty result
+  has to be distinguishable — written as a `limit 1` row rather than a bare `max()`.
 - Run the build. `YoSQL` reports these as build failures naming the file and the statement, so a
   green build is the check.
 

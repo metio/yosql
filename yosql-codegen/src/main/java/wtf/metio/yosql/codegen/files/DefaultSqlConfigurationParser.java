@@ -10,10 +10,12 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import wtf.metio.yosql.codegen.exceptions.UnreadableFrontMatterException;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.internals.jdk.Strings;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -36,14 +38,14 @@ public final class DefaultSqlConfigurationParser implements SqlConfigurationPars
     }
 
     @Override
-    public SqlConfiguration parseConfig(final String yaml) {
+    public SqlConfiguration parseConfig(final Path source, final String yaml) {
         return Optional.of(yaml)
                 .filter(Predicate.not(Strings::isBlank))
-                .flatMap(this::parseYaml)
+                .flatMap(front -> parseYaml(source, front))
                 .orElseGet(() -> SqlConfiguration.builder().build());
     }
 
-    private Optional<SqlConfiguration> parseYaml(final String yaml) {
+    private Optional<SqlConfiguration> parseYaml(final Path source, final String yaml) {
         try {
             final var tree = mapper.readTree(yaml);
             if (tree instanceof ObjectNode root) {
@@ -51,7 +53,7 @@ public final class DefaultSqlConfigurationParser implements SqlConfigurationPars
             }
             return Optional.of(mapper.treeToValue(tree, SqlConfiguration.class));
         } catch (final JacksonException exception) {
-            errors.add(exception);
+            errors.add(new UnreadableFrontMatterException(source, exception));
             return Optional.empty();
         }
     }
