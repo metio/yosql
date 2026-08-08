@@ -366,6 +366,23 @@ class DefaultMethodParameterConfigurerTest {
         }
 
         @Test
+        @DisplayName("the failure says what the schema came out holding")
+        void shouldNameTheTablesTheSchemaHolds() {
+            // The case this exists for: the schema was read, and the table this statement needs is
+            // not in it. Read as "name the type", that sends a reader to fix the wrong thing.
+            final var configurer = withSchema("create table tenant (id uuid not null primary key)");
+
+            final var thrown = assertThrows(UntypedParameterException.class,
+                    () -> configurer.configureParameters(statement(), SOURCE,
+                            "select role from tenant_member where account_id = :accountId",
+                            indices("accountId")));
+
+            assertAll(
+                    () -> assertTrue(thrown.getMessage().contains("read 1 table(s)"), thrown::getMessage),
+                    () -> assertTrue(thrown.getMessage().contains("tenant"), thrown::getMessage));
+        }
+
+        @Test
         @DisplayName("a parameter named after no column at all is still an error, not a guess")
         void shouldStillRefuseAParameterNamingNoColumn() {
             final var configurer = withSchema(

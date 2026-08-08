@@ -157,9 +157,25 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
             }
         }
         if (!untyped.isEmpty()) {
-            throw new UntypedParameterException(source, configuration.name().orElse("<unnamed>"), untyped);
+            throw new UntypedParameterException(source, configuration.name().orElse("<unnamed>"), untyped,
+                    tablesRead(configuration.vendor()));
         }
         return typed;
+    }
+
+    /**
+     * Every table the schema came out holding, for a statement that could not be typed from it.
+     *
+     * <p>Across the catalogs the statement could run against, since a table described for one vendor
+     * and not another is exactly the case a reader would otherwise have to guess at.</p>
+     */
+    private List<String> tablesRead(final Optional<String> vendor) {
+        return schemas.applicableTo(vendor).stream()
+                .map(Catalog::tableNames)
+                .flatMap(Set::stream)
+                .distinct()
+                .sorted()
+                .toList();
     }
 
     /**
