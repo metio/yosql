@@ -106,7 +106,7 @@ In order to use `YoSQL` together with [Maven](https://maven.apache.org/), take a
 <build>
   <plugins>
     <plugin>
-      <groupId>wtf.metio.yosql</groupId>
+      <groupId>wtf.metio.yosql.tooling</groupId>
       <artifactId>yosql-tooling-maven</artifactId>
       <version>{{yosqlVersion}}</version>
       <configuration>

@@ -52,7 +52,7 @@ You need [Java 25](../) and a container runtime for Testcontainers. Everything e
   <build>
     <plugins>
       <plugin>
-        <groupId>wtf.metio.yosql</groupId>
+        <groupId>wtf.metio.yosql.tooling</groupId>
         <artifactId>yosql-tooling-maven</artifactId>
         <version>2026.8.8</version>
         <executions>

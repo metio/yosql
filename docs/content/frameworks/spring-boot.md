@@ -21,7 +21,7 @@ Add the plugin. Spring Boot's own configuration is untouched:
 <build>
   <plugins>
     <plugin>
-      <groupId>wtf.metio.yosql</groupId>
+      <groupId>wtf.metio.yosql.tooling</groupId>
       <artifactId>yosql-tooling-maven</artifactId>
       <version>2026.8.8</version>
       <executions>
