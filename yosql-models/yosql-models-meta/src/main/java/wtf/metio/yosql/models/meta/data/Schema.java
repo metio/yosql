@@ -46,6 +46,7 @@ public final class Schema extends AbstractConfigurationGroup {
                         safe to turn on in a project that was not written with it in mind.""")
                 .addSettings(validation())
                 .addSettings(sqlStatementsDirectory())
+                .addSettings(vendor())
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
                 .addImmutableAnnotations(immutableAnnotation())
@@ -84,6 +85,39 @@ public final class Schema extends AbstractConfigurationGroup {
                 .addExamples(ConfigurationExample.builder()
                         .setValue(SchemaValidation.ERROR.name())
                         .setDescription("A disagreement fails the build, naming the file, the statement and what it disagreed about.")
+                        .build())
+                .build();
+    }
+
+    private static ConfigurationSetting vendor() {
+        final var name = "vendor";
+        final var description = "Which database your DDL is written for, when the DDL itself does not say.";
+        final var value = "";
+        return setting(GROUP_NAME, name, description, value)
+                .setExplanation("""
+                        Names the database whose spellings the schema uses, so that `bytea`, `timestamptz`,
+                        `bigserial`, `jsonb` and the rest of a dialect's own type names are understood. Without it
+                        only the spellings every database shares are — a column declared `bytea` reads as *unknown*,
+                        which means no inferred parameter type and no generated result row type for any statement
+                        touching it.
+
+                        A schema file can say the same thing with a `-- vendor:` line of its own, and that is the
+                        better place when a project describes several databases. This setting exists for the schema
+                        you cannot edit: a Flyway or Liquibase migration directory, where every file is checksummed
+                        and adding a comment to one already applied makes the tool refuse to run.
+
+                        Write it the way a JDBC driver reports the database, which is the same spelling a
+                        statement's own [vendor](../../sql/vendor/) is matched against — `PostgreSQL`, `MySQL`,
+                        `MariaDB`, `H2`, `Oracle`, `Microsoft SQL Server`. It says nothing about which statements
+                        are generated: every statement still applies to every database, and a file that names its
+                        own vendor keeps it.""")
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("PostgreSQL")
+                        .setDescription("Reads the schema as PostgreSQL's, so a `bytea` column gives `byte[]` and a `timestamptz` gives `Instant`.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("")
+                        .setDescription("The default. Only the type spellings every supported database shares are understood, unless a schema file names a vendor itself.")
                         .build())
                 .build();
     }

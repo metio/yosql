@@ -132,6 +132,17 @@ public final class SchemaFiles {
         return Integer.compare(left.size(), right.size());
     }
 
+    /**
+     * The database the whole schema is written for, for DDL that does not name one itself.
+     *
+     * <p>A file's own {@code -- vendor:} line still wins. This is for the schema nobody can edit —
+     * a migration directory whose files are checksummed by the tool that applies them, where adding
+     * a comment to a migration already run is not a change a project can make.</p>
+     */
+    private Optional<String> configuredVendor() {
+        return Optional.of(schema.vendor()).filter(configured -> !configured.isBlank());
+    }
+
     private Stream<Schemas.VendorStatement> statementsIn(final Path file) {
         final String text;
         try {
@@ -150,7 +161,7 @@ public final class SchemaFiles {
                 continue;
             }
             statements.add(new Schemas.VendorStatement(
-                    vendor.find() ? Optional.of(vendor.group(1)) : Optional.empty(), sql));
+                    vendor.find() ? Optional.of(vendor.group(1)) : configuredVendor(), sql));
         }
         return statements.stream();
     }

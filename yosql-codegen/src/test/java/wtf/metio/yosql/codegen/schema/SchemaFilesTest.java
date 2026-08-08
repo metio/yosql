@@ -5,6 +5,7 @@
 
 package wtf.metio.yosql.codegen.schema;
 
+import com.palantir.javapoet.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,7 +78,7 @@ class SchemaFilesTest {
         void shouldApplyMigrationsInVersionOrder(@TempDir final Path directory) {
             writeMigrations(directory);
 
-            final var tenant = Schemas.of(reading(directory).read()).forVendor(java.util.Optional.empty())
+            final var tenant = Schemas.of(reading(directory).read()).forVendor(Optional.empty())
                     .table("tenant")
                     .orElseThrow(() -> new AssertionError("tenant is not in the catalog at all"));
 
@@ -156,6 +158,69 @@ class SchemaFilesTest {
         private static String subject(final String sql) {
             final var words = sql.strip().split("\\s+");
             return words[0].equalsIgnoreCase("alter") ? words[5] : words[2];
+        }
+
+    }
+
+    @Nested
+    @DisplayName("a configured vendor names the database a schema does not name itself")
+    class ConfiguredVendor {
+
+        private static SchemaFiles readingAs(final Path directory, final String vendor) {
+            return new SchemaFiles(
+                    FilesConfigurations.defaults(),
+                    SchemaConfiguration.builder()
+                            .setSqlStatementsDirectory(directory.toAbsolutePath().toString())
+                            .setVendor(vendor)
+                            .build());
+        }
+
+        private static Optional<TypeName> typeOf(final SchemaFiles files, final String column) {
+            final var catalog = Schemas.of(files.read()).applicableTo(Optional.empty()).getFirst();
+            return SqlTypes.javaType(
+                    catalog.table("attachment").orElseThrow().column(column).orElseThrow(),
+                    catalog.dialect(Optional.empty()));
+        }
+
+        /**
+         * A Flyway directory: the files are checksummed by the tool that applied them, so a
+         * {@code -- vendor:} comment added to one already run is not a change a project can make.
+         */
+        private void writeMigration(final Path directory) {
+            write(directory, "V1__attachment.sql", """
+                    create table attachment (
+                        id      bigserial primary key,
+                        payload bytea not null,
+                        at      timestamptz not null
+                    );""");
+        }
+
+        @Test
+        @DisplayName("its spellings reach a schema whose files say nothing")
+        void shouldReadTheConfiguredVendorsSpellings(@TempDir final Path directory) {
+            writeMigration(directory);
+
+            assertAll(
+                    () -> assertEquals(Optional.of("byte[]"),
+                            typeOf(readingAs(directory, "PostgreSQL"), "payload").map(Object::toString)),
+                    () -> assertEquals(Optional.of("java.time.Instant"),
+                            typeOf(readingAs(directory, "PostgreSQL"), "at").map(Object::toString)),
+                    () -> assertEquals(Optional.empty(),
+                            typeOf(reading(directory), "payload"),
+                            "without it the same column is a spelling nobody claimed"));
+        }
+
+        @Test
+        @DisplayName("a file naming its own vendor keeps it")
+        void shouldNotOverrideAFilesOwnVendor(@TempDir final Path directory) {
+            write(directory, "V1__attachment.sql", """
+                    -- vendor: mysql
+                    create table attachment (id bigint auto_increment primary key);""");
+
+            final var read = readingAs(directory, "PostgreSQL").read();
+
+            assertEquals(List.of(Optional.of("mysql")),
+                    read.stream().map(Schemas.VendorStatement::vendor).toList());
         }
 
     }

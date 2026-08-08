@@ -6,8 +6,10 @@
 package wtf.metio.yosql.codegen.files;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wtf.metio.yosql.internals.testing.configs.RepositoriesConfigurations;
+import wtf.metio.yosql.internals.testing.configs.SqlConfigurations;
 import wtf.metio.yosql.models.configuration.SqlStatementType;
 import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlConfiguration;
@@ -53,6 +55,39 @@ class DefaultMethodApiConfigurerTest {
         final var adapted = configurer.batch(original);
         assertTrue(adapted.executeBatch().isPresent());
         assertTrue(adapted.executeBatch().get());
+    }
+
+    @Test
+    @DisplayName("a write holding a collection is not handed a batch it could never have")
+    void batchNotDefaultedOntoACollection() {
+        final var original = SqlConfiguration.builder()
+                // executeBatch is NOT set: this is the project default arriving
+                .setName("updateCancelledOrders")
+                .addParameters(SqlConfigurations.collectionParameter())
+                .build();
+
+        final var adapted = configurer.batch(original);
+
+        assertAll(
+                () -> assertTrue(adapted.executeBatch().isPresent()),
+                () -> assertFalse(adapted.executeBatch().get(),
+                        "each value of a collection needs a placeholder of its own, so every "
+                                + "execution of the batch would need a different query"));
+    }
+
+    @Test
+    @DisplayName("a statement that asks for the batch itself still gets the error")
+    void batchKeptWhenAskedForWithACollection() {
+        final var original = SqlConfiguration.builder()
+                .setName("updateCancelledOrders")
+                .setExecuteBatch(true)
+                .addParameters(SqlConfigurations.collectionParameter())
+                .build();
+
+        final var adapted = configurer.batch(original);
+
+        assertTrue(adapted.executeBatch().orElseThrow(),
+                "asking for something impossible is reported, not quietly granted");
     }
 
     @Test

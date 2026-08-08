@@ -40,6 +40,28 @@ with one database has no reason to do — so its schema answered for the standar
 else. Marking the schema is now worth doing even where there is only one database to name. Nothing
 changes for a project that marks its statements, or for one that marks neither.
 
+Where the schema is a migration directory, the files are checksummed by the tool that applied them
+and a comment added to one already run makes it refuse to start. The new `schema.vendor` setting
+says the same thing from the build instead:
+
+```xml
+<schema>
+  <sqlStatementsDirectory>src/main/resources/db/migration</sqlStatementsDirectory>
+  <vendor>PostgreSQL</vendor>
+</schema>
+```
+
+A schema file naming its own vendor keeps it.
+
+### A write holding a collection no longer asks for a batch
+
+`executeBatch` defaults to on for writing statements, and a collection parameter cannot be batched —
+each of its values needs a placeholder of its own, so every execution would need a different query.
+Those two defaults met in a build failure on every `update … where state in (:states)`, curable only
+by writing `executeBatch: false` on each one. The default now yields: a statement holding a
+collection is generated without a batch method. Writing `executeBatch: true` on one is still an
+error, because that asks for something that cannot exist.
+
 ## 2026.8.8
 
 The first release since 2023.5.3, and it changes enough to be worth reading before you bump the

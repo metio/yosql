@@ -131,6 +131,19 @@ statement is *for* that database and is not the fallback for any other — so it
 a project with one database. It also disables collection expansion. Mark the schema, not the
 queries.
 
+Where the schema is a Flyway or Liquibase directory the files are checksummed, and adding a comment
+to a migration already applied makes the tool refuse to run. Say it in the build instead, with
+`schema.vendor`:
+
+```xml
+<schema>
+  <sqlStatementsDirectory>src/main/resources/db/migration</sqlStatementsDirectory>
+  <vendor>PostgreSQL</vendor>
+</schema>
+```
+
+A file naming its own vendor still keeps it.
+
 Where neither says, a column spelled that way is unknown: the parameter needs its type written out,
 and `generateResultRowType` will not write the record.
 
@@ -209,7 +222,10 @@ select id, slug from tenant where id in (:ids)
 ```
 
 `List`, `Set`, `Collection` and `Iterable` all work; an array does not, because an array parameter
-is how a batch statement passes one value per execution. An empty collection matches no row, which
+is how a batch statement passes one value per execution. For the same reason a write holding a
+collection gets no batch method — `executeBatch` defaults to off for it rather than failing the
+build, so `update … where state in (:states)` needs nothing said about batching. Writing
+`executeBatch: true` on such a statement is still an error: it asks for something impossible. An empty collection matches no row, which
 is what `in` on an empty set means — but an empty collection in a `not in` throws, because that
 should match every row and no list of placeholders can say so. A statement written once per vendor
 cannot expand a collection at all.
