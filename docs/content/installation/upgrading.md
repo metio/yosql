@@ -53,6 +53,17 @@ says the same thing from the build instead:
 
 A schema file naming its own vendor keeps it.
 
+### A `camelCase` parameter finds its `snake_case` column
+
+`:accountId` now takes its type from an `account_id` column, the same conversion a result row
+component has always had. Previously a parameter had to be spelled exactly as the column was, so
+every parameter named after a `snake_case` column fell through to "no type known for" and had to be
+declared by hand — the schema had the answer and the name never reached it. If your front matter is
+full of `parameters:` blocks that only repeat what the schema says, they can go.
+
+A parameter written the column's way keeps working, and a type in the front matter still wins over
+both.
+
 ### A write holding a collection no longer asks for a batch
 
 `executeBatch` defaults to on for writing statements, and a collection parameter cannot be batched —

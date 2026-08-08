@@ -225,4 +225,81 @@ class SchemaFilesTest {
 
     }
 
+    @Nested
+    @DisplayName("a migration holding more than the alter itself")
+    class AlongsideTheAlter {
+
+        /**
+         * A migration as projects actually write them: the {@code alter table} that adds the column,
+         * and a {@code comment on column} beside it whose text is prose — hyphens in the default
+         * value, a colon and commas in the comment.
+         */
+        @Test
+        @DisplayName("the column it adds survives everything written next to it")
+        void shouldAddTheColumnBesideACommentOn(@TempDir final Path directory) {
+            write(directory, "V1__create.sql", """
+                    create table tenant (
+                        id         uuid not null primary key,
+                        account_id uuid not null
+                    );""");
+            write(directory, "V48__when_a_customer_takes_updates.sql", """
+                    alter table tenant
+                        add column update_window text not null default 'outside-business-hours';
+
+                    comment on column tenant.update_window is
+                        'when this customer accepts a change to their software: any-time, \
+                    outside-business-hours, nights or weekends';""");
+
+            final var tenant = Schemas.of(reading(directory).read()).forVendor(Optional.empty())
+                    .table("tenant")
+                    .orElseThrow(() -> new AssertionError("tenant is not in the catalog at all"));
+
+            assertAll(
+                    () -> assertTrue(tenant.column("update_window").isPresent(),
+                            () -> "update_window is missing; tenant reads as " + tenant.columnNames()),
+                    () -> assertEquals("text",
+                            tenant.column("update_window").orElseThrow().sqlType(),
+                            "the default value is not part of the type"),
+                    () -> assertTrue(tenant.column("account_id").isPresent(),
+                            "the create is still there too"));
+        }
+
+        @Test
+        @DisplayName("a type it cannot follow leaves the column out rather than the table")
+        void shouldKeepTheRestOfTheTable(@TempDir final Path directory) {
+            write(directory, "V1__create.sql", "create table tenant (id uuid not null primary key);");
+            write(directory, "V2__add.sql", "alter table tenant add column update_window text not null;");
+
+            final var tenant = Schemas.of(reading(directory).read()).forVendor(Optional.empty())
+                    .table("tenant").orElseThrow();
+
+            assertEquals(java.util.Set.of("id", "update_window"), tenant.columnNames());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("what a late migration adds is available to infer from")
+    class Inference {
+
+        /**
+         * The deduction the ordering fix rests on, checked rather than argued: a parameter named
+         * after a column no earlier migration declared takes its type from the migration that did.
+         */
+        @Test
+        @DisplayName("a parameter takes its type from a column a high-numbered migration added")
+        void shouldInferFromALateMigration(@TempDir final Path directory) {
+            write(directory, "V1__create.sql", "create table tenant (id uuid not null primary key);");
+            write(directory, "V48__add.sql",
+                    "alter table tenant add column update_window text not null default 'outside-business-hours';");
+
+            final var catalog = Schemas.of(reading(directory).read()).forVendor(Optional.empty());
+            final var column = catalog.table("tenant").orElseThrow().column("update_window").orElseThrow();
+
+            assertEquals(Optional.of("java.lang.String"),
+                    SqlTypes.javaType(column, catalog.dialect(Optional.empty())).map(Object::toString));
+        }
+
+    }
+
 }

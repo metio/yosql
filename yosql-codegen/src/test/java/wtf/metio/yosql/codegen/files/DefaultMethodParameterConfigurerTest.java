@@ -318,6 +318,35 @@ class DefaultMethodParameterConfigurerTest {
         }
 
         @Test
+        @DisplayName("a camelCase parameter names the snake_case column, as a record component does")
+        void shouldTypeACamelCaseParameterFromASnakeCaseColumn() {
+            final var configured = withSchema("""
+                    create table tenant (
+                        id         uuid not null primary key,
+                        account_id uuid not null,
+                        created_at timestamp with time zone not null
+                    )""")
+                    .configureParameters(statement(), SOURCE,
+                            "select id from tenant where account_id = :accountId and created_at > :createdAt",
+                            indices("accountId", "createdAt"));
+
+            assertAll(
+                    () -> assertEquals("java.util.UUID", configured.parameters().get(0).type().orElseThrow()),
+                    () -> assertEquals("java.time.Instant", configured.parameters().get(1).type().orElseThrow()));
+        }
+
+        @Test
+        @DisplayName("the column's own spelling still names it")
+        void shouldTypeALiteralParameterName() {
+            final var configured = withSchema(
+                    "create table tenant (id uuid not null primary key, account_id uuid not null)")
+                    .configureParameters(statement(), SOURCE,
+                            "select id from tenant where account_id = :account_id", indices("account_id"));
+
+            assertEquals("java.util.UUID", configured.parameters().getFirst().type().orElseThrow());
+        }
+
+        @Test
         @DisplayName("a nullable column gives a type that can hold a null")
         void shouldBoxNullableColumns() {
             final var configured = withSchema("create table tenant (id uuid not null, rank bigint)")

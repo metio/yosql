@@ -100,8 +100,9 @@ answers the same question, so a write statement usually needs no `parameters` bl
 insert into tenant (id, slug, created_at) values (:id, :slug, :createdAt)
 ```
 
-`uuid`, `varchar` and `timestamp` columns give `UUID`, `String` and `Instant`; a nullable column
-gives the boxed type. Check whether a schema is being read before writing types out by hand — look
+A parameter names its column the way a record component does: `:accountId` reads `account_id`, and
+`:account_id` reads it too. `uuid`, `varchar` and `timestamp` columns give `UUID`, `String` and
+`Instant`; a nullable column gives the boxed type. Check whether a schema is being read before writing types out by hand — look
 for `create table` statements among the `.sql` files, or a `schema.sqlStatementsDirectory`. That
 directory can be a Flyway migrations directory as it stands: files are read in version order, so the
 schema is the one the migrations leave behind rather than the one the first file created.

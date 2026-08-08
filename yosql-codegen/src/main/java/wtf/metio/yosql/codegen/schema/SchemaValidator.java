@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Checks a statement against the schema it runs against.
@@ -107,10 +108,16 @@ public final class SchemaValidator {
             if (qualifier.isPresent()) {
                 final var table = scope.resolve(qualifier.get()).flatMap(catalog::table);
                 if (table.isPresent() && table.get().column(bare).isEmpty()) {
-                    complaints.add("no column '%s' in '%s'".formatted(bare, table.get().name()));
+                    complaints.add("no column '%s' in '%s', which reads as %s"
+                            .formatted(bare, table.get().name(), columnList(table.get())));
                 }
             } else if (catalog.declaringTable(bare, scope).isEmpty()) {
-                complaints.add("no column '%s' in %s".formatted(bare, tableList(scope)));
+                complaints.add("no column '%s' in %s, which read as %s".formatted(bare, tableList(scope),
+                        scope.tables().stream()
+                                .map(catalog::table)
+                                .flatMap(Optional::stream)
+                                .map(known -> "'%s' %s".formatted(known.name(), columnList(known)))
+                                .collect(Collectors.joining(", "))));
             }
         }
         return complaints;
@@ -135,8 +142,7 @@ public final class SchemaValidator {
             if (name.isBlank() || declared.isEmpty()) {
                 continue;
             }
-            catalog.declaringTable(name, scope)
-                    .flatMap(table -> table.column(name))
+            namedColumn(name, scope, catalog)
                     .flatMap(column -> SqlTypes.javaType(column, catalog.dialect(vendor)))
                     .filter(expected -> !compatible(expected, declared.get()))
                     .ifPresent(expected -> complaints.add(
@@ -238,8 +244,41 @@ public final class SchemaValidator {
                 && scope.tables().stream().allMatch(table -> catalog.table(table).isPresent());
     }
 
+    /**
+     * The column a parameter names, spelled either as the column is or in the {@code camelCase} a
+     * Java parameter is written in — the same two spellings the type is inferred from, so that a
+     * parameter typed from {@code account_id} is also checked against it.
+     */
+    private static Optional<Column> namedColumn(
+            final String parameter,
+            final TableScope scope,
+            final Catalog catalog) {
+        final var literal = catalog.declaringTable(parameter, scope)
+                .flatMap(table -> table.column(parameter));
+        if (literal.isPresent()) {
+            return literal;
+        }
+        final var column = ColumnNames.columnFor(parameter);
+        return catalog.declaringTable(column, scope).flatMap(table -> table.column(column));
+    }
+
     private static String tableList(final TableScope scope) {
         return "'" + String.join("', '", scope.tables()) + "'";
+    }
+
+    /**
+     * What the catalog holds for a table, said out loud beside a column it does not hold.
+     *
+     * <p>"No column 'update_window' in 'tenant'" reads as a mistake in the query, and is just as
+     * often a schema this reader assembled short — a migration it could not follow, a directory it
+     * was not pointed at, an {@code alter table} in a dialect it does not parse. The reader can tell
+     * those apart at a glance once the message says what the table did come out holding, and cannot
+     * tell them apart at all without it.</p>
+     */
+    private static String columnList(final Table table) {
+        return table.columnNames().isEmpty()
+                ? "a table with no columns at all"
+                : "'" + String.join("', '", table.columnNames()) + "'";
     }
 
     private static Optional<String> qualifierOf(final String column) {

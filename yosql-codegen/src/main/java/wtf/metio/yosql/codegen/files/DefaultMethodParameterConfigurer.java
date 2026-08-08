@@ -12,6 +12,7 @@ import wtf.metio.yosql.codegen.exceptions.UntypedParameterException;
 import wtf.metio.yosql.codegen.lifecycle.ValidationErrors;
 import wtf.metio.yosql.codegen.orchestration.ExecutionErrors;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
+import wtf.metio.yosql.codegen.records.ColumnNames;
 import wtf.metio.yosql.codegen.records.JavaSourceComponent;
 import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.codegen.schema.Catalog;
@@ -144,7 +145,7 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
             }
             final var name = parameter.name().orElse("<unnamed>");
             final var fromComponent = components.get(name);
-            final var fromColumn = columns.get(Catalog.normalize(name));
+            final var fromColumn = columnType(columns, name);
             if (fromComponent != null) {
                 logger.debug("Parameter '{}' takes the type of the matching component: {}", name, fromComponent);
                 typed.add(SqlParameter.copyOf(parameter).withType(fromComponent));
@@ -159,6 +160,25 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
             throw new UntypedParameterException(source, configuration.name().orElse("<unnamed>"), untyped);
         }
         return typed;
+    }
+
+    /**
+     * The column a parameter is named after, read the way the other half of the same statement reads
+     * a name.
+     *
+     * <p>A result row component named {@code createdAt} takes the {@code created_at} column, and a
+     * parameter written {@code :createdAt} has to mean the same column or one statement holds two
+     * conventions. Matching the spelling literally left every parameter named after a
+     * {@code snake_case} column — most of them, in a schema written the usual way — falling through
+     * to "no type known for", which reads as "the schema cannot answer this" when the schema
+     * answered a name away.</p>
+     *
+     * <p>The literal spelling is tried first, so a parameter written {@code :created_at} keeps
+     * naming the column it always did.</p>
+     */
+    private static String columnType(final Map<String, String> columns, final String parameter) {
+        final var literal = columns.get(Catalog.normalize(parameter));
+        return literal != null ? literal : columns.get(ColumnNames.columnFor(parameter));
     }
 
     /**
