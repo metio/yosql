@@ -53,6 +53,18 @@ says the same thing from the build instead:
 
 A schema file naming its own vendor keeps it.
 
+### Undo migrations are no longer read as schema
+
+A Flyway undo migration — `U48__…` beside the `V48__…` it reverses — says how to take a migration
+back out. It is never run by a migration, so the database has never had it applied, and reading it
+describes a schema that does not exist. It also carries no version this reader recognised, so it
+sorted after every versioned migration and undid them last of all.
+
+What that looked like was a column missing from an otherwise perfect schema: `U48`'s `drop column`
+is something the reader follows exactly, so it took the column back out and reported nothing. If a
+statement of yours was reported as using a column that plainly exists, and the migration adding it
+has an undo beside it, that was this.
+
 ### A `camelCase` parameter finds its `snake_case` column
 
 `:accountId` now takes its type from an `account_id` column, the same conversion a result row

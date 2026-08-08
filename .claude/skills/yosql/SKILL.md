@@ -115,7 +115,8 @@ A parameter naming nothing at all still fails the build. Inference fills in what
 never overrides and never falls back to `Object`. Check whether a schema is being read before writing types out by hand — look
 for `create table` statements among the `.sql` files, or a `schema.sqlStatementsDirectory`. That
 directory can be a Flyway migrations directory as it stands: files are read in version order, so the
-schema is the one the migrations leave behind rather than the one the first file created.
+schema is the one the migrations leave behind rather than the one the first file created. Undo
+migrations (`U48__…`) are skipped, since a migration never runs them.
 
 Standard SQL spellings are the ones it knows without being told which database it is looking at:
 `char`, `varchar`, `text`, `clob`, `smallint`, `int`, `bigint`, `boolean`, `real`, `double

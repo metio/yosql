@@ -47,6 +47,19 @@ public final class SchemaFiles {
             "^[vV](\\d+(?:[._]\\d+)*)__.*");
 
     /**
+     * Flyway's undo migration, which says how to reverse the versioned one of the same number.
+     *
+     * <p>It is never run by a migration, so the schema a project's database is in has never had it
+     * applied and reading it describes a database that does not exist. Read as ordinary DDL it is
+     * worse than useless: it carries no version this reader recognises, so it sorted after every
+     * versioned migration and undid them — a {@code U48} holding {@code drop column update_window}
+     * took that column back out of the catalog last of all, and reported nothing, because dropping
+     * a column is something this reader follows perfectly well.</p>
+     */
+    private static final Pattern UNDO_MIGRATION = Pattern.compile(
+            "^[uU]\\d+(?:[._]\\d+)*__.*");
+
+    /**
      * The order the files applied in, which is not the order their names sort in.
      *
      * <p>A versioned migration is ordered by its version, segment by segment and each segment as a
@@ -60,7 +73,8 @@ public final class SchemaFiles {
      *
      * <p>Anything else keeps name order, after the versioned migrations — where Flyway also runs its
      * repeatable {@code R__} ones, and where a project whose DDL is not migrations at all is
-     * unaffected, since with no versions to order by this is name order throughout.</p>
+     * unaffected, since with no versions to order by this is name order throughout. Undo migrations
+     * are the exception and are not read at all; see {@link #UNDO_MIGRATION}.</p>
      */
     private static final Comparator<Path> APPLICATION_ORDER = Comparator
             .comparing(SchemaFiles::version, Comparator.nullsLast(SchemaFiles::compareVersions))
@@ -85,6 +99,7 @@ public final class SchemaFiles {
         try (final var found = Files.walk(directory.get())) {
             return found.filter(Files::isRegularFile)
                     .filter(path -> path.getFileName().toString().endsWith(files.sqlFilesSuffix()))
+                    .filter(path -> !UNDO_MIGRATION.matcher(path.getFileName().toString()).matches())
                     .sorted(APPLICATION_ORDER)
                     .flatMap(this::statementsIn)
                     .toList();

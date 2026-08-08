@@ -340,4 +340,57 @@ class SchemaFilesTest {
 
     }
 
+    @Nested
+    @DisplayName("an undo migration says how to reverse a migration, not what the schema is")
+    class UndoMigrations {
+
+        /**
+         * The shape that made this findable only by reading the directory: the undo carries no
+         * version this reader recognises, so it sorted last and undid the migration it belongs to.
+         * Dropping a column is something the reader follows perfectly, so nothing was reported.
+         */
+        @Test
+        @DisplayName("it is not read, so the column its migration added stays")
+        void shouldNotApplyAnUndoMigration(@TempDir final Path directory) {
+            write(directory, "V1__create.sql",
+                    "create table tenant (id uuid not null primary key, slug varchar(64) not null);");
+            write(directory, "V48__updates.sql",
+                    "alter table tenant add column update_window text not null default 'outside-business-hours';");
+            write(directory, "U48__updates.sql", "alter table tenant drop column update_window;");
+
+            final var tenant = Schemas.of(reading(directory).read()).forVendor(Optional.empty())
+                    .table("tenant").orElseThrow();
+
+            assertAll(
+                    () -> assertTrue(tenant.column("update_window").isPresent(),
+                            () -> "U48 was applied; tenant reads as " + tenant.columnNames()),
+                    () -> assertTrue(tenant.columnNames().contains("slug")));
+        }
+
+        @Test
+        @DisplayName("an undo that would drop the table leaves the table alone")
+        void shouldNotApplyAnUndoThatDropsATable(@TempDir final Path directory) {
+            write(directory, "V1__create.sql", "create table tenant (id uuid not null primary key);");
+            write(directory, "U1__create.sql", "drop table tenant;");
+
+            assertTrue(Schemas.of(reading(directory).read()).forVendor(Optional.empty())
+                    .table("tenant").isPresent());
+        }
+
+        @Test
+        @DisplayName("a table whose name merely begins with a u is read as usual")
+        void shouldReadAFileThatOnlyLooksLikeAnUndo(@TempDir final Path directory) {
+            write(directory, "usage_schema.sql", "create table usage (id uuid not null primary key);");
+            write(directory, "V1__create.sql", "create table tenant (id uuid not null primary key);");
+
+            final var catalog = Schemas.of(reading(directory).read()).forVendor(Optional.empty());
+
+            assertAll(
+                    () -> assertTrue(catalog.table("usage").isPresent(),
+                            "'usage_schema.sql' carries no version, so it is not an undo migration"),
+                    () -> assertTrue(catalog.table("tenant").isPresent()));
+        }
+
+    }
+
 }
