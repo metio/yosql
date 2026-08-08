@@ -14,6 +14,9 @@ import wtf.metio.yosql.internals.jdk.SupportedLocales;
 import wtf.metio.yosql.models.immutables.RuntimeConfiguration;
 import wtf.metio.yosql.tooling.dagger.DaggerYoSQLComponent;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,8 +71,10 @@ public class GenerateMojo extends AbstractMojo {
             // be compiled. Doing this only inside the delta check makes the second build of an
             // unchanged project compile nothing.
             project.addCompileSourceRoot(configuration.files().outputBaseDirectory().toString());
-            if (buildContext.hasDelta(regeneratingInputs())) {
+            final var settings = settingsOfLastRun();
+            if (buildContext.hasDelta(regeneratingInputs()) || settingsChanged(settings, configuration)) {
                 buildYoSQL(configuration).generateCode();
+                recordSettings(settings, configuration);
                 buildContext.refresh(configuration.files().outputBaseDirectory().toFile());
             }
         } catch (final Exception exception) {
@@ -95,6 +100,51 @@ public class GenerateMojo extends AbstractMojo {
             inputs.add(schema.sqlStatementsDirectory);
         }
         return inputs;
+    }
+
+    /**
+     * Where the settings the last run generated from are remembered.
+     *
+     * <p>Under {@code target}, so that a clean build starts without one and generates, and so that
+     * nothing lands among the sources this plugin writes.</p>
+     */
+    private Path settingsOfLastRun() {
+        return Path.of(project.getBuild().getDirectory(), "yosql", "settings-of-last-run.txt");
+    }
+
+    /**
+     * Whether the settings decide something different from what they decided last time.
+     *
+     * <p>What is generated depends on the files above and on the configuration, and only the files
+     * were being asked about. Changing a setting and nothing else — a base package, a converter
+     * class, the schema's vendor — left an incremental build with no delta to find and the output of
+     * the old settings on disk, which then compiles: the change appears to have done nothing at all.
+     * A run without a delta is not the same question as a run that would produce the same code.</p>
+     *
+     * <p>The whole configuration is written out rather than hashed, so that a maintainer looking at
+     * why a build regenerated can diff two of these and read the answer.</p>
+     */
+    // Fully qualified: this package declares its own `Files`, the mojo parameter holding the file
+    // settings, and importing java.nio.file.Files here would shadow it.
+    // visible for testing
+    static boolean settingsChanged(final Path settings, final RuntimeConfiguration configuration) {
+        try {
+            return !configuration.toString().equals(java.nio.file.Files.readString(settings, StandardCharsets.UTF_8));
+        } catch (final IOException _) {
+            // Never written, or unreadable. Generating is the answer that cannot be wrong.
+            return true;
+        }
+    }
+
+    // visible for testing
+    static void recordSettings(final Path settings, final RuntimeConfiguration configuration) {
+        try {
+            java.nio.file.Files.createDirectories(settings.getParent());
+            java.nio.file.Files.writeString(settings, configuration.toString(), StandardCharsets.UTF_8);
+        } catch (final IOException _) {
+            // Only costs the next build a regeneration it did not need, which is the safe direction,
+            // and failing the build over a note to itself would not be.
+        }
     }
 
     private static YoSQL buildYoSQL(final RuntimeConfiguration configuration) {
