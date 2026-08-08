@@ -58,7 +58,14 @@ public final class CatalogReader {
         for (final var statement : statements) {
             final var parsed = parse(statement);
             if (parsed.isEmpty()) {
-                unparsed.add(statement);
+                // The parser covers a great deal of SQL and never all of it, and one clause it does
+                // not cover otherwise costs the whole table. Structure is a weaker reading than a
+                // parse, so it is only ever asked where the parse already failed.
+                final var lenient = LenientCreateTable.read(statement);
+                lenient.ifPresent(table -> tables.put(Catalog.normalize(table.name()), table));
+                if (lenient.isEmpty()) {
+                    unparsed.add(statement);
+                }
                 continue;
             }
             if (parsed.get() instanceof CreateTable created) {
