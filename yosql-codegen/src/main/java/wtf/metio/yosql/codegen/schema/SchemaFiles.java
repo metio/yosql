@@ -133,6 +133,21 @@ public final class SchemaFiles {
     }
 
     /**
+     * Drops the byte order mark an editor may have written in front of the file.
+     *
+     * <p>Java's UTF-8 decoder hands the mark over as a character rather than eating it, so it lands
+     * in front of the file's first statement — where it costs that one statement and nothing else.
+     * The parser rejects it, and a statement this reader cannot parse is silently not in the
+     * catalog, which is the right answer for a dialect nobody anticipated and the wrong one for an
+     * {@code alter table} it understands perfectly. The result is a table that is present, correct
+     * about every column but the one its file's first statement added, and a query using that
+     * column reported as disagreeing with the schema.</p>
+     */
+    private static String withoutByteOrderMark(final String text) {
+        return text.isEmpty() || text.charAt(0) != '﻿' ? text : text.substring(1);
+    }
+
+    /**
      * The database the whole schema is written for, for DDL that does not name one itself.
      *
      * <p>A file's own {@code -- vendor:} line still wins. This is for the schema nobody can edit —
@@ -146,7 +161,7 @@ public final class SchemaFiles {
     private Stream<Schemas.VendorStatement> statementsIn(final Path file) {
         final String text;
         try {
-            text = Files.readString(file, files.sqlFilesCharset());
+            text = withoutByteOrderMark(Files.readString(file, files.sqlFilesCharset()));
         } catch (final IOException _) {
             return Stream.empty();
         }

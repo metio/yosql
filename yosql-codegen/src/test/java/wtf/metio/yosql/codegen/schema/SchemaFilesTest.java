@@ -302,4 +302,42 @@ class SchemaFilesTest {
 
     }
 
+    @Nested
+    @DisplayName("a mark an editor left in front of the file")
+    class ByteOrderMark {
+
+        private static final String ALTER =
+                "alter table tenant add column update_window text not null default 'outside-business-hours';";
+
+        /**
+         * The mark costs exactly one statement — the first — so the table it alters is present and
+         * right about everything else, and only a query using that one column is reported as
+         * disagreeing with the schema.
+         */
+        @Test
+        @DisplayName("does not cost the file its first statement")
+        void shouldReadPastAByteOrderMark(@TempDir final Path directory) {
+            write(directory, "V1__create.sql",
+                    "create table tenant (id uuid not null primary key, slug varchar(64) not null);");
+            write(directory, "V48__updates.sql", "\uFEFF" + ALTER);
+
+            final var tenant = Schemas.of(reading(directory).read()).forVendor(Optional.empty())
+                    .table("tenant").orElseThrow();
+
+            assertTrue(tenant.column("update_window").isPresent(),
+                    () -> "update_window is missing; tenant reads as " + tenant.columnNames());
+        }
+
+        @Test
+        @DisplayName("nor the create table it opens with")
+        void shouldReadPastAByteOrderMarkOnACreate(@TempDir final Path directory) {
+            write(directory, "V1__create.sql",
+                    "\uFEFFcreate table tenant (id uuid not null primary key, slug varchar(64) not null);");
+
+            assertTrue(Schemas.of(reading(directory).read()).forVendor(Optional.empty())
+                    .table("tenant").isPresent(), "the whole table would be missing");
+        }
+
+    }
+
 }
