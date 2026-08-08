@@ -9,6 +9,7 @@ import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.SchemaConfiguration;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,9 +28,9 @@ import java.util.stream.Stream;
  * a build over a file nobody asked it to understand. So it reads text, splits it, and looks for one
  * front matter key.</p>
  *
- * <p>Files are read in name order, which is what makes a directory of migrations —
- * {@code V1__create.sql}, {@code V2__add_column.sql} — describe the schema they leave behind rather
- * than an arbitrary one.</p>
+ * <p>Files are read in the order a migration tool would apply them, which is what makes a directory
+ * of migrations describe the schema they leave behind rather than an arbitrary one. See
+ * {@link #APPLICATION_ORDER}.</p>
  */
 public final class SchemaFiles {
 
@@ -37,6 +38,33 @@ public final class SchemaFiles {
             "^--\\s*vendor\\s*:\\s*(.+?)\\s*$", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
     private static final Pattern BLOCK_COMMENT = Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL);
     private static final Pattern FRONT_MATTER_LINE = Pattern.compile("^\\s*--.*$", Pattern.MULTILINE);
+
+    /**
+     * Flyway's versioned migration: {@code V}, a version of numeric segments separated by {@code .}
+     * or {@code _}, then {@code __} and a description.
+     */
+    private static final Pattern VERSIONED_MIGRATION = Pattern.compile(
+            "^[vV](\\d+(?:[._]\\d+)*)__.*");
+
+    /**
+     * The order the files applied in, which is not the order their names sort in.
+     *
+     * <p>A versioned migration is ordered by its version, segment by segment and each segment as a
+     * number, because that is the order the tool that wrote the names applies them in. Sorting the
+     * names as text puts {@code V10__} and {@code V12__} in front of {@code V2__}, so an
+     * {@code alter table} lands before the {@code create table} it extends — where it is dropped,
+     * since altering a table the catalog does not hold says nothing. The columns of every migration
+     * numbered past nine then go missing, which reads downstream as a schema that disagrees with the
+     * statements written against it and as parameter types that cannot be inferred. Renaming the
+     * files is not a fix available to anyone whose migrations have already been applied.</p>
+     *
+     * <p>Anything else keeps name order, after the versioned migrations — where Flyway also runs its
+     * repeatable {@code R__} ones, and where a project whose DDL is not migrations at all is
+     * unaffected, since with no versions to order by this is name order throughout.</p>
+     */
+    private static final Comparator<Path> APPLICATION_ORDER = Comparator
+            .comparing(SchemaFiles::version, Comparator.nullsLast(SchemaFiles::compareVersions))
+            .thenComparing(Path::toString);
 
     private final FilesConfiguration files;
     private final SchemaConfiguration schema;
@@ -57,7 +85,7 @@ public final class SchemaFiles {
         try (final var found = Files.walk(directory.get())) {
             return found.filter(Files::isRegularFile)
                     .filter(path -> path.getFileName().toString().endsWith(files.sqlFilesSuffix()))
-                    .sorted(Comparator.comparing(Path::toString))
+                    .sorted(APPLICATION_ORDER)
                     .flatMap(this::statementsIn)
                     .toList();
         } catch (final IOException _) {
@@ -75,6 +103,33 @@ public final class SchemaFiles {
                 .filter(configured -> !configured.isBlank())
                 .map(Path::of)
                 .or(() -> Optional.ofNullable(files.inputBaseDirectory()));
+    }
+
+    /**
+     * @return the segments of the file's migration version, or null when its name is not one
+     */
+    private static List<BigInteger> version(final Path file) {
+        final var name = VERSIONED_MIGRATION.matcher(file.getFileName().toString());
+        if (!name.matches()) {
+            return null;
+        }
+        // BigInteger rather than long because a version segment is whatever the project wrote, and
+        // a timestamp version is already fourteen digits.
+        return Stream.of(name.group(1).split("[._]")).map(BigInteger::new).toList();
+    }
+
+    /**
+     * Segment by segment, and the shorter version first where one is the other's prefix: {@code V1}
+     * comes before {@code V1.1}, as it does everywhere else these names are read.
+     */
+    private static int compareVersions(final List<BigInteger> left, final List<BigInteger> right) {
+        for (var index = 0; index < Math.min(left.size(), right.size()); index++) {
+            final var segment = left.get(index).compareTo(right.get(index));
+            if (segment != 0) {
+                return segment;
+            }
+        }
+        return Integer.compare(left.size(), right.size());
     }
 
     private Stream<Schemas.VendorStatement> statementsIn(final Path file) {

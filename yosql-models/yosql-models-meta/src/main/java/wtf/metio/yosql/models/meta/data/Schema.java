@@ -99,9 +99,12 @@ public final class Schema extends AbstractConfigurationGroup {
                         configuration at all.
 
                         Point this at a directory to read the DDL from somewhere else: a Flyway or Liquibase
-                        migrations directory, most usefully. Files are read in name order, and `alter table` applies
-                        to whatever came before it, which is what makes `V1__create.sql` followed by
-                        `V2__add_column.sql` describe the schema those two migrations leave behind.
+                        migrations directory, most usefully. `alter table` applies to whatever came before it, so
+                        the files are read in the order they applied: a `V<version>__<description>.sql` name is
+                        ordered by its version, comparing each numeric segment as a number, which puts `V2__` ahead
+                        of `V10__` where sorting the names as text would not. Everything else — a repeatable
+                        `R__` migration, a plain `schema.sql` — keeps name order after those, so a directory that
+                        is not migrations at all is read exactly as its names sort.
 
                         DDL marked with a [vendor](../../sql/vendor/) builds that vendor's schema rather than the
                         shared one, so a project supporting several databases describes only the tables that differ
