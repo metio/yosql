@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import wtf.metio.yosql.internals.testing.configs.FilesConfigurations;
+import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.SchemaConfiguration;
 
 import java.io.IOException;
@@ -389,6 +390,63 @@ class SchemaFilesTest {
                     () -> assertTrue(catalog.table("usage").isPresent(),
                             "'usage_schema.sql' carries no version, so it is not an undo migration"),
                     () -> assertTrue(catalog.table("tenant").isPresent()));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("cutting a file into statements")
+    class Splitting {
+
+        private static SchemaFiles readingWith(final Path directory, final String separator) {
+            return new SchemaFiles(
+                    FilesConfiguration.copyOf(FilesConfigurations.defaults())
+                            .withSqlStatementSeparator(separator),
+                    SchemaConfiguration.builder()
+                            .setSqlStatementsDirectory(directory.toAbsolutePath().toString())
+                            .build());
+        }
+
+        @Test
+        @DisplayName("a separator inside a string literal is not a cut")
+        void shouldNotCutInsideALiteral(@TempDir final Path directory) {
+            write(directory, "V1__create.sql", """
+                    create table tenant (
+                        id   uuid not null primary key,
+                        note text not null default 'first; second'
+                    );""");
+
+            final var catalog = Schemas.of(reading(directory).read()).forVendor(Optional.empty());
+
+            assertTrue(catalog.table("tenant").isPresent(),
+                    () -> "the halves parse as nothing, so the whole table goes: " + catalog.tableNames());
+        }
+
+        @Test
+        @DisplayName("nor is one inside a comment")
+        void shouldNotCutInsideAComment(@TempDir final Path directory) {
+            write(directory, "V1__create.sql", """
+                    create table tenant (
+                        -- one row each; keyed by id
+                        id uuid not null primary key
+                    );""");
+
+            assertTrue(Schemas.of(reading(directory).read()).forVendor(Optional.empty())
+                    .table("tenant").isPresent());
+        }
+
+        @Test
+        @DisplayName("the separator is the text it says it is, not a pattern")
+        void shouldTreatTheSeparatorLiterally(@TempDir final Path directory) {
+            write(directory, "V1__create.sql", "create table tenant (id uuid not null primary key)|");
+
+            final var read = readingWith(directory, "|").read();
+
+            assertAll(
+                    () -> assertEquals(1, read.size(),
+                            () -> "as a pattern '|' matches between every pair of characters: " + read.size()),
+                    () -> assertTrue(Schemas.of(read).forVendor(Optional.empty())
+                            .table("tenant").isPresent()));
         }
 
     }

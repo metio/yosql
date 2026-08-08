@@ -5,6 +5,7 @@
 
 package wtf.metio.yosql.codegen.schema;
 
+import wtf.metio.yosql.codegen.files.SqlText;
 import wtf.metio.yosql.models.immutables.FilesConfiguration;
 import wtf.metio.yosql.models.immutables.SchemaConfiguration;
 
@@ -148,6 +149,35 @@ public final class SchemaFiles {
     }
 
     /**
+     * Cuts a file into statements at the separator, the way the statement parser cuts one.
+     *
+     * <p>Two things it does that splitting the raw text on the raw setting does not. The separator is
+     * the text it says it is rather than a pattern, so the {@code |} the documentation offers as an
+     * example does not match the empty string between every pair of characters. And the cuts are
+     * found in {@link SqlText#maskLiteralsAndComments(String)} rather than in the DDL itself, so a
+     * {@code ;} inside a string literal is not a cut — {@code default 'first; second'} would
+     * otherwise leave two halves, neither of which parses, and the table they declare absent from the
+     * catalog with nothing said. Which is the whole failure: the column turns up missing on some
+     * statement that reads it, a long way from the DDL that lost it.</p>
+     */
+    private List<String> splitStatements(final String text) {
+        final var separator = files.sqlStatementSeparator();
+        if (separator == null || separator.isEmpty()) {
+            return List.of(text);
+        }
+        final var masked = SqlText.maskLiteralsAndComments(text);
+        final var statements = new ArrayList<String>();
+        final var matcher = Pattern.compile(Pattern.quote(separator)).matcher(masked);
+        var start = 0;
+        while (matcher.find()) {
+            statements.add(text.substring(start, matcher.start()));
+            start = matcher.end();
+        }
+        statements.add(text.substring(start));
+        return statements;
+    }
+
+    /**
      * Drops the byte order mark an editor may have written in front of the file.
      *
      * <p>Java's UTF-8 decoder hands the mark over as a character rather than eating it, so it lands
@@ -181,7 +211,7 @@ public final class SchemaFiles {
             return Stream.empty();
         }
         final var statements = new ArrayList<Schemas.VendorStatement>();
-        for (final var raw : BLOCK_COMMENT.matcher(text).replaceAll("").split(files.sqlStatementSeparator())) {
+        for (final var raw : splitStatements(BLOCK_COMMENT.matcher(text).replaceAll(""))) {
             if (raw.isBlank()) {
                 continue;
             }
