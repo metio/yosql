@@ -18,7 +18,11 @@ import wtf.metio.yosql.models.immutables.SchemaConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -57,6 +61,56 @@ public final class SchemaValidator {
             return;
         }
         statements.forEach(this::validate);
+        uncheckedReport(statements).forEach(logger::warn);
+    }
+
+    /**
+     * Says which statements were not checked, and why.
+     *
+     * <p>A check that skips is indistinguishable from a check that passed: a statement reading a
+     * table the catalog does not hold is left alone, deliberately, because a schema this reader could
+     * not assemble in full would otherwise fail statements that are correct against the real
+     * database. What was missing is that the skip said nothing, so a green build at {@code ERROR}
+     * meant either "every statement was checked and agreed" or "some tables never arrived and their
+     * statements were never checked", and nothing told the two apart.</p>
+     *
+     * <p>Reported per table rather than per statement: one line naming a table nobody described is
+     * what a reader can act on, where one line per statement reading it is the same fact repeated.</p>
+     */
+    // visible for testing
+    List<String> uncheckedReport(final List<SqlStatement> statements) {
+        final var unchecked = new LinkedHashMap<String, Unchecked>();
+        for (final var statement : statements) {
+            final var config = statement.getConfiguration();
+            if (config.validateSchema().map(Boolean.FALSE::equals).orElse(Boolean.FALSE)) {
+                continue;
+            }
+            final var scope = TableScope.of(statement.getRawStatement());
+            if (scope.exhaustive()) {
+                recordUnknownTables(statement, scope, config.vendor(), unchecked);
+            }
+        }
+        return unchecked.entrySet().stream().map(entry -> {
+            final var what = entry.getValue();
+            return ("The schema holds no table '%s', so %d statement(s) reading it were not checked "
+                    + "against it: %s.%s Every check this schema can make still ran.")
+                    .formatted(entry.getKey(), what.statements().size(),
+                            String.join(", ", what.statements()),
+                            what.notes().isEmpty() ? ""
+                                    : " Reading the schema, this was passed over: "
+                                            + String.join("; ", what.notes()) + ".");
+        }).toList();
+    }
+
+    /**
+     * A table nobody described: which statements went unchecked for want of it, and anything the
+     * reader passed over that names it — which is where a table that should have been there went.
+     */
+    private record Unchecked(Set<String> statements, Set<String> notes) {
+
+        Unchecked() {
+            this(new LinkedHashSet<>(), new LinkedHashSet<>());
+        }
     }
 
     private void validate(final SqlStatement statement) {
@@ -254,6 +308,33 @@ public final class SchemaValidator {
      * commonest way the second happens, and naming it turns bisecting a migration directory into
      * reading one line.</p>
      */
+    /**
+     * Notes every table a statement reads that no catalog it could run against describes.
+     *
+     * <p>Collected rather than reported here, so that a table nobody described is one line however
+     * many statements read it, and so that the account of a schema's coverage arrives whole rather
+     * than scattered through the statements that happened to need it.</p>
+     */
+    private void recordUnknownTables(
+            final SqlStatement statement,
+            final TableScope scope,
+            final Optional<String> vendor,
+            final Map<String, Unchecked> unchecked) {
+        final var name = statement.getConfiguration().name().orElse("<unnamed>");
+        for (final var catalog : schemas.applicableTo(vendor)) {
+            for (final var table : scope.tables()) {
+                if (catalog.table(table).isPresent()) {
+                    continue;
+                }
+                final var what = unchecked.computeIfAbsent(Catalog.normalize(table), _ -> new Unchecked());
+                what.statements().add(name);
+                what.notes().addAll(catalog.unfollowedFor(table));
+                catalog.unparsedMentioning(table).forEach(passed ->
+                        what.notes().add(passed + " — this reader could not parse it"));
+            }
+        }
+    }
+
     private static String unfollowedNote(final Catalog catalog, final String table) {
         final var passedOver = new ArrayList<String>(catalog.unfollowedFor(table));
         catalog.unparsedMentioning(table).forEach(statement ->

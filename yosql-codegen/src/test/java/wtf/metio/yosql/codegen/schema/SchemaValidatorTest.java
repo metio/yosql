@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -356,6 +357,78 @@ class SchemaValidatorTest {
 
             assertDoesNotThrow(() -> validator(SchemaValidation.ERROR, TENANT_DDL)
                     .validate(List.of(statement("select id, slug from tenant", intoRecord()))));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("what it did not check")
+    class Coverage {
+
+        /**
+         * The property that makes a green build mean something. A statement reading a table the
+         * catalog does not hold is left alone on purpose — a schema assembled short would otherwise
+         * fail statements that are correct against the real database — but the skip used to say
+         * nothing, so "every statement agreed" and "some were never looked at" were the same build.
+         */
+        @Test
+        @DisplayName("a table nobody described is named, with the statements that went unchecked")
+        void shouldReportAnUnknownTable() {
+            final var report = validator(SchemaValidation.ERROR, TENANT_DDL)
+                    .uncheckedReport(List.of(
+                            statement("select id from tenant_member where tenant_id = :tenantId"),
+                            statement("select id from tenant")));
+
+            assertAll(
+                    () -> assertEquals(1, report.size(), report::toString),
+                    () -> assertTrue(report.getFirst().contains("'tenant_member'"), report::toString),
+                    () -> assertTrue(report.getFirst().contains("findTenant"), report::toString));
+        }
+
+        @Test
+        @DisplayName("one line per table, however many statements read it")
+        void shouldReportOncePerTable() {
+            final var report = validator(SchemaValidation.ERROR, TENANT_DDL)
+                    .uncheckedReport(List.of(
+                            statement("select id from tenant_member"),
+                            statement("select id from tenant_member where id = :id"),
+                            statement("select id from tenant_invitation")));
+
+            assertEquals(2, report.size(), report::toString);
+        }
+
+        @Test
+        @DisplayName("a schema that describes everything the statements read says nothing")
+        void shouldReportNothingWhenEveryTableIsKnown() {
+            final var report = validator(SchemaValidation.ERROR, TENANT_DDL)
+                    .uncheckedReport(List.of(statement("select id, slug from tenant")));
+
+            assertTrue(report.isEmpty(), report::toString);
+        }
+
+        @Test
+        @DisplayName("a statement that opted out of the check is not counted against the schema")
+        void shouldIgnoreAnOptedOutStatement() {
+            final var report = validator(SchemaValidation.ERROR, TENANT_DDL)
+                    .uncheckedReport(List.of(statement("select id from tenant_member",
+                            SqlConfiguration.builder().setName("findMember").setValidateSchema(false).build())));
+
+            assertTrue(report.isEmpty(), report::toString);
+        }
+
+        @Test
+        @DisplayName("where the table went is said beside the table that is missing")
+        void shouldSayWhatWasPassedOver() {
+            // A `create table` cut in half — by a separator inside a string literal, say — leaves
+            // something that does not parse, and the table it declared simply absent.
+            final var report = validator(SchemaValidation.ERROR, TENANT_DDL,
+                    "create table tenant_member (id uuid not null primary key, note text default 'half")
+                    .uncheckedReport(List.of(statement("select id from tenant_member")));
+
+            assertAll(
+                    () -> assertEquals(1, report.size(), report::toString),
+                    () -> assertTrue(report.getFirst().contains("could not parse"), report::toString),
+                    () -> assertTrue(report.getFirst().contains("tenant_member"), report::toString));
         }
 
     }
