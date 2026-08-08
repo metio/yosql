@@ -30,40 +30,50 @@ public final class Catalog {
     private final Map<String, Table> tables;
     private final Optional<String> vendor;
     private final Map<String, List<String>> unfollowed;
+    private final List<String> unparsed;
 
     private Catalog(
             final Map<String, Table> tables,
             final Optional<String> vendor,
-            final Map<String, List<String>> unfollowed) {
+            final Map<String, List<String>> unfollowed,
+            final List<String> unparsed) {
         this.tables = tables;
         this.vendor = vendor;
         this.unfollowed = unfollowed;
+        this.unparsed = unparsed;
     }
 
     public static Catalog of(final Map<String, Table> tables) {
-        return of(tables, Map.of());
+        return of(tables, Map.of(), List.of());
+    }
+
+    public static Catalog of(final Map<String, Table> tables, final Map<String, List<String>> unfollowed) {
+        return of(tables, unfollowed, List.of());
     }
 
     /**
      * @param unfollowed what the reader could not follow, by the table it was about — see
      *                   {@link #unfollowedFor(String)}
      */
-    public static Catalog of(final Map<String, Table> tables, final Map<String, List<String>> unfollowed) {
+    public static Catalog of(
+            final Map<String, Table> tables,
+            final Map<String, List<String>> unfollowed,
+            final List<String> unparsed) {
         final var byLowerCaseName = new LinkedHashMap<String, Table>(tables.size());
         tables.forEach((name, table) -> byLowerCaseName.put(normalize(name), table));
         return new Catalog(Collections.unmodifiableMap(byLowerCaseName), Optional.empty(),
-                Map.copyOf(unfollowed));
+                Map.copyOf(unfollowed), List.copyOf(unparsed));
     }
 
     public static Catalog empty() {
-        return new Catalog(Map.of(), Optional.empty(), Map.of());
+        return new Catalog(Map.of(), Optional.empty(), Map.of(), List.of());
     }
 
     /**
      * @return the same tables, marked as having been read from the DDL of that database
      */
     public Catalog describing(final String databaseVendor) {
-        return new Catalog(tables, Optional.of(databaseVendor), unfollowed);
+        return new Catalog(tables, Optional.of(databaseVendor), unfollowed, unparsed);
     }
 
     /**
@@ -81,6 +91,24 @@ public final class Catalog {
      */
     public List<String> unfollowedFor(final String tableName) {
         return unfollowed.getOrDefault(normalize(tableName), List.of());
+    }
+
+    /**
+     * Statements this reader could not parse that name the table asked about.
+     *
+     * <p>A statement that does not parse is filed under no table, because nothing here knows what it
+     * was about — which made it invisible to {@link #unfollowedFor(String)} and left the one failure
+     * a reader most needs to see unaccounted for: a `create table` cut in half by a separator inside
+     * a string literal, an `alter table` in a dialect the parser does not cover. Matching the text
+     * against the table's name is a guess, and a guess offered as one beats the silence it replaces:
+     * a column reported missing from a table whose DDL was quietly dropped is otherwise
+     * indistinguishable from a query that is simply wrong.</p>
+     */
+    public List<String> unparsedMentioning(final String tableName) {
+        final var name = normalize(tableName);
+        return unparsed.stream()
+                .filter(statement -> statement.toLowerCase(Locale.ROOT).contains(name))
+                .toList();
     }
 
     /**

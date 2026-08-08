@@ -441,6 +441,21 @@ class CatalogReaderTest {
         }
 
         @Test
+        @DisplayName("a statement it could not parse is matched to the table it names")
+        void shouldRecordAnUnparsedStatement() {
+            final var catalog = CatalogReader.read(List.of(
+                    "create table tenant (id uuid not null primary key)",
+                    // What a `;` inside a string literal leaves behind: half a statement.
+                    "alter table tenant add column note text not null default 'first"));
+
+            assertAll(
+                    () -> assertEquals(1, catalog.unparsedMentioning("tenant").size(),
+                            () -> catalog.unparsedMentioning("tenant").toString()),
+                    () -> assertTrue(catalog.unparsedMentioning("account").isEmpty(),
+                            "it names tenant, and nothing about account"));
+        }
+
+        @Test
         @DisplayName("a schema it read whole has nothing to report")
         void shouldRecordNothingForAReadableSchema() {
             final var catalog = CatalogReader.read(List.of(
@@ -451,6 +466,8 @@ class CatalogReaderTest {
             assertAll(
                     () -> assertTrue(catalog.unfollowedFor("tenant").isEmpty(),
                             () -> catalog.unfollowedFor("tenant").toString()),
+                    () -> assertTrue(catalog.unparsedMentioning("tenant").isEmpty(),
+                            () -> catalog.unparsedMentioning("tenant").toString()),
                     () -> assertTrue(catalog.table("tenant").orElseThrow().column("slug").isPresent()));
         }
 

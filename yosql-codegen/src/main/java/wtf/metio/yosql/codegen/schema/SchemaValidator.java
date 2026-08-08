@@ -255,9 +255,11 @@ public final class SchemaValidator {
      * reading one line.</p>
      */
     private static String unfollowedNote(final Catalog catalog, final String table) {
-        final var unfollowed = catalog.unfollowedFor(table);
-        return unfollowed.isEmpty() ? "" : ". Reading the schema, this was passed over: "
-                + String.join("; ", unfollowed);
+        final var passedOver = new ArrayList<String>(catalog.unfollowedFor(table));
+        catalog.unparsedMentioning(table).forEach(statement ->
+                passedOver.add(statement + " — this reader could not parse it"));
+        return passedOver.isEmpty() ? "" : ". Reading the schema, this was passed over: "
+                + String.join("; ", passedOver);
     }
 
     /**

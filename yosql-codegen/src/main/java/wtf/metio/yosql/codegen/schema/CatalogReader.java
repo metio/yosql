@@ -51,11 +51,14 @@ public final class CatalogReader {
     public static Catalog read(final List<String> statements) {
         final var tables = new LinkedHashMap<String, Table>();
         final var unfollowed = new LinkedHashMap<String, List<String>>();
+        // Kept apart from `unfollowed` because there is no table to file them under: the statement
+        // did not parse, so nothing here knows what it was about. They are matched to a table by
+        // name when one is asked about, which is the most that can honestly be said of them.
+        final var unparsed = new ArrayList<String>();
         for (final var statement : statements) {
             final var parsed = parse(statement);
             if (parsed.isEmpty()) {
-                // A statement nothing here could parse says nothing about any one table, so there is
-                // no table to file it under. `alter table` is the case that matters and it parses.
+                unparsed.add(statement);
                 continue;
             }
             if (parsed.get() instanceof CreateTable created) {
@@ -67,7 +70,7 @@ public final class CatalogReader {
                         .add("%s — %s".formatted(oneLine(statement), why)));
             }
         }
-        return Catalog.of(tables, unfollowed);
+        return Catalog.of(tables, unfollowed, unparsed.stream().map(CatalogReader::oneLine).toList());
     }
 
     /**
