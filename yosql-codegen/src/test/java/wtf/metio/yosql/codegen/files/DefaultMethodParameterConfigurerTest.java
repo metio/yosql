@@ -336,6 +336,47 @@ class DefaultMethodParameterConfigurerTest {
         }
 
         @Test
+        @DisplayName("an exact column name wins over one the conversion would reach")
+        void shouldPreferTheExactColumnName() {
+            // A schema holding both spellings is the case where the conversion could take the wrong
+            // one. It cannot: the name as written is looked up first, and only a miss converts.
+            final var configured = withSchema("""
+                    create table placed_order (
+                        orderid  uuid not null primary key,
+                        order_id bigint not null
+                    )""")
+                    .configureParameters(statement(), SOURCE,
+                            "select order_id from placed_order where orderid = :orderId", indices("orderId"));
+
+            assertEquals("java.util.UUID", configured.parameters().getFirst().type().orElseThrow());
+        }
+
+        @Test
+        @DisplayName("a declared type beats a column the conversion would otherwise have found")
+        void shouldPreferTheDeclaredTypeOverAConvertedName() {
+            final var configured = withSchema(
+                    "create table tenant (id uuid not null primary key, account_id uuid not null)")
+                    .configureParameters(
+                            statement(parameter("accountId", "com.example.domain.AccountId")), SOURCE,
+                            "select id from tenant where account_id = :accountId", indices("accountId"));
+
+            assertEquals("com.example.domain.AccountId",
+                    configured.parameters().getFirst().type().orElseThrow(),
+                    "front matter is authoritative: inference only fills in what nobody declared");
+        }
+
+        @Test
+        @DisplayName("a parameter named after no column at all is still an error, not a guess")
+        void shouldStillRefuseAParameterNamingNoColumn() {
+            final var configurer = withSchema(
+                    "create table tenant (id uuid not null primary key, created_at timestamp not null)");
+
+            assertThrows(UntypedParameterException.class, () -> configurer.configureParameters(
+                    statement(), SOURCE,
+                    "select id from tenant where created_at > :changedSince", indices("changedSince")));
+        }
+
+        @Test
         @DisplayName("the column's own spelling still names it")
         void shouldTypeALiteralParameterName() {
             final var configured = withSchema(

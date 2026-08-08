@@ -102,7 +102,17 @@ insert into tenant (id, slug, created_at) values (:id, :slug, :createdAt)
 
 A parameter names its column the way a record component does: `:accountId` reads `account_id`, and
 `:account_id` reads it too. `uuid`, `varchar` and `timestamp` columns give `UUID`, `String` and
-`Instant`; a nullable column gives the boxed type. Check whether a schema is being read before writing types out by hand — look
+`Instant`; a nullable column gives the boxed type.
+
+Four sources, in this order, and the first that answers wins:
+
+1. the `parameters` block — always authoritative, whatever the schema says;
+2. a component of the same name on the `resultRowType` record;
+3. a column spelled exactly as the parameter is;
+4. a column whose `snake_case` name the parameter's `camelCase` converts to.
+
+A parameter naming nothing at all still fails the build. Inference fills in what nobody declared; it
+never overrides and never falls back to `Object`. Check whether a schema is being read before writing types out by hand — look
 for `create table` statements among the `.sql` files, or a `schema.sqlStatementsDirectory`. That
 directory can be a Flyway migrations directory as it stands: files are read in version order, so the
 schema is the one the migrations leave behind rather than the one the first file created.
