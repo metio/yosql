@@ -63,7 +63,9 @@ public final class Schemas {
             // own on top.
             final var combined = new ArrayList<>(sharedSql);
             combined.addAll(vendorSql.get(vendor));
-            byVendor.put(vendor, CatalogReader.read(combined));
+            // Marked with the vendor whose DDL it is, so that a column's type is read in the
+            // spelling it was written in rather than in whatever the statement reading it declares.
+            byVendor.put(vendor, CatalogReader.read(combined).describing(vendor));
         });
         return new Schemas(shared, Collections.unmodifiableMap(byVendor));
     }

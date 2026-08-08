@@ -108,7 +108,12 @@ public final class Schema extends AbstractConfigurationGroup {
 
                         DDL marked with a [vendor](../../sql/vendor/) builds that vendor's schema rather than the
                         shared one, so a project supporting several databases describes only the tables that differ
-                        more than once.""")
+                        more than once. The mark also decides how the column types are spelled: `bytea`,
+                        `timestamptz` and `bigserial` mean what PostgreSQL means by them once the DDL says it is
+                        PostgreSQL's, and every statement reading those columns gets the type without declaring a
+                        vendor of its own. Marking the schema is the way to say which database a project uses;
+                        marking a statement says the narrower thing, that it is written for that database and is
+                        the fallback for no other.""")
                 .build();
         // Resolved against the project rather than taken as written: every other directory setting
         // is, and a relative one taken as written looks in whatever directory the build was started

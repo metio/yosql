@@ -137,7 +137,7 @@ public final class SchemaValidator {
             }
             catalog.declaringTable(name, scope)
                     .flatMap(table -> table.column(name))
-                    .flatMap(column -> SqlTypes.javaType(column, vendor))
+                    .flatMap(column -> SqlTypes.javaType(column, catalog.dialect(vendor)))
                     .filter(expected -> !compatible(expected, declared.get()))
                     .ifPresent(expected -> complaints.add(
                             "parameter '%s' is declared %s but the column it names reads as %s"
@@ -177,7 +177,7 @@ public final class SchemaValidator {
                         .formatted(component.name(), component.type(), column.get().name()));
                 continue;
             }
-            SqlTypes.javaType(column.get(), vendor)
+            SqlTypes.javaType(column.get(), catalog.dialect(vendor))
                     .filter(expected -> !compatible(expected, component.type()))
                     .ifPresent(expected -> complaints.add(
                             "component '%s' is %s but column '%s' reads as %s"

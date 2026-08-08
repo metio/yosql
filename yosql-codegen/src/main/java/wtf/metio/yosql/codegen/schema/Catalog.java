@@ -27,19 +27,48 @@ import java.util.Set;
 public final class Catalog {
 
     private final Map<String, Table> tables;
+    private final Optional<String> vendor;
 
-    private Catalog(final Map<String, Table> tables) {
+    private Catalog(final Map<String, Table> tables, final Optional<String> vendor) {
         this.tables = tables;
+        this.vendor = vendor;
     }
 
     public static Catalog of(final Map<String, Table> tables) {
         final var byLowerCaseName = new LinkedHashMap<String, Table>(tables.size());
         tables.forEach((name, table) -> byLowerCaseName.put(normalize(name), table));
-        return new Catalog(Collections.unmodifiableMap(byLowerCaseName));
+        return new Catalog(Collections.unmodifiableMap(byLowerCaseName), Optional.empty());
     }
 
     public static Catalog empty() {
-        return new Catalog(Map.of());
+        return new Catalog(Map.of(), Optional.empty());
+    }
+
+    /**
+     * @return the same tables, marked as having been read from the DDL of that database
+     */
+    public Catalog describing(final String databaseVendor) {
+        return new Catalog(tables, Optional.of(databaseVendor));
+    }
+
+    /**
+     * Whose spellings this catalog's column types are written in.
+     *
+     * <p>A catalog read from DDL marked with a {@code vendor} holds that database's columns whatever
+     * the statement reading them says: {@code bytea} is PostgreSQL's spelling because the DDL was
+     * PostgreSQL's, not because a query asked for it. Reading such a column with the statement's
+     * vendor instead left every vendor-specific spelling unknown for the statements that need no
+     * vendor of their own — which is most of them, since {@code vendor} exists to tell databases
+     * apart and a project with one database has none to tell apart.</p>
+     *
+     * <p>The shared catalog was written for no database in particular, so there the statement's own
+     * vendor is the best answer available, and a project that marks its statements but not its DDL
+     * keeps reading its columns exactly as it did.</p>
+     *
+     * @param statementVendor what the statement declares, used when the DDL declared nothing
+     */
+    public Optional<String> dialect(final Optional<String> statementVendor) {
+        return vendor.or(() -> statementVendor);
     }
 
     /**

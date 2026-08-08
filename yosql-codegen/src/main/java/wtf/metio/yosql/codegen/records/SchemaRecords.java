@@ -177,7 +177,7 @@ public final class SchemaRecords {
             if (column.isEmpty()) {
                 return Optional.empty();
             }
-            final var javaType = SqlTypes.javaType(column.get(), vendor);
+            final var javaType = SqlTypes.javaType(column.get(), catalog.dialect(vendor));
             if (javaType.isEmpty()) {
                 return Optional.empty();
             }

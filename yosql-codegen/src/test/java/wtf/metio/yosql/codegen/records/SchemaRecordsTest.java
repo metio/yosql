@@ -262,6 +262,27 @@ class SchemaRecordsTest {
         }
 
         @Test
+        @DisplayName("a vendor's own type spellings are read for a statement that names no vendor")
+        void shouldReadVendorSpellingsForAVendorlessStatement() {
+            // The shape of a project with one database: the DDL says which one, the statements have
+            // no other database to be told apart from and so say nothing.
+            final var shape = records(forVendor("postgresql", """
+                    create table attachment (
+                        id      bigserial primary key,
+                        payload bytea not null,
+                        at      timestamptz not null
+                    )"""))
+                    .shapeOf(TENANT, statement("select id, payload, at from attachment"))
+                    .orElseThrow(() -> new AssertionError(
+                            "no shape at all: every column is spelled the way PostgreSQL spells it"));
+
+            assertAll(
+                    () -> assertEquals("long", shape.components().get(0).type().toString()),
+                    () -> assertEquals("byte[]", shape.components().get(1).type().toString()),
+                    () -> assertEquals("java.time.Instant", shape.components().get(2).type().toString()));
+        }
+
+        @Test
         @DisplayName("the answer does not depend on which vendor's DDL was read first")
         void shouldNotDependOnVendorOrder() {
             final var postgres = forVendor("postgresql", "create table tenant (id uuid not null primary key)");

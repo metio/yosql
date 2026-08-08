@@ -109,13 +109,32 @@ schema is the one the migrations leave behind rather than the one the first file
 Standard SQL spellings are the ones it knows without being told which database it is looking at:
 `char`, `varchar`, `text`, `clob`, `smallint`, `int`, `bigint`, `boolean`, `real`, `double
 precision`, `numeric`, `decimal`, `date`, `time`, `timestamp`, `timestamp with time zone`, `uuid`,
-`blob`, `binary`, `varbinary`. **A vendor's own spellings are only read when the statement declares
-`vendor:`** — PostgreSQL's `bytea`, `timestamptz`, `bigserial`, `serial`, `int8`, `jsonb` and
-`citext`, MySQL's `datetime` and `longtext`. Marking the *DDL* with a vendor does not do it; the key
-is read off the statement. A column spelled that way is simply unknown, which means the parameter
-needs its type written out and `generateResultRowType` will not write the record.
+`blob`, `binary`, `varbinary`.
 
-Where that bites most often is `bytea`, whose type is `byte[]`:
+A vendor's own spellings — PostgreSQL's `bytea`, `timestamptz`, `bigserial`, `serial`, `int8`,
+`jsonb` and `citext`, MySQL's `datetime` and `longtext` — need somebody to say which database the
+DDL was written for. **Mark the DDL itself**, once per schema file, and every statement reading it
+gets those spellings without declaring anything:
+
+```sql
+-- vendor: postgresql
+
+create table attachment (
+    id      bigserial primary key,
+    payload bytea not null,
+    at      timestamptz not null
+);
+```
+
+A statement's own `vendor` key does the same, but it says something else as well — that the
+statement is *for* that database and is not the fallback for any other — so it is the wrong tool for
+a project with one database. It also disables collection expansion. Mark the schema, not the
+queries.
+
+Where neither says, a column spelled that way is unknown: the parameter needs its type written out,
+and `generateResultRowType` will not write the record.
+
+The type to write for `bytea` is `byte[]`:
 
 ```sql
 -- name: insertAttachment

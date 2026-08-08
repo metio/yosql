@@ -195,7 +195,7 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
             final var withinCatalog = new LinkedHashMap<String, String>();
             for (final var table : scope.tables()) {
                 catalog.table(table).ifPresent(known -> known.columns().forEach((name, column) ->
-                        SqlTypes.javaType(column, vendor).ifPresent(type ->
+                        SqlTypes.javaType(column, catalog.dialect(vendor)).ifPresent(type ->
                                 withinCatalog.putIfAbsent(name, type.toString()))));
             }
             withinCatalog.forEach((name, type) -> {

@@ -24,6 +24,22 @@ exist can go back to `ERROR`. Parameter and result types written out by hand bec
 "did not work" are now inferred, and the front matter still wins where the two disagree — so a type
 declared against the wrong schema stays wrong until you delete it.
 
+A column is also read in the spelling its own DDL was written in. Marking a schema file with a
+[vendor](/configuration/sql/vendor/) now decides how its column types are read, so `bytea`,
+`timestamptz`, `bigserial`, `jsonb` and the rest of a database's own spellings reach statements that
+declare no vendor themselves:
+
+```sql
+-- vendor: postgresql
+
+create table attachment (id bigserial primary key, payload bytea not null);
+```
+
+Previously those spellings were only read when the *statement* declared the vendor, which a project
+with one database has no reason to do — so its schema answered for the standard types and nothing
+else. Marking the schema is now worth doing even where there is only one database to name. Nothing
+changes for a project that marks its statements, or for one that marks neither.
+
 ## 2026.8.8
 
 The first release since 2023.5.3, and it changes enough to be worth reading before you bump the
