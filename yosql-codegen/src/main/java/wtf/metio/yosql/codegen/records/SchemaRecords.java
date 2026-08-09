@@ -14,6 +14,7 @@ import wtf.metio.yosql.codegen.exceptions.CollidingResultColumnsException;
 import wtf.metio.yosql.codegen.exceptions.ConflictingColumnTypeException;
 import wtf.metio.yosql.codegen.exceptions.UnusableComponentNameException;
 import wtf.metio.yosql.codegen.schema.Catalog;
+import wtf.metio.yosql.codegen.schema.Column;
 import wtf.metio.yosql.codegen.schema.SelectItems;
 import wtf.metio.yosql.codegen.schema.SqlTypes;
 import wtf.metio.yosql.codegen.schema.Schemas;
@@ -32,6 +33,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Writes the record a statement builds its rows into, instead of checking one somebody wrote.
@@ -78,6 +80,143 @@ public final class SchemaRecords {
         rejectUnusableNames(components, statement);
         rejectCollidingComponents(components, statement);
         return Optional.of(JavaSourceType.record(type, components, List.of(), List.of()));
+    }
+
+    /**
+     * Why {@link #shapeOf} could not answer, in the words of whatever actually stopped it.
+     *
+     * <p>Four unrelated situations end in the same empty shape — nothing was read, the statement
+     * selects from something with no columns to name, a column is not in the catalog, or a column is
+     * there and its SQL type maps to nothing — and they are fixed in four different files. Listing
+     * every remedy leaves the reader to work out which one they are, so each reason carries the one
+     * that answers it and nothing else is printed.</p>
+     *
+     * <p>The type that maps to nothing is the reason worth naming outright: a vendor-specific type
+     * resolves only for a declared vendor, so a Postgres schema read with no {@code vendor} set
+     * describes {@code jsonb} and {@code timestamptz} perfectly well and then types neither.</p>
+     *
+     * <p>Runs only on the way to the exception, and repeats the walk {@link #shapeOf} just made
+     * rather than making it carry a reason it discards on every successful build.</p>
+     */
+    public String whyNot(final SqlStatement statement) {
+        final var vendor = statement.getConfiguration().vendor();
+        if (schemas.isEmpty()) {
+            // Before the per-column reasons, which would otherwise report every column of the
+            // statement as one no table declares — true of an empty catalog, and no help at all.
+            return say(new Reason("no schema was read at all", Remedy.MORE_DDL));
+        }
+        final var catalogs = schemas.applicableTo(vendor);
+        if (catalogs.isEmpty()) {
+            return say(new Reason("no schema describes " + vendor.orElse("this vendor"),
+                    Remedy.MORE_DDL));
+        }
+        final var sql = statement.getRawStatement();
+        final var scope = TableScope.of(sql);
+        if (!scope.exhaustive()) {
+            return say(new Reason("it selects from something the schema cannot name the columns of, "
+                    + "such as a subquery or a derived table", Remedy.BY_HAND));
+        }
+        final var reasons = new LinkedHashSet<Reason>();
+        catalogs.forEach(catalog -> reasons.addAll(reasonsAgainst(sql, scope, catalog, vendor)));
+        if (reasons.isEmpty()) {
+            return new Reason("the schemas that describe it do not agree on which columns it selects",
+                    Remedy.BY_HAND).toString();
+        }
+        return say(reasons.toArray(Reason[]::new));
+    }
+
+    /**
+     * What stopped the record being written, and what the reader can do about that particular thing.
+     */
+    private record Reason(String what, Remedy remedy) {
+    }
+
+    /**
+     * The advice a reason comes with. Each is a sentence, and each is written at most once however
+     * many columns asked for it — a table of JSON columns would otherwise repeat one until the
+     * reasons themselves are hard to pick out.
+     */
+    private enum Remedy {
+
+        VENDOR("Set 'schema.vendor', or a 'vendor' on the statement, so that the types only one "
+                + "database has are looked up."),
+        MORE_DDL("Add the 'create table' statements it reads from to the SQL files YoSQL parses, or "
+                + "set 'schema.sqlStatementsDirectory' to where they live."),
+        BY_HAND("Write the record by hand and drop 'generateResultRowType'.");
+
+        private final String advice;
+
+        Remedy(final String advice) {
+            this.advice = advice;
+        }
+
+    }
+
+    private static String say(final Reason... reasons) {
+        final var what = Stream.of(reasons).map(Reason::what).collect(Collectors.joining("; "));
+        final var advice = Stream.of(reasons)
+                .map(Reason::remedy)
+                .distinct()
+                .sorted()
+                .map(remedy -> remedy.advice)
+                .collect(Collectors.joining(" "));
+        return what + ". " + advice;
+    }
+
+    private static Set<Reason> reasonsAgainst(
+            final String sql,
+            final TableScope scope,
+            final Catalog catalog,
+            final Optional<String> vendor) {
+        final var selected = SelectItems.of(sql, scope, catalog);
+        if (selected.isEmpty()) {
+            return Set.of(new Reason("the columns it selects cannot be matched to the schema",
+                    Remedy.MORE_DDL));
+        }
+        final var reasons = new LinkedHashSet<Reason>();
+        for (final var item : selected.get().items()) {
+            final var source = item.sourceColumn();
+            if (source.isEmpty()) {
+                reasons.add(new Reason("'%s' is not a plain column".formatted(item.resultName()),
+                        Remedy.BY_HAND));
+                continue;
+            }
+            final var columnName = unqualified(source.get());
+            final var table = catalog.declaringTable(source.get(), scope);
+            if (table.isEmpty()) {
+                reasons.add(new Reason("no table in scope declares '%s'".formatted(columnName),
+                        Remedy.MORE_DDL));
+                continue;
+            }
+            final var column = table.get().column(columnName);
+            if (column.isEmpty()) {
+                reasons.add(new Reason(
+                        "table '%s' has no column '%s'".formatted(table.get().name(), columnName),
+                        Remedy.MORE_DDL));
+                continue;
+            }
+            final var dialect = catalog.dialect(vendor);
+            if (SqlTypes.javaType(column.get(), dialect).isEmpty()) {
+                reasons.add(untypedColumn(table.get().name(), column.get(), dialect));
+            }
+        }
+        return reasons;
+    }
+
+    /**
+     * The schema knows this column and still cannot say what it holds, which is the one reason that
+     * writing more DDL does not answer. For a declared vendor it is a type nothing here maps, and
+     * there is nothing the reader can set to change that — so the advice is to write the record.
+     */
+    private static Reason untypedColumn(
+            final String table,
+            final Column column,
+            final Optional<String> dialect) {
+        final var untyped = "'%s.%s' is declared '%s', which is not a type YoSQL maps"
+                .formatted(table, column.name(), column.sqlType());
+        return dialect
+                .map(vendor -> new Reason(untyped + " for " + vendor, Remedy.BY_HAND))
+                .orElseGet(() -> new Reason(untyped + " without a vendor", Remedy.VENDOR));
     }
 
     /**

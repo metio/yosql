@@ -313,4 +313,76 @@ class SchemaRecordsTest {
                 () -> assertTrue(written.contains("java.time.Instant createdAt"), written));
     }
 
+    @Nested
+    @DisplayName("why it could not")
+    class WhyNot {
+
+        private static final String DOCUMENT_DDL = """
+                create table document (
+                    id      uuid not null primary key,
+                    payload jsonb not null
+                )""";
+
+        @Test
+        @DisplayName("names the column whose type maps to nothing, and asks for the vendor")
+        void shouldPointAtTheVendorForAVendorSpecificType() {
+            final var why = records(DOCUMENT_DDL)
+                    .whyNot(statement("select payload from document"));
+
+            assertAll(
+                    () -> assertTrue(why.contains("'document.payload'"), why),
+                    () -> assertTrue(why.contains("jsonb"), why),
+                    () -> assertTrue(why.contains("schema.vendor"), why));
+        }
+
+        @Test
+        @DisplayName("says the vendor it looked the type up for once one is declared")
+        void shouldNameTheVendorItUsed() {
+            final var configured = SqlStatement.builder()
+                    .setSourcePath(Path.of("src", "main", "yosql", "document", "findDocument.sql"))
+                    .setConfiguration(SqlConfiguration.builder()
+                            .setName("findDocument")
+                            .setVendor("Oracle")
+                            .build())
+                    .setRawStatement("select payload from document")
+                    .build();
+
+            final var why = records(DOCUMENT_DDL).whyNot(configured);
+
+            assertAll(
+                    () -> assertTrue(why.contains("Oracle"), why),
+                    () -> assertTrue(!why.contains("schema.vendor"), why));
+        }
+
+        @Test
+        @DisplayName("says so plainly when nothing was read")
+        void shouldSayWhenNoSchemaWasRead() {
+            final var records = new SchemaRecords(Schemas.empty(),
+                    BlocksObjectMother.annotationGenerator());
+
+            final var why = records.whyNot(statement("select id from tenant"));
+
+            assertAll(
+                    () -> assertTrue(why.startsWith("no schema was read at all"), why),
+                    () -> assertTrue(why.contains("schema.sqlStatementsDirectory"), why));
+        }
+
+        @Test
+        @DisplayName("names the column the schema does not hold")
+        void shouldNameAnUnknownColumn() {
+            final var why = records(DDL).whyNot(statement("select id, missing from tenant"));
+
+            assertTrue(why.contains("missing"), why);
+        }
+
+        @Test
+        @DisplayName("says a computed expression is not a column")
+        void shouldSayWhenSomethingIsNotAColumn() {
+            final var why = records(DDL).whyNot(statement("select count(*) as total from tenant"));
+
+            assertTrue(why.contains("total"), why);
+        }
+
+    }
+
 }

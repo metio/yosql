@@ -22,13 +22,11 @@ public final class UnknownRecordShapeException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public UnknownRecordShapeException(final ClassName type, final String statement) {
-        super(("Statement '%s' asks YoSQL to write '%s', but the schema does not describe every column "
-                + "it selects. Add the 'create table' statements it reads from to the SQL files YoSQL "
-                + "parses, or set 'schema.sqlStatementsDirectory' to where they live — then write the "
-                + "record by hand and drop 'generateResultRowType' if the statement selects something "
-                + "no table can describe, such as a computed expression or a subquery.")
-                .formatted(statement, type));
+    public UnknownRecordShapeException(final ClassName type, final String statement, final String reason) {
+        // The reason carries its own advice: four unrelated things end in a shape nobody can write,
+        // and a message listing every remedy leaves the reader to work out which one they are.
+        super("Statement '%s' asks YoSQL to write '%s', but the schema does not say what every column "
+                .formatted(statement, type) + "it selects holds: " + reason);
     }
 
 }

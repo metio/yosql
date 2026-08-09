@@ -709,7 +709,7 @@ class RecordConverterGeneratorTest {
             final var exception = assertThrows(UnknownRecordShapeException.class, () ->
                     generator().generateConverterClasses(List.of(writesItsOwnRecord())).toList());
             assertAll(
-                    () -> assertTrue(exception.getMessage().contains("does not describe every column"),
+                    () -> assertTrue(exception.getMessage().contains("no schema was read at all"),
                             exception.getMessage()),
                     () -> assertFalse(exception.getMessage().contains("no source file"),
                             exception.getMessage()));

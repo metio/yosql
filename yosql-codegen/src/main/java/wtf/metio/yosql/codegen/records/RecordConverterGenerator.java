@@ -119,7 +119,8 @@ public final class RecordConverterGenerator {
             byType.computeIfAbsent(type, key -> {
                 if (writesItsOwnRecord(statement)) {
                     final var shape = schemaRecords.shapeOf(key, statement)
-                            .orElseThrow(() -> new UnknownRecordShapeException(key, statement.getName()));
+                            .orElseThrow(() -> new UnknownRecordShapeException(
+                                    key, statement.getName(), schemaRecords.whyNot(statement)));
                     written.put(key, shape);
                     return shape;
                 }
