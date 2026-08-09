@@ -433,4 +433,36 @@ class SchemaValidatorTest {
 
     }
 
+    @Nested
+    @DisplayName("what it read")
+    class Summary {
+
+        @Test
+        @DisplayName("counts the tables and names them")
+        void shouldSayWhatTheSchemaHolds() {
+            final var summary = validator(SchemaValidation.ERROR, TENANT_DDL,
+                    "create table account (id uuid not null primary key)").schemaSummary();
+
+            assertAll(
+                    () -> assertTrue(summary.contains("2 table(s)"), summary),
+                    // Sorted, so two runs of the same build say the same thing.
+                    () -> assertTrue(summary.contains("account, tenant"), summary));
+        }
+
+        /**
+         * The case worth saying out loud: a directory pointed somewhere with no DDL in it reads as a
+         * green build, because every statement is skipped for want of a table to check it against.
+         */
+        @Test
+        @DisplayName("says so plainly when it read nothing")
+        void shouldSayWhenItReadNothing() {
+            final var summary = validator(SchemaValidation.ERROR).schemaSummary();
+
+            assertAll(
+                    () -> assertTrue(summary.contains("no tables"), summary),
+                    () -> assertTrue(summary.contains("sqlStatementsDirectory"), summary));
+        }
+
+    }
+
 }

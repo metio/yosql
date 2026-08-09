@@ -57,11 +57,39 @@ public final class SchemaValidator {
     }
 
     public void validate(final List<SqlStatement> statements) {
-        if (configuration.validation() == SchemaValidation.OFF || schemas.isEmpty()) {
+        if (configuration.validation() == SchemaValidation.OFF) {
+            return;
+        }
+        logger.info(schemaSummary());
+        if (schemas.isEmpty()) {
             return;
         }
         statements.forEach(this::validate);
         uncheckedReport(statements).forEach(logger::warn);
+    }
+
+    /**
+     * What the schema came out holding, said once on every run.
+     *
+     * <p>Everything else here speaks only when something is wrong, and a schema assembled short is
+     * not wrong in a way that has anything to complain about: statements reading a table nobody
+     * described are skipped, quietly and on purpose. So a build could be green over a schema half
+     * the size of the one on disk, and nothing distinguished that from a build green over all of it.
+     * A count and the names answer it before anybody has to ask.</p>
+     */
+    // visible for testing
+    String schemaSummary() {
+        final var tables = schemas.applicableTo(Optional.empty()).stream()
+                .map(Catalog::tableNames)
+                .flatMap(Set::stream)
+                .distinct()
+                .sorted()
+                .toList();
+        if (tables.isEmpty()) {
+            return "The schema reads no tables. Point 'schema.sqlStatementsDirectory' at your DDL, "
+                    + "or keep your 'create table' statements among the SQL files YoSQL already reads.";
+        }
+        return "The schema reads %d table(s): %s.".formatted(tables.size(), String.join(", ", tables));
     }
 
     /**
