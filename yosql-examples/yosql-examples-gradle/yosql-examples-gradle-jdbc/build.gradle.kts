@@ -37,4 +37,10 @@ dependencies {
     implementation("wtf.metio.yosql.examples:yosql-examples-common:${version}") {
         because("we want to re-use the same example app across all example projects")
     }
+    testImplementation(libs.junit)
+    testRuntimeOnly(libs.junitLauncher)
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
