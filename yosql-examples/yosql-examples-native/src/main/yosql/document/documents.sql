@@ -43,3 +43,14 @@ select id,
 from document
 where id = :id
 ;
+
+-- name: findDocumentColumns
+-- returning: single
+-- parameters:
+--   - name: id
+--     type: java.util.UUID
+select id,
+       payload
+from document
+where id = :id
+;

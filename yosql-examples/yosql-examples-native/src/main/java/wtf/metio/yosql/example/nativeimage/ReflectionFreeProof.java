@@ -115,6 +115,17 @@ public final class ReflectionFreeProof {
                 () -> new AssertionError("the document that was just inserted was not found"));
         check("jsonb", "{\"a\": 1, \"b\": 2}", document.payload());
         check("json", WRITTEN, document.plain());
+
+        // A statement with no result row type reads through the map converter, and that one asks
+        // for getObject because it has no type to read towards. Postgres answers a jsonb column
+        // with a PGobject, so the same column is a String in a record and a driver type in a map —
+        // and code reading the map has to expect that rather than cast to String. Asserting the
+        // class name rather than the value is the point: the value's toString is the JSON either
+        // way, which is exactly what makes the difference easy to miss.
+        final var columns = repository.findDocumentColumns(id).orElseThrow(
+                () -> new AssertionError("the document was not found through the map converter"));
+        check("map jsonb", "org.postgresql.util.PGobject", columns.get("payload").getClass().getName());
+        check("map uuid", UUID.class, columns.get("id").getClass());
     }
 
     private static void check(final String what, final Object expected, final Object actual) {
