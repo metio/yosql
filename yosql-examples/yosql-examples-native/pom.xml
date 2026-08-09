@@ -76,6 +76,17 @@
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.nativeimage.persistence</basePackageName>
                     </repositories>
+                    <schema>
+                        <!-- The statements themselves, which is where this module's `create table`
+                             already lives. A second copy of the DDL under a migrations directory
+                             would be one more thing to keep in step with the database the proof
+                             actually runs against, and the reader takes the front matter off a
+                             statement file the same way it does a migration. -->
+                        <sqlStatementsDirectory>src/main/yosql</sqlStatementsDirectory>
+                        <!-- Without this the vendor-neutral types are all that resolve, and
+                             `jsonb`, `uuid` and `timestamptz` are none of them. -->
+                        <vendor>PostgreSQL</vendor>
+                    </schema>
                     <converter>
                         <mapConverterClass>
                             wtf.metio.yosql.example.nativeimage.persistence.converter.ToMapConverter

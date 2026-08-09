@@ -8,6 +8,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 import wtf.metio.yosql.example.nativeimage.domain.Level;
 import wtf.metio.yosql.example.nativeimage.domain.Reading;
 import wtf.metio.yosql.example.nativeimage.domain.ReadingId;
+import wtf.metio.yosql.example.nativeimage.persistence.DocumentRepository;
 import wtf.metio.yosql.example.nativeimage.persistence.ReadingRepository;
 
 import java.math.BigDecimal;
@@ -33,6 +34,8 @@ public final class ReflectionFreeProof {
     private static final UUID OPEN = UUID.fromString("8c1f0b44-0000-4000-8000-000000000002");
     private static final Instant RECORDED = Instant.parse("2026-04-01T06:30:00Z");
     private static final Instant CLEARED_AT = Instant.parse("2026-04-01T07:45:00Z");
+    /** Keys out of order and no space after the colon, so that normalisation is visible. */
+    private static final String WRITTEN = "{\"b\":2,\"a\":1}";
 
     public static void main(final String[] arguments) {
         final var repository = new ReadingRepository(dataSource());
@@ -68,6 +71,8 @@ public final class ReflectionFreeProof {
                 () -> new AssertionError("insert … returning id produced no row"));
         check("returning id", new ReadingId(returned), inserted);
 
+        documents();
+
         final var bySensor = repository.findReadingsBySensor("boiler-1");
         check("row count", 2, bySensor.size());
         check("first row", CLEARED, bySensor.getFirst().id());
@@ -75,6 +80,41 @@ public final class ReflectionFreeProof {
 
         System.out.println("generated mapping produced " + bySensor.size()
                 + " rows with no reflection registered");
+    }
+
+    /**
+     * What a {@code jsonb} column arrives as.
+     *
+     * <p>Postgres has no JDBC type of its own for JSON: the driver hands back a
+     * {@code PGobject} from {@code getObject}, and refuses {@code getObject(column, String.class)}
+     * outright. The catalog maps {@code json} and {@code jsonb} to {@code String} and the generated
+     * reader takes the {@code getString} branch, which is the accessor the driver does answer — so
+     * the record holds the JSON as text. The record here is written by the generator, not by hand,
+     * so the field type is the catalog's choice rather than a guess repeated back at it.</p>
+     *
+     * <p>The two columns hold the same text written the same way and read back differently:
+     * {@code jsonb} is stored parsed, so it comes back with its keys ordered and its whitespace
+     * normalised, while {@code json} keeps the bytes it was given. Asserting both is what
+     * distinguishes reading the database's rendering from echoing the input.</p>
+     *
+     * <p>Going the other way needs the cast the statement carries. A {@code String} parameter is
+     * bound as {@code varchar}, and Postgres will not compare or assign that to {@code jsonb} — it
+     * fails with "column is of type jsonb but expression is of type character varying". The cast is
+     * the statement author's job; nothing in the generated code can add it, because the type the
+     * parameter needs to arrive as is a property of the SQL.</p>
+     */
+    private static void documents() {
+        final var repository = new DocumentRepository(dataSource());
+        repository.createDocumentTable();
+        repository.deleteDocuments();
+
+        final var id = UUID.fromString("8c1f0b44-0000-4000-8000-000000000004");
+        repository.insertDocument(id, WRITTEN, WRITTEN);
+
+        final var document = repository.findDocument(id).orElseThrow(
+                () -> new AssertionError("the document that was just inserted was not found"));
+        check("jsonb", "{\"a\": 1, \"b\": 2}", document.payload());
+        check("json", WRITTEN, document.plain());
     }
 
     private static void check(final String what, final Object expected, final Object actual) {

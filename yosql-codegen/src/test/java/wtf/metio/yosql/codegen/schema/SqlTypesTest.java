@@ -107,6 +107,10 @@ class SqlTypesTest {
                     () -> assertEquals("long", javaType("bigserial", false, "PostgreSQL")),
                     () -> assertEquals("java.time.Instant", javaType("timestamptz", false, "PostgreSQL")),
                     () -> assertEquals("byte[]", javaType("bytea", false, "PostgreSQL")),
+                    // JSON arrives as text: the driver answers getString for both spellings and
+                    // refuses getObject(column, String.class), so String is the type the generated
+                    // reader can actually fill.
+                    () -> assertEquals("java.lang.String", javaType("json", false, "PostgreSQL")),
                     () -> assertEquals("java.lang.String", javaType("jsonb", false, "PostgreSQL")));
         }
 
