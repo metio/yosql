@@ -175,6 +175,35 @@ Note `byte[]`, not the `blob` short name — `blob` in front matter means `java.
 different thing from the bytes a `bytea` column holds. Getting this wrong produces a compile error at
 the *call site* rather than a generation error, so it reads as unrelated to the statement.
 
+The type for `json` and `jsonb` is `String`, holding the JSON as text. Postgres has no JDBC type of
+its own for them: the driver refuses `getObject(column, String.class)` and answers `getString`, so
+that is the accessor generated code uses. A record component is a `String`, and so is the parameter
+type to write.
+
+Reading is otherwise unremarkable. **Writing needs a cast in the SQL**, because a `String` parameter
+binds as `varchar` and Postgres will not assign or compare that to a JSON column:
+
+```sql
+-- name: insertDocument
+-- returning: none
+-- parameters:
+--   id: uuid
+--   payload: string
+insert into document (id, payload) values (:id, cast(:payload as jsonb))
+```
+
+Either spelling of the cast works — `cast(:payload as jsonb)` or `:payload::jsonb`. Without one the
+build passes and the statement fails at run time with `column "payload" is of type jsonb but
+expression is of type character varying`. Nothing in generated code can supply the cast, because the
+type a parameter has to arrive as is a property of the query.
+
+Two things differ from what the `String` suggests. A `jsonb` column is stored parsed, so it reads
+back with its keys ordered and its whitespace normalised rather than as the text that was written —
+`json` keeps the bytes verbatim. And a statement with no `resultRowType` reads through the map
+converter, which asks for `getObject` because it has no type to read towards: in that `Map<String,
+Object>` a JSON column is a `PGobject`, not a `String`. Its `toString` is the same JSON, so the
+difference only shows up when something casts.
+
 Where neither answers — no schema, no matching component — name the types:
 
 ```sql
@@ -289,9 +318,10 @@ more often a typo than a request. Reach for it when the record has no behaviour 
 exists only to carry a row; write the record by hand when it has a value object, an enum or a nested
 record in it, because the schema can only describe columns.
 
-The build stops if the schema cannot describe every column selected — a computed expression, a
-subquery, a table no `create table` mentions. That is a different message from the missing-source
-one, and it means *write this one yourself*.
+The build stops if the schema cannot say what every column selected holds — a computed expression, a
+subquery, a table no `create table` mentions, or a column whose type maps to nothing. The message
+names the column and what answers that particular thing, which is worth reading rather than skimming:
+a vendor-specific type in a schema with no vendor declared reads as a missing schema and is not one.
 
 ### Where the generated types go
 
