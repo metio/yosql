@@ -66,6 +66,91 @@
                         <generateInterfaces>true</generateInterfaces>
                     </repositories>
                 </configuration>
+                <executions>
+                    <execution>
+                        <!-- Every configuration group, set to something other than its default,
+                             through the mojo parameters the meta-model generates. The run above
+                             sets two of the seven, and the other three frontends each carry the
+                             same check of their own surface — this is the Maven one.
+
+                             Its own output directory, because the generator clears what it wrote
+                             before writing again — two executions sharing one would leave whichever
+                             went second. -->
+                        <id>config-surface</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <inputBaseDirectory>src/main/yosql-config</inputBaseDirectory>
+                                <outputBaseDirectory>${project.build.directory}/generated-sources/config</outputBaseDirectory>
+                                <sourceDirectory>src/main/java</sourceDirectory>
+                                <sqlFilesSuffix>.sql</sqlFilesSuffix>
+                            </files>
+                            <repositories>
+                                <basePackageName>wtf.metio.yosql.example.maven.jdbc.config.persistence</basePackageName>
+                                <!-- Said again, because a plugin-level setting merges into every
+                                     execution: without this the run inherits the interfaces the
+                                     example above asks for, and the interface for these statements
+                                     is named after their directory — the same name as the record
+                                     they build. What this run generates should be what it declares. -->
+                                <generateInterfaces>false</generateInterfaces>
+                            </repositories>
+                            <converter>
+                                <recordConverterPrefix>Build</recordConverterPrefix>
+                                <recordConverterSuffix>Mapper</recordConverterSuffix>
+                                <recordConverterMethod>asRecord</recordConverterMethod>
+                            </converter>
+                            <!-- The DDL sits outside the statements, so only this can have found it;
+                                 and its jsonb column resolves only for a declared vendor, so a
+                                 vendor that fails to arrive stops the build rather than quietly
+                                 generating something else. -->
+                            <schema>
+                                <sqlStatementsDirectory>src/main/schema</sqlStatementsDirectory>
+                                <vendor>PostgreSQL</vendor>
+                                <validation>ERROR</validation>
+                            </schema>
+                            <annotations>
+                                <repositoryAnnotations>
+                                    <repositoryAnnotation>
+                                        <type>java.lang.SuppressWarnings</type>
+                                        <members>
+                                            <member>
+                                                <key>value</key>
+                                                <value>maven-config-example</value>
+                                            </member>
+                                        </members>
+                                    </repositoryAnnotation>
+                                </repositoryAnnotations>
+                            </annotations>
+                            <logging>
+                                <api>JUL</api>
+                            </logging>
+                            <resources>
+                                <maxThreads>1</maxThreads>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-config-surface-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/config</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
