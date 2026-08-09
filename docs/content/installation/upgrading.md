@@ -111,6 +111,27 @@ by writing `executeBatch: false` on each one. The default now yields: a statemen
 collection is generated without a batch method. Writing `executeBatch: true` on one is still an
 error, because that asks for something that cannot exist.
 
+### Two generated types with one name stop the build
+
+A repository interface is the repository's name without its `Repository` suffix, so statements in a
+`document` directory generate an interface called `Document` alongside `DocumentRepository`. A
+`resultRowType` naming `<your base package>.persistence.Document` names that same type, and the two
+were written to one file — whichever the generator reached second was the one that survived.
+
+What that looked like was a compile error on a file you did not write, saying the type a converter
+instantiates is abstract, or a duplicate class where the record was your own. Now it stops
+generation and names both:
+
+```text
+Two generated types would both be written as 'com.example.persistence.Document': an interface
+and a record.
+```
+
+This only affects a build that was already failing at compile time, so nothing that worked can start
+failing. If you see it, rename whichever of the two names is yours — usually the `resultRowType`,
+into a package of its own — or turn off
+[generateInterfaces](/configuration/repositories/generateinterfaces/).
+
 ## 2026.8.8
 
 The first release since 2023.5.3, and it changes enough to be worth reading before you bump the
