@@ -167,10 +167,70 @@ table` mentions leaves `YoSQL` with nothing to write, and it says so rather than
 
 ```text
 Statement 'findTenantSummary' asks YoSQL to write 'com.example.domain.TenantSummary', but the
-schema does not describe every column it selects.
+schema does not say what every column it selects holds: 'tenant.settings' is declared 'jsonb',
+which is not a type YoSQL maps without a vendor. Set 'schema.vendor', or a 'vendor' on the
+statement, so that the types only one database has are looked up.
 ```
 
-Write that one by hand — everything else about it stays the same.
+The message names the column and the one thing that answers it, which is worth reading rather than
+skimming — the four situations that end here are fixed in four different files. A missing table asks
+for more DDL, a computed expression asks for a record written by hand, and the case above is neither.
+
+## Types only one database has
+
+Standard spellings resolve without being told which database wrote the DDL. A vendor's own —
+PostgreSQL's `bytea`, `timestamptz`, `bigserial`, `json`, `jsonb` and `citext`, MySQL's `datetime`
+and `longtext` — resolve only once something declares the vendor. Until then those columns are
+described but untyped: parameters naming them need their type written out, and
+`generateResultRowType` will not write the record.
+
+Mark the DDL itself, once per file, and every statement reading it follows:
+
+```sql
+-- vendor: PostgreSQL
+
+create table document (
+    id      uuid  not null primary key,
+    payload jsonb not null
+)
+```
+
+Where the schema is a Flyway or Liquibase directory the files are checksummed, and adding a comment
+to a migration already applied makes the tool refuse to run. Say it in the build instead:
+
+```xml
+<schema>
+  <sqlStatementsDirectory>src/main/resources/db/migration</sqlStatementsDirectory>
+  <vendor>PostgreSQL</vendor>
+</schema>
+```
+
+A file naming its own vendor still keeps it.
+
+### JSON columns
+
+`json` and `jsonb` are a `String` holding the JSON as text. Postgres has no JDBC type of its own for
+them — the driver refuses `getObject(column, String.class)` and answers `getString` — so that is the
+accessor generated code uses, and a `String` is both the record component and the parameter type.
+
+Reading is otherwise unremarkable. Writing needs a cast in the query, because a `String` parameter
+binds as `varchar` and Postgres will not assign or compare that to a JSON column:
+
+```sql
+-- name: insertDocument
+-- returning: none
+insert into document (id, payload)
+values (:id, cast(:payload as jsonb))
+```
+
+`:payload::jsonb` does the same. Without one the build passes and the statement fails at run time
+with `column "payload" is of type jsonb but expression is of type character varying`. Nothing
+generated can add the cast, because the type a parameter has to arrive as is a property of the query.
+
+Two things differ from what the `String` suggests. A `jsonb` column is stored parsed, so it reads
+back with its keys ordered and its whitespace normalised rather than as the text that was written;
+`json` keeps the bytes verbatim. And through the [map converter](../converters/#map-converter) a JSON
+column is a `PGobject` rather than a `String`.
 
 ## More than one database
 

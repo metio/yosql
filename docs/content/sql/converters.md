@@ -349,6 +349,12 @@ List<Map<String, Object>> someMethod()
 Stream<Map<String, Object>> someMethod()
 ```
 
+The values are whatever the driver answers `getObject` with, which is not always what a record
+component of the same column would hold: the map converter has no type to read towards, so a type
+JDBC does not describe comes back as the driver's own. A PostgreSQL `json` or `jsonb` column is a
+`PGobject` here and a `String` in a record. Its `toString` is the same JSON either way, so the
+difference surfaces where something casts rather than where it prints.
+
 Generated record converters live in the same package as the map converter, so `mapConverterClass`
 decides where they all go. What they are called comes from
 [recordConverterPrefix](../../configuration/converter/recordconverterprefix/) and
