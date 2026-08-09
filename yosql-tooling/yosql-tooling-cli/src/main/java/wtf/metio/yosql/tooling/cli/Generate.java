@@ -61,12 +61,15 @@ public class Generate implements Callable<Integer> {
     }
 
     private RuntimeConfiguration createConfiguration() {
+        // The converters go beside the repositories, so where the repositories go is settled
+        // first and handed over — the effective value, not the field, which may be unset.
+        final var repositoriesConfiguration = repositories.asConfiguration();
         return RuntimeConfiguration.builder()
                 .setAnnotations(annotations.asConfiguration())
-                .setConverter(converter.asConfiguration())
+                .setConverter(converter.asConfiguration(repositoriesConfiguration.basePackageName()))
                 .setFiles(files.asConfiguration(Paths.get(System.getProperty("user.dir"))))
                 .setLogging(logging.asConfiguration())
-                .setRepositories(repositories.asConfiguration())
+                .setRepositories(repositoriesConfiguration)
                 .setResources(resources.asConfiguration())
                 .setSchema(schema.asConfiguration(Paths.get(System.getProperty("user.dir"))))
                 .build();

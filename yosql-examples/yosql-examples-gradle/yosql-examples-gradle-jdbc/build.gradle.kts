@@ -28,9 +28,6 @@ yosql {
     repositories {
         basePackageName.set("${group}.persistence")
     }
-    converter {
-        mapConverterClass.set("${group}.converter.ToMapConverter")
-    }
 }
 
 dependencies {

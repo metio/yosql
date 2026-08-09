@@ -27,6 +27,8 @@ public final class Converter extends AbstractConfigurationGroup {
     private static final String MAP_CONVERTER_ALIAS = "mapConverterAlias";
     private static final String MAP_CONVERTER_METHOD = "mapConverterMethod";
     private static final String MAP_CONVERTER_CLASS = "mapConverterClass";
+    private static final String BASE_PACKAGE_NAME = "basePackageName";
+    private static final String RESOLVE_CONVERTER_CLASS = "resolvedMapConverterClass";
     private static final String RECORD_CONVERTER_METHOD = "recordConverterMethod";
     private static final String RECORD_CONVERTER_PREFIX = "recordConverterPrefix";
     private static final String RECORD_CONVERTER_SUFFIX = "recordConverterSuffix";
@@ -46,19 +48,30 @@ public final class Converter extends AbstractConfigurationGroup {
                 .addSettings(recordConverterPrefix())
                 .addSettings(recordConverterSuffix())
                 .addAntMethods(createRowConverter(Modifier.FINAL, Converter::field))
+                .addAntMethods(resolveConverterClass(Modifier.FINAL, Converter::field))
                 .addCliMethods(createRowConverter(Modifier.FINAL, Converter::field))
+                .addCliMethods(resolveConverterClass(Modifier.FINAL, Converter::field))
                 .addGradleMethods(createRowConverter(Modifier.PRIVATE, Converter::gradleAccessor))
+                .addGradleMethods(resolveConverterClass(Modifier.PRIVATE, Converter::gradleAccessor))
                 .addImmutableMethods(immutableBuilder(GROUP_NAME))
                 .addImmutableMethods(immutableCopyOf(GROUP_NAME))
                 .addImmutableAnnotations(immutableAnnotation())
                 .addMavenMethods(createRowConverter(Modifier.FINAL, Converter::field))
+                .addMavenMethods(resolveConverterClass(Modifier.FINAL, Converter::field))
+                // Where the repositories go decides where the converters go, and the two settings
+                // live in different groups — so the one that depends on the other is handed it.
+                .addAntParameters(basePackageNameParameter())
+                .addCliParameters(basePackageNameParameter())
+                .addGradleParameters(basePackageNameParameter())
+                .addMavenParameters(basePackageNameParameter())
                 .build();
     }
 
     private static ConfigurationSetting defaultConverter() {
         final var name = DEFAULT_CONVERTER;
         final var description = "The fully-qualified name of the converter to use for statements that name none.";
-        final var initializer = CodeBlock.of(".set$L($L($L))\n", upperCase(name), CREATE_ROW_CONVERTER, name);
+        final var initializer = CodeBlock.of(".set$L($L($L, $L))\n",
+                upperCase(name), CREATE_ROW_CONVERTER, name, BASE_PACKAGE_NAME);
         return ConfigurationSetting.builder()
                 .setName(name)
                 .setDescription(description)
@@ -81,7 +94,8 @@ public final class Converter extends AbstractConfigurationGroup {
                         .build())
                 .setAntInitializer(initializer)
                 .setCliInitializer(initializer)
-                .setGradleInitializer(CodeBlock.of(".set$L($L($L().get()))\n", upperCase(name), CREATE_ROW_CONVERTER, gradlePropertyName(name)))
+                .setGradleInitializer(CodeBlock.of(".set$L($L($L().get(), $L))\n",
+                        upperCase(name), CREATE_ROW_CONVERTER, gradlePropertyName(name), BASE_PACKAGE_NAME))
                 .setMavenInitializer(initializer)
                 .setGradleConvention(CodeBlock.of("$L().convention($S)", gradlePropertyName(name), ""))
                 .addAntFields(antField(name, description, ""))
@@ -129,15 +143,38 @@ public final class Converter extends AbstractConfigurationGroup {
     }
 
     private static ConfigurationSetting mapConverterClass() {
-        final var description = "The fully-qualified class name of the ToMap converter.";
-        final var value = "com.example.persistence.converter.ToMapConverter";
-        return setting(GROUP_NAME, MAP_CONVERTER_CLASS, description, value)
+        final var description = "The class name of the ToMap converter.";
+        final var value = "ToMapConverter";
+        final var configured = setting(GROUP_NAME, MAP_CONVERTER_CLASS, description, value)
                 .setExplanation("""
-                        Where the generated ToMap converter is written, and what it is called. Change it to put
-                        the converter in a package of your own — or, together with
+                        Where the generated ToMap converter is written and what it is called — and, since every
+                        generated converter is written beside it, where the rest of them go too.
+
+                        A bare class name, which is the default, puts them in a `converter` package under the
+                        repositories' [basePackageName](../../repositories/basepackagename/): a project that has
+                        said where its repositories go has thereby said where its converters go. Write a
+                        fully-qualified name to put them somewhere else — or, together with
                         [generateMapConverter](../generatemapconverter/) set to `false`, to point repositories at a
                         ToMap converter you wrote yourself.""")
+                .addExamples(ConfigurationExample.builder()
+                        .setValue(value)
+                        .setDescription("The default. Converters are generated into a `converter` package beneath the base package the repositories use.")
+                        .build())
+                .addExamples(ConfigurationExample.builder()
+                        .setValue("com.example.mapping.ToMapConverter")
+                        .setDescription("A name with a package is followed exactly, wherever the repositories are.")
+                        .build())
                 .build();
+        // Resolved as the configuration is assembled rather than where it is read: the default
+        // converter copies this value, and a copy taken before the resolution names a class nobody
+        // writes.
+        final var resolve = CodeBlock.of(".set$L($L($L))\n",
+                upperCase(MAP_CONVERTER_CLASS), RESOLVE_CONVERTER_CLASS, BASE_PACKAGE_NAME);
+        return ConfigurationSetting.copyOf(configured)
+                .withAntInitializer(resolve)
+                .withCliInitializer(resolve)
+                .withGradleInitializer(resolve)
+                .withMavenInitializer(resolve);
     }
 
     private static ConfigurationSetting recordConverterMethod() {
@@ -231,6 +268,7 @@ public final class Converter extends AbstractConfigurationGroup {
                 .addModifiers(modifier)
                 .returns(ResultRowConverter.class)
                 .addParameter(ParameterSpec.builder(String.class, "converterClass", Modifier.FINAL).build())
+                .addParameter(basePackageNameParameter())
                 .addStatement(CodeBlock.builder()
                         .add("return $T.ofNullable($L)", Optional.class, "converterClass")
                         .add("$>$>\n.map($T::strip)", String.class)
@@ -238,11 +276,35 @@ public final class Converter extends AbstractConfigurationGroup {
                         .add("\n.map($T::fromClassName)", ResultRowConverter.class)
                         .add("\n.orElseGet(() -> $T.builder()", ResultRowConverter.class)
                         .add("$>\n.setAlias($L)", accessor.apply(MAP_CONVERTER_ALIAS))
-                        .add("\n.setConverterType($L)", accessor.apply(MAP_CONVERTER_CLASS))
+                        .add("\n.setConverterType($L($L))", RESOLVE_CONVERTER_CLASS, BASE_PACKAGE_NAME)
                         .add("\n.setMethodName($L)", accessor.apply(MAP_CONVERTER_METHOD))
                         .add("\n.setResultType($S)", MAP_RESULT_TYPE)
                         .add("\n.build())$<$<$<")
                         .build())
+                .build();
+    }
+
+    private static ParameterSpec basePackageNameParameter() {
+        return ParameterSpec.builder(String.class, BASE_PACKAGE_NAME, Modifier.FINAL).build();
+    }
+
+    /**
+     * Turns whatever {@code mapConverterClass} says into the class name the rest of the build uses.
+     *
+     * <p>Generated per frontend rather than resolved further down, because the value is copied while
+     * the configuration is assembled — the default converter takes its type from it — and a copy made
+     * before the resolution is a reference to a class that is never written.</p>
+     */
+    private static MethodSpec resolveConverterClass(
+            final Modifier modifier,
+            final Function<String, CodeBlock> accessor) {
+        return MethodSpec.methodBuilder(RESOLVE_CONVERTER_CLASS)
+                .addModifiers(modifier)
+                .returns(String.class)
+                .addParameter(basePackageNameParameter())
+                .addStatement("final var declared = $L.strip()", accessor.apply(MAP_CONVERTER_CLASS))
+                .addStatement("return declared.contains($S) ? declared : $L + $S + declared",
+                        ".", BASE_PACKAGE_NAME, ".converter.")
                 .build();
     }
 

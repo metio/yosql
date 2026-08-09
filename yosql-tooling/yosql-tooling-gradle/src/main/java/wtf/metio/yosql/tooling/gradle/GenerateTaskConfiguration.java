@@ -40,12 +40,16 @@ public class GenerateTaskConfiguration implements Action<GenerateCodeTask> {
                 .map(directory -> directory.isBlank()
                         ? List.of()
                         : List.of(projectDirectory.resolve(directory).toFile())));
+        // The converters go beside the repositories, so where the repositories go is settled
+        // first and handed over — the effective value, not the field, which may be unset.
+        final var repositoriesConfiguration = extension.getRepositories().asConfiguration();
         task.getRuntimeConfiguration().set(RuntimeConfiguration.builder()
                 .setAnnotations(extension.getAnnotations().asConfiguration())
-                .setConverter(extension.getConverter().asConfiguration())
+                .setConverter(extension.getConverter().asConfiguration(
+                        repositoriesConfiguration.basePackageName()))
                 .setFiles(extension.getFiles().asConfiguration())
                 .setLogging(extension.getLogging().asConfiguration())
-                .setRepositories(extension.getRepositories().asConfiguration())
+                .setRepositories(repositoriesConfiguration)
                 .setResources(extension.getResources().asConfiguration())
                 .setSchema(extension.getSchema().asConfiguration(projectDirectory))
                 .build());

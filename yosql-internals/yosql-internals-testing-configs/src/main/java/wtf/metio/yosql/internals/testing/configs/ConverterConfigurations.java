@@ -13,8 +13,16 @@ import wtf.metio.yosql.models.immutables.ConverterConfiguration;
  */
 public final class ConverterConfigurations {
 
+    /**
+     * The map converter's class is fully qualified here because that is how it arrives: a frontend
+     * resolves a bare {@code mapConverterClass} against the repositories' base package while it
+     * assembles the configuration, so everything downstream is given a name it can write an import
+     * for.
+     */
     public static ConverterConfiguration withoutConverters() {
-        return ConverterConfiguration.builder().build();
+        return ConverterConfiguration.builder()
+                .setMapConverterClass("com.example.persistence.converter.ToMapConverter")
+                .build();
     }
 
     /**

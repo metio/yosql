@@ -43,13 +43,16 @@ public class YoSQLGenerateTask extends Task {
     }
 
     private RuntimeConfiguration createConfiguration() {
+        // The converters go beside the repositories, so where the repositories go is settled
+        // first and handed over — the effective value, not the field, which may be unset.
+        final var repositoriesConfiguration = repositories.asConfiguration();
         return RuntimeConfiguration.builder()
                 .setFiles(files.asConfiguration(getProject().getBaseDir().toPath()))
                 .setAnnotations(annotations.asConfiguration())
                 .setLogging(logging.asConfiguration())
-                .setRepositories(repositories.asConfiguration())
+                .setRepositories(repositoriesConfiguration)
                 .setResources(resources.asConfiguration())
-                .setConverter(converter.asConfiguration())
+                .setConverter(converter.asConfiguration(repositoriesConfiguration.basePackageName()))
                 .setSchema(schema.asConfiguration(getProject().getBaseDir().toPath()))
                 .build();
     }

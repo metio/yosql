@@ -72,13 +72,6 @@
                     <repositories>
                         <basePackageName>wtf.metio.yosql.example.records.persistence</basePackageName>
                     </repositories>
-                    <converter>
-                        <!-- Generated converters land beside the map converter, so this decides
-                             where they go. -->
-                        <mapConverterClass>
-                            wtf.metio.yosql.example.records.persistence.converter.ToMapConverter
-                        </mapConverterClass>
-                    </converter>
                 </configuration>
             </plugin>
             <plugin>

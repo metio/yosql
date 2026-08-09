@@ -14,6 +14,32 @@ What each release needs from you, when it needs anything. Releases not listed he
 
 ## 2026.9.8
 
+### Converters are generated beside your repositories
+
+`converter.mapConverterClass` used to default to `com.example.persistence.converter.ToMapConverter`,
+and every generated converter is written to the package that setting names. A project that set
+`repositories.basePackageName` and nothing else therefore had its repositories generated where it
+asked and its converters generated into the example's package — a name it had never written down,
+reached through a setting it had never heard of.
+
+The default is now the bare name `ToMapConverter`, and a name without a package is resolved against
+`repositories.basePackageName`. So converters land in `<your base package>.converter`, and a project
+that already worked around this by writing the setting out in full keeps exactly what it had — a
+fully-qualified name is still followed to the letter.
+
+Nothing to do unless you configured `mapConverterClass` solely to relocate the converters. That
+setting can go:
+
+```xml
+<converter>
+  <mapConverterClass>com.example.store.converter.ToMapConverter</mapConverterClass>
+</converter>
+```
+
+If you want the converters to stay where they are while your base package differs, keep it. Anything
+of your own importing a generated converter moves with it — that shows up as a compile error naming
+the import, not as anything silent.
+
 A `schema.sqlStatementsDirectory` holding versioned migrations is now read in version order.
 Previously the files were read in name order, so `V10__` and `V12__` were applied ahead of `V2__`
 and every column added past the ninth migration was missing from the schema `YoSQL` worked from.

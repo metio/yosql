@@ -295,17 +295,17 @@ one, and it means *write this one yourself*.
 
 ### Where the generated types go
 
-Repositories go in `repositories.basePackageName`. Converters do not: a converter generated from a
-record is named `<recordConverterPrefix><Record><recordConverterSuffix>` and written to the package
-of **`converter.mapConverterClass`**, which defaults to `com.example.persistence.converter`. Left
-alone it stays there however the repositories are packaged, so set it alongside `basePackageName`:
+Repositories go in `repositories.basePackageName`, and converters go in a `converter` package
+beneath it — so saying where the repositories go says where the converters go, and nothing else
+needs configuring. A converter generated from a record is named
+`<recordConverterPrefix><Record><recordConverterSuffix>`.
+
+To put them somewhere else, write **`converter.mapConverterClass`** out in full; every generated
+converter follows the package it names:
 
 ```xml
-<repositories>
-  <basePackageName>com.example.store</basePackageName>
-</repositories>
 <converter>
-  <mapConverterClass>com.example.store.converter.ToMapConverter</mapConverterClass>
+  <mapConverterClass>com.example.mapping.ToMapConverter</mapConverterClass>
 </converter>
 ```
 
