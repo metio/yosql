@@ -117,6 +117,80 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <!-- Every configuration group, set to something other than its default,
+                             through the options the meta-model generates for picocli. Each frontend
+                             gets its own surface and its own wiring, so a group that arrives through
+                             the mojo says nothing about the same group arriving on a command line.
+                             The two runs above set three of the seven between them.
+
+                             Its own output directory, because the generator clears what it wrote
+                             before writing again — two runs sharing one would leave whichever went
+                             second. -->
+                        <id>config-surface</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>wtf.metio.yosql.tooling.cli.YoSQL</argument>
+                                <argument>generate</argument>
+                                <argument>--files-input-base-directory</argument>
+                                <argument>${project.basedir}/src/main/yosql-config</argument>
+                                <argument>--files-output-base-directory</argument>
+                                <argument>${project.build.directory}/generated-sources/config</argument>
+                                <argument>--files-source-directory</argument>
+                                <argument>${project.basedir}/src/main/java</argument>
+                                <argument>--files-sql-files-suffix</argument>
+                                <argument>.sql</argument>
+                                <argument>--repositories-base-package-name</argument>
+                                <argument>wtf.metio.yosql.example.cli.config.persistence</argument>
+                                <argument>--converter-record-converter-prefix</argument>
+                                <argument>Build</argument>
+                                <argument>--converter-record-converter-suffix</argument>
+                                <argument>Mapper</argument>
+                                <argument>--converter-record-converter-method</argument>
+                                <argument>asRecord</argument>
+                                <!-- The DDL sits outside the statements, so only this can have found
+                                     it; and its jsonb column resolves only for a declared vendor, so
+                                     a vendor that fails to arrive stops the build rather than
+                                     quietly generating something else. -->
+                                <argument>--schema-sql-statements-directory</argument>
+                                <argument>${project.basedir}/src/main/schema</argument>
+                                <argument>--schema-vendor</argument>
+                                <argument>PostgreSQL</argument>
+                                <argument>--schema-validation</argument>
+                                <argument>ERROR</argument>
+                                <!-- One string carrying a type and a member, which is how a command
+                                     line spells what the other frontends spell as nested elements. -->
+                                <argument>--annotations-repository-annotations</argument>
+                                <argument>java.lang.SuppressWarnings:value|cli-config-example</argument>
+                                <argument>--logging-api</argument>
+                                <argument>JUL</argument>
+                                <argument>--resources-max-threads</argument>
+                                <argument>1</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run-generated-code</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>wtf.metio.yosql.example.cli.ExampleApp</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -136,28 +210,8 @@
                             <sources>
                                 <source>${project.build.directory}/generated-sources/plain</source>
                                 <source>${project.build.directory}/generated-sources/interfaces</source>
+                                <source>${project.build.directory}/generated-sources/config</source>
                             </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>run-generated-code</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-classpath</argument>
-                                <classpath/>
-                                <argument>wtf.metio.yosql.example.cli.ExampleApp</argument>
-                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
