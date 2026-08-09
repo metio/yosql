@@ -82,6 +82,56 @@
                             </target>
                         </configuration>
                     </execution>
+                    <execution>
+                        <!-- Every configuration group, set to something other than its default,
+                             through the elements and attributes the meta-model generates for Ant.
+                             Each frontend gets its own surface and its own wiring, so a group that
+                             arrives through the mojo says nothing about the same group arriving
+                             through the task. The run above sets two of the seven.
+
+                             Its own output directory, because the generator clears what it wrote
+                             before writing again — two runs sharing one directory would leave
+                             whichever went second. -->
+                        <id>generate-config-surface</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+
+                                <taskdef name="yosql"
+                                         classname="wtf.metio.yosql.tooling.ant.YoSQLGenerateTask"
+                                         classpath="${runtime_classpath}"/>
+
+                                <yosql>
+                                    <files inputBaseDirectory="src/main/yosql-config"
+                                           outputBaseDirectory="${project.build.directory}/generated-sources/yosql-config"
+                                           sourceDirectory="src/main/java"
+                                           sqlFilesSuffix=".sql"/>
+                                    <repositories basePackageName="wtf.metio.yosql.example.ant.config.persistence"/>
+                                    <converter recordConverterPrefix="Build"
+                                               recordConverterSuffix="Mapper"
+                                               recordConverterMethod="asRecord"/>
+                                    <!-- The DDL sits outside the statements, so only this can have
+                                         found it; and its jsonb column resolves only for a declared
+                                         vendor, so a vendor that fails to arrive stops the build
+                                         rather than quietly generating something else. -->
+                                    <schema sqlStatementsDirectory="src/main/schema"
+                                            vendor="PostgreSQL"
+                                            validation="ERROR"/>
+                                    <annotations>
+                                        <repositoryAnnotations type="java.lang.SuppressWarnings">
+                                            <member key="value" value="ant-config-example"/>
+                                        </repositoryAnnotations>
+                                    </annotations>
+                                    <logging api="JUL"/>
+                                    <resources maxThreads="1"/>
+                                </yosql>
+                            </target>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -97,6 +147,7 @@
                         <configuration>
                             <sources>
                                 <source>${project.build.directory}/generated-sources/yosql</source>
+                                <source>${project.build.directory}/generated-sources/yosql-config</source>
                             </sources>
                         </configuration>
                     </execution>
