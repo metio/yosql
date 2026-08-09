@@ -67,6 +67,7 @@ each value on its line, however long:
 | `resultRowColumns` | Which column a component reads, when aliasing in SQL is not possible. |
 | `vendor` | Marks a statement as being for one database only. |
 | `description` | Carried into the generated method's javadoc. One line. |
+| `injectConverter` | Take this statement's converter as a constructor parameter instead of building it. |
 
 ### Statement type comes from the name
 
@@ -393,10 +394,13 @@ Worth deciding early, because both change the shape of the code around the repos
 arguments, so a mapper closing over a resolver, a tenant key or a clock has nowhere to take them
 from. Two ways out:
 
-- `repositories.injectConverters` makes repositories take their converters as constructor
-  parameters, so a converter you wrote can hold whatever it needs. It is one setting for the whole
-  project — every repository constructor changes at once — so in a project with dozens of them it is
-  a single large migration rather than something to reach for per statement.
+- `injectConverter: true` in a statement's front matter makes *that* converter a constructor
+  parameter of its repository. Every other repository is generated exactly as before, so one
+  statement needing a stateful mapper costs one constructor. Statements sharing a converter share the
+  field, so one of them asking is enough; the converter needs an alias, since that names the
+  parameter.
+- `repositories.injectConverters` does the same for every repository in the project at once. Reach
+  for it when most converters need injecting, not when one does.
 - Return a flat record straight from the schema and do the mapping in the caller. Nothing about the
   repositories changes, and the state stays in the service that owns it. This is the one that scales
   when only a few statements need it.

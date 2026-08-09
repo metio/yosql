@@ -77,6 +77,7 @@ public final class Sql extends AbstractConfigurationGroup {
                 name(),
                 description(),
                 validateSchema(),
+                injectConverter(),
                 generateResultRowType(),
                 vendor(),
                 type(),
@@ -235,6 +236,33 @@ public final class Sql extends AbstractConfigurationGroup {
 
                         Set it to `false` and this statement is generated without any of the checks
                         [validation](../../schema/validation/) turns on. Nothing else changes about it.""")
+                .addImmutableMethods(immutableMethod(ClassName.get(Boolean.class), name, description))
+                .addTags(Tags.FRONT_MATTER)
+                .build();
+    }
+
+    private static ConfigurationSetting injectConverter() {
+        final var name = "injectConverter";
+        final var description = "Whether this statement's converter is a constructor parameter of its repository.";
+        return ConfigurationSetting.builder()
+                .setName(name)
+                .setDescription(description)
+                .setFrontMatterExampleCode("true")
+                .setExplanation("""
+                        A generated converter is constructed with no arguments, so a mapper that has to close over
+                        something — a resolver, a tenant key, a clock — cannot be one. The way out is to write the
+                        converter yourself and have the repository take it, which is what
+                        [injectConverters](../../repositories/injectconverters/) does for every repository in the
+                        project at once. In a project with dozens of them already wired up by hand, changing every
+                        constructor for the sake of one statement is not a trade worth making.
+
+                        Set this on the statement instead and only that converter is injected. The repository it
+                        belongs to takes one more constructor parameter; every other repository is generated exactly
+                        as before.
+
+                        Statements sharing a converter share its field, so one of them asking is enough for it to
+                        be injected — there is one field and it is initialised once. The converter needs an alias,
+                        since that is what names the parameter.""")
                 .addImmutableMethods(immutableMethod(ClassName.get(Boolean.class), name, description))
                 .addTags(Tags.FRONT_MATTER)
                 .build();

@@ -25,6 +25,10 @@ public final class RepositoriesConfigurations {
      * One method per statement, in whichever shape {@code createConnection} asks for, so that a test
      * about that setting sees only what it configures.
      */
+    public static RepositoriesConfiguration injectConverters() {
+        return RepositoriesConfiguration.copyOf(defaults()).withInjectConverters(true);
+    }
+
     public static RepositoriesConfiguration withoutConnectionOverloads() {
         return RepositoriesConfiguration.copyOf(defaults())
                 .withGenerateConnectionOverloads(false);

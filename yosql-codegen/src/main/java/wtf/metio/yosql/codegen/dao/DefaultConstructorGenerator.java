@@ -18,6 +18,8 @@ import wtf.metio.yosql.models.immutables.RepositoriesConfiguration;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -54,19 +56,41 @@ public final class DefaultConstructorGenerator implements ConstructorGenerator {
                     .addCode(blocks.initializeFieldToSelf(GeneratedNames.DATA_SOURCE));
         }
 
-        if (repositories.injectConverters()) {
-            resultConverters(statements).forEach(converter -> {
+        final var injected = injectedConverters(statements);
+        resultConverters(statements).forEach(converter -> {
+            if (repositories.injectConverters() || injected.contains(converter)) {
                 constructor.addParameter(jdbcParameters.converter(converter));
                 builder.add(blocks.initializeFieldToSelf(converter.alias()
                         .orElseThrow(MissingConverterAliasException::new)));
-            });
-        } else {
-            resultConverters(statements).forEach(converter -> builder.add(blocks.initializeConverter(converter)));
-        }
+            } else {
+                builder.add(blocks.initializeConverter(converter));
+            }
+        });
 
         return constructor
                 .addCode(builder.build())
                 .build();
+    }
+
+    /**
+     * The converters a statement of this repository asked to be given rather than to construct.
+     *
+     * <p>Asked per statement and answered per converter, because a converter is a field of the
+     * repository and a field is initialised once. Statements sharing one therefore share the answer,
+     * and one of them asking settles it: a converter that has to be handed in cannot also be built
+     * here, while one that is handed in satisfies every statement that would have built it.</p>
+     */
+    private Set<ResultRowConverter> injectedConverters(final List<SqlStatement> statements) {
+        final var asked = statements.stream()
+                .map(SqlStatement::getConfiguration)
+                .filter(configuration -> configuration.injectConverter().orElse(Boolean.FALSE))
+                .toList();
+        return SqlStatement.resultConverters(
+                        statements.stream()
+                                .filter(statement -> asked.contains(statement.getConfiguration()))
+                                .toList(),
+                        converters.defaultConverter().orElseThrow(MissingDefaultConverterException::new))
+                .collect(Collectors.toSet());
     }
 
     private Stream<ResultRowConverter> resultConverters(final List<SqlStatement> statements) {
