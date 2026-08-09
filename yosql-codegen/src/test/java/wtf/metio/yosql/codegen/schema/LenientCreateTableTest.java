@@ -137,9 +137,9 @@ class LenientCreateTableTest {
     @DisplayName("agrees with the parser wherever both can read")
     class Agrees {
 
-        private static void shouldAgree(final String parseable, final String unparseable) {
+        private static void shouldAgree(final String parseable, final String unparsable) {
             final var parsed = CatalogReader.read(List.of(parseable)).table("t").orElseThrow();
-            final var lenient = CatalogReader.read(List.of(unparseable)).table("t").orElseThrow();
+            final var lenient = CatalogReader.read(List.of(unparsable)).table("t").orElseThrow();
 
             assertAll(
                     () -> assertEquals(List.copyOf(parsed.columnNames()), List.copyOf(lenient.columnNames())),
