@@ -72,9 +72,11 @@ jobs:
           # generated sources is unreadable anyway.
           diff --recursive --brief /tmp/first /tmp/second
   gradle:
-    # The Gradle example is not a Maven module, so the reactor never reaches it.
-    # Building it is the only check that the Gradle plugin's DSL still matches
-    # the configuration model the generator produces.
+    # The Gradle examples are not Maven modules, so the reactor never reaches
+    # them. Building them is the only check that the Gradle plugin's DSL still
+    # matches the configuration model the generator produces — and the config
+    # example sets every group through that DSL and asserts what came out, which
+    # is the part no Maven gate can fail in its place.
     name: Gradle
     runs-on: ubuntu-latest
     timeout-minutes: 45

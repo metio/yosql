@@ -4,6 +4,8 @@
 [libraries]
 hikari = "com.zaxxer:HikariCP:latest.release"
 h2 = "com.h2database:h2:latest.release"
+junit = "org.junit.jupiter:junit-jupiter:latest.release"
+junitLauncher = "org.junit.platform:junit-platform-launcher:latest.release"
 
 [bundles]
 database = ["hikari", "h2"]
