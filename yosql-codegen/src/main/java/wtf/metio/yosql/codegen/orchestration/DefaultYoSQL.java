@@ -5,6 +5,8 @@
 package wtf.metio.yosql.codegen.orchestration;
 
 import ch.qos.cal10n.IMessageConveyor;
+import com.palantir.javapoet.TypeSpec;
+import wtf.metio.yosql.codegen.exceptions.DuplicateGeneratedTypeException;
 import wtf.metio.yosql.codegen.dao.CodeGenerator;
 import wtf.metio.yosql.codegen.files.FileParser;
 import wtf.metio.yosql.codegen.lifecycle.*;
@@ -13,6 +15,8 @@ import wtf.metio.yosql.models.immutables.PackagedTypeSpec;
 import wtf.metio.yosql.codegen.schema.SchemaValidator;
 import wtf.metio.yosql.models.immutables.SqlStatement;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -111,7 +115,43 @@ public final class DefaultYoSQL implements YoSQL {
     private Stream<PackagedTypeSpec> generateCode(final List<SqlStatement> statements) {
         final var generated = timer.timed(messages.getMessage(CodegenLifecycle.GENERATE_REPOSITORIES),
                 () -> codeGenerator.generateCode(statements).toList());
+        rejectDuplicates(generated);
         return generated.stream();
+    }
+
+    /**
+     * Two generated types that would be written as the same file.
+     *
+     * <p>Here rather than in any one generator, because no generator can see it: a repository
+     * interface, a record and a converter are named by rules that never meet, and each name is
+     * unobjectionable on its own. This is the only place the whole set exists at once, and it is
+     * before anything is on disk.</p>
+     */
+    private static void rejectDuplicates(final List<PackagedTypeSpec> generated) {
+        final var byName = new LinkedHashMap<String, List<PackagedTypeSpec>>();
+        generated.forEach(spec -> byName.computeIfAbsent(
+                spec.getPackageName() + "." + spec.getType().name(),
+                key -> new ArrayList<>()).add(spec));
+        for (final var entry : byName.entrySet()) {
+            if (entry.getValue().size() > 1) {
+                throw new DuplicateGeneratedTypeException(entry.getKey(), entry.getValue().stream()
+                        .map(spec -> describe(spec.getType().kind()))
+                        .toList());
+            }
+        }
+    }
+
+    /**
+     * JavaPoet spells its kinds in capitals, which reads as shouting in the middle of a sentence.
+     */
+    private static String describe(final TypeSpec.Kind kind) {
+        return switch (kind) {
+            case INTERFACE -> "an interface";
+            case RECORD -> "a record";
+            case ENUM -> "an enum";
+            case ANNOTATION -> "an annotation";
+            case CLASS -> "a class";
+        };
     }
 
     private void writeIntoFiles(final Stream<PackagedTypeSpec> typeSpecs) {
