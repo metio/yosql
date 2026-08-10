@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sql on YoSQL</title><link>https://yosql.projects.metio.wtf/configuration/sql/</link><description>Recent content in Sql on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 10 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/configuration/sql/index.xml" rel="self" type="application/rss+xml"/><item><title>annotations</title><link>https://yosql.projects.metio.wtf/configuration/sql/annotations/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/annotations/</guid><description>&lt;p&gt;The additional annotations to be placed on generated methods.&lt;/p&gt;
+&lt;p&gt;This list is empty by default and thus no annotations are added to generated methods.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-yourownannotation"&gt;Option: &amp;lsquo;your.own.Annotation&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;In order to add an annotation to the generated methods, specify its fully-qualified name.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;com.example.persistence&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;your.own.Annotation&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SomeRepository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Annotation&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;someMethod&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... some code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... rest of generated code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="option-yourotherannotation"&gt;Option: &amp;lsquo;your.other.Annotation&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;In order to add an annotation with some member, specify name of the annotation member, its value, and its type. The type defaults to &lt;code&gt;java.lang.String&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>catchAndRethrow</title><link>https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/catchandrethrow/</guid><description>&lt;p&gt;Catch exceptions during SQL execution and re-throw them as RuntimeExceptions&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-true"&gt;Option: &amp;rsquo;true'&lt;/h3&gt;
+&lt;p&gt;The default value for &lt;code&gt;catchAndRethrow&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt;. This will catch any &lt;code&gt;SQLException&lt;/code&gt; that happen during SQL execution and re-throw them as &lt;code&gt;RuntimeExceptions&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;com.example.persistence&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SomeRepository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;writeSome&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... some code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... rest of generated code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="option-false"&gt;Option: &amp;lsquo;false&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;In case you want to handle &lt;code&gt;SQLException&lt;/code&gt;s yourself, set &lt;code&gt;catchAndRethrow&lt;/code&gt; to &lt;code&gt;false&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>createConnection</title><link>https://yosql.projects.metio.wtf/configuration/sql/createconnection/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/createconnection/</guid><description>&lt;p&gt;Controls whether the generated code should create/open connection itself or use a given connection.&lt;/p&gt;
+&lt;p&gt;A method either takes a connection from the repository&amp;rsquo;s &lt;code&gt;DataSource&lt;/code&gt; and closes it when it
+is done, or takes a &lt;code&gt;java.sql.Connection&lt;/code&gt; as its first parameter and leaves it open for
+whoever passed it in.&lt;/p&gt;
+&lt;p&gt;With &lt;a href="../generateconnectionoverloads/"&gt;generateConnectionOverloads&lt;/a&gt;
+ left on — it is on by
+default — you get both and this setting decides nothing you have to think about. It matters
+when you turn overloads off and want one shape rather than the other.&lt;/p&gt;</description></item><item><title>description</title><link>https://yosql.projects.metio.wtf/configuration/sql/description/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/description/</guid><description>&lt;p&gt;The description for the SQL statement&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-some-random-description"&gt;Option: &amp;lsquo;Some random description&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;In case you use the &lt;code&gt;description&lt;/code&gt; option, &lt;code&gt;YoSQL&lt;/code&gt; will use the supplied value as a JavaDoc comment&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;com.example.persistence&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SomeRepository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cm"&gt; * Some random description
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cm"&gt; */&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;someMethod&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... some code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... rest of generated code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../annotations/"&gt;annotations&lt;/a&gt;
+, &lt;a href="../catchandrethrow/"&gt;catchAndRethrow&lt;/a&gt;
+, &lt;a href="../createconnection/"&gt;createConnection&lt;/a&gt;
+, &lt;a href="../executebatch/"&gt;executeBatch&lt;/a&gt;
+, &lt;a href="../executeonce/"&gt;executeOnce&lt;/a&gt;
+, &lt;a href="../generateconnectionoverloads/"&gt;generateConnectionOverloads&lt;/a&gt;
+, &lt;a href="../generateresultrowtype/"&gt;generateResultRowType&lt;/a&gt;
+, &lt;a href="../injectconverter/"&gt;injectConverter&lt;/a&gt;
+, &lt;a href="../name/"&gt;name&lt;/a&gt;
+, &lt;a href="../parameters/"&gt;parameters&lt;/a&gt;
+, &lt;a href="../repository/"&gt;repository&lt;/a&gt;
+, &lt;a href="../resultrowcolumns/"&gt;resultRowColumns&lt;/a&gt;
+, &lt;a href="../resultrowconverter/"&gt;resultRowConverter&lt;/a&gt;
+, &lt;a href="../resultrowtype/"&gt;resultRowType&lt;/a&gt;
+, &lt;a href="../returningmode/"&gt;returningMode&lt;/a&gt;
+, &lt;a href="../throwonmultipleresults/"&gt;throwOnMultipleResults&lt;/a&gt;
+, &lt;a href="../type/"&gt;type&lt;/a&gt;
+, &lt;a href="../validateschema/"&gt;validateSchema&lt;/a&gt;
+, &lt;a href="../vendor/"&gt;vendor&lt;/a&gt;
+, &lt;a href="../writesreturnupdatecount/"&gt;writesReturnUpdateCount&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>executeBatch</title><link>https://yosql.projects.metio.wtf/configuration/sql/executebatch/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/executebatch/</guid><description>&lt;p&gt;Generate methods that are executed as batch&lt;/p&gt;
+&lt;p&gt;A second method taking an array per parameter, adding a batch entry per element and
+answering with the &lt;code&gt;int[]&lt;/code&gt; the driver gives back. One round trip instead of one per row,
+which is the difference between an import that takes a minute and one that takes an hour.&lt;/p&gt;
+&lt;p&gt;Only writing statements get one — batching a query would have nowhere to put the results.
+Turn it off for a statement that is never run in bulk, if the extra method bothers you;
+it costs nothing to leave on.&lt;/p&gt;</description></item><item><title>executeOnce</title><link>https://yosql.projects.metio.wtf/configuration/sql/executeonce/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/executeonce/</guid><description>&lt;p&gt;Generate methods that are executed once with the given parameters&lt;/p&gt;
+&lt;p&gt;The ordinary method: one call, one execution, the parameters you passed. It is what you
+want for almost every statement, which is why it is on.&lt;/p&gt;
+&lt;p&gt;Turning it off for a statement leaves only its batch method, which is worth doing for a
+statement that is never sensibly run for a single row — a bulk import, say. A statement
+with both turned off generates nothing, and &lt;code&gt;YoSQL&lt;/code&gt; warns rather than leaving you to
+notice the missing method.&lt;/p&gt;</description></item><item><title>generateConnectionOverloads</title><link>https://yosql.projects.metio.wtf/configuration/sql/generateconnectionoverloads/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/generateconnectionoverloads/</guid><description>&lt;p&gt;Generate both a DataSource-based method and a Connection-taking overload for every statement.&lt;/p&gt;
+&lt;p&gt;Whether a statement gets its connection from the repository&amp;rsquo;s &lt;code&gt;DataSource&lt;/code&gt; or from the
+caller is not a property of the statement — it is what the call site needs. One caller
+reads a tenant on its own; another reads it as part of a transaction it already opened. So
+every statement generates both, as overloads of one name:&lt;/p&gt;</description></item><item><title>generateResultRowType</title><link>https://yosql.projects.metio.wtf/configuration/sql/generateresultrowtype/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/generateresultrowtype/</guid><description>&lt;p&gt;Write the record this statement builds its rows into.&lt;/p&gt;
+&lt;p&gt;Everything the record needs is already known — which columns the statement selects, what
+each one holds, whether it can be null — so naming a record that does not exist yet and
+setting this writes it for you, next to the converter that builds it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- name: findTenant
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- returning: single
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- resultRowType: com.example.domain.Tenant
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- generateResultRowType: true
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;slug&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;created_at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tenant&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Opt in per statement rather than whenever the record is missing. A &lt;code&gt;resultRowType&lt;/code&gt; naming
+a record that is not there is far more often a typo than a request, and writing a new
+record for a misspelled name would replace a build error with a mystery.&lt;/p&gt;</description></item><item><title>injectConverter</title><link>https://yosql.projects.metio.wtf/configuration/sql/injectconverter/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/injectconverter/</guid><description>&lt;p&gt;Whether this statement&amp;rsquo;s converter is a constructor parameter of its repository.&lt;/p&gt;
+&lt;p&gt;A generated converter is constructed with no arguments, so a mapper that has to close over
+something — a resolver, a tenant key, a clock — cannot be one. The way out is to write the
+converter yourself and have the repository take it, which is what
+&lt;a href="../../repositories/injectconverters/"&gt;injectConverters&lt;/a&gt;
+ does for every repository in the
+project at once. In a project with dozens of them already wired up by hand, changing every
+constructor for the sake of one statement is not a trade worth making.&lt;/p&gt;</description></item><item><title>name</title><link>https://yosql.projects.metio.wtf/configuration/sql/name/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/name/</guid><description>&lt;p&gt;The name of the SQL statement&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-yourspecialname"&gt;Option: &amp;lsquo;yourSpecialName&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;In case you use the &lt;code&gt;name&lt;/code&gt; option, &lt;code&gt;YoSQL&lt;/code&gt; will use the supplied value as a method name&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;com.example.persistence&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SomeRepository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;yourSpecialName&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... some code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... rest of generated code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../annotations/"&gt;annotations&lt;/a&gt;
+, &lt;a href="../catchandrethrow/"&gt;catchAndRethrow&lt;/a&gt;
+, &lt;a href="../createconnection/"&gt;createConnection&lt;/a&gt;
+, &lt;a href="../description/"&gt;description&lt;/a&gt;
+, &lt;a href="../executebatch/"&gt;executeBatch&lt;/a&gt;
+, &lt;a href="../executeonce/"&gt;executeOnce&lt;/a&gt;
+, &lt;a href="../generateconnectionoverloads/"&gt;generateConnectionOverloads&lt;/a&gt;
+, &lt;a href="../generateresultrowtype/"&gt;generateResultRowType&lt;/a&gt;
+, &lt;a href="../injectconverter/"&gt;injectConverter&lt;/a&gt;
+, &lt;a href="../parameters/"&gt;parameters&lt;/a&gt;
+, &lt;a href="../repository/"&gt;repository&lt;/a&gt;
+, &lt;a href="../resultrowcolumns/"&gt;resultRowColumns&lt;/a&gt;
+, &lt;a href="../resultrowconverter/"&gt;resultRowConverter&lt;/a&gt;
+, &lt;a href="../resultrowtype/"&gt;resultRowType&lt;/a&gt;
+, &lt;a href="../returningmode/"&gt;returningMode&lt;/a&gt;
+, &lt;a href="../throwonmultipleresults/"&gt;throwOnMultipleResults&lt;/a&gt;
+, &lt;a href="../type/"&gt;type&lt;/a&gt;
+, &lt;a href="../validateschema/"&gt;validateSchema&lt;/a&gt;
+, &lt;a href="../vendor/"&gt;vendor&lt;/a&gt;
+, &lt;a href="../writesreturnupdatecount/"&gt;writesReturnUpdateCount&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>parameters</title><link>https://yosql.projects.metio.wtf/configuration/sql/parameters/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/parameters/</guid><description>&lt;p&gt;The parameters of the SQL statement.&lt;/p&gt;
+&lt;p&gt;A statement binds its parameters by name — &lt;code&gt;:tenantId&lt;/code&gt; — and each becomes a method
+parameter, in the order the names first appear in the statement. A name used more than
+once is one method parameter bound at every position it occupies.&lt;/p&gt;
+&lt;p&gt;What &lt;code&gt;YoSQL&lt;/code&gt; needs from you is the Java type of each one, and only when it cannot work it
+out. A statement naming a record with &lt;a href="../resultrowtype/"&gt;resultRowType&lt;/a&gt;
+ takes each
+parameter&amp;rsquo;s type from the component of the same name, so a query selecting a tenant by its
+id needs nothing here: the record already says the id is a &lt;code&gt;UUID&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>repository</title><link>https://yosql.projects.metio.wtf/configuration/sql/repository/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/repository/</guid><description>&lt;p&gt;The fully qualified name of the target repository class.&lt;/p&gt;
+&lt;p&gt;In order to overwrite the target repository of a single SQL statement, use the &lt;code&gt;repository&lt;/code&gt; option.
+You can specify the fully qualified name of the repository that should contain your statement, or
+you can just specify the name of the class and &lt;code&gt;YoSQL&lt;/code&gt; will add the
+&lt;a href="../../repositories/basepackagename/"&gt;base package name&lt;/a&gt;
+ and the &lt;code&gt;Repository&lt;/code&gt; suffix
+for you.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../annotations/"&gt;annotations&lt;/a&gt;
+, &lt;a href="../catchandrethrow/"&gt;catchAndRethrow&lt;/a&gt;
+, &lt;a href="../createconnection/"&gt;createConnection&lt;/a&gt;
+, &lt;a href="../description/"&gt;description&lt;/a&gt;
+, &lt;a href="../executebatch/"&gt;executeBatch&lt;/a&gt;
+, &lt;a href="../executeonce/"&gt;executeOnce&lt;/a&gt;
+, &lt;a href="../generateconnectionoverloads/"&gt;generateConnectionOverloads&lt;/a&gt;
+, &lt;a href="../generateresultrowtype/"&gt;generateResultRowType&lt;/a&gt;
+, &lt;a href="../injectconverter/"&gt;injectConverter&lt;/a&gt;
+, &lt;a href="../name/"&gt;name&lt;/a&gt;
+, &lt;a href="../parameters/"&gt;parameters&lt;/a&gt;
+, &lt;a href="../resultrowcolumns/"&gt;resultRowColumns&lt;/a&gt;
+, &lt;a href="../resultrowconverter/"&gt;resultRowConverter&lt;/a&gt;
+, &lt;a href="../resultrowtype/"&gt;resultRowType&lt;/a&gt;
+, &lt;a href="../returningmode/"&gt;returningMode&lt;/a&gt;
+, &lt;a href="../throwonmultipleresults/"&gt;throwOnMultipleResults&lt;/a&gt;
+, &lt;a href="../type/"&gt;type&lt;/a&gt;
+, &lt;a href="../validateschema/"&gt;validateSchema&lt;/a&gt;
+, &lt;a href="../vendor/"&gt;vendor&lt;/a&gt;
+, &lt;a href="../writesreturnupdatecount/"&gt;writesReturnUpdateCount&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>resultRowColumns</title><link>https://yosql.projects.metio.wtf/configuration/sql/resultrowcolumns/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/resultrowcolumns/</guid><description>&lt;p&gt;Overrides which column a component of the result row type reads&lt;/p&gt;
+&lt;p&gt;A component reads the column its own name implies, &lt;code&gt;camelCase&lt;/code&gt; read as &lt;code&gt;snake_case&lt;/code&gt;. Where the
+two disagree, aliasing the column in the query is usually the better answer, because it puts the
+mapping next to the column being renamed. This is for when the query is not yours to change —
+a view you do not own, or SQL generated elsewhere.&lt;/p&gt;</description></item><item><title>resultRowConverter</title><link>https://yosql.projects.metio.wtf/configuration/sql/resultrowconverter/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/resultrowconverter/</guid><description>&lt;p&gt;The fully-qualified name of the converter class to use&lt;/p&gt;
+&lt;p&gt;Name the class and nothing else. &lt;code&gt;YoSQL&lt;/code&gt; reads it to find the single public method that
+takes a &lt;code&gt;ResultSet&lt;/code&gt;; that method&amp;rsquo;s name is what the repository calls, and its return type
+is what the statement produces. The converter is injected into a field named after the
+class, with a lower-case first letter.&lt;/p&gt;
+&lt;p&gt;The class has to be visible under &lt;a href="../../files/sourcedirectory/"&gt;sourceDirectory&lt;/a&gt;
+, because
+it is read from source rather than loaded. Naming a class that is missing, that has no
+such method, or that has more than one, fails the build.&lt;/p&gt;</description></item><item><title>resultRowType</title><link>https://yosql.projects.metio.wtf/configuration/sql/resultrowtype/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/resultrowtype/</guid><description>&lt;p&gt;The fully-qualified name of a record to build each result row into&lt;/p&gt;
+&lt;p&gt;Name a record and &lt;code&gt;YoSQL&lt;/code&gt; writes the converter for you. It reads the record&amp;rsquo;s canonical
+constructor out of its source file — under &lt;a href="../../files/sourcedirectory/"&gt;sourceDirectory&lt;/a&gt;
+ — and
+emits one &lt;code&gt;resultSet.getX(...)&lt;/code&gt; call per component, in a class of its own. No reflection is
+involved at any point, so the result survives a GraalVM native image intact.&lt;/p&gt;
+&lt;p&gt;A component takes its column from its own name, &lt;code&gt;camelCase&lt;/code&gt; read as &lt;code&gt;snake_case&lt;/code&gt;: &lt;code&gt;tenantId&lt;/code&gt;
+reads the &lt;code&gt;tenant_id&lt;/code&gt; column. When a column is named something else, alias it in the SQL —
+&lt;code&gt;select amount_cents as minor_units&lt;/code&gt; — which keeps the mapping next to the query that produces
+it.&lt;/p&gt;</description></item><item><title>returningMode</title><link>https://yosql.projects.metio.wtf/configuration/sql/returningmode/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/returningmode/</guid><description>&lt;p&gt;The returning mode of the SQL statement.&lt;/p&gt;
+&lt;p&gt;How many rows the statement answers with, which decides what the generated method returns.
+It is written &lt;code&gt;returning&lt;/code&gt; in the front matter.&lt;/p&gt;
+&lt;p&gt;The row type comes from elsewhere — &lt;a href="../resultrowtype/"&gt;resultRowType&lt;/a&gt;
+ or
+&lt;a href="../resultrowconverter/"&gt;resultRowConverter&lt;/a&gt;
+, or a &lt;code&gt;Map&amp;lt;String, Object&amp;gt;&lt;/code&gt; when neither is
+named. This setting only wraps it.&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;&lt;code&gt;returning&lt;/code&gt;&lt;/th&gt;
+					&lt;th&gt;You get&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;none&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;nothing, or the number of rows a write changed&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;single&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;code&gt;Optional&amp;lt;T&amp;gt;&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;multiple&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;code&gt;List&amp;lt;T&amp;gt;&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;&lt;code&gt;cursor&lt;/code&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;code&gt;Stream&amp;lt;T&amp;gt;&lt;/code&gt;, read lazily&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;single&lt;/code&gt; is for a statement that can answer with at most one row. A second row is
+silently ignored unless &lt;a href="../throwonmultipleresults/"&gt;throwOnMultipleResults&lt;/a&gt;
+ is on, which
+is worth turning on wherever you believe the query really is unique.&lt;/p&gt;</description></item><item><title>throwOnMultipleResults</title><link>https://yosql.projects.metio.wtf/configuration/sql/throwonmultipleresults/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/throwonmultipleresults/</guid><description>&lt;p&gt;Throw an exception in case a statement using &lt;code&gt;ReturningMode.SINGLE&lt;/code&gt; produces more than 1 result.&lt;/p&gt;
+&lt;p&gt;What a &lt;a href="../../sql/returningmode/"&gt;returning&lt;/a&gt;
+ &lt;code&gt;single&lt;/code&gt; statement does when the database
+answers with more than one row. Off, the first row is returned and the rest are dropped;
+on, it throws.&lt;/p&gt;
+&lt;p&gt;A statement declared &lt;code&gt;single&lt;/code&gt; is a claim that at most one row can match. Where that claim
+rests on a unique constraint the database enforces, the check is redundant and the
+default is right. Where it rests on you being sure — a lookup by something that ought to
+be unique but is not constrained to be — turning this on converts a silent wrong answer
+into a loud one.&lt;/p&gt;</description></item><item><title>type</title><link>https://yosql.projects.metio.wtf/configuration/sql/type/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/type/</guid><description>&lt;p&gt;The type of the SQL statement.&lt;/p&gt;
+&lt;p&gt;Whether a statement reads, writes, or calls a stored procedure. It decides what is
+generated for it, and it is normally not written at all: the statement&amp;rsquo;s
+&lt;a href="../name/"&gt;name&lt;/a&gt;
+ settles it.&lt;/p&gt;
+&lt;p&gt;A name beginning with one of the
+&lt;a href="../../repositories/allowedreadprefixes/"&gt;read prefixes&lt;/a&gt;
+ is &lt;code&gt;reading&lt;/code&gt;, one of the
+&lt;a href="../../repositories/allowedwriteprefixes/"&gt;write prefixes&lt;/a&gt;
+ is &lt;code&gt;writing&lt;/code&gt;, and one of the
+&lt;a href="../../repositories/allowedcallprefixes/"&gt;call prefixes&lt;/a&gt;
+ is &lt;code&gt;calling&lt;/code&gt;. &lt;code&gt;YoSQL&lt;/code&gt; does not
+parse your SQL to work this out, and it does not need to.&lt;/p&gt;</description></item><item><title>validateSchema</title><link>https://yosql.projects.metio.wtf/configuration/sql/validateschema/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/validateschema/</guid><description>&lt;p&gt;Whether this statement is checked against the schema.&lt;/p&gt;
+&lt;p&gt;Schema validation reads what it can and says nothing about the rest, so a statement it
+cannot parse costs you nothing already. This is for the other case: a statement it &lt;em&gt;can&lt;/em&gt;
+read and gets wrong, or one whose schema lives somewhere &lt;code&gt;YoSQL&lt;/code&gt; was never told about.&lt;/p&gt;
+&lt;p&gt;Set it to &lt;code&gt;false&lt;/code&gt; and this statement is generated without any of the checks
+&lt;a href="../../schema/validation/"&gt;validation&lt;/a&gt;
+ turns on. Nothing else changes about it.&lt;/p&gt;</description></item><item><title>vendor</title><link>https://yosql.projects.metio.wtf/configuration/sql/vendor/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/vendor/</guid><description>&lt;p&gt;The vendor name of the database the SQL statement is intended for&lt;/p&gt;
+&lt;p&gt;Where one query cannot be written for every database you support, write one statement per
+database and give them the same &lt;a href="../name/"&gt;name&lt;/a&gt;
+. They become a single method that picks
+its statement from the connection at run time.&lt;/p&gt;
+&lt;p&gt;The value is matched against the JDBC driver&amp;rsquo;s own
+&lt;code&gt;DatabaseMetaData.getDatabaseProductName()&lt;/code&gt;, so it has to be exactly what the driver
+reports — &lt;code&gt;PostgreSQL&lt;/code&gt;, &lt;code&gt;MySQL&lt;/code&gt;, &lt;code&gt;H2&lt;/code&gt;, &lt;code&gt;Microsoft SQL Server&lt;/code&gt;, &lt;code&gt;Oracle&lt;/code&gt;. A statement of the
+same name &lt;strong&gt;without&lt;/strong&gt; a vendor is the fallback for every database not named, and a name
+with no fallback fails against a database none of its statements claim.&lt;/p&gt;</description></item><item><title>writesReturnUpdateCount</title><link>https://yosql.projects.metio.wtf/configuration/sql/writesreturnupdatecount/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/sql/writesreturnupdatecount/</guid><description>&lt;p&gt;Writing method which are using &lt;code&gt;ReturningMode.NONE&lt;/code&gt; return the number of affected rows instead.&lt;/p&gt;
+&lt;p&gt;What a write answers with when it returns no rows. On, it is the number of rows the
+statement changed; off, the method is &lt;code&gt;void&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The count is worth having: an update that changed no rows is usually a bug the caller can
+act on, and there is nowhere else to learn that. Turn it off for a statement whose count
+is meaningless — a &lt;code&gt;create table&lt;/code&gt;, or DDL generally.&lt;/p&gt;</description></item></channel></rss>

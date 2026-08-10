@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Schema on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/schema/</link><description>Recent content in Schema on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 10 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/schema/index.xml" rel="self" type="application/rss+xml"/><item><title>Schema</title><link>https://yosql.projects.metio.wtf/configuration/schema/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/schema/</guid><description>&lt;p&gt;Configures how &lt;code&gt;YoSQL&lt;/code&gt; checks statements against the schema they run against.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;YoSQL&lt;/code&gt; reads the &lt;code&gt;create table&lt;/code&gt; statements your project already keeps and checks the rest of
+your SQL against them: a column no table declares, a parameter whose type disagrees with the
+column it is compared against, a record component that cannot hold what its column can
+contain.&lt;/p&gt;
+&lt;p&gt;Nothing here connects to a database. The schema comes from your own DDL, which is why
+generation still works in a checkout with no services running — and why it costs nothing in
+a build that has no database available.&lt;/p&gt;</description></item><item><title>sqlStatementsDirectory</title><link>https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/</guid><description>&lt;p&gt;Where the DDL describing your schema lives, when it is not among your statements.&lt;/p&gt;
+&lt;p&gt;Left empty — the default — the schema is read from the statements &lt;code&gt;YoSQL&lt;/code&gt; already parses, so
+a project that keeps its &lt;code&gt;create table&lt;/code&gt; statements alongside its queries needs no
+configuration at all.&lt;/p&gt;
+&lt;p&gt;Point this at a directory to read the DDL from somewhere else: a Flyway or Liquibase
+migrations directory, most usefully. &lt;code&gt;alter table&lt;/code&gt; applies to whatever came before it, so
+the files are read in the order they applied: a &lt;code&gt;V&amp;lt;version&amp;gt;__&amp;lt;description&amp;gt;.sql&lt;/code&gt; name is
+ordered by its version, comparing each numeric segment as a number, which puts &lt;code&gt;V2__&lt;/code&gt; ahead
+of &lt;code&gt;V10__&lt;/code&gt; where sorting the names as text would not. Everything else — a repeatable
+&lt;code&gt;R__&lt;/code&gt; migration, a plain &lt;code&gt;schema.sql&lt;/code&gt; — keeps name order after those, so a directory that
+is not migrations at all is read exactly as its names sort.&lt;/p&gt;</description></item><item><title>validation</title><link>https://yosql.projects.metio.wtf/configuration/schema/validation/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/schema/validation/</guid><description>&lt;p&gt;What to do about a statement that disagrees with the schema.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;WARN&lt;/code&gt; is the default, so upgrading adds warnings and never a failure. Turning it up to
+&lt;code&gt;ERROR&lt;/code&gt; in an existing project is a migration rather than a switch: the first run finds
+everything at once, and a build that fails on all of it is a build nobody can bisect. Deal
+with what &lt;code&gt;WARN&lt;/code&gt; reports first, then move up so that nothing new gets in.&lt;/p&gt;</description></item><item><title>vendor</title><link>https://yosql.projects.metio.wtf/configuration/schema/vendor/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/schema/vendor/</guid><description>&lt;p&gt;Which database your DDL is written for, when the DDL itself does not say.&lt;/p&gt;
+&lt;p&gt;Names the database whose spellings the schema uses, so that &lt;code&gt;bytea&lt;/code&gt;, &lt;code&gt;timestamptz&lt;/code&gt;,
+&lt;code&gt;bigserial&lt;/code&gt;, &lt;code&gt;jsonb&lt;/code&gt; and the rest of a dialect&amp;rsquo;s own type names are understood. Without it
+only the spellings every database shares are — a column declared &lt;code&gt;bytea&lt;/code&gt; reads as &lt;em&gt;unknown&lt;/em&gt;,
+which means no inferred parameter type and no generated result row type for any statement
+touching it.&lt;/p&gt;</description></item><item><title>Schema validation</title><link>https://yosql.projects.metio.wtf/sql/schema/</link><pubDate>Mon, 03 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/sql/schema/</guid><description>&lt;p&gt;&lt;code&gt;YoSQL&lt;/code&gt; reads the &lt;code&gt;create table&lt;/code&gt; statements your project already keeps, and checks the rest of your
+SQL against them. A column that does not exist, a parameter whose type disagrees with its column, a
+record component that cannot hold what its column can — each of those becomes a build failure naming
+the file and the statement, instead of an exception on whichever request reached the query first.&lt;/p&gt;
+&lt;p&gt;It also answers a question you used to have to answer yourself: what type a parameter is.&lt;/p&gt;</description></item><item><title>Front matter schema</title><link>https://yosql.projects.metio.wtf/editors/schema/</link><pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/editors/schema/</guid><description>&lt;p&gt;The front matter of a statement is YAML written inside SQL comments, which means your editor
+highlights the SQL and leaves the part with all the keys in it entirely unassisted. A JSON schema
+fixes that: completion for every key, the description on hover, and a warning on a key that does not
+exist.&lt;/p&gt;
+&lt;p&gt;The schema is published at
+&lt;a href="https://yosql.projects.metio.wtf/schema/frontmatter.json"&gt;https://yosql.projects.metio.wtf/schema/frontmatter.json&lt;/a&gt;
+ and generated from the same description of
+the settings that generates the &lt;a href="../../configuration/"&gt;configuration reference&lt;/a&gt;
+, so the two cannot
+drift.&lt;/p&gt;</description></item></channel></rss>

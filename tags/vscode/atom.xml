@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Vscode on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/vscode/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/vscode/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/vscode/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-10T18:57:29+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/vscode/</id><entry><title type="html">Front matter schema</title><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/editors/schema/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The front matter of a statement is YAML written inside SQL comments, which means your editor
+highlights the SQL and leaves the part with all the keys in it entirely unassisted. A JSON schema
+fixes that: completion for every key, the description on hover, and a warning on a key that does not
+exist.</p>
+<p>The schema is published at
+<a href="https://yosql.projects.metio.wtf/schema/frontmatter.json">https://yosql.projects.metio.wtf/schema/frontmatter.json</a>
+ and generated from the same description of
+the settings that generates the <a href="../../configuration/">configuration reference</a>
+, so the two cannot
+drift.</p>
+<h2 id="what-it-checks">What it checks</h2>
+<p>Every key a statement accepts, its description, and the type of the ones that take a scalar —
+<code>returning</code> is one of four words, <code>executeBatch</code> is a boolean, <code>repository</code> is a string. Keys that
+accept more than one shape, such as <code>parameters</code> and <code>resultRowConverter</code>, are listed without a type
+rather than described half-correctly, so completion offers them and then stays out of your way.</p>
+<p>A key that is not in the schema is flagged. That is deliberate: an unknown key in the front matter
+is a typo, and finding it while typing beats finding it in a build log.</p>
+<h2 id="intellij-idea">IntelliJ IDEA</h2>
+<p><strong>Settings → Languages &amp; Frameworks → Schemas and DTDs → JSON Schema Mappings</strong>, add a mapping:</p>
+<ul>
+<li><strong>Schema file or URL</strong>: <code>https://yosql.projects.metio.wtf/schema/frontmatter.json</code></li>
+<li><strong>Schema version</strong>: JSON Schema version 7 or later</li>
+<li><strong>File path pattern</strong>: <code>src/main/yosql/**/*.sql</code></li>
+</ul>
+<p>IDEA applies JSON schemas to YAML, but not to YAML embedded in SQL comments. Where you want the
+checking while writing a new statement, draft the front matter in a scratch <code>.yaml</code> file mapped to
+the schema and paste it in with the <code>--</code> prefixes. It is a workaround; it is also the difference
+between finding a typo now and finding it in a build.</p>
+<h2 id="visual-studio-code">Visual Studio Code</h2>
+<p>With the <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml">YAML extension</a>
+,
+add to <code>.vscode/settings.json</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;yaml.schemas&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;https://yosql.projects.metio.wtf/schema/frontmatter.json&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;**/yosql/**/*.yaml&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>The same caveat applies — the mapping is for YAML files, not for YAML inside SQL comments.</p>
+<h2 id="using-it-in-a-check-of-your-own">Using it in a check of your own</h2>
+<p>The schema is an ordinary JSON Schema document, so anything that speaks the format can use it. A
+pre-commit hook that strips the <code>--</code> prefixes and validates the result catches a mistyped key before
+the build does:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">curl -sO https://yosql.projects.metio.wtf/schema/frontmatter.json
+</span></span></code></pre></div><p>Pin the copy rather than fetching it every run — the schema grows as settings are added, and a check
+that changes under you is worse than no check.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/editors" term="editors" label="Editors"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/><category scheme="https://yosql.projects.metio.wtf/tags/intellij" term="intellij" label="intellij"/><category scheme="https://yosql.projects.metio.wtf/tags/vscode" term="vscode" label="vscode"/></entry></feed>

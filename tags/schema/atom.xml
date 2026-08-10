@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Schema on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/schema/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/schema/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/schema/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-10T18:57:29+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/schema/</id><entry><title type="html">Schema</title><link href="https://yosql.projects.metio.wtf/configuration/schema/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/?utm_source=atom_feed" rel="related" type="text/html" title="sqlStatementsDirectory"/><link href="https://yosql.projects.metio.wtf/configuration/schema/validation/?utm_source=atom_feed" rel="related" type="text/html" title="validation"/><link href="https://yosql.projects.metio.wtf/configuration/schema/vendor/?utm_source=atom_feed" rel="related" type="text/html" title="vendor"/><link href="https://yosql.projects.metio.wtf/sql/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Schema validation"/><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Front matter schema"/><id>https://yosql.projects.metio.wtf/configuration/schema/</id><published>2026-08-10T00:00:00+00:00</published><updated>2026-08-10T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Configures how <code>YoSQL</code> checks statements against the schema they run against.</p>
+<p><code>YoSQL</code> reads the <code>create table</code> statements your project already keeps and checks the rest of
+your SQL against them: a column no table declares, a parameter whose type disagrees with the
+column it is compared against, a record component that cannot hold what its column can
+contain.</p>
+<p>Nothing here connects to a database. The schema comes from your own DDL, which is why
+generation still works in a checkout with no services running — and why it costs nothing in
+a build that has no database available.</p>
+<p>Anything it cannot read, it says nothing about. A statement in a dialect the parser does not
+cover, a table created from a select, a type nobody mapped: each of those is <em>unknown</em>, and
+an unknown skips a check rather than failing it. That is deliberate, and it is what makes it
+safe to turn on in a project that was not written with it in mind.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/></entry><entry><title type="html">sqlStatementsDirectory</title><link href="https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/schema/validation/?utm_source=atom_feed" rel="related" type="text/html" title="validation"/><link href="https://yosql.projects.metio.wtf/configuration/schema/vendor/?utm_source=atom_feed" rel="related" type="text/html" title="vendor"/><link href="https://yosql.projects.metio.wtf/sql/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Schema validation"/><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Front matter schema"/><id>https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/</id><published>2026-08-10T00:00:00+00:00</published><updated>2026-08-10T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Where the DDL describing your schema lives, when it is not among your statements.</p>
+<p>Left empty — the default — the schema is read from the statements <code>YoSQL</code> already parses, so
+a project that keeps its <code>create table</code> statements alongside its queries needs no
+configuration at all.</p>
+<p>Point this at a directory to read the DDL from somewhere else: a Flyway or Liquibase
+migrations directory, most usefully. <code>alter table</code> applies to whatever came before it, so
+the files are read in the order they applied: a <code>V&lt;version&gt;__&lt;description&gt;.sql</code> name is
+ordered by its version, comparing each numeric segment as a number, which puts <code>V2__</code> ahead
+of <code>V10__</code> where sorting the names as text would not. Everything else — a repeatable
+<code>R__</code> migration, a plain <code>schema.sql</code> — keeps name order after those, so a directory that
+is not migrations at all is read exactly as its names sort.</p>
+<p>DDL marked with a <a href="../../sql/vendor/">vendor</a>
+ builds that vendor&rsquo;s schema rather than the
+shared one, so a project supporting several databases describes only the tables that differ
+more than once. The mark also decides how the column types are spelled: <code>bytea</code>,
+<code>timestamptz</code> and <code>bigserial</code> mean what PostgreSQL means by them once the DDL says it is
+PostgreSQL&rsquo;s, and every statement reading those columns gets the type without declaring a
+vendor of its own. Marking the schema is the way to say which database a project uses;
+marking a statement says the narrower thing, that it is written for that database and is
+the fallback for no other.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../validation/">validation</a>
+, <a href="../vendor/">vendor</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --schema-sql-statements-directory=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>sqlStatementsDirectory</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2026.8.8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sqlStatementsDirectory</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2026.8.8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sqlStatementsDirectory</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>sqlStatementsDirectory</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql.tooling<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2026.8.8<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;sqlStatementsDirectory&gt;</span>configValue<span class="nt">&lt;/sqlStatementsDirectory&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/schema&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/></entry><entry><title type="html">validation</title><link href="https://yosql.projects.metio.wtf/configuration/schema/validation/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/?utm_source=atom_feed" rel="related" type="text/html" title="sqlStatementsDirectory"/><link href="https://yosql.projects.metio.wtf/configuration/schema/vendor/?utm_source=atom_feed" rel="related" type="text/html" title="vendor"/><link href="https://yosql.projects.metio.wtf/sql/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Schema validation"/><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Front matter schema"/><id>https://yosql.projects.metio.wtf/configuration/schema/validation/</id><published>2026-08-10T00:00:00+00:00</published><updated>2026-08-10T00:00:00+00:00</updated><content type="html"><![CDATA[<p>What to do about a statement that disagrees with the schema.</p>
+<p><code>WARN</code> is the default, so upgrading adds warnings and never a failure. Turning it up to
+<code>ERROR</code> in an existing project is a migration rather than a switch: the first run finds
+everything at once, and a build that fails on all of it is a build nobody can bisect. Deal
+with what <code>WARN</code> reports first, then move up so that nothing new gets in.</p>
+<p>A single statement can opt out with
+<a href="../../sql/validateschema/">validateSchema</a>
+ in its front matter, for the query this cannot
+read and you do not want to argue with.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-off">Option: &lsquo;OFF&rsquo;</h3>
+<p>Says nothing at all. Statements are generated exactly as they were before any of this existed.</p>
+<h3 id="option-warn">Option: &lsquo;WARN&rsquo;</h3>
+<p>The default. Every disagreement is reported and the build carries on, so nothing that passed before starts failing.</p>
+<h3 id="option-error">Option: &lsquo;ERROR&rsquo;</h3>
+<p>A disagreement fails the build, naming the file, the statement and what it disagreed about.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../sqlstatementsdirectory/">sqlStatementsDirectory</a>
+, <a href="../vendor/">vendor</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --schema-validation=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>validation</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2026.8.8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">validation</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2026.8.8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">validation</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>validation</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql.tooling<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2026.8.8<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;validation&gt;</span>configValue<span class="nt">&lt;/validation&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/schema&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/></entry><entry><title type="html">vendor</title><link href="https://yosql.projects.metio.wtf/configuration/schema/vendor/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/configuration/schema/sqlstatementsdirectory/?utm_source=atom_feed" rel="related" type="text/html" title="sqlStatementsDirectory"/><link href="https://yosql.projects.metio.wtf/configuration/schema/validation/?utm_source=atom_feed" rel="related" type="text/html" title="validation"/><link href="https://yosql.projects.metio.wtf/sql/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Schema validation"/><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Front matter schema"/><id>https://yosql.projects.metio.wtf/configuration/schema/vendor/</id><published>2026-08-10T00:00:00+00:00</published><updated>2026-08-10T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Which database your DDL is written for, when the DDL itself does not say.</p>
+<p>Names the database whose spellings the schema uses, so that <code>bytea</code>, <code>timestamptz</code>,
+<code>bigserial</code>, <code>jsonb</code> and the rest of a dialect&rsquo;s own type names are understood. Without it
+only the spellings every database shares are — a column declared <code>bytea</code> reads as <em>unknown</em>,
+which means no inferred parameter type and no generated result row type for any statement
+touching it.</p>
+<p>A schema file can say the same thing with a <code>-- vendor:</code> line of its own, and that is the
+better place when a project describes several databases. This setting exists for the schema
+you cannot edit: a Flyway or Liquibase migration directory, where every file is checksummed
+and adding a comment to one already applied makes the tool refuse to run.</p>
+<p>Write it the way a JDBC driver reports the database, which is the same spelling a
+statement&rsquo;s own <a href="../../sql/vendor/">vendor</a>
+ is matched against — <code>PostgreSQL</code>, <code>MySQL</code>,
+<code>MariaDB</code>, <code>H2</code>, <code>Oracle</code>, <code>Microsoft SQL Server</code>. It says nothing about which statements
+are generated: every statement still applies to every database, and a file that names its
+own vendor keeps it.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<h3 id="option-postgresql">Option: &lsquo;PostgreSQL&rsquo;</h3>
+<p>Reads the schema as PostgreSQL&rsquo;s, so a <code>bytea</code> column gives <code>byte[]</code> and a <code>timestamptz</code> gives <code>Instant</code>.</p>
+<h3 id="option-">Option: ''</h3>
+<p>The default. Only the type spellings every supported database shares are understood, unless a schema file names a vendor itself.</p>
+<h2 id="related-options">Related Options</h2>
+<p>Also in this group: <a href="../sqlstatementsdirectory/">sqlStatementsDirectory</a>
+, <a href="../validation/">validation</a>
+.</p>
+<h2 id="tooling">Tooling</h2>
+<h3 id="ant">Ant</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://ant.apache.org/">Ant</a>
+, take a look at the tooling <a href="/tooling/ant/">documentation for Ant</a>
+.</p>
+<h3 id="bazel">Bazel</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://bazel.build/">Bazel</a>
+, take a look at the tooling <a href="/tooling/bazel/">documentation for Bazel</a>
+.</p>
+<h3 id="cli">CLI</h3>
+<p>In order to use <code>YoSQL</code> on the command line, take a look at the tooling <a href="/tooling/cli/">documentation for CLI</a>
+.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">yosql generate --schema-vendor=configValue
+</span></span></span></code></pre></div><h3 id="gradle">Gradle</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://gradle.org/">Gradle</a>
+, take a look at the tooling <a href="/tooling/gradle/">documentation for Gradle</a>
+. The <code>vendor</code> setting can be configured using Gradle in Kotlin syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">java</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span><span class="p">(</span><span class="s2">&#34;wtf.metio.yosql&#34;</span><span class="p">)</span> <span class="n">version</span> <span class="s2">&#34;2026.8.8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">vendor</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="n">configValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>or in Groovy syntax like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-groovy" data-lang="groovy"><span class="line"><span class="cl"><span class="n">plugins</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;java&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">id</span> <span class="s2">&#34;wtf.metio.yosql&#34;</span> <span class="n">version</span> <span class="s2">&#34;2026.8.8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">yosql</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">schema</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">vendor</span> <span class="o">=</span> <span class="n">configValue</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="maven">Maven</h3>
+<p>In order to use <code>YoSQL</code> together with <a href="https://maven.apache.org/">Maven</a>
+, take a look at the tooling <a href="/tooling/maven/">documentation for Maven</a>
+. The <code>vendor</code> setting can be configured using Maven like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql.tooling<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2026.8.8<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;vendor&gt;</span>configValue<span class="nt">&lt;/vendor&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/schema&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div>]]></content><category scheme="https://yosql.projects.metio.wtf/categories/configuration" term="configuration" label="Configuration"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/></entry><entry><title type="html">Schema validation</title><link href="https://yosql.projects.metio.wtf/sql/schema/?utm_source=atom_feed" rel="alternate" type="text/html"/><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="related" type="text/html" title="Front matter schema"/><id>https://yosql.projects.metio.wtf/sql/schema/</id><published>2026-08-03T00:00:00+00:00</published><updated>2026-08-03T00:00:00+00:00</updated><content type="html"><![CDATA[<p><code>YoSQL</code> reads the <code>create table</code> statements your project already keeps, and checks the rest of your
+SQL against them. A column that does not exist, a parameter whose type disagrees with its column, a
+record component that cannot hold what its column can — each of those becomes a build failure naming
+the file and the statement, instead of an exception on whichever request reached the query first.</p>
+<p>It also answers a question you used to have to answer yourself: what type a parameter is.</p>
+<h2 id="turning-it-up">Turning it up</h2>
+<p><code>WARN</code> is the default: disagreements are reported and nothing stops. <strong>No build that passed before
+fails because of this.</strong></p>
+<p>Move it to <code>ERROR</code> once you have dealt with what it reports, so nothing new gets in:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;validation&gt;</span>ERROR<span class="nt">&lt;/validation&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/schema&gt;</span>
+</span></span></code></pre></div><p><code>ERROR</code> from a standing start is the wrong order. The first run finds everything at once, and a
+build that fails on all of it is a build nobody can bisect.</p>
+<p>To hear nothing at all, <code>OFF</code>.</p>
+<h2 id="where-the-schema-comes-from">Where the schema comes from</h2>
+<p>Your own DDL. <strong>Nothing connects to a database</strong> — that is why generation still works in a checkout
+with no services running, and why this costs nothing in a build that has no database available.</p>
+<p>By default the <code>create table</code> statements among your own statements are used, so a project that keeps
+its schema next to its queries configures nothing:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">src/main/yosql/
+</span></span><span class="line"><span class="cl">├── schema/createSchema.sql   ← read as the schema
+</span></span><span class="line"><span class="cl">└── tenant/findTenant.sql     ← checked against it
+</span></span></code></pre></div><p>Keep your schema elsewhere — Flyway, Liquibase — and point at it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;validation&gt;</span>ERROR<span class="nt">&lt;/validation&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;sqlStatementsDirectory&gt;</span>src/main/resources/db/migration<span class="nt">&lt;/sqlStatementsDirectory&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/schema&gt;</span>
+</span></span></code></pre></div><p>Files are read in name order and <code>alter table</code> applies to whatever came before, so <code>V1__create.sql</code>
+followed by <code>V2__add_column.sql</code> describes the schema those two migrations leave behind.</p>
+<h2 id="what-it-checks">What it checks</h2>
+<p><strong>A column no table declares.</strong> The typo that returns an error from the database on the first
+request:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slgu</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Statement &#39;findTenant&#39; in tenant/findTenant.sql does not match the schema:
+</span></span><span class="line"><span class="cl">  no column &#39;slgu&#39; in &#39;tenant&#39;.
+</span></span></code></pre></div><p><strong>A parameter that disagrees with its column.</strong> <code>id</code> is a <code>uuid</code>, so declaring it a <code>Long</code> is wrong
+now rather than at run time.</p>
+<p><strong>A record component that cannot hold its column.</strong> The one worth having: a <strong>nullable column read
+into a primitive</strong> compiles and then throws on the first row that has a null in it.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">nickname</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">component &#39;nickname&#39; is int but column &#39;nickname&#39; is nullable.
+</span></span></code></pre></div><p><strong><code>select *</code> is checked too.</strong> With a catalog the star expands to the columns the table declares, in
+declaration order, so a record built from one is checked like any other.</p>
+<h2 id="what-it-says-nothing-about">What it says nothing about</h2>
+<p>This is the important half. Anything it cannot read with certainty is <strong>unknown</strong>, and an unknown
+skips a check rather than failing it:</p>
+<ul>
+<li>SQL the parser does not cover — a stored function whose body is another language, a dialect
+extension</li>
+<li>a <strong>subquery</strong>, a <strong>common table expression</strong>, or a <strong>union</strong>, any of which can produce a column
+the catalog never saw</li>
+<li>a table the catalog does not have</li>
+<li>a SQL type nobody mapped, which stays unknown rather than becoming <code>Object</code></li>
+</ul>
+<p>That is deliberate, and it is what makes this safe to turn on in a project that was not written with
+it in mind.</p>
+<p>Where it is wrong about one statement, that statement opts out:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- validateSchema: false
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">whatever</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">wherever</span><span class="w">
+</span></span></span></code></pre></div><h2 id="parameter-types-come-free">Parameter types come free</h2>
+<p>The part that removes work. A parameter takes the type of the column it is named after, so a write
+statement needs no <code>parameters</code> block at all:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: insertTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: none
+</span></span></span><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">values</span><span class="w"> </span><span class="p">(:</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">createdAt</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p><code>UUID</code>, <code>String</code> and <code>Instant</code> come from the DDL. A <strong>nullable</strong> column gives the boxed type, because
+the parameter can be null; a <code>not null</code> column gives the primitive.</p>
+<p>What you write always wins. Naming a type in the front matter is how you use a type of your own —
+a <code>TenantId</code> wrapping a <code>UUID</code> — and how you settle anything this gets wrong.</p>
+<h3 id="what-named-after-means">What &ldquo;named after&rdquo; means</h3>
+<p>The parameter&rsquo;s own name, matched against the columns of the tables the statement reads. Nothing
+about the comparison it appears in is used, so this infers every parameter:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">tenant_invitation</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">tenant_id</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">invited_at</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">values</span><span class="w"> </span><span class="p">(:</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">invitedAt</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>and this infers none of its one:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">currency</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">tenantId</span><span class="w">
+</span></span></span></code></pre></div><p>The column is <code>id</code>, the parameter is <code>tenantId</code>, and the statement is otherwise as simple as it
+gets. Rename the parameter after its column, or declare the type — a parameter named for what it
+means rather than for its column is worth keeping and declaring. <code>staleBefore</code> in
+<code>last_seen_at &lt; :staleBefore</code> says more than <code>lastSeenAt</code> would, and it needs a type.</p>
+<p>Two boundaries follow from &ldquo;the tables the statement reads&rdquo;:</p>
+<ul>
+<li>A table reached only inside a subquery is not one of them, so <code>:tenantId</code> in
+<code>order_id in (select id from placed_order where tenant_id = :tenantId)</code> has nothing to match. The
+statement&rsquo;s own parameters are unaffected.</li>
+<li>A statement selecting from a derived table or a common table expression has no scope that can be
+listed at all, and none of its parameters are inferred.</li>
+</ul>
+<p>The build says which of these it is when it cannot type a parameter, including the columns it
+matched against.</p>
+<p>A block only has to name what inference cannot reach. Declaring one parameter of six leaves the
+other five inferred, and the method&rsquo;s parameters stay in the order the statement binds them either
+way — so a statement with one awkward name keeps one line of front matter rather than six:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findOrderSuspensionsOfTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   tenantId: uuid
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">order_suspension</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">suspended_at</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span><span class="n">suspendedAt</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">placed_order</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">tenant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">tenantId</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><h2 id="records-come-free-too">Records come free too</h2>
+<p>A result row type is usually a record whose components repeat, one by one, what the <code>select</code> list
+already says. Set <code>generateResultRowType</code> and <code>YoSQL</code> writes it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenantSummary
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.TenantSummary
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- generateResultRowType: true
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">accountId</span><span class="w">
+</span></span></span></code></pre></div><p>which produces</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">TenantSummary</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">Instant</span><span class="w"> </span><span class="n">createdAt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>next to its converter, in the package the type name gives. Aliases decide the component names, so
+<code>select amount_cents as minor_units</code> gives a <code>minorUnits</code>; a nullable column gives the boxed type.</p>
+<p>It is per statement, and off unless you ask. A <code>resultRowType</code> naming a record that is not there is
+far more often a typo than a request, and quietly writing a new record for a misspelled name would
+replace a build error with a mystery.</p>
+<p>The record has to be describable in full. A computed expression, a subquery or a column no <code>create table</code> mentions leaves <code>YoSQL</code> with nothing to write, and it says so rather than guessing:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Statement &#39;findTenantSummary&#39; asks YoSQL to write &#39;com.example.domain.TenantSummary&#39;, but the
+</span></span><span class="line"><span class="cl">schema does not say what every column it selects holds: &#39;tenant.settings&#39; is declared &#39;jsonb&#39;,
+</span></span><span class="line"><span class="cl">which is not a type YoSQL maps without a vendor. Set &#39;schema.vendor&#39;, or a &#39;vendor&#39; on the
+</span></span><span class="line"><span class="cl">statement, so that the types only one database has are looked up.
+</span></span></code></pre></div><p>The message names the column and the one thing that answers it, which is worth reading rather than
+skimming — the four situations that end here are fixed in four different files. A missing table asks
+for more DDL, a computed expression asks for a record written by hand, and the case above is neither.</p>
+<h2 id="types-only-one-database-has">Types only one database has</h2>
+<p>Standard spellings resolve without being told which database wrote the DDL. A vendor&rsquo;s own —
+PostgreSQL&rsquo;s <code>bytea</code>, <code>timestamptz</code>, <code>bigserial</code>, <code>json</code>, <code>jsonb</code> and <code>citext</code>, MySQL&rsquo;s <code>datetime</code>
+and <code>longtext</code> — resolve only once something declares the vendor. Until then those columns are
+described but untyped: parameters naming them need their type written out, and
+<code>generateResultRowType</code> will not write the record.</p>
+<p>A run says which columns that leaves untyped, so the question does not have to be guessed at:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">The schema holds 1 column(s) whose type YoSQL does not map: document.payload (jsonb). No vendor
+</span></span><span class="line"><span class="cl">is declared, and the types only one database has are looked up only for a declared one — so
+</span></span><span class="line"><span class="cl">&#39;schema.vendor&#39; may be all that is missing.
+</span></span></code></pre></div><p>The table count above it is the same either way — it is the columns that change — so it is the
+wrong figure to read a vendor&rsquo;s effect off. An untyped column that no statement selects and no
+parameter is named after costs nothing, which is why this is said rather than warned about.</p>
+<p>Mark the DDL itself, once per file, and every statement reading it follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- vendor: PostgreSQL
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">document</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">id</span><span class="w">      </span><span class="n">uuid</span><span class="w">  </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">payload</span><span class="w"> </span><span class="n">jsonb</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>Where the schema is a Flyway or Liquibase directory the files are checksummed, and adding a comment
+to a migration already applied makes the tool refuse to run. Say it in the build instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;sqlStatementsDirectory&gt;</span>src/main/resources/db/migration<span class="nt">&lt;/sqlStatementsDirectory&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;vendor&gt;</span>PostgreSQL<span class="nt">&lt;/vendor&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/schema&gt;</span>
+</span></span></code></pre></div><p>A file naming its own vendor still keeps it.</p>
+<h3 id="json-columns">JSON columns</h3>
+<p><code>json</code> and <code>jsonb</code> are a <code>String</code> holding the JSON as text. Postgres has no JDBC type of its own for
+them — the driver refuses <code>getObject(column, String.class)</code> and answers <code>getString</code> — so that is the
+accessor generated code uses, and a <code>String</code> is both the record component and the parameter type.</p>
+<p>Reading is otherwise unremarkable. Writing needs a cast in the query, because a <code>String</code> parameter
+binds as <code>varchar</code> and Postgres will not assign or compare that to a JSON column:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: insertDocument
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: none
+</span></span></span><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">document</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">values</span><span class="w"> </span><span class="p">(:</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">cast</span><span class="p">(:</span><span class="n">payload</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">jsonb</span><span class="p">))</span><span class="w">
+</span></span></span></code></pre></div><p><code>:payload::jsonb</code> does the same. Without one the build passes and the statement fails at run time
+with <code>column &quot;payload&quot; is of type jsonb but expression is of type character varying</code>. Nothing
+generated can add the cast, because the type a parameter has to arrive as is a property of the query.</p>
+<p>Two things differ from what the <code>String</code> suggests. A <code>jsonb</code> column is stored parsed, so it reads
+back with its keys ordered and its whitespace normalised rather than as the text that was written;
+<code>json</code> keeps the bytes verbatim. And through the <a href="../converters/#map-converter">map converter</a>
+ a JSON
+column is a <code>PGobject</code> rather than a <code>String</code>.</p>
+<h2 id="more-than-one-database">More than one database</h2>
+<p><code>YoSQL</code> <a href="../sql-files/">picks a statement by vendor at run time</a>
+, and the schema follows the same
+rule. Mark DDL with a <code>vendor</code> and it builds that database&rsquo;s schema; DDL with no vendor applies to
+all of them, so only the tables that actually differ are written twice.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- vendor: PostgreSQL
+</span></span></span><span class="line"><span class="cl"><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="n">bigserial</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- vendor: MySQL
+</span></span></span><span class="line"><span class="cl"><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="nb">bigint</span><span class="w"> </span><span class="n">auto_increment</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>Most dialect differences never surface, because validation compares <strong>Java</strong> types rather than SQL
+ones: <code>bigserial</code>, <code>bigint auto_increment</code> and <code>int8</code> are all a <code>long</code>.</p>
+<p>Where two databases genuinely disagree — a <code>uuid</code> on one and a <code>varchar(36)</code> on the other — a
+statement naming no vendor cannot be generated, because it is the fallback for both and one method
+cannot have two signatures. That is reported rather than resolved by picking one:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Statement &#39;findTenant&#39; runs against databases that disagree about what a column holds:
+</span></span><span class="line"><span class="cl">  &#39;id&#39; reads as java.util.UUID and java.lang.String.
+</span></span></code></pre></div><p>Name the type in the front matter to settle it, or write a statement per vendor.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/sql" term="sql" label="SQL"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/><category scheme="https://yosql.projects.metio.wtf/tags/validation" term="validation" label="validation"/></entry><entry><title type="html">Front matter schema</title><link href="https://yosql.projects.metio.wtf/editors/schema/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/editors/schema/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p>The front matter of a statement is YAML written inside SQL comments, which means your editor
+highlights the SQL and leaves the part with all the keys in it entirely unassisted. A JSON schema
+fixes that: completion for every key, the description on hover, and a warning on a key that does not
+exist.</p>
+<p>The schema is published at
+<a href="https://yosql.projects.metio.wtf/schema/frontmatter.json">https://yosql.projects.metio.wtf/schema/frontmatter.json</a>
+ and generated from the same description of
+the settings that generates the <a href="../../configuration/">configuration reference</a>
+, so the two cannot
+drift.</p>
+<h2 id="what-it-checks">What it checks</h2>
+<p>Every key a statement accepts, its description, and the type of the ones that take a scalar —
+<code>returning</code> is one of four words, <code>executeBatch</code> is a boolean, <code>repository</code> is a string. Keys that
+accept more than one shape, such as <code>parameters</code> and <code>resultRowConverter</code>, are listed without a type
+rather than described half-correctly, so completion offers them and then stays out of your way.</p>
+<p>A key that is not in the schema is flagged. That is deliberate: an unknown key in the front matter
+is a typo, and finding it while typing beats finding it in a build log.</p>
+<h2 id="intellij-idea">IntelliJ IDEA</h2>
+<p><strong>Settings → Languages &amp; Frameworks → Schemas and DTDs → JSON Schema Mappings</strong>, add a mapping:</p>
+<ul>
+<li><strong>Schema file or URL</strong>: <code>https://yosql.projects.metio.wtf/schema/frontmatter.json</code></li>
+<li><strong>Schema version</strong>: JSON Schema version 7 or later</li>
+<li><strong>File path pattern</strong>: <code>src/main/yosql/**/*.sql</code></li>
+</ul>
+<p>IDEA applies JSON schemas to YAML, but not to YAML embedded in SQL comments. Where you want the
+checking while writing a new statement, draft the front matter in a scratch <code>.yaml</code> file mapped to
+the schema and paste it in with the <code>--</code> prefixes. It is a workaround; it is also the difference
+between finding a typo now and finding it in a build.</p>
+<h2 id="visual-studio-code">Visual Studio Code</h2>
+<p>With the <a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml">YAML extension</a>
+,
+add to <code>.vscode/settings.json</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;yaml.schemas&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;https://yosql.projects.metio.wtf/schema/frontmatter.json&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;**/yosql/**/*.yaml&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>The same caveat applies — the mapping is for YAML files, not for YAML inside SQL comments.</p>
+<h2 id="using-it-in-a-check-of-your-own">Using it in a check of your own</h2>
+<p>The schema is an ordinary JSON Schema document, so anything that speaks the format can use it. A
+pre-commit hook that strips the <code>--</code> prefixes and validates the result catches a mistyped key before
+the build does:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">curl -sO https://yosql.projects.metio.wtf/schema/frontmatter.json
+</span></span></code></pre></div><p>Pin the copy rather than fetching it every run — the schema grows as settings are added, and a check
+that changes under you is worse than no check.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/editors" term="editors" label="Editors"/><category scheme="https://yosql.projects.metio.wtf/tags/schema" term="schema" label="schema"/><category scheme="https://yosql.projects.metio.wtf/tags/intellij" term="intellij" label="intellij"/><category scheme="https://yosql.projects.metio.wtf/tags/vscode" term="vscode" label="vscode"/></entry></feed>

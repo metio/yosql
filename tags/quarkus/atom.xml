@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Quarkus on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/quarkus/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/quarkus/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/quarkus/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-10T18:57:29+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/quarkus/</id><entry><title type="html">Quarkus</title><link href="https://yosql.projects.metio.wtf/frameworks/quarkus/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/frameworks/quarkus/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Quarkus is where <code>YoSQL</code> has the most to offer, and the reason is native images: a persistence layer
+that resolves nothing by name needs no reflection registration, so there is no class to hint, no
+build that succeeds and then fails on the first query, and nothing to re-check when your schema
+changes.</p>
+<h2 id="the-build">The build</h2>
+<p>Add the plugin next to the Quarkus one:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>wtf.metio.yosql.tooling<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>yosql-tooling-maven<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>2026.8.8<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;executions&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;execution&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;goals&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;goal&gt;</span>generate<span class="nt">&lt;/goal&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;/goals&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/execution&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/executions&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;repositories&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;basePackageName&gt;</span>com.example.persistence<span class="nt">&lt;/basePackageName&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/repositories&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;annotations&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;repositoryAnnotations&gt;</span>jakarta.enterprise.context.ApplicationScoped<span class="nt">&lt;/repositoryAnnotations&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/annotations&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></div><p>Generated repositories become CDI beans, and the agroal <code>DataSource</code> Quarkus configures is injected
+into each one. A repository has exactly one constructor, which Quarkus&rsquo;s ArC treats as the injection
+point without being told. Under a strict CDI container that wants to be told, add it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;annotations&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;repositoryAnnotations&gt;</span>jakarta.enterprise.context.ApplicationScoped<span class="nt">&lt;/repositoryAnnotations&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;constructorAnnotations&gt;</span>jakarta.inject.Inject<span class="nt">&lt;/constructorAnnotations&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/annotations&gt;</span>
+</span></span></code></pre></div><p>You need <code>quarkus-jdbc-postgresql</code> (or your driver&rsquo;s extension) and <code>quarkus-agroal</code>. You do <strong>not</strong>
+need <code>quarkus-hibernate-orm</code> — that is rather the point.</p>
+<h2 id="using-it">Using it</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@ApplicationScoped</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenantService</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">TenantRepository</span><span class="w"> </span><span class="n">tenants</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">TenantService</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">TenantRepository</span><span class="w"> </span><span class="n">tenants</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">tenants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tenants</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Transactional</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">rename</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">slug</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">tenants</span><span class="p">.</span><span class="na">updateTenantSlug</span><span class="p">(</span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>An injected <code>DataSource</code> under a JTA transaction already hands out the transaction&rsquo;s connection, so
+<code>@Transactional</code> works with no proxy and no configuration. Where you want a unit of work outside the
+ambient transaction, use the <a href="../../sql/transactions/">connection overloads</a>
+.</p>
+<h2 id="native-images">Native images</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">./mvnw package -Dnative
+</span></span></code></pre></div><p>That is the whole procedure. Nothing to add to <code>reflect-config.json</code>, no
+<code>@RegisterForReflection</code> on your records, no <code>native-image.properties</code> entry. The generated converter
+reads each column with a <code>resultSet.getX(...)</code> call the compiler resolved and calls a constructor
+the compiler resolved, so the closed-world analysis sees all of it.</p>
+<p>Compare that with an ORM, where entities, their proxies and their collections are all reached
+reflectively and every one has to be registered — usually by an extension that knows how, which is
+why the extension has to exist.</p>
+<p>Startup follows: there is no mapping metadata to read at boot, no entity manager to build, and no
+schema to validate, because there is nothing that could disagree with the database that the build
+did not already check.</p>
+<h2 id="dev-services">Dev Services</h2>
+<p>Quarkus Dev Services starts a database container for you in dev and test mode, which suits <code>YoSQL</code>
+because a generated repository takes a <code>DataSource</code> and asks nothing about where it came from. Set
+no JDBC URL and you get a container; set one and you get that.</p>
+<p>Code generation itself never connects to a database — it reads <code>.sql</code> files and your record
+sources — so a build with no database available still builds.</p>
+<h2 id="testing">Testing</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@QuarkusTest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">TenantRepositoryTest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Inject</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">TenantRepository</span><span class="w"> </span><span class="n">tenants</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">findsTheTenantItInserted</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UUID</span><span class="p">.</span><span class="na">randomUUID</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">tenants</span><span class="p">.</span><span class="na">insertTenant</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;acme&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">Instant</span><span class="p">.</span><span class="na">now</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">assertThat</span><span class="p">(</span><span class="n">tenants</span><span class="p">.</span><span class="na">findTenant</span><span class="p">(</span><span class="n">id</span><span class="p">)).</span><span class="na">map</span><span class="p">(</span><span class="n">Tenant</span><span class="p">::</span><span class="n">slug</span><span class="p">).</span><span class="na">hasValue</span><span class="p">(</span><span class="s">&#34;acme&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>@QuarkusTest</code> with Dev Services gives a real database, which is what a test of a query wants. To
+run the same tests against the native binary, <code>@QuarkusIntegrationTest</code> — worth doing once, to see
+that the persistence layer genuinely needs nothing.</p>
+<h2 id="reactive">Reactive</h2>
+<p>There is none. <code>YoSQL</code> generates blocking JDBC, so a repository belongs on a worker thread — under
+Quarkus that means a <code>@Blocking</code> endpoint, or letting a non-reactive resource method run on the
+worker pool as it does by default. If your application is built on Mutiny end to end, the reactive
+SQL clients are the better fit.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/frameworks" term="frameworks" label="Frameworks"/><category scheme="https://yosql.projects.metio.wtf/tags/quarkus" term="quarkus" label="quarkus"/><category scheme="https://yosql.projects.metio.wtf/tags/native-image" term="native-image" label="native-image"/></entry></feed>

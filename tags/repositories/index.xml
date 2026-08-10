@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Repositories on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/repositories/</link><description>Recent content in Repositories on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 10 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/repositories/index.xml" rel="self" type="application/rss+xml"/><item><title>allowedCallPrefixes</title><link>https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/allowedcallprefixes/</guid><description>&lt;p&gt;Configures which name prefixes are allowed for statements that are calling stored procedures.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-call-execute-evaluate-eval"&gt;Option: &amp;lsquo;call, execute, evaluate, eval&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;allowedCallPrefixes&lt;/code&gt; configuration option is &lt;code&gt;call, execute, evaluate, eval&lt;/code&gt; to allow several commonly used names for calling procedures.&lt;/p&gt;
+&lt;h3 id="option-do"&gt;Option: &amp;lsquo;do&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;allowedCallPrefixes&lt;/code&gt; configuration option to &lt;code&gt;do&lt;/code&gt; only allows names with the prefix &lt;code&gt;do&lt;/code&gt; to call stored procedures.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../allowedreadprefixes/"&gt;allowedReadPrefixes&lt;/a&gt;
+, &lt;a href="../allowedwriteprefixes/"&gt;allowedWritePrefixes&lt;/a&gt;
+, &lt;a href="../basepackagename/"&gt;basePackageName&lt;/a&gt;
+, &lt;a href="../catchandrethrow/"&gt;catchAndRethrow&lt;/a&gt;
+, &lt;a href="../createconnection/"&gt;createConnection&lt;/a&gt;
+, &lt;a href="../executebatch/"&gt;executeBatch&lt;/a&gt;
+, &lt;a href="../executeonce/"&gt;executeOnce&lt;/a&gt;
+, &lt;a href="../generateconnectionoverloads/"&gt;generateConnectionOverloads&lt;/a&gt;
+, &lt;a href="../generateinterfaces/"&gt;generateInterfaces&lt;/a&gt;
+, &lt;a href="../injectconverters/"&gt;injectConverters&lt;/a&gt;
+, &lt;a href="../throwonmultipleresults/"&gt;throwOnMultipleResults&lt;/a&gt;
+, &lt;a href="../validatemethodnameprefixes/"&gt;validateMethodNamePrefixes&lt;/a&gt;
+, &lt;a href="../writesreturnupdatecount/"&gt;writesReturnUpdateCount&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>allowedReadPrefixes</title><link>https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/allowedreadprefixes/</guid><description>&lt;p&gt;Configures which name prefixes are allowed for statements that are reading data from your database.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-read-select-find-query-lookup-get"&gt;Option: &amp;lsquo;read, select, find, query, lookup, get&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;allowedReadPrefixes&lt;/code&gt; configuration option is &lt;code&gt;read, select, find, query, lookup, get&lt;/code&gt; to allow several commonly used names for reading statements.&lt;/p&gt;
+&lt;h3 id="option-lego"&gt;Option: &amp;rsquo;lego'&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;allowedReadPrefixes&lt;/code&gt; configuration option to &lt;code&gt;lego&lt;/code&gt; only allows names with the prefix &lt;code&gt;lego&lt;/code&gt; to read data.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../allowedcallprefixes/"&gt;allowedCallPrefixes&lt;/a&gt;
+, &lt;a href="../allowedwriteprefixes/"&gt;allowedWritePrefixes&lt;/a&gt;
+, &lt;a href="../basepackagename/"&gt;basePackageName&lt;/a&gt;
+, &lt;a href="../catchandrethrow/"&gt;catchAndRethrow&lt;/a&gt;
+, &lt;a href="../createconnection/"&gt;createConnection&lt;/a&gt;
+, &lt;a href="../executebatch/"&gt;executeBatch&lt;/a&gt;
+, &lt;a href="../executeonce/"&gt;executeOnce&lt;/a&gt;
+, &lt;a href="../generateconnectionoverloads/"&gt;generateConnectionOverloads&lt;/a&gt;
+, &lt;a href="../generateinterfaces/"&gt;generateInterfaces&lt;/a&gt;
+, &lt;a href="../injectconverters/"&gt;injectConverters&lt;/a&gt;
+, &lt;a href="../throwonmultipleresults/"&gt;throwOnMultipleResults&lt;/a&gt;
+, &lt;a href="../validatemethodnameprefixes/"&gt;validateMethodNamePrefixes&lt;/a&gt;
+, &lt;a href="../writesreturnupdatecount/"&gt;writesReturnUpdateCount&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>allowedWritePrefixes</title><link>https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/allowedwriteprefixes/</guid><description>&lt;p&gt;Configures which name prefixes are allowed for statements that are writing data to your database.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-update-insert-delete-create-write-add-remove-merge-drop"&gt;Option: &amp;lsquo;update, insert, delete, create, write, add, remove, merge, drop&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;allowedWritePrefixes&lt;/code&gt; configuration option is &lt;code&gt;update, insert, delete, create, write, add, remove, merge, drop&lt;/code&gt; to allow several commonly used names for writing statements.&lt;/p&gt;
+&lt;h3 id="option-scribo"&gt;Option: &amp;lsquo;scribo&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;allowedWritePrefixes&lt;/code&gt; configuration option to &lt;code&gt;scribo&lt;/code&gt; only allows names with the prefix &lt;code&gt;scribo&lt;/code&gt; to write data.&lt;/p&gt;</description></item><item><title>basePackageName</title><link>https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/</guid><description>&lt;p&gt;The base package name for all repositories&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-comexamplepersistence"&gt;Option: &amp;lsquo;com.example.persistence&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;basePackageName&lt;/code&gt; configuration option is &lt;code&gt;com.example.persistence&lt;/code&gt;. Setting the option to &lt;code&gt;com.example.persistence&lt;/code&gt; therefore produces the same code generated as the default configuration without any configuration option set. It produces code similar to this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;com.example.persistence&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SomeRepository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... rest of generated code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="option-yourowndomain"&gt;Option: &amp;lsquo;your.own.domain&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;basePackageName&lt;/code&gt; configuration option to &lt;code&gt;your.own.domain&lt;/code&gt; generates the following code instead:&lt;/p&gt;</description></item><item><title>catchAndRethrow</title><link>https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/catchandrethrow/</guid><description>&lt;p&gt;Catch exceptions during SQL execution and re-throw them as RuntimeExceptions&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-true"&gt;Option: &amp;rsquo;true'&lt;/h3&gt;
+&lt;p&gt;The default value for &lt;code&gt;catchAndRethrow&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt;. This will catch any &lt;code&gt;SQLException&lt;/code&gt; that happen during SQL execution and re-throw them as &lt;code&gt;RuntimeExceptions&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;com.example.persistence&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SomeRepository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;writeSome&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... some code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... rest of generated code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="option-false"&gt;Option: &amp;lsquo;false&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;In case you want to handle &lt;code&gt;SQLException&lt;/code&gt;s yourself, set &lt;code&gt;catchAndRethrow&lt;/code&gt; to &lt;code&gt;false&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>createConnection</title><link>https://yosql.projects.metio.wtf/configuration/repositories/createconnection/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/createconnection/</guid><description>&lt;p&gt;Controls whether the generated code should create/open connection itself or use a given connection.&lt;/p&gt;
+&lt;p&gt;A method either takes a connection from the repository&amp;rsquo;s &lt;code&gt;DataSource&lt;/code&gt; and closes it when it
+is done, or takes a &lt;code&gt;java.sql.Connection&lt;/code&gt; as its first parameter and leaves it open for
+whoever passed it in.&lt;/p&gt;
+&lt;p&gt;With &lt;a href="../generateconnectionoverloads/"&gt;generateConnectionOverloads&lt;/a&gt;
+ left on — it is on by
+default — you get both and this setting decides nothing you have to think about. It matters
+when you turn overloads off and want one shape rather than the other.&lt;/p&gt;</description></item><item><title>executeBatch</title><link>https://yosql.projects.metio.wtf/configuration/repositories/executebatch/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/executebatch/</guid><description>&lt;p&gt;Generate methods that are executed as batch&lt;/p&gt;
+&lt;p&gt;A second method taking an array per parameter, adding a batch entry per element and
+answering with the &lt;code&gt;int[]&lt;/code&gt; the driver gives back. One round trip instead of one per row,
+which is the difference between an import that takes a minute and one that takes an hour.&lt;/p&gt;
+&lt;p&gt;Only writing statements get one — batching a query would have nowhere to put the results.
+Turn it off for a statement that is never run in bulk, if the extra method bothers you;
+it costs nothing to leave on.&lt;/p&gt;</description></item><item><title>executeOnce</title><link>https://yosql.projects.metio.wtf/configuration/repositories/executeonce/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/executeonce/</guid><description>&lt;p&gt;Generate methods that are executed once with the given parameters&lt;/p&gt;
+&lt;p&gt;The ordinary method: one call, one execution, the parameters you passed. It is what you
+want for almost every statement, which is why it is on.&lt;/p&gt;
+&lt;p&gt;Turning it off for a statement leaves only its batch method, which is worth doing for a
+statement that is never sensibly run for a single row — a bulk import, say. A statement
+with both turned off generates nothing, and &lt;code&gt;YoSQL&lt;/code&gt; warns rather than leaving you to
+notice the missing method.&lt;/p&gt;</description></item><item><title>generateConnectionOverloads</title><link>https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/generateconnectionoverloads/</guid><description>&lt;p&gt;Generate both a DataSource-based method and a Connection-taking overload for every statement.&lt;/p&gt;
+&lt;p&gt;Whether a statement gets its connection from the repository&amp;rsquo;s &lt;code&gt;DataSource&lt;/code&gt; or from the
+caller is not a property of the statement — it is what the call site needs. One caller
+reads a tenant on its own; another reads it as part of a transaction it already opened. So
+every statement generates both, as overloads of one name:&lt;/p&gt;</description></item><item><title>generateInterfaces</title><link>https://yosql.projects.metio.wtf/configuration/repositories/generateinterfaces/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/generateinterfaces/</guid><description>&lt;p&gt;Generate interfaces for all repositories&lt;/p&gt;
+&lt;p&gt;Writes an interface next to each repository, declaring the same methods, and has the
+repository implement it. Depend on the interface and the class it is implemented by
+becomes something you can substitute — a stub in a test, a caching decorator, a fake
+that never touches a database.&lt;/p&gt;
+&lt;p&gt;The interface is the repository without the &lt;code&gt;Repository&lt;/code&gt; that made it one, so a
+&lt;code&gt;TenantRepository&lt;/code&gt; implements a &lt;code&gt;Tenant&lt;/code&gt;. Where there is no suffix to drop — a
+repository you named yourself — the interface takes an &lt;code&gt;I&lt;/code&gt; in front instead, which is
+what keeps the two names apart.&lt;/p&gt;</description></item><item><title>injectConverters</title><link>https://yosql.projects.metio.wtf/configuration/repositories/injectconverters/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/injectconverters/</guid><description>&lt;p&gt;Toggles whether converters should be injected as constructor parameters.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-false"&gt;Option: &amp;lsquo;false&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;injectConverters&lt;/code&gt; configuration option is &lt;code&gt;false&lt;/code&gt;. It produces code similar to this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;com.example.persistence&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SomeRepository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;DataSource&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dataSource&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ToMapConverter&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;toMap&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;SomeRepository&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;DataSource&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dataSource&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;dataSource&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dataSource&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toMap&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ToMapConverter&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... rest of generated code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="option-true"&gt;Option: &amp;rsquo;true'&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;injectConverters&lt;/code&gt; configuration option to &lt;code&gt;true&lt;/code&gt; generates the following code instead:&lt;/p&gt;</description></item><item><title>Repositories</title><link>https://yosql.projects.metio.wtf/configuration/repositories/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/</guid><description>&lt;p&gt;The &lt;code&gt;repositories&lt;/code&gt; configuration can be used to control how &lt;code&gt;YoSQL&lt;/code&gt; outputs repositories.&lt;/p&gt;</description></item><item><title>throwOnMultipleResults</title><link>https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/throwonmultipleresults/</guid><description>&lt;p&gt;Throw an exception in case a statement using &lt;code&gt;ReturningMode.SINGLE&lt;/code&gt; produces more than 1 result.&lt;/p&gt;
+&lt;p&gt;What a &lt;a href="../../sql/returningmode/"&gt;returning&lt;/a&gt;
+ &lt;code&gt;single&lt;/code&gt; statement does when the database
+answers with more than one row. Off, the first row is returned and the rest are dropped;
+on, it throws.&lt;/p&gt;
+&lt;p&gt;A statement declared &lt;code&gt;single&lt;/code&gt; is a claim that at most one row can match. Where that claim
+rests on a unique constraint the database enforces, the check is redundant and the
+default is right. Where it rests on you being sure — a lookup by something that ought to
+be unique but is not constrained to be — turning this on converts a silent wrong answer
+into a loud one.&lt;/p&gt;</description></item><item><title>validateMethodNamePrefixes</title><link>https://yosql.projects.metio.wtf/configuration/repositories/validatemethodnameprefixes/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/validatemethodnameprefixes/</guid><description>&lt;p&gt;Validate user given names against list of allowed prefixes per type.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-false"&gt;Option: &amp;lsquo;false&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;validateMethodNamePrefixes&lt;/code&gt; configuration option is &lt;code&gt;false&lt;/code&gt; which disables the validation of names according to your configured prefixes.&lt;/p&gt;
+&lt;h3 id="option-true"&gt;Option: &amp;rsquo;true'&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;validateMethodNamePrefixes&lt;/code&gt; configuration option to &lt;code&gt;true&lt;/code&gt; enables the validation of method names.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../allowedcallprefixes/"&gt;allowedCallPrefixes&lt;/a&gt;
+, &lt;a href="../allowedreadprefixes/"&gt;allowedReadPrefixes&lt;/a&gt;
+, &lt;a href="../allowedwriteprefixes/"&gt;allowedWritePrefixes&lt;/a&gt;
+, &lt;a href="../basepackagename/"&gt;basePackageName&lt;/a&gt;
+, &lt;a href="../catchandrethrow/"&gt;catchAndRethrow&lt;/a&gt;
+, &lt;a href="../createconnection/"&gt;createConnection&lt;/a&gt;
+, &lt;a href="../executebatch/"&gt;executeBatch&lt;/a&gt;
+, &lt;a href="../executeonce/"&gt;executeOnce&lt;/a&gt;
+, &lt;a href="../generateconnectionoverloads/"&gt;generateConnectionOverloads&lt;/a&gt;
+, &lt;a href="../generateinterfaces/"&gt;generateInterfaces&lt;/a&gt;
+, &lt;a href="../injectconverters/"&gt;injectConverters&lt;/a&gt;
+, &lt;a href="../throwonmultipleresults/"&gt;throwOnMultipleResults&lt;/a&gt;
+, &lt;a href="../writesreturnupdatecount/"&gt;writesReturnUpdateCount&lt;/a&gt;
+.&lt;/p&gt;
+&lt;h2 id="tooling"&gt;Tooling&lt;/h2&gt;
+&lt;h3 id="ant"&gt;Ant&lt;/h3&gt;
+&lt;p&gt;In order to use &lt;code&gt;YoSQL&lt;/code&gt; together with &lt;a href="https://ant.apache.org/"&gt;Ant&lt;/a&gt;
+, take a look at the tooling &lt;a href="https://yosql.projects.metio.wtf/tooling/ant/"&gt;documentation for Ant&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>writesReturnUpdateCount</title><link>https://yosql.projects.metio.wtf/configuration/repositories/writesreturnupdatecount/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/repositories/writesreturnupdatecount/</guid><description>&lt;p&gt;Writing method which are using &lt;code&gt;ReturningMode.NONE&lt;/code&gt; return the number of affected rows instead.&lt;/p&gt;
+&lt;p&gt;What a write answers with when it returns no rows. On, it is the number of rows the
+statement changed; off, the method is &lt;code&gt;void&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The count is worth having: an update that changed no rows is usually a bug the caller can
+act on, and there is nowhere else to learn that. Turn it off for a statement whose count
+is meaningless — a &lt;code&gt;create table&lt;/code&gt;, or DDL generally.&lt;/p&gt;</description></item><item><title>Structure</title><link>https://yosql.projects.metio.wtf/sql/structure/</link><pubDate>Sun, 16 Jun 2019 18:33:06 +0200</pubDate><guid>https://yosql.projects.metio.wtf/sql/structure/</guid><description>&lt;p&gt;In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. &lt;code&gt;YoSQL&lt;/code&gt; will try to detect which repository your SQL statements will end up in. Based on the &lt;a href="https://yosql.projects.metio.wtf/configuration/files/inputbasedirectory/"&gt;inputBaseDirectory&lt;/a&gt;
+ configuration option, your project structure could look like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;lt;inputBaseDirectory&amp;gt;/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└── user/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── getAllUsers.sql
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Based on the above example, &lt;code&gt;YoSQL&lt;/code&gt; will determine that you want a method called &lt;code&gt;getAllUsers&lt;/code&gt; in a repository called &lt;code&gt;UserRepository&lt;/code&gt;. Use the &lt;a href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/"&gt;basePackageName&lt;/a&gt;
+ option to change the base package name for all generated repositories. Together they will form the fully qualified name &lt;code&gt;&amp;lt;basePackageName&amp;gt;.UserRepository&lt;/code&gt;.&lt;/p&gt;</description></item></channel></rss>

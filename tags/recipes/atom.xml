@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Recipes on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/recipes/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/recipes/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/recipes/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-10T18:57:29+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/recipes/</id><entry><title type="html">Cookbook</title><link href="https://yosql.projects.metio.wtf/sql/cookbook/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/sql/cookbook/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p>Queries that need more than a name and a return mode. Each one is a whole statement you can paste
+and adapt.</p>
+<h2 id="a-list-of-values-in-an-in-clause">A list of values in an IN clause</h2>
+<p>Declare the parameter as a collection and the query is built around it — one placeholder per value
+the caller passed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenantsByIds
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   - name: ids
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     type: java.util.List&lt;java.util.UUID&gt;
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">(:</span><span class="n">ids</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tenants</span><span class="p">.</span><span class="na">findTenantsByIds</span><span class="p">(</span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">second</span><span class="p">,</span><span class="w"> </span><span class="n">third</span><span class="p">));</span><span class="w">
+</span></span></span></code></pre></div><p><code>List</code>, <code>Set</code>, <code>Collection</code> and <code>Iterable</code> all work. An empty one matches no row, which is what <code>in</code>
+on an empty set means — but an empty collection in a <code>not in</code> throws, because that should match
+every row and no list of placeholders can say so. See
+<a href="../sql-files/#lists-of-values">lists of values</a>
+ for the rest of the rules.</p>
+<p>On a database with array types there is a second option, and on a busy statement it is the better
+one: comparing against an array keeps the SQL the same length whatever the caller passes, so the
+database can reuse one plan rather than preparing a new statement per size.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenantsByIdArray
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   ids: array
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">any</span><span class="p">(:</span><span class="n">ids</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p><code>java.sql.Array</code> values are made by the connection, which is exactly what the
+<a href="../transactions/">connection overload</a>
+ hands you:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">.</span><span class="na">getConnection</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="na">createArrayOf</span><span class="p">(</span><span class="s">&#34;uuid&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">tenantIds</span><span class="p">.</span><span class="na">toArray</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">tenants</span><span class="p">.</span><span class="na">findTenantsByIdArray</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">ids</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="optional-filters">Optional filters</h2>
+<p>A statement is fixed at build time, so a filter that is sometimes applied has to be expressed in
+SQL rather than by building a different query:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenants
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   accountId: uuid
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   slug: string
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">accountId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="p">(:</span><span class="n">slug</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">slug</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">slug</span><span class="w">
+</span></span></span></code></pre></div><p>Passing <code>null</code> for <code>slug</code> drops the condition. Watch the query plan: some optimisers handle this
+well and some do not, and where it matters, two statements beat one clever one.</p>
+<h2 id="pagination">Pagination</h2>
+<p>Keyset pagination is one statement, and it is the one to prefer — <code>offset</code> makes the database count
+rows it then discards:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenantsAfter
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   accountId: uuid
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   afterSlug: string
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   pageSize: int
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">account_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">accountId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span><span class="n">afterSlug</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">slug</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fetch</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="p">:</span><span class="n">pageSize</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="k">only</span><span class="w">
+</span></span></span></code></pre></div><p>For the first page, pass an empty string — or write a second statement without the <code>slug &gt;</code>
+condition, which keeps both plans simple.</p>
+<p>Not every database takes a placeholder in the row-count clause. Where yours does not, write the
+limit into the statement and have a statement per page size, or use its own syntax — one statement
+per <code>vendor</code>, as below.</p>
+<h2 id="streaming-a-large-result">Streaming a large result</h2>
+<p><code>returning: cursor</code> gives a lazy <code>Stream</code> rather than a <code>List</code>, so rows are read as you consume
+them and the whole result never has to fit in memory:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findAllLedgerEntries
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: cursor
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.LedgerEntry
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">amount_cents</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_units</span><span class="p">,</span><span class="w"> </span><span class="n">currency</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">at</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">ledger_entry</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">id</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ledger</span><span class="p">.</span><span class="na">findAllLedgerEntries</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">entries</span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">entry</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="na">amount</span><span class="p">().</span><span class="na">minorUnits</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">           </span><span class="p">.</span><span class="na">forEach</span><span class="p">(</span><span class="k">this</span><span class="p">::</span><span class="n">report</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Close the stream.</strong> It holds the <code>ResultSet</code>, the statement and — for the <code>DataSource</code> form — the
+connection, and none of them are returned until it is closed. Most drivers also need a
+non-default fetch size and auto-commit off before they stream rather than buffer; that is a
+connection setting, so use the <a href="../transactions/">connection overload</a>
+ and set it yourself.</p>
+<h2 id="rows-from-a-write">Rows from a write</h2>
+<p>A write that returns rows is a read as far as the front matter is concerned — give it a
+<code>returning</code> mode and a result row type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: insertTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   accountId: uuid
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   slug: string
+</span></span></span><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">account_id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">values</span><span class="w"> </span><span class="p">(</span><span class="n">gen_random_uuid</span><span class="p">(),</span><span class="w"> </span><span class="p">:</span><span class="n">accountId</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">now</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">returning</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">account_id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="w">
+</span></span></span></code></pre></div><p>That is how to get a generated key back: let the database return the row and map it like any other.</p>
+<h2 id="nested-records">Nested records</h2>
+<p>A component whose type is itself a record is built from the same flat row — nesting groups values in
+Java and the query knows nothing about it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findLedgerEntries
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.LedgerEntry
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   tenantId: uuid
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">amount_cents</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_units</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">currency</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">created_at</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">at</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">ledger_entry</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">tenant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">tenantId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">id</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">Money</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">minorUnits</span><span class="p">,</span><span class="w"> </span><span class="n">Currency</span><span class="w"> </span><span class="n">currency</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">LedgerEntry</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">Money</span><span class="w"> </span><span class="n">amount</span><span class="p">,</span><span class="w"> </span><span class="n">Instant</span><span class="w"> </span><span class="n">at</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>Money</code> claims <code>minor_units</code> and <code>currency</code> from the row it shares with <code>LedgerEntry</code>. A nested
+component claims the column matching <strong>its own</strong> name, not a prefixed one, which is why the query
+aliases <code>amount_cents</code> to <code>minor_units</code> rather than to <code>amount_minor_units</code>.</p>
+<p>This maps one row to one object. It does not turn several rows into one object with a collection in
+it — a query joining a tenant to its orders returns one row per order, and folding those into one
+<code>Tenant</code> with a <code>List&lt;Order&gt;</code> is work for the caller.</p>
+<h2 id="enums">Enums</h2>
+<p>An enum is read from a column by the <code>valueOf</code> its own declaration gives it, so nothing is needed
+beyond naming it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="n">OrderState</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">PLACED</span><span class="p">,</span><span class="w"> </span><span class="n">ACTIVE</span><span class="p">,</span><span class="w"> </span><span class="n">CANCELLED</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">PlacedOrder</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">OrderState</span><span class="w"> </span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">BigDecimal</span><span class="w"> </span><span class="n">monthlyPrice</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findOrder
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.PlacedOrder
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   id: uuid
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">state</span><span class="p">,</span><span class="w"> </span><span class="n">monthly_price</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">placed_order</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">id</span><span class="w">
+</span></span></span></code></pre></div><p>The column is read as a <code>String</code> and passed to <code>OrderState.valueOf</code>. Going the other way, bind the
+name: <code>-- parameters:</code> <code>state: string</code>, and pass <code>order.state().name()</code>.</p>
+<h2 id="a-type-of-your-own-around-one-column">A type of your own around one column</h2>
+<p>Any type with a <code>static valueOf</code> taking a value the generator knows is built from a single column,
+and its matching accessor is what gets bound on the way in. So a wrapper travels in both
+directions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">TenantId</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">TenantId</span><span class="w"> </span><span class="nf">valueOf</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TenantId</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenantBySlug
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   tenantId: com.example.domain.TenantId
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">tenantId</span><span class="w">
+</span></span></span></code></pre></div><p>That is also what settles what a one-component record means: with a <code>valueOf</code> it is a value wrapped
+around a column, without one it is a record whose component reads a column of its own.</p>
+<h2 id="json-columns">JSON columns</h2>
+<p>Drivers hand JSON back as text, so read it as a <code>String</code> and parse it where you would parse
+anything else. Wrapping it in a value type keeps the parsing in one place:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findDocument
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Document
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   id: uuid
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">::</span><span class="nb">text</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">payload</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">from</span><span class="w"> </span><span class="n">document</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">id</span><span class="w">
+</span></span></span></code></pre></div><p>The <code>::text</code> cast matters on PostgreSQL: without it the driver hands back a <code>PGobject</code>, which is a
+driver type the generated code will not read. Bind on the way in with an explicit
+<code>sqlType</code>, so the driver knows what it is being given:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   - name: payload
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     type: java.lang.String
+</span></span></span><span class="line"><span class="cl"><span class="c1">--     sqlType: 1111
+</span></span></span></code></pre></div><h2 id="batch-inserts">Batch inserts</h2>
+<p>Batch methods are generated alongside the single-row ones and take arrays:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: insertLedgerEntry
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: none
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   id: long
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   tenantId: uuid
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   amountCents: long
+</span></span></span><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">ledger_entry</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">tenant_id</span><span class="p">,</span><span class="w"> </span><span class="n">amount_cents</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">values</span><span class="w"> </span><span class="p">(:</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">amountCents</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ledger</span><span class="p">.</span><span class="na">insertLedgerEntryBatch</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="kt">long</span><span class="o">[]</span><span class="p">{</span><span class="n">1L</span><span class="p">,</span><span class="w"> </span><span class="n">2L</span><span class="p">,</span><span class="w"> </span><span class="n">3L</span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">UUID</span><span class="o">[]</span><span class="p">{</span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">tenantId</span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="kt">long</span><span class="o">[]</span><span class="p">{</span><span class="n">500L</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">200L</span><span class="p">,</span><span class="w"> </span><span class="n">1_000L</span><span class="p">});</span><span class="w">
+</span></span></span></code></pre></div><p>The return is the <code>int[]</code> the driver gives back, one entry per row. Turn batch methods off for a
+statement with <code>executeBatch: false</code> where they make no sense.</p>
+<h2 id="one-statement-per-database">One statement per database</h2>
+<p>Statements sharing a name but naming different vendors are one method, picking the statement at
+runtime from the connection&rsquo;s database product name:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenants
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- vendor: PostgreSQL
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="k">fetch</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="k">only</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- name: findTenants
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- vendor: MySQL
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">100</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- name: findTenants
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: multiple
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">slug</span><span class="w">
+</span></span></span></code></pre></div><p>The statement without a vendor is the fallback for every database not named.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/sql" term="sql" label="SQL"/><category scheme="https://yosql.projects.metio.wtf/tags/cookbook" term="cookbook" label="cookbook"/><category scheme="https://yosql.projects.metio.wtf/tags/recipes" term="recipes" label="recipes"/></entry></feed>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Intellij on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/intellij/</link><description>Recent content in Intellij on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 02 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/intellij/index.xml" rel="self" type="application/rss+xml"/><item><title>Front matter schema</title><link>https://yosql.projects.metio.wtf/editors/schema/</link><pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/editors/schema/</guid><description>&lt;p&gt;The front matter of a statement is YAML written inside SQL comments, which means your editor
+highlights the SQL and leaves the part with all the keys in it entirely unassisted. A JSON schema
+fixes that: completion for every key, the description on hover, and a warning on a key that does not
+exist.&lt;/p&gt;
+&lt;p&gt;The schema is published at
+&lt;a href="https://yosql.projects.metio.wtf/schema/frontmatter.json"&gt;https://yosql.projects.metio.wtf/schema/frontmatter.json&lt;/a&gt;
+ and generated from the same description of
+the settings that generates the &lt;a href="../../configuration/"&gt;configuration reference&lt;/a&gt;
+, so the two cannot
+drift.&lt;/p&gt;</description></item></channel></rss>

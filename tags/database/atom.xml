@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Database on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/database/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/database/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/database/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-10T18:57:29+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/database/</id><entry><title type="html">Database Access</title><link href="https://yosql.projects.metio.wtf/benchmarks/db-access/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/benchmarks/db-access/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p>How long a generated repository takes to run a statement, measured across every logging
+configuration <code>YoSQL</code> can generate.</p>
+<p>What is being measured is the overhead <code>YoSQL</code> adds on top of JDBC — not how fast your database is.
+The numbers are dominated by the database in any real application, which is rather the point: there
+is nothing between your query and the driver except the code you can read in
+<code>target/generated-sources</code>.</p>
+<h2 id="the-scenarios">The scenarios</h2>
+<p>Each configuration runs the same set, so the numbers are comparable across them:</p>
+<p>Eleven of them, declared as the <code>Read</code>, <code>Write</code> and <code>Call</code> interfaces in
+<code>yosql-benchmarks-dao</code>, so that an implementation either covers all of them or does not compile.</p>
+<h3 id="reading">Reading</h3>
+<ul>
+<li><code>readSingleEntityByPrimaryKey</code>: Read a single entity using its primary key.</li>
+<li><code>readOneToManyRelation</code>: Reads the many part of a one-to-many relation.</li>
+<li><code>readManyToOneRelation</code>: Reads the one part of a many-to-one relation.</li>
+<li><code>readMultipleEntities</code>: Read multiple entities in one go.</li>
+<li><code>readMultipleEntitiesBasedOnCondition</code>: Read multiple entities and filter them inside the database.</li>
+</ul>
+<h3 id="writing">Writing</h3>
+<ul>
+<li><code>writeSingleEntity</code>: Writes a new entity into the database.</li>
+<li><code>writeMultipleEntities</code>: Writes several entities as one batch.</li>
+<li><code>updateSingleEntity</code>: Update every column of one entity.</li>
+<li><code>updateOneToManyRelation</code>: Update the one-to-many relationship part of an entity.</li>
+<li><code>deleteSingleEntityByPrimaryKey</code>: Delete a single entity using its primary key.</li>
+</ul>
+<h3 id="calling-stored-procedures">Calling stored procedures</h3>
+<ul>
+<li><code>callStoredProcedure</code>: Call a single stored procedure.</li>
+</ul>
+<h2 id="the-published-results">The published results</h2>
+<p><a href="https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-dao-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-dao-CURRENT.json">The results</a>
+
+are in <strong>microseconds</strong>, against an in-process H2, with every logging implementation configured for
+maximum output so the cost of each can be read against the no-op baseline.</p>
+<p>Read them with their provenance in mind. They were measured on a shared GitHub Actions runner, one
+fork, three warmup and five measurement iterations — enough to see the shape, not enough to separate
+two implementations that are close. Several have a confidence interval wider than the score itself.</p>
+<p><strong>If you are making a decision, run them on your own hardware with your own statements.</strong> That is
+not a disclaimer; it is the only way a number like this means anything for your project.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">mvn --projects yosql-benchmarks/yosql-benchmarks-dao --also-make \
+</span></span></span><span class="line"><span class="cl"><span class="go">  --activate-profiles benchmarks verify
+</span></span></span></code></pre></div><p>The run writes <code>target/benchmark/yosql-benchmarks-dao.json</code>, which
+<a href="https://jmh.morethan.io/">jmh.morethan.io</a>
+ will render against the published baseline.</p>
+<h2 id="against-jdbi">Against JDBI</h2>
+<p><code>yosql-benchmarks-vs-jdbi</code> runs the eleven scenarios twice — once through generated repositories,
+once through <a href="https://jdbi.org/">JDBI</a>
+ — in <strong>one</strong> JMH run.</p>
+<p>That matters more than it sounds. Numbers from two runs on two machines are not comparable at all;
+numbers from one run share the JVM, the warmup, the schema and the hardware, so what is left is the
+difference between the two libraries. Both take a connection per call and give it back, both read
+rows into <code>Map&lt;String, Object&gt;</code>, and both send the database the same SQL — the statements come from
+this module&rsquo;s <code>.sql</code> files, so neither side can be measured running a query the other did not.</p>
+<p>Each implementation gets its own in-memory database, because the write scenarios insert and delete
+and a shared one would make each side&rsquo;s numbers depend on how often the other had already run.</p>
+<p>Both implementations are in the repository. If you suspect one was written to lose, read it — that
+is the answer a chart cannot give you.</p>
+<h3 id="what-it-measures">What it measures</h3>
+<p>µs per operation, lower is better. JDK 25, H2 in process, one fork, three warmup and five
+measurement iterations, on an otherwise idle 16-core machine.</p>
+<table>
+	<thead>
+			<tr>
+					<th>Scenario</th>
+					<th><code>YoSQL</code></th>
+					<th>JDBI</th>
+					<th>Difference</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>callStoredProcedure</code></td>
+					<td>7.07 ± 0.44</td>
+					<td>17.63 ± 5.81</td>
+					<td>+10.56</td>
+			</tr>
+			<tr>
+					<td><code>readManyToOneRelation</code></td>
+					<td>7.85 ± 0.68</td>
+					<td>18.62 ± 2.52</td>
+					<td>+10.77</td>
+			</tr>
+			<tr>
+					<td><code>readMultipleEntitiesBasedOnCondition</code></td>
+					<td>7.87 ± 0.67</td>
+					<td>18.17 ± 3.98</td>
+					<td>+10.30</td>
+			</tr>
+			<tr>
+					<td><code>deleteSingleEntityByPrimaryKey</code></td>
+					<td>7.87 ± 1.28</td>
+					<td>17.85 ± 7.13</td>
+					<td>+9.98</td>
+			</tr>
+			<tr>
+					<td><code>readOneToManyRelation</code></td>
+					<td>8.00 ± 0.74</td>
+					<td>17.40 ± 1.10</td>
+					<td>+9.40</td>
+			</tr>
+			<tr>
+					<td><code>readSingleEntityByPrimaryKey</code></td>
+					<td>8.03 ± 1.19</td>
+					<td>17.62 ± 2.32</td>
+					<td>+9.59</td>
+			</tr>
+			<tr>
+					<td><code>updateOneToManyRelation</code></td>
+					<td>8.06 ± 1.14</td>
+					<td>18.57 ± 4.09</td>
+					<td>+10.51</td>
+			</tr>
+			<tr>
+					<td><code>readMultipleEntities</code></td>
+					<td>8.07 ± 0.79</td>
+					<td>16.39 ± 1.50</td>
+					<td>+8.32</td>
+			</tr>
+			<tr>
+					<td><code>writeSingleEntity</code></td>
+					<td>12.15 ± 1.36</td>
+					<td>21.54 ± 4.81</td>
+					<td>+9.39</td>
+			</tr>
+			<tr>
+					<td><code>updateSingleEntity</code></td>
+					<td>13.60 ± 2.05</td>
+					<td>22.11 ± 5.96</td>
+					<td>+8.52</td>
+			</tr>
+			<tr>
+					<td><code>writeMultipleEntities</code></td>
+					<td>56.47 ± 12.96</td>
+					<td>60.72 ± 6.61</td>
+					<td>+4.25</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="what-it-means-and-what-it-does-not">What it means, and what it does not</h3>
+<p>The ratios run from 1.08× to 2.49×, and quoting any of them would be misleading. Read the last
+column instead: the difference is about <strong>9.6 µs on every scenario</strong>, whatever that scenario does.
+A fixed cost per call, not a proportional one — JDBI builds a <code>Handle</code>, with its configuration and
+its mapper registry, every time you ask for one. Generated code has no such step because it has
+nothing to configure.</p>
+<p><code>writeMultipleEntities</code> is the one that proves it. It does roughly 50 µs of real database work, and
+there the two are <strong>indistinguishable</strong>: +4.25 µs with error bars that overlap. Once actual work
+dominates, the constant disappears into it.</p>
+<p>So the honest claim is narrow: <strong>JDBI&rsquo;s per-call machinery costs around 10 µs, and <code>YoSQL</code> has no
+per-call machinery.</strong> Whether that matters to you is arithmetic. Against an in-process H2, where a
+query costs 8 µs, it doubles your time. Against a database on the other side of a socket, where a
+query costs hundreds of microseconds or milliseconds, 10 µs is a rounding error you will never
+measure — which is the same reason this page opens by saying it measures what the layer costs and
+not what your application will do.</p>
+<p>Two caveats worth keeping in view. JDBI&rsquo;s error bars are wide — ±5.81 µs on one scenario — so no
+single row settles anything; it is the same result appearing in all eleven that carries it. And this
+is one fork on one machine.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi \
+</span></span></span><span class="line"><span class="cl"><span class="go">  --activate-profiles benchmarks verify
+</span></span></span></code></pre></div><p>Leave <code>--also-make</code> off once the dependencies are installed. With it, the DAO benchmarks run too —
+including the variant that logs every statement — which takes far longer and writes a very large
+log.</p>
+<h2 id="against-an-orm">Against an ORM</h2>
+<p>There is none, and there is unlikely to be one.</p>
+<p>Read the same entity twice and Hibernate answers the second from its identity map, so it wins by a
+distance; turn that off and you are measuring a Hibernate nobody deploys. Whichever you pick, the
+number argues about the configuration rather than about the tools, and the honest version of that
+argument is prose. The <a href="../../community/alternatives/">comparison of alternatives</a>
+ says where an ORM
+is the better choice without pretending to a measurement.</p>
+<p>The JDBI result above also suggests what such a comparison would find between two SQL-first
+libraries: a fixed per-call cost, invisible the moment a real database is involved. That is worth
+knowing once. It is not worth knowing four times.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/benchmarks" term="benchmarks" label="Benchmarks"/><category scheme="https://yosql.projects.metio.wtf/tags/database" term="database" label="database"/><category scheme="https://yosql.projects.metio.wtf/tags/access" term="access" label="access"/></entry></feed>

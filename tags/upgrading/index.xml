@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Upgrading on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/upgrading/</link><description>Recent content in Upgrading on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 02 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/upgrading/index.xml" rel="self" type="application/rss+xml"/><item><title>Upgrading</title><link>https://yosql.projects.metio.wtf/installation/upgrading/</link><pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/installation/upgrading/</guid><description>&lt;p&gt;What each release needs from you, when it needs anything. Releases not listed here are drop-in.&lt;/p&gt;
+&lt;h2 id="202698"&gt;2026.9.8&lt;/h2&gt;
+&lt;h3 id="converters-are-generated-beside-your-repositories"&gt;Converters are generated beside your repositories&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;converter.mapConverterClass&lt;/code&gt; used to default to &lt;code&gt;com.example.persistence.converter.ToMapConverter&lt;/code&gt;,
+and every generated converter is written to the package that setting names. A project that set
+&lt;code&gt;repositories.basePackageName&lt;/code&gt; and nothing else therefore had its repositories generated where it
+asked and its converters generated into the example&amp;rsquo;s package — a name it had never written down,
+reached through a setting it had never heard of.&lt;/p&gt;</description></item></channel></rss>

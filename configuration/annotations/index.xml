@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Annotations on YoSQL</title><link>https://yosql.projects.metio.wtf/configuration/annotations/</link><description>Recent content in Annotations on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 10 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/configuration/annotations/index.xml" rel="self" type="application/rss+xml"/><item><title>constructorAnnotations</title><link>https://yosql.projects.metio.wtf/configuration/annotations/constructorannotations/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/annotations/constructorannotations/</guid><description>&lt;p&gt;The additional annotations to be placed on generated constructors.&lt;/p&gt;
+&lt;p&gt;A repository has one constructor, so most containers inject through it without being
+told. This is for the ones that want to be told, or for a project whose style is to say
+so anyway — &lt;code&gt;jakarta.inject.Inject&lt;/code&gt;, &lt;code&gt;org.springframework.beans.factory.annotation.Autowired&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-jakartainjectinject"&gt;Option: &amp;lsquo;jakarta.inject.Inject&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Marks the constructor for injection explicitly:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;com.example.persistence&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.inject.Inject&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TenantRepository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Inject&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;TenantRepository&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;DataSource&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dataSource&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ... rest of generated code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../methodannotations/"&gt;methodAnnotations&lt;/a&gt;
+, &lt;a href="../repositoryannotations/"&gt;repositoryAnnotations&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>methodAnnotations</title><link>https://yosql.projects.metio.wtf/configuration/annotations/methodannotations/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/annotations/methodannotations/</guid><description>&lt;p&gt;The additional annotations to be placed on generated methods.&lt;/p&gt;
+&lt;p&gt;Goes on every generated method of every repository, which limits it to annotations that
+make sense everywhere — a metrics &lt;code&gt;@Timed&lt;/code&gt;, a &lt;code&gt;@SuppressWarnings&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Resist putting &lt;code&gt;@Transactional&lt;/code&gt; here. It would open a transaction per statement, which is
+the opposite of what a transaction is for; transactions belong to the service calling
+several statements, and &lt;a href="../../../sql/transactions/"&gt;transactions&lt;/a&gt;
+ covers how a repository
+joins one.&lt;/p&gt;
+&lt;p&gt;To annotate one statement rather than all of them, use
+&lt;a href="../../sql/annotations/"&gt;annotations&lt;/a&gt;
+ in its front matter.&lt;/p&gt;</description></item><item><title>repositoryAnnotations</title><link>https://yosql.projects.metio.wtf/configuration/annotations/repositoryannotations/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/annotations/repositoryannotations/</guid><description>&lt;p&gt;The additional annotations to be placed on generated repository classes.&lt;/p&gt;
+&lt;p&gt;This is how a generated repository becomes a bean. &lt;code&gt;org.springframework.stereotype.Repository&lt;/code&gt;
+makes component scanning find it; &lt;code&gt;jakarta.enterprise.context.ApplicationScoped&lt;/code&gt; makes CDI
+find it. Either way constructor injection supplies the &lt;code&gt;DataSource&lt;/code&gt;, and no configuration
+class is needed — see &lt;a href="../../../frameworks/spring-boot/"&gt;Spring Boot&lt;/a&gt;
+ and
+&lt;a href="../../../frameworks/quarkus/"&gt;Quarkus&lt;/a&gt;
+.&lt;/p&gt;
+&lt;p&gt;Name annotations by their fully-qualified name; the import is written for you. The
+annotation has to be on the compile classpath of the project being generated for, since
+the generated code has to compile against it — but it is your dependency, not one of
+&lt;code&gt;YoSQL&lt;/code&gt;&amp;rsquo;s.&lt;/p&gt;</description></item></channel></rss>

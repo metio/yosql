@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Transactions on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/transactions/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/transactions/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/transactions/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-10T18:57:29+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/transactions/</id><entry><title type="html">Transactions</title><link href="https://yosql.projects.metio.wtf/sql/transactions/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/sql/transactions/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p><code>YoSQL</code> generates no transaction management, opens no transaction of its own, and has no opinion
+about where yours come from. What it generates is the one thing a transaction needs: every statement
+is reachable on a connection you supply.</p>
+<h2 id="two-shapes-for-every-statement">Two shapes for every statement</h2>
+<p>Each statement generates two methods with the same name:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>The first takes a connection from the repository&rsquo;s <code>DataSource</code> and closes it. The second runs on
+the connection it is given and leaves it open, so several statements can share one — which is all a
+transaction is.</p>
+<p>Which one a call site uses is its own business, and that is why both exist. Turning them into a
+choice made per statement is what
+<a href="../../configuration/repositories/generateconnectionoverloads/">generateConnectionOverloads</a>
+ is
+for, and there is rarely a reason to.</p>
+<h2 id="plain-jdbc">Plain JDBC</h2>
+<p>Open a connection, turn off auto-commit, and pass it to every statement in the unit of work:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">placeOrder</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PlacedOrder</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">.</span><span class="na">getConnection</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">connection</span><span class="p">.</span><span class="na">setAutoCommit</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">orders</span><span class="p">.</span><span class="na">insertOrder</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">id</span><span class="p">(),</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">state</span><span class="p">(),</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">monthlyPrice</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ledger</span><span class="p">.</span><span class="na">insertLedgerEntry</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">nextId</span><span class="p">(),</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">monthlyPrice</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">connection</span><span class="p">.</span><span class="na">commit</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">RuntimeException</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">SQLException</span><span class="w"> </span><span class="n">failure</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">connection</span><span class="p">.</span><span class="na">rollback</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">failure</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Both repositories run on the same connection, so both statements are in the same transaction, and
+neither closes it — the <code>try</code>-with-resources does, once.</p>
+<p>Nothing about that is specific to <code>YoSQL</code>. It is the JDBC you would have written, which is the
+point.</p>
+<h2 id="spring">Spring</h2>
+<p>Under Spring you do not thread a <code>Connection</code> at all. Wrap the <code>DataSource</code> in a
+<code>TransactionAwareDataSourceProxy</code> and hand <em>that</em> to the repositories: <code>getConnection()</code> then returns
+the connection bound to the current transaction, and the <code>DataSource</code>-based methods join whatever
+<code>@Transactional</code> opened.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PersistenceConfiguration</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">DataSource</span><span class="w"> </span><span class="nf">transactionAwareDataSource</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">DataSource</span><span class="w"> </span><span class="n">dataSource</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TransactionAwareDataSourceProxy</span><span class="p">(</span><span class="n">dataSource</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">TenantRepository</span><span class="w"> </span><span class="nf">tenantRepository</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">DataSource</span><span class="w"> </span><span class="n">transactionAwareDataSource</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TenantRepository</span><span class="p">(</span><span class="n">transactionAwareDataSource</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OrderService</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">OrderRepository</span><span class="w"> </span><span class="n">orders</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">LedgerRepository</span><span class="w"> </span><span class="n">ledger</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// constructor omitted</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Transactional</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">placeOrder</span><span class="p">(</span><span class="kd">final</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PlacedOrder</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">orders</span><span class="p">.</span><span class="na">insertOrder</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="na">id</span><span class="p">(),</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">state</span><span class="p">(),</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">monthlyPrice</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ledger</span><span class="p">.</span><span class="na">insertLedgerEntry</span><span class="p">(</span><span class="n">nextId</span><span class="p">(),</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">.</span><span class="na">monthlyPrice</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Both statements run on the transaction&rsquo;s connection, rollback works, and the repositories know
+nothing about any of it. Use the <code>Connection</code> overloads under Spring only where you want a unit of
+work that is explicitly <em>not</em> the ambient one.</p>
+<p>Give the <code>PlatformTransactionManager</code> the <strong>underlying</strong> <code>DataSource</code>, not the proxy — the proxy is
+for the code that consumes connections, not for the manager that binds them.</p>
+<h2 id="quarkus-and-jakarta-ee">Quarkus and Jakarta EE</h2>
+<p>An injected <code>DataSource</code> under a JTA transaction is already transaction-aware: <code>getConnection()</code>
+returns the connection enlisted in the current transaction. Inject it, construct the repository with
+it, and annotate the service method with <code>@Transactional</code>. As with Spring, the <code>Connection</code>
+overloads are for the cases you want to keep out of the ambient transaction.</p>
+<h2 id="things-worth-knowing">Things worth knowing</h2>
+<p><strong>A <code>cursor</code> result outlives the method that returned it.</strong> A statement with <code>returning: cursor</code>
+gives you a lazy <code>Stream</code>, and the connection stays open until the stream is closed. The
+<code>DataSource</code> form closes it for you when the stream closes; the <code>Connection</code> form does not close a
+connection it did not open, so close the stream inside the transaction that owns it.</p>
+<p><strong>Batch methods take a connection too.</strong> <code>insertTenantBatch(Connection, UUID[], String[])</code> exists
+alongside <code>insertTenantBatch(UUID[], String[])</code>, so a batch belongs in a transaction like anything
+else.</p>
+<p><strong>Isolation, savepoints and read-only flags are yours.</strong> They are properties of the connection, so
+set them on the connection before passing it in. <code>YoSQL</code> does not touch them.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/sql" term="sql" label="SQL"/><category scheme="https://yosql.projects.metio.wtf/tags/transactions" term="transactions" label="transactions"/><category scheme="https://yosql.projects.metio.wtf/tags/connections" term="connections" label="connections"/></entry></feed>

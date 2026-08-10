@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Converter on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/converter/</link><description>Recent content in Converter on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 10 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/converter/index.xml" rel="self" type="application/rss+xml"/><item><title>Converter</title><link>https://yosql.projects.metio.wtf/configuration/converter/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/</guid><description>&lt;p&gt;Configures converter related settings.&lt;/p&gt;</description></item><item><title>defaultConverter</title><link>https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/defaultconverter/</guid><description>&lt;p&gt;The fully-qualified name of the converter to use for statements that name none.&lt;/p&gt;
+&lt;p&gt;A converter is named by its class and nothing else: &lt;code&gt;YoSQL&lt;/code&gt; reads the class to find its
+single public method taking a &lt;code&gt;ResultSet&lt;/code&gt;, and that method&amp;rsquo;s name and return type become
+the method the repository calls and the type each row becomes. The field the repository
+injects it into is named after the class, with a lower-case first letter.&lt;/p&gt;</description></item><item><title>generateMapConverter</title><link>https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/generatemapconverter/</guid><description>&lt;p&gt;Whether the ToMap converter should be generated.&lt;/p&gt;
+&lt;p&gt;A statement naming neither a &lt;a href="../../sql/resultrowtype/"&gt;resultRowType&lt;/a&gt;
+ nor a
+&lt;a href="../../sql/resultrowconverter/"&gt;resultRowConverter&lt;/a&gt;
+ answers with a
+&lt;code&gt;Map&amp;lt;String, Object&amp;gt;&lt;/code&gt; per row, read by a converter generated for the purpose. This decides
+whether that converter is written.&lt;/p&gt;
+&lt;p&gt;Turn it off once every statement names a type of its own, and a statement that goes back
+to answering with maps then fails the build instead of quietly doing so — which is the
+point of turning it off.&lt;/p&gt;</description></item><item><title>mapConverterAlias</title><link>https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/mapconverteralias/</guid><description>&lt;p&gt;The name of the alias referencing the ToMap converter.&lt;/p&gt;
+&lt;p&gt;The field a repository holds the ToMap converter in. Converters generated from a record are
+named after their own class; this one is named here, because there is one of it and
+&lt;code&gt;toMapConverter&lt;/code&gt; reads worse than &lt;code&gt;toMap&lt;/code&gt; in the body of every method that uses it.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../defaultconverter/"&gt;defaultConverter&lt;/a&gt;
+, &lt;a href="../generatemapconverter/"&gt;generateMapConverter&lt;/a&gt;
+, &lt;a href="../mapconverterclass/"&gt;mapConverterClass&lt;/a&gt;
+, &lt;a href="../mapconvertermethod/"&gt;mapConverterMethod&lt;/a&gt;
+, &lt;a href="../recordconvertermethod/"&gt;recordConverterMethod&lt;/a&gt;
+, &lt;a href="../recordconverterprefix/"&gt;recordConverterPrefix&lt;/a&gt;
+, &lt;a href="../recordconvertersuffix/"&gt;recordConverterSuffix&lt;/a&gt;
+.&lt;/p&gt;
+&lt;h2 id="tooling"&gt;Tooling&lt;/h2&gt;
+&lt;h3 id="ant"&gt;Ant&lt;/h3&gt;
+&lt;p&gt;In order to use &lt;code&gt;YoSQL&lt;/code&gt; together with &lt;a href="https://ant.apache.org/"&gt;Ant&lt;/a&gt;
+, take a look at the tooling &lt;a href="https://yosql.projects.metio.wtf/tooling/ant/"&gt;documentation for Ant&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>mapConverterClass</title><link>https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/mapconverterclass/</guid><description>&lt;p&gt;The class name of the ToMap converter.&lt;/p&gt;
+&lt;p&gt;Where the generated ToMap converter is written and what it is called — and, since every
+generated converter is written beside it, where the rest of them go too.&lt;/p&gt;
+&lt;p&gt;A bare class name, which is the default, puts them in a &lt;code&gt;converter&lt;/code&gt; package under the
+repositories&amp;rsquo; &lt;a href="../../repositories/basepackagename/"&gt;basePackageName&lt;/a&gt;
+: a project that has
+said where its repositories go has thereby said where its converters go. Write a
+fully-qualified name to put them somewhere else — or, together with
+&lt;a href="../generatemapconverter/"&gt;generateMapConverter&lt;/a&gt;
+ set to &lt;code&gt;false&lt;/code&gt;, to point repositories at a
+ToMap converter you wrote yourself.&lt;/p&gt;</description></item><item><title>mapConverterMethod</title><link>https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/mapconvertermethod/</guid><description>&lt;p&gt;The name of the method to generate/call in the ToMap converter.&lt;/p&gt;
+&lt;p&gt;The method repositories call on the ToMap converter. It defaults to &lt;code&gt;apply&lt;/code&gt;, which is what
+a &lt;code&gt;Function&amp;lt;ResultSet, Map&amp;lt;String, Object&amp;gt;&amp;gt;&lt;/code&gt; declares — so the generated converter can be
+used as one.&lt;/p&gt;
+&lt;p&gt;Where you supply the converter yourself, this is how you name the method it actually
+has.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../defaultconverter/"&gt;defaultConverter&lt;/a&gt;
+, &lt;a href="../generatemapconverter/"&gt;generateMapConverter&lt;/a&gt;
+, &lt;a href="../mapconverteralias/"&gt;mapConverterAlias&lt;/a&gt;
+, &lt;a href="../mapconverterclass/"&gt;mapConverterClass&lt;/a&gt;
+, &lt;a href="../recordconvertermethod/"&gt;recordConverterMethod&lt;/a&gt;
+, &lt;a href="../recordconverterprefix/"&gt;recordConverterPrefix&lt;/a&gt;
+, &lt;a href="../recordconvertersuffix/"&gt;recordConverterSuffix&lt;/a&gt;
+.&lt;/p&gt;
+&lt;h2 id="tooling"&gt;Tooling&lt;/h2&gt;
+&lt;h3 id="ant"&gt;Ant&lt;/h3&gt;
+&lt;p&gt;In order to use &lt;code&gt;YoSQL&lt;/code&gt; together with &lt;a href="https://ant.apache.org/"&gt;Ant&lt;/a&gt;
+, take a look at the tooling &lt;a href="https://yosql.projects.metio.wtf/tooling/ant/"&gt;documentation for Ant&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>recordConverterMethod</title><link>https://yosql.projects.metio.wtf/configuration/converter/recordconvertermethod/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/recordconvertermethod/</guid><description>&lt;p&gt;The name of the method to generate in converters built from a record.&lt;/p&gt;
+&lt;p&gt;Every converter generated from a &lt;a href="../../sql/resultrowtype/"&gt;resultRowType&lt;/a&gt;
+ declares one method,
+and this is its name. Change it to match the convention the hand-written converters in your
+project already follow, so a repository reads the same whichever kind of converter it calls.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-asusertype"&gt;Option: &amp;lsquo;asUserType&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;recordConverterMethod&lt;/code&gt; configuration option is &lt;code&gt;asUserType&lt;/code&gt;, which matches the name used by the hand-written converters in the examples.&lt;/p&gt;</description></item><item><title>recordConverterPrefix</title><link>https://yosql.projects.metio.wtf/configuration/converter/recordconverterprefix/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/recordconverterprefix/</guid><description>&lt;p&gt;The prefix of the class name of converters built from a record.&lt;/p&gt;
+&lt;p&gt;A converter generated for a record is named &lt;code&gt;&amp;lt;prefix&amp;gt;&amp;lt;record&amp;gt;&amp;lt;suffix&amp;gt;&lt;/code&gt; and lives in the package
+of the &lt;a href="../mapconverterclass/"&gt;mapConverterClass&lt;/a&gt;
+. The field a repository injects it into takes
+the same name with a lower-case first letter, so changing either affix changes both.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-to"&gt;Option: &amp;lsquo;To&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;recordConverterPrefix&lt;/code&gt; configuration option is &lt;code&gt;To&lt;/code&gt;, which names the converter for a &lt;code&gt;User&lt;/code&gt; record &lt;code&gt;ToUserConverter&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>recordConverterSuffix</title><link>https://yosql.projects.metio.wtf/configuration/converter/recordconvertersuffix/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/converter/recordconvertersuffix/</guid><description>&lt;p&gt;The suffix of the class name of converters built from a record.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-converter"&gt;Option: &amp;lsquo;Converter&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default value of the &lt;code&gt;recordConverterSuffix&lt;/code&gt; configuration option is &lt;code&gt;Converter&lt;/code&gt;, which names the converter for a &lt;code&gt;User&lt;/code&gt; record &lt;code&gt;ToUserConverter&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="option-rowmapper"&gt;Option: &amp;lsquo;RowMapper&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;Changing the &lt;code&gt;recordConverterSuffix&lt;/code&gt; configuration option to &lt;code&gt;RowMapper&lt;/code&gt; names it &lt;code&gt;ToUserRowMapper&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="related-options"&gt;Related Options&lt;/h2&gt;
+&lt;p&gt;Also in this group: &lt;a href="../defaultconverter/"&gt;defaultConverter&lt;/a&gt;
+, &lt;a href="../generatemapconverter/"&gt;generateMapConverter&lt;/a&gt;
+, &lt;a href="../mapconverteralias/"&gt;mapConverterAlias&lt;/a&gt;
+, &lt;a href="../mapconverterclass/"&gt;mapConverterClass&lt;/a&gt;
+, &lt;a href="../mapconvertermethod/"&gt;mapConverterMethod&lt;/a&gt;
+, &lt;a href="../recordconvertermethod/"&gt;recordConverterMethod&lt;/a&gt;
+, &lt;a href="../recordconverterprefix/"&gt;recordConverterPrefix&lt;/a&gt;
+.&lt;/p&gt;
+&lt;h2 id="tooling"&gt;Tooling&lt;/h2&gt;
+&lt;h3 id="ant"&gt;Ant&lt;/h3&gt;
+&lt;p&gt;In order to use &lt;code&gt;YoSQL&lt;/code&gt; together with &lt;a href="https://ant.apache.org/"&gt;Ant&lt;/a&gt;
+, take a look at the tooling &lt;a href="https://yosql.projects.metio.wtf/tooling/ant/"&gt;documentation for Ant&lt;/a&gt;
+.&lt;/p&gt;</description></item></channel></rss>

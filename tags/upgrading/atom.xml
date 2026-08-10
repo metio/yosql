@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://gohugo.io/" version="0.163.3">Hugo</generator><title type="html">Upgrading on YoSQL</title><link href="https://yosql.projects.metio.wtf/tags/upgrading/" rel="alternate" type="text/html" title="html"/><link href="https://yosql.projects.metio.wtf/tags/upgrading/index.xml" rel="alternate" type="application/rss+xml" title="rss"/><link href="https://yosql.projects.metio.wtf/tags/upgrading/atom.xml" rel="self" type="application/atom+xml" title="atom"/><updated>2026-08-10T18:57:29+00:00</updated><author><name>metio.wtf</name></author><id>https://yosql.projects.metio.wtf/tags/upgrading/</id><entry><title type="html">Upgrading</title><link href="https://yosql.projects.metio.wtf/installation/upgrading/?utm_source=atom_feed" rel="alternate" type="text/html"/><id>https://yosql.projects.metio.wtf/installation/upgrading/</id><published>2026-08-02T00:00:00+00:00</published><updated>2026-08-02T00:00:00+00:00</updated><content type="html"><![CDATA[<p>What each release needs from you, when it needs anything. Releases not listed here are drop-in.</p>
+<h2 id="202698">2026.9.8</h2>
+<h3 id="converters-are-generated-beside-your-repositories">Converters are generated beside your repositories</h3>
+<p><code>converter.mapConverterClass</code> used to default to <code>com.example.persistence.converter.ToMapConverter</code>,
+and every generated converter is written to the package that setting names. A project that set
+<code>repositories.basePackageName</code> and nothing else therefore had its repositories generated where it
+asked and its converters generated into the example&rsquo;s package — a name it had never written down,
+reached through a setting it had never heard of.</p>
+<p>The default is now the bare name <code>ToMapConverter</code>, and a name without a package is resolved against
+<code>repositories.basePackageName</code>. So converters land in <code>&lt;your base package&gt;.converter</code>, and a project
+that already worked around this by writing the setting out in full keeps exactly what it had — a
+fully-qualified name is still followed to the letter.</p>
+<p>Nothing to do unless you configured <code>mapConverterClass</code> solely to relocate the converters. That
+setting can go:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;mapConverterClass&gt;</span>com.example.store.converter.ToMapConverter<span class="nt">&lt;/mapConverterClass&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/converter&gt;</span>
+</span></span></code></pre></div><p>If you want the converters to stay where they are while your base package differs, keep it. Anything
+of your own importing a generated converter moves with it — that shows up as a compile error naming
+the import, not as anything silent.</p>
+<p>A <code>schema.sqlStatementsDirectory</code> holding versioned migrations is now read in version order.
+Previously the files were read in name order, so <code>V10__</code> and <code>V12__</code> were applied ahead of <code>V2__</code>
+and every column added past the ninth migration was missing from the schema <code>YoSQL</code> worked from.</p>
+<p>Nothing needs changing, but two things are worth rechecking if you pointed this at a Flyway or
+Liquibase directory. Schema validation lowered to <code>WARN</code> because it reported columns that plainly
+exist can go back to <code>ERROR</code>. Parameter and result types written out by hand because inference
+&ldquo;did not work&rdquo; are now inferred, and the front matter still wins where the two disagree — so a type
+declared against the wrong schema stays wrong until you delete it.</p>
+<p>A column is also read in the spelling its own DDL was written in. Marking a schema file with a
+<a href="/configuration/sql/vendor/">vendor</a>
+ now decides how its column types are read, so <code>bytea</code>,
+<code>timestamptz</code>, <code>bigserial</code>, <code>jsonb</code> and the rest of a database&rsquo;s own spellings reach statements that
+declare no vendor themselves:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- vendor: postgresql
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">attachment</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="n">bigserial</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="n">bytea</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>Previously those spellings were only read when the <em>statement</em> declared the vendor, which a project
+with one database has no reason to do — so its schema answered for the standard types and nothing
+else. Nothing changes for a project that marks its statements, or for one that marks neither.</p>
+<p>Whether marking the schema gains you anything depends on how your DDL is written, and it is worth
+checking rather than assuming. <code>uuid</code>, <code>text</code>, <code>varchar</code>, <code>boolean</code>, <code>integer</code>, <code>bigint</code>, <code>numeric</code>,
+<code>date</code> and <code>timestamp with time zone</code> are read the same by every database, so a schema written in
+those types already types completely, and a vendor adds nothing to it. A schema saying <code>timestamptz</code>,
+<code>bigserial</code>, <code>bytea</code>, <code>jsonb</code> or <code>citext</code> is the one this is for.
+<a href="#the-build-says-which-columns-it-cannot-type">The build says which columns it cannot type</a>
+, which
+answers it for your schema without guessing.</p>
+<p>Where the schema is a migration directory, the files are checksummed by the tool that applied them
+and a comment added to one already run makes it refuse to start. The new <code>schema.vendor</code> setting
+says the same thing from the build instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;sqlStatementsDirectory&gt;</span>src/main/resources/db/migration<span class="nt">&lt;/sqlStatementsDirectory&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;vendor&gt;</span>PostgreSQL<span class="nt">&lt;/vendor&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/schema&gt;</span>
+</span></span></code></pre></div><p>A schema file naming its own vendor keeps it.</p>
+<h3 id="undo-migrations-are-no-longer-read-as-schema">Undo migrations are no longer read as schema</h3>
+<p>A Flyway undo migration — <code>U48__…</code> beside the <code>V48__…</code> it reverses — says how to take a migration
+back out. It is never run by a migration, so the database has never had it applied, and reading it
+describes a schema that does not exist. It also carries no version this reader recognised, so it
+sorted after every versioned migration and undid them last of all.</p>
+<p>What that looked like was a column missing from an otherwise perfect schema: <code>U48</code>&rsquo;s <code>drop column</code>
+is something the reader follows exactly, so it took the column back out and reported nothing. If a
+statement of yours was reported as using a column that plainly exists, and the migration adding it
+has an undo beside it, that was this.</p>
+<h3 id="a-camelcase-parameter-finds-its-snake_case-column">A <code>camelCase</code> parameter finds its <code>snake_case</code> column</h3>
+<p><code>:accountId</code> now takes its type from an <code>account_id</code> column, the same conversion a result row
+component has always had. Previously a parameter had to be spelled exactly as the column was, so
+every parameter named after a <code>snake_case</code> column fell through to &ldquo;no type known for&rdquo; and had to be
+declared by hand — the schema had the answer and the name never reached it. If your front matter is
+full of <code>parameters:</code> blocks that only repeat what the schema says, they can go.</p>
+<p>A parameter written the column&rsquo;s way keeps working, and a type in the front matter still wins over
+both.</p>
+<h3 id="a-write-holding-a-collection-no-longer-asks-for-a-batch">A write holding a collection no longer asks for a batch</h3>
+<p><code>executeBatch</code> defaults to on for writing statements, and a collection parameter cannot be batched —
+each of its values needs a placeholder of its own, so every execution would need a different query.
+Those two defaults met in a build failure on every <code>update … where state in (:states)</code>, curable only
+by writing <code>executeBatch: false</code> on each one. The default now yields: a statement holding a
+collection is generated without a batch method. Writing <code>executeBatch: true</code> on one is still an
+error, because that asks for something that cannot exist.</p>
+<h3 id="two-generated-types-with-one-name-stop-the-build">Two generated types with one name stop the build</h3>
+<p>A repository interface is the repository&rsquo;s name without its <code>Repository</code> suffix, so statements in a
+<code>document</code> directory generate an interface called <code>Document</code> alongside <code>DocumentRepository</code>. A
+<code>resultRowType</code> naming <code>&lt;your base package&gt;.persistence.Document</code> names that same type, and the two
+were written to one file — whichever the generator reached second was the one that survived.</p>
+<p>What that looked like was a compile error on a file you did not write, saying the type a converter
+instantiates is abstract, or a duplicate class where the record was your own. Now it stops
+generation and names both:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Two generated types would both be written as &#39;com.example.persistence.Document&#39;: an interface
+</span></span><span class="line"><span class="cl">and a record.
+</span></span></code></pre></div><p>The same name can also meet a class you wrote yourself, which is the likelier of the two: a project
+keeping its stores in the repositories&rsquo; package has hand-written classes sitting exactly where the
+generator writes, and a <code>windDown</code> statements directory generates an interface called <code>WindDown</code>.
+That was a duplicate class from <code>javac</code>, in whichever of the two files it reached first. It is now
+the same kind of failure, before anything is written, naming the file it met.</p>
+<p>Either way this only affects a build that was already failing at compile time, so nothing that
+worked can start failing. If you see it, rename whichever of the two names is yours, move it to
+another package, or turn off
+<a href="/configuration/repositories/generateinterfaces/">generateInterfaces</a>
+.</p>
+<h3 id="a-parameters-block-no-longer-changes-the-order-of-a-method">A <code>parameters:</code> block no longer changes the order of a method</h3>
+<p>A generated method takes its parameters in the order the statement binds them. Declaring some of
+them used to move those to the front:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   tenantId: uuid
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">id</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">tenant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">tenantId</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">findWithdrawableRestore</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w">   </span><span class="c1">// before</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">findWithdrawableRestore</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">tenantId</span><span class="p">)</span><span class="w">   </span><span class="c1">// now, and what the SQL says</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Check any statement whose block names fewer parameters than the statement binds, or names them in
+an order the SQL does not use.</strong> Where the moved parameters have different types, your call sites
+stop compiling and the compiler shows you every one. Where they share a type — two <code>UUID</code>s, as
+above — they compile before and after, and the arguments were going in the wrong way round before
+this release. That is the case worth looking for: a query returns nothing where it should return a
+row, and a write touches the wrong row.</p>
+<p>A block naming every parameter in the order the SQL binds them is unaffected, which is how most are
+written.</p>
+<h3 id="the-build-says-which-columns-it-cannot-type">The build says which columns it cannot type</h3>
+<p>Alongside the table count, a run now names the columns the schema holds and cannot give a Java type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">The schema holds 1 column(s) whose type YoSQL does not map: document.payload (jsonb). No vendor
+</span></span><span class="line"><span class="cl">is declared, and the types only one database has are looked up only for a declared one — so
+</span></span><span class="line"><span class="cl">&#39;schema.vendor&#39; may be all that is missing.
+</span></span></code></pre></div><p>The table count is the same whether or not a vendor is declared — it is the columns that change —
+so it was the wrong figure to read a vendor&rsquo;s effect off. This is the one that answers it. Nothing
+to do: an untyped column that no statement selects and no parameter is named after costs nothing.</p>
+<h2 id="202688">2026.8.8</h2>
+<p>The first release since 2023.5.3, and it changes enough to be worth reading before you bump the
+version.</p>
+<h3 id="java-25-is-now-the-minimum">Java 25 is now the minimum</h3>
+<p>Both to run <code>YoSQL</code> and to compile and run what it generates. Generated code uses <code>var</code>, text
+blocks, records and sequenced collections.</p>
+<p>If your project is on an older Java release, stay on <code>2023.5.3</code> until you can move. There is no
+configuration that makes the generator emit older code — the switch that used to do that is gone,
+because it silently produced output that no longer matched what the documentation promised.</p>
+<h3 id="a-converter-is-named-by-its-class-and-nothing-else">A converter is named by its class, and nothing else</h3>
+<p>The four-part converter description and the registry that held it are gone. A statement that used
+to name a converter by alias:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowConverter:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   alias: itemConverter
+</span></span></span></code></pre></div><p>now names the class:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- resultRowConverter: com.example.persistence.converter.ToItemConverter
+</span></span></span></code></pre></div><p>and the build configuration that declared the alias goes away entirely. In Maven:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;converter&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="c">&lt;!-- delete the whole rowConverters block --&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;rowConverters&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;rowConverter&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;alias&gt;</span>itemConverter<span class="nt">&lt;/alias&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;converterType&gt;</span>com.example.persistence.converter.ToItemConverter<span class="nt">&lt;/converterType&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;methodName&gt;</span>asUserType<span class="nt">&lt;/methodName&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;resultType&gt;</span>com.example.domain.Item<span class="nt">&lt;/resultType&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/rowConverter&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/rowConverters&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/converter&gt;</span>
+</span></span></code></pre></div><p>The same applies to <code>rowConverters</code> in Gradle and Ant, and to <code>--rowConverters</code> on the command
+line. <code>defaultConverter</code> survives but now takes a single class name rather than the four parts.</p>
+<p><code>YoSQL</code> reads the class to find its one public method taking a <code>ResultSet</code>. That method&rsquo;s name is
+what the repository calls and its return type is what the statement produces, so nothing repeats
+what the class already says. Two consequences worth knowing:</p>
+<ul>
+<li>The converter has to be <strong>visible as source</strong> under
+<a href="../../configuration/files/sourcedirectory/">sourceDirectory</a>
+, because it is read rather than
+loaded. A converter that lives in a different module needs that directory pointed at it.</li>
+<li>The class must declare <strong>exactly one</strong> public method taking a <code>ResultSet</code>. None, or more than
+one, fails the build and names the class.</li>
+</ul>
+<p>The field the repository holds the converter in is now the class name with a lower-case first
+letter — <code>toItemConverter</code> rather than whatever the alias was. That only matters if you were
+reading generated fields directly.</p>
+<h3 id="generic-types-cannot-be-result-rows">Generic types cannot be result rows</h3>
+<p>A record declaring type parameters is refused rather than mapped, because a statement says nothing
+about what to substitute for them. Name a concrete type instead.</p>
+<h3 id="yosql-reads-your-schema-now">YoSQL reads your schema now</h3>
+<p>If your project keeps <code>create table</code> statements where <code>YoSQL</code> can see them, this release starts
+holding the rest of your SQL to them: a column that does not exist, a parameter whose type disagrees
+with its column, a nullable column read into a primitive. Nothing connects to a database, so it
+works in a checkout with no services running.</p>
+<p><strong>It reports and does not stop.</strong> The default is <code>WARN</code>, so no build that passed before fails
+because of this — expect new warnings, not new failures. Read them; they are the queries that would
+have failed on whichever request reached them first.</p>
+<p>Once you have dealt with them, turn it up so nothing new gets in:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;schema&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;validation&gt;</span>ERROR<span class="nt">&lt;/validation&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/schema&gt;</span>
+</span></span></code></pre></div><p>To hear nothing at all, set it to <code>OFF</code>.</p>
+<p>It also settles what a parameter&rsquo;s type is, which removes the <code>parameters</code> block from write
+statements entirely — see <a href="../../sql/schema/">schema validation</a>
+.</p>
+<h3 id="a-colon-with-no-name-after-it-is-no-longer-a-parameter">A colon with no name after it is no longer a parameter</h3>
+<p><code>:id</code> is a parameter. A bare <code>:</code> is not, and used to be read as one — which made two ordinary things
+wrong.</p>
+<p>A statement carrying a licence header picked up a parameter with no name from the colon in
+<code>SPDX-License-Identifier:</code>. And PostgreSQL&rsquo;s <code>::</code> cast bound two parameters, the bare colon and the
+type name, so <strong>every parameter after a cast was bound to the wrong placeholder</strong> — the statement
+ran and answered with the wrong rows.</p>
+<p>If you have statements using <code>::</code> casts, their generated methods change: the spurious parameters
+disappear and the real ones move to the indices they should always have had. Check any such method&rsquo;s
+signature after upgrading, and be glad if you never hit the bug.</p>
+<h3 id="every-statement-is-now-reachable-with-and-without-a-connection">Every statement is now reachable with and without a connection</h3>
+<p>Where a statement got its connection used to be decided per statement by <code>createConnection</code>, and you
+got one method. It is now decided by the caller, and you get two:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Tenant</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">findTenant</span><span class="p">(</span><span class="n">Connection</span><span class="w"> </span><span class="n">connection</span><span class="p">,</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>The first opens a connection from the repository&rsquo;s <code>DataSource</code> and closes it; the second runs on
+the one it is given. That is what lets several statements share a transaction — see
+<a href="../../sql/transactions/">transactions</a>
+.</p>
+<p>Nothing you call today changes name or signature, so existing code keeps compiling, with one
+exception: <strong>a repository whose statements all set <code>createConnection: false</code> used to have a no-arg
+constructor</strong> and now takes a <code>DataSource</code>, because it now also has methods that need one. Pass it
+one, or set
+<a href="../../configuration/repositories/generateconnectionoverloads/">generateConnectionOverloads</a>
+ to
+<code>false</code> to keep one method per statement.</p>
+<p>If you wrote a statement twice in a file — once plain and once with <code>createConnection: false</code> — to
+get both shapes, delete the second one. It now generates a method with a <code>2</code> in its name for no
+reason.</p>
+<h3 id="a-parameter-with-no-type-now-fails-instead-of-becoming-an-object">A parameter with no type now fails instead of becoming an Object</h3>
+<p>A parameter the front matter did not type used to be bound as <code>java.lang.Object</code>. The method
+compiled, accepted anything, and offered exactly the type safety of the JDBC it replaced — silently.
+It is now a build error naming the file, the statement and every parameter still without a type.</p>
+<p>Two things fill them in. A statement naming a record with
+<a href="../../configuration/sql/resultrowtype/">resultRowType</a>
+ takes each parameter&rsquo;s type from the
+component of the same name, so most read statements need nothing:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- name: findTenant
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- returning: single
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- resultRowType: com.example.domain.Tenant
+</span></span></span><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">slug</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tenant</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">id</span><span class="w">
+</span></span></span></code></pre></div><p><code>Tenant</code> declares <code>UUID id</code>, so <code>:id</code> is a <code>UUID</code>. For everything else — write statements, above all
+— name the types. The front matter now takes a mapping of name to type alongside the list form:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- parameters:
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   id: uuid
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   slug: string
+</span></span></span><span class="line"><span class="cl"><span class="c1">--   createdAt: instant
+</span></span></span></code></pre></div><p><code>uuid</code>, <code>string</code> and <code>instant</code> are short names for the types statements are usually written in; the
+full list is under <a href="../../configuration/sql/parameters/">parameters</a>
+. A fully-qualified class name
+still works everywhere, and the list form is unchanged for parameters that need a <code>sqlType</code>, a
+<code>scale</code> or a <code>variant</code>.</p>
+<p>Where the build fails, the message shows the front matter to add. Nothing else has to change.</p>
+<h3 id="statements-that-generate-nothing-now-fail">Statements that generate nothing now fail</h3>
+<p>A statement whose name matches none of the configured prefixes, and which sets no explicit <code>type</code>,
+used to be skipped without a word — so a typo removed a method from your repository and said
+nothing. It is now a build error naming the file and the statement. If a release starts failing
+here, it is reporting something that was already broken.</p>
+<h3 id="the-ti-logging-api-is-gone">The <code>TI</code> logging API is gone</h3>
+<p><code>logging.api</code> no longer accepts <code>TI</code>. The generator behind it was never written: it answered every
+question with an empty block while reporting that logging was off, and the repositories it produced
+did not compile — a bare <code>if () {</code> reading a variable nothing declared.</p>
+<p>If your build sets it — <code>&lt;api&gt;TI&lt;/api&gt;</code> in a <code>pom.xml</code>, <code>api = 'TI'</code> in a <code>build.gradle</code>, or
+<code>--logging-api=TI</code> on the command line — pick one of <code>NONE</code>, <code>JUL</code>, <code>SYSTEM</code>, <code>LOG4J</code>, <code>SLF4J</code> or
+<code>TINYLOG</code>. <code>NONE</code> is the closest to what <code>TI</code> actually did, which was nothing.</p>
+<h3 id="the-java-configuration-group-is-gone">The <code>java</code> configuration group is gone</h3>
+<p>Its six switches decided whether generated classes, fields, methods, parameters and locals were
+declared <code>final</code>. Generated code reassigns none of them, so they all are now, which is what the
+defaults already said. One of them, <code>useSealedInterfaces</code>, was documented in every frontend and did
+nothing at all.</p>
+<p>Remove the block if your build has one — a <code>&lt;java&gt;</code> element in a <code>pom.xml</code>, a <code>java { }</code> block in a
+<code>build.gradle</code>, a <code>&lt;java&gt;</code> element in an Ant task, or <code>--use-final-*</code> on the command line. Maven and
+Ant fail on an unknown element, so this one is not optional. Nothing about the generated code
+changes unless you had turned one of them off, in which case the output gains the <code>final</code> keywords
+it describes.</p>
+<h3 id="the-names-configuration-group-is-gone">The <code>names</code> configuration group is gone</h3>
+<p>Its twenty-two settings renamed the variables inside generated methods — the <code>Connection</code>, the
+<code>ResultSet</code>, the loop counter. None of them is part of a repository&rsquo;s API, so none of them was a
+decision worth making: a name nobody outside the method can see cannot fit a codebase better or
+worse. They also had to be kept distinct from each other, which is why a whole validator existed to
+check they were.</p>
+<p>Remove the block if your build has one — a <code>&lt;names&gt;</code> element in a <code>pom.xml</code>, a <code>names { }</code> block in
+a <code>build.gradle</code>, a <code>&lt;names&gt;</code> element in an Ant task, or the matching command-line options. Maven and
+Ant fail on an unknown element, so this one is not optional. Generated code is unchanged unless you
+had renamed something, in which case it goes back to the default name.</p>
+<p>The one thing those settings could rescue was a statement whose own parameter is called <code>connection</code>,
+<code>statement</code>, <code>resultSet</code>, <code>index</code> or another name a generated method already uses. That is now a
+build error naming the file, the statement and the parameter, instead of a Java error about a
+variable already defined in a file you did not write. Rename the parameter in the SQL — the name
+reaches no further than the method&rsquo;s signature.</p>
+<h3 id="skiplines-is-gone-and-a-licence-header-is-dropped-on-its-own"><code>skipLines</code> is gone, and a licence header is dropped on its own</h3>
+<p>A <code>.sql</code> file that opens with a block comment has it dropped, however many lines it runs to. The
+count that used to have to match — and to be kept matching every time somebody edited the header —
+is no longer a setting.</p>
+<p>Remove <code>skipLines</code> from your build; Maven and Ant fail on an unknown element. If your headers are
+written as <code>--</code> lines rather than as a block comment, rewrite them as <code>/* … */</code>. A <code>--</code> line at the
+top of a file is front matter, and <code>-- SPDX-License-Identifier: 0BSD</code> is as good a YAML mapping as
+<code>-- name: findTenant</code>, so there is no way to tell the two apart.</p>
+<h3 id="generated-code-now-says-so-and-the-annotations-switches-are-gone">Generated code now says so, and the <code>annotations</code> switches are gone</h3>
+<p>Every generated class, field and method carries <code>@Generated</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Generated</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;wtf.metio.yosql&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">comments</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;generated by YoSQL 2026.8.8 - do not modify, this file is rewritten on every build&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>It used to be off unless you turned it on, which is backwards for a marker whose whole job is to tell
+coverage tools, linters and the next reader that nobody wrote this by hand. Eleven settings decided
+whether it appeared, which annotation class it used, which members it carried and what each of them
+said; all eleven are gone, and so is the <code>javax.annotation.Generated</code> option, which has not existed
+in the JDK since Java 11.</p>
+<p>The <code>value</code> is the generator&rsquo;s fully qualified name, which is what the annotation&rsquo;s own
+documentation asks for. The <code>comments</code> carry the release that wrote the file — the one fact about
+generated code that is nowhere else in it, since which <code>.sql</code> file a method came from is already in
+its javadoc.</p>
+<p>There is deliberately <strong>no date</strong>. Two builds of the same statements produce the same code, and a
+timestamp would be the only thing in the output that differed between them.</p>
+<p><code>javax.annotation.processing.Generated</code> lives in the <code>java.compiler</code> module, which a classpath build
+always has. A <strong>modular</strong> project compiling generated code inside its own module needs
+<code>requires static java.compiler;</code> in its <code>module-info.java</code> — static, because the annotation is
+discarded after compilation and nothing needs it at run time.</p>
+<p>Remove the <code>&lt;annotations&gt;</code> switches from your build — <code>annotationApi</code>, <code>annotateClasses</code>,
+<code>annotateFields</code>, <code>annotateMethods</code>, <code>classMembers</code>, <code>fieldMembers</code>, <code>methodMembers</code>,
+<code>classComment</code>, <code>fieldComment</code>, <code>methodComment</code> and <code>generatorName</code>. Maven and Ant fail on an unknown
+element. The three settings that add <strong>your own</strong> annotations to generated repositories,
+constructors and methods are unchanged.</p>
+<h3 id="repository-and-method-names-are-no-longer-spelled-out-in-configuration">Repository and method names are no longer spelled out in configuration</h3>
+<p>Eight settings decided what to put around a generated name — <code>repositoryNamePrefix</code>,
+<code>repositoryNameSuffix</code>, <code>repositoryInterfacePrefix</code>, <code>repositoryInterfaceSuffix</code>,
+<code>executeOncePrefix</code>, <code>executeOnceSuffix</code>, <code>executeBatchPrefix</code> and <code>executeBatchSuffix</code>. Six of them
+defaulted to nothing at all, and the two that did something were carrying the two names that have to
+differ from each other:</p>
+<ul>
+<li>A repository is its directory plus <code>Repository</code>, so <code>tenant/*.sql</code> becomes <code>TenantRepository</code>.</li>
+<li>Its interface is the same name without that suffix — <code>Tenant</code> — and gets an <code>I</code> in front only when
+there is no suffix to drop.</li>
+<li>A batch method is its statement plus <code>Batch</code>, so <code>insertTenant</code> and <code>insertTenantBatch</code> can live in
+the same repository.</li>
+</ul>
+<p>That is what the defaults already produced. Remove the settings from your build and from any front
+matter that set them per statement; Maven and Ant fail on an unknown element. If you had renamed
+something, the generated names change back — name the repository with
+<a href="../../configuration/sql/repository/">repository</a>
+ in the front matter, which still decides it
+outright.</p>
+<h3 id="sqlstatementsdirectory-is-relative-to-your-project-not-to-where-the-build-was-started"><code>sqlStatementsDirectory</code> is relative to your project, not to where the build was started</h3>
+<p><a href="../../configuration/schema/sqlstatementsdirectory/">sqlStatementsDirectory</a>
+ says where the DDL
+describing your schema lives. Written as a relative path, it used to be resolved against whatever
+directory the build was running in rather than against the module being built — so in a multi-module
+project, <code>mvn verify</code> from the root looked for the schema under the root while <code>mvn verify</code> inside
+the module found it. Every frontend resolves it against the project now, the same as every other
+directory setting.</p>
+<p>Nothing reports the difference, which is what makes it worth checking: a schema directory that
+resolves to nothing is indistinguishable from a schema that raises no complaints, because reading
+the schema is designed never to fail a build. If you set this to a relative path, confirm it is
+relative to the module&rsquo;s own directory. An absolute path is unaffected.</p>
+<p>Maven is where this is most likely to have bitten you. The CLI runs in the directory you invoke it
+from, which is the answer it now arrives at deliberately; Gradle ran in the project&rsquo;s own directory,
+so it already found the right one, and no longer depends on that being true.</p>
+<h3 id="ant-can-set-the-method-name-prefixes-and-the-annotations">Ant can set the method name prefixes and the annotations</h3>
+<p>Ant builds an attribute setter only for a type it can make out of a string, and
+<a href="../../configuration/repositories/allowedcallprefixes/">allowedCallPrefixes</a>
+,
+<a href="../../configuration/repositories/allowedreadprefixes/">allowedReadPrefixes</a>
+ and
+<a href="../../configuration/repositories/allowedwriteprefixes/">allowedWritePrefixes</a>
+ are lists — so the
+task declared them and then refused them, with <code>doesn't support the &quot;allowedReadPrefixes&quot; attribute</code>. The whole <a href="../../configuration/annotations/">annotations</a>
+ group went the same way: the
+nested element could be written, and nothing inside it could be set.</p>
+<p>Both work now. The three lists are one attribute, separated by commas:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;repositories</span> <span class="na">validateMethodNamePrefixes=</span><span class="s">&#34;true&#34;</span>
+</span></span><span class="line"><span class="cl">              <span class="na">allowedReadPrefixes=</span><span class="s">&#34;fetch,find&#34;</span><span class="nt">/&gt;</span>
+</span></span></code></pre></div><p>An annotation is a nested element, and each of its members is a nested element of that:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;annotations&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;repositoryAnnotations</span> <span class="na">type=</span><span class="s">&#34;jakarta.inject.Named&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;member</span> <span class="na">key=</span><span class="s">&#34;value&#34;</span> <span class="na">value=</span><span class="s">&#34;tenants&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/repositoryAnnotations&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/annotations&gt;</span>
+</span></span></code></pre></div><p>Nothing here can have broken a build: none of it could be set before. If you turned
+<code>validateMethodNamePrefixes</code> off because the prefix lists were out of reach, it is worth turning
+back on.</p>
+<h2 id="202353-and-earlier">2023.5.3 and earlier</h2>
+<p>See the <a href="https://github.com/metio/yosql/releases">release notes</a>
+ for those versions.</p>
+]]></content><category scheme="https://yosql.projects.metio.wtf/categories/installation" term="installation" label="Installation"/><category scheme="https://yosql.projects.metio.wtf/tags/upgrading" term="upgrading" label="upgrading"/></entry></feed>

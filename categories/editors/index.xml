@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Editors on YoSQL</title><link>https://yosql.projects.metio.wtf/categories/editors/</link><description>Recent content in Editors on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 02 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/categories/editors/index.xml" rel="self" type="application/rss+xml"/><item><title>Claude skill</title><link>https://yosql.projects.metio.wtf/editors/claude/</link><pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/editors/claude/</guid><description>&lt;p&gt;&lt;a href="https://claude.com/claude-code"&gt;Claude Code&lt;/a&gt;
+ writing a statement for you needs to know things that
+are not visible in the file it is editing: that a result row type is read from &lt;em&gt;source&lt;/em&gt; rather than
+from the classpath, that a name matching no configured prefix generates nothing at all, that a
+parameter with no type fails the build rather than becoming an &lt;code&gt;Object&lt;/code&gt;. A skill tells it.&lt;/p&gt;
+&lt;h2 id="installing-it"&gt;Installing it&lt;/h2&gt;
+&lt;p&gt;Copy the skill into your own project:&lt;/p&gt;</description></item><item><title>Front matter schema</title><link>https://yosql.projects.metio.wtf/editors/schema/</link><pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/editors/schema/</guid><description>&lt;p&gt;The front matter of a statement is YAML written inside SQL comments, which means your editor
+highlights the SQL and leaves the part with all the keys in it entirely unassisted. A JSON schema
+fixes that: completion for every key, the description on hover, and a warning on a key that does not
+exist.&lt;/p&gt;
+&lt;p&gt;The schema is published at
+&lt;a href="https://yosql.projects.metio.wtf/schema/frontmatter.json"&gt;https://yosql.projects.metio.wtf/schema/frontmatter.json&lt;/a&gt;
+ and generated from the same description of
+the settings that generates the &lt;a href="../../configuration/"&gt;configuration reference&lt;/a&gt;
+, so the two cannot
+drift.&lt;/p&gt;</description></item></channel></rss>

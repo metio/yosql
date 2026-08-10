@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Logging on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/logging/</link><description>Recent content in Logging on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 10 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/logging/index.xml" rel="self" type="application/rss+xml"/><item><title>api</title><link>https://yosql.projects.metio.wtf/configuration/logging/api/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/logging/api/</guid><description>&lt;p&gt;The logging API to use.&lt;/p&gt;
+&lt;h2 id="configuration-options"&gt;Configuration Options&lt;/h2&gt;
+&lt;h3 id="option-none"&gt;Option: &amp;lsquo;NONE&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The default &lt;code&gt;no-op&lt;/code&gt; implementation for a logging generator. It won&amp;rsquo;t generate any logging statements in your generated code.&lt;/p&gt;
+&lt;h3 id="option-jul"&gt;Option: &amp;lsquo;JUL&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;java.util.logging&lt;/code&gt; based implementation for a logging generator. The generated code does not require any external non-JDK classes. All loggers use the &lt;a href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/"&gt;basePackageName&lt;/a&gt;
+ as their base name.&lt;/p&gt;
+&lt;h3 id="option-log4j"&gt;Option: &amp;lsquo;LOG4J&amp;rsquo;&lt;/h3&gt;
+&lt;p&gt;The &lt;a href="https://logging.apache.org/log4j/2.x/"&gt;log4j&lt;/a&gt;
+ based implementation for a logging generator. All loggers use the &lt;a href="https://yosql.projects.metio.wtf/configuration/repositories/basepackagename/"&gt;basePackageName&lt;/a&gt;
+ as their base name.&lt;/p&gt;</description></item><item><title>Logging</title><link>https://yosql.projects.metio.wtf/configuration/logging/</link><pubDate>Mon, 10 Aug 2026 00:00:00 +0000</pubDate><guid>https://yosql.projects.metio.wtf/configuration/logging/</guid><description>&lt;p&gt;Configures log statements in generated code.&lt;/p&gt;</description></item></channel></rss>
