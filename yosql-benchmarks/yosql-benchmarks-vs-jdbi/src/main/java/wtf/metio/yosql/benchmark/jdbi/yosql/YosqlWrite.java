@@ -29,13 +29,13 @@ public class YosqlWrite extends AbstractYosqlShootout implements Write {
     @Override
     @Benchmark
     public void updateOneToManyRelation() {
-        departments.updateDepartmentsOfCompany(2L, 1L, "benchmarks");
+        departments.updateDepartmentsOfCompany(2L, "benchmarks", 1L);
     }
 
     @Override
     @Benchmark
     public void updateSingleEntity() {
-        employees.updateEmployee(1L, 1L, "bob", "builder", "bob@example.com", 200L);
+        employees.updateEmployee(1L, "bob", "builder", "bob@example.com", 200L, 1L);
     }
 
     @Override
