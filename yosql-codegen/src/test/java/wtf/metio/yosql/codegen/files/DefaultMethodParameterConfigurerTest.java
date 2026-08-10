@@ -317,6 +317,78 @@ class DefaultMethodParameterConfigurerTest {
                     () -> assertEquals("java.lang.String", configured.parameters().get(1).type().orElseThrow()));
         }
 
+        @Nested
+        @DisplayName("and when it cannot, says what it matched against")
+        class WhenItCannot {
+
+            private static final String TENANT = """
+                    create table tenant (
+                        id       uuid not null primary key,
+                        currency varchar(3) not null
+                    )""";
+
+            @Test
+            @DisplayName("states the rule and lists the columns the statement reads")
+            void shouldSayTheNameIsTheInput() {
+                // The column is 'id' and the parameter is 'tenantId'. Everything else is in order —
+                // the table is described, the type is one we map, the comparison is a bare equality
+                // — so a message about what the schema holds reads as "the schema is short" and
+                // sends the reader to their migrations.
+                final var exception = assertThrows(UntypedParameterException.class,
+                        () -> withSchema(TENANT).configureParameters(statement(), SOURCE,
+                                "select currency from tenant where id = :tenantId",
+                                indices("tenantId")));
+
+                assertAll(
+                        () -> assertTrue(exception.getMessage().contains("column of the same name"),
+                                exception.getMessage()),
+                        () -> assertTrue(exception.getMessage().contains("It reads tenant"),
+                                exception.getMessage()),
+                        () -> assertTrue(exception.getMessage().contains("currency"),
+                                exception.getMessage()));
+            }
+
+            @Test
+            @DisplayName("does not offer the columns of a table only a subquery reads")
+            void shouldNotOfferColumnsOutOfScope() {
+                // The scope is what the statement selects *from*. A table reached only inside a
+                // subquery is not in it, so a parameter compared against one of its columns has
+                // nothing to match — while the parameters of the outer table are unaffected.
+                final var exception = assertThrows(UntypedParameterException.class,
+                        () -> withSchema(TENANT, "create table audit (slug varchar(64) not null)")
+                                .configureParameters(statement(), SOURCE,
+                                        "select currency from tenant where id = :id "
+                                                + "and currency in (select slug from audit where slug = :slug)",
+                                        indices("id", "slug")));
+
+                assertAll(
+                        () -> assertTrue(exception.getMessage().contains("slug"), exception.getMessage()),
+                        () -> assertTrue(exception.getMessage().contains("It reads tenant"),
+                                exception.getMessage()),
+                        // The outer parameter typed from the schema and is not among the complaints.
+                        () -> assertTrue(!exception.getMessage().contains("for: id"),
+                                exception.getMessage()));
+            }
+
+            @Test
+            @DisplayName("says when the statement reads from something it cannot list")
+            void shouldSayWhenTheScopeIsNotExhaustive() {
+                // A derived table in the FROM takes the whole statement out of inference, and the
+                // reason has nothing to do with the schema.
+                final var exception = assertThrows(UntypedParameterException.class,
+                        () -> withSchema(TENANT).configureParameters(statement(), SOURCE,
+                                "select currency from (select * from tenant) t where t.id = :id",
+                                indices("id")));
+
+                assertAll(
+                        () -> assertTrue(exception.getMessage().contains("subquery"),
+                                exception.getMessage()),
+                        () -> assertTrue(exception.getMessage().contains("every parameter here"),
+                                exception.getMessage()));
+            }
+
+        }
+
         @Test
         @DisplayName("a camelCase parameter names the snake_case column, as a record component does")
         void shouldTypeACamelCaseParameterFromASnakeCaseColumn() {

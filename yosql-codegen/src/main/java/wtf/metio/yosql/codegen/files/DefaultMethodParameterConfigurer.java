@@ -157,8 +157,10 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
             }
         }
         if (!untyped.isEmpty()) {
+            final var scope = TableScope.of(sql);
             throw new UntypedParameterException(source, configuration.name().orElse("<unnamed>"), untyped,
-                    tablesRead(configuration.vendor()));
+                    tablesRead(configuration.vendor()), scope.exhaustive() ? scope.tables() : null,
+                    columns.keySet());
         }
         return typed;
     }

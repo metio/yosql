@@ -105,6 +105,13 @@ A parameter names its column the way a record component does: `:accountId` reads
 `:account_id` reads it too. `uuid`, `varchar` and `timestamp` columns give `UUID`, `String` and
 `Instant`; a nullable column gives the boxed type.
 
+**The parameter's name is the whole input.** Nothing about the comparison it appears in is used, so
+`insert into tenant (id, slug) values (:id, :slug)` infers both and
+`select slug from tenant where id = :tenantId` infers nothing — the column is `id`. Rename the
+parameter after its column, or declare the type and keep the name where it says more than the column
+would. A table reached only inside a subquery is not one of the statement's tables, and a statement
+selecting from a derived table or a CTE has no scope to match against at all.
+
 Four sources, in this order, and the first that answers wins:
 
 1. the `parameters` block — always authoritative, whatever the schema says;

@@ -135,6 +135,38 @@ the parameter can be null; a `not null` column gives the primitive.
 What you write always wins. Naming a type in the front matter is how you use a type of your own —
 a `TenantId` wrapping a `UUID` — and how you settle anything this gets wrong.
 
+### What "named after" means
+
+The parameter's own name, matched against the columns of the tables the statement reads. Nothing
+about the comparison it appears in is used, so this infers every parameter:
+
+```sql
+insert into tenant_invitation (id, tenant_id, email, invited_at)
+values (:id, :tenantId, :email, :invitedAt)
+```
+
+and this infers none of its one:
+
+```sql
+select currency from tenant where id = :tenantId
+```
+
+The column is `id`, the parameter is `tenantId`, and the statement is otherwise as simple as it
+gets. Rename the parameter after its column, or declare the type — a parameter named for what it
+means rather than for its column is worth keeping and declaring. `staleBefore` in
+`last_seen_at < :staleBefore` says more than `lastSeenAt` would, and it needs a type.
+
+Two boundaries follow from "the tables the statement reads":
+
+- A table reached only inside a subquery is not one of them, so `:tenantId` in
+  `order_id in (select id from placed_order where tenant_id = :tenantId)` has nothing to match. The
+  statement's own parameters are unaffected.
+- A statement selecting from a derived table or a common table expression has no scope that can be
+  listed at all, and none of its parameters are inferred.
+
+The build says which of these it is when it cannot type a parameter, including the columns it
+matched against.
+
 ## Records come free too
 
 A result row type is usually a record whose components repeat, one by one, what the `select` list
