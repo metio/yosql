@@ -184,6 +184,18 @@ and `longtext` — resolve only once something declares the vendor. Until then t
 described but untyped: parameters naming them need their type written out, and
 `generateResultRowType` will not write the record.
 
+A run says which columns that leaves untyped, so the question does not have to be guessed at:
+
+```text
+The schema holds 1 column(s) whose type YoSQL does not map: document.payload (jsonb). No vendor
+is declared, and the types only one database has are looked up only for a declared one — so
+'schema.vendor' may be all that is missing.
+```
+
+The table count above it is the same either way — it is the columns that change — so it is the
+wrong figure to read a vendor's effect off. An untyped column that no statement selects and no
+parameter is named after costs nothing, which is why this is said rather than warned about.
+
 Mark the DDL itself, once per file, and every statement reading it follows:
 
 ```sql

@@ -11,6 +11,7 @@ import dagger.Provides;
 import org.slf4j.cal10n.LocLogger;
 import wtf.metio.yosql.codegen.dao.CodeGenerator;
 import wtf.metio.yosql.codegen.files.FileParser;
+import wtf.metio.yosql.codegen.records.RecordScanner;
 import wtf.metio.yosql.codegen.schema.SchemaValidator;
 import wtf.metio.yosql.codegen.orchestration.*;
 import wtf.metio.yosql.codegen.validation.RuntimeValidator;
@@ -37,7 +38,8 @@ public class DefaultOrchestrationModule {
             final TypeWriter typeWriter,
             final ExecutionErrors errors,
             final RuntimeValidator runtimeValidator,
-            final SchemaValidator schemaValidator) {
+            final SchemaValidator schemaValidator,
+            final GeneratedTypeCollisions collisions) {
         return new DefaultYoSQL(
                 files,
                 codeGenerator,
@@ -47,7 +49,14 @@ public class DefaultOrchestrationModule {
                 typeWriter,
                 errors,
                 runtimeValidator,
-                schemaValidator);
+                schemaValidator,
+                collisions);
+    }
+
+    @Provides
+    @Singleton
+    GeneratedTypeCollisions provideGeneratedTypeCollisions(final RecordScanner scanner) {
+        return new GeneratedTypeCollisions(scanner);
     }
 
     @Provides

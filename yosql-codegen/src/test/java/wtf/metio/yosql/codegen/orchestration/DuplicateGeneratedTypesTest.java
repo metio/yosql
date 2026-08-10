@@ -125,7 +125,10 @@ final class DuplicateGeneratedTypesTest {
                         new RecordScanner(
                                 FilesConfiguration.builder().setSourceDirectory(sources).build(),
                                 new JavaSourceParser()),
-                        LoggingObjectMother.logger()));
+                        LoggingObjectMother.logger()),
+                new GeneratedTypeCollisions(new RecordScanner(
+                        FilesConfiguration.builder().setSourceDirectory(sources).build(),
+                        new JavaSourceParser())));
     }
 
     private static TypeWriter recording(final List<String> written) {

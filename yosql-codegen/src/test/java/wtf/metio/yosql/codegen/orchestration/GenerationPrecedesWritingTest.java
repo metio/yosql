@@ -69,7 +69,10 @@ final class GenerationPrecedesWritingTest {
                         new RecordScanner(
                                 FilesConfiguration.builder().setSourceDirectory(sources).build(),
                                 new JavaSourceParser()),
-                        LoggingObjectMother.logger()));
+                        LoggingObjectMother.logger()),
+                new GeneratedTypeCollisions(new RecordScanner(
+                        FilesConfiguration.builder().setSourceDirectory(sources).build(),
+                        new JavaSourceParser())));
 
         yosql.generateCode();
 

@@ -127,10 +127,30 @@ Two generated types would both be written as 'com.example.persistence.Document':
 and a record.
 ```
 
-This only affects a build that was already failing at compile time, so nothing that worked can start
-failing. If you see it, rename whichever of the two names is yours — usually the `resultRowType`,
-into a package of its own — or turn off
+The same name can also meet a class you wrote yourself, which is the likelier of the two: a project
+keeping its stores in the repositories' package has hand-written classes sitting exactly where the
+generator writes, and a `windDown` statements directory generates an interface called `WindDown`.
+That was a duplicate class from `javac`, in whichever of the two files it reached first. It is now
+the same kind of failure, before anything is written, naming the file it met.
+
+Either way this only affects a build that was already failing at compile time, so nothing that
+worked can start failing. If you see it, rename whichever of the two names is yours, move it to
+another package, or turn off
 [generateInterfaces](/configuration/repositories/generateinterfaces/).
+
+### The build says which columns it cannot type
+
+Alongside the table count, a run now names the columns the schema holds and cannot give a Java type:
+
+```text
+The schema holds 1 column(s) whose type YoSQL does not map: document.payload (jsonb). No vendor
+is declared, and the types only one database has are looked up only for a declared one — so
+'schema.vendor' may be all that is missing.
+```
+
+The table count is the same whether or not a vendor is declared — it is the columns that change —
+so it was the wrong figure to read a vendor's effect off. This is the one that answers it. Nothing
+to do: an untyped column that no statement selects and no parameter is named after costs nothing.
 
 ## 2026.8.8
 

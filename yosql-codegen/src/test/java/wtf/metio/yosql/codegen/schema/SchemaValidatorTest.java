@@ -463,6 +463,44 @@ class SchemaValidatorTest {
                     () -> assertTrue(summary.contains("sqlStatementsDirectory"), summary));
         }
 
+        @Test
+        @DisplayName("names the columns whose type it cannot say, and what may be missing")
+        void shouldSayWhichColumnsAreUntyped() {
+            final var untyped = validator(SchemaValidation.ERROR,
+                    "create table document (id uuid not null primary key, payload jsonb not null)")
+                    .untypedColumns().orElseThrow();
+
+            assertAll(
+                    () -> assertTrue(untyped.contains("1 column(s)"), untyped),
+                    () -> assertTrue(untyped.contains("document.payload (jsonb)"), untyped),
+                    () -> assertTrue(untyped.contains("schema.vendor"), untyped));
+        }
+
+        @Test
+        @DisplayName("says nothing when every column has a type")
+        void shouldSayNothingWhenEverythingIsTyped() {
+            assertEquals(Optional.empty(),
+                    validator(SchemaValidation.ERROR, TENANT_DDL).untypedColumns());
+        }
+
+        /**
+         * The table count is the same either way — it is the columns that change — so the count is
+         * the wrong figure to read a vendor's effect off, and this is the right one.
+         */
+        @Test
+        @DisplayName("stops mentioning the vendor once the DDL declares one")
+        void shouldNotSuggestAVendorItAlreadyHas() {
+            final var validator = new SchemaValidator(
+                    Schemas.of(List.of(new VendorStatement(Optional.of("PostgreSQL"),
+                            "create table document (id uuid not null primary key, payload jsonb not null)"))),
+                    SchemaConfiguration.builder().setValidation(SchemaValidation.ERROR).build(),
+                    new RecordScanner(FilesConfiguration.builder().setSourceDirectory(sources).build(),
+                            new JavaSourceParser()),
+                    LoggingObjectMother.logger());
+
+            assertEquals(Optional.empty(), validator.untypedColumns());
+        }
+
     }
 
 }

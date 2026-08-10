@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,7 @@ public final class SchemaValidator {
             return;
         }
         logger.info(schemaSummary());
+        untypedColumns().ifPresent(logger::info);
         if (schemas.isEmpty()) {
             return;
         }
@@ -90,6 +92,45 @@ public final class SchemaValidator {
                     + "or keep your 'create table' statements among the SQL files YoSQL already reads.";
         }
         return "The schema reads %d table(s): %s.".formatted(tables.size(), String.join(", ", tables));
+    }
+
+    /**
+     * Which columns the schema holds and cannot say the Java type of.
+     *
+     * <p>The table count answers whether the DDL arrived; it cannot answer whether the columns in it
+     * mean anything, and the two get read as one thing. A vendor's own spellings resolve only for a
+     * declared vendor, so a schema can be complete, counted, and still type nothing — and the only
+     * sign of it downstream is a parameter that has to be declared by hand, which reads as YoSQL
+     * simply not inferring much.</p>
+     *
+     * <p>Said at {@code INFO} rather than warned about, because a column nobody selects and nobody
+     * names a parameter after is untyped without costing anything. What makes it worth printing is
+     * that it is the difference between "declaring the vendor would change nothing" and "declaring
+     * the vendor is the thing that has been missing", and nothing else distinguishes them.</p>
+     */
+    // visible for testing
+    Optional<String> untypedColumns() {
+        final var untyped = new TreeSet<String>();
+        for (final var catalog : schemas.applicableTo(Optional.empty())) {
+            final var dialect = catalog.dialect(Optional.empty());
+            for (final var tableName : catalog.tableNames()) {
+                catalog.table(tableName).ifPresent(table -> table.columnNames().forEach(columnName ->
+                        table.column(columnName)
+                                .filter(column -> SqlTypes.javaType(column, dialect).isEmpty())
+                                .ifPresent(column -> untyped.add("%s.%s (%s)"
+                                        .formatted(table.name(), column.name(), column.sqlType())))));
+            }
+        }
+        if (untyped.isEmpty()) {
+            return Optional.empty();
+        }
+        final var vendor = schemas.applicableTo(Optional.empty()).stream()
+                .anyMatch(catalog -> catalog.dialect(Optional.empty()).isPresent())
+                ? ""
+                : " No vendor is declared, and the types only one database has are looked up only "
+                        + "for a declared one — so 'schema.vendor' may be all that is missing.";
+        return Optional.of("The schema holds %d column(s) whose type YoSQL does not map: %s.%s"
+                .formatted(untyped.size(), String.join(", ", untyped), vendor));
     }
 
     /**
