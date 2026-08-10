@@ -167,6 +167,20 @@ Two boundaries follow from "the tables the statement reads":
 The build says which of these it is when it cannot type a parameter, including the columns it
 matched against.
 
+A block only has to name what inference cannot reach. Declaring one parameter of six leaves the
+other five inferred, and the method's parameters stay in the order the statement binds them either
+way — so a statement with one awkward name keeps one line of front matter rather than six:
+
+```sql
+-- name: findOrderSuspensionsOfTenant
+-- returning: multiple
+-- parameters:
+--   tenantId: uuid
+select * from order_suspension
+where suspended_at > :suspendedAt
+  and order_id in (select id from placed_order where tenant_id = :tenantId)
+```
+
 ## Records come free too
 
 A result row type is usually a record whose components repeat, one by one, what the `select` list

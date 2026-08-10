@@ -80,7 +80,8 @@ all** — name it accordingly, or set `type` explicitly.
 
 Named parameters are written `:name` and become method parameters in the order they first appear.
 That order comes from the SQL alone — a `parameters:` block naming some of them, or naming them in
-another order, does not move them.
+another order, does not move them. So a block only has to name what inference cannot reach: declare
+the one parameter the schema cannot type and let the rest infer, rather than writing out all six.
 
 The generator needs a Java type for each one. It takes it from the front matter, from the component
 of the same name on the `resultRowType` record, or from the column the parameter is named after:
