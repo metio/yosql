@@ -274,6 +274,73 @@ class DefaultMethodParameterConfigurerTest {
     }
 
     @Nested
+    @DisplayName("orders the method by the statement, not by the front matter")
+    class Order {
+
+        private DefaultMethodParameterConfigurer withSchema(final String... ddl) {
+            return new DefaultMethodParameterConfigurer(
+                    LoggingObjectMother.logger(),
+                    OrchestrationObjectMother.executionErrors(),
+                    LoggingObjectMother.messages(),
+                    new RecordScanner(
+                            FilesConfiguration.builder().setSourceDirectory(sources).build(),
+                            new JavaSourceParser()),
+                    Schemas.of(java.util.Arrays.stream(ddl)
+                            .map(sql -> new Schemas.VendorStatement(java.util.Optional.empty(), sql))
+                            .toList()));
+        }
+
+        @Test
+        @DisplayName("a block naming one parameter leaves the rest where the SQL puts them")
+        void shouldNotMoveADeclaredParameterToTheFront() {
+            // The dangerous shape: two parameters of one type, one of them declared. Reordering
+            // them leaves every call site compiling and passing them the wrong way round.
+            // 'id' inferred from the schema, 'tenantId' declared — the partial block.
+            final var configured = withSchema("""
+                    create table restore (id uuid not null primary key, tenant_id uuid not null)""")
+                    .configureParameters(
+                            statement(parameter("tenantId", "java.util.UUID")), SOURCE,
+                            "select * from restore where id = :id and tenant_id = :tenantId",
+                            indices("id", "tenantId"));
+
+            assertEquals(List.of("id", "tenantId"), names(configured));
+        }
+
+        @Test
+        @DisplayName("a block written out of order does not reorder the method either")
+        void shouldFollowTheSqlRatherThanTheBlock() {
+            final var configured = configurer.configureParameters(
+                    statement(parameter("slug", "java.lang.String"), parameter("id", "java.util.UUID")),
+                    SOURCE, "insert into tenant (id, slug) values (:id, :slug)", indices("id", "slug"));
+
+            assertEquals(List.of("id", "slug"), names(configured));
+        }
+
+        @Test
+        @DisplayName("a parameter bound twice takes the place it is first bound in")
+        void shouldUseTheFirstOccurrence() {
+            // Written out by hand: the helper above gives each name one index, and the point here
+            // is a name bound at two positions.
+            final var bound = new LinkedHashMap<String, List<Integer>>();
+            bound.put("slug", List.of(1, 3));
+            bound.put("id", List.of(2));
+
+            final var configured = configurer.configureParameters(
+                    statement(parameter("id", "java.util.UUID"), parameter("slug", "java.lang.String")),
+                    SOURCE, "select * from tenant where slug = :slug or id = :id or slug = :slug", bound);
+
+            assertEquals(List.of("slug", "id"), names(configured));
+        }
+
+        private static List<String> names(final SqlConfiguration configuration) {
+            return configuration.parameters().stream()
+                    .map(parameter -> parameter.name().orElseThrow())
+                    .toList();
+        }
+
+    }
+
+    @Nested
     @DisplayName("takes the type of the column the parameter is named after")
     class FromSchema {
 

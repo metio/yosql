@@ -145,6 +145,32 @@ worked can start failing. If you see it, rename whichever of the two names is yo
 another package, or turn off
 [generateInterfaces](/configuration/repositories/generateinterfaces/).
 
+### A `parameters:` block no longer changes the order of a method
+
+A generated method takes its parameters in the order the statement binds them. Declaring some of
+them used to move those to the front:
+
+```sql
+-- parameters:
+--   tenantId: uuid
+select id from restore where id = :id and tenant_id = :tenantId
+```
+
+```java
+findWithdrawableRestore(UUID tenantId, UUID id)   // before
+findWithdrawableRestore(UUID id, UUID tenantId)   // now, and what the SQL says
+```
+
+**Check any statement whose block names fewer parameters than the statement binds, or names them in
+an order the SQL does not use.** Where the moved parameters have different types, your call sites
+stop compiling and the compiler shows you every one. Where they share a type — two `UUID`s, as
+above — they compile before and after, and the arguments were going in the wrong way round before
+this release. That is the case worth looking for: a query returns nothing where it should return a
+row, and a write touches the wrong row.
+
+A block naming every parameter in the order the SQL binds them is unaffected, which is how most are
+written.
+
 ### The build says which columns it cannot type
 
 Alongside the table count, a run now names the columns the schema holds and cannot give a Java type:

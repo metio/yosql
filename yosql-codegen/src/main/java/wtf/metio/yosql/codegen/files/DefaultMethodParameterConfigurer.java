@@ -26,6 +26,8 @@ import wtf.metio.yosql.models.immutables.SqlConfiguration;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.LinkedHashSet;
@@ -78,7 +80,7 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
         }
         rejectReservedNames(source, configuration, parameterIndices.keySet());
         final var declared = updateIndices(configuration.parameters(), parameterIndices);
-        final var all = addMissingParameters(declared, parameterIndices);
+        final var all = inSqlOrder(addMissingParameters(declared, parameterIndices));
         final var typed = inferTypes(all, configuration, source, sql);
         return SqlConfiguration.copyOf(configuration).withParameters(typed);
     }
@@ -303,6 +305,34 @@ public final class DefaultMethodParameterConfigurer implements MethodParameterCo
         return numbers.stream()
                 .mapToInt(Integer::intValue)
                 .toArray();
+    }
+
+    /**
+     * The order the statement binds them in, whichever of them the front matter happens to name.
+     *
+     * <p>A method's parameters are a property of its SQL — {@code :id} before {@code :slug} because
+     * the insert lists them that way — and the front matter is telling us types. Appending the ones
+     * it did not name put every declared parameter first, so a block naming one of six moved that
+     * one to the front of a method whose SQL had not changed. Where the moved parameter shares a
+     * type with the one it displaced, every call site still compiles and now passes them the wrong
+     * way round.</p>
+     *
+     * <p>By first occurrence, since a parameter bound more than once is one method parameter and
+     * the earliest position is the one a reader of the statement sees.</p>
+     */
+    private static List<SqlParameter> inSqlOrder(final List<SqlParameter> parameters) {
+        return parameters.stream()
+                .sorted(Comparator.comparingInt(DefaultMethodParameterConfigurer::firstIndex))
+                .toList();
+    }
+
+    private static int firstIndex(final SqlParameter parameter) {
+        return parameter.indices()
+                .filter(indices -> indices.length > 0)
+                .map(indices -> Arrays.stream(indices).min().orElse(Integer.MAX_VALUE))
+                // Nothing says where it goes, so it keeps its place at the back rather than
+                // jumping to the front of a sort that cannot see it.
+                .orElse(Integer.MAX_VALUE);
     }
 
     private static List<SqlParameter> addMissingParameters(final List<SqlParameter> parameters, final Map<String, List<Integer>> indices) {

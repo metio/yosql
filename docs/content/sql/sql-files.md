@@ -47,6 +47,11 @@ WHERE   id = :userId
 
 While parsing your `.sql` files, `YoSQL` will strip the SQL comment prefix (`--`) and read the remaining text as a YAML object. The available configuration options that can be used in the front matter, are listed under [SQL statement configuration](/configuration/sql/).
 
+The generated method takes its parameters in the order the statement binds them, by first
+occurrence. That is a property of the SQL, so it does not change with what the front matter says: a
+`parameters:` block naming some of them, or naming all of them in another order, still produces the
+same signature. Reordering a statement's placeholders does change it.
+
 ### Names a parameter cannot have
 
 A generated method declares a few variables of its own — the `Connection`, the `PreparedStatement`,
