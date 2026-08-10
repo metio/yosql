@@ -63,8 +63,15 @@ create table attachment (id bigserial primary key, payload bytea not null);
 
 Previously those spellings were only read when the *statement* declared the vendor, which a project
 with one database has no reason to do — so its schema answered for the standard types and nothing
-else. Marking the schema is now worth doing even where there is only one database to name. Nothing
-changes for a project that marks its statements, or for one that marks neither.
+else. Nothing changes for a project that marks its statements, or for one that marks neither.
+
+Whether marking the schema gains you anything depends on how your DDL is written, and it is worth
+checking rather than assuming. `uuid`, `text`, `varchar`, `boolean`, `integer`, `bigint`, `numeric`,
+`date` and `timestamp with time zone` are read the same by every database, so a schema written in
+those types already types completely, and a vendor adds nothing to it. A schema saying `timestamptz`,
+`bigserial`, `bytea`, `jsonb` or `citext` is the one this is for.
+[The build says which columns it cannot type](#the-build-says-which-columns-it-cannot-type), which
+answers it for your schema without guessing.
 
 Where the schema is a migration directory, the files are checksummed by the tool that applied them
 and a comment added to one already run makes it refuse to start. The new `schema.vendor` setting
