@@ -90,9 +90,9 @@
         <version.h2>2.4.240</version.h2>
         <version.hikaricp>7.1.0</version.hikaricp>
         <version.immutables>2.12.2</version.immutables>
-        <version.jackson>2.22.1</version.jackson>
+        <version.jackson>2.22.2</version.jackson>
         <version.javaparser>3.28.2</version.javaparser>
-        <version.javapoet>0.18.0</version.javapoet>
+        <version.javapoet>0.19.0</version.javapoet>
         <version.javax-inject>1</version.javax-inject>
         <version.jdbi>3.54.0</version.jdbi>
         <version.jsqlparser>5.3</version.jsqlparser>
