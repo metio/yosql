@@ -44,14 +44,14 @@ jobs:
         with:
           fetch-depth: 0 # the gate reads tags and history
       - id: gate
-        uses: metio/ci/needs-release@3529dd5a30dd5739b2d80c2acc8882a951760b53 # 2026.8.22144013
+        uses: metio/ci/needs-release@46616c49a31480c95fe6e3b2229f264645d28763 # 2026.9.19094139
         with:
           # The examples, the benchmarks and the website ship nothing, so a
           # change confined to them is not worth a release.
           paths: pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling
       - id: quota
         if: steps.gate.outputs.needed == 'true'
-        uses: metio/ci/central-quota@3529dd5a30dd5739b2d80c2acc8882a951760b53 # 2026.8.22144013
+        uses: metio/ci/central-quota@46616c49a31480c95fe6e3b2229f264645d28763 # 2026.9.19094139
       - id: version
         name: Compute the version and the build timestamp
         if: steps.gate.outputs.needed == 'true'
@@ -78,7 +78,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -138,7 +138,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -181,7 +181,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -264,11 +264,11 @@ jobs:
         # the whole release and adding an archive cannot silently escape it.
         run: sha256sum ./*.zip > SHA256SUMS
       - id: cosign
-        uses: metio/ci/cosign-sign-blob@3529dd5a30dd5739b2d80c2acc8882a951760b53 # 2026.8.22144013
+        uses: metio/ci/cosign-sign-blob@46616c49a31480c95fe6e3b2229f264645d28763 # 2026.9.19094139
         with:
           file: artifacts/SHA256SUMS
       - id: notes
-        uses: metio/ci/release-notes@3529dd5a30dd5739b2d80c2acc8882a951760b53 # 2026.8.22144013
+        uses: metio/ci/release-notes@46616c49a31480c95fe6e3b2229f264645d28763 # 2026.9.19094139
         with:
           version: ${{ needs.gate.outputs.version }}
           previous: ${{ needs.gate.outputs.last }}
