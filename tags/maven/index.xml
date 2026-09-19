@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Maven on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/maven/</link><description>Recent content in Maven on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 16 Jun 2019 18:23:45 +0200</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/maven/index.xml" rel="self" type="application/rss+xml"/><item><title>Maven</title><link>https://yosql.projects.metio.wtf/tooling/maven/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/maven/</guid><description>&lt;p&gt;&lt;a href="https://maven.apache.org/"&gt;Maven&lt;/a&gt;
+ projects can use the &lt;code&gt;yosql-tooling-maven&lt;/code&gt; plugin to use &lt;code&gt;YoSQL&lt;/code&gt; in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Add the &lt;a href="https://search.maven.org/artifact/wtf.metio.yosql.tooling/yosql-tooling-maven"&gt;plugin&lt;/a&gt;
+ to your &lt;code&gt;pom.xml&lt;/code&gt;:
+
+ 
+ &lt;div class="highlight"&gt;&lt;pre class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="nt"&gt;&amp;lt;build&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;plugins&amp;gt;&lt;/span&gt;
+ ...
+ &lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;wtf.metio.yosql.tooling&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;yosql-tooling-maven&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;2026.8.8&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+ ...
+ &lt;span class="nt"&gt;&amp;lt;/plugins&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;/build&amp;gt;&lt;/span&gt;
+ &lt;/code&gt;&lt;/pre&gt;
+ &lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Add .sql files in &lt;code&gt;src/main/yosql&lt;/code&gt; and write SQL statements into them. Take a look at the various options to &lt;a href="https://yosql.projects.metio.wtf/sql/structure/"&gt;structure&lt;/a&gt;
+ your &lt;a href="https://yosql.projects.metio.wtf/sql/sql-files/"&gt;SQL files&lt;/a&gt;
+.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;lt;project_root&amp;gt;/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── pom.xml
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└── src/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── main/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── yosql/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── domainObject/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├── queryData.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── changeYourData.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── aggregateRoot/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├── findRoot.sql
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── addData.sql
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Execute the &lt;code&gt;yosql:generate&lt;/code&gt; goal (or just run &lt;code&gt;mvn generate-sources&lt;/code&gt;) to generate the Java code.&lt;/p&gt;</description></item></channel></rss>

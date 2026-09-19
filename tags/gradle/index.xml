@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Gradle on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/gradle/</link><description>Recent content in Gradle on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 16 Jun 2019 18:23:45 +0200</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/gradle/index.xml" rel="self" type="application/rss+xml"/><item><title>Gradle</title><link>https://yosql.projects.metio.wtf/tooling/gradle/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/gradle/</guid><description>&lt;p&gt;&lt;a href="https://gradle.org/"&gt;Gradle&lt;/a&gt;
+ projects can use the &lt;a href="https://plugins.gradle.org/plugin/wtf.metio.yosql"&gt;yosql-tooling-gradle&lt;/a&gt;
+ plugin to use &lt;code&gt;YoSQL&lt;/code&gt; in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Add the &lt;a href="https://plugins.gradle.org/plugin/wtf.metio.yosql"&gt;plugin&lt;/a&gt;
+ to your &lt;code&gt;build.gradle(.kts)&lt;/code&gt; file as describe in the Gradle plugin portal.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Add .sql files in &lt;code&gt;src/main/yosql&lt;/code&gt; and write SQL statements into them. Take a look at the various options to &lt;a href="https://yosql.projects.metio.wtf/sql/structure/"&gt;structure&lt;/a&gt;
+ your &lt;a href="https://yosql.projects.metio.wtf/sql/sql-files/"&gt;SQL files&lt;/a&gt;
+.&lt;/p&gt;</description></item></channel></rss>

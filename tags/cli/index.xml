@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CLI on YoSQL</title><link>https://yosql.projects.metio.wtf/tags/cli/</link><description>Recent content in CLI on YoSQL</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 16 Jun 2019 18:23:45 +0200</lastBuildDate><atom:link href="https://yosql.projects.metio.wtf/tags/cli/index.xml" rel="self" type="application/rss+xml"/><item><title>CLI</title><link>https://yosql.projects.metio.wtf/tooling/cli/</link><pubDate>Sun, 16 Jun 2019 18:23:45 +0200</pubDate><guid>https://yosql.projects.metio.wtf/tooling/cli/</guid><description>&lt;p&gt;The &lt;a href="https://en.wikipedia.org/wiki/Command-line_interface"&gt;command line&lt;/a&gt;
+ tool generates the same
+code as the build plugins, without being part of a build. Use it when your project builds with
+something &lt;code&gt;YoSQL&lt;/code&gt; has no plugin for, or to generate code once and commit the result.&lt;/p&gt;
+&lt;h2 id="getting-it"&gt;Getting it&lt;/h2&gt;
+&lt;p&gt;Each &lt;a href="https://github.com/metio/yosql/releases/latest"&gt;release&lt;/a&gt;
+ publishes two kinds of archive:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;yosql-tooling-cli-&amp;lt;version&amp;gt;-linux.zip&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code&gt;-mac.zip&lt;/code&gt;&lt;/strong&gt; — a single native binary. It starts
+instantly and needs no Java installed at all.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;yosql-tooling-cli-&amp;lt;version&amp;gt;-jvm.zip&lt;/code&gt;&lt;/strong&gt; — scripts plus jars, for any platform with Java 25.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Unpack it and put the &lt;code&gt;yosql&lt;/code&gt; binary, or the &lt;code&gt;bin/yosql&lt;/code&gt; script, on your &lt;code&gt;PATH&lt;/code&gt;. Both archives are
+covered by the signed &lt;code&gt;SHA256SUMS&lt;/code&gt; — see &lt;a href="../../installation/#verifying-a-download"&gt;verifying a download&lt;/a&gt;
+.&lt;/p&gt;</description></item></channel></rss>
