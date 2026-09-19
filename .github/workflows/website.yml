@@ -29,7 +29,7 @@ jobs:
           fetch-depth: 0 # the version banner reads the newest tag
           # The theme is a submodule; without it Hugo has no layouts at all.
           submodules: recursive
-      - uses: metio/nix-devshell@1976169d4c51b321be318ade369ccf689849f9f0 # 2026.7.6091757
+      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
