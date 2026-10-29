@@ -15,7 +15,7 @@ jobs:
     # examples and the benchmarks — so the frontends are exercised by building
     # the projects that consume them.
     name: Maven
-    uses: metio/ci/.github/workflows/maven.yml@4def8bb13ad219067f8e697df842231f315c9de0 # 2026.10.10140717
+    uses: metio/ci/.github/workflows/maven.yml@14ad475c5f5c4c0df727df1a22345298604e66ba # 2026.10.26174650
   reproducible:
     # Generated .java files land in users' repositories, build caches and CI
     # diffs, so the same input has to produce the same bytes. Two defects made it
@@ -244,7 +244,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - uses: metio/ci/dco@4def8bb13ad219067f8e697df842231f315c9de0 # 2026.10.10140717
+      - uses: metio/ci/dco@14ad475c5f5c4c0df727df1a22345298604e66ba # 2026.10.26174650
   policy:
     # metio org workflow conventions (conftest/Rego from metio/ci): SHA-pinned
     # uses refs, top-level permissions, timeout-minutes on every job, no
@@ -254,7 +254,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/ci/policy-check@4def8bb13ad219067f8e697df842231f315c9de0 # 2026.10.10140717
+      - uses: metio/ci/policy-check@14ad475c5f5c4c0df727df1a22345298604e66ba # 2026.10.26174650
   verify:
     # Single required check covering every job above: mark only this one
     # required in branch protection and new jobs are covered automatically.
