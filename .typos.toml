@@ -1,22 +1,15 @@
 # SPDX-FileCopyrightText: The yosql Authors
 # SPDX-License-Identifier: 0BSD
 
-[files]
-# Verbatim licence text, and the translated message bundles and site strings —
-# every language other than English reads as misspelled to an English
-# dictionary, so checking them would mean a new exception per translated string.
-extend-exclude = [
-  "LICENSES/",
-  "**/*_de.properties",
-  "**/*_pl.properties",
-  # The site theme is vendored from metio/metio-hugo-theme; its identifiers
-  # are upstream's to rename.
-  "docs/themes/metio/",
-]
+[default]
+extend-ignore-re = []
 
 [default.extend-words]
-# German strings asserted inline in the Javadoc generator's tests. The bundles
-# they mirror are excluded above, but these live in Java literals where the
-# surrounding code is still worth checking.
+edn = "edn"
 Methode = "Methode"
 Sie = "Sie"
+
+[default.extend-identifiers]
+
+[files]
+extend-exclude = ["LICENSES/", "docs/themes/", "**/*_de.properties", "**/*_pl.properties", "docs/themes/metio/"]

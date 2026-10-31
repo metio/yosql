@@ -1,9 +1,8 @@
 # SPDX-FileCopyrightText: The yosql Authors
 # SPDX-License-Identifier: 0BSD
+
 extends: default
 rules:
-  # 160 is the style target, but SHA-pinned `uses:` refs and embedded shell in
-  # CI scripts legitimately exceed it — warn rather than fail.
   line-length:
     max: 160
     level: warning
@@ -12,3 +11,5 @@ rules:
     min-spaces-from-content: 1
   truthy:
     check-keys: false
+ignore:
+  - docs/public/

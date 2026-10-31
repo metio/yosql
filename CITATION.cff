@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: The yosql Authors
+# SPDX-License-Identifier: 0BSD
+
+cff-version: 1.2.0
+title: yosql
+message: If you use this software, please cite it as below.
+type: software
+authors:
+- family-names: Hoß
+  given-names: Sebastian
+  email: seb@hoß.de
+url: https://github.com/metio/yosql/
+license: 0BSD
+keywords:
+  - ant-task
+  - build-tool
+  - cli
+  - code-generator
+  - dagger2
+  - gradle-plugin
+  - java
+  - javapoet
+  - jdbc
+  - jmh
+  - maven-plugin
+  - persistence
+  - sql
+  - zero-dependency
