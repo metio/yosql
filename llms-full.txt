@@ -1,0 +1,3580 @@
+# YoSQL — full documentation
+
+> The complete YoSQL documentation (https://yosql.projects.metio.wtf/) concatenated for
+> LLMs. For a concise link index see https://yosql.projects.metio.wtf/llms.txt.
+
+
+> write more SQL!
+
+`YoSQL` is a [yesql](https://github.com/krisajenkins/yesql) inspired persistence solution for
+[Java](https://www.java.com/). It turns [SQL](https://en.wikipedia.org/wiki/SQL) statements into
+type-safe Java code at build time.
+
+Write the query you want:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug, created_at
+from tenant
+where id = :id
+```
+
+and the record you want back:
+
+```java
+public record Tenant(UUID id, String slug, Instant createdAt) {
+}
+```
+
+and you get `Optional<Tenant> findTenant(UUID id)`, backed by a mapper that reads each column by
+name and calls the constructor. Nothing says what `:id` is: the record has an `id` component, and
+your `create table` has an `id` column — either answers. No reflection, no proxies, no annotations
+on your domain types.
+
+Or don't write the record. Where it would only repeat what the `select` list already says, add
+`generateResultRowType: true` and it is written from your schema:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+-- generateResultRowType: true
+select id, slug, created_at
+from tenant
+where id = :id
+```
+
+Write it yourself when it carries more than columns — a value object, an enum, a nested record —
+because those are things a schema cannot describe.
+
+Needs [Java 25](./installation/). Ready in about a minute — see [installation](./installation/).
+
+## Features
+
+### reflection-free
+
+Generated code reads a `ResultSet` through calls the compiler has already resolved — no reflection,
+no proxies, no runtime type lookup. Name a record as a statement's result row type and the mapper is
+written for you, still as plain `resultSet.getX(...)` calls. That is what makes a
+[GraalVM](https://www.graalvm.org/) native image straightforward: nothing in the persistence layer
+needs a reflection hint, and no code path can fail the first time it runs because a registration was
+missing. Every release compiles a generated repository into a native image and runs it against a
+real database, so that claim is checked rather than asserted.
+
+Nothing else in Java gives you a persistence layer with that property.
+
+### zero dependency
+
+`YoSQL` is a true zero dependency solution. Instead of adding a new dependency to your project,
+`YoSQL` is available as a build-tool that is only active during build-time. Once everything is
+generated, `YoSQL` is no longer required at run-time. The generated code relies only on JDK classes
+without any external dependencies — there is no library version to keep in step with your framework,
+and no upgrade that changes what your queries do.
+
+### database-first
+
+`YoSQL` allows you to use the full power of your database to overcome the individual challenges of
+your project. Re-use existing database tooling to iterate quickly by just running an SQL statement
+directly against your database without ever starting your JVM application. Bridge the gap between
+developers and DBAs by using your SQL statements as a common meeting ground and place for
+performance tuning.
+
+### mistakes surface at build time
+
+A column no component of your record reads, a component no column supplies, a parameter whose type
+nothing gives, a statement whose name means it would generate nothing — each of these fails the
+build, naming the file and the statement. None of them waits for the request that happens to hit it.
+
+Point `YoSQL` at the `create table` statements you already keep and it holds your queries to those
+too: a column that does not exist, a parameter whose type disagrees with its column, a nullable
+column read into a primitive. No database connection is involved — see
+[schema validation](./sql/schema/).
+
+### developer friendly
+
+No magic involved - `YoSQL` generates code that is easy to read and debug. Step-through in case you
+encounter an error or use the extensive logging capabilities of `YoSQL` to monitor both code
+generation and SQL execution. No hidden SELECT statements or opened transactions, developers using
+`YoSQL` are 100% in control on how their SQL statements are executed. Get started quickly in under a
+minute (not reading this included): Just add the appropriate plugin to your project, and you are
+good to go.
+
+## Usage
+
+[Installation](./installation/) covers what you need and how to add `YoSQL` to a Maven, Gradle, Ant
+or plain project. However you run it, the shape is the same:
+
+1. Write SQL statements, and configure `YoSQL` if the defaults do not suit you.
+2. Run your build to generate Java code.
+3. Call the generated repositories from your application.
+
+Then: [SQL files](./sql/) for how statements are written, [converters](./sql/converters/) for
+turning rows into your own types, the [cookbook](./sql/cookbook/) for the queries that need more
+than one line of front matter, and [configuration](./configuration/) for everything you can change
+about the output.
+
+Weighing `YoSQL` against jOOQ, MyBatis, Spring Data JDBC or an ORM? The
+[comparison](./community/alternatives/) is frank about where each of them wins.
+
+
+---
+
+# Installation
+
+Source: https://yosql.projects.metio.wtf/installation/
+
+
+`YoSQL` turns `.sql` files into Java repositories at build time. Pick the tooling that matches your
+build, point it at your SQL, and the generated code is ordinary Java from then on.
+
+## What you need
+
+**Java 25 or later**, both to run `YoSQL` and to compile and run what it generates. Generated code
+uses `var`, text blocks, records and sequenced collections, so it does not compile on older
+releases.
+
+Nothing else. `YoSQL` is not a dependency of your application — it runs during your build and the
+code it leaves behind calls only the JDK and your JDBC driver. Nothing needs to be on the classpath
+at run time, which is also why a generated repository works unchanged inside a
+[GraalVM](https://www.graalvm.org/) native image.
+
+## Choosing the tooling
+
+| Your build | Use |
+| --- | --- |
+| [Maven](https://maven.apache.org/) | the [Maven plugin](../tooling/maven/) |
+| [Gradle](https://gradle.org/) | the [Gradle plugin](../tooling/gradle/) |
+| [Ant](https://ant.apache.org/) | the [Ant task](../tooling/ant/) |
+| anything else, or no build at all | the [command line tool](../tooling/cli/) |
+
+The command line tool is also the way to generate code once and never think about `YoSQL` again:
+run it, commit the result, and drop it from your build entirely.
+
+## Your first statement
+
+Write a `.sql` file under `src/main/yosql`:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug, created_at
+from tenant
+where id = :id
+```
+
+Write the record it should build:
+
+```java
+package com.example.domain;
+
+public record Tenant(UUID id, String slug, Instant createdAt) {
+}
+```
+
+Run your build. You get a `TenantRepository` with a `findTenant` method returning
+`Optional<Tenant>`, and a converter that reads each column by name and calls the constructor —
+no reflection, nothing resolved at run time.
+
+From here, the [tutorial](./tutorial/) builds a whole project — schema, statements, records and
+tests against a real database — in about half an hour. [SQL files](../sql/) covers how statements are
+written and [configuration](../configuration/) covers everything you can change about the output.
+
+## Verifying a download
+
+Releases of the command line tool and the Ant task ship a `SHA256SUMS` file alongside the archives,
+signed with [cosign](https://docs.sigstore.dev/) keyless signing. To check an archive you downloaded
+from the [releases page](https://github.com/metio/yosql/releases):
+
+```shell
+sha256sum --check --ignore-missing SHA256SUMS
+cosign verify-blob SHA256SUMS \
+  --bundle SHA256SUMS.bundle \
+  --certificate-identity-regexp 'https://github\.com/metio/yosql/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+Artifacts published to [Maven Central](https://central.sonatype.com/namespace/wtf.metio.yosql.tooling) are
+signed with PGP instead, which your build tool checks for you.
+
+## Releases
+
+A new version is published on the 8th of each month, named after that date — `2026.8.8` for the
+August 2026 release. A month with no changes gets no release. When a release needs you to change
+something, it is described under [upgrading](./upgrading/).
+
+
+---
+
+# Tutorial
+
+Source: https://yosql.projects.metio.wtf/installation/tutorial/
+
+
+A schema, three statements, and a test that runs them against a real PostgreSQL. Half an hour, and
+at the end you have the shape every `YoSQL` project has.
+
+You need [Java 25](../) and a container runtime for Testcontainers. Everything else is Maven.
+
+## 1. The build
+
+```xml
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>tenants</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.release>25</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.7.9</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>6.1.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>1.21.3</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>wtf.metio.yosql.tooling</groupId>
+        <artifactId>yosql-tooling-maven</artifactId>
+        <version>2026.8.8</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <repositories>
+            <basePackageName>com.example.persistence</basePackageName>
+          </repositories>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+Note what is **not** there: no `YoSQL` dependency. The plugin runs during the build and the code it
+leaves behind needs only the JDK and your driver.
+
+## 2. The schema
+
+`YoSQL` does not manage schemas, so this is a statement like any other — it just happens to be DDL.
+Put it in `src/main/yosql/schema/createSchema.sql`:
+
+```sql
+-- name: createTenantTable
+-- returning: none
+-- writesReturnUpdateCount: false
+create table if not exists tenant (
+    id         uuid         not null primary key,
+    account_id uuid         not null,
+    slug       varchar(64)  not null unique,
+    created_at timestamp with time zone not null
+)
+```
+
+`writesReturnUpdateCount: false` makes the method `void` — a row count means nothing for a
+`create table`.
+
+In a real project this belongs in Flyway or Liquibase. Here it keeps the tutorial to one tool.
+
+## 3. The record
+
+Result rows are read from **source**, so the record has to exist before the build runs.
+`src/main/java/com/example/domain/Tenant.java`:
+
+```java
+package com.example.domain;
+
+import java.time.Instant;
+import java.util.UUID;
+
+public record Tenant(UUID id, UUID accountId, String slug, Instant createdAt) {
+}
+```
+
+A component reads the column its own name implies, `camelCase` as `snake_case` — `accountId` reads
+`account_id`. Nothing configures that.
+
+## 4. The statements
+
+`src/main/yosql/tenant/tenants.sql`:
+
+```sql
+-- name: insertTenant
+-- returning: none
+insert into tenant (id, account_id, slug, created_at)
+values (:id, :accountId, :slug, :createdAt)
+;
+
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, account_id, slug, created_at
+from tenant
+where id = :id
+;
+
+-- name: findTenantsByAccount
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+select id, account_id, slug, created_at
+from tenant
+where account_id = :accountId
+order by slug
+;
+```
+
+Three things worth noticing:
+
+- **Nothing names a parameter type.** `:id` and `:accountId` on the reads come from the components
+  of the record they build; on the insert they come from the columns they are named after, because
+  the `create table` in step 2 is a statement `YoSQL` reads like any other. Write the types out only
+  where neither can answer.
+- **The file is `tenants.sql` under `tenant/`, so all three land in `TenantRepository`.** The
+  directory decides the repository, not the file.
+- **Every name starts with `insert` or `find`.** A name matching none of the configured prefixes
+  fails the build rather than generating nothing.
+
+## 5. Generate
+
+```shell
+mvn generate-sources
+```
+
+Under `target/generated-sources/yosql` you now have `com/example/persistence/TenantRepository.java`
+and `com/example/persistence/converter/ToTenantConverter.java`. Read them — that is the point of the
+tool. The converter is one `resultSet.getX(...)` call per component and then the constructor, and
+the repository is the JDBC you would have written.
+
+Each statement generated **two** methods: one taking a `DataSource` connection and one taking a
+`Connection` you supply. The second is what a transaction uses.
+
+## 6. Run it
+
+`src/test/java/com/example/TenantRepositoryTest.java`:
+
+```java
+package com.example;
+
+import com.example.domain.Tenant;
+import com.example.persistence.SchemaRepository;
+import com.example.persistence.TenantRepository;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.postgresql.ds.PGSimpleDataSource;
+import org.testcontainers.containers.PostgreSQLContainer;
+
+import javax.sql.DataSource;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class TenantRepositoryTest {
+
+    private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:18");
+
+    private static DataSource dataSource;
+
+    @BeforeAll
+    static void startDatabase() {
+        POSTGRES.start();
+        final var source = new PGSimpleDataSource();
+        source.setUrl(POSTGRES.getJdbcUrl());
+        source.setUser(POSTGRES.getUsername());
+        source.setPassword(POSTGRES.getPassword());
+        dataSource = source;
+        new SchemaRepository(dataSource).createTenantTable();
+    }
+
+    @Test
+    void findsTheTenantItInserted() {
+        final var tenants = new TenantRepository(dataSource);
+        final var id = UUID.randomUUID();
+        final var accountId = UUID.randomUUID();
+        final var createdAt = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+        tenants.insertTenant(id, accountId, "acme", createdAt);
+
+        final var found = tenants.findTenant(id);
+        assertTrue(found.isPresent());
+        assertEquals("acme", found.orElseThrow().slug());
+        assertEquals(accountId, found.orElseThrow().accountId());
+    }
+
+    @Test
+    void readsBackEveryTenantOfAnAccount() {
+        final var tenants = new TenantRepository(dataSource);
+        final var accountId = UUID.randomUUID();
+
+        tenants.insertTenant(UUID.randomUUID(), accountId, "beta", Instant.now());
+        tenants.insertTenant(UUID.randomUUID(), accountId, "alpha", Instant.now());
+
+        final var found = tenants.findTenantsByAccount(accountId);
+        assertEquals(2, found.size());
+        assertEquals("alpha", found.getFirst().slug());
+    }
+
+}
+```
+
+```shell
+mvn test
+```
+
+No mocks and no fixtures. A generated repository takes a `DataSource` and nothing else, so a test
+that constructs one is testing your SQL — which is the only part of this you wrote.
+
+## 7. Break it on purpose
+
+The most useful thing to learn about `YoSQL` is what it refuses. Try each of these and run
+`mvn generate-sources`:
+
+**Drop a column from the select.** Remove `created_at` from `findTenant` — the build fails saying no
+selected column supplies `createdAt`.
+
+**Add one nothing reads.** Add `, 1 as extra` — the build fails saying no component claims `extra`.
+
+**Rename a parameter.** Change `:id` to `:tenantId` in `findTenant` — no component is called
+`tenantId`, so the build fails saying no type is known for it.
+
+**Rename the method to `fetchTenant`.** `fetch` is not a configured read prefix, so the build fails
+rather than silently generating nothing.
+
+Every one of those is a defect that an ORM or a string-concatenating DAO would have handed you at
+run time, on whichever request hit it first.
+
+## Where to go next
+
+- [SQL files](../../sql/sql-files/) — everything the front matter accepts.
+- [Cookbook](../../sql/cookbook/) — `IN` lists, pagination, optional filters, streaming, enums.
+- [Transactions](../../sql/transactions/) — several statements, one connection.
+- [Spring Boot](../../frameworks/spring-boot/) or [Quarkus](../../frameworks/quarkus/) — the same
+  repositories as beans.
+- [Configuration](../../configuration/) — everything you can change about the output.
+
+
+---
+
+# Upgrading
+
+Source: https://yosql.projects.metio.wtf/installation/upgrading/
+
+
+What each release needs from you, when it needs anything. Releases not listed here are drop-in.
+
+## 2026.9.8
+
+### Converters are generated beside your repositories
+
+`converter.mapConverterClass` used to default to `com.example.persistence.converter.ToMapConverter`,
+and every generated converter is written to the package that setting names. A project that set
+`repositories.basePackageName` and nothing else therefore had its repositories generated where it
+asked and its converters generated into the example's package — a name it had never written down,
+reached through a setting it had never heard of.
+
+The default is now the bare name `ToMapConverter`, and a name without a package is resolved against
+`repositories.basePackageName`. So converters land in `<your base package>.converter`, and a project
+that already worked around this by writing the setting out in full keeps exactly what it had — a
+fully-qualified name is still followed to the letter.
+
+Nothing to do unless you configured `mapConverterClass` solely to relocate the converters. That
+setting can go:
+
+```xml
+<converter>
+  <mapConverterClass>com.example.store.converter.ToMapConverter</mapConverterClass>
+</converter>
+```
+
+If you want the converters to stay where they are while your base package differs, keep it. Anything
+of your own importing a generated converter moves with it — that shows up as a compile error naming
+the import, not as anything silent.
+
+A `schema.sqlStatementsDirectory` holding versioned migrations is now read in version order.
+Previously the files were read in name order, so `V10__` and `V12__` were applied ahead of `V2__`
+and every column added past the ninth migration was missing from the schema `YoSQL` worked from.
+
+Nothing needs changing, but two things are worth rechecking if you pointed this at a Flyway or
+Liquibase directory. Schema validation lowered to `WARN` because it reported columns that plainly
+exist can go back to `ERROR`. Parameter and result types written out by hand because inference
+"did not work" are now inferred, and the front matter still wins where the two disagree — so a type
+declared against the wrong schema stays wrong until you delete it.
+
+A column is also read in the spelling its own DDL was written in. Marking a schema file with a
+[vendor](/configuration/sql/vendor/) now decides how its column types are read, so `bytea`,
+`timestamptz`, `bigserial`, `jsonb` and the rest of a database's own spellings reach statements that
+declare no vendor themselves:
+
+```sql
+-- vendor: postgresql
+
+create table attachment (id bigserial primary key, payload bytea not null);
+```
+
+Previously those spellings were only read when the *statement* declared the vendor, which a project
+with one database has no reason to do — so its schema answered for the standard types and nothing
+else. Nothing changes for a project that marks its statements, or for one that marks neither.
+
+Whether marking the schema gains you anything depends on how your DDL is written, and it is worth
+checking rather than assuming. `uuid`, `text`, `varchar`, `boolean`, `integer`, `bigint`, `numeric`,
+`date` and `timestamp with time zone` are read the same by every database, so a schema written in
+those types already types completely, and a vendor adds nothing to it. A schema saying `timestamptz`,
+`bigserial`, `bytea`, `jsonb` or `citext` is the one this is for.
+[The build says which columns it cannot type](#the-build-says-which-columns-it-cannot-type), which
+answers it for your schema without guessing.
+
+Where the schema is a migration directory, the files are checksummed by the tool that applied them
+and a comment added to one already run makes it refuse to start. The new `schema.vendor` setting
+says the same thing from the build instead:
+
+```xml
+<schema>
+  <sqlStatementsDirectory>src/main/resources/db/migration</sqlStatementsDirectory>
+  <vendor>PostgreSQL</vendor>
+</schema>
+```
+
+A schema file naming its own vendor keeps it.
+
+### Undo migrations are no longer read as schema
+
+A Flyway undo migration — `U48__…` beside the `V48__…` it reverses — says how to take a migration
+back out. It is never run by a migration, so the database has never had it applied, and reading it
+describes a schema that does not exist. It also carries no version this reader recognised, so it
+sorted after every versioned migration and undid them last of all.
+
+What that looked like was a column missing from an otherwise perfect schema: `U48`'s `drop column`
+is something the reader follows exactly, so it took the column back out and reported nothing. If a
+statement of yours was reported as using a column that plainly exists, and the migration adding it
+has an undo beside it, that was this.
+
+### A `camelCase` parameter finds its `snake_case` column
+
+`:accountId` now takes its type from an `account_id` column, the same conversion a result row
+component has always had. Previously a parameter had to be spelled exactly as the column was, so
+every parameter named after a `snake_case` column fell through to "no type known for" and had to be
+declared by hand — the schema had the answer and the name never reached it. If your front matter is
+full of `parameters:` blocks that only repeat what the schema says, they can go.
+
+A parameter written the column's way keeps working, and a type in the front matter still wins over
+both.
+
+### A write holding a collection no longer asks for a batch
+
+`executeBatch` defaults to on for writing statements, and a collection parameter cannot be batched —
+each of its values needs a placeholder of its own, so every execution would need a different query.
+Those two defaults met in a build failure on every `update … where state in (:states)`, curable only
+by writing `executeBatch: false` on each one. The default now yields: a statement holding a
+collection is generated without a batch method. Writing `executeBatch: true` on one is still an
+error, because that asks for something that cannot exist.
+
+### Two generated types with one name stop the build
+
+A repository interface is the repository's name without its `Repository` suffix, so statements in a
+`document` directory generate an interface called `Document` alongside `DocumentRepository`. A
+`resultRowType` naming `<your base package>.persistence.Document` names that same type, and the two
+were written to one file — whichever the generator reached second was the one that survived.
+
+What that looked like was a compile error on a file you did not write, saying the type a converter
+instantiates is abstract, or a duplicate class where the record was your own. Now it stops
+generation and names both:
+
+```text
+Two generated types would both be written as 'com.example.persistence.Document': an interface
+and a record.
+```
+
+The same name can also meet a class you wrote yourself, which is the likelier of the two: a project
+keeping its stores in the repositories' package has hand-written classes sitting exactly where the
+generator writes, and a `windDown` statements directory generates an interface called `WindDown`.
+That was a duplicate class from `javac`, in whichever of the two files it reached first. It is now
+the same kind of failure, before anything is written, naming the file it met.
+
+Either way this only affects a build that was already failing at compile time, so nothing that
+worked can start failing. If you see it, rename whichever of the two names is yours, move it to
+another package, or turn off
+[generateInterfaces](/configuration/repositories/generateinterfaces/).
+
+### A `parameters:` block no longer changes the order of a method
+
+A generated method takes its parameters in the order the statement binds them. Declaring some of
+them used to move those to the front:
+
+```sql
+-- parameters:
+--   tenantId: uuid
+select id from restore where id = :id and tenant_id = :tenantId
+```
+
+```java
+findWithdrawableRestore(UUID tenantId, UUID id)   // before
+findWithdrawableRestore(UUID id, UUID tenantId)   // now, and what the SQL says
+```
+
+**Check any statement whose block names fewer parameters than the statement binds, or names them in
+an order the SQL does not use.** Where the moved parameters have different types, your call sites
+stop compiling and the compiler shows you every one. Where they share a type — two `UUID`s, as
+above — they compile before and after, and the arguments were going in the wrong way round before
+this release. That is the case worth looking for: a query returns nothing where it should return a
+row, and a write touches the wrong row.
+
+A block naming every parameter in the order the SQL binds them is unaffected, which is how most are
+written.
+
+### The build says which columns it cannot type
+
+Alongside the table count, a run now names the columns the schema holds and cannot give a Java type:
+
+```text
+The schema holds 1 column(s) whose type YoSQL does not map: document.payload (jsonb). No vendor
+is declared, and the types only one database has are looked up only for a declared one — so
+'schema.vendor' may be all that is missing.
+```
+
+The table count is the same whether or not a vendor is declared — it is the columns that change —
+so it was the wrong figure to read a vendor's effect off. This is the one that answers it. Nothing
+to do: an untyped column that no statement selects and no parameter is named after costs nothing.
+
+## 2026.8.8
+
+The first release since 2023.5.3, and it changes enough to be worth reading before you bump the
+version.
+
+### Java 25 is now the minimum
+
+Both to run `YoSQL` and to compile and run what it generates. Generated code uses `var`, text
+blocks, records and sequenced collections.
+
+If your project is on an older Java release, stay on `2023.5.3` until you can move. There is no
+configuration that makes the generator emit older code — the switch that used to do that is gone,
+because it silently produced output that no longer matched what the documentation promised.
+
+### A converter is named by its class, and nothing else
+
+The four-part converter description and the registry that held it are gone. A statement that used
+to name a converter by alias:
+
+```sql
+-- resultRowConverter:
+--   alias: itemConverter
+```
+
+now names the class:
+
+```sql
+-- resultRowConverter: com.example.persistence.converter.ToItemConverter
+```
+
+and the build configuration that declared the alias goes away entirely. In Maven:
+
+```xml
+<converter>
+    <!-- delete the whole rowConverters block -->
+    <rowConverters>
+        <rowConverter>
+            <alias>itemConverter</alias>
+            <converterType>com.example.persistence.converter.ToItemConverter</converterType>
+            <methodName>asUserType</methodName>
+            <resultType>com.example.domain.Item</resultType>
+        </rowConverter>
+    </rowConverters>
+</converter>
+```
+
+The same applies to `rowConverters` in Gradle and Ant, and to `--rowConverters` on the command
+line. `defaultConverter` survives but now takes a single class name rather than the four parts.
+
+`YoSQL` reads the class to find its one public method taking a `ResultSet`. That method's name is
+what the repository calls and its return type is what the statement produces, so nothing repeats
+what the class already says. Two consequences worth knowing:
+
+- The converter has to be **visible as source** under
+  [sourceDirectory](../../configuration/files/sourcedirectory/), because it is read rather than
+  loaded. A converter that lives in a different module needs that directory pointed at it.
+- The class must declare **exactly one** public method taking a `ResultSet`. None, or more than
+  one, fails the build and names the class.
+
+The field the repository holds the converter in is now the class name with a lower-case first
+letter — `toItemConverter` rather than whatever the alias was. That only matters if you were
+reading generated fields directly.
+
+### Generic types cannot be result rows
+
+A record declaring type parameters is refused rather than mapped, because a statement says nothing
+about what to substitute for them. Name a concrete type instead.
+
+### YoSQL reads your schema now
+
+If your project keeps `create table` statements where `YoSQL` can see them, this release starts
+holding the rest of your SQL to them: a column that does not exist, a parameter whose type disagrees
+with its column, a nullable column read into a primitive. Nothing connects to a database, so it
+works in a checkout with no services running.
+
+**It reports and does not stop.** The default is `WARN`, so no build that passed before fails
+because of this — expect new warnings, not new failures. Read them; they are the queries that would
+have failed on whichever request reached them first.
+
+Once you have dealt with them, turn it up so nothing new gets in:
+
+```xml
+<schema>
+  <validation>ERROR</validation>
+</schema>
+```
+
+To hear nothing at all, set it to `OFF`.
+
+It also settles what a parameter's type is, which removes the `parameters` block from write
+statements entirely — see [schema validation](../../sql/schema/).
+
+### A colon with no name after it is no longer a parameter
+
+`:id` is a parameter. A bare `:` is not, and used to be read as one — which made two ordinary things
+wrong.
+
+A statement carrying a licence header picked up a parameter with no name from the colon in
+`SPDX-License-Identifier:`. And PostgreSQL's `::` cast bound two parameters, the bare colon and the
+type name, so **every parameter after a cast was bound to the wrong placeholder** — the statement
+ran and answered with the wrong rows.
+
+If you have statements using `::` casts, their generated methods change: the spurious parameters
+disappear and the real ones move to the indices they should always have had. Check any such method's
+signature after upgrading, and be glad if you never hit the bug.
+
+### Every statement is now reachable with and without a connection
+
+Where a statement got its connection used to be decided per statement by `createConnection`, and you
+got one method. It is now decided by the caller, and you get two:
+
+```java
+Optional<Tenant> findTenant(UUID id);
+Optional<Tenant> findTenant(Connection connection, UUID id);
+```
+
+The first opens a connection from the repository's `DataSource` and closes it; the second runs on
+the one it is given. That is what lets several statements share a transaction — see
+[transactions](../../sql/transactions/).
+
+Nothing you call today changes name or signature, so existing code keeps compiling, with one
+exception: **a repository whose statements all set `createConnection: false` used to have a no-arg
+constructor** and now takes a `DataSource`, because it now also has methods that need one. Pass it
+one, or set
+[generateConnectionOverloads](../../configuration/repositories/generateconnectionoverloads/) to
+`false` to keep one method per statement.
+
+If you wrote a statement twice in a file — once plain and once with `createConnection: false` — to
+get both shapes, delete the second one. It now generates a method with a `2` in its name for no
+reason.
+
+### A parameter with no type now fails instead of becoming an Object
+
+A parameter the front matter did not type used to be bound as `java.lang.Object`. The method
+compiled, accepted anything, and offered exactly the type safety of the JDBC it replaced — silently.
+It is now a build error naming the file, the statement and every parameter still without a type.
+
+Two things fill them in. A statement naming a record with
+[resultRowType](../../configuration/sql/resultrowtype/) takes each parameter's type from the
+component of the same name, so most read statements need nothing:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug from tenant where id = :id
+```
+
+`Tenant` declares `UUID id`, so `:id` is a `UUID`. For everything else — write statements, above all
+— name the types. The front matter now takes a mapping of name to type alongside the list form:
+
+```sql
+-- parameters:
+--   id: uuid
+--   slug: string
+--   createdAt: instant
+```
+
+`uuid`, `string` and `instant` are short names for the types statements are usually written in; the
+full list is under [parameters](../../configuration/sql/parameters/). A fully-qualified class name
+still works everywhere, and the list form is unchanged for parameters that need a `sqlType`, a
+`scale` or a `variant`.
+
+Where the build fails, the message shows the front matter to add. Nothing else has to change.
+
+### Statements that generate nothing now fail
+
+A statement whose name matches none of the configured prefixes, and which sets no explicit `type`,
+used to be skipped without a word — so a typo removed a method from your repository and said
+nothing. It is now a build error naming the file and the statement. If a release starts failing
+here, it is reporting something that was already broken.
+
+### The `TI` logging API is gone
+
+`logging.api` no longer accepts `TI`. The generator behind it was never written: it answered every
+question with an empty block while reporting that logging was off, and the repositories it produced
+did not compile — a bare `if () {` reading a variable nothing declared.
+
+If your build sets it — `<api>TI</api>` in a `pom.xml`, `api = 'TI'` in a `build.gradle`, or
+`--logging-api=TI` on the command line — pick one of `NONE`, `JUL`, `SYSTEM`, `LOG4J`, `SLF4J` or
+`TINYLOG`. `NONE` is the closest to what `TI` actually did, which was nothing.
+
+### The `java` configuration group is gone
+
+Its six switches decided whether generated classes, fields, methods, parameters and locals were
+declared `final`. Generated code reassigns none of them, so they all are now, which is what the
+defaults already said. One of them, `useSealedInterfaces`, was documented in every frontend and did
+nothing at all.
+
+Remove the block if your build has one — a `<java>` element in a `pom.xml`, a `java { }` block in a
+`build.gradle`, a `<java>` element in an Ant task, or `--use-final-*` on the command line. Maven and
+Ant fail on an unknown element, so this one is not optional. Nothing about the generated code
+changes unless you had turned one of them off, in which case the output gains the `final` keywords
+it describes.
+
+### The `names` configuration group is gone
+
+Its twenty-two settings renamed the variables inside generated methods — the `Connection`, the
+`ResultSet`, the loop counter. None of them is part of a repository's API, so none of them was a
+decision worth making: a name nobody outside the method can see cannot fit a codebase better or
+worse. They also had to be kept distinct from each other, which is why a whole validator existed to
+check they were.
+
+Remove the block if your build has one — a `<names>` element in a `pom.xml`, a `names { }` block in
+a `build.gradle`, a `<names>` element in an Ant task, or the matching command-line options. Maven and
+Ant fail on an unknown element, so this one is not optional. Generated code is unchanged unless you
+had renamed something, in which case it goes back to the default name.
+
+The one thing those settings could rescue was a statement whose own parameter is called `connection`,
+`statement`, `resultSet`, `index` or another name a generated method already uses. That is now a
+build error naming the file, the statement and the parameter, instead of a Java error about a
+variable already defined in a file you did not write. Rename the parameter in the SQL — the name
+reaches no further than the method's signature.
+
+### `skipLines` is gone, and a licence header is dropped on its own
+
+A `.sql` file that opens with a block comment has it dropped, however many lines it runs to. The
+count that used to have to match — and to be kept matching every time somebody edited the header —
+is no longer a setting.
+
+Remove `skipLines` from your build; Maven and Ant fail on an unknown element. If your headers are
+written as `--` lines rather than as a block comment, rewrite them as `/* … */`. A `--` line at the
+top of a file is front matter, and `-- SPDX-License-Identifier: 0BSD` is as good a YAML mapping as
+`-- name: findTenant`, so there is no way to tell the two apart.
+
+### Generated code now says so, and the `annotations` switches are gone
+
+Every generated class, field and method carries `@Generated`:
+
+```java
+@Generated(
+    value = "wtf.metio.yosql",
+    comments = "generated by YoSQL 2026.8.8 - do not modify, this file is rewritten on every build"
+)
+```
+
+It used to be off unless you turned it on, which is backwards for a marker whose whole job is to tell
+coverage tools, linters and the next reader that nobody wrote this by hand. Eleven settings decided
+whether it appeared, which annotation class it used, which members it carried and what each of them
+said; all eleven are gone, and so is the `javax.annotation.Generated` option, which has not existed
+in the JDK since Java 11.
+
+The `value` is the generator's fully qualified name, which is what the annotation's own
+documentation asks for. The `comments` carry the release that wrote the file — the one fact about
+generated code that is nowhere else in it, since which `.sql` file a method came from is already in
+its javadoc.
+
+There is deliberately **no date**. Two builds of the same statements produce the same code, and a
+timestamp would be the only thing in the output that differed between them.
+
+`javax.annotation.processing.Generated` lives in the `java.compiler` module, which a classpath build
+always has. A **modular** project compiling generated code inside its own module needs
+`requires static java.compiler;` in its `module-info.java` — static, because the annotation is
+discarded after compilation and nothing needs it at run time.
+
+Remove the `<annotations>` switches from your build — `annotationApi`, `annotateClasses`,
+`annotateFields`, `annotateMethods`, `classMembers`, `fieldMembers`, `methodMembers`,
+`classComment`, `fieldComment`, `methodComment` and `generatorName`. Maven and Ant fail on an unknown
+element. The three settings that add **your own** annotations to generated repositories,
+constructors and methods are unchanged.
+
+### Repository and method names are no longer spelled out in configuration
+
+Eight settings decided what to put around a generated name — `repositoryNamePrefix`,
+`repositoryNameSuffix`, `repositoryInterfacePrefix`, `repositoryInterfaceSuffix`,
+`executeOncePrefix`, `executeOnceSuffix`, `executeBatchPrefix` and `executeBatchSuffix`. Six of them
+defaulted to nothing at all, and the two that did something were carrying the two names that have to
+differ from each other:
+
+- A repository is its directory plus `Repository`, so `tenant/*.sql` becomes `TenantRepository`.
+- Its interface is the same name without that suffix — `Tenant` — and gets an `I` in front only when
+  there is no suffix to drop.
+- A batch method is its statement plus `Batch`, so `insertTenant` and `insertTenantBatch` can live in
+  the same repository.
+
+That is what the defaults already produced. Remove the settings from your build and from any front
+matter that set them per statement; Maven and Ant fail on an unknown element. If you had renamed
+something, the generated names change back — name the repository with
+[repository](../../configuration/sql/repository/) in the front matter, which still decides it
+outright.
+
+### `sqlStatementsDirectory` is relative to your project, not to where the build was started
+
+[sqlStatementsDirectory](../../configuration/schema/sqlstatementsdirectory/) says where the DDL
+describing your schema lives. Written as a relative path, it used to be resolved against whatever
+directory the build was running in rather than against the module being built — so in a multi-module
+project, `mvn verify` from the root looked for the schema under the root while `mvn verify` inside
+the module found it. Every frontend resolves it against the project now, the same as every other
+directory setting.
+
+Nothing reports the difference, which is what makes it worth checking: a schema directory that
+resolves to nothing is indistinguishable from a schema that raises no complaints, because reading
+the schema is designed never to fail a build. If you set this to a relative path, confirm it is
+relative to the module's own directory. An absolute path is unaffected.
+
+Maven is where this is most likely to have bitten you. The CLI runs in the directory you invoke it
+from, which is the answer it now arrives at deliberately; Gradle ran in the project's own directory,
+so it already found the right one, and no longer depends on that being true.
+
+### Ant can set the method name prefixes and the annotations
+
+Ant builds an attribute setter only for a type it can make out of a string, and
+[allowedCallPrefixes](../../configuration/repositories/allowedcallprefixes/),
+[allowedReadPrefixes](../../configuration/repositories/allowedreadprefixes/) and
+[allowedWritePrefixes](../../configuration/repositories/allowedwriteprefixes/) are lists — so the
+task declared them and then refused them, with `doesn't support the "allowedReadPrefixes"
+attribute`. The whole [annotations](../../configuration/annotations/) group went the same way: the
+nested element could be written, and nothing inside it could be set.
+
+Both work now. The three lists are one attribute, separated by commas:
+
+```xml
+<repositories validateMethodNamePrefixes="true"
+              allowedReadPrefixes="fetch,find"/>
+```
+
+An annotation is a nested element, and each of its members is a nested element of that:
+
+```xml
+<annotations>
+    <repositoryAnnotations type="jakarta.inject.Named">
+        <member key="value" value="tenants"/>
+    </repositoryAnnotations>
+</annotations>
+```
+
+Nothing here can have broken a build: none of it could be set before. If you turned
+`validateMethodNamePrefixes` off because the prefix lists were out of reach, it is worth turning
+back on.
+
+## 2023.5.3 and earlier
+
+See the [release notes](https://github.com/metio/yosql/releases) for those versions.
+
+
+---
+
+# Tooling
+
+Source: https://yosql.projects.metio.wtf/tooling/
+
+
+`YoSQL` is available as a build tool which needs to be integrated into your project. Each currently supported tool has its own documentation page, which is listed below. We recommend using the tooling that is most appropriate for your project, e.g. [Maven](https://maven.apache.org/) projects should use the `YoSQL` Maven tooling. Since `YoSQL` is not required at run-time, you could use it just once to generate code and not add `YoSQL` to your build at all.
+
+In its default configuration, `YoSQL` will try to generate as much code as possible, and you are expected to configure the generated code so that it matches the requirements of your project. Take a look at the [configuration](/configuration/) section in order to see all available configuration options in case you want to change something.
+
+Once your initial setup is complete, it's time to write [SQL](/sql/) statements. There is no upper limit imposed by `YoSQL` on how many statements there can be per generated repository, however Java has a hard limit of [65535 methods per class](https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.11). We recommend splitting your statements according to the domain objects in your projects, e.g. all statements that are related to a single class should go in one repository, but you are free to choose whatever structure best fits your project.
+
+Using any of the listed tools below allows you to convert SQL statements into runnable Java code that no longer requires the original SQL statements.
+
+
+---
+
+# Ant
+
+Source: https://yosql.projects.metio.wtf/tooling/ant/
+
+
+In order to use the `YoSQL` tooling for [Ant](https://ant.apache.org/), follow these steps:
+
+1. Download the `yosql-tooling-ant` task zip file from the [latest release](https://github.com/metio/yosql/releases/latest) (or any prior version).
+2. Define a task in your build.xml. The `lib` folder of the `yosql-tooling-ant` zip file contains all jar files that are required for the task.
+3. Write `.sql` files in a directory of your choice (e.g. `/path/to/your/sql/files`).
+4. Adjust the [configuration](/configuration/) of the `YoSQL` task.
+5. Execute the `YoSQL` task in order to generate Java code.
+
+An example build.xml file could look like this:
+
+```xml
+<project name="YourProject">
+  <description>
+    example showing how to use YoSQL with Ant
+  </description>
+
+  <!-- define YoSQL task -->
+  <taskdef name="yosql"
+           classname="wtf.metio.yosql.tooling.ant.YoSQLGenerateTask"
+           classpath="/path/of/all/yosql/jar/files"/>
+
+  <!-- configure YoSQL -->
+  <yosql>
+    <files inputBaseDirectory="/path/to/your/sql/files"
+           outputBaseDirectory="/path/for/writing/java/code"/>
+    <repositories generateInterfaces="true"/>
+    <converter defaultConverter="com.example.YourConverter"/>
+  </yosql>
+</project>
+```
+
+
+---
+
+# Bazel
+
+Source: https://yosql.projects.metio.wtf/tooling/bazel/
+
+
+[bazel](https://bazel.build/) users can use the [yosql-tooling-cli](../cli/) in their builds by following these steps:
+
+1. Download the `yosql-tooling-cli` zip file from the [latest release](https://github.com/metio/yosql/releases/latest) (or any prior version).
+2. Use a [java_import](https://bazel.build/reference/be/java#java_import) rule to capture all `.jar` files used by `yosql-tooling-cli`
+
+```python
+java_import(
+    name = "yosql_tooling_cli",
+    jars = [
+        "lib/yosql-tooling-cli-x.y.z.jar",
+        "lib/yosql-codegen-x.y.z.jar",
+        "lib/yosql-models-immutables-x.y.z.jar",
+        ... every other jar file from the 'lib' folder
+    ],
+)
+```
+
+1. Use a [java_binary](https://bazel.build/reference/be/java#java_binary) rule to create a runnable binary for bazel
+
+```python
+java_binary(
+    name = "yosql",
+    deps = [
+        ":yosql_tooling_cli",
+    ],
+    main_class = "wtf.metio.yosql.tooling.cli.YoSQL",
+)
+```
+
+1. Write .sql files in a directory of your choice (e.g. `persistence`)
+
+```text
+project/
+├── WORKSPACE
+├── BUILD
+└── persistence/   
+    └── user/
+        ├── findUser.sql
+        └── addUser.sql
+    └── item/
+        ├── queryAllItems.sql
+        └── createItemTable.sql
+```
+
+1. Declare a [filegroup](https://bazel.build/reference/be/general#filegroup) that contains all of your SQL files:
+
+```text
+filegroup(
+  name = "your-sql-files",
+  srcs = glob(["persistence/**/*.sql"]),
+)
+```
+
+1. Generate Java code by calling the previously defined `java_binary`:
+
+```text
+genrule(
+  name = "your-repositories",
+  srcs = [":your-sql-files"],
+  outs = [
+    "com/example/persistence/UserRepository.java",
+    "com/example/persistence/ItemRepository.java",
+    ... all of your generated code
+  ],
+  cmd = """
+    $(location :yosql) generate
+  """,
+  tools = [":yosql"],
+)
+```
+
+1. Depend on the generated sources by using the target name of the generated code in the `srcs` of another rule.
+
+
+---
+
+# CLI
+
+Source: https://yosql.projects.metio.wtf/tooling/cli/
+
+
+The [command line](https://en.wikipedia.org/wiki/Command-line_interface) tool generates the same
+code as the build plugins, without being part of a build. Use it when your project builds with
+something `YoSQL` has no plugin for, or to generate code once and commit the result.
+
+## Getting it
+
+Each [release](https://github.com/metio/yosql/releases/latest) publishes two kinds of archive:
+
+- **`yosql-tooling-cli-<version>-linux.zip`** and **`-mac.zip`** — a single native binary. It starts
+  instantly and needs no Java installed at all.
+- **`yosql-tooling-cli-<version>-jvm.zip`** — scripts plus jars, for any platform with Java 25.
+
+Unpack it and put the `yosql` binary, or the `bin/yosql` script, on your `PATH`. Both archives are
+covered by the signed `SHA256SUMS` — see [verifying a download](../../installation/#verifying-a-download).
+
+## Starting from something
+
+In a project with no statements yet, `init` writes the three files that make a first run possible —
+a statement, the record it builds, and an arguments file tying the directories together:
+
+```shell
+yosql init
+yosql generate @yosql.args
+```
+
+That leaves a `TenantRepository` with a `findTenant` and an `insertTenant` to delete or rename.
+`--package` sets the package to write in, `--directory` the project to write into, and files that
+are already there are kept unless `--force` says otherwise.
+
+## Using it
+
+```shell
+yosql generate --files-input-base-directory=/path/to/your/sql/files
+```
+
+That reads every `.sql` file under the directory and writes Java beside it. Option names follow the
+[configuration](/configuration/) groups: a setting shown there as `files.outputBaseDirectory` is
+`--files-output-base-directory` here. `yosql generate --help` lists all of them.
+
+Options can also come from a file, which is easier to keep in version control than a long command:
+
+```shell
+yosql generate @yosql.args
+```
+
+where `yosql.args` holds one option per line:
+
+```text
+--files-input-base-directory=src/main/yosql
+--files-output-base-directory=src/main/java
+--repositories-base-package-name=com.example.persistence
+```
+
+
+---
+
+# Gradle
+
+Source: https://yosql.projects.metio.wtf/tooling/gradle/
+
+
+[Gradle](https://gradle.org/) projects can use the [yosql-tooling-gradle](https://plugins.gradle.org/plugin/wtf.metio.yosql) plugin to use `YoSQL` in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.
+
+1. Add the [plugin](https://plugins.gradle.org/plugin/wtf.metio.yosql) to your `build.gradle(.kts)` file as describe in the Gradle plugin portal.
+2. Add .sql files in `src/main/yosql` and write SQL statements into them. Take a look at the various options to [structure](/sql/structure/) your [SQL files](/sql/sql-files/).
+
+    ```text
+    <project_root>/
+    ├── build.gradle.kts
+    ├── settings.gradle.kts
+    └── src/
+        └── main/
+            └── yosql/
+                └── domainObject/
+                    ├── queryData.sql
+                    └── changeYourData.sql
+                └── aggregateRoot/
+                    ├── findRoot.sql
+                    └── addData.sql
+    ```
+
+3. Execute the `yosql` task (or just run `gradle build`) to generate the Java code.
+
+**Note**: The YoSQL Gradle plugin will automatically add the generated sources to the main source set as defined by the Gradle Java plugin. If your project is not using the Java plugin, you have to configure the [outputBaseDirectory](/configuration/files/outputbasedirectory/) to be part of a source sets of your project yourself.
+
+## Configuration
+
+You can configure how YoSQL operates and how the generated code looks like by using the `yosql` task extension. Take a look at the [available configuration options](/configuration/) in order to see what can be configured.
+
+
+---
+
+# Maven
+
+Source: https://yosql.projects.metio.wtf/tooling/maven/
+
+
+[Maven](https://maven.apache.org/) projects can use the `yosql-tooling-maven` plugin to use `YoSQL` in their builds. The following steps show how a basic setup looks like. In case you are looking for more details, check out the configuration section further down below.
+
+1. Add the [plugin](https://search.maven.org/artifact/wtf.metio.yosql.tooling/yosql-tooling-maven) to your `pom.xml`:
+   {{< maven/tooling/index >}}
+2. Add .sql files in `src/main/yosql` and write SQL statements into them. Take a look at the various options to [structure](/sql/structure/) your [SQL files](/sql/sql-files/).
+
+    ```text
+    <project_root>/
+    ├── pom.xml
+    └── src/
+        └── main/
+            └── yosql/
+                └── domainObject/
+                    ├── queryData.sql
+                    └── changeYourData.sql
+                └── aggregateRoot/
+                    ├── findRoot.sql
+                    └── addData.sql
+    ```
+
+3. Execute the `yosql:generate` goal (or just run `mvn generate-sources`) to generate the Java code.
+
+## Build Helper Plugin
+
+As an optional and final step to complete the setup of `YoSQL`, you can add the [build-helper-maven-plugin](https://www.mojohaus.org/build-helper-maven-plugin/) to your build in order to mark the [outputBaseDirectory](/configuration/files/outputbasedirectory/) as a source directory in your IDE like this:
+
+```xml
+<build>
+    <plugins>
+        ...
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>add-source</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                        <sources>
+                            <source>${project.build.directory}/generated-sources/yosql</source>
+                        </sources>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        ...
+    </plugins>
+</build>
+```
+
+## Configuration
+
+You can configure how YoSQL operates and how the generated code looks like by using the [default Maven configuration
+mechanism](https://maven.apache.org/guides/mini/guide-configuring-plugins.html). Take a look at the [available configuration options](/configuration/) in order to see what can be configured.
+
+{{< maven/tooling/full >}}
+
+The `generate` goal binds itself automatically to the `generate-sources` phase. In case you want to run it in another phase, change the above example accordingly.
+
+### Multiple Configurations
+
+In some cases it might be preferable to generate some repositories with a specific set of configuration options while using another set for other repositories. There are several ways how this can be accomplished:
+
+1. Place SQL files in different Maven modules.
+2. Use a single module with multiple `execution` configurations.
+3. Override configuration for individual SQL statements.
+
+#### Multiple `execution`s
+
+Make sure that multiple executions do not make use of the same .sql files. Otherwise, the executions will overwrite
+the generated code of each other. The last execution will win. Share configuration across all executions by using a single top level `configuration` block.
+
+{{< maven/tooling/multi >}}
+
+
+---
+
+# Frameworks
+
+Source: https://yosql.projects.metio.wtf/frameworks/
+
+
+A generated repository is a plain class with a `DataSource` constructor parameter. That is all any
+framework needs, and it is why there is no `YoSQL` integration module for any of them — there would
+be nothing in it.
+
+What these pages cover is the wiring: how a repository becomes a bean, how it joins the transaction
+your framework opened, and — for Quarkus — how a persistence layer that resolves nothing by name
+makes a native image uneventful.
+
+- [Spring Boot](./spring-boot/)
+- [Quarkus](./quarkus/)
+
+For the mechanics underneath all of them, see [transactions](../sql/transactions/).
+
+
+---
+
+# Quarkus
+
+Source: https://yosql.projects.metio.wtf/frameworks/quarkus/
+
+
+Quarkus is where `YoSQL` has the most to offer, and the reason is native images: a persistence layer
+that resolves nothing by name needs no reflection registration, so there is no class to hint, no
+build that succeeds and then fails on the first query, and nothing to re-check when your schema
+changes.
+
+## The build
+
+Add the plugin next to the Quarkus one:
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>wtf.metio.yosql.tooling</groupId>
+      <artifactId>yosql-tooling-maven</artifactId>
+      <version>2026.8.8</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>generate</goal>
+          </goals>
+        </execution>
+      </executions>
+      <configuration>
+        <repositories>
+          <basePackageName>com.example.persistence</basePackageName>
+        </repositories>
+        <annotations>
+          <repositoryAnnotations>jakarta.enterprise.context.ApplicationScoped</repositoryAnnotations>
+        </annotations>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+
+Generated repositories become CDI beans, and the agroal `DataSource` Quarkus configures is injected
+into each one. A repository has exactly one constructor, which Quarkus's ArC treats as the injection
+point without being told. Under a strict CDI container that wants to be told, add it:
+
+```xml
+<annotations>
+  <repositoryAnnotations>jakarta.enterprise.context.ApplicationScoped</repositoryAnnotations>
+  <constructorAnnotations>jakarta.inject.Inject</constructorAnnotations>
+</annotations>
+```
+
+You need `quarkus-jdbc-postgresql` (or your driver's extension) and `quarkus-agroal`. You do **not**
+need `quarkus-hibernate-orm` — that is rather the point.
+
+## Using it
+
+```java
+@ApplicationScoped
+public class TenantService {
+
+    private final TenantRepository tenants;
+
+    public TenantService(final TenantRepository tenants) {
+        this.tenants = tenants;
+    }
+
+    @Transactional
+    public void rename(final UUID id, final String slug) {
+        tenants.updateTenantSlug(slug, id);
+    }
+
+}
+```
+
+An injected `DataSource` under a JTA transaction already hands out the transaction's connection, so
+`@Transactional` works with no proxy and no configuration. Where you want a unit of work outside the
+ambient transaction, use the [connection overloads](../../sql/transactions/).
+
+## Native images
+
+```shell
+./mvnw package -Dnative
+```
+
+That is the whole procedure. Nothing to add to `reflect-config.json`, no
+`@RegisterForReflection` on your records, no `native-image.properties` entry. The generated converter
+reads each column with a `resultSet.getX(...)` call the compiler resolved and calls a constructor
+the compiler resolved, so the closed-world analysis sees all of it.
+
+Compare that with an ORM, where entities, their proxies and their collections are all reached
+reflectively and every one has to be registered — usually by an extension that knows how, which is
+why the extension has to exist.
+
+Startup follows: there is no mapping metadata to read at boot, no entity manager to build, and no
+schema to validate, because there is nothing that could disagree with the database that the build
+did not already check.
+
+## Dev Services
+
+Quarkus Dev Services starts a database container for you in dev and test mode, which suits `YoSQL`
+because a generated repository takes a `DataSource` and asks nothing about where it came from. Set
+no JDBC URL and you get a container; set one and you get that.
+
+Code generation itself never connects to a database — it reads `.sql` files and your record
+sources — so a build with no database available still builds.
+
+## Testing
+
+```java
+@QuarkusTest
+class TenantRepositoryTest {
+
+    @Inject
+    TenantRepository tenants;
+
+    @Test
+    void findsTheTenantItInserted() {
+        final var id = UUID.randomUUID();
+
+        tenants.insertTenant(id, "acme", Instant.now());
+
+        assertThat(tenants.findTenant(id)).map(Tenant::slug).hasValue("acme");
+    }
+}
+```
+
+`@QuarkusTest` with Dev Services gives a real database, which is what a test of a query wants. To
+run the same tests against the native binary, `@QuarkusIntegrationTest` — worth doing once, to see
+that the persistence layer genuinely needs nothing.
+
+## Reactive
+
+There is none. `YoSQL` generates blocking JDBC, so a repository belongs on a worker thread — under
+Quarkus that means a `@Blocking` endpoint, or letting a non-reactive resource method run on the
+worker pool as it does by default. If your application is built on Mutiny end to end, the reactive
+SQL clients are the better fit.
+
+
+---
+
+# Spring Boot
+
+Source: https://yosql.projects.metio.wtf/frameworks/spring-boot/
+
+
+Five minutes, and no `YoSQL` dependency on your runtime classpath at the end of it.
+
+## The build
+
+Add the plugin. Spring Boot's own configuration is untouched:
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>wtf.metio.yosql.tooling</groupId>
+      <artifactId>yosql-tooling-maven</artifactId>
+      <version>2026.8.8</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>generate</goal>
+          </goals>
+        </execution>
+      </executions>
+      <configuration>
+        <repositories>
+          <basePackageName>com.example.persistence</basePackageName>
+        </repositories>
+        <annotations>
+          <repositoryAnnotations>org.springframework.stereotype.Repository</repositoryAnnotations>
+        </annotations>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+
+`repositoryAnnotations` puts `@Repository` on every generated class, so component scanning finds them
+and constructor injection gives each one the application's `DataSource`. No `@Bean` methods, no
+configuration class.
+
+## The statement and the record
+
+```sql
+-- src/main/yosql/tenant/findTenant.sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug, created_at
+from tenant
+where id = :id
+```
+
+```java
+package com.example.domain;
+
+public record Tenant(UUID id, String slug, Instant createdAt) {
+}
+```
+
+Build, and `com.example.persistence.TenantRepository` exists with an
+`Optional<Tenant> findTenant(UUID)`.
+
+## Using it
+
+```java
+@Service
+public class TenantService {
+
+    private final TenantRepository tenants;
+
+    public TenantService(final TenantRepository tenants) {
+        this.tenants = tenants;
+    }
+
+    public Optional<Tenant> find(final UUID id) {
+        return tenants.findTenant(id);
+    }
+
+}
+```
+
+## Transactions
+
+For `@Transactional` to reach the generated repositories, they need a `DataSource` that hands out
+the transaction's connection. That is what `TransactionAwareDataSourceProxy` is:
+
+```java
+@Configuration
+public class PersistenceConfiguration {
+
+    @Bean
+    @Primary
+    public DataSource transactionAwareDataSource(
+            @Qualifier("dataSource") final DataSource dataSource) {
+        return new TransactionAwareDataSourceProxy(dataSource);
+    }
+
+}
+```
+
+With that in place, a `@Transactional` method that calls two repositories runs both statements on
+one connection, in one transaction, and rolls both back together — while neither repository knows
+anything about Spring.
+
+Give the `DataSourceTransactionManager` the **underlying** `DataSource`, not the proxy. Spring
+Boot's autoconfiguration builds the manager from the unwrapped bean, so the `@Qualifier` above
+matters.
+
+Where you want a unit of work that is deliberately *not* the ambient transaction, use the
+[connection overloads](../../sql/transactions/) and pass a connection you opened yourself.
+
+## Testing
+
+A generated repository has one dependency, so a test needs a database and nothing else.
+`@JdbcTest` with Testcontainers is the whole setup:
+
+```java
+@JdbcTest
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class TenantRepositoryTest {
+
+    @Container
+    @ServiceConnection
+    static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:18");
+
+    @Autowired
+    DataSource dataSource;
+
+    @Test
+    void findsTheTenantItInserted() {
+        final var tenants = new TenantRepository(dataSource);
+        final var id = UUID.randomUUID();
+
+        tenants.insertTenant(id, "acme", Instant.now());
+
+        assertThat(tenants.findTenant(id)).map(Tenant::slug).hasValue("acme");
+    }
+}
+```
+
+Constructing the repository directly is deliberate — it is a class with a constructor, and a test
+that builds one is testing your SQL rather than your wiring.
+
+## Substituting a repository
+
+Generated classes are `final`, so mocking them is not on offer. Turn on
+[generateInterfaces](../../configuration/repositories/generateinterfaces/), depend on the interface,
+and substitute whatever you like:
+
+```xml
+<repositories>
+  <generateInterfaces>true</generateInterfaces>
+</repositories>
+```
+
+The interface is the repository without the `Repository` that made it one, so `TenantRepository`
+implements `Tenant`.
+
+Consider whether you want to. A repository whose whole content is SQL is a poor thing to mock — a
+test that fakes it asserts that your code calls a method, not that your query is right.
+
+## Native images
+
+Spring Boot's AOT processing and GraalVM need reflection hints for anything resolved by name.
+Generated repositories resolve nothing by name, so they need none — no `@RegisterReflectionForBinding`
+for your row types, no runtime hints class. That is not a claim about Spring; it is a property of the
+generated code, and every `YoSQL` release compiles a generated repository into a native image and
+runs it against a real database to check it.
+
+
+---
+
+# Editors
+
+Source: https://yosql.projects.metio.wtf/editors/
+
+
+Statements are `.sql` files with YAML front matter in a comment. Editors highlight the SQL on their
+own; these pages cover getting them to help with the front matter too, and getting a coding agent to
+write statements that generate what you meant.
+
+- [Front matter schema](./schema/) — completion and validation for the front matter keys in IntelliJ
+  IDEA and Visual Studio Code.
+- [Claude skill](./claude/) — teaches [Claude Code](https://claude.com/claude-code) how statements,
+  records and converters fit together.
+
+
+---
+
+# Claude skill
+
+Source: https://yosql.projects.metio.wtf/editors/claude/
+
+
+[Claude Code](https://claude.com/claude-code) writing a statement for you needs to know things that
+are not visible in the file it is editing: that a result row type is read from *source* rather than
+from the classpath, that a name matching no configured prefix generates nothing at all, that a
+parameter with no type fails the build rather than becoming an `Object`. A skill tells it.
+
+## Installing it
+
+Copy the skill into your own project:
+
+```shell
+mkdir -p .claude/skills/yosql
+curl -o .claude/skills/yosql/SKILL.md https://yosql.projects.metio.wtf/claude/SKILL.md
+```
+
+Commit it, and every contributor gets the same behaviour. Claude loads it when it notices `.sql`
+files under a `YoSQL` source directory, a `yosql-tooling-*` plugin in the build, or a `yosql.args`
+file — you do not have to mention it.
+
+Put it in `~/.claude/skills/yosql/SKILL.md` instead to have it available in every project on your
+machine.
+
+## What it knows
+
+- Where statements and records have to live, and how the directory a `.sql` file sits in decides the
+  repository it generates into.
+- The front matter keys that matter, and which ones are usually inferred rather than written.
+- That a statement's kind comes from its name prefix, and that a name matching none of them silently
+  produces no code — the mistake most likely to waste an afternoon.
+- How parameter types are found: from the front matter, from the component of the same name on the
+  result row type, or from the column the parameter is named after. Including the short names, so it
+  writes `uuid` rather than `java.util.UUID`.
+- When to let the schema write the result record instead of writing one, and when a record has to be
+  written by hand because it carries more than columns.
+- That a collection parameter becomes an `in (...)` list, and which names a parameter cannot have.
+- That a licence header belongs in a block comment, because `--` lines at the top of a file are
+  front matter.
+- How a record maps to a result row, when to alias a column in the query instead of reaching for
+  [resultRowColumns](../../configuration/sql/resultrowcolumns/), and what makes a build fail.
+- Running several statements in one transaction.
+- What not to do — chiefly, editing generated code.
+
+## Keeping it honest
+
+The file served above is the one
+[in the repository](https://github.com/metio/yosql/blob/main/.claude/skills/yosql/SKILL.md), copied
+in when the site is built, so the two cannot disagree. It changes with the generator, so re-fetch it
+when you upgrade. It describes behaviour, not
+version numbers; if you find it saying something that is no longer true,
+[open an issue](https://github.com/metio/yosql/issues/new) — a skill that lies is worse than no
+skill.
+
+## Other agents
+
+The file is ordinary Markdown with a small front matter header. Tools that read `AGENTS.md`, Cursor
+rules or a similar convention can use the same content — drop the body into whatever file your tool
+reads.
+
+
+---
+
+# Front matter schema
+
+Source: https://yosql.projects.metio.wtf/editors/schema/
+
+
+The front matter of a statement is YAML written inside SQL comments, which means your editor
+highlights the SQL and leaves the part with all the keys in it entirely unassisted. A JSON schema
+fixes that: completion for every key, the description on hover, and a warning on a key that does not
+exist.
+
+The schema is published at
+<https://yosql.projects.metio.wtf/schema/frontmatter.json> and generated from the same description of
+the settings that generates the [configuration reference](../../configuration/), so the two cannot
+drift.
+
+## What it checks
+
+Every key a statement accepts, its description, and the type of the ones that take a scalar —
+`returning` is one of four words, `executeBatch` is a boolean, `repository` is a string. Keys that
+accept more than one shape, such as `parameters` and `resultRowConverter`, are listed without a type
+rather than described half-correctly, so completion offers them and then stays out of your way.
+
+A key that is not in the schema is flagged. That is deliberate: an unknown key in the front matter
+is a typo, and finding it while typing beats finding it in a build log.
+
+## IntelliJ IDEA
+
+**Settings → Languages & Frameworks → Schemas and DTDs → JSON Schema Mappings**, add a mapping:
+
+- **Schema file or URL**: `https://yosql.projects.metio.wtf/schema/frontmatter.json`
+- **Schema version**: JSON Schema version 7 or later
+- **File path pattern**: `src/main/yosql/**/*.sql`
+
+IDEA applies JSON schemas to YAML, but not to YAML embedded in SQL comments. Where you want the
+checking while writing a new statement, draft the front matter in a scratch `.yaml` file mapped to
+the schema and paste it in with the `--` prefixes. It is a workaround; it is also the difference
+between finding a typo now and finding it in a build.
+
+## Visual Studio Code
+
+With the [YAML extension](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml),
+add to `.vscode/settings.json`:
+
+```json
+{
+  "yaml.schemas": {
+    "https://yosql.projects.metio.wtf/schema/frontmatter.json": [
+      "**/yosql/**/*.yaml"
+    ]
+  }
+}
+```
+
+The same caveat applies — the mapping is for YAML files, not for YAML inside SQL comments.
+
+## Using it in a check of your own
+
+The schema is an ordinary JSON Schema document, so anything that speaks the format can use it. A
+pre-commit hook that strips the `--` prefixes and validates the result catches a mistyped key before
+the build does:
+
+```shell
+curl -sO https://yosql.projects.metio.wtf/schema/frontmatter.json
+```
+
+Pin the copy rather than fetching it every run — the schema grows as settings are added, and a check
+that changes under you is worse than no check.
+
+
+---
+
+# Configuration
+
+Source: https://yosql.projects.metio.wtf/configuration/
+
+
+Most projects configure almost nothing. `YoSQL` works the rest out from your SQL, your schema and
+the records you already have, and every setting below defaults to what the majority of projects
+would have picked anyway.
+
+So start with an empty configuration, write a statement, and come back here when something is not
+where `YoSQL` looked for it.
+
+## What a project usually sets
+
+Four, and a project on the conventional Maven or Gradle layout sets one:
+
+| Setting | What it answers |
+| --- | --- |
+| [basePackageName](repositories/basepackagename/) | Which package the generated repositories live in. |
+| [inputBaseDirectory](files/inputbasedirectory/) | Where the `.sql` files are, if not `src/main/yosql`. |
+| [sourceDirectory](files/sourcedirectory/) | Where the records a statement names are, if not `src/main/java`. |
+| [validation](schema/validation/) | Whether a statement disagreeing with your schema warns or stops the build. |
+
+## What a statement says
+
+Configuration belonging to one query rather than to the project goes in that statement's
+[front matter](../sql/sql-files/), and most statements need three lines of it:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug, created_at from tenant where id = :id
+```
+
+[name](sql/name/), [returning](sql/returningmode/) and [resultRowType](sql/resultrowtype/) carry
+almost every statement. [parameters](sql/parameters/) is needed only where neither the schema nor the
+result row type says what a parameter holds, [vendor](sql/vendor/) only where a statement is written
+once per database, and [repository](sql/repository/) only where a statement belongs somewhere other
+than its directory suggests.
+
+## Everything else
+
+The remaining groups are worth reading when you need them, and not before:
+
+- [repositories](repositories/) — which methods a repository gets, what they are called, and which
+  name prefixes mean reading, writing or calling.
+- [converter](converter/) — the fallback for a statement that names no result row type.
+- [annotations](annotations/) — what the generated classes say about themselves.
+- [files](files/) — file suffix, charset, statement separator, output directory.
+- [logging](logging/) — which logging API the generated code writes to, if any.
+- [schema](schema/) — where the `create table` statements are, when they are not next to the queries.
+- [resources](resources/) — how many threads generation may use.
+
+
+---
+
+# Benchmarks
+
+Source: https://yosql.projects.metio.wtf/benchmarks/
+
+
+Two things are measured: how long `YoSQL` takes to generate code, and how much the code it generates
+adds on top of JDBC.
+
+- [Code generation](./codegen/) — reading, parsing and generating 10, 25 and 50 repositories, in each
+  logging configuration.
+- [Database access](./db-access/) — running statements through a generated repository, in each
+  logging configuration, and the same statements through [JDBI](https://jdbi.org/) for comparison.
+
+## Reading the numbers
+
+The published results were measured on a **free GitHub Actions runner**, which is shared hardware
+with no guarantee of what else is on it. Within a single run they are consistent enough to compare
+configurations against each other; between runs, and against your own machine, they are not.
+
+Some of them carry a confidence interval wider than the score. Where that is so, the honest reading
+is "these two configurations are indistinguishable here", not "this one is faster".
+
+**Run them yourself before deciding anything.** Your hardware and your statements are the only ones
+that matter for your project, and both benchmarks take one command.
+
+```console
+git clone https://github.com/metio/yosql
+mvn verify --activate-profiles benchmarks
+```
+
+The `benchmarks` profile is off by default — a full JMH run takes far longer than the rest of the
+build put together, so it is not part of the normal gate. Each module writes its results to
+`target/benchmark/*.json`, which [jmh.morethan.io](https://jmh.morethan.io/) renders against the
+published baseline.
+
+Benchmarks use [jmh](https://github.com/openjdk/jmh) via the
+[jmh-maven-plugin](https://github.com/jhunters/jmh-maven-plugin). Improvements and new scenarios are
+welcome.
+
+
+---
+
+# Code Generation
+
+Source: https://yosql.projects.metio.wtf/benchmarks/codegen/
+
+
+How long `YoSQL` takes to read `.sql` files, parse them, and write the Java — which is time added to
+every build of every project that uses it.
+
+## What is measured
+
+Three sizes — **10, 25 and 50 repositories** — in each of five logging configurations:
+
+| Configuration | What it generates |
+| --- | --- |
+| no logging | The baseline. No logging statements at all. |
+| `java.util.logging` | Logging through the JDK's own API. |
+| `log4j` | Logging through log4j. |
+| `slf4j` | Logging through slf4j. |
+| `tinylog` | Logging through tinylog. |
+
+Every repository holds the same eight statements: a stored-procedure call and several of them, a
+write and several, a read and several, an update and several.
+
+## The published results
+
+[The results](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-codegen-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-codegen-CURRENT.json)
+are what a shared GitHub Actions runner measured, and should be read as an order of magnitude rather
+than a measurement — see [reading the numbers](../).
+
+What they show, and what holds across machines:
+
+- **Generating logging statements costs more than not generating them.** Expected, since there is
+  more code to write.
+- **Which logging implementation makes no observable difference.** They all cost about the same.
+- **The whole thing is measured in milliseconds**, even for 50 repositories. If your build is slow,
+  this is not why.
+
+If code generation genuinely is on your critical path, the way out is not a setting: generate the
+repositories in one module and depend on it from the others, so the work happens once.
+
+## Running it
+
+```console
+mvn --projects yosql-benchmarks/yosql-benchmarks-codegen --also-make \
+  --activate-profiles benchmarks verify
+```
+
+The run writes `target/benchmark/yosql-benchmarks-codegen.json`. It takes tens of minutes and wants
+a machine with nothing else on it — a laptop compiling something else in another window will produce
+numbers that mean nothing.
+
+
+---
+
+# Database Access
+
+Source: https://yosql.projects.metio.wtf/benchmarks/db-access/
+
+
+How long a generated repository takes to run a statement, measured across every logging
+configuration `YoSQL` can generate.
+
+What is being measured is the overhead `YoSQL` adds on top of JDBC — not how fast your database is.
+The numbers are dominated by the database in any real application, which is rather the point: there
+is nothing between your query and the driver except the code you can read in
+`target/generated-sources`.
+
+## The scenarios
+
+Each configuration runs the same set, so the numbers are comparable across them:
+
+Eleven of them, declared as the `Read`, `Write` and `Call` interfaces in
+`yosql-benchmarks-dao`, so that an implementation either covers all of them or does not compile.
+
+### Reading
+
+- `readSingleEntityByPrimaryKey`: Read a single entity using its primary key.
+- `readOneToManyRelation`: Reads the many part of a one-to-many relation.
+- `readManyToOneRelation`: Reads the one part of a many-to-one relation.
+- `readMultipleEntities`: Read multiple entities in one go.
+- `readMultipleEntitiesBasedOnCondition`: Read multiple entities and filter them inside the database.
+
+### Writing
+
+- `writeSingleEntity`: Writes a new entity into the database.
+- `writeMultipleEntities`: Writes several entities as one batch.
+- `updateSingleEntity`: Update every column of one entity.
+- `updateOneToManyRelation`: Update the one-to-many relationship part of an entity.
+- `deleteSingleEntityByPrimaryKey`: Delete a single entity using its primary key.
+
+### Calling stored procedures
+
+- `callStoredProcedure`: Call a single stored procedure.
+
+## The published results
+
+[The results](https://jmh.morethan.io/?sources=https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-dao-baseline.json,https://yosql.projects.metio.wtf/benchmarks/results/yosql-benchmarks-dao-CURRENT.json)
+are in **microseconds**, against an in-process H2, with every logging implementation configured for
+maximum output so the cost of each can be read against the no-op baseline.
+
+Read them with their provenance in mind. They were measured on a shared GitHub Actions runner, one
+fork, three warmup and five measurement iterations — enough to see the shape, not enough to separate
+two implementations that are close. Several have a confidence interval wider than the score itself.
+
+**If you are making a decision, run them on your own hardware with your own statements.** That is
+not a disclaimer; it is the only way a number like this means anything for your project.
+
+```console
+mvn --projects yosql-benchmarks/yosql-benchmarks-dao --also-make \
+  --activate-profiles benchmarks verify
+```
+
+The run writes `target/benchmark/yosql-benchmarks-dao.json`, which
+[jmh.morethan.io](https://jmh.morethan.io/) will render against the published baseline.
+
+## Against JDBI
+
+`yosql-benchmarks-vs-jdbi` runs the eleven scenarios twice — once through generated repositories,
+once through [JDBI](https://jdbi.org/) — in **one** JMH run.
+
+That matters more than it sounds. Numbers from two runs on two machines are not comparable at all;
+numbers from one run share the JVM, the warmup, the schema and the hardware, so what is left is the
+difference between the two libraries. Both take a connection per call and give it back, both read
+rows into `Map<String, Object>`, and both send the database the same SQL — the statements come from
+this module's `.sql` files, so neither side can be measured running a query the other did not.
+
+Each implementation gets its own in-memory database, because the write scenarios insert and delete
+and a shared one would make each side's numbers depend on how often the other had already run.
+
+Both implementations are in the repository. If you suspect one was written to lose, read it — that
+is the answer a chart cannot give you.
+
+### What it measures
+
+µs per operation, lower is better. JDK 25, H2 in process, one fork, three warmup and five
+measurement iterations, on an otherwise idle 16-core machine.
+
+| Scenario | `YoSQL` | JDBI | Difference |
+| --- | --- | --- | --- |
+| `callStoredProcedure` | 7.07 ± 0.44 | 17.63 ± 5.81 | +10.56 |
+| `readManyToOneRelation` | 7.85 ± 0.68 | 18.62 ± 2.52 | +10.77 |
+| `readMultipleEntitiesBasedOnCondition` | 7.87 ± 0.67 | 18.17 ± 3.98 | +10.30 |
+| `deleteSingleEntityByPrimaryKey` | 7.87 ± 1.28 | 17.85 ± 7.13 | +9.98 |
+| `readOneToManyRelation` | 8.00 ± 0.74 | 17.40 ± 1.10 | +9.40 |
+| `readSingleEntityByPrimaryKey` | 8.03 ± 1.19 | 17.62 ± 2.32 | +9.59 |
+| `updateOneToManyRelation` | 8.06 ± 1.14 | 18.57 ± 4.09 | +10.51 |
+| `readMultipleEntities` | 8.07 ± 0.79 | 16.39 ± 1.50 | +8.32 |
+| `writeSingleEntity` | 12.15 ± 1.36 | 21.54 ± 4.81 | +9.39 |
+| `updateSingleEntity` | 13.60 ± 2.05 | 22.11 ± 5.96 | +8.52 |
+| `writeMultipleEntities` | 56.47 ± 12.96 | 60.72 ± 6.61 | +4.25 |
+
+### What it means, and what it does not
+
+The ratios run from 1.08× to 2.49×, and quoting any of them would be misleading. Read the last
+column instead: the difference is about **9.6 µs on every scenario**, whatever that scenario does.
+A fixed cost per call, not a proportional one — JDBI builds a `Handle`, with its configuration and
+its mapper registry, every time you ask for one. Generated code has no such step because it has
+nothing to configure.
+
+`writeMultipleEntities` is the one that proves it. It does roughly 50 µs of real database work, and
+there the two are **indistinguishable**: +4.25 µs with error bars that overlap. Once actual work
+dominates, the constant disappears into it.
+
+So the honest claim is narrow: **JDBI's per-call machinery costs around 10 µs, and `YoSQL` has no
+per-call machinery.** Whether that matters to you is arithmetic. Against an in-process H2, where a
+query costs 8 µs, it doubles your time. Against a database on the other side of a socket, where a
+query costs hundreds of microseconds or milliseconds, 10 µs is a rounding error you will never
+measure — which is the same reason this page opens by saying it measures what the layer costs and
+not what your application will do.
+
+Two caveats worth keeping in view. JDBI's error bars are wide — ±5.81 µs on one scenario — so no
+single row settles anything; it is the same result appearing in all eleven that carries it. And this
+is one fork on one machine.
+
+```console
+mvn --projects yosql-benchmarks/yosql-benchmarks-vs-jdbi \
+  --activate-profiles benchmarks verify
+```
+
+Leave `--also-make` off once the dependencies are installed. With it, the DAO benchmarks run too —
+including the variant that logs every statement — which takes far longer and writes a very large
+log.
+
+## Against an ORM
+
+There is none, and there is unlikely to be one.
+
+Read the same entity twice and Hibernate answers the second from its identity map, so it wins by a
+distance; turn that off and you are measuring a Hibernate nobody deploys. Whichever you pick, the
+number argues about the configuration rather than about the tools, and the honest version of that
+argument is prose. The [comparison of alternatives](../../community/alternatives/) says where an ORM
+is the better choice without pretending to a measurement.
+
+The JDBI result above also suggests what such a comparison would find between two SQL-first
+libraries: a fixed per-call cost, invisible the moment a real database is involved. That is worth
+knowing once. It is not worth knowing four times.
+
+
+---
+
+# SQL
+
+Source: https://yosql.projects.metio.wtf/sql/
+
+
+Statements live in `.sql` files, and a comment block above each one says what to generate for it:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug, created_at
+from tenant
+where id = :id
+```
+
+`name` becomes the method, every `:id` becomes one of its arguments and the placeholder the driver
+binds, and `returning` decides whether you get one row, many, or a stream. Nothing says what `:id`
+is, because `Tenant` has an `id` component and the `tenant` table has an `id` column — either
+answers. Name a type only where neither can.
+
+## What you get back
+
+A statement returns one of three things, depending on what you tell it:
+
+| You write | You get |
+| --- | --- |
+| nothing | a `Map<String, Object>` per row |
+| `resultRowType: com.example.domain.Tenant` | a `Tenant`, from a mapper written for you |
+| `resultRowConverter: com.example.ToTenant` | whatever your own converter returns |
+
+`returning` then wraps that in `Optional`, `List` or `Stream` — or drops it for a write, which
+answers with the number of rows it changed.
+
+## Where to go next
+
+[SQL files](./sql-files/) — how a file is laid out, how several statements share one, and every key
+the front matter accepts.
+
+[Structure](./structure/) — how files and directories decide which repository a statement lands in,
+and how to override that.
+
+[Converters](./converters/) — how a row becomes something other than a `Map`. Naming a record is
+usually all it takes; there is a hand-written escape hatch for mappings a record cannot express, and
+the same types work for parameters on the way in.
+
+[Schema validation](./schema/) — holding your statements to the `create table` statements your
+project already keeps, so a column that does not exist fails the build rather than the request. It
+also settles what a parameter's type is, which is most of the front matter a write statement used to
+need.
+
+[Transactions](./transactions/) — running several statements on one connection, with plain JDBC or
+under a framework that opens the transaction for you.
+
+[Cookbook](./cookbook/) — whole statements for the queries that need more than a name and a return
+mode: `IN` lists, optional filters, pagination, streaming, nested records, enums, JSON columns,
+batches, and one statement per database.
+
+
+---
+
+# Schema validation
+
+Source: https://yosql.projects.metio.wtf/sql/schema/
+
+
+`YoSQL` reads the `create table` statements your project already keeps, and checks the rest of your
+SQL against them. A column that does not exist, a parameter whose type disagrees with its column, a
+record component that cannot hold what its column can — each of those becomes a build failure naming
+the file and the statement, instead of an exception on whichever request reached the query first.
+
+It also answers a question you used to have to answer yourself: what type a parameter is.
+
+## Turning it up
+
+`WARN` is the default: disagreements are reported and nothing stops. **No build that passed before
+fails because of this.**
+
+Move it to `ERROR` once you have dealt with what it reports, so nothing new gets in:
+
+```xml
+<schema>
+  <validation>ERROR</validation>
+</schema>
+```
+
+`ERROR` from a standing start is the wrong order. The first run finds everything at once, and a
+build that fails on all of it is a build nobody can bisect.
+
+To hear nothing at all, `OFF`.
+
+## Where the schema comes from
+
+Your own DDL. **Nothing connects to a database** — that is why generation still works in a checkout
+with no services running, and why this costs nothing in a build that has no database available.
+
+By default the `create table` statements among your own statements are used, so a project that keeps
+its schema next to its queries configures nothing:
+
+```text
+src/main/yosql/
+├── schema/createSchema.sql   ← read as the schema
+└── tenant/findTenant.sql     ← checked against it
+```
+
+Keep your schema elsewhere — Flyway, Liquibase — and point at it:
+
+```xml
+<schema>
+  <validation>ERROR</validation>
+  <sqlStatementsDirectory>src/main/resources/db/migration</sqlStatementsDirectory>
+</schema>
+```
+
+Files are read in name order and `alter table` applies to whatever came before, so `V1__create.sql`
+followed by `V2__add_column.sql` describes the schema those two migrations leave behind.
+
+## What it checks
+
+**A column no table declares.** The typo that returns an error from the database on the first
+request:
+
+```sql
+select id, slgu from tenant
+```
+
+```text
+Statement 'findTenant' in tenant/findTenant.sql does not match the schema:
+  no column 'slgu' in 'tenant'.
+```
+
+**A parameter that disagrees with its column.** `id` is a `uuid`, so declaring it a `Long` is wrong
+now rather than at run time.
+
+**A record component that cannot hold its column.** The one worth having: a **nullable column read
+into a primitive** compiles and then throws on the first row that has a null in it.
+
+```sql
+-- resultRowType: com.example.domain.Tenant
+select id, nickname from tenant
+```
+
+```text
+component 'nickname' is int but column 'nickname' is nullable.
+```
+
+**`select *` is checked too.** With a catalog the star expands to the columns the table declares, in
+declaration order, so a record built from one is checked like any other.
+
+## What it says nothing about
+
+This is the important half. Anything it cannot read with certainty is **unknown**, and an unknown
+skips a check rather than failing it:
+
+- SQL the parser does not cover — a stored function whose body is another language, a dialect
+  extension
+- a **subquery**, a **common table expression**, or a **union**, any of which can produce a column
+  the catalog never saw
+- a table the catalog does not have
+- a SQL type nobody mapped, which stays unknown rather than becoming `Object`
+
+That is deliberate, and it is what makes this safe to turn on in a project that was not written with
+it in mind.
+
+Where it is wrong about one statement, that statement opts out:
+
+```sql
+-- name: findTenant
+-- validateSchema: false
+select whatever from wherever
+```
+
+## Parameter types come free
+
+The part that removes work. A parameter takes the type of the column it is named after, so a write
+statement needs no `parameters` block at all:
+
+```sql
+-- name: insertTenant
+-- returning: none
+insert into tenant (id, slug, created_at)
+values (:id, :slug, :createdAt)
+```
+
+`UUID`, `String` and `Instant` come from the DDL. A **nullable** column gives the boxed type, because
+the parameter can be null; a `not null` column gives the primitive.
+
+What you write always wins. Naming a type in the front matter is how you use a type of your own —
+a `TenantId` wrapping a `UUID` — and how you settle anything this gets wrong.
+
+### What "named after" means
+
+The parameter's own name, matched against the columns of the tables the statement reads. Nothing
+about the comparison it appears in is used, so this infers every parameter:
+
+```sql
+insert into tenant_invitation (id, tenant_id, email, invited_at)
+values (:id, :tenantId, :email, :invitedAt)
+```
+
+and this infers none of its one:
+
+```sql
+select currency from tenant where id = :tenantId
+```
+
+The column is `id`, the parameter is `tenantId`, and the statement is otherwise as simple as it
+gets. Rename the parameter after its column, or declare the type — a parameter named for what it
+means rather than for its column is worth keeping and declaring. `staleBefore` in
+`last_seen_at < :staleBefore` says more than `lastSeenAt` would, and it needs a type.
+
+Two boundaries follow from "the tables the statement reads":
+
+- A table reached only inside a subquery is not one of them, so `:tenantId` in
+  `order_id in (select id from placed_order where tenant_id = :tenantId)` has nothing to match. The
+  statement's own parameters are unaffected.
+- A statement selecting from a derived table or a common table expression has no scope that can be
+  listed at all, and none of its parameters are inferred.
+
+The build says which of these it is when it cannot type a parameter, including the columns it
+matched against.
+
+A block only has to name what inference cannot reach. Declaring one parameter of six leaves the
+other five inferred, and the method's parameters stay in the order the statement binds them either
+way — so a statement with one awkward name keeps one line of front matter rather than six:
+
+```sql
+-- name: findOrderSuspensionsOfTenant
+-- returning: multiple
+-- parameters:
+--   tenantId: uuid
+select * from order_suspension
+where suspended_at > :suspendedAt
+  and order_id in (select id from placed_order where tenant_id = :tenantId)
+```
+
+## Records come free too
+
+A result row type is usually a record whose components repeat, one by one, what the `select` list
+already says. Set `generateResultRowType` and `YoSQL` writes it:
+
+```sql
+-- name: findTenantSummary
+-- returning: multiple
+-- resultRowType: com.example.domain.TenantSummary
+-- generateResultRowType: true
+select id, slug, created_at from tenant where account_id = :accountId
+```
+
+which produces
+
+```java
+public record TenantSummary(UUID id, String slug, Instant createdAt) {
+}
+```
+
+next to its converter, in the package the type name gives. Aliases decide the component names, so
+`select amount_cents as minor_units` gives a `minorUnits`; a nullable column gives the boxed type.
+
+It is per statement, and off unless you ask. A `resultRowType` naming a record that is not there is
+far more often a typo than a request, and quietly writing a new record for a misspelled name would
+replace a build error with a mystery.
+
+The record has to be describable in full. A computed expression, a subquery or a column no `create
+table` mentions leaves `YoSQL` with nothing to write, and it says so rather than guessing:
+
+```text
+Statement 'findTenantSummary' asks YoSQL to write 'com.example.domain.TenantSummary', but the
+schema does not say what every column it selects holds: 'tenant.settings' is declared 'jsonb',
+which is not a type YoSQL maps without a vendor. Set 'schema.vendor', or a 'vendor' on the
+statement, so that the types only one database has are looked up.
+```
+
+The message names the column and the one thing that answers it, which is worth reading rather than
+skimming — the four situations that end here are fixed in four different files. A missing table asks
+for more DDL, a computed expression asks for a record written by hand, and the case above is neither.
+
+## Types only one database has
+
+Standard spellings resolve without being told which database wrote the DDL. A vendor's own —
+PostgreSQL's `bytea`, `timestamptz`, `bigserial`, `json`, `jsonb` and `citext`, MySQL's `datetime`
+and `longtext` — resolve only once something declares the vendor. Until then those columns are
+described but untyped: parameters naming them need their type written out, and
+`generateResultRowType` will not write the record.
+
+A run says which columns that leaves untyped, so the question does not have to be guessed at:
+
+```text
+The schema holds 1 column(s) whose type YoSQL does not map: document.payload (jsonb). No vendor
+is declared, and the types only one database has are looked up only for a declared one — so
+'schema.vendor' may be all that is missing.
+```
+
+The table count above it is the same either way — it is the columns that change — so it is the
+wrong figure to read a vendor's effect off. An untyped column that no statement selects and no
+parameter is named after costs nothing, which is why this is said rather than warned about.
+
+Mark the DDL itself, once per file, and every statement reading it follows:
+
+```sql
+-- vendor: PostgreSQL
+
+create table document (
+    id      uuid  not null primary key,
+    payload jsonb not null
+)
+```
+
+Where the schema is a Flyway or Liquibase directory the files are checksummed, and adding a comment
+to a migration already applied makes the tool refuse to run. Say it in the build instead:
+
+```xml
+<schema>
+  <sqlStatementsDirectory>src/main/resources/db/migration</sqlStatementsDirectory>
+  <vendor>PostgreSQL</vendor>
+</schema>
+```
+
+A file naming its own vendor still keeps it.
+
+### JSON columns
+
+`json` and `jsonb` are a `String` holding the JSON as text. Postgres has no JDBC type of its own for
+them — the driver refuses `getObject(column, String.class)` and answers `getString` — so that is the
+accessor generated code uses, and a `String` is both the record component and the parameter type.
+
+Reading is otherwise unremarkable. Writing needs a cast in the query, because a `String` parameter
+binds as `varchar` and Postgres will not assign or compare that to a JSON column:
+
+```sql
+-- name: insertDocument
+-- returning: none
+insert into document (id, payload)
+values (:id, cast(:payload as jsonb))
+```
+
+`:payload::jsonb` does the same. Without one the build passes and the statement fails at run time
+with `column "payload" is of type jsonb but expression is of type character varying`. Nothing
+generated can add the cast, because the type a parameter has to arrive as is a property of the query.
+
+Two things differ from what the `String` suggests. A `jsonb` column is stored parsed, so it reads
+back with its keys ordered and its whitespace normalised rather than as the text that was written;
+`json` keeps the bytes verbatim. And through the [map converter](../converters/#map-converter) a JSON
+column is a `PGobject` rather than a `String`.
+
+## More than one database
+
+`YoSQL` [picks a statement by vendor at run time](../sql-files/), and the schema follows the same
+rule. Mark DDL with a `vendor` and it builds that database's schema; DDL with no vendor applies to
+all of them, so only the tables that actually differ are written twice.
+
+```sql
+-- vendor: PostgreSQL
+create table tenant (id bigserial primary key, slug varchar(64) not null)
+;
+
+-- vendor: MySQL
+create table tenant (id bigint auto_increment primary key, slug varchar(64) not null)
+```
+
+Most dialect differences never surface, because validation compares **Java** types rather than SQL
+ones: `bigserial`, `bigint auto_increment` and `int8` are all a `long`.
+
+Where two databases genuinely disagree — a `uuid` on one and a `varchar(36)` on the other — a
+statement naming no vendor cannot be generated, because it is the fallback for both and one method
+cannot have two signatures. That is reported rather than resolved by picking one:
+
+```text
+Statement 'findTenant' runs against databases that disagree about what a column holds:
+  'id' reads as java.util.UUID and java.lang.String.
+```
+
+Name the type in the front matter to settle it, or write a statement per vendor.
+
+
+---
+
+# Cookbook
+
+Source: https://yosql.projects.metio.wtf/sql/cookbook/
+
+
+Queries that need more than a name and a return mode. Each one is a whole statement you can paste
+and adapt.
+
+## A list of values in an IN clause
+
+Declare the parameter as a collection and the query is built around it — one placeholder per value
+the caller passed:
+
+```sql
+-- name: findTenantsByIds
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   - name: ids
+--     type: java.util.List<java.util.UUID>
+select id, slug, created_at
+from tenant
+where id in (:ids)
+```
+
+```java
+final var found = tenants.findTenantsByIds(List.of(first, second, third));
+```
+
+`List`, `Set`, `Collection` and `Iterable` all work. An empty one matches no row, which is what `in`
+on an empty set means — but an empty collection in a `not in` throws, because that should match
+every row and no list of placeholders can say so. See
+[lists of values](../sql-files/#lists-of-values) for the rest of the rules.
+
+On a database with array types there is a second option, and on a busy statement it is the better
+one: comparing against an array keeps the SQL the same length whatever the caller passes, so the
+database can reuse one plan rather than preparing a new statement per size.
+
+```sql
+-- name: findTenantsByIdArray
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   ids: array
+select id, slug, created_at
+from tenant
+where id = any(:ids)
+```
+
+`java.sql.Array` values are made by the connection, which is exactly what the
+[connection overload](../transactions/) hands you:
+
+```java
+try (final var connection = dataSource.getConnection()) {
+    final var ids = connection.createArrayOf("uuid", tenantIds.toArray());
+    return tenants.findTenantsByIdArray(connection, ids);
+}
+```
+
+## Optional filters
+
+A statement is fixed at build time, so a filter that is sometimes applied has to be expressed in
+SQL rather than by building a different query:
+
+```sql
+-- name: findTenants
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   accountId: uuid
+--   slug: string
+select id, slug, created_at
+from tenant
+where account_id = :accountId
+  and (:slug is null or slug = :slug)
+order by slug
+```
+
+Passing `null` for `slug` drops the condition. Watch the query plan: some optimisers handle this
+well and some do not, and where it matters, two statements beat one clever one.
+
+## Pagination
+
+Keyset pagination is one statement, and it is the one to prefer — `offset` makes the database count
+rows it then discards:
+
+```sql
+-- name: findTenantsAfter
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   accountId: uuid
+--   afterSlug: string
+--   pageSize: int
+select id, slug, created_at
+from tenant
+where account_id = :accountId
+  and slug > :afterSlug
+order by slug
+fetch first :pageSize rows only
+```
+
+For the first page, pass an empty string — or write a second statement without the `slug >`
+condition, which keeps both plans simple.
+
+Not every database takes a placeholder in the row-count clause. Where yours does not, write the
+limit into the statement and have a statement per page size, or use its own syntax — one statement
+per `vendor`, as below.
+
+## Streaming a large result
+
+`returning: cursor` gives a lazy `Stream` rather than a `List`, so rows are read as you consume
+them and the whole result never has to fit in memory:
+
+```sql
+-- name: findAllLedgerEntries
+-- returning: cursor
+-- resultRowType: com.example.domain.LedgerEntry
+select id, amount_cents as minor_units, currency, created_at as at
+from ledger_entry
+order by id
+```
+
+```java
+try (final var entries = ledger.findAllLedgerEntries()) {
+    entries.filter(entry -> entry.amount().minorUnits() > 0)
+           .forEach(this::report);
+}
+```
+
+**Close the stream.** It holds the `ResultSet`, the statement and — for the `DataSource` form — the
+connection, and none of them are returned until it is closed. Most drivers also need a
+non-default fetch size and auto-commit off before they stream rather than buffer; that is a
+connection setting, so use the [connection overload](../transactions/) and set it yourself.
+
+## Rows from a write
+
+A write that returns rows is a read as far as the front matter is concerned — give it a
+`returning` mode and a result row type:
+
+```sql
+-- name: insertTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   accountId: uuid
+--   slug: string
+insert into tenant (id, account_id, slug, created_at)
+values (gen_random_uuid(), :accountId, :slug, now())
+returning id, account_id, slug, created_at
+```
+
+That is how to get a generated key back: let the database return the row and map it like any other.
+
+## Nested records
+
+A component whose type is itself a record is built from the same flat row — nesting groups values in
+Java and the query knows nothing about it:
+
+```sql
+-- name: findLedgerEntries
+-- returning: multiple
+-- resultRowType: com.example.domain.LedgerEntry
+-- parameters:
+--   tenantId: uuid
+select id,
+       amount_cents as minor_units,
+       currency,
+       created_at as at
+from ledger_entry
+where tenant_id = :tenantId
+order by id
+```
+
+```java
+public record Money(long minorUnits, Currency currency) {
+}
+
+public record LedgerEntry(long id, Money amount, Instant at) {
+}
+```
+
+`Money` claims `minor_units` and `currency` from the row it shares with `LedgerEntry`. A nested
+component claims the column matching **its own** name, not a prefixed one, which is why the query
+aliases `amount_cents` to `minor_units` rather than to `amount_minor_units`.
+
+This maps one row to one object. It does not turn several rows into one object with a collection in
+it — a query joining a tenant to its orders returns one row per order, and folding those into one
+`Tenant` with a `List<Order>` is work for the caller.
+
+## Enums
+
+An enum is read from a column by the `valueOf` its own declaration gives it, so nothing is needed
+beyond naming it:
+
+```java
+public enum OrderState {
+    PLACED, ACTIVE, CANCELLED
+}
+
+public record PlacedOrder(UUID id, OrderState state, BigDecimal monthlyPrice) {
+}
+```
+
+```sql
+-- name: findOrder
+-- returning: single
+-- resultRowType: com.example.domain.PlacedOrder
+-- parameters:
+--   id: uuid
+select id, state, monthly_price
+from placed_order
+where id = :id
+```
+
+The column is read as a `String` and passed to `OrderState.valueOf`. Going the other way, bind the
+name: `-- parameters:` `state: string`, and pass `order.state().name()`.
+
+## A type of your own around one column
+
+Any type with a `static valueOf` taking a value the generator knows is built from a single column,
+and its matching accessor is what gets bound on the way in. So a wrapper travels in both
+directions:
+
+```java
+public record TenantId(UUID value) {
+
+    public static TenantId valueOf(final UUID value) {
+        return new TenantId(value);
+    }
+
+}
+```
+
+```sql
+-- name: findTenantBySlug
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   tenantId: com.example.domain.TenantId
+select id, slug
+from tenant
+where id = :tenantId
+```
+
+That is also what settles what a one-component record means: with a `valueOf` it is a value wrapped
+around a column, without one it is a record whose component reads a column of its own.
+
+## JSON columns
+
+Drivers hand JSON back as text, so read it as a `String` and parse it where you would parse
+anything else. Wrapping it in a value type keeps the parsing in one place:
+
+```sql
+-- name: findDocument
+-- returning: single
+-- resultRowType: com.example.domain.Document
+-- parameters:
+--   id: uuid
+select id, payload::text as payload
+from document
+where id = :id
+```
+
+The `::text` cast matters on PostgreSQL: without it the driver hands back a `PGobject`, which is a
+driver type the generated code will not read. Bind on the way in with an explicit
+`sqlType`, so the driver knows what it is being given:
+
+```sql
+-- parameters:
+--   - name: payload
+--     type: java.lang.String
+--     sqlType: 1111
+```
+
+## Batch inserts
+
+Batch methods are generated alongside the single-row ones and take arrays:
+
+```sql
+-- name: insertLedgerEntry
+-- returning: none
+-- parameters:
+--   id: long
+--   tenantId: uuid
+--   amountCents: long
+insert into ledger_entry (id, tenant_id, amount_cents)
+values (:id, :tenantId, :amountCents)
+```
+
+```java
+ledger.insertLedgerEntryBatch(
+        new long[]{1L, 2L, 3L},
+        new UUID[]{tenantId, tenantId, tenantId},
+        new long[]{500L, -200L, 1_000L});
+```
+
+The return is the `int[]` the driver gives back, one entry per row. Turn batch methods off for a
+statement with `executeBatch: false` where they make no sense.
+
+## One statement per database
+
+Statements sharing a name but naming different vendors are one method, picking the statement at
+runtime from the connection's database product name:
+
+```sql
+-- name: findTenants
+-- vendor: PostgreSQL
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+select id, slug from tenant order by slug fetch first 100 rows only
+;
+
+-- name: findTenants
+-- vendor: MySQL
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+select id, slug from tenant order by slug limit 100
+;
+
+-- name: findTenants
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+select id, slug from tenant order by slug
+```
+
+The statement without a vendor is the fallback for every database not named.
+
+
+---
+
+# Transactions
+
+Source: https://yosql.projects.metio.wtf/sql/transactions/
+
+
+`YoSQL` generates no transaction management, opens no transaction of its own, and has no opinion
+about where yours come from. What it generates is the one thing a transaction needs: every statement
+is reachable on a connection you supply.
+
+## Two shapes for every statement
+
+Each statement generates two methods with the same name:
+
+```java
+Optional<Tenant> findTenant(UUID id);
+Optional<Tenant> findTenant(Connection connection, UUID id);
+```
+
+The first takes a connection from the repository's `DataSource` and closes it. The second runs on
+the connection it is given and leaves it open, so several statements can share one — which is all a
+transaction is.
+
+Which one a call site uses is its own business, and that is why both exist. Turning them into a
+choice made per statement is what
+[generateConnectionOverloads](../../configuration/repositories/generateconnectionoverloads/) is
+for, and there is rarely a reason to.
+
+## Plain JDBC
+
+Open a connection, turn off auto-commit, and pass it to every statement in the unit of work:
+
+```java
+public void placeOrder(final UUID tenantId, final PlacedOrder order) {
+    try (final var connection = dataSource.getConnection()) {
+        connection.setAutoCommit(false);
+        try {
+            orders.insertOrder(connection, order.id(), tenantId, order.state(), order.monthlyPrice());
+            ledger.insertLedgerEntry(connection, nextId(), tenantId, order.monthlyPrice());
+            connection.commit();
+        } catch (final RuntimeException | SQLException failure) {
+            connection.rollback();
+            throw failure;
+        }
+    }
+}
+```
+
+Both repositories run on the same connection, so both statements are in the same transaction, and
+neither closes it — the `try`-with-resources does, once.
+
+Nothing about that is specific to `YoSQL`. It is the JDBC you would have written, which is the
+point.
+
+## Spring
+
+Under Spring you do not thread a `Connection` at all. Wrap the `DataSource` in a
+`TransactionAwareDataSourceProxy` and hand *that* to the repositories: `getConnection()` then returns
+the connection bound to the current transaction, and the `DataSource`-based methods join whatever
+`@Transactional` opened.
+
+```java
+@Configuration
+public class PersistenceConfiguration {
+
+    @Bean
+    public DataSource transactionAwareDataSource(final DataSource dataSource) {
+        return new TransactionAwareDataSourceProxy(dataSource);
+    }
+
+    @Bean
+    public TenantRepository tenantRepository(final DataSource transactionAwareDataSource) {
+        return new TenantRepository(transactionAwareDataSource);
+    }
+
+}
+```
+
+```java
+@Service
+public class OrderService {
+
+    private final OrderRepository orders;
+    private final LedgerRepository ledger;
+
+    // constructor omitted
+
+    @Transactional
+    public void placeOrder(final UUID tenantId, final PlacedOrder order) {
+        orders.insertOrder(order.id(), tenantId, order.state(), order.monthlyPrice());
+        ledger.insertLedgerEntry(nextId(), tenantId, order.monthlyPrice());
+    }
+
+}
+```
+
+Both statements run on the transaction's connection, rollback works, and the repositories know
+nothing about any of it. Use the `Connection` overloads under Spring only where you want a unit of
+work that is explicitly *not* the ambient one.
+
+Give the `PlatformTransactionManager` the **underlying** `DataSource`, not the proxy — the proxy is
+for the code that consumes connections, not for the manager that binds them.
+
+## Quarkus and Jakarta EE
+
+An injected `DataSource` under a JTA transaction is already transaction-aware: `getConnection()`
+returns the connection enlisted in the current transaction. Inject it, construct the repository with
+it, and annotate the service method with `@Transactional`. As with Spring, the `Connection`
+overloads are for the cases you want to keep out of the ambient transaction.
+
+## Things worth knowing
+
+**A `cursor` result outlives the method that returned it.** A statement with `returning: cursor`
+gives you a lazy `Stream`, and the connection stays open until the stream is closed. The
+`DataSource` form closes it for you when the stream closes; the `Connection` form does not close a
+connection it did not open, so close the stream inside the transaction that owns it.
+
+**Batch methods take a connection too.** `insertTenantBatch(Connection, UUID[], String[])` exists
+alongside `insertTenantBatch(UUID[], String[])`, so a batch belongs in a transaction like anything
+else.
+
+**Isolation, savepoints and read-only flags are yours.** They are properties of the connection, so
+set them on the connection before passing it in. `YoSQL` does not touch them.
+
+
+---
+
+# Converters
+
+Source: https://yosql.projects.metio.wtf/sql/converters/
+
+
+The JDBC API has no object mapping. Something has to turn a `java.sql.ResultSet` row into a value
+of your domain, and in `YoSQL` that something is a **converter**: a plain Java class with a method
+taking a `ResultSet` and returning your type.
+
+Most of the time you never write one. Name a record and it is written for you:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id, slug, created_at from tenant where id = :id
+```
+
+That is the whole configuration. Components read the column matching their name in `snake_case`,
+so `createdAt` reads `created_at`, and a mismatch between the query and the record fails the build
+rather than surprising you at run time.
+
+The rest of this page is what to reach for when that is not enough:
+
+| You need | See |
+| --- | --- |
+| a column named something else | [which column a component reads](#which-column-a-component-reads) |
+| a type of your own around one column | [types that build themselves](#types-that-build-themselves) |
+| several columns as one value | [value objects spanning several columns](#value-objects-spanning-several-columns) |
+| one value rather than a row | [results that are one value](#results-that-are-one-value) |
+| a mapping a record cannot express | [writing one by hand](#writing-one-by-hand) |
+| your own types as parameters | [parameters, on the way in](#parameters-on-the-way-in) |
+
+## From a record
+
+Point a statement at a record and `YoSQL` reads that record's canonical constructor and emits the
+converter:
+
+```sql
+-- name: findTenant
+-- returning: single
+-- resultRowType: com.example.domain.Tenant
+select id,
+       account_id,
+       slug,
+       currency,
+       created_at
+from tenant
+where id = :id
+```
+
+```java
+package com.example.domain;
+
+public record Tenant(UUID id, UUID accountId, String slug, Currency currency, Instant createdAt) {
+}
+```
+
+What comes out is one `resultSet.getX(...)` call per component and then the constructor — the same
+code you would have written:
+
+```java
+public final class ToTenantConverter {
+  public Tenant asUserType(final ResultSet resultSet) throws SQLException {
+    final UUID id = resultSet.getObject("id", UUID.class);
+    final UUID accountId = resultSet.getObject("account_id", UUID.class);
+    final String slug = resultSet.getString("slug");
+    final String currencyCode = resultSet.getString("currency");
+    final Currency currency = currencyCode == null ? null : Currency.getInstance(currencyCode);
+    final Timestamp createdAtTimestamp = resultSet.getTimestamp("created_at");
+    final Instant createdAt = createdAtTimestamp == null ? null : createdAtTimestamp.toInstant();
+    return new Tenant(id, accountId, slug, currency, createdAt);
+  }
+}
+```
+
+Nothing is looked up by name at runtime, so the result survives a GraalVM native image without a
+reflection hint — which is the reason to reach for generated JDBC over an ORM in the first place.
+
+The record is read from its **source**, under [sourceDirectory](../../configuration/files/sourcedirectory/),
+because code generation runs before compilation and the record usually lives in the module being
+generated for. Nothing is loaded or executed while reading it.
+
+### Which column a component reads
+
+A component's own name, read as `snake_case`: `tenantId` reads `tenant_id`, `createdAt` reads
+`created_at`. Where the column is named something else, alias it in the query:
+
+```sql
+select amount_cents as minor_units,
+       currency
+from ledger_entry
+```
+
+That keeps the one place the two naming schemes meet next to the column being renamed, rather than
+in configuration you would have to go and find.
+
+When the query is not yours to change — a view you do not own, or SQL generated elsewhere — name
+the column in the front matter instead. Keys are component paths from the root of the result row
+type:
+
+```sql
+-- name: findLedgerEntries
+-- returning: multiple
+-- resultRowType: com.example.domain.LedgerEntry
+-- resultRowColumns:
+--   amount.minorUnits: amount_cents
+--   at: created_at
+```
+
+A column override belongs to the type rather than to one query, so every statement naming the same
+result row type shares one set: overrides declared on any of them apply to all of them, and two
+statements mapping the same component to different columns fail the build.
+
+### Value objects spanning several columns
+
+A component whose type is itself a record is built from the same flat row. Nesting groups values on
+the Java side and the query knows nothing about it, so a nested component claims the column matching
+its own name — no prefix:
+
+```java
+public record Money(long minorUnits, Currency currency) {
+}
+
+public record LedgerEntry(long id, Money amount, Reason reason, String reference, Instant at) {
+}
+```
+
+```sql
+-- name: findLedgerEntries
+-- returning: multiple
+-- resultRowType: com.example.domain.LedgerEntry
+select id,
+       amount_cents as minor_units,
+       currency,
+       reason,
+       reference,
+       created_at as at
+from ledger_entry
+where tenant_id = :tenantId
+```
+
+`LedgerEntry` arrives with its `Money` assembled from `minor_units` and `currency`.
+
+### Null, and what it must not become
+
+`getLong` answers `0` for SQL NULL and `getInt` answers `0`, which is how a nullable column quietly
+becomes a wrong number. So:
+
+- a **primitive** component reads the value and then checks `wasNull()`, failing with the column's
+  name — a `long` cannot represent NULL and will not pretend to;
+- a **boxed or object** component arrives as `null`. A `cancelled_at` that was never set is `null`,
+  not the epoch.
+
+Make a component nullable by giving it a reference type: `Instant activatedAt` rather than a
+primitive.
+
+### Enums
+
+An enum component is read as text and passed to `valueOf`. A value the enum does not know raises
+`IllegalArgumentException` naming the type and the value. Failing is the point: a persistence layer
+handed a state it cannot represent should stop rather than invent a default.
+
+### What fails the build
+
+A mismatch between the query and the record is visible before anything is compiled, so it stops the
+build and names the file, the statement and the component:
+
+- a component no selected column supplies;
+- a selected column no component claims;
+- two records that would need converters of the same name;
+- a record that contains itself;
+- a component whose type nothing can read from a result set — the error names the `valueOf`
+  factory that would fix it;
+- a type declaring more than one `valueOf` the generator could use.
+
+Where the select list cannot be enumerated — `select *`, or an expression without an alias — the
+first two checks are skipped rather than guessed at. Aliasing your expressions gets them back.
+
+### Types that build themselves
+
+A type nothing above can read still works, if it says how. Give it a `static` factory called
+`valueOf` taking one value the generator does know, and a component of that type is read from a
+single column and handed to it:
+
+```java
+public record TenantId(UUID value) {
+    public static TenantId valueOf(final UUID value) {
+        return new TenantId(value);
+    }
+}
+```
+
+```java
+final UUID tenantIdValue = resultSet.getObject("tenant_id", UUID.class);
+final TenantId tenantId = tenantIdValue == null ? null : TenantId.valueOf(tenantIdValue);
+```
+
+This is the same convention enums already follow — `OrderState.valueOf(String)` — extended to your
+own types, and it is the extension point for anything the built-in list cannot cover: an identifier
+wrapped around a `UUID`, a normalising short name, a column holding JSON that your factory parses.
+The mapping lives on the type it belongs to, written in Java, and the emitted call is still a
+direct one, so nothing about it needs a native-image hint.
+
+Every rule above still holds, because the column is read exactly as a bare value of the parameter's
+type would be: a primitive parameter refuses NULL, an object parameter accepts it, and the factory
+is only called for a value that is actually there.
+
+The factory also settles what a one-component record means. With one, `TenantId` is a value wrapped
+around a column and reads the column its *component in the outer record* names. Without one, it is
+an ordinary nested record and its component reads a column called `value`. The type says which by
+declaring the factory or not.
+
+Two `valueOf` overloads that both take a readable type is a build error rather than a coin flip —
+leave a single one taking the type the column holds.
+
+### Types a component can have
+
+`String`, `UUID`, `Instant`, `LocalDate`, `LocalDateTime`, `LocalTime`, `OffsetDateTime`,
+`BigDecimal`, `Currency`, `byte[]`, the primitives and their wrappers, any enum, any record built
+from those, and any type with a `valueOf` factory taking one of them.
+
+### Writes that answer with a row
+
+`insert … returning id` is a write that produces a result set, and Postgres will only hand it back
+through `executeQuery`. Say so with `type`, because the method name decides otherwise — anything
+starting with `insert`, `update`, `delete` and the rest of
+[allowedWritePrefixes](../../configuration/repositories/allowedwriteprefixes/) is taken for a write,
+and a write runs `executeUpdate` and throws the row away:
+
+```sql
+-- name: insertSignIn
+-- type: reading
+-- returning: single
+-- resultRowType: com.example.domain.SignInId
+-- parameters:
+--   - name: accountId
+--     type: java.util.UUID
+insert into sign_in (account_id, created_at)
+values (:accountId, now())
+returning id
+```
+
+```java
+public record SignInId(UUID id) {
+}
+```
+
+The record's component is named after the column the statement returns, so a single returned value
+needs a one-component record rather than a bare `UUID` — a result row type is always a row.
+
+## Results that are one value
+
+A statement answering with a single value names that value's type, and needs no record around it:
+
+```sql
+-- name: countTenants
+-- type: reading
+-- returning: single
+-- resultRowType: java.lang.Long
+select count(*)
+from tenant
+```
+
+```java
+Optional<Long> countTenants()
+```
+
+The value is read from the **first column** by position, not by name, because a value has no name to
+go by — `count(*)` names nothing, and requiring an alias for it would be a rule about SQL style
+rather than about mapping. When the select list can be enumerated and holds more than one column,
+that is a build error: one value cannot hold two columns.
+
+Anything a column can hold works — `String`, `UUID`, `Instant`, `BigDecimal`, the wrappers — as does
+an enum, and so does a type that builds itself:
+
+```sql
+-- name: findTenantIdentity
+-- returning: single
+-- resultRowType: com.example.domain.TenantId
+select id from tenant where slug = :slug
+```
+
+A `valueOf` factory means one column here exactly as it does for a component, so `TenantId` reads the
+column rather than becoming a row of one. A one-component record *without* a factory is still a row,
+and reads the column its component names — which is what `insert … returning id` uses.
+
+A primitive is refused: a statement that may return no row answers `Optional`, and `Optional<long>`
+is not a type. Name the wrapper.
+
+A row holding SQL NULL answers `Optional.empty()` rather than throwing.
+
+## Parameters, on the way in
+
+The same types travel back. A parameter declared as a value type is unwrapped through the accessor
+its `valueOf` takes, so a repository accepts what it hands back:
+
+```sql
+-- name: insertTenant
+-- parameters:
+--   - name: tenantId
+--     type: com.example.domain.TenantId
+--   - name: registeredAt
+--     type: java.time.Instant
+insert into tenant (id, registered_at)
+values (:tenantId, :registeredAt)
+```
+
+```java
+final UUID tenantIdParameter = tenantId == null ? null : tenantId.value();
+final Timestamp registeredAtParameter = registeredAt == null ? null : Timestamp.from(registeredAt);
+```
+
+`Instant` is there for a reason of its own: PostgreSQL refuses `setObject` with one — *"Can't infer
+the SQL type to use for an instance of java.time.Instant"* — so a statement naming the type its
+domain actually uses would compile and fail at run time. `Instant`, `Currency` and enums are
+converted; everything a driver already takes is passed through untouched, so a statement whose
+parameters need nothing generates exactly what it always generated.
+
+The conversion happens once, in front of the loop that binds the parameter, so a name used twice in
+one statement is unwrapped once. Passing `null` writes SQL NULL rather than throwing.
+
+Two things this refuses, both at build time. A record that is not one value — `Money(long
+minorUnits, Currency currency)` — because a statement binds one value per parameter; declare a
+parameter per component. And a value type that is not a record, because reading one needs only the
+`valueOf` factory while writing one needs the accessor it came from, and a class does not say which
+of its methods that is.
+
+## Map converter
+
+Without a `resultRowType` or a converter of your own, generated code returns
+`Map<String, Object>`. That converter is the [defaultConverter](../../configuration/converter/defaultconverter/)
+unless you say otherwise, so freshly generated code returns maps to begin with. Turn it off with
+[generateMapConverter](../../configuration/converter/generatemapconverter/), move it with
+[mapConverterClass](../../configuration/converter/mapconverterclass/), rename its method with
+[mapConverterMethod](../../configuration/converter/mapconvertermethod/) and its alias with
+[mapConverterAlias](../../configuration/converter/mapconverteralias/). Methods using it look like:
+
+```java
+Optional<Map<String, Object>> someMethod()
+List<Map<String, Object>> someMethod()
+Stream<Map<String, Object>> someMethod()
+```
+
+The values are whatever the driver answers `getObject` with, which is not always what a record
+component of the same column would hold: the map converter has no type to read towards, so a type
+JDBC does not describe comes back as the driver's own. A PostgreSQL `json` or `jsonb` column is a
+`PGobject` here and a `String` in a record. Its `toString` is the same JSON either way, so the
+difference surfaces where something casts rather than where it prints.
+
+Generated record converters live in the same package as the map converter, so `mapConverterClass`
+decides where they all go. What they are called comes from
+[recordConverterPrefix](../../configuration/converter/recordconverterprefix/) and
+[recordConverterSuffix](../../configuration/converter/recordconvertersuffix/) — `To` and `Converter`
+by default, giving `ToTenantConverter` and a repository field named `tenantConverter`. The method
+each one declares is [recordConverterMethod](../../configuration/converter/recordconvertermethod/),
+`asUserType` by default. Set them to whatever the hand-written converters in your project already
+use, so a repository reads the same whichever kind it calls.
+
+## Default converter
+
+Every statement that does not say otherwise uses the default converter. Set
+[defaultConverter](../../configuration/converter/defaultconverter/) to change what that is for all
+of them at once. It points at the map converter above until you change it.
+
+## Writing one by hand
+
+Some mappings a record cannot express: a discriminator column choosing between subtypes, a column
+holding JSON you want parsed, a legacy shape you do not want in your domain. Write the converter
+yourself:
+
+```java
+package my.own;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import my.own.User;
+
+public class UserConverter {
+
+    public User apply(ResultSet resultSet) throws SQLException {
+        User pojo = new User();
+        pojo.setId(resultSet.getInt("id"));
+        pojo.setName(resultSet.getString("name"));
+        return pojo;
+    }
+
+}
+```
+
+Package, class name and method name are yours to choose. Name the class on a statement as its
+[resultRowConverter](../../configuration/sql/resultrowconverter/) — that is the whole configuration:
+
+```sql
+-- resultRowConverter: my.own.UserConverter
+select id, name
+from users
+```
+
+`YoSQL` reads the class to find the one public method taking a `ResultSet`. That method's name is
+what the repository calls, its return type is what the statement produces, and the field the
+converter is injected into is the class name with a lower-case first letter — `userConverter` here.
+Nothing about the method is repeated in configuration, so it cannot go stale when you rename it.
+
+Name the same class as [defaultConverter](../../configuration/converter/defaultconverter/) to use it
+for every statement that names none of its own.
+
+Like a record, the class is read from its **source** under
+[sourceDirectory](../../configuration/files/sourcedirectory/), and three things fail the build rather
+than the compile that follows: a class with no source there, a class declaring no public method
+taking a `ResultSet`, and a class declaring more than one — with nothing to choose between them,
+guessing would be worse than stopping.
+
+A statement naming both a `resultRowConverter` and a `resultRowType` keeps the converter: naming a
+converter names the exact code to call, and there is nothing left to infer.
+
+Either way, generated methods return the converter's result type:
+
+```java
+Optional<User> someMethod()
+List<User> someMethod()
+Stream<User> someMethod()
+```
+
+
+---
+
+# SQL Files
+
+Source: https://yosql.projects.metio.wtf/sql/sql-files/
+
+
+Writing `.sql` files is the essential work that needs to be done in order to use `YoSQL`. Each file can contain multiple SQL statements. Each statement has its own configuration and metadata attached to it.
+
+## Statement Type
+
+`YoSQL` supports the tree types of SQL statements and is able to generate code for them: `READING` for SQL statements that read data, `WRITING` for SQL statements that write data, and `CALLING` for SQL statements that call stored procedures.
+
+In order to correctly guess which type your statement is, `YoSQL` does not parse your SQL code, but uses the file name of your `.sql` files or the `name` front matter. It applies the following rules to determine the statement type from its name:
+
+- All names that start with the [configured read prefixes](/configuration/repositories/allowedreadprefixes/) are assigned the `READING` type.
+- All names that start with the [configured write prefixes](/configuration/repositories/allowedwriteprefixes/) are assigned the `WRITING` type.
+- All names that start with the [configured call prefixes](/configuration/repositories/allowedcallprefixes/) are assigned the `CALLING` type.
+
+SQL statements that cannot be mapped to one of the available types **are not considered** while generating code! You can always overwrite that guess with a specific [type](/configuration/sql/type/) value in your front matter. This can be useful if you want to use a special name for your statement, but don't want to adhere to the configured prefixes. On the other hand, enable [validateMethodNamePrefixes](/configuration/repositories/validatemethodnameprefixes/) to enforce that all statements are named accordingly to the configured prefixes.
+
+## Front Matter
+
+Each SQL statement can have an optional front matter section written in YAML that is placed inside an SQL comment. Configuration options that are specified in a front matter of an SQL statement overwrite the same option that was specified globally, e.g. in a `pom.xml`/`build.gradle` file.
+
+```sql
+-- name: someName
+-- description: Retrieves a single user
+-- repository: com.example.persistence.YourRepository
+-- vendor: H2
+-- parameters:
+--   - name: userId
+--     type: int
+-- type: reading
+-- returning: one
+-- catchAndRethrow: true
+SELECT  *
+FROM    users
+WHERE   id = :userId
+```
+
+While parsing your `.sql` files, `YoSQL` will strip the SQL comment prefix (`--`) and read the remaining text as a YAML object. The available configuration options that can be used in the front matter, are listed under [SQL statement configuration](/configuration/sql/).
+
+The generated method takes its parameters in the order the statement binds them, by first
+occurrence. That is a property of the SQL, so it does not change with what the front matter says: a
+`parameters:` block naming some of them, or naming all of them in another order, still produces the
+same signature. Reordering a statement's placeholders does change it.
+
+### Names a parameter cannot have
+
+A generated method declares a few variables of its own — the `Connection`, the `PreparedStatement`,
+the `ResultSet`, the query, the loop counters — and a parameter cannot be called after one of them,
+because both become identifiers in the same method. The full list is `LOG`, `query`, `rawQuery`,
+`executedQuery`, `databaseProductName`, `action`, `exception`, `dataSource`, `connection`,
+`statement`, `resultSetMetaData`, `databaseMetaData`, `resultSet`, `columnCount`, `columnLabel`,
+`batch`, `list`, `jdbcIndex`, `index` and `row`.
+
+`YoSQL` says so with the file, the statement and the parameter rather than letting Java complain
+about a variable already defined. Rename it in the SQL — the name reaches no further than the
+method's signature.
+
+## Lists of values
+
+A prepared statement has one placeholder per value, and how many values there are is only known when
+the method is called. Declare a parameter as a collection and `YoSQL` builds the placeholders for it:
+
+```sql
+-- name: findTenantsByIds
+-- returning: multiple
+-- resultRowType: com.example.domain.Tenant
+-- parameters:
+--   - name: ids
+--     type: java.util.List<java.util.UUID>
+--   - name: accountId
+--     type: java.util.UUID
+select id, slug from tenant
+where id in (:ids)
+  and account_id = :accountId
+```
+
+The method takes a `List<UUID>`, and the query it runs has as many placeholders between the brackets
+as the caller passed. Every other parameter still lands on the placeholder the statement wrote it on,
+however long the list is. `List`, `Set`, `Collection` and `Iterable` all work; an array does not,
+because an array parameter is how a [batch statement](/configuration/sql/executebatch/) passes
+one value per execution.
+
+An **empty** collection matches no row, which is what `in` on an empty set means. Negated it is not:
+`not in` on an empty set matches *every* row, and no list of placeholders can say that — so a
+statement that would hit it throws instead of quietly returning nothing.
+
+A statement written once per database cannot expand a collection. Each vendor's SQL may place its
+parameters differently, one method binds all of them, and it can only count placeholders in one
+order — so that combination stops the build rather than binding the wrong values on the second
+database.
+
+## File Extension
+
+By default, `YoSQL` only considers files that end in `.sql`, but this can be configured using the [sqlFilesSuffix](/configuration/files/sqlfilessuffix) option. Lots of editors have built-in syntax support for SQL and they auto-enable that once you open an `.sql` file, so we recommend to stick to the default and only change if it necessary.
+
+## File Charset
+
+By default, `YoSQL` uses the **UTF-8** charset. In order to change this, use the [sqlFilesCharset](/configuration/files/sqlfilescharset) option.
+
+## Statement Separator
+
+By default, `YoSQL` uses `;` to separate multiple SQL statements within a single file. In order to change this, use the [sqlStatementSeparator](/configuration/files/sqlstatementseparator) option.
+
+```sql
+-- name: firstStatement
+SELECT  *
+FROM    users
+WHERE   id = :userId
+;
+
+-- name: secondStatement
+SELECT  *
+FROM    customers
+WHERE   id = :customerId
+;
+```
+
+## License Headers
+
+A `.sql` file may open with a block comment, and `YoSQL` drops it:
+
+```sql
+/*
+ * SPDX-FileCopyrightText: The yosql Authors
+ * SPDX-License-Identifier: 0BSD
+ */
+
+-- name: findTenant
+select id from tenant where id = :id
+```
+
+However many lines it runs to, and there is nothing to configure. A block comment anywhere else in
+the file stays where it is, because that is where a vendor puts an optimizer hint —
+`select /*+ INDEX(tenant tenant_pkey) */ …` reaches the database intact.
+
+Write the header as a block comment rather than as `--` lines. A `--` line at the top of a file is
+front matter, and `-- SPDX-License-Identifier: 0BSD` is as good a YAML mapping as
+`-- name: findTenant` — so a licence written that way would quietly become configuration.
+
+
+---
+
+# Structure
+
+Source: https://yosql.projects.metio.wtf/sql/structure/
+
+
+In order to call your SQL statement, a Java class must be created that contains methods for each of your statements. `YoSQL` will try to detect which repository your SQL statements will end up in. Based on the [inputBaseDirectory](/configuration/files/inputbasedirectory/) configuration option, your project structure could look like this:
+
+```text
+<inputBaseDirectory>/
+└── user/
+    └── getAllUsers.sql
+```
+
+Based on the above example, `YoSQL` will determine that you want a method called `getAllUsers` in a repository called `UserRepository`. Use the [basePackageName](/configuration/repositories/basepackagename/) option to change the base package name for all generated repositories. Together they will form the fully qualified name `<basePackageName>.UserRepository`.
+
+```text
+<inputBaseDirectory>/
+└── internal/
+    └── user/
+        └── getAllUsers.sql
+```
+
+Nested package structures are supported as well - they are simply interpreted as subpackages, that are appended to the [basePackageName](/configuration/repositories/basepackagename/) option to form the fully qualified name `<basePackageName>.internal.UserRepository`.
+
+```text
+<inputBaseDirectory>/
+  └── user/
+    └── vips/
+        └── findSpecialUsers.sql
+    └── getAllUsers.sql
+```
+
+Nesting repositories within other repositories is supported as well - `YoSql` will create two repositories for the above example: `<basePackageName>.UserRepository` with a method called `getAllUsers` and `<basePackageName>.user.VipsRepository` with a method called `findSpecialUsers`.
+
+```text
+<inputBaseDirectory>/
+└── internal/
+    └── user/
+        └── getAllUsers.sql
+└── user/
+    └── findUser.sql
+```
+
+Mixing nested and non-nested repositories work as well. The above example will generate the two repositories `<basePackageName>.internal.UserRepository` and `<basePackageName>.UserRepository`.
+
+```text
+<inputBaseDirectory>/
+└── allQueries.sql
+```
+
+Smaller projects might just want to use a single `.sql` file that contains all of your queries. In case none of your SQL statements change their target repository in their [front matter](../sql-files/), all queries in the above structure will end up in a class called `<basePackageName>.Repository`.
+
+```text
+<inputBaseDirectory>/
+└── internal/
+    └── user/
+        └── vips/
+            └── findSpecialUsers.sql
+        └── getAllUsers.sql
+└── user/
+    └── findUser.sql
+└── lotsOfQueries.sql
+```
+
+Mixing all options is of course supported as well - we recommend using any structure that best fits to your project/team. One statement per file makes it easier to quickly find single statements, however grouping multiple statements together in one file might make sense for multiple reasons, e.g. a statement might have multiple variants based on the used database or any other set of statements that are usually changed together as a single unit.
+
