@@ -10,7 +10,7 @@
 .classpath
 .DS_Store
 .claude/settings.local.json
-.direnv/
+.breto.local.edn
 docs/public/
 docs/resources/
 docs/.hugo_build.lock
