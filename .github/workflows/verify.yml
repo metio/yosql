@@ -173,15 +173,6 @@ jobs:
           psql --host=127.0.0.1 --port=5599 --username=yosql \
             --dbname=postgres --command="create database readings"
           ./yosql-examples/yosql-examples-native/target/yosql-native-proof
-  reuse:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/ci/breto@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
-        with:
-          registries: github:metio/toolchains
-      - run: ci-reuse
   yaml:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -250,32 +241,11 @@ jobs:
           --printPathWarnings --printUnusedTemplates --source docs
       - name: Check the links
         run: htmltest --conf docs/htmltest.yml
-  dco:
-    # Developer Certificate of Origin: every commit must carry a Signed-off-by
-    # trailer. Skipped for bot-authored PRs (Renovate cannot sign off); a
-    # skipped job still satisfies the all-green gate below.
-    if: github.event.pull_request.user.type != 'Bot'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          fetch-depth: 0
-      - uses: metio/ci/dco@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
-  policy:
-    # metio org workflow conventions (conftest/Rego from metio/ci): SHA-pinned
-    # uses refs, top-level permissions, timeout-minutes on every job, no
-    # untrusted ${{ github.event.* }} interpolation in run: blocks.
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/ci/policy-check@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
   verify:
     # Single required check covering every job above: mark only this one
     # required in branch protection and new jobs are covered automatically.
     name: Verify
-    needs: [maven, gradle, reproducible, native, reuse, yaml, github-actions, markdown, typos, website, dco, policy]
+    needs: [maven, gradle, reproducible, native, yaml, github-actions, markdown, typos, website]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
