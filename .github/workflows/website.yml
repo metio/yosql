@@ -29,7 +29,9 @@ jobs:
           fetch-depth: 0 # the version banner reads the newest tag
           # The theme is a submodule; without it Hugo has no layouts at all.
           submodules: recursive
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -44,22 +46,22 @@ jobs:
         env:
           VERSION: ${{ steps.released.outputs.version }}
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --define newVersion="$VERSION"
           --define generateBackupPoms=false
           versions:set
       - name: Generate the configuration reference
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects docs --also-make --define skipTests install
       - name: Build the site
         env:
           YOSQL_RELEASE: ${{ steps.released.outputs.version }}
         run: >
-          nix develop --command hugo --minify --printI18nWarnings
+          hugo --minify --printI18nWarnings
           --printPathWarnings --printUnusedTemplates --source docs
       - name: Check the links
-        run: nix develop --command htmltest --conf docs/htmltest.yml
+        run: htmltest --conf docs/htmltest.yml
       - name: Deploy
         uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4
         with:

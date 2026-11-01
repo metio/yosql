@@ -122,7 +122,7 @@
     <profiles>
         <profile>
             <!-- Compiling an image needs a GraalVM JDK, which the ordinary gate does not
-                 download. `nix develop .#native` provides one. -->
+                 download. The breto environment of this directory provides one. -->
             <id>native-image</id>
             <build>
                 <plugins>

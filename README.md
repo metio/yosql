@@ -9,13 +9,21 @@ Take a look at the [project website](https://yosql.projects.metio.wtf/) to read 
 
 ## Development
 
-The whole toolchain — JDK, Maven, Hugo, htmltest, Postgres — comes from `flake.nix` and is pinned in `flake.lock`.
-CI runs the same shell, so a green gate here is a green gate there.
+The whole toolchain — JDK, Maven, Hugo, htmltest, Postgres — comes from [breto](https://github.com/metio/breto),
+which installs what [`.breto.edn`](.breto.edn) names in the versions the
+[metio/toolchains](https://github.com/metio/toolchains) groups pin. CI installs the same versions, so a green gate
+here is a green gate there.
 
 ```console
-nix develop --command mvn verify                        # the full gate
-nix develop --command hugo server --source docs           # the website, live
-nix develop .#native --command mvn -Pnative-image verify # the GraalVM native-image gate
+breto run mvn verify                                    # the full gate
+breto run hugo server --source docs                     # the website, live
+```
+
+GraalVM comes from the environment of `yosql-examples/yosql-examples-native`, which the native-image gate uses:
+
+```console
+eval "$(breto env --dir yosql-examples/yosql-examples-native)"
+mvn -Pnative-image verify
 ```
 
 ## License

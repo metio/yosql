@@ -10,27 +10,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 `YoSQL` turns `.sql` files into Java repositories at build time. It is a code generator: almost
 everything here exists to produce Java source that somebody else compiles.
 
-## The toolchain is the flake
+## The toolchain is breto's
 
-Every tool — JDK, Maven, Hugo, htmltest, Postgres, GraalVM — comes from `flake.nix`, pinned in
-`flake.lock`. CI runs the same shell, so a green gate locally is green in CI by construction. Always
-go through it:
+Every tool — JDK, Maven, Hugo, htmltest, Postgres, GraalVM — comes from breto, which installs what
+`.breto.edn` names in the versions the metio/toolchains groups pin. CI installs the same versions, so a
+green gate locally is green in CI by construction. Always go through it:
 
 ```console
-nix develop --command mvn verify                   # the full gate, 33 modules
-nix develop --command mvn --projects yosql-codegen test
-nix develop --command mvn --projects yosql-codegen test --define test=JavaSourceParserTest
-nix develop --command mvn --projects yosql-codegen test --define test=JavaSourceParserTest#findsRecord
-nix develop --command hugo server --source docs    # the website, live
+breto run mvn verify                   # the full gate, 33 modules
+breto run mvn --projects yosql-codegen test
+breto run mvn --projects yosql-codegen test --define test=JavaSourceParserTest
+breto run mvn --projects yosql-codegen test --define test=JavaSourceParserTest#findsRecord
+breto run hugo server --source docs    # the website, live
 ```
 
-Lint gates come from the shared devShell and each is its own CI job:
+Lint gates come from the `@lint` group and each is its own CI job:
 `ci-reuse`, `ci-typos`, `ci-yaml`, `ci-markdown`.
 
-The `.#native` shell carries GraalVM and is the only one that can build an image:
+The environment of `yosql-examples/yosql-examples-native` carries GraalVM and is the only one that can build
+an image:
 
 ```console
-nix develop .#native --command mvn --projects yosql-tooling/yosql-tooling-cli --also-make \
+eval "$(breto env --dir yosql-examples/yosql-examples-native)"
+mvn --projects yosql-tooling/yosql-tooling-cli --also-make \
   --define skipNativeBuild=false verify
 ```
 
@@ -115,9 +117,9 @@ them, so a change to the generated configuration model can pass every Maven gate
 Gradle plugin. Run it after touching the meta-model:
 
 ```console
-nix develop --command mvn --projects yosql-tooling/yosql-tooling-dagger,yosql-examples/yosql-examples-common \
+breto run mvn --projects yosql-tooling/yosql-tooling-dagger,yosql-examples/yosql-examples-common \
   --also-make --define maven.test.skip=true install
-cd yosql-examples/yosql-examples-gradle && nix develop ../.. --command ./gradlew build run
+cd yosql-examples/yosql-examples-gradle && breto run --dir ../.. ./gradlew build run
 ```
 
 ## Native image configuration

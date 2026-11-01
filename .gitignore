@@ -10,8 +10,6 @@
 .classpath
 .DS_Store
 .claude/settings.local.json
-result
-result-*
 .direnv/
 docs/public/
 docs/resources/

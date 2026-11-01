@@ -1,0 +1,4 @@
+;; SPDX-FileCopyrightText: The yosql Authors
+;; SPDX-License-Identifier: 0BSD
+
+{:packages ["@graalvm" "@maven" "@postgres"]}

@@ -27,7 +27,9 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -39,14 +41,14 @@ jobs:
         # repository yet. Installing first is what makes the two runs below
         # reach the code generator at all.
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --define maven.test.skip=true install
       - name: Generate once
         # `clean` on both runs, so the two are compared from the same starting
         # state. Without it the first run can carry directories an earlier phase
         # left behind, and the diff reports those rather than anything generated.
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --define maven.test.skip=true clean generate-sources
       - name: Keep what was generated
         run: |
@@ -59,7 +61,7 @@ jobs:
               cp --parents --recursive {} /tmp/first/
       - name: Generate again
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --define maven.test.skip=true clean generate-sources
       - name: Compare the two runs
         run: |
@@ -82,7 +84,9 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -90,12 +94,12 @@ jobs:
           restore-keys: maven-${{ runner.os }}-
       - name: Install the tooling the Gradle plugin builds on
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects yosql-tooling/yosql-tooling-dagger,yosql-examples/yosql-examples-common
           --also-make install
       - name: Build and run the Gradle example
         working-directory: ./yosql-examples/yosql-examples-gradle
-        run: nix develop --command ./gradlew build run
+        run: ./gradlew build run
   native:
     # Reflection-free generated code is the reason to prefer YoSQL to an ORM
     # under native image, and a claim nobody can check is worth nothing. The JVM
@@ -103,14 +107,18 @@ jobs:
     # not there once the image is closed, and the failure surfaces on the code
     # path that needed it rather than at build time. So this job compiles
     # generated mapping code into a binary and runs it against a real Postgres,
-    # asserting the values that come back. Its own devShell carries GraalVM,
-    # which the other jobs do not download.
+    # asserting the values that come back. Its own breto environment, from
+    # yosql-examples/yosql-examples-native/.breto.edn, carries GraalVM, which the other
+    # jobs do not download.
     name: Native image
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
+          project: yosql-examples/yosql-examples-native
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -118,12 +126,12 @@ jobs:
           restore-keys: maven-${{ runner.os }}-
       - name: Install the tooling the examples generate with
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects yosql-tooling/yosql-tooling-maven --also-make
           --define skipTests install
       - name: Build the CLI native image
         run: >
-          nix develop .#native --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects yosql-tooling/yosql-tooling-cli --also-make
           --define skipNativeBuild=false verify
       - name: Generate code with the CLI binary
@@ -145,7 +153,7 @@ jobs:
         # --no-fallback: an image that needed an unregistered reflective lookup
         # fails here rather than quietly shipping a binary that starts a JVM.
         run: >
-          nix develop .#native --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects yosql-examples/yosql-examples-native
           --activate-profiles native-image
           --define skipTests package
@@ -153,57 +161,64 @@ jobs:
         env:
           DATABASE_URL: jdbc:postgresql://127.0.0.1:5599/readings
           DATABASE_USER: yosql
-        # A throwaway cluster from the flake's Postgres — no daemon, no container
+        # A throwaway cluster from the toolchain's Postgres — no daemon, no container
         # runtime, no network. The binary asserts every value it reads back: a
         # UUID, an enum out of text, a value object built from two columns, and a
         # timestamp that is NULL are each a separate way the mapping could have
         # been resolved at runtime instead of at build time.
         run: |
-          nix develop .#native --command initdb --pgdata=pgdata --username=yosql --auth=trust --no-sync
-          nix develop .#native --command pg_ctl --pgdata=pgdata --wait --log=pg.log \
+          initdb --pgdata=pgdata --username=yosql --auth=trust --no-sync
+          pg_ctl --pgdata=pgdata --wait --log=pg.log \
             --options="-p 5599 -c listen_addresses=127.0.0.1 -c unix_socket_directories=/tmp" start
-          nix develop .#native --command psql --host=127.0.0.1 --port=5599 --username=yosql \
+          psql --host=127.0.0.1 --port=5599 --username=yosql \
             --dbname=postgres --command="create database readings"
-          # Through the devShell: the binary's dynamic loader lives in the nix
-          # store, and so does the Postgres it talks to.
-          nix develop .#native --command \
-            ./yosql-examples/yosql-examples-native/target/yosql-native-proof
+          ./yosql-examples/yosql-examples-native/target/yosql-native-proof
   reuse:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
-      - run: nix develop --command ci-reuse
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
+      - run: ci-reuse
   yaml:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
-      - run: nix develop --command ci-yaml
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
+      - run: ci-yaml
   github-actions:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
-      # shellcheck rides in the devShell, so actionlint lints run: blocks too.
-      - run: nix develop --command ci-actionlint
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
+      # shellcheck comes with @lint, so actionlint lints run: blocks too.
+      - run: ci-actionlint
   markdown:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
-      - run: nix develop --command ci-markdown
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
+      - run: ci-markdown
   typos:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
-      - run: nix develop --command ci-typos
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
+      - run: ci-typos
   website:
     # A broken shortcode or a dead internal link fails the same way a broken
     # test does. Hugo reads the generated configuration reference, so the site
@@ -215,7 +230,9 @@ jobs:
         with:
           # The theme is a submodule; without it Hugo has no layouts at all.
           submodules: recursive
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -223,16 +240,16 @@ jobs:
           restore-keys: maven-${{ runner.os }}-
       - name: Generate the configuration reference
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects docs --also-make --define skipTests install
       - name: Build the site
         env:
           YOSQL_RELEASE: 0.0.0
         run: >
-          nix develop --command hugo --minify --printI18nWarnings
+          hugo --minify --printI18nWarnings
           --printPathWarnings --printUnusedTemplates --source docs
       - name: Check the links
-        run: nix develop --command htmltest --conf docs/htmltest.yml
+        run: htmltest --conf docs/htmltest.yml
   dco:
     # Developer Certificate of Origin: every commit must carry a Signed-off-by
     # trailer. Skipped for bot-authored PRs (Renovate cannot sign off); a
@@ -248,8 +265,7 @@ jobs:
   policy:
     # metio org workflow conventions (conftest/Rego from metio/ci): SHA-pinned
     # uses refs, top-level permissions, timeout-minutes on every job, no
-    # untrusted ${{ github.event.* }} interpolation in run: blocks, and — since
-    # this repo ships a flake.nix — every tool coming from the devShell.
+    # untrusted ${{ github.event.* }} interpolation in run: blocks.
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

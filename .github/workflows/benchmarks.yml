@@ -34,7 +34,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -47,7 +49,7 @@ jobs:
         env:
           BENCHMARK: ${{ matrix.benchmark }}
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects "yosql-benchmarks/yosql-benchmarks-$BENCHMARK" --also-make
           --activate-profiles benchmarks
           --define org.slf4j.simpleLogger.log.yosql=warn

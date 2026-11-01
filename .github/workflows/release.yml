@@ -78,7 +78,9 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -88,7 +90,7 @@ jobs:
         env:
           VERSION: ${{ needs.gate.outputs.version }}
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --define newVersion="$VERSION"
           --define generateBackupPoms=false
           versions:set
@@ -121,7 +123,7 @@ jobs:
         # distributions ship on the GitHub release, the examples and benchmarks
         # ship nowhere.
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --settings "$RUNNER_TEMP/settings.xml"
           --activate-profiles release
           --projects yosql-tooling/yosql-tooling-maven --also-make
@@ -138,7 +140,9 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -148,12 +152,12 @@ jobs:
         env:
           VERSION: ${{ needs.gate.outputs.version }}
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --define newVersion="$VERSION"
           --define generateBackupPoms=false
           versions:set
       - name: Install the tooling the Gradle plugin builds on
-        run: nix develop --command mvn --batch-mode --no-transfer-progress install
+        run: mvn --batch-mode --no-transfer-progress install
       - name: Publish the Gradle plugin
         working-directory: ./yosql-tooling/yosql-tooling-gradle
         env:
@@ -161,7 +165,7 @@ jobs:
           PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
           PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
         run: >
-          nix develop --command ./gradlew publishPlugins
+          ./gradlew publishPlugins
           -Pversion="$VERSION"
           -Pgradle.publish.key="$PUBLISH_KEY"
           -Pgradle.publish.secret="$PUBLISH_SECRET"
@@ -170,7 +174,7 @@ jobs:
     # The Ant task and the CLI, which are downloaded rather than resolved. Both
     # are built on the runner they target: GraalVM cannot cross-compile, so a
     # native binary needs a runner of its own architecture. Windows is absent
-    # because the toolchain contract is the flake, and Nix does not run there.
+    # because breto, which installs the toolchain, has no Windows release.
     name: Distributions on ${{ matrix.os }}
     needs: [gate]
     if: needs.gate.outputs.release == 'true'
@@ -181,7 +185,10 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/nix-devshell@d0c25fdb0d2c08f23bc62c867317a266b6f1a5c1 # 2026.9.12204255
+      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+        with:
+          registries: github:metio/toolchains
+          project: yosql-examples/yosql-examples-native
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.m2/repository
@@ -191,7 +198,7 @@ jobs:
         env:
           VERSION: ${{ needs.gate.outputs.version }}
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --define newVersion="$VERSION"
           --define generateBackupPoms=false
           versions:set
@@ -200,7 +207,7 @@ jobs:
         env:
           TIMESTAMP: ${{ needs.gate.outputs.timestamp }}
         run: >
-          nix develop --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects yosql-tooling/yosql-tooling-ant --also-make
           --define project.build.outputTimestamp="$TIMESTAMP"
           install
@@ -208,7 +215,7 @@ jobs:
         env:
           TIMESTAMP: ${{ needs.gate.outputs.timestamp }}
         run: >
-          nix develop .#native --command mvn --batch-mode --no-transfer-progress
+          mvn --batch-mode --no-transfer-progress
           --projects yosql-tooling/yosql-tooling-cli --also-make
           --define project.build.outputTimestamp="$TIMESTAMP"
           --define skipNativeBuild=false
