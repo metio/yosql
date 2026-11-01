@@ -44,14 +44,14 @@ jobs:
         with:
           fetch-depth: 0 # the gate reads tags and history
       - id: gate
-        uses: metio/ci/needs-release@14ad475c5f5c4c0df727df1a22345298604e66ba # 2026.10.26174650
+        uses: metio/ci/needs-release@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
         with:
           # The examples, the benchmarks and the website ship nothing, so a
           # change confined to them is not worth a release.
           paths: pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling
       - id: quota
         if: steps.gate.outputs.needed == 'true'
-        uses: metio/ci/central-quota@14ad475c5f5c4c0df727df1a22345298604e66ba # 2026.10.26174650
+        uses: metio/ci/central-quota@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
       - id: version
         name: Compute the version and the build timestamp
         if: steps.gate.outputs.needed == 'true'
@@ -78,7 +78,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+      - uses: metio/ci/breto@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
         with:
           registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
@@ -140,7 +140,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+      - uses: metio/ci/breto@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
         with:
           registries: github:metio/toolchains
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
@@ -185,7 +185,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: metio/ci/breto@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
+      - uses: metio/ci/breto@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
         with:
           registries: github:metio/toolchains
           project: yosql-examples/yosql-examples-native
@@ -271,11 +271,11 @@ jobs:
         # the whole release and adding an archive cannot silently escape it.
         run: sha256sum ./*.zip > SHA256SUMS
       - id: cosign
-        uses: metio/ci/cosign-sign-blob@14ad475c5f5c4c0df727df1a22345298604e66ba # 2026.10.26174650
+        uses: metio/ci/cosign-sign-blob@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
         with:
           file: artifacts/SHA256SUMS
       - id: notes
-        uses: metio/ci/release-notes@14ad475c5f5c4c0df727df1a22345298604e66ba # 2026.10.26174650
+        uses: metio/ci/release-notes@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # main
         with:
           version: ${{ needs.gate.outputs.version }}
           previous: ${{ needs.gate.outputs.last }}
