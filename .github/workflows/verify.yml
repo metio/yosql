@@ -15,7 +15,7 @@ jobs:
     # examples and the benchmarks — so the frontends are exercised by building
     # the projects that consume them.
     name: Maven
-    uses: metio/ci/.github/workflows/maven.yml@14ad475c5f5c4c0df727df1a22345298604e66ba # 2026.10.26174650
+    uses: metio/ci/.github/workflows/maven.yml@f6c5da232253f67486721f46cf4cd5d488189e04 # 2026.10.31224636
   reproducible:
     # Generated .java files land in users' repositories, build caches and CI
     # diffs, so the same input has to produce the same bytes. Two defects made it
