@@ -179,7 +179,7 @@ jobs:
           psql --host=127.0.0.1 --port=5599 --username=yosql \
             --dbname=postgres --command="create database readings"
           ./yosql-examples/yosql-examples-native/target/yosql-native-proof
-  yaml:
+  lint:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -189,41 +189,9 @@ jobs:
       - uses: metio/ci/breto@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # 2026.11.1111906
         with:
           registries: github:metio/toolchains
-      - run: ci-yaml
-  github-actions:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-      - uses: metio/ci/breto@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # 2026.11.1111906
-        with:
-          registries: github:metio/toolchains
-      # shellcheck comes with @lint, so actionlint lints run: blocks too.
-      - run: ci-actionlint
-  markdown:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-      - uses: metio/ci/breto@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # 2026.11.1111906
-        with:
-          registries: github:metio/toolchains
-      - run: ci-markdown
-  typos:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-      - uses: metio/ci/breto@d4a165ac035d1fa1a7aee5b27192d0aed9c7a0b0 # 2026.11.1111906
-        with:
-          registries: github:metio/toolchains
-      - run: ci-typos
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: breto run ci-lint
   website:
     # A broken shortcode or a dead internal link fails the same way a broken
     # test does. Hugo reads the generated configuration reference, so the site
@@ -260,7 +228,7 @@ jobs:
     # Single required check covering every job above: mark only this one
     # required in branch protection and new jobs are covered automatically.
     name: Verify
-    needs: [maven, gradle, reproducible, native, yaml, github-actions, markdown, typos, website]
+    needs: [maven, gradle, reproducible, native, lint, website]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
