@@ -17,7 +17,7 @@ concurrency:
 jobs:
   release:
     name: Release
-    uses: metio/ci/.github/workflows/maven-central-release.yml@bfcb1a4d37c4fd4d5d9c27181191dcad0d04f90c # 2026.11.1211658
+    uses: metio/ci/.github/workflows/maven-central-release.yml@00adafd0fe1924f57325d9dd264d5d731fb099ad # 2026.11.4082509
     with:
       paths: pom.xml yosql-codegen yosql-internals yosql-models yosql-tooling
     secrets:
