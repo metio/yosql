@@ -23,7 +23,7 @@ permissions:
 jobs:
   website:
     name: Website
-    uses: metio/ci/.github/workflows/hugo.yml@92eaf0dff9859e52fbbc3f07c7f9eb832b31ea3b # 2026.11.15155907
+    uses: metio/ci/.github/workflows/hugo.yml@ee1344847682b2c1a1c5b5413da59be084662645 # 2026.11.16053738
     permissions:
       contents: write
     with:
