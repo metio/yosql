@@ -64,7 +64,7 @@ jobs:
           cp --force "$results" "${target}/yosql-benchmarks-${BENCHMARK}-${VERSION}.json"
           cp --force "$results" "${target}/yosql-benchmarks-${BENCHMARK}-CURRENT.json"
       - name: Open a pull request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           commit-message: "Record ${{ matrix.benchmark }} benchmarks for ${{ steps.released.outputs.version }}"
           title: "Record ${{ matrix.benchmark }} benchmarks for ${{ steps.released.outputs.version }}"
